@@ -1,5 +1,6 @@
-# xcite is QT
-# 
+#                X C I T E
+#
+#  XTRABYTES Consolidated Interactive TErminal
 
 Supported Operating Systems
 
