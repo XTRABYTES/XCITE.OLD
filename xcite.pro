@@ -4,17 +4,34 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+VERSION = 0.0.0
+
+QT	+= core gui
+QT	+= quick
+CONFIG	+= c++11
+
+DEFINES += QT_DEPRECATED_WARNINGS
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = xcite
 TEMPLATE = app
 
+CONFIG(debug, debug|release) {
+    DESTDIR = build/debug
+}
+CONFIG(release, debug|release) {
+    DESTDIR = build/release
+}
 
-SOURCES += main.cpp\
-        xcite.cpp
+OBJECTS_DIR = $$DESTDIR/.obj
+MOC_DIR = $$DESTDIR/.moc
+RCC_DIR = $$DESTDIR/.qrc
+UI_DIR = $$DESTDIR/.u
 
-HEADERS  += xcite.h
+SOURCES += main/main.cpp
 
-FORMS    += xcite.ui
+RESOURCES += frontend/qml.qrc
+
+# HEADERS  += xcite.h
+

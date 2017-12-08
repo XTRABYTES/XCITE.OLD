@@ -1,0 +1,1 @@
+This area includes a directory for each team member to use to create work products. Each team member can organize their directory in whatever manner makes sense to them. There is no standard structure. 
