@@ -1,1 +1,1 @@
-UI files
+A frontend must provide a good user experience and should be convenient for the end user to operate. It should be able to perform proper validation of any data sent by the user and should be responsive.
