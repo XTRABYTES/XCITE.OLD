@@ -20,6 +20,6 @@ i686-w64-mingw32.static-qmake-qt5 \
     BDB_LIB_PATH=$MXE_LIB_PATH \
     MINIUPNPC_INCLUDE_PATH=$MXE_INCLUDE_PATH \
     MINIUPNPC_LIB_PATH=$MXE_LIB_PATH \
-    QMAKE_LRELEASE=/usr/lib/mxe/usr/i686-w64-mingw32.static/qt5/bin/lrelease xcite.pro
+    QMAKE_LRELEASE=/usr/lib/mxe/usr/i686-w64-mingw32.static/qt/bin/lrelease xcite.pro
 
 make -j4 -f Makefile.Release

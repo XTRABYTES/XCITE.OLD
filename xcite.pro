@@ -29,9 +29,12 @@ MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
-SOURCES += main/main.cpp
+SOURCES += main/main.cpp \
+	    backend/backend.cpp \
+	    backend/iobject.cpp
 
 RESOURCES += frontend/qml.qrc
 
-# HEADERS  += xcite.h
+HEADERS  += backend/backend.hpp \
+	    backend/iobject.hpp
 

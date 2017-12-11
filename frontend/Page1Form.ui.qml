@@ -40,6 +40,9 @@ Item {
                 text: qsTr("BLOCK 11")
                 font.pixelSize: 12
             }
+
+
+
         }
 
         Rectangle {
@@ -125,10 +128,22 @@ Item {
             Text {
                 id: text7
                 x: 180
-                y: 161
+                y: 121
                 text: qsTr("BLOCK 6")
                 font.pixelSize: 12
             }
+    TextField {
+        text: backend.loremIpsum
+        placeholderText: qsTr("type here")
+        anchors.centerIn: parent
+
+        onTextChanged: backend.loremIpsum = text
+    }
+
+    Button {
+        text: "update window title"
+        onClicked: pressMeSignal(backend.loremIpsum)
+    }
         }
 
         Rectangle {
