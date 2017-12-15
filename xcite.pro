@@ -35,6 +35,9 @@ SOURCES += main/main.cpp \
 
 RESOURCES += frontend/qml.qrc
 
+QML2_IMPORT_PATH += frontend/EmbeddedAuto
+include("frontend/GridStarLayout/quickgridstarlayout.pri")
+
 HEADERS  += backend/backend.hpp \
 	    backend/iobject.hpp
 
