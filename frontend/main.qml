@@ -5,13 +5,15 @@ import xtrabytes.xcite.backend 1.0
 
 ApplicationWindow {
     visible: true
-
     width: 1024
     height: 768
     title: qsTr("Hello XCITE")
 
-       Page1 {
-       }
+    StackView {
+        id: mainRoot
+        initialItem: LoginForm {}
+        anchors.fill: parent
+    }
 
     BackEnd {
         id: backend

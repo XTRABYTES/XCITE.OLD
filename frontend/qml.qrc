@@ -1,8 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>Page1.qml</file>
-        <file>Page1Form.qml</file>
+        <file>DashboardForm.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>EmbeddedAuto/AppTheme.qml</file>
         <file>EmbeddedAuto/qmldir</file>
@@ -11,5 +10,21 @@
         <file>GridStarLayout/qquickgridstar.cpp</file>
         <file>GridStarLayout/qquickgridstar.h</file>
         <file>GridStarLayout/quickgridstarlayout.pri</file>
+        <file>LoginForm.qml</file>
+        <file>PolygonalBackground.qml</file>
+        <file>Logo.qml</file>
+        <file>Assets/Background/.DS_Store</file>
+        <file>Assets/Background/Background_v1.png</file>
+        <file>Assets/Icons/avatar.svg</file>
+        <file>Assets/Icons/padlock.svg</file>
+        <file>Assets/Logo/xby_logo.png</file>
+        <file>Assets/Logo/xby_logo_250.png</file>
+        <file>Assets/Logo/xby_logo_200.png</file>
+        <file>BlueTextInput.qml</file>
+        <file>SimpleButton.qml</file>
+        <file>ForgotPasswordForm.qml</file>
+        <file>PlainTextButton.qml</file>
+        <file>SignUpForm.qml</file>
+        <file>TwoFactorAuthForm.qml</file>
     </qresource>
 </RCC>
