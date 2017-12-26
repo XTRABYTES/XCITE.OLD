@@ -2,8 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QtQuick/QQuickWindow>
 
-#include "../backend/backend.hpp"
-#include "../backend/iobject.hpp"
+#include "../backend/xchat/xchat.hpp"
 
 
 int main(int argc, char *argv[])
@@ -11,7 +10,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
-    qmlRegisterType<BackEnd>("xtrabytes.xcite.backend", 1, 0, "BackEnd");
+    qmlRegisterType<Xchat>("xtrabytes.xcite.xchat", 1, 0, "Xchat");
 
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/");
@@ -20,13 +19,13 @@ int main(int argc, char *argv[])
         return -1;
 
     QQuickWindow *W = (QQuickWindow *)engine.rootObjects().first();
-    iObject a(W);
+    XchatObject a(W);
 
     // connect QML signals to C++ slots
-    QObject::connect(engine.rootObjects().first(),SIGNAL(pressMeSignal(QString)),&a,SLOT(PressMeCall(QString)));
+    QObject::connect(engine.rootObjects().first(),SIGNAL(xchatSubmitMsgSignal(QString,QString)),&a,SLOT(SubmitMsgCall(QString,QString)));
 
     // connect C++ signals to QML slots
-    QObject::connect(&a, SIGNAL(setTextFieldSignal(QVariant)),engine.rootObjects().first(), SLOT(setTextFieldCall(QVariant)));
+    QObject::connect(&a, SIGNAL(xchatResponseSignal(QVariant)),engine.rootObjects().first(), SLOT(xchatResponse(QVariant)));
 
     return app.exec();
 }

@@ -1,13 +1,15 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
-import xtrabytes.xcite.backend 1.0
+import xtrabytes.xcite.xchat 1.0
 
 ApplicationWindow {
     visible: true
     width: 1024
     height: 768
     title: qsTr("Hello XCITE")
+    
+    property var responseTXT: ""
 
     StackView {
         id: mainRoot
@@ -15,16 +17,24 @@ ApplicationWindow {
         anchors.fill: parent
     }
 
-    BackEnd {
-        id: backend
+XchatPopup{}
 
+
+
+    Xchat {
+		       id: xchat
+		       
+             
+		
     }
 
+				signal xchatSubmitMsgSignal(string msg, string responseTXT)	    
 
-    function setTextFieldCall(text){
-      title = text
-    }
+			    function xchatResponse(response){
+			      responseTXT = response
+			    }
+			
+			    
 
-    signal pressMeSignal(string msg)
 
 }

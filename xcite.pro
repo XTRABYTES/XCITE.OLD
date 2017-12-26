@@ -30,14 +30,14 @@ RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
 SOURCES += main/main.cpp \
-	    backend/backend.cpp \
-	    backend/iobject.cpp
+	    backend/xchat/xchat.cpp \
+	    backend/p2p/p2p.cpp 
 
 RESOURCES += frontend/qml.qrc
 
 QML2_IMPORT_PATH += frontend/EmbeddedAuto
 include("frontend/GridStarLayout/quickgridstarlayout.pri")
 
-HEADERS  += backend/backend.hpp \
-	    backend/iobject.hpp
+HEADERS  += backend/xchat/xchat.hpp \
+	    backend/p2p/p2p.hpp 
 
