@@ -15,7 +15,7 @@ PolygonalBackground {
 
         Text {
             font.family: "Roboto Thin"
-            text: "XCITE"
+            text: qsTr("XCITE")
             font.pointSize: 30
             color: "#10B9C5"
             anchors.horizontalCenter: parent.horizontalCenter
@@ -24,7 +24,7 @@ PolygonalBackground {
 
         BlueTextInput {
           anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: "john@email.com"
+          placeholder: qsTr("john@email.com")
         }
 
         BlueTextInput {
@@ -34,7 +34,7 @@ PolygonalBackground {
         }
 
         SimpleButton {
-            text: "Login"
+            text: qsTr("Login")
             backgroundColor: "transparent"
             hoverBackgroundColor: "#1A10B9C5"
             anchors.horizontalCenter: parent.horizontalCenter
@@ -44,7 +44,7 @@ PolygonalBackground {
         }
 
         PlainTextButton {
-            text: "Forgot password?"
+            text: qsTr("Forgot password?")
             opacity: 0.9
             fontPointSize: 10
             anchors.horizontalCenter: parent.horizontalCenter
@@ -54,7 +54,7 @@ PolygonalBackground {
         }
 
         PlainTextButton {
-            text: "Don't have an account? Sign Up!"
+            text: qsTr("Don't have an account? Sign Up!")
             opacity: 0.8
             fontPointSize: 10
             anchors.horizontalCenter: parent.horizontalCenter

@@ -12,21 +12,16 @@
         <file>GridStarLayout/qquickgridstar.h</file>
         <file>GridStarLayout/quickgridstarlayout.pri</file>
         <file>LoginForm.qml</file>
-	<file>resources/buttons/ok.png</file>
+        <file>resources/buttons/ok.png</file>
         <file>PolygonalBackground.qml</file>
         <file>Logo.qml</file>
-        <file>Assets/Background/.DS_Store</file>
-        <file>Assets/Background/Background_v1.png</file>
-        <file>Assets/Icons/avatar.svg</file>
-        <file>Assets/Icons/padlock.svg</file>
-        <file>Assets/Logo/xby_logo.png</file>
-        <file>Assets/Logo/xby_logo_250.png</file>
-        <file>Assets/Logo/xby_logo_200.png</file>
         <file>BlueTextInput.qml</file>
         <file>SimpleButton.qml</file>
         <file>ForgotPasswordForm.qml</file>
         <file>PlainTextButton.qml</file>
         <file>SignUpForm.qml</file>
         <file>TwoFactorAuthForm.qml</file>
+        <file>resources/logos/xby_logo_200.png</file>
+        <file>resources/backgrounds/polygonal.png</file>
     </qresource>
 </RCC>

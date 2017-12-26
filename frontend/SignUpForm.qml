@@ -17,7 +17,7 @@ PolygonalBackground {
 
         Text {
             font.family: "Roboto Thin"
-            text: "XCITE"
+            text: qsTr("XCITE")
             font.pointSize: 30
             color: "#10B9C5"
             anchors.horizontalCenter: parent.horizontalCenter
@@ -26,17 +26,17 @@ PolygonalBackground {
 
         BlueTextInput {
           anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: "username"
+          placeholder: qsTr("username")
         }
 
         BlueTextInput {
           anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: "e-mail"
+          placeholder: qsTr("e-mail")
         }
 
         BlueTextInput {
           anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: "choose password"
+          placeholder: qsTr("choose password")
           echoMode: TextInput.Password
         }
 
@@ -50,7 +50,7 @@ PolygonalBackground {
         }
 
         SimpleButton {
-            text: "Sign Up"
+            text: qsTr("Sign Up")
             backgroundColor: "#10B9C4"
             hoverBackgroundColor: "#31d3de"
             foregroundColor: "#273A3B"
@@ -62,7 +62,7 @@ PolygonalBackground {
         }
 
         PlainTextButton {
-            text: "Already a member? Go Back!"
+            text: qsTr("Already a member? Go Back!")
             opacity: 0.8
             fontPointSize: 10
             anchors.horizontalCenter: parent.horizontalCenter

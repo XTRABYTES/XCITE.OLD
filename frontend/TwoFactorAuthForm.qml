@@ -15,7 +15,7 @@ PolygonalBackground {
 
         Text {
             font.family: "Roboto Thin"
-            text: "XCITE"
+            text: qsTr("XCITE")
             font.pointSize: 30
             color: "#10B9C5"
             anchors.horizontalCenter: parent.horizontalCenter
@@ -24,7 +24,7 @@ PolygonalBackground {
 
         Text {
             font.family: "Roboto Thin"
-            text: "Enter your verification code"
+            text: qsTr("Enter your verification code")
             font.pointSize: 10
             color: "#FFFFFF"
             opacity: 0.9
@@ -38,7 +38,7 @@ PolygonalBackground {
         }
 
         SimpleButton {
-            text: "Verify"
+            text: qsTr("Verify")
             backgroundColor: "transparent"
             hoverBackgroundColor: "#1A10B9C5"
             anchors.horizontalCenter: parent.horizontalCenter
@@ -48,7 +48,7 @@ PolygonalBackground {
         }
 
         PlainTextButton {
-            text: "Use another account? Go Back!"
+            text: qsTr("Use another account? Go Back!")
             opacity: 0.8
             fontPointSize: 10
             anchors.horizontalCenter: parent.horizontalCenter
