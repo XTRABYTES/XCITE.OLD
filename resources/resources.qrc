@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>buttons/ok.png</file>
+        <file>logos/xby_logo_200.png</file>
+        <file>backgrounds/polygonal.png</file>
+        <file>aiml/date.aiml</file>
+    </qresource>
+</RCC>

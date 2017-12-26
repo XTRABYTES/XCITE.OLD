@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<aiml>
+<category>
+<pattern>WHAT TIME IS IT</pattern>
+<template><random>
+  <li>Do I look like a clock?</li>
+  <li>It's Now more than it ever has been before.</li>
+  <li>It's getting late.</li>
+</random> 
+</template>
+</category>
+</aiml>

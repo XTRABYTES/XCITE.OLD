@@ -105,7 +105,7 @@ Pane {
 
 										Image {
 										        anchors.fill: parent
-										        source: "resources/buttons/ok.png"
+										        source: "buttons/ok.png"
 										        fillMode: Image.Tile
 										    	}
 	
