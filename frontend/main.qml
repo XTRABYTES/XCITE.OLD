@@ -5,15 +5,17 @@ import xtrabytes.xcite.xchat 1.0
 
 ApplicationWindow {
     visible: true
-
     width: 1024
     height: 768
     title: qsTr("Hello XCITE")
     
     property var responseTXT: ""
 
-       Page1 {
-       }
+    StackView {
+        id: mainRoot
+        initialItem: LoginForm {}
+        anchors.fill: parent
+    }
 
 XchatPopup{}
 
