@@ -20,5 +20,6 @@
         <file>PlainTextButton.qml</file>
         <file>SignUpForm.qml</file>
         <file>TwoFactorAuthForm.qml</file>
+        <file>NavigationButton.qml</file>
     </qresource>
 </RCC>
