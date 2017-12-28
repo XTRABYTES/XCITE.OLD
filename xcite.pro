@@ -39,9 +39,6 @@ SOURCES += main/main.cpp \
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
 
-QML2_IMPORT_PATH += frontend/EmbeddedAuto
-include("frontend/GridStarLayout/quickgridstarlayout.pri")
-
 HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xchat/xchataiml.hpp \
 	    backend/p2p/p2p.hpp 

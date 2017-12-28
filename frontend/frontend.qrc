@@ -4,13 +4,6 @@
         <file>DashboardForm.qml</file>
         <file>XchatPopup.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>EmbeddedAuto/AppTheme.qml</file>
-        <file>EmbeddedAuto/qmldir</file>
-        <file>GridStarLayout/qquickgriddefinition.cpp</file>
-        <file>GridStarLayout/qquickgriddefinition.h</file>
-        <file>GridStarLayout/qquickgridstar.cpp</file>
-        <file>GridStarLayout/qquickgridstar.h</file>
-        <file>GridStarLayout/quickgridstarlayout.pri</file>
         <file>LoginForm.qml</file>
         <file>PolygonalBackground.qml</file>
         <file>Logo.qml</file>
