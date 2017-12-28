@@ -13,28 +13,18 @@ ApplicationWindow {
 
     StackView {
         id: mainRoot
-        initialItem: LoginForm {}
+        //initialItem: LoginForm {}
+        initialItem: DashboardForm {}
         anchors.fill: parent
     }
 
-XchatPopup{}
-
-
-
     Xchat {
-		       id: xchat
-		       
-             
-		
+        id: xchat
     }
 
-				signal xchatSubmitMsgSignal(string msg, string responseTXT)	    
+    signal xchatSubmitMsgSignal(string msg, string responseTXT)
 
-			    function xchatResponse(response){
-			      responseTXT = response
-			    }
-			
-			    
-
-
+    function xchatResponse(response){
+      responseTXT = response
+    }
 }
