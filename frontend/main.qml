@@ -13,8 +13,7 @@ ApplicationWindow {
 
     StackView {
         id: mainRoot
-        //initialItem: LoginForm {}
-        initialItem: DashboardForm {}
+        initialItem: LoginForm {}
         anchors.fill: parent
     }
 
