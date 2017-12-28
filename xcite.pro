@@ -9,6 +9,7 @@ VERSION = 0.0.0
 QT	+= core gui
 QT	+= xml
 QT	+= quick
+QT += svg
 CONFIG	+= c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
