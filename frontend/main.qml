@@ -5,7 +5,7 @@ import xtrabytes.xcite.xchat 1.0
 
 ApplicationWindow {
     visible: true
-    width: 1024
+    width: 1200
     height: 768
     title: qsTr("Hello XCITE")
     
@@ -15,6 +15,22 @@ ApplicationWindow {
         id: mainRoot
         initialItem: LoginForm {}
         anchors.fill: parent
+        pushEnter: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 0
+                to:1
+                duration: 200
+            }
+        }
+        pushExit: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 1
+                to:0
+                duration: 200
+            }
+        }
     }
 
     Xchat {
