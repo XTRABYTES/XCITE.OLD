@@ -2,8 +2,6 @@ import QtQuick 2.0
 
 PolygonalBackground {
     id: root
-    anchors.fill: parent
-    anchors.centerIn: parent
 
     Column {
         id: column
@@ -43,7 +41,7 @@ PolygonalBackground {
             hoverBackgroundColor: "#1A10B9C5"
             anchors.horizontalCenter: parent.horizontalCenter
             onButtonClicked: {
-                mainRoot.replace("DashboardForm.qml")
+                mainRoot.push("DashboardForm.qml")
             }
         }
 

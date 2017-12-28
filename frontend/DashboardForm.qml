@@ -12,7 +12,6 @@ import xtrabytes.xcite.xchat 1.0
 // More information: http://doc.qt.io/qt-5/scalability.html
 
 Item {
-    anchors.fill: parent
 
     RowLayout {
         id: rootLayout

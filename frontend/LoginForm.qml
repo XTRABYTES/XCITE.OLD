@@ -2,8 +2,6 @@ import QtQuick 2.0
 
 PolygonalBackground {
     id: loginFormRoot
-    anchors.fill: parent
-    anchors.centerIn: parent
 
     Column {
         id: column
