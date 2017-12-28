@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<substitutions>
+  <substitution>
+    <old>:\-\)</old>
+    <new> smile </new>
+  </substitution>
+  <substitution>
+    <old>:\)</old>
+    <new> smile </new>
+  </substitution>
+  <substitution>
+    <old>,\)</old>
+    <new> smile </new>
+  </substitution>
+  <substitution>
+    <old>;\)</old>
+    <new> smile </new>
+  </substitution>
+  <substitution>
+    <old>;\-\)</old>
+    <new> smile </new>
+  </substitution>
+  <substitution>
+    <old>&quot;</old>
+    <new></new>
+  </substitution>
+  <substitution>
+    <old>/</old>
+    <new> </new>
+  </substitution>
+  <substitution>
+    <old>\(</old>
+    <new> </new>
+  </substitution>
+  <substitution>
+    <old>\)</old>
+    <new> </new>
+  </substitution>
+  <substitution>
+    <old>`</old>
+    <new> </new>
+  </substitution>
+  <substitution>
+    <old>,</old>
+    <new> </new>
+  </substitution>
+  <substitution>
+    <old>:</old>
+    <new> </new>
+  </substitution>
+  <substitution>
+    <old>\bwe re\b</old>
+    <new>we are</new>
+  </substitution>
+  <substitution>
+    <old>\bshe s\b</old>
+    <new>she is</new>
+  </substitution>
+  <substitution>
+    <old>\bhe s\b</old>
+    <new>he is</new>
+  </substitution>
+  <substitution>
+    <old>\biama\b</old>
+    <new>I am a</new>
+  </substitution>
+  <substitution>
+    <old>\biamasking\b</old>
+    <new>I am asking</new>
+  </substitution>
+  <substitution>
+    <old>\biamdoing\b</old>
+    <new>I am doing</new>
+  </substitution>
+  <substitution>
+    <old>\biamfrom\b</old>
+    <new>I am from</new>
+  </substitution>
+  <substitution>
+    <old>\biamin\b</old>
+    <new>I am in</new>
+  </substitution>
+  <substitution>
+    <old>\biamok\b</old>
+    <new>I am ok</new>
+  </substitution>
+  <substitution>
+    <old>\biamsorry\b</old>
+    <new>I am sorry</new>
+  </substitution>
+  <substitution>
+    <old>\biamtalking\b</old>
+    <new>I am talking</new>
+  </substitution>
+  <substitution>
+    <old>\biamtired\b</old>
+    <new>I am tired</new>
+  </substitution>
+  <substitution>
+    <old>\bdown load\b</old>
+    <new>download</new>
+  </substitution>
+</substitutions>

@@ -3,6 +3,9 @@
         <file>buttons/ok.png</file>
         <file>logos/xby_logo_200.png</file>
         <file>backgrounds/polygonal.png</file>
+        <file>aiml/substitutions.xml</file>
+        <file>aiml/hello.aiml</file>
         <file>aiml/date.aiml</file>
+        <file>aiml/emotions.aiml</file>
     </qresource>
 </RCC>

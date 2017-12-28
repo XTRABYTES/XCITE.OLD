@@ -19,13 +19,14 @@ int main(int argc, char *argv[])
         return -1;
 
     QQuickWindow *W = (QQuickWindow *)engine.rootObjects().first();
-    XchatObject a(W);
+    XchatObject xchatobj(W);
+    xchatobj.Initialize();
 
     // connect QML signals to C++ slots
-    QObject::connect(engine.rootObjects().first(),SIGNAL(xchatSubmitMsgSignal(QString,QString)),&a,SLOT(SubmitMsgCall(QString,QString)));
+    QObject::connect(engine.rootObjects().first(),SIGNAL(xchatSubmitMsgSignal(QString,QString)),&xchatobj,SLOT(SubmitMsgCall(QString,QString)));
 
     // connect C++ signals to QML slots
-    QObject::connect(&a, SIGNAL(xchatResponseSignal(QVariant)),engine.rootObjects().first(), SLOT(xchatResponse(QVariant)));
+    QObject::connect(&xchatobj, SIGNAL(xchatResponseSignal(QVariant)),engine.rootObjects().first(), SLOT(xchatResponse(QVariant)));
 
     return app.exec();
 }

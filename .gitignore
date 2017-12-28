@@ -35,3 +35,4 @@
 Makefile
 .qmake.stash
 build/release/*
+android

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QVariant>
-
+#include "xchataiml.hpp"
 
 class Xchat : public QObject
 {
@@ -31,7 +31,11 @@ class XchatObject : public QObject
 {
 Q_OBJECT
 public:
-explicit XchatObject(QObject *parent = 0);
+	explicit XchatObject(QObject *parent = 0);
+   ~XchatObject();
+    
+   void Initialize();
+
 
 signals:
 void xchatResponseSignal(QVariant text);
@@ -39,7 +43,9 @@ void xchatResponseSignal(QVariant text);
 public slots:
 void SubmitMsgCall(const QString &msg, const QString &resp);
 private:
-QObject *window;
+QObject 				*window;
+XchatAIML*        m_pXchatAiml;
+bool              m_bIsInitialized;
 };
 
 
