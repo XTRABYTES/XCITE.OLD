@@ -21,5 +21,7 @@
         <file>SignUpForm.qml</file>
         <file>TwoFactorAuthForm.qml</file>
         <file>NavigationButton.qml</file>
+        <file>XchatSummary.qml</file>
+        <file>DockButton.qml</file>
     </qresource>
 </RCC>
