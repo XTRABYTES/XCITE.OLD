@@ -6,9 +6,8 @@ import QtQuick.Window 2.1
 
 Item {
     id: root
-    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-    Layout.topMargin: 35
     width: size
+    height: size
 
     property alias isSelected: overlay.visible
     property alias imageSource: image.source
@@ -24,6 +23,7 @@ Item {
         sourceSize.width: size
         sourceSize.height: size
         horizontalAlignment: Image.AlignHCenter
+        verticalAlignment: Image.AlignVCenter
 
         MouseArea {
             id: mouseArea

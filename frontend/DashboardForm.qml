@@ -48,6 +48,8 @@ Item {
                 DiodeButton {
                     id: logobutton
                     imageSource: "logos/xby_logo.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    Layout.topMargin: 35
                     changeColorOnClick: false
                     hoverEnabled: false
                     size: 70
@@ -56,6 +58,7 @@ Item {
                 DiodeButton {
                     id: diode1button
                     imageSource: "icons/dollar-pointer.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     isSelected: true
                     onButtonClicked: {
 
@@ -65,6 +68,7 @@ Item {
                 DiodeButton {
                     id: diode2button
                     imageSource: "icons/share.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     isSelected: true
                     onButtonClicked: {
 
@@ -74,6 +78,7 @@ Item {
                 DiodeButton {
                     id: diode3button
                     imageSource: "icons/shuffle.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     isSelected: true
                     onButtonClicked: {
 
@@ -83,6 +88,7 @@ Item {
                 DiodeButton {
                     id: diode4button
                     imageSource: "icons/chat.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     isSelected: true
                     onButtonClicked: {
 
@@ -92,6 +98,7 @@ Item {
                 DiodeButton {
                     id: diode5button
                     imageSource: "icons/plus-button.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     isSelected: false
                     onButtonClicked: {
 

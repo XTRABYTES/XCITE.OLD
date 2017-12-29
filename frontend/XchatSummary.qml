@@ -30,6 +30,7 @@ Rectangle {
     }
 
     Label {
+        id: xchatLabel
         text: qsTr("X-CHAT")
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
@@ -44,24 +45,24 @@ Rectangle {
         anchors.rightMargin: 10
         height: parent.height
 
-        Image {
-            smooth: true
-            source: "icons/friend-request.svg"
-            mipmap: true
-            Layout.maximumHeight: Math.min(parent.height, 25)
-            Layout.alignment: Qt.AlignRight | Qt.AlignCenter
-            verticalAlignment: Qt.AlignCenter
-            sourceSize: Qt.size(width, height) //important
+        DiodeButton {
+            id: xchatUsersButton
+            imageSource: "icons/friend-request.svg"
+            size: 25
+            isSelected: true
+            onButtonClicked: {
+                xchatBotsButton.isSelected = false
+            }
         }
 
-        Image {
-            smooth: true
-            source: "icons/robot.svg"
-            mipmap: true
-            Layout.maximumHeight: Math.min(parent.height, 25)
-            Layout.alignment: Qt.AlignRight | Qt.AlignCenter
-            verticalAlignment: Qt.AlignCenter
-            sourceSize: Qt.size(width, height) //important
+        DiodeButton {
+            id: xchatBotsButton
+            imageSource: "icons/robot.svg"
+            size: 25
+            isSelected: false
+            onButtonClicked: {
+                xchatUsersButton.isSelected = false
+            }
         }
     }
 }
