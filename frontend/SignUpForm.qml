@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.0
+import QtQuick.Layouts 1.3
 
 PolygonalBackground {
     id: root
@@ -60,12 +61,32 @@ PolygonalBackground {
         }
 
         PlainTextButton {
-            text: qsTr("Already a member? Go Back!")
-            opacity: 0.8
-            fontPointSize: 10
             anchors.horizontalCenter: parent.horizontalCenter
+            width: (alreadyMemberText.width + loginText.width)
             onButtonClicked: {
                 mainRoot.push("LoginForm.qml")
+            }
+
+            RowLayout {
+                anchors.centerIn: parent
+
+                Text {
+                    id: alreadyMemberText
+                    text: qsTr("Already a member?")
+                    font.family: "Roboto Thin"
+                    font.pointSize: 10
+                    color: "#FFFFFF"
+                    opacity: 0.8
+                }
+
+                Text {
+                    id: loginText
+                    text: qsTr("Login!")
+                    font.family: "Roboto Thin"
+                    font.pointSize: 10
+                    color: "#28D4E0"
+                    opacity: 0.8
+                }
             }
         }
     }
