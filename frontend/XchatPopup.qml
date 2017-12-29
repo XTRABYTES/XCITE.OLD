@@ -81,7 +81,8 @@ Rectangle {
                 id: content
                 padding: 5
                 text: responseTXT
-                font.pixelSize: 12
+                font.family: "Roboto"
+                font.pixelSize: 13
                 y: -vbar.position * height
                 color: "#DEDEDE"
 
@@ -118,6 +119,12 @@ Rectangle {
                     Layout.fillWidth: true
                     placeholderText: qsTr("Write something here...")
                     wrapMode: TextArea.Wrap
+                    Keys.onReturnPressed: {
+                        if (messageField.length > 0) {
+                            xchatSubmitMsgSignal(xchat.messageTXT,responseTXT)
+                            xchat.messageTXT = ""
+                        }
+                    }
                 }
 
                 Button {
@@ -126,10 +133,13 @@ Rectangle {
                     Layout.minimumHeight: 32
                     Layout.maximumHeight: 32
 
-                    Image {
-                        anchors.fill: parent
-                        source: "buttons/ok.png"
-                        fillMode: Image.Tile
+                    Text {
+                        text: qsTr("Send")
+                        anchors.centerIn: parent
+                        font.family: "Roboto"
+                        font.weight: Font.Bold
+                        font.pixelSize: 12
+                        color: "#62DED6"
                     }
 
                     id: sendMsgButton
