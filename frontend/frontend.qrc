@@ -16,5 +16,6 @@
         <file>NavigationButton.qml</file>
         <file>XchatSummary.qml</file>
         <file>DockButton.qml</file>
+        <file>DiodeButton.qml</file>
     </qresource>
 </RCC>
