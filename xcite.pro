@@ -9,6 +9,7 @@ VERSION = 0.0.0
 QT	+= core gui
 QT	+= xml
 QT	+= quick
+QT += svg
 CONFIG	+= c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -37,9 +38,6 @@ SOURCES += main/main.cpp \
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
-
-QML2_IMPORT_PATH += frontend/EmbeddedAuto
-include("frontend/GridStarLayout/quickgridstarlayout.pri")
 
 HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xchat/xchataiml.hpp \

@@ -1,9 +1,8 @@
 import QtQuick 2.0
+import QtQuick.Layouts 1.3
 
 PolygonalBackground {
     id: root
-    anchors.fill: parent
-    anchors.centerIn: parent
 
     Column {
         id: column
@@ -47,12 +46,32 @@ PolygonalBackground {
         }
 
         PlainTextButton {
-            text: qsTr("Remembered your password? Go Back!")
-            opacity: 0.8
-            fontPointSize: 10
             anchors.horizontalCenter: parent.horizontalCenter
+            width: (rememberedPasswordText.width + goBackText.width)
             onButtonClicked: {
                 mainRoot.push("LoginForm.qml")
+            }
+
+            RowLayout {
+                anchors.centerIn: parent
+
+                Text {
+                    id: rememberedPasswordText
+                    text: qsTr("Remembered your password?")
+                    font.family: "Roboto Thin"
+                    font.pointSize: 10
+                    color: "#FFFFFF"
+                    opacity: 0.8
+                }
+
+                Text {
+                    id: goBackText
+                    text: qsTr("Go Back!")
+                    font.family: "Roboto Thin"
+                    font.pointSize: 10
+                    color: "#28D4E0"
+                    opacity: 0.8
+                }
             }
         }
     }

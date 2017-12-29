@@ -7,5 +7,28 @@
         <file>aiml/hello.aiml</file>
         <file>aiml/date.aiml</file>
         <file>aiml/emotions.aiml</file>
+        <file>icons/avatar.svg</file>
+        <file>icons/chat.svg</file>
+        <file>icons/cloud-computing.svg</file>
+        <file>icons/dollar-pointer.svg</file>
+        <file>icons/download.svg</file>
+        <file>icons/edit (1).svg</file>
+        <file>icons/edit.svg</file>
+        <file>icons/email icon.svg</file>
+        <file>icons/envelope.svg</file>
+        <file>icons/friend-request.svg</file>
+        <file>icons/key.svg</file>
+        <file>icons/lock.svg</file>
+        <file>icons/padlock.svg</file>
+        <file>icons/phone-call.svg</file>
+        <file>icons/plus-button.svg</file>
+        <file>icons/right-arrow.svg</file>
+        <file>icons/robot.svg</file>
+        <file>icons/search.svg</file>
+        <file>icons/share.svg</file>
+        <file>icons/shuffle.svg</file>
+        <file>icons/wifi.svg</file>
+        <file>logos/xby_logo.svg</file>
+        <file>icons/dock.png</file>
     </qresource>
 </RCC>
