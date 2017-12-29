@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Revision Drugs-1.01 -->
-<!-- Last Modified  Jul 16 2004 -->
  <category><pattern>WHAT IS ADDICTION</pattern><template>
 <set name="it">Addiction</set> is being abnormally tolerant to and dependent on something that is psychologically or physically habit-forming</template>
 </category>

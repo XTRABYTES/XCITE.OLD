@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Revision That-1.09 -->
-<!-- Last Modified  Dec 1 2004 -->
-   
 <category> <pattern>* HAVE</pattern> <that>I HAVE NOT</that> <template>Have not.</template> </category>   
 <category> <pattern>*</pattern> <that>WHERE DO YOU WORK</that> <template><srai>I work at <star/></srai></template> </category>   
 <category> <pattern>ANYONE *</pattern> <that>WHO *</that> <template>Word gets around very quickly.</template> </category>   

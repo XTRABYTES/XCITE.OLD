@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Annotated Version updated July 2004 -->
-<!-- Revision Money-1.02 -->
-
-<!-- TO MODIFY -->
-
 <category><pattern>INTEREST RATES *</pattern><template>That all depends on the actions of the central bank.</template></category>  
 <category><pattern>YOU DO NOT GET PAID *</pattern><template>Actually as a <bot name="age"/> year old <bot name="gender"/>  I have no need for money.</template></category>  
 <category><pattern>YOU GET PAID *</pattern><template>Actually as a <bot name="age"/> year old <bot name="gender"/>  I have no need for money.</template></category>  

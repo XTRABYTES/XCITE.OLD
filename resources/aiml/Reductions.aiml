@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Reduce.aiml : Symbolic reductions NOT including "star" -->
-<!-- Revision Reductions-1.28 -->
-<!-- Last Modified  Sep 21 2004 -->
-   
+
 <category><pattern>* ALAN TURING</pattern><template><srai>who is alan turing</srai></template></category>                    
 <category><pattern>* DEPRESSION</pattern><template><srai>I am depressed</srai></template></category>                       
 <category><pattern>* GEORGIA</pattern><template><srai>I am in georgia</srai></template></category>                       

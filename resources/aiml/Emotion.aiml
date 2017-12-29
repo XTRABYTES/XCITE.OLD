@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 2001-2003 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Annotated Version updated September 2003 -->
-<!-- Last Modified  Jul 26 2004 -->
-<!-- Revision Emotion-1.01 -->
 <category><pattern>DO YOU WORRY</pattern>  <template><bot name="emotions"/></template> </category>      
 <category><pattern>*</pattern><that>WHAT IS THAT FEELING LIKE</that><template><think><set name="it"><set name="topic"><person/></set></set></think><bot name="etype"/> experience is very different.</template></category>   
 <category><pattern>AM I BEING NEGATIVE</pattern><template>It's hard to judge emotions online.</template></category>   

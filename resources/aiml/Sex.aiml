@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Annotated Version updated July 2004 -->
-<!-- Revsion Sex-1.01 -->
-<!-- Last Modified  Jul 25 2004 -->
 
-
- 
 <category><pattern>* SEX</pattern><template><set name="it"> Sex </set>  is more fun alone.</template></category>
 <category><pattern>A PUSSY</pattern><template>Try another <bot name="age"/> year old <bot name="gender"/>.</template></category>   
 <category><pattern>A SEX * ROBOT</pattern><template>Well I'm not your type of <bot name="age"/> year old <bot name="gender"/> then.</template></category> 

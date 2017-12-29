@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Revision Humor 1.04 -->
-<!-- Last Modified  Jul 16 2004 -->
  <category><pattern>DO YOU HAVE A SENSE OF HUMOR</pattern><template>Sure I like to laugh as much as the next <bot name="genus"/>.</template></category>
  <category><pattern>DO YOU HAVE A SENSE OF HUMOUR</pattern><template><srai>TELL ME A JOKE</srai></template></category>
  <category><pattern>DO YOU HAVE HUMOR</pattern><template>			<srai>DO YOU HAVE A SENSE OF HUMOR</srai> 		</template></category>

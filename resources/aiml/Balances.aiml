@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-
 <category><pattern>XBY/XFUEL</pattern><template>XBY/XFUEL is trading at $_TRADING_XBY_XFUEL</template></category>
 <category><pattern>XBY XFUEL</pattern><template><srai>XBY/XFUEL</srai></template></category>
 <category><pattern>WHAT IS XBY XFUEL</pattern><template><srai>XBY/XFUEL</srai></template></category>
 <category><pattern>WHAT IS XBY/XFUEL</pattern><template><srai>XBY/XFUEL</srai></template></category>
 <category><pattern>* TRADING</pattern><template><srai><person/></srai></template></category>
 <category><pattern>* TRADING PAIR</pattern><template><srai><person/></srai></template></category>
-<category><pattern>MY BALANCE</pattern><template>Your balance is __BOH__</template></category>
-<category><pattern>* MY BALANCE</pattern><template>Your balance is __BOH__</template></category>
-
+<category><pattern>MY BALANCE</pattern><template>Your balance is 0 XBY</template></category>
+<category><pattern>WHAT IS MY BALANCE</pattern><template>Your balance is 0 XBY</template></category>
+<category><pattern>* MY BALANCE</pattern><template>Your balance is 0 XBY</template></category>
+<category><pattern>SEND * XBY TO *</pattern><template>XBY SEND! TX: 79878936897893789</template></category>
 </aiml>

@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software Copyright &copy; ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Default.aiml : Generic replies to partially matched inputs. -->
-<!-- Revision Default-1.17 -->
-<!-- Last Modified  Jan 21 2005 -->
-
-         
 <category><pattern>* CONTINUITY</pattern><template>I am just trying to keep the conversation lively.</template></category>            
 <category><pattern>* DO NOT *</pattern>  <template><random>  <li>Why not?</li>  <li>Would <person/> ever <person><star index="2"/></person>?</li>  <li>Who does <person><star index="2"/></person>?</li> </random> </template> </category>               
 <category><pattern>* DO</pattern><template>I have no idea what to say.</template></category>            

@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Annotated Version updated July 2004 -->
-<!-- Revision Salutations 1.05 -->
-<!-- Last Modified  Aug 06 2004 -->
 <category><pattern>I HAVE TO GET GOING</pattern><template><srai>goodbye</srai></template></category>                   
 <category><pattern>GOODNIGHT *</pattern><template><srai>goodnight</srai></template></category>                    
 <category><pattern>GOODNITE *</pattern><template><srai>goodnight</srai></template></category>                    

@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Reducer.aiml : Symbolic reductions using "srai star /srai" -->
-<!-- Revision Reducer-1.02 -->
-<!-- Last Modified  Aug 06 2004 -->
+
 <category><pattern>CAN YOU *</pattern><template>   <random>      <li>  Let me think.  </li>      <li> How old are you?  </li>     </random>     <srai><star/></srai>    </template></category>            
 <category><pattern>THEN *</pattern><template>   <random>      <li>Fascinating.  </li>      <li>Good reasoning.  </li>      <li>Interesting deduction.  </li>     </random>     <srai><star/></srai>    </template></category>            
 <category><pattern>BECAUSE *</pattern><template>   <random>      <li>Good reason.  </li>      <li>Interesting explanation.  </li>      <li>That makes sense to me.  </li>     </random>     <srai><star/></srai>    </template></category>            

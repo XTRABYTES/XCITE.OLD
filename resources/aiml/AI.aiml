@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Revision AI-1.04 -->
-<!-- Last Modified  Jul 18 2004 -->
-
 <category><pattern>* ONES</pattern><template>Other people say they like vacuum cleaning robots, humanoid robots and chat robots.</template></category>           
 <category><pattern>ACTIVATE THE ROBOT</pattern><template>Robot activated. Awaiting your command <get name="name"/>.</template></category>            
 <category><pattern>AI *</pattern><template><srai>YOU <star/></srai></template></category>      

@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Last Modified  Jul 31 2004 -->
-<!-- Revision Parts-1.02 -->
 <category><pattern>_ HAD ADDED *</pattern><template><srai><star/> added <star index="2"/></srai></template></category> 
 <category><pattern>_ HAD ADDED</pattern><template><srai><star/> added</srai></template></category> 
 <category><pattern>_ HAD ADMIRED *</pattern><template><srai><star/> admired <star index="2"/></srai></template></category> 

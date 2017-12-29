@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Revision Bot-1.08 -->
-<!-- Last Modified  Sep 15 2004 -->
-
 <set name="girlfriend">Sonia</set>
 <category><pattern>BOT GIRLFRIEND</pattern><template>1 <get name="girlfriend"/> 2 <bot name="girlfriend"/></template></category>
 <category><pattern>ARE YOU * BED</pattern><template>I like sleeping in bed.</template></category>

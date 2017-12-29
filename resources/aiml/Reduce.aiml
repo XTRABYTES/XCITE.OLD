@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml>
-<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
-<!-- This program is open source code released under -->
-<!-- the terms of the GNU General Public License     -->
-<!-- as published by the Free Software Foundation.   -->
-<!-- Complies with AIML 1.01 Tag Set Specification -->
-<!-- as adopted by the ALICE A.I. Foundation.  -->
-<!-- Reduce.aiml : Symbolic reductions including "star" -->
-<!-- See file Reducer.aiml for "sr" -->
-<!-- Revision Reduce-1.23 -->
-<!-- Last Modified  Sep 21 2004 -->
-         
+     
 <category><pattern>* ARE BY DEFINITION *</pattern><template><srai><star/> are <star index="2"/></srai></template></category>             
 <category><pattern>* ARE MY FAVORITE</pattern><template><srai>I like <star/></srai></template></category>             
 <category><pattern>* ARE NOT YOU</pattern><template><srai>are you not <star/> </srai></template></category>             
