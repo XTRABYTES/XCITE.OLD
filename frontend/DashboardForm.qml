@@ -33,18 +33,6 @@ Item {
                 anchors.top: parent.top
                 spacing: 30
 
-                /*
-                Image {
-                    anchors.topMargin: 15
-                    smooth: true
-                    source: "logos/xby_logo.svg"
-                    mipmap: true
-                    sourceSize.width: 70
-                    sourceSize.height: 70
-                    horizontalAlignment: Image.AlignHCenter
-                }
-                */
-
                 DiodeButton {
                     id: logobutton
                     imageSource: "logos/xby_logo.svg"
@@ -111,7 +99,6 @@ Item {
             id: rootColumnLayout
             anchors.top: parent.top
             Layout.fillHeight: true
-            spacing: 15
 
             Rectangle {
                 // Main navigation
@@ -130,7 +117,6 @@ Item {
                     Layout.maximumWidth: 700
                     anchors.left: parent.left
                     height: parent.height
-                    //spacing: 30
 
                     NavigationButton {
                         id: homeNavButton
@@ -202,6 +188,12 @@ Item {
                 }
             }
 
+            Rectangle {
+                // Filler
+                width: 15
+                color: "transparent"
+            }
+
             RowLayout {
                 // Diode row 2
                 Layout.fillHeight: true
@@ -222,6 +214,12 @@ Item {
                 }
             }
 
+            Rectangle {
+                // Filler
+                width: 15
+                color: "transparent"
+            }
+
             RowLayout {
                 // Footer
                 height: 40
@@ -231,6 +229,27 @@ Item {
                     Layout.fillWidth: true
                     height: 40
                     color: "#0DD8D2"
+
+                    RowLayout {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 20
+
+                        Text {
+                            text: qsTr("Notice!")
+                            font.family: "Roboto"
+                            font.weight: Font.Bold
+                            font.pixelSize: 20
+                            color: "#335F5E"
+                        }
+
+                        Text {
+                            text: qsTr("This is a pre-release version of XCITE for testing only.")
+                            font.family: "Roboto"
+                            font.pixelSize: 20
+                            color: "#335F5E"
+                        }
+                    }
                 }
 
                 XchatSummary {
