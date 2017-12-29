@@ -2,8 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.1
-//import EmbeddedAuto 1.0
-//import QuickGridStar 1.0
+
 import xtrabytes.xcite.xchat 1.0
 
 
@@ -16,6 +15,7 @@ Item {
     RowLayout {
         id: rootLayout
         anchors.fill: parent
+        spacing: 15
 
         Rectangle {
             // Diode navigation
@@ -31,70 +31,71 @@ Item {
                 Layout.fillHeight: true
                 anchors.left: parent.left
                 anchors.top: parent.top
-                //Layout.fillHeight: true
-                spacing: 35
+                spacing: 30
 
-
+                /*
                 Image {
-                    Layout.topMargin: 20
+                    anchors.topMargin: 15
                     smooth: true
                     source: "logos/xby_logo.svg"
                     mipmap: true
-                    Layout.maximumWidth: Math.min(parent.width, 80)
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    verticalAlignment: Qt.AlignTop
-                    sourceSize: Qt.size(width, height) //important
+                    sourceSize.width: 70
+                    sourceSize.height: 70
+                    horizontalAlignment: Image.AlignHCenter
+                }
+                */
+
+                DiodeButton {
+                    id: logobutton
+                    imageSource: "logos/xby_logo.svg"
+                    changeColorOnClick: false
+                    hoverEnabled: false
+                    size: 70
                 }
 
-                Image {
-                    Layout.topMargin: 20
-                    smooth: true
-                    source: "icons/dollar-pointer.svg"
-                    mipmap: true
-                    Layout.maximumWidth: Math.min(parent.width, 40)
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    verticalAlignment: Qt.AlignTop
-                    sourceSize: Qt.size(width, height) //important
+                DiodeButton {
+                    id: diode1button
+                    imageSource: "icons/dollar-pointer.svg"
+                    isSelected: true
+                    onButtonClicked: {
+
+                    }
                 }
 
-                Image {
-                    smooth: true
-                    source: "icons/share.svg"
-                    mipmap: true
-                    Layout.maximumWidth: Math.min(parent.width, 40)
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    verticalAlignment: Qt.AlignTop
-                    sourceSize: Qt.size(width, height) //important
+                DiodeButton {
+                    id: diode2button
+                    imageSource: "icons/share.svg"
+                    isSelected: true
+                    onButtonClicked: {
+
+                    }
                 }
 
-                Image {
-                    smooth: true
-                    source: "icons/shuffle.svg"
-                    mipmap: true
-                    Layout.maximumWidth: Math.min(parent.width, 40)
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    verticalAlignment: Qt.AlignTop
-                    sourceSize: Qt.size(width, height) //important
+                DiodeButton {
+                    id: diode3button
+                    imageSource: "icons/shuffle.svg"
+                    isSelected: true
+                    onButtonClicked: {
+
+                    }
                 }
 
-                Image {
-                    smooth: true
-                    source: "icons/chat.svg"
-                    mipmap: true
-                    Layout.maximumWidth: Math.min(parent.width, 40)
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    verticalAlignment: Qt.AlignTop
-                    sourceSize: Qt.size(width, height) //important
+                DiodeButton {
+                    id: diode4button
+                    imageSource: "icons/chat.svg"
+                    isSelected: true
+                    onButtonClicked: {
+
+                    }
                 }
 
-                Image {
-                    smooth: true
-                    source: "icons/plus-button.svg"
-                    mipmap: true
-                    Layout.maximumWidth: Math.min(parent.width, 40)
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    verticalAlignment: Qt.AlignTop
-                    sourceSize: Qt.size(width, height) //important
+                DiodeButton {
+                    id: diode5button
+                    imageSource: "icons/plus-button.svg"
+                    isSelected: false
+                    onButtonClicked: {
+
+                    }
                 }
             }
         }
@@ -103,48 +104,61 @@ Item {
             id: rootColumnLayout
             anchors.top: parent.top
             Layout.fillHeight: true
-            spacing: 5
+            spacing: 15
 
             Rectangle {
                 // Main navigation
                 Layout.fillWidth: true
                 Layout.maximumWidth: parent.width
-                Layout.minimumHeight: 50
-                Layout.preferredHeight: 50
-                Layout.maximumHeight: 50
+                Layout.minimumHeight: 70
+                Layout.preferredHeight: 70
+                Layout.maximumHeight: 70
                 anchors.left: parent.left
                 anchors.top: parent.top
+                anchors.bottomMargin: -15
                 color: "transparent"
 
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.maximumWidth: 700
                     anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
+                    height: parent.height
+                    //spacing: 30
 
                     NavigationButton {
-                        Layout.fillWidth: true
-                        Layout.maximumWidth: 225
-                        Layout.preferredWidth: 100
-                        Layout.minimumWidth: 90
+                        id: homeNavButton
+                        height: 70
                         text: qsTr("HOME")
+                        isSelected: true
+                        onButtonClicked: {
+                            homeNavButton.isSelected = true
+                            xchangeNavButton.isSelected = false
+                            xchatNavButton.isSelected = false
+                        }
                     }
 
                     NavigationButton {
-                        Layout.fillWidth: true
-                        Layout.maximumWidth: 120
-                        Layout.preferredWidth: 100
-                        Layout.minimumWidth: 90
+                        id: xchangeNavButton
+                        height: 70
                         text: qsTr("X-CHANGE")
+                        onButtonClicked: {
+                            homeNavButton.isSelected = false
+                            xchangeNavButton.isSelected = true
+                            xchatNavButton.isSelected = false
+                        }
                     }
 
                     NavigationButton {
-                        Layout.fillWidth: true
-                        Layout.maximumWidth: 120
-                        Layout.preferredWidth: 100
-                        Layout.minimumWidth: 90
+                        id: xchatNavButton
+                        height: 70
                         text: qsTr("X-CHAT")
+                        onButtonClicked: {
+                            homeNavButton.isSelected = false
+                            xchangeNavButton.isSelected = false
+                            xchatNavButton.isSelected = true
+                        }
                     }
+
                 }
             }
 
@@ -152,6 +166,7 @@ Item {
                 // Diode row 1
                 Layout.fillHeight: true
                 anchors.left: parent.left
+                spacing: 15
 
                 Rectangle {
                     Layout.fillWidth: true
@@ -184,6 +199,7 @@ Item {
                 // Diode row 2
                 Layout.fillHeight: true
                 anchors.left: parent.left
+                spacing: 15
 
                 Rectangle {
                     Layout.fillWidth: true
