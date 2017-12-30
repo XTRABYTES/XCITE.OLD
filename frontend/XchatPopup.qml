@@ -82,6 +82,13 @@ Rectangle {
                 anchors.fill: parent
                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
+                Flickable {
+                    id: messageFlickable
+                    anchors.fill: parent
+                    flickableDirection: Flickable.VerticalFlick
+                    contentHeight: content.height
+                }
+
                 Text {
                     id: content
                     padding: 5
@@ -92,6 +99,9 @@ Rectangle {
                     font.pixelSize: 14
                     color: "#DEDEDE"
 
+                    onTextChanged: {
+                        messageFlickable.contentY = contentHeight - messageFlickable.height
+                    }
                 }
             }
         }
