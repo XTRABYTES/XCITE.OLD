@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
@@ -77,52 +77,55 @@ Rectangle {
             x: 5
             y: 5
 
-            Text {
-                id: content
-                padding: 5
-                text: responseTXT
-                font.family: "Roboto"
-                font.pixelSize: 13
-                y: -vbar.position * height
-                color: "#DEDEDE"
+            ScrollView {
+                id: messageScrollView
+                anchors.fill: parent
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
+                Text {
+                    id: content
+                    padding: 5
+                    text: responseTXT
+                    width: 240
+                    wrapMode: TextArea.Wrap
+                    font.family: "Roboto"
+                    font.pixelSize: 14
+                    color: "#DEDEDE"
+
+                }
             }
-
-            ScrollBar {
-                id: vbar
-                hoverEnabled: true
-                active: hovered || pressed
-                orientation: Qt.Vertical
-                size: frame.height / content.height
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-            }
-
         }
 
-        Pane {
-            id: pane
-            width: 240
-            y: 380
-            x: 5
-
+        Rectangle {
+            anchors.top: frame.bottom
+            anchors.topMargin: 15
+            anchors.left: frame.left
+            anchors.leftMargin: 5
+            anchors.rightMargin: 5
+            width: 230
+            height: 70
+            color: "#3A3E47"
 
             RowLayout {
                 width: parent.width
 
-                TextField {
-                    id: messageField
-                    text: xchat.messageTXT
-                    onTextChanged: xchat.messageTXT = text
-                    font.pixelSize: 16
+                ScrollView {
                     Layout.fillWidth: true
-                    placeholderText: qsTr("Write something here...")
-                    wrapMode: TextArea.Wrap
-                    Keys.onReturnPressed: {
-                        if (messageField.length > 0) {
-                            xchatSubmitMsgSignal(xchat.messageTXT,responseTXT)
-                            xchat.messageTXT = ""
+                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                    Layout.maximumHeight: 70
+
+                    TextArea {
+                        id: messageField
+                        text: xchat.messageTXT
+                        onTextChanged: xchat.messageTXT = text
+                        font.pixelSize: 16
+                        placeholderText: qsTr("Write something here...")
+                        wrapMode: TextArea.Wrap
+                        Keys.onReturnPressed: {
+                            if (messageField.length > 0) {
+                                xchatSubmitMsgSignal(xchat.messageTXT,responseTXT)
+                                xchat.messageTXT = ""
+                            }
                         }
                     }
                 }
@@ -132,6 +135,7 @@ Rectangle {
                     Layout.maximumWidth: 32
                     Layout.minimumHeight: 32
                     Layout.maximumHeight: 32
+                    anchors.right: parent.right
 
                     Text {
                         text: qsTr("Send")

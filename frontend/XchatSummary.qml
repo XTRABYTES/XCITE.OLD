@@ -49,7 +49,7 @@ Rectangle {
             id: xchatUsersButton
             imageSource: "icons/friend-request.svg"
             size: 25
-            isSelected: true
+            isSelected: false
             onButtonClicked: {
                 xchatBotsButton.isSelected = false
             }
@@ -59,7 +59,7 @@ Rectangle {
             id: xchatBotsButton
             imageSource: "icons/robot.svg"
             size: 25
-            isSelected: false
+            isSelected: true
             onButtonClicked: {
                 xchatUsersButton.isSelected = false
             }

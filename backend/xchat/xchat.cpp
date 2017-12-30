@@ -54,8 +54,8 @@ void XchatObject::SubmitMsgCall(const QString &msg, const QString &resp) {
 	
 	     QString qsBotResponse = m_pXchatAiml->getResponse(msg);
 	     QString ret;
-	     ret = resp + "<br/><b>you:</b>" + msg;
-	     ret = ret + "<br/><b>xcite:</b>" + qsBotResponse ;
+         ret = resp + "<br/><b>you: </b><font color=\"#0DD8D2\">" + msg + "</font>";
+         ret = ret + "<br/><b>xcite: </b>" + qsBotResponse + "<br/>" ;
         emit xchatResponseSignal(ret);
 }
 
