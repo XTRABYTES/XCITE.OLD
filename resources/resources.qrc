@@ -4,9 +4,6 @@
         <file>logos/xby_logo_200.png</file>
         <file>backgrounds/polygonal.png</file>
         <file>aiml/substitutions.xml</file>
-        <file>aiml/hello.aiml</file>
-        <file>aiml/date.aiml</file>
-        <file>aiml/emotions.aiml</file>
         <file>icons/avatar.svg</file>
         <file>icons/chat.svg</file>
         <file>icons/cloud-computing.svg</file>
@@ -30,5 +27,33 @@
         <file>icons/wifi.svg</file>
         <file>logos/xby_logo.svg</file>
         <file>icons/dock.png</file>
+        <file>aiml/Adverbs.aiml</file>
+        <file>aiml/AI.aiml</file>
+        <file>aiml/Atomic.aiml</file>
+        <file>aiml/Balances.aiml</file>
+        <file>aiml/Bot.aiml</file>
+        <file>aiml/Client.aiml</file>
+        <file>aiml/Computers.aiml</file>
+        <file>aiml/Default.aiml</file>
+        <file>aiml/Drugs.aiml</file>
+        <file>aiml/Emotion.aiml</file>
+        <file>aiml/gossip.aiml</file>
+        <file>aiml/Humor.aiml</file>
+        <file>aiml/Inquiry.aiml</file>
+        <file>aiml/Interjection.aiml</file>
+        <file>aiml/IU.aiml</file>
+        <file>aiml/Literature.aiml</file>
+        <file>aiml/Money.aiml</file>
+        <file>aiml/Parts.aiml</file>
+        <file>aiml/Pickup.aiml</file>
+        <file>aiml/Predicates.aiml</file>
+        <file>aiml/Psychology.aiml</file>
+        <file>aiml/Reduce.aiml</file>
+        <file>aiml/Reducer.aiml</file>
+        <file>aiml/Reductions.aiml</file>
+        <file>aiml/Salutations.aiml</file>
+        <file>aiml/Sex.aiml</file>
+        <file>aiml/Stack.aiml</file>
+        <file>aiml/That.aiml</file>
     </qresource>
 </RCC>
