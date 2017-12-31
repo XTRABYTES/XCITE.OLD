@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.1
 
@@ -127,6 +127,9 @@ Item {
                             homeNavButton.isSelected = true
                             xchangeNavButton.isSelected = false
                             xchatNavButton.isSelected = false
+                            homeDiodeRow1.visible = true
+                            homeDiodeRow2.visible = true
+                            toolsDiodeRow1.visible = false
                         }
                     }
 
@@ -138,6 +141,10 @@ Item {
                             homeNavButton.isSelected = false
                             xchangeNavButton.isSelected = true
                             xchatNavButton.isSelected = false
+                            toolsNavButton.isSelected = false
+                            homeDiodeRow1.visible = true
+                            homeDiodeRow2.visible = true
+                            toolsDiodeRow1.visible = false
                         }
                     }
 
@@ -149,6 +156,24 @@ Item {
                             homeNavButton.isSelected = false
                             xchangeNavButton.isSelected = false
                             xchatNavButton.isSelected = true
+                            toolsNavButton.isSelected = false
+                            homeDiodeRow1.visible = true
+                            homeDiodeRow2.visible = true
+                            toolsDiodeRow1.visible = false
+                        }
+                    }
+                    NavigationButton {
+                        id: toolsNavButton
+                        height: 70
+                        text: qsTr("TOOLS")
+                        onButtonClicked: {
+                            homeNavButton.isSelected = false
+                            xchangeNavButton.isSelected = false
+                            xchatNavButton.isSelected = false
+                            toolsNavButton.isSelected = true
+                            homeDiodeRow1.visible = false
+                            homeDiodeRow2.visible = false
+                            toolsDiodeRow1.visible = true
                         }
                     }
 
@@ -157,6 +182,7 @@ Item {
 
             RowLayout {
                 // Diode row 1
+                id: homeDiodeRow1
                 Layout.fillHeight: true
                 anchors.left: parent.left
                 spacing: 15
@@ -188,6 +214,120 @@ Item {
                 }
             }
 
+            RowLayout {
+                id: toolsDiodeRow1
+                Layout.fillHeight: true
+                anchors.left: parent.left
+                spacing: 15
+                visible: false
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.minimumHeight: 100
+                    color: "#3A3E47"
+
+                    ColumnLayout {
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        width: parent.width
+
+                        DockButton {
+                            height: 13
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            width: parent.width
+                        }
+
+                        ColumnLayout {
+                            Layout.margins: 15
+                            Label {
+                                text: qsTr("XBY Transfer Amount (e.g. 1 or 1000):")
+                            }
+                            TextField {
+                                id: transferAmount
+                                text: "1"
+                            }
+                            Label {
+                                text: qsTr("XBY Transfer Cycles (e.g. 5000):")
+                            }
+                            TextField {
+                                id: transferCycles
+                                text: "5000"
+                            }
+                            Label {
+                                text: qsTr("Transactions Per Minute (Use a number between 1 and 1000 to prevent your system from freezing)")
+                            }
+                            TextField {
+                                id: transactionsPerMin
+                                text: "500"
+                            }
+                            Label {
+                                text: qsTr("XBY Receiving Addresses (Enter one address per line)")
+                            }
+                            ScrollView {
+                                Layout.fillWidth: true
+                                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                                Layout.minimumHeight: 100
+                                Layout.maximumHeight: 100
+                                Layout.maximumWidth: 300
+
+                                TextArea {
+                                    id: receivingAddresses
+                                    Layout.minimumHeight: 100
+                                    Layout.maximumHeight: 100
+                                    wrapMode: TextArea.Wrap
+                                }
+                            }
+                            RowLayout {
+                                Button {
+                                    id: sendButton
+                                    text: qsTr("Send")
+                                    onClicked: {
+
+                                    }
+                                }
+                                Button {
+                                    id: pauseButton
+                                    text: qsTr("Pause")
+                                    onClicked: {
+
+                                    }
+                                }
+                            }
+
+                            Label {
+                                text: qsTr("Completed Transactions:")
+                            }
+                            TextField {
+                                id: completedTransactions
+                                readOnly: true
+                            }
+                            Label {
+                                text: qsTr("TX Log:")
+                            }
+
+                            ScrollView {
+                                Layout.fillWidth: true
+                                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                                Layout.minimumHeight: 100
+                                Layout.maximumHeight: 100
+                                Layout.maximumWidth: 300
+
+                                TextArea {
+                                    id: transactionLog
+                                    Layout.minimumHeight: 100
+                                    Layout.maximumHeight: 100
+                                    wrapMode: TextArea.Wrap
+                                    readOnly: true
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
             Rectangle {
                 // Filler
                 width: 15
@@ -196,6 +336,7 @@ Item {
 
             RowLayout {
                 // Diode row 2
+                id: homeDiodeRow2
                 Layout.fillHeight: true
                 anchors.left: parent.left
                 spacing: 15
