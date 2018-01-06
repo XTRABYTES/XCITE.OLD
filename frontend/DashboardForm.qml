@@ -93,6 +93,43 @@ Item {
                     }
                 }
             }
+
+            ColumnLayout {
+                width: parent.width
+                Layout.fillHeight: true
+                Layout.minimumHeight: 200
+                Layout.preferredHeight: 200
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                spacing: 15
+
+                DiodeButton {
+                    id: settingsButton
+                    imageSource: "icons/plus-button.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    isSelected: false
+                    onButtonClicked: {
+
+                    }
+                }
+
+                DiodeButton {
+                    id: wifiButton
+                    imageSource: "icons/wifi.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    isSelected: false
+                    onButtonClicked: {
+
+                    }
+                }
+
+                Switch {
+                    id: killSwitch
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    checked: true
+                    padding: 0
+                }
+            }
         }
 
         ColumnLayout {
