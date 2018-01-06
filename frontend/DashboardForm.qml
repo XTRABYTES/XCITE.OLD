@@ -151,7 +151,6 @@ Item {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.maximumWidth: 700
                     anchors.left: parent.left
                     height: parent.height
 
@@ -214,6 +213,23 @@ Item {
                         }
                     }
 
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: 300
+                    Layout.minimumWidth: 200
+                    Layout.preferredWidth: 200
+                    anchors.right: parent.right
+                    height: parent.height
+                    spacing: 30
+
+                    SearchBox {
+                        id: searchBox
+                        placeholder: qsTr("Search for something...")
+                        anchors.right: parent.right
+                        anchors.rightMargin: 15
+                    }
                 }
             }
 
