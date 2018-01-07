@@ -103,6 +103,7 @@ Item {
                 anchors.bottom: parent.bottom
                 spacing: 15
 
+                /*
                 DiodeButton {
                     id: settingsButton
                     imageSource: "icons/plus-button.svg"
@@ -112,6 +113,7 @@ Item {
 
                     }
                 }
+                */
 
                 DiodeButton {
                     id: wifiButton
