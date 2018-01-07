@@ -17,5 +17,6 @@
         <file>XchatSummary.qml</file>
         <file>DockButton.qml</file>
         <file>DiodeButton.qml</file>
+        <file>SearchBox.qml</file>
     </qresource>
 </RCC>

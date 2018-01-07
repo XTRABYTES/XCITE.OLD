@@ -93,6 +93,45 @@ Item {
                     }
                 }
             }
+
+            ColumnLayout {
+                width: parent.width
+                Layout.fillHeight: true
+                Layout.minimumHeight: 200
+                Layout.preferredHeight: 200
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                spacing: 15
+
+                /*
+                DiodeButton {
+                    id: settingsButton
+                    imageSource: "icons/plus-button.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    isSelected: false
+                    onButtonClicked: {
+
+                    }
+                }
+                */
+
+                DiodeButton {
+                    id: wifiButton
+                    imageSource: "icons/wifi.svg"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    isSelected: false
+                    onButtonClicked: {
+
+                    }
+                }
+
+                Switch {
+                    id: killSwitch
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    checked: true
+                    padding: 0
+                }
+            }
         }
 
         ColumnLayout {
@@ -114,7 +153,6 @@ Item {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.maximumWidth: 700
                     anchors.left: parent.left
                     height: parent.height
 
@@ -177,6 +215,23 @@ Item {
                         }
                     }
 
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: 300
+                    Layout.minimumWidth: 200
+                    Layout.preferredWidth: 200
+                    anchors.right: parent.right
+                    height: parent.height
+                    spacing: 30
+
+                    SearchBox {
+                        id: searchBox
+                        placeholder: qsTr("Search for something...")
+                        anchors.right: parent.right
+                        anchors.rightMargin: 15
+                    }
                 }
             }
 
