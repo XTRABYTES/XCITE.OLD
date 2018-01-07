@@ -7,9 +7,9 @@ Rectangle {
     id: root
     anchors.verticalCenter: parent.Center
     Layout.fillWidth: true
-    Layout.maximumWidth: 300
-    Layout.minimumWidth: 200
-    Layout.preferredWidth: 200
+    Layout.maximumWidth: 250
+    Layout.minimumWidth: 250
+    Layout.preferredWidth: 250
     height: 40
     color: "#3A3E46"
 
@@ -28,8 +28,8 @@ Rectangle {
         TextField {
             id: searchField
             height: parent.height
-            width: parent.width
-            font.pixelSize: 17
+            width: 220
+            font.pointSize: 10
             font.family: "Roboto Thin"
             placeholderText: placeholder
             anchors.left: parent.left
@@ -42,6 +42,7 @@ Rectangle {
             }
         }
 
+        /*
         MouseArea {
             id: searchFieldMouseArea
             anchors.fill: parent
@@ -55,6 +56,7 @@ Rectangle {
                 }
             }
         }
+        */
     }
 
 
