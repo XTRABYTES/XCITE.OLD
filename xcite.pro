@@ -31,6 +31,12 @@ MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
+# Additional import path used to resolve QML modules in Qt Creator's code model
+QML_IMPORT_PATH =
+
+# Additional import path used to resolve QML modules just for Qt Quick Designer
+QML_DESIGNER_IMPORT_PATH =
+
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
