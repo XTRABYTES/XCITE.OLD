@@ -28,5 +28,7 @@ int main(int argc, char *argv[])
     // connect C++ signals to QML slots
     QObject::connect(&xchatobj, SIGNAL(xchatResponseSignal(QVariant)),engine.rootObjects().first(), SLOT(xchatResponse(QVariant)));
 
+    app.setWindowIcon(QIcon(":/icons/xbyicon.ico"));
+
     return app.exec();
 }

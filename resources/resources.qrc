@@ -55,5 +55,6 @@
         <file>aiml/Sex.aiml</file>
         <file>aiml/Stack.aiml</file>
         <file>aiml/That.aiml</file>
+        <file>icons/xbyicon.ico</file>
     </qresource>
 </RCC>
