@@ -49,3 +49,7 @@ HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xchat/xchataiml.hpp \
 	    backend/p2p/p2p.hpp 
 
+DISTFILES += \
+    xcite.ico
+
+RC_ICONS = xcite.ico
