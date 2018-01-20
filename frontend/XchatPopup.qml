@@ -154,12 +154,12 @@ Rectangle {
 
     DropShadow {
       anchors.fill: innerPopupContainer
-      horizontalOffset: 2
-      verticalOffset: 2
-      radius: 5
-      samples: 5
+      horizontalOffset: -5
+      verticalOffset: -5
+      radius: 10
+      samples: 20
       source: innerPopupContainer
-      color: "black"
+      color: "#32373d"
     }
 }
 
