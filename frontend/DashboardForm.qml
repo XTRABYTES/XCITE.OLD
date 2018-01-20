@@ -223,12 +223,6 @@ Item {
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
                     color: "#3A3E47"
-                    DockButton {
-                        height: 13
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        width: parent.width
-                    }
                 }
 
                 Rectangle {
@@ -236,12 +230,6 @@ Item {
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
                     color: "#3A3E47"
-                    DockButton {
-                        height: 13
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        width: parent.width
-                    }
                 }
             }
 
@@ -262,13 +250,6 @@ Item {
                         anchors.top: parent.top
                         anchors.left: parent.left
                         width: parent.width
-
-                        DockButton {
-                            height: 13
-                            anchors.top: parent.top
-                            anchors.left: parent.left
-                            width: parent.width
-                        }
 
                         ColumnLayout {
                             Layout.margins: 15
@@ -377,12 +358,6 @@ Item {
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
                     color: "#3A3E47"
-                    DockButton {
-                        height: 13
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        width: parent.width
-                    }
                 }
             }
 
