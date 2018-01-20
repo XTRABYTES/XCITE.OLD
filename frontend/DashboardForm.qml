@@ -436,15 +436,32 @@ Item {
                             text: qsTr("Notice!")
                             font.family: "Roboto"
                             font.weight: Font.Bold
-                            font.pixelSize: 20
+                            font.pixelSize: 18
                             color: "#335F5E"
                         }
 
                         Text {
                             text: qsTr("This is a pre-release version of XCITE for testing only.")
                             font.family: "Roboto"
-                            font.pixelSize: 20
+                            font.pixelSize: 18
                             color: "#335F5E"
+                        }
+
+                        PlainTextButton {
+                            width: webLinkText.width
+                            onButtonClicked: {
+                                Qt.openUrlExternally("https://xtrabytes.global")
+                            }
+
+                            Text {
+                                id: webLinkText
+                                anchors.topMargin: 5
+                                text: qsTr("xtrabytes.global")
+                                font.family: "Roboto"
+                                font.weight: Font.Bold
+                                font.pixelSize: 18
+                                color: "#335F5E"
+                            }
                         }
                     }
                 }
