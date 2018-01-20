@@ -131,71 +131,82 @@ Item {
                 anchors.bottomMargin: -15
                 color: "transparent"
 
-                RowLayout {
-                    Layout.fillWidth: true
+                Rectangle {
+                    height: 50
+                    anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
-                    height: parent.height
+                    width: navRowLayout.width
+                    radius: 5
+                    color: "#3A3E47"
 
-                    NavigationButton {
-                        id: homeNavButton
-                        height: 70
-                        text: qsTr("X-BOARD")
-                        isSelected: true
-                        onButtonClicked: {
-                            homeNavButton.isSelected = true
-                            xchangeNavButton.isSelected = false
-                            xchatNavButton.isSelected = false
-                            toolsNavButton.isSelected = false
-                            homeDiodeRow1.visible = true
-                            homeDiodeRow2.visible = true
-                            toolsDiodeRow1.visible = false
-                        }
-                    }
+                    RowLayout {
+                        id: navRowLayout
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        height: parent.height
+                        spacing: 0
 
-                    NavigationButton {
-                        id: xchangeNavButton
-                        height: 70
-                        text: qsTr("X-CHANGE")
-                        onButtonClicked: {
-                            homeNavButton.isSelected = false
-                            xchangeNavButton.isSelected = true
-                            xchatNavButton.isSelected = false
-                            toolsNavButton.isSelected = false
-                            homeDiodeRow1.visible = true
-                            homeDiodeRow2.visible = true
-                            toolsDiodeRow1.visible = false
+                        NavigationButton {
+                            id: homeNavButton
+                            height: 50
+                            text: qsTr("X-BOARD")
+                            isSelected: true
+                            onButtonClicked: {
+                                homeNavButton.isSelected = true
+                                xchangeNavButton.isSelected = false
+                                xchatNavButton.isSelected = false
+                                toolsNavButton.isSelected = false
+                                homeDiodeRow1.visible = true
+                                homeDiodeRow2.visible = true
+                                toolsDiodeRow1.visible = false
+                            }
                         }
-                    }
 
-                    NavigationButton {
-                        id: xchatNavButton
-                        height: 70
-                        text: qsTr("X-CHAT")
-                        onButtonClicked: {
-                            homeNavButton.isSelected = false
-                            xchangeNavButton.isSelected = false
-                            xchatNavButton.isSelected = true
-                            toolsNavButton.isSelected = false
-                            homeDiodeRow1.visible = true
-                            homeDiodeRow2.visible = true
-                            toolsDiodeRow1.visible = false
+                        NavigationButton {
+                            id: xchangeNavButton
+                            height: 50
+                            text: qsTr("X-CHANGE")
+                            onButtonClicked: {
+                                homeNavButton.isSelected = false
+                                xchangeNavButton.isSelected = true
+                                xchatNavButton.isSelected = false
+                                toolsNavButton.isSelected = false
+                                homeDiodeRow1.visible = true
+                                homeDiodeRow2.visible = true
+                                toolsDiodeRow1.visible = false
+                            }
                         }
-                    }
-                    NavigationButton {
-                        id: toolsNavButton
-                        height: 70
-                        text: qsTr("TOOLS")
-                        onButtonClicked: {
-                            homeNavButton.isSelected = false
-                            xchangeNavButton.isSelected = false
-                            xchatNavButton.isSelected = false
-                            toolsNavButton.isSelected = true
-                            homeDiodeRow1.visible = false
-                            homeDiodeRow2.visible = false
-                            toolsDiodeRow1.visible = true
-                        }
-                    }
 
+                        NavigationButton {
+                            id: xchatNavButton
+                            height: 50
+                            text: qsTr("X-CHAT")
+                            onButtonClicked: {
+                                homeNavButton.isSelected = false
+                                xchangeNavButton.isSelected = false
+                                xchatNavButton.isSelected = true
+                                toolsNavButton.isSelected = false
+                                homeDiodeRow1.visible = true
+                                homeDiodeRow2.visible = true
+                                toolsDiodeRow1.visible = false
+                            }
+                        }
+                        NavigationButton {
+                            id: toolsNavButton
+                            height: 50
+                            text: qsTr("TOOLS")
+                            onButtonClicked: {
+                                homeNavButton.isSelected = false
+                                xchangeNavButton.isSelected = false
+                                xchatNavButton.isSelected = false
+                                toolsNavButton.isSelected = true
+                                homeDiodeRow1.visible = false
+                                homeDiodeRow2.visible = false
+                                toolsDiodeRow1.visible = true
+                            }
+                        }
+
+                    }
                 }
 
                 RowLayout {

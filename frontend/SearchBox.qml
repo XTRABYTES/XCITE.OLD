@@ -10,7 +10,7 @@ Rectangle {
     Layout.maximumWidth: 250
     Layout.minimumWidth: 250
     Layout.preferredWidth: 250
-    height: 40
+    height: 50
     color: "#3A3E46"
     radius: 5
 
@@ -31,7 +31,7 @@ Rectangle {
             id: searchField
             height: parent.height
             width: 220
-            font.pointSize: 10
+            font.pointSize: 9
             font.family: "Roboto Thin"
             placeholderText: placeholder
             anchors.left: parent.left
