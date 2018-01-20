@@ -8,7 +8,9 @@ PolygonalBackground {
 
     Column {
         id: column
-        anchors.centerIn: parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 40
         spacing: 40
         Logo {
             anchors.horizontalCenter: parent.horizontalCenter
