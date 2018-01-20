@@ -139,12 +139,13 @@ Item {
                     NavigationButton {
                         id: homeNavButton
                         height: 70
-                        text: qsTr("HOME")
+                        text: qsTr("X-BOARD")
                         isSelected: true
                         onButtonClicked: {
                             homeNavButton.isSelected = true
                             xchangeNavButton.isSelected = false
                             xchatNavButton.isSelected = false
+                            toolsNavButton.isSelected = false
                             homeDiodeRow1.visible = true
                             homeDiodeRow2.visible = true
                             toolsDiodeRow1.visible = false
