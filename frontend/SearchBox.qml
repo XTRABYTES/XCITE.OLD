@@ -12,6 +12,7 @@ Rectangle {
     Layout.preferredWidth: 250
     height: 40
     color: "#3A3E46"
+    radius: 5
 
     property alias text: searchField.text
     property alias placeholder: searchField.placeholderText
@@ -24,6 +25,7 @@ Rectangle {
         color: "transparent"
         anchors.top: parent.top
         anchors.left: parent.left
+        radius: 5
 
         TextField {
             id: searchField
