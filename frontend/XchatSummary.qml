@@ -15,9 +15,7 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: xchatpopup.visible == false
         onClicked: {
-            if (xchatpopup.visible == false) {
-                xchatpopup.visible = true
-            }
+            xchatpopup.visible = !xchatpopup.visible
         }
         onHoveredChanged: {
             if (containsMouse) {
