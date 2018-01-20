@@ -32,16 +32,17 @@ Item {
                 Layout.fillHeight: true
                 anchors.left: parent.left
                 anchors.top: parent.top
-                spacing: 30
+                spacing: 40
 
                 DiodeButton {
                     id: logobutton
                     imageSource: "logos/xby_logo.svg"
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    Layout.topMargin: 35
+                    Layout.topMargin: 15
                     changeColorOnClick: false
                     hoverEnabled: false
                     size: 70
+                    height: 40
                 }
 
                 DiodeButton {
@@ -49,6 +50,8 @@ Item {
                     imageSource: "icons/dollar-pointer.svg"
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     isSelected: true
+                    hasLabel: true
+                    labelText: qsTr("HOME")
                     onButtonClicked: {
 
                     }
@@ -58,37 +61,9 @@ Item {
                     id: diode2button
                     imageSource: "icons/share.svg"
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    isSelected: true
-                    onButtonClicked: {
-
-                    }
-                }
-
-                DiodeButton {
-                    id: diode3button
-                    imageSource: "icons/shuffle.svg"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    isSelected: true
-                    onButtonClicked: {
-
-                    }
-                }
-
-                DiodeButton {
-                    id: diode4button
-                    imageSource: "icons/chat.svg"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    isSelected: true
-                    onButtonClicked: {
-
-                    }
-                }
-
-                DiodeButton {
-                    id: diode5button
-                    imageSource: "icons/plus-button.svg"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     isSelected: false
+                    hasLabel: true
+                    labelText: qsTr("NODES")
                     onButtonClicked: {
 
                     }
