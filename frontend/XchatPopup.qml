@@ -46,9 +46,7 @@ Rectangle {
 
         XchatSummary {
             id: summary
-            anchors.top: dockbutton.bottom
-            //anchors.top: parent.top
-            //anchors.left: xchatpopup.left
+            anchors.top: parent.top
             width: 250
         }
 
