@@ -44,19 +44,6 @@ Rectangle {
                 state = "visible";
         }
 
-
-        DockButton {
-            id: dockbutton
-            anchors.top: parent.top
-            //anchors.left: xchatpopup.left
-            height: 13
-            width: 250
-            onButtonClicked: {
-                xchatpopup.visible = false
-            }
-        }
-
-
         XchatSummary {
             id: summary
             anchors.top: dockbutton.bottom
