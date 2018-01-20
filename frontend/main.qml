@@ -8,7 +8,7 @@ ApplicationWindow {
     width: 1200
     height: 768
     title: qsTr("Hello XCITE")
-    color: "#262626"
+    color: "#2B2C31"
     
     property var responseTXT: ""
 
