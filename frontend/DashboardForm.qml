@@ -223,6 +223,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
                     color: "#3A3E47"
+                    radius: 5
                 }
 
                 Rectangle {
@@ -230,6 +231,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
                     color: "#3A3E47"
+                    radius: 5
                 }
             }
 
@@ -245,6 +247,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
                     color: "#3A3E47"
+                    radius: 5
 
                     ColumnLayout {
                         anchors.top: parent.top
@@ -358,6 +361,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
                     color: "#3A3E47"
+                    radius: 5
                 }
             }
 
@@ -376,6 +380,7 @@ Item {
                     Layout.fillWidth: true
                     height: 40
                     color: "#0DD8D2"
+                    radius: 2
 
                     RowLayout {
                         anchors.verticalCenter: parent.verticalCenter
