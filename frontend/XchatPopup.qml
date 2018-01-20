@@ -12,6 +12,7 @@ Rectangle {
     smooth: true
     color: "#3A3E47"
     state: "visible"
+    radius: 2
 
     Rectangle {
         id: innerPopupContainer
@@ -20,6 +21,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         color: "#3A3E47"
+        radius: 2
 
         states: [
             State {

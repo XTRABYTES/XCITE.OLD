@@ -9,6 +9,7 @@ Rectangle {
     Layout.minimumWidth: 250
     height: 40
     color: "#3A3E47"
+    radius: 2
 
     MouseArea {
         id: mouseArea
