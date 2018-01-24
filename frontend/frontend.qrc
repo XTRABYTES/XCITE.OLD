@@ -18,5 +18,8 @@
         <file>DockButton.qml</file>
         <file>DiodeButton.qml</file>
         <file>SearchBox.qml</file>
+        <file>BalanceBoard.qml</file>
+        <file>LabelUnderlined.qml</file>
+        <file>ButtonBalanceDate.qml</file>
     </qresource>
 </RCC>

@@ -1,5 +1,5 @@
 import QtQuick 2.0
-
+//Balance board used on the main navigation page (left hand side)
 Item {
     Rectangle {
         id: rectangle
@@ -10,7 +10,7 @@ Item {
         color: "#3a3e46"
         radius: 5
         opacity: 1
-
+        //Horizontal gray ruler
         Rectangle {
             id: rectangle1
             x: 0
@@ -20,7 +20,7 @@ Item {
             color: "#9fa0a3"
             opacity: 0.2
         }
-
+        //Balance header text
         Text {
             id: text1
             y: 16
@@ -44,17 +44,8 @@ Item {
             font.pixelSize: 12
         }
 
-        LabelUnderlined{
-            id: dailyText
-            x: 0
-            y:213
-            text:"Daily"
-            anchors.left: parent.left
-            anchors.leftMargin: 33
-            pixelSize:19
 
-        }
-
+        //Balances text values
         Text{
             id: dailyValue
             x:263
@@ -90,7 +81,17 @@ Item {
             anchors.rightMargin: 30
 
         }
+        //Balance labels
+        LabelUnderlined{
+            id: dailyText
+            x: 0
+            y:213
+            text:"Daily"
+            anchors.left: parent.left
+            anchors.leftMargin: 33
+            pixelSize:19
 
+        }
         LabelUnderlined{
             id: monthlyText
             y:299
@@ -108,6 +109,70 @@ Item {
             anchors.leftMargin: 33
             pixelSize:19
 
+        }
+
+        ButtonBalanceDate{
+            anchors.top: parent.top
+            anchors.topMargin: 97
+            anchors.left: parent.left
+            anchors.leftMargin: 245
+            dayText:"WED"
+            dateText:"18"
+        }
+
+        ButtonBalanceDate {
+            x: 9
+            y: 1
+            anchors.leftMargin: 191
+            anchors.left: parent.left
+            dayText: "TUES"
+            dateText: "17"
+            anchors.top: parent.top
+            anchors.topMargin: 97
+        }
+
+        ButtonBalanceDate {
+            x: 2
+            y: 4
+            anchors.leftMargin: 136
+            anchors.left: parent.left
+            dayText: "MON"
+            dateText: "16"
+            anchors.top: parent.top
+            anchors.topMargin: 97
+        }
+
+        ButtonBalanceDate {
+            x: -1
+            y: 5
+            anchors.leftMargin: 83
+            anchors.left: parent.left
+            dayText: "SUN"
+            dateText: "15"
+            anchors.top: parent.top
+            anchors.topMargin: 97
+        }
+
+        ButtonBalanceDate {
+            x: -1
+            y: 5
+            anchors.leftMargin: 32
+            anchors.left: parent.left
+            dayText: "SAT"
+            dateText: "14"
+            anchors.top: parent.top
+            anchors.topMargin: 97
+        }
+
+        ButtonBalanceDate {
+            x: -10
+            y: 7
+            anchors.leftMargin: 299
+            anchors.left: parent.left
+            dayText: "THU"
+            dateText: "19"
+            anchors.top: parent.top
+            anchors.topMargin: 97
         }
     }
 
