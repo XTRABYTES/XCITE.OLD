@@ -7,7 +7,7 @@ Rectangle {
     property bool isSelected: false
 
     anchors.verticalCenter: parent.Center
-    width: label.width + 40
+    width: 140
     color: "transparent"
     radius: 5
     onIsSelectedChanged: {
@@ -25,7 +25,7 @@ Rectangle {
         anchors.centerIn: parent
         text: "Start"
         font.family: "Roboto"
-        font.pixelSize: 21
+        font.pixelSize: 16
         color: "#62DED6"
     }
 
