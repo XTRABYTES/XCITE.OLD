@@ -5,8 +5,8 @@ import xtrabytes.xcite.xchat 1.0
 
 ApplicationWindow {
     visible: true
-    width: 1200
-    height: 768
+    width: 1440
+    height: 1024
     title: qsTr("Hello XCITE")
     color: "#2B2C31"
     

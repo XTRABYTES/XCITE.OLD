@@ -120,6 +120,7 @@ Item {
             Layout.fillHeight: true
 
             Rectangle {
+                id: mainNav
                 // Main navigation
                 Layout.fillWidth: true
                 Layout.maximumWidth: parent.width
@@ -132,7 +133,7 @@ Item {
                 color: "transparent"
 
                 Rectangle {
-                    height: 50
+                    height: 44
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     width: navRowLayout.width
@@ -148,14 +149,15 @@ Item {
 
                         NavigationButton {
                             id: homeNavButton
-                            height: 50
+                            height: 44
                             text: qsTr("X-BOARD")
                             isSelected: true
                             onButtonClicked: {
                                 homeNavButton.isSelected = true
                                 xchangeNavButton.isSelected = false
                                 xchatNavButton.isSelected = false
-                                toolsNavButton.isSelected = false
+                                xVaultNavButton.isSelected = false
+                                moreNavButton.isSelected = false
                                 homeDiodeRow1.visible = true
                                 homeDiodeRow2.visible = true
                                 toolsDiodeRow1.visible = false
@@ -164,13 +166,14 @@ Item {
 
                         NavigationButton {
                             id: xchangeNavButton
-                            height: 50
+                            height: 44
                             text: qsTr("X-CHANGE")
                             onButtonClicked: {
                                 homeNavButton.isSelected = false
                                 xchangeNavButton.isSelected = true
                                 xchatNavButton.isSelected = false
                                 toolsNavButton.isSelected = false
+                                xVaultNavButton.isSelected = false
                                 homeDiodeRow1.visible = true
                                 homeDiodeRow2.visible = true
                                 toolsDiodeRow1.visible = false
@@ -179,27 +182,45 @@ Item {
 
                         NavigationButton {
                             id: xchatNavButton
-                            height: 50
+                            height: 44
                             text: qsTr("X-CHAT")
                             onButtonClicked: {
                                 homeNavButton.isSelected = false
                                 xchangeNavButton.isSelected = false
                                 xchatNavButton.isSelected = true
-                                toolsNavButton.isSelected = false
+                                xVaultNavButton.isSelected = false
+                                moreNavButton.isSelected = false
                                 homeDiodeRow1.visible = true
                                 homeDiodeRow2.visible = true
                                 toolsDiodeRow1.visible = false
                             }
                         }
                         NavigationButton {
-                            id: toolsNavButton
-                            height: 50
-                            text: qsTr("TOOLS")
+                            id: xVaultNavButton
+                            height: 44
+                            text: qsTr("X-VAULT")
                             onButtonClicked: {
                                 homeNavButton.isSelected = false
                                 xchangeNavButton.isSelected = false
                                 xchatNavButton.isSelected = false
-                                toolsNavButton.isSelected = true
+                                xVaultNavButton.isSelected = true
+                                moreNavButton.isSelected = false
+                                homeDiodeRow1.visible = false
+                                homeDiodeRow2.visible = false
+                                toolsDiodeRow1.visible = true
+                            }
+                        }
+
+                        NavigationButton {
+                            id: moreNavButton
+                            height: 44
+                            text: qsTr("MORE")
+                            onButtonClicked: {
+                                homeNavButton.isSelected = false
+                                xchangeNavButton.isSelected = false
+                                xchatNavButton.isSelected = false
+                                xVaultNavButton.isSelected = false
+                                moreNavButton.isSelected = true
                                 homeDiodeRow1.visible = false
                                 homeDiodeRow2.visible = false
                                 toolsDiodeRow1.visible = true
@@ -231,18 +252,18 @@ Item {
                 // Diode row 1
                 id: homeDiodeRow1
                 Layout.fillHeight: true
+                Layout.rightMargin:15
                 anchors.left: parent.left
                 spacing: 15
 
-                Rectangle {
-                    Layout.fillWidth: true
+                BalanceBoard{
+                    Layout.minimumHeight: 470
                     Layout.fillHeight: true
-                    Layout.minimumHeight: 100
-                    color: "#3A3E47"
-                    radius: 5
                 }
 
+
                 Rectangle {
+                    id: nodeTransactionsBoard
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
@@ -369,13 +390,19 @@ Item {
                 // Diode row 2
                 id: homeDiodeRow2
                 Layout.fillHeight: true
+                Layout.rightMargin:15
                 anchors.left: parent.left
+                anchors.right:parent.right
+
                 spacing: 15
 
                 Rectangle {
+                    id: networkStatusBoard
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.minimumHeight: 100
+                    //Layout.fillHeight: true
+                    height:398
+
+                    Layout.minimumHeight: 398
                     color: "#3A3E47"
                     radius: 5
                 }
