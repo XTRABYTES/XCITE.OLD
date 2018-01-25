@@ -7,10 +7,10 @@ Rectangle {
     id: root
     anchors.verticalCenter: parent.Center
     Layout.fillWidth: true
-    Layout.maximumWidth: 250
-    Layout.minimumWidth: 250
-    Layout.preferredWidth: 250
-    height: 50
+    Layout.maximumWidth: 367
+    Layout.minimumWidth: 367
+    Layout.preferredWidth: 367
+    height: 44
     color: "#3A3E46"
     radius: 5
 
@@ -21,7 +21,8 @@ Rectangle {
     Rectangle {
         id: searchFieldContainer
         Layout.fillWidth: true
-        height: parent.height
+        height: 44
+        width:367
         color: "transparent"
         anchors.top: parent.top
         anchors.left: parent.left
@@ -31,10 +32,13 @@ Rectangle {
             id: searchField
             height: parent.height
             width: 220
+            y:0
+
             font.pointSize: 9
             font.family: "Roboto Thin"
             placeholderText: placeholder
             anchors.left: parent.left
+            anchors.leftMargin:15
             style: TextFieldStyle {
                 textColor: "#7B7D82"
                 placeholderTextColor: "#7B7D82"
@@ -74,6 +78,7 @@ Rectangle {
         DiodeButton {
             id: searchButton
             imageSource: "icons/search.svg"
+
             size: 20
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             anchors.verticalCenter: parent.verticalCenter

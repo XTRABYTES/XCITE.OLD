@@ -1,6 +1,6 @@
 import QtQuick 2.0
 //Balance board used on the main navigation page (left hand side)
-Item {
+
     Rectangle {
         id: rectangle
         x: 0
@@ -10,6 +10,7 @@ Item {
         color: "#3a3e46"
         radius: 5
         opacity: 1
+
         //Horizontal gray ruler
         Rectangle {
             id: rectangle1
@@ -176,4 +177,4 @@ Item {
         }
     }
 
-}
+
