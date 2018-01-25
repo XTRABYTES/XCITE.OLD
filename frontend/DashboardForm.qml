@@ -234,13 +234,22 @@ Item {
                 anchors.left: parent.left
                 spacing: 15
 
-                Rectangle {
+                BalanceBoard{
+                    x:99
+                    y:74
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.minimumHeight: 100
+                }
+
+               /* Rectangle {
+                    id: bal
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
                     color: "#3A3E47"
                     radius: 5
-                }
+                }*/
 
                 Rectangle {
                     Layout.fillWidth: true
