@@ -3,6 +3,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.1
 import QtQuick.Controls.Material 2.1
+import "X-Board/Nodes" as NodeComponents
 
 import xtrabytes.xcite.xchat 1.0
 
@@ -66,7 +67,10 @@ Item {
                     hasLabel: true
                     labelText: qsTr("NODES")
                     onButtonClicked: {
-
+                        homeDiodeRow1.visible = false
+                        homeDiodeRow2.visible = false
+                        toolsDiodeRow1.visible = false
+                        nodesDiodeRow.visible = true
                     }
                 }
             }
@@ -248,6 +252,18 @@ Item {
                     Layout.minimumHeight: 100
                     color: "#3A3E47"
                     radius: 5
+                }
+            }
+
+            RowLayout {
+                id: nodesDiodeRow
+                Layout.fillHeight: true
+                anchors.left: parent.left
+                spacing: 15
+                visible: false
+
+                NodeComponents.RegistrationLevel {
+
                 }
             }
 
