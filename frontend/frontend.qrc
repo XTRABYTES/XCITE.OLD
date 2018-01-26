@@ -21,6 +21,9 @@
         <file>X-Board/Nodes/RegistrationConfirmation.qml</file>
         <file>X-Board/Nodes/RegistrationDetails.qml</file>
         <file>X-Board/Nodes/RegistrationLevel.qml</file>
+        <file>BalanceBoard.qml</file>
+        <file>LabelUnderlined.qml</file>
+        <file>ButtonBalanceDate.qml</file>
         <file>X-Board/Nodes/RegistrationTermsConditions.qml</file>
     </qresource>
 </RCC>
