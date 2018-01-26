@@ -18,5 +18,9 @@
         <file>DockButton.qml</file>
         <file>DiodeButton.qml</file>
         <file>SearchBox.qml</file>
+        <file>X-Board/Nodes/RegistrationConfirmation.qml</file>
+        <file>X-Board/Nodes/RegistrationDetails.qml</file>
+        <file>X-Board/Nodes/RegistrationLevel.qml</file>
+        <file>X-Board/Nodes/RegistrationTermsConditions.qml</file>
     </qresource>
 </RCC>
