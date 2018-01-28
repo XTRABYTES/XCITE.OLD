@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
+import "../Controls" as Controls
 
 Rectangle {
     id: root
@@ -75,9 +76,9 @@ Rectangle {
         anchors.top: parent.top
         anchors.right: parent.right
 
-        DiodeButton {
+        Controls.ButtonDiode {
             id: searchButton
-            imageSource: "icons/search.svg"
+            imageSource: "../icons/search.svg"
 
             size: 20
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
