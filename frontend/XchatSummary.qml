@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import "Controls" as Controls
 
 Rectangle {
     Layout.fillWidth: true
@@ -44,7 +45,7 @@ Rectangle {
         anchors.rightMargin: 10
         height: parent.height
 
-        DiodeButton {
+        Controls.ButtonDiode {
             id: xchatUsersButton
             imageSource: "icons/friend-request.svg"
             size: 25
@@ -54,7 +55,7 @@ Rectangle {
             }
         }
 
-        DiodeButton {
+        Controls.ButtonDiode {
             id: xchatBotsButton
             imageSource: "icons/robot.svg"
             size: 25
