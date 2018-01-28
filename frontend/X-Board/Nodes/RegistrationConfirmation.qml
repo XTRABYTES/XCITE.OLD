@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
+import "../../Controls" as Controls
 
 Rectangle {
     Layout.fillWidth: true
@@ -9,7 +10,7 @@ Rectangle {
     radius: 5
 
     Text {
-        text: qsTr("Confirmation")
+        text: qsTr("Confirmation Placeholder")
         anchors.centerIn: parent
         font.family: "Roboto"
         font.weight: Font.Bold
