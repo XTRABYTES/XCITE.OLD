@@ -273,9 +273,28 @@ Item {
 
                     // TODO Add first row of wallet UI here after mockups are ready
 
-                    NodeComponents.BalanceBoard{}
+                    Rectangle {
+                        id: rectangle
+                        x: 0
+                        y: 0
+                        width: 380
+                        height: 470
+                        color: "#3a3e46"
+                        radius: 5
+                        opacity: 1
+                        Layout.minimumHeight: 470
+                        Layout.fillHeight: true
+                    }
 
-                    NodeComponents.TransactionsBoard{}
+                    Rectangle {
+                        id: rectangleId
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumHeight: 200
+                        Layout.preferredHeight: 400
+                        color: "#3A3E47"
+                        radius: 5
+                    }
                 }
 
                 RowLayout {
@@ -286,7 +305,15 @@ Item {
                     Layout.rightMargin:15
                     spacing: 15
 
-                   NodeComponents.NetworkStatusBoard{}
+                    Rectangle {
+                        id: networkStatusBoardId
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumHeight: 200
+                        Layout.preferredHeight: 400
+                        color: "#3A3E47"
+                        radius: 5
+                    }
                 }
             }
 
