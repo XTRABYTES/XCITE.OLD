@@ -269,8 +269,6 @@ Item {
                     Layout.fillHeight: true
                     Layout.rightMargin:15
                     anchors.left: parent.left
-                    //anchors.right: parent.right
-
                     spacing: 15
 
                     // TODO Add first row of wallet UI here after mockups are ready
@@ -288,16 +286,7 @@ Item {
                     Layout.rightMargin:15
                     spacing: 15
 
-                    // TODO Add second row of wallet UI here after mockups are ready
-
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.minimumHeight: 200
-                        Layout.preferredHeight: 400
-                        color: "#3A3E47"
-                        radius: 5
-                    }
+                   NodeComponents.NetworkStatusBoard{}
                 }
             }
 
