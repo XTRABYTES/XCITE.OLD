@@ -3,6 +3,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.1
 import QtQuick.Controls.Material 2.1
+import "Controls" as Controls
 import "X-Board/Nodes" as NodeComponents
 
 import xtrabytes.xcite.xchat 1.0
@@ -35,7 +36,7 @@ Item {
                 anchors.top: parent.top
                 spacing: 40
 
-                DiodeButton {
+                Controls.ButtonDiode {
                     id: logobutton
                     imageSource: "logos/xby_logo.svg"
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
@@ -46,8 +47,8 @@ Item {
                     height: 40
                 }
 
-                DiodeButton {
-                    id: diode1button
+                Controls.ButtonDiode {
+                    id: xBoardHomeButtonDiode
                     imageSource: "icons/dollar-pointer.svg"
                     // This is a placeholder image
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
@@ -55,22 +56,25 @@ Item {
                     hasLabel: true
                     labelText: qsTr("HOME")
                     onButtonClicked: {
-
+                        xBoardHome.visible = true
+                        tools.visible = false
+                        xBoardNodes.visible = false
+                        xBoardNodesButtonDiode.isSelected = false
                     }
                 }
 
-                DiodeButton {
-                    id: diode2button
+                Controls.ButtonDiode {
+                    id: xBoardNodesButtonDiode
                     imageSource: "icons/share.svg"
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     isSelected: false
                     hasLabel: true
                     labelText: qsTr("NODES")
                     onButtonClicked: {
-                        homeDiodeRow1.visible = false
-                        homeDiodeRow2.visible = false
-                        toolsDiodeRow1.visible = false
-                        nodesDiodeRow.visible = true
+                        xBoardHome.visible = false
+                        tools.visible = false
+                        xBoardNodes.visible = true
+                        xBoardHomeButtonDiode.isSelected = false
                     }
                 }
             }
@@ -84,7 +88,7 @@ Item {
                 anchors.bottom: parent.bottom
                 spacing: 40
 
-                DiodeButton {
+                Controls.ButtonDiode {
                     id: settingsButton
                     imageSource: "icons/lock.svg"
                     // This is a placeholder image
@@ -97,7 +101,7 @@ Item {
                     }
                 }
 
-                DiodeButton {
+                Controls.ButtonDiode {
                     id: wifiButton
                     imageSource: "icons/wifi.svg"
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
@@ -121,6 +125,7 @@ Item {
         ColumnLayout {
             id: rootColumnLayout
             anchors.top: parent.top
+            anchors.bottom: parent.bottom
             Layout.fillHeight: true
 
             Rectangle {
@@ -151,7 +156,7 @@ Item {
                         height: parent.height
                         spacing: 0
 
-                        NavigationButton {
+                        Controls.ButtonNavigation {
                             id: homeNavButton
                             height: 44
                             text: qsTr("X-BOARD")
@@ -162,13 +167,13 @@ Item {
                                 xchatNavButton.isSelected = false
                                 xVaultNavButton.isSelected = false
                                 moreNavButton.isSelected = false
-                                homeDiodeRow1.visible = true
-                                homeDiodeRow2.visible = true
-                                toolsDiodeRow1.visible = false
+                                xBoardHome.visible = true
+                                tools.visible = false
+                                xBoardNodes.visible = false
                             }
                         }
 
-                        NavigationButton {
+                        Controls.ButtonNavigation {
                             id: xchangeNavButton
                             height: 44
                             text: qsTr("X-CHANGE")
@@ -176,15 +181,15 @@ Item {
                                 homeNavButton.isSelected = false
                                 xchangeNavButton.isSelected = true
                                 xchatNavButton.isSelected = false
-                                toolsNavButton.isSelected = false
                                 xVaultNavButton.isSelected = false
-                                homeDiodeRow1.visible = true
-                                homeDiodeRow2.visible = true
-                                toolsDiodeRow1.visible = false
+                                moreNavButton.isSelected = false
+                                xBoardHome.visible = false
+                                tools.visible = false
+                                xBoardNodes.visible = false
                             }
                         }
 
-                        NavigationButton {
+                        Controls.ButtonNavigation {
                             id: xchatNavButton
                             height: 44
                             text: qsTr("X-CHAT")
@@ -194,12 +199,12 @@ Item {
                                 xchatNavButton.isSelected = true
                                 xVaultNavButton.isSelected = false
                                 moreNavButton.isSelected = false
-                                homeDiodeRow1.visible = true
-                                homeDiodeRow2.visible = true
-                                toolsDiodeRow1.visible = false
+                                xBoardHome.visible = false
+                                tools.visible = false
+                                xBoardNodes.visible = false
                             }
                         }
-                        NavigationButton {
+                        Controls.ButtonNavigation {
                             id: xVaultNavButton
                             height: 44
                             text: qsTr("X-VAULT")
@@ -209,13 +214,13 @@ Item {
                                 xchatNavButton.isSelected = false
                                 xVaultNavButton.isSelected = true
                                 moreNavButton.isSelected = false
-                                homeDiodeRow1.visible = false
-                                homeDiodeRow2.visible = false
-                                toolsDiodeRow1.visible = true
+                                xBoardHome.visible = false
+                                tools.visible = false
+                                xBoardNodes.visible = false
                             }
                         }
 
-                        NavigationButton {
+                        Controls.ButtonNavigation {
                             id: moreNavButton
                             height: 44
                             text: qsTr("MORE")
@@ -225,9 +230,9 @@ Item {
                                 xchatNavButton.isSelected = false
                                 xVaultNavButton.isSelected = false
                                 moreNavButton.isSelected = true
-                                homeDiodeRow1.visible = false
-                                homeDiodeRow2.visible = false
-                                toolsDiodeRow1.visible = true
+                                xBoardHome.visible = false
+                                tools.visible = true
+                                xBoardNodes.visible = false
                             }
                         }
 
@@ -243,7 +248,7 @@ Item {
                     height: parent.height
                     spacing: 30
 
-                    SearchBox {
+                    Controls.SearchBox {
                         id: searchBox
                         placeholder: qsTr("Search for something...")
                         anchors.right: parent.right
@@ -252,175 +257,243 @@ Item {
                 }
             }
 
-            RowLayout {
-                // Diode row 1
-                id: homeDiodeRow1
-                Layout.fillHeight: true
-                Layout.rightMargin:15
+            ColumnLayout {
+                id: xBoardHome
                 anchors.left: parent.left
+                anchors.right: parent.right
                 spacing: 15
 
-                BalanceBoard{
-                    Layout.minimumHeight: 470
+                RowLayout {
+                    // X-Board Home Row 1
+                    id: xBoardHomeRow1
                     Layout.fillHeight: true
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    spacing: 15
+
+                    // TODO Add first row of wallet UI here after mockups are ready
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.minimumHeight: 470
+                        Layout.fillHeight: true
+                        color: "#3A3E47"
+                        radius: 5
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.minimumHeight: 470
+                        Layout.fillHeight: true
+                        color: "#3A3E47"
+                        radius: 5
+                    }
                 }
 
-
-                Rectangle {
-                    id: nodeTransactionsBoard
-                    Layout.fillWidth: true
+                RowLayout {
+                    // X-Board Home Row 2
+                    id: xBoardHomeRow2
                     Layout.fillHeight: true
-                    Layout.minimumHeight: 100
-                    color: "#3A3E47"
-                    radius: 5
-                }
-            }
+                    anchors.left: parent.left
+                    anchors.right:parent.right
+                    spacing: 15
 
-            RowLayout {
-                id: nodesDiodeRow
-                Layout.fillHeight: true
-                anchors.left: parent.left
-                spacing: 15
-                visible: false
+                    // TODO Add second row of wallet UI here after mockups are ready
 
-                NodeComponents.RegistrationLevel {
-
-                }
-            }
-
-            RowLayout {
-                id: toolsDiodeRow1
-                Layout.fillHeight: true
-                anchors.left: parent.left
-                spacing: 15
-                visible: false
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.minimumHeight: 100
-                    color: "#3A3E47"
-                    radius: 5
-
-                    ColumnLayout {
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        width: parent.width
-
-                        ColumnLayout {
-                            Layout.margins: 15
-                            Label {
-                                text: qsTr("XBY Transfer Amount (e.g. 1 or 1000):")
-                            }
-                            TextField {
-                                id: transferAmount
-                                text: "1"
-                            }
-                            Label {
-                                text: qsTr("XBY Transfer Cycles (e.g. 5000):")
-                            }
-                            TextField {
-                                id: transferCycles
-                                text: "5000"
-                            }
-                            Label {
-                                text: qsTr("Transactions Per Minute (Use a number between 1 and 1000 to prevent your system from freezing)")
-                            }
-                            TextField {
-                                id: transactionsPerMin
-                                text: "500"
-                            }
-                            Label {
-                                text: qsTr("XBY Receiving Addresses (Enter one address per line)")
-                            }
-                            ScrollView {
-                                Layout.fillWidth: true
-                                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-                                Layout.minimumHeight: 100
-                                Layout.maximumHeight: 100
-                                Layout.maximumWidth: 300
-
-                                TextArea {
-                                    id: receivingAddresses
-                                    Layout.minimumHeight: 100
-                                    Layout.maximumHeight: 100
-                                    wrapMode: TextArea.Wrap
-                                }
-                            }
-                            RowLayout {
-                                Button {
-                                    id: sendButton
-                                    text: qsTr("Send")
-                                    onClicked: {
-
-                                    }
-                                }
-                                Button {
-                                    id: pauseButton
-                                    text: qsTr("Pause")
-                                    onClicked: {
-
-                                    }
-                                }
-                            }
-
-                            Label {
-                                text: qsTr("Completed Transactions:")
-                            }
-                            TextField {
-                                id: completedTransactions
-                                readOnly: true
-                            }
-                            Label {
-                                text: qsTr("TX Log:")
-                            }
-
-                            ScrollView {
-                                Layout.fillWidth: true
-                                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-                                Layout.minimumHeight: 100
-                                Layout.maximumHeight: 100
-                                Layout.maximumWidth: 300
-
-                                TextArea {
-                                    id: transactionLog
-                                    Layout.minimumHeight: 100
-                                    Layout.maximumHeight: 100
-                                    wrapMode: TextArea.Wrap
-                                    readOnly: true
-                                }
-                            }
-                        }
-
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumHeight: 200
+                        Layout.preferredHeight: 400
+                        color: "#3A3E47"
+                        radius: 5
                     }
                 }
             }
 
-            Rectangle {
-                // Filler
-                width: 15
-                color: "transparent"
+            ColumnLayout {
+                id: xBoardNodes
+                anchors.left: parent.left
+                anchors.right: parent.right
+                spacing: 15
+                visible: false
+
+                RowLayout {
+                    id: xBoardNodesHeader
+                    height: 50
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    spacing: 15
+
+                    Controls.ButtonSimple {
+                        text: qsTr("Register Node")
+                        onButtonClicked: {
+                            xBoardNodesHeader.visible = false
+                            nodeBalanceBoard.visible = false
+                            nodeTransactionsBoard.visible = false
+                            nodeRegistrationLevel.visible = true
+                            xBoardNodesRow2.visible = false
+                        }
+                    }
+                }
+
+                RowLayout {
+                    id: xBoardNodesRow1
+                    Layout.fillHeight: true
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    spacing: 15
+
+                    NodeComponents.BalanceBoard {
+                        id: nodeBalanceBoard
+                    }
+
+                    NodeComponents.TransactionsBoard {
+                        id: nodeTransactionsBoard
+                    }
+
+                    NodeComponents.RegistrationLevel {
+                        id: nodeRegistrationLevel
+                        visible: false
+                    }
+
+                    NodeComponents.RegistrationDetails {
+                        id: nodeRegistrationDetails
+                        visible: false
+                    }
+
+                    NodeComponents.RegistrationConfirmation {
+                        id: nodeRegistrationConfirmation
+                        visible: false
+                    }
+                }
+
+                RowLayout {
+                    id: xBoardNodesRow2
+                    Layout.fillHeight: true
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    spacing: 15
+
+                    NodeComponents.NetworkStatusBoard {
+                        id: nodeNetworkStatus
+                    }
+                }
             }
 
-            RowLayout {
-                // Diode row 2
-                id: homeDiodeRow2
-                Layout.fillHeight: true
-                Layout.rightMargin:15
+            ColumnLayout {
+                id: tools
                 anchors.left: parent.left
-                anchors.right:parent.right
-
+                anchors.right: parent.right
                 spacing: 15
+                visible: false
 
-                Rectangle {
-                    id: networkStatusBoard
-                    Layout.fillWidth: true
-                    //Layout.fillHeight: true
-                    height:398
+                RowLayout {
+                    id: toolsRow1
+                    Layout.fillHeight: true
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    spacing: 15
 
-                    Layout.minimumHeight: 398
-                    color: "#3A3E47"
-                    radius: 5
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumHeight: 100
+                        color: "#3A3E47"
+                        radius: 5
+
+                        ColumnLayout {
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            width: parent.width
+
+                            ColumnLayout {
+                                Layout.margins: 15
+                                Label {
+                                    text: qsTr("XBY Transfer Amount (e.g. 1 or 1000):")
+                                }
+                                TextField {
+                                    id: transferAmount
+                                    text: "1"
+                                }
+                                Label {
+                                    text: qsTr("XBY Transfer Cycles (e.g. 5000):")
+                                }
+                                TextField {
+                                    id: transferCycles
+                                    text: "5000"
+                                }
+                                Label {
+                                    text: qsTr("Transactions Per Minute (Use a number between 1 and 1000 to prevent your system from freezing)")
+                                }
+                                TextField {
+                                    id: transactionsPerMin
+                                    text: "500"
+                                }
+                                Label {
+                                    text: qsTr("XBY Receiving Addresses (Enter one address per line)")
+                                }
+                                ScrollView {
+                                    Layout.fillWidth: true
+                                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                                    Layout.minimumHeight: 100
+                                    Layout.maximumHeight: 100
+                                    Layout.maximumWidth: 300
+
+                                    TextArea {
+                                        id: receivingAddresses
+                                        Layout.minimumHeight: 100
+                                        Layout.maximumHeight: 100
+                                        wrapMode: TextArea.Wrap
+                                    }
+                                }
+                                RowLayout {
+                                    Button {
+                                        id: sendButton
+                                        text: qsTr("Send")
+                                        onClicked: {
+
+                                        }
+                                    }
+                                    Button {
+                                        id: pauseButton
+                                        text: qsTr("Pause")
+                                        onClicked: {
+
+                                        }
+                                    }
+                                }
+
+                                Label {
+                                    text: qsTr("Completed Transactions:")
+                                }
+                                TextField {
+                                    id: completedTransactions
+                                    readOnly: true
+                                }
+                                Label {
+                                    text: qsTr("TX Log:")
+                                }
+
+                                ScrollView {
+                                    Layout.fillWidth: true
+                                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                                    Layout.minimumHeight: 100
+                                    Layout.maximumHeight: 100
+                                    Layout.maximumWidth: 300
+
+                                    TextArea {
+                                        id: transactionLog
+                                        Layout.minimumHeight: 100
+                                        Layout.maximumHeight: 100
+                                        wrapMode: TextArea.Wrap
+                                        readOnly: true
+                                    }
+                                }
+                            }
+
+                        }
+                    }
                 }
             }
 
@@ -434,6 +507,7 @@ Item {
                 // Footer
                 height: 40
                 anchors.left: parent.left
+                anchors.bottom: parent.bottom
 
                 Rectangle {
                     Layout.fillWidth: true
@@ -461,7 +535,7 @@ Item {
                             color: "#335F5E"
                         }
 
-                        PlainTextButton {
+                        Controls.ButtonPlainText {
                             width: webLinkText.width
                             onButtonClicked: {
                                 Qt.openUrlExternally("https://xtrabytes.global")
