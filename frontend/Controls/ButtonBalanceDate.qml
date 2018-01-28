@@ -19,16 +19,16 @@ Item {
             id: mouseArea
             anchors.fill: parent
             onClicked: {
-                root.buttonClicked()
+                //root.buttonClicked()
             }
             hoverEnabled: true
             onHoveredChanged: {
                 if (!isSelected) {
                     if (containsMouse) {
-                        root.color= "#64DDD8"
+                        //root.color= "#64DDD8"
                     }
                     else {
-                        root.color= "transparent"
+                        //root.color= "transparent"
                     }
                 }
             }

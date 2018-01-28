@@ -267,27 +267,15 @@ Item {
                     // X-Board Home Row 1
                     id: xBoardHomeRow1
                     Layout.fillHeight: true
+                    Layout.rightMargin:15
                     anchors.left: parent.left
-                    anchors.right: parent.right
                     spacing: 15
 
                     // TODO Add first row of wallet UI here after mockups are ready
 
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.minimumHeight: 470
-                        Layout.fillHeight: true
-                        color: "#3A3E47"
-                        radius: 5
-                    }
+                    NodeComponents.BalanceBoard{}
 
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.minimumHeight: 470
-                        Layout.fillHeight: true
-                        color: "#3A3E47"
-                        radius: 5
-                    }
+                    NodeComponents.TransactionsBoard{}
                 }
 
                 RowLayout {
@@ -295,19 +283,10 @@ Item {
                     id: xBoardHomeRow2
                     Layout.fillHeight: true
                     anchors.left: parent.left
-                    anchors.right:parent.right
+                    Layout.rightMargin:15
                     spacing: 15
 
-                    // TODO Add second row of wallet UI here after mockups are ready
-
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.minimumHeight: 200
-                        Layout.preferredHeight: 400
-                        color: "#3A3E47"
-                        radius: 5
-                    }
+                   NodeComponents.NetworkStatusBoard{}
                 }
             }
 

@@ -20,7 +20,7 @@ import "../../Controls" as Controls
             id: rectangle1
             x: 0
             y: 45
-            width: 380
+            width: parent.width
             height: 1
             color: "#9fa0a3"
             opacity: 0.2
