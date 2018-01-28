@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import xtrabytes.xcite.xchat 1.0
+import "Login" as LoginComponents
 
 ApplicationWindow {
     visible: true
@@ -14,7 +15,7 @@ ApplicationWindow {
 
     StackView {
         id: mainRoot
-        initialItem: LoginForm {}
+        initialItem: LoginComponents.LoginForm {}
         anchors.fill: parent
         pushEnter: Transition {
             PropertyAnimation {
