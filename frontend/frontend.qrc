@@ -4,26 +4,28 @@
         <file>DashboardForm.qml</file>
         <file>XchatPopup.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>LoginForm.qml</file>
-        <file>PolygonalBackground.qml</file>
-        <file>Logo.qml</file>
-        <file>BlueTextInput.qml</file>
-        <file>SimpleButton.qml</file>
-        <file>ForgotPasswordForm.qml</file>
-        <file>PlainTextButton.qml</file>
-        <file>SignUpForm.qml</file>
-        <file>TwoFactorAuthForm.qml</file>
-        <file>NavigationButton.qml</file>
         <file>XchatSummary.qml</file>
-        <file>DockButton.qml</file>
-        <file>DiodeButton.qml</file>
-        <file>SearchBox.qml</file>
         <file>X-Board/Nodes/RegistrationConfirmation.qml</file>
         <file>X-Board/Nodes/RegistrationDetails.qml</file>
         <file>X-Board/Nodes/RegistrationLevel.qml</file>
-        <file>BalanceBoard.qml</file>
-        <file>LabelUnderlined.qml</file>
-        <file>ButtonBalanceDate.qml</file>
         <file>X-Board/Nodes/RegistrationTermsConditions.qml</file>
+        <file>X-Board/Nodes/BalanceBoard.qml</file>
+        <file>X-Board/Nodes/TransactionsBoard.qml</file>
+        <file>Login/ForgotPasswordForm.qml</file>
+        <file>Login/LoginForm.qml</file>
+        <file>Login/SignUpForm.qml</file>
+        <file>Login/TwoFactorAuthForm.qml</file>
+        <file>Controls/LabelUnderlined.qml</file>
+        <file>Controls/SearchBox.qml</file>
+        <file>Controls/ButtonBalanceDate.qml</file>
+        <file>X-Board/Nodes/NetworkStatusBoard.qml</file>
+        <file>Controls/TextInputBlue.qml</file>
+        <file>Controls/ButtonSimple.qml</file>
+        <file>Controls/ButtonDiode.qml</file>
+        <file>Controls/ButtonDock.qml</file>
+        <file>Controls/ButtonNavigation.qml</file>
+        <file>Controls/ButtonPlainText.qml</file>
+        <file>Controls/ImagePolygonal.qml</file>
+        <file>Controls/ImageLogo.qml</file>
     </qresource>
 </RCC>
