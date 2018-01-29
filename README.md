@@ -21,12 +21,21 @@ After installing Qt, clone this repository and open xcite.pro using Qt Creator.
 
 ![xcite-node-ui](https://user-images.githubusercontent.com/17502298/35520404-efc47ee0-04e4-11e8-854c-598959929a02.png)
 
-Supported Operating Systems
+## Frequently Asked Questions
 
-- Linux Desktop
-- Android devices
-- Apple Desktop (macOS)
-- iPhone/iPad (iOS)
-- Windows desktop
-- Windows mobile CE/RT
-- BlackBerry (Qnx)
+**1. Where is the rest of the source code?**
+
+   Since the Proof of Signature consensus algorithm is still closed-source, this repository does not yet include the complete source code. We understand that the public needs to be able to review the source code and will publish the remaining source code as soon as it's ready.
+   
+**2. What platforms does XCITE plan to support?**
+   - Linux Desktop
+   - Android devices
+   - Apple Desktop (macOS)
+   - iPhone/iPad (iOS)
+   - Windows desktop
+
+**3. Where can I learn more about XTRABYTES?**
+   - [Website](https://xtrabytes.global/)
+   - [Whitepaper](https://xtrabytes.global/whitepaper.pdf)
+   - [Forum](https://community.xtrabytes.global)
+   - [Help Center](http://support.xtrabytes.global)
