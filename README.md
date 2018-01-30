@@ -21,6 +21,10 @@ After installing Qt, clone this repository and open xcite.pro using Qt Creator.
 
 ![xcite-node-ui](https://user-images.githubusercontent.com/17502298/35520404-efc47ee0-04e4-11e8-854c-598959929a02.png)
 
+## Contributing
+
+If you would like to contribute to XCITE development, please [contact us](mailto:development@xtrabytes.global). We would love to hear from you.
+
 ## Frequently Asked Questions
 
 **1. Where is the rest of the source code?**
