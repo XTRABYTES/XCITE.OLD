@@ -36,3 +36,7 @@ Makefile
 .qmake.stash
 build/release/*
 android
+
+# Qt
+*.pro.user
+*.pro.user.*
