@@ -29,5 +29,6 @@
         <file>Controls/ImageLogo.qml</file>
         <file>Controls/BalanceItem.qml</file>
         <file>Controls/BoardHeader.qml</file>
+        <file>X-Board/Home/BalanceBoard.qml</file>
     </qresource>
 </RCC>
