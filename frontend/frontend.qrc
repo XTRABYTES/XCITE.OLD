@@ -30,5 +30,7 @@
         <file>Controls/BalanceItem.qml</file>
         <file>Controls/BoardHeader.qml</file>
         <file>X-Board/Home/BalanceBoard.qml</file>
+        <file>X-Board/Home/BalanceValueBoard.qml</file>
+        <file>X-Board/Home/Layout.qml</file>
     </qresource>
 </RCC>

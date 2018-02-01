@@ -15,6 +15,7 @@ import xtrabytes.xcite.xchat 1.0
 // More information: http://doc.qt.io/qt-5/scalability.html
 
 Item {
+    readonly property int layoutGridSpacing: 15
 
     RowLayout {
         id: rootLayout
@@ -258,53 +259,13 @@ Item {
                 }
             }
 
-            ColumnLayout {
+            // X-Board Home
+
+            HomeComponents.Layout {
                 id: xBoardHome
-                anchors.left: parent.left
-                anchors.right: parent.right
-                spacing: 15
-
-                RowLayout {
-                    // X-Board Home Row 1
-                    id: xBoardHomeRow1
-                    Layout.fillHeight: true
-                    Layout.rightMargin:15
-                    anchors.left: parent.left
-                    spacing: 15
-
-                    HomeComponents.BalanceBoard {
-                    }
-
-                    Rectangle {
-                        id: rectangleId
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.minimumHeight: 200
-                        Layout.preferredHeight: 400
-                        color: "#3A3E47"
-                        radius: 5
-                    }
-                }
-
-                RowLayout {
-                    // X-Board Home Row 2
-                    id: xBoardHomeRow2
-                    Layout.fillHeight: true
-                    anchors.left: parent.left
-                    Layout.rightMargin:15
-                    spacing: 15
-
-                    Rectangle {
-                        id: networkStatusBoardId
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.minimumHeight: 200
-                        Layout.preferredHeight: 400
-                        color: "#3A3E47"
-                        radius: 5
-                    }
-                }
             }
+
+            // X-Board Nodes
 
             ColumnLayout {
                 id: xBoardNodes

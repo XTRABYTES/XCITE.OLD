@@ -8,6 +8,7 @@ Item {
     property alias value: value.text
     property alias valueFont: value.font
     property alias valueColor: value.color
+    property alias valuePrefix: prefix.text
 
     anchors.left: parent.left
     anchors.right: parent.right
@@ -32,6 +33,7 @@ Item {
         anchors.right: parent.right
 
         Text {
+            id: prefix
             anchors.bottom: parent.bottom
             anchors.right: parent.left
             anchors.rightMargin: 6
@@ -40,7 +42,6 @@ Item {
             font.pixelSize: 14
             font.family: "Roboto"
             font.weight: Font.Light
-            text: qsTr("XBY")
         }
     }
 }
