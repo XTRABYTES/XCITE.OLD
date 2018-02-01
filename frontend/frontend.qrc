@@ -27,5 +27,7 @@
         <file>Controls/ButtonPlainText.qml</file>
         <file>Controls/ImagePolygonal.qml</file>
         <file>Controls/ImageLogo.qml</file>
+        <file>Controls/BalanceItem.qml</file>
+        <file>Controls/BoardHeader.qml</file>
     </qresource>
 </RCC>
