@@ -5,6 +5,7 @@ import QtQuick.Window 2.1
 import QtQuick.Controls.Material 2.1
 import "Controls" as Controls
 import "X-Board/Nodes" as NodeComponents
+import "X-Board/Home" as HomeComponents
 
 import xtrabytes.xcite.xchat 1.0
 
@@ -271,19 +272,7 @@ Item {
                     anchors.left: parent.left
                     spacing: 15
 
-                    // TODO Add first row of wallet UI here after mockups are ready
-
-                    Rectangle {
-                        id: rectangle
-                        x: 0
-                        y: 0
-                        width: 380
-                        height: 470
-                        color: "#3a3e46"
-                        radius: 5
-                        opacity: 1
-                        Layout.minimumHeight: 470
-                        Layout.fillHeight: true
+                    HomeComponents.BalanceBoard {
                     }
 
                     Rectangle {
