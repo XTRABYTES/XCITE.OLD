@@ -19,6 +19,7 @@ Rectangle {
     Controls.BalanceItem {
         id: dailyBalance
         text: qsTr("Balance")
+        valuePrefix: qsTr("XBY")
         value: "175,314"
         anchors.top: parent.top
         anchors.topMargin: 63
@@ -27,6 +28,7 @@ Rectangle {
     Controls.BalanceItem {
         id: unconfirmedBalance
         text: qsTr("Unconfirmed")
+        valuePrefix: qsTr("XBY")
         value: "22,695"
         anchors.top: dailyBalance.bottom
     }
@@ -36,6 +38,7 @@ Rectangle {
         text: qsTr("Total")
         value: "198,009"
         valueColor: "#0ED8D2"
+        valuePrefix: qsTr("XBY")
         valueFont.family: "Roboto"
         valueFont.weight: Font.Normal
         anchors.top: unconfirmedBalance.bottom
