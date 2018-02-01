@@ -19,6 +19,12 @@ During installation, be sure to pick the "Qt 5.9.3" component since that is the 
 
 After installing Qt, clone this repository and open xcite.pro using Qt Creator.
 
+## Screenshots
+
+##### X-Board -> Home
+![x-board-home-20180201](https://user-images.githubusercontent.com/17502298/35703298-94e0892e-0769-11e8-9a48-da4da4d1faa8.png)
+
+##### X-Board -> Nodes
 ![xcite-node-ui](https://user-images.githubusercontent.com/17502298/35520404-efc47ee0-04e4-11e8-854c-598959929a02.png)
 
 ## Contributing
