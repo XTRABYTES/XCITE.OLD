@@ -1,4 +1,4 @@
-![xby_logo_200](https://user-images.githubusercontent.com/17502298/35520447-0dfeee4a-04e5-11e8-92c7-68ac45ca4607.png)
+![xcite-github_banner](https://user-images.githubusercontent.com/17502298/35753808-268b1630-082f-11e8-8eb6-af6604cdc301.png)
 
 #                X C I T E
 ####  XTRABYTES Consolidated Interactive TErminal
