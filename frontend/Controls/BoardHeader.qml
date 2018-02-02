@@ -4,6 +4,7 @@ Item {
     readonly property color cHeaderText: "#e2e2e2"
     readonly property color cHeaderLine: "#535353"
 
+    property alias menuLabelText: menuLabel.text
     property alias text: label.text
 
     height: 44.5
@@ -41,7 +42,7 @@ Item {
         }
 
         Text {
-            text: qsTr("XBY")
+            id: menuLabel
             color: cHeaderText
             font.family: "Roboto"
             font.pixelSize: 12

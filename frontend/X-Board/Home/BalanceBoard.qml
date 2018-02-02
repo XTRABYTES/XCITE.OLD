@@ -7,13 +7,14 @@ import "../../Controls" as Controls
 Rectangle {
     width: 376
     height: 313
-    color: "#3a3e46"
+    color: cBoardBackground
     radius: 5
     Layout.minimumHeight: 313
     Layout.fillHeight: true
 
     Controls.BoardHeader {
         text: qsTr("BALANCE")
+        menuLabelText: qsTr("XBY")
     }
 
     Controls.BalanceItem {

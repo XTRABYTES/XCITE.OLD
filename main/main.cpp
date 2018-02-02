@@ -3,7 +3,7 @@
 #include <QtQuick/QQuickWindow>
 
 #include "../backend/xchat/xchat.hpp"
-
+#include "../frontend/support/sortfilterproxymodel.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -11,9 +11,11 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<Xchat>("xtrabytes.xcite.xchat", 1, 0, "Xchat");
+    qmlRegisterType<SortFilterProxyModel>("SortFilterProxyModel", 0, 1, "SortFilterProxyModel");
 
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/");
+
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;

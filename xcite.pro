@@ -40,14 +40,16 @@ QML_DESIGNER_IMPORT_PATH =
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
-	    backend/p2p/p2p.cpp 
+            backend/p2p/p2p.cpp \
+            frontend/support/sortfilterproxymodel.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
 
 HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xchat/xchataiml.hpp \
-	    backend/p2p/p2p.hpp 
+            backend/p2p/p2p.hpp \
+            frontend/support/sortfilterproxymodel.hpp
 
 DISTFILES += \
     xcite.ico

@@ -32,5 +32,6 @@
         <file>X-Board/Home/BalanceBoard.qml</file>
         <file>X-Board/Home/BalanceValueBoard.qml</file>
         <file>X-Board/Home/Layout.qml</file>
+        <file>X-Board/Home/RecentTransactionsBoard.qml</file>
     </qresource>
 </RCC>

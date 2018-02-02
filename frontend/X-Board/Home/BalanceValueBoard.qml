@@ -6,18 +6,19 @@ import "../../Controls" as Controls
 Rectangle {
     width: 376
     height: 135
-    color: "#3a3e46"
+    color: cBoardBackground
     radius: 5
 
     Controls.BoardHeader {
         id: boardHeader
         text: qsTr("BALANCE VALUE")
+        menuLabelText: qsTr("USD")
     }
 
     Controls.BalanceItem {
         id: unconfirmedBalance
         text: ""
-        value: "5,446"
+        value: "37,621"
         valuePrefix: qsTr("$")
         anchors.top: boardHeader.bottom
     }
