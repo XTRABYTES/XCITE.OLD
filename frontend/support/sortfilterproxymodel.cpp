@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include "sortfilterproxymodel.h"
+#include "sortfilterproxymodel.hpp"
 #include <QtDebug>
 #include <QtQml>
 
