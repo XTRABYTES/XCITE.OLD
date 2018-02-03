@@ -31,14 +31,7 @@ ColumnLayout {
         anchors.left: parent.left
         spacing: layoutGridSpacing
 
-        Rectangle {
-            id: xtrabytesChart
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.minimumHeight: 200
-            Layout.preferredHeight: 400
-            color: "#3A3E47"
-            radius: 5
+        ChartDiode {
         }
     }
 }

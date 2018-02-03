@@ -33,5 +33,6 @@
         <file>X-Board/Home/BalanceValueBoard.qml</file>
         <file>X-Board/Home/Layout.qml</file>
         <file>X-Board/Home/RecentTransactionsBoard.qml</file>
+        <file>X-Board/Home/ChartDiode.qml</file>
     </qresource>
 </RCC>
