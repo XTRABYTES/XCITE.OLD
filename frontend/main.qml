@@ -5,14 +5,14 @@ import xtrabytes.xcite.xchat 1.0
 import "Login" as LoginComponents
 
 ApplicationWindow {
+    id: xcite
+
     visible: true
     width: 1440
     height: 1024
     title: qsTr("Hello XCITE")
     color: "#2B2C31"
     
-    property var responseTXT: ""
-
     StackView {
         id: mainRoot
         initialItem: LoginComponents.LoginForm {}
@@ -39,9 +39,10 @@ ApplicationWindow {
         id: xchat
     }
 
-    signal xchatSubmitMsgSignal(string msg, string responseTXT)
+    signal xchatSubmitMsgSignal(string msg)
+    signal xChatMessageReceived(string message, date datetime)
 
-    function xchatResponse(response){
-      responseTXT = response
+    function xchatResponse(response) {
+        xChatMessageReceived(response, new Date());
     }
 }

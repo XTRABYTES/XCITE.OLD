@@ -3,6 +3,7 @@
 #include <QtQuick/QQuickWindow>
 
 #include "../backend/xchat/xchat.hpp"
+#include "../backend/xchat/xchatconversationmodel.hpp"
 #include "../frontend/support/sortfilterproxymodel.hpp"
 
 int main(int argc, char *argv[])
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<Xchat>("xtrabytes.xcite.xchat", 1, 0, "Xchat");
     qmlRegisterType<SortFilterProxyModel>("SortFilterProxyModel", 0, 1, "SortFilterProxyModel");
+    qmlRegisterType<XChatConversationModel>("XChatConversationModel", 0, 1, "XChatConversationModel");
 
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/");
@@ -25,7 +27,7 @@ int main(int argc, char *argv[])
     xchatobj.Initialize();
 
     // connect QML signals to C++ slots
-    QObject::connect(engine.rootObjects().first(),SIGNAL(xchatSubmitMsgSignal(QString,QString)),&xchatobj,SLOT(SubmitMsgCall(QString,QString)));
+    QObject::connect(engine.rootObjects().first(),SIGNAL(xchatSubmitMsgSignal(QString)),&xchatobj,SLOT(SubmitMsgCall(QString)));
 
     // connect C++ signals to QML slots
     QObject::connect(&xchatobj, SIGNAL(xchatResponseSignal(QVariant)),engine.rootObjects().first(), SLOT(xchatResponse(QVariant)));
