@@ -131,6 +131,8 @@ Item {
                             anchors.leftMargin: 10.69
                             anchors.rightMargin: 10.69
 
+                            clip: true
+
                             font.pixelSize: 11
                             font.family: "Roboto"
                             color: "#ffffff"
