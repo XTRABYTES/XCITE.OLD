@@ -1,12 +1,13 @@
 import QtQuick 2.0
 
-Item {
-    readonly property color cHeaderText: "#e2e2e2"
+Rectangle {
+    property color cHeaderText: "#e2e2e2"
     readonly property color cHeaderLine: "#535353"
 
     property alias menuLabelText: menuLabel.text
     property alias text: label.text
 
+    color: "transparent"
     height: 44.5
     width: parent.width
 

@@ -58,6 +58,7 @@ Item {
                     hasLabel: true
                     labelText: qsTr("HOME")
                     onButtonClicked: {
+                        xChatPopup.focus()
                         xBoardHome.visible = true
                         tools.visible = false
                         xBoardNodes.visible = false
@@ -509,18 +510,12 @@ Item {
                         }
                     }
                 }
-
-                XchatSummary {
-                    anchors.right: parent.right
-                }
             }
         }
     }
 
     XchatPopup {
-        id: xchatpopup
+        id: xChatPopup
         visible:true
     }
 }
-
-

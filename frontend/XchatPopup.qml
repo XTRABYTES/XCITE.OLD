@@ -2,152 +2,167 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
+import 'X-Chat' as XChat
 
-Rectangle {
-    id: xchatpopup
+import "Controls" as Controls
+
+Item {
+    readonly property color cBackground: "#3a3e47"
+
+    id: xChatPopup
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    width: 250
-    height: 450
+    width: 318
     smooth: true
-    color: "#3A3E47"
-    state: "visible"
-    radius: 2
+
+    state: "full"
+    states: [
+        State {
+            name: "minimal"
+            PropertyChanges { target: xChatPopup; height: 48 }
+        },
+
+        State {
+            name: "full"
+            PropertyChanges { target: xChatPopup; height: 639 }
+        }
+    ]
+
+    transitions: Transition {
+        PropertyAnimation {
+            properties: "height"
+            easing.type: Easing.InOutQuad
+            duration: 200
+        }
+    }
+
+    function toggle() {
+        state = state === 'full' ? 'minimal' : 'full';
+    }
+
+    function focus(e) {
+        xChatTextInput.forceActiveFocus();
+    }
+
+    function onSubmitUserInput(e) {
+        var text = xChatTextInput.text.trim();
+
+        if (text.length > 0) {
+            conversation.add(text, new Date(), true);
+            xchatSubmitMsgSignal(text, '');
+            xChatTextInput.text = '';
+        }
+    }
 
     Rectangle {
         id: innerPopupContainer
-        width: 245
-        height: 445
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        color: "#3A3E47"
-        radius: 2
+        anchors.fill: parent
+        anchors.rightMargin: 15
 
-        states: [
-            State {
-                name: "invisible"
-                PropertyChanges { target: xchatpopup; opacity: 0 }
-            },
+        color: cBackground
+        radius: 4
 
-            State {
-                name: "visible"
-                PropertyChanges { target: xchatpopup; opacity: 1.0 }
+        ColumnLayout {
+            anchors.fill: parent
+
+            XChat.Header {
             }
-        ]
 
-        transitions: Transition {
-            NumberAnimation { properties: "opacity"; duration: 100 }
-        }
-
-        function toggle() {
-            if (state == "visible")
-                state = "invisible";
-            else
-                state = "visible";
-        }
-
-        XchatSummary {
-            id: summary
-            anchors.top: parent.top
-            width: 250
-        }
-
-
-        Rectangle {
-            id: frame
-            clip: true
-            anchors.top: summary.bottom
-            anchors.topMargin: 5
-            color: "#3A3E47"
-            width: 240
-            height: 317
-            x: 5
-            y: 5
-
-            ScrollView {
-                id: messageScrollView
-                anchors.fill: parent
-                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-
-                Flickable {
-                    id: messageFlickable
-                    anchors.fill: parent
-                    flickableDirection: Flickable.VerticalFlick
-                    contentHeight: content.height
-                }
-
-                Text {
-                    id: content
-                    padding: 5
-                    text: responseTXT
-                    width: 240
-                    wrapMode: TextArea.Wrap
-                    font.family: "Roboto"
-                    font.pixelSize: 14
-                    color: "#DEDEDE"
-
-                    onTextChanged: {
-                        messageFlickable.contentY = contentHeight - messageFlickable.height
-                    }
-                }
+            XChat.Conversation {
+                id: conversation
+                Layout.fillHeight: true
             }
-        }
 
-        Rectangle {
-            anchors.top: frame.bottom
-            anchors.topMargin: 15
-            anchors.left: frame.left
-            anchors.leftMargin: 5
-            anchors.rightMargin: 5
-            width: 230
-            height: 70
-            color: "#3A3E47"
+            // Bottom controls
+            Item {
+                id: xChatUserInput
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 18.9
+                anchors.rightMargin: 18.9
+                height: 61
 
-            RowLayout {
-                width: parent.width
-
-                ScrollView {
-                    Layout.fillWidth: true
-                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-                    Layout.maximumHeight: 70
-
-                    TextArea {
-                        id: messageField
-                        text: xchat.messageTXT
-                        onTextChanged: xchat.messageTXT = text
-                        font.pixelSize: 16
-                        placeholderText: qsTr("Write something here...")
-                        wrapMode: TextArea.Wrap
-                        Keys.onReturnPressed: {
-                            if (messageField.length > 0) {
-                                xchatSubmitMsgSignal(xchat.messageTXT,responseTXT)
-                                xchat.messageTXT = ""
-                            }
-                        }
-                    }
-                }
-
-                Button {
-                    Layout.minimumWidth: 32
-                    Layout.maximumWidth: 32
-                    Layout.minimumHeight: 32
-                    Layout.maximumHeight: 32
+                Rectangle {
+                    anchors.top: parent.top
+                    anchors.left: parent.left
                     anchors.right: parent.right
 
-                    Text {
-                        text: qsTr("Send")
-                        anchors.centerIn: parent
-                        font.family: "Roboto"
-                        font.weight: Font.Bold
-                        font.pixelSize: 12
-                        color: "#62DED6"
+                    height: 1
+                    color: "#727989"
+                }
+
+                RowLayout {
+                    width: xChatUserInput.width
+                    spacing: 10
+
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Rectangle {
+                        // Left button
+                        width: 27.59
+                        radius: width*0.5
+                        height: width
+                        border.width: 2
+                        border.color: "#d4d4d4"
+                        color: "transparent"
                     }
 
-                    id: sendMsgButton
-                    enabled: messageField.length > 0
-                    onClicked: {
-                        xchatSubmitMsgSignal(xchat.messageTXT,responseTXT)
-                        xchat.messageTXT = ""
+                    Rectangle {
+                        // User input
+                        Layout.fillWidth: true
+                        height: 32
+                        radius: 4
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.IBeamCursor
+                            onClicked: xChatTextInput.forceActiveFocus()
+                        }
+
+                        color: "#505a67"
+
+                        TextInput {
+                            id: xChatTextInput
+
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+
+                            anchors.leftMargin: 10.69
+                            anchors.rightMargin: 10.69
+
+                            font.pixelSize: 11
+                            font.family: "Roboto"
+                            color: "#ffffff"
+
+                            Keys.onReturnPressed: onSubmitUserInput()
+                        }
+                    }
+
+                    Button {
+                        id: xChatBtnSend
+                        text: qsTr("Send")
+                        enabled: xChatTextInput.length > 0
+
+                        onClicked: onSubmitUserInput()
+
+                        // TODO: We'll likely want to make a reusable component for buttons
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape:Qt.PointingHandCursor
+                            onPressed: mouse.accepted = false
+                        }
+
+                        contentItem: Text {
+                            text: xChatBtnSend.text
+                            color: xChatBtnSend.enabled ? (xChatBtnSend.down ? "#ffffff" : "#24B9C3") : "#777"
+                            font.family: "Roboto"
+                            font.pixelSize: 12
+                        }
+
+                        background: Rectangle {
+                            color: "transparent"
+                        }
                     }
                 }
             }
@@ -164,5 +179,3 @@ Rectangle {
       color: "#32373d"
     }
 }
-
-

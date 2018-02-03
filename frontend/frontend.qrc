@@ -4,7 +4,6 @@
         <file>DashboardForm.qml</file>
         <file>XchatPopup.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>XchatSummary.qml</file>
         <file>X-Board/Nodes/RegistrationConfirmation.qml</file>
         <file>X-Board/Nodes/RegistrationDetails.qml</file>
         <file>X-Board/Nodes/RegistrationLevel.qml</file>
@@ -33,5 +32,9 @@
         <file>X-Board/Home/BalanceValueBoard.qml</file>
         <file>X-Board/Home/Layout.qml</file>
         <file>X-Board/Home/RecentTransactionsBoard.qml</file>
+        <file>support/sortfilterproxymodel.cpp</file>
+        <file>support/sortfilterproxymodel.hpp</file>
+        <file>X-Chat/Conversation.qml</file>
+        <file>X-Chat/Header.qml</file>
     </qresource>
 </RCC>
