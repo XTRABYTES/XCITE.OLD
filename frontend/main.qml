@@ -5,6 +5,8 @@ import xtrabytes.xcite.xchat 1.0
 import "Login" as LoginComponents
 
 ApplicationWindow {
+    property bool isNetworkActive: true
+
     id: xcite
 
     visible: true

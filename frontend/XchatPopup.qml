@@ -8,6 +8,7 @@ import "Controls" as Controls
 
 Item {
     readonly property color cBackground: "#3a3e47"
+    property string mode: "robot"
 
     id: xChatPopup
     anchors.right: parent.right
@@ -151,7 +152,7 @@ Item {
                         // TODO: We'll likely want to make a reusable component for buttons
                         MouseArea {
                             anchors.fill: parent
-                            cursorShape:Qt.PointingHandCursor
+                            cursorShape: Qt.PointingHandCursor
                             onPressed: mouse.accepted = false
                         }
 

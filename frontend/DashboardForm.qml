@@ -9,7 +9,6 @@ import "X-Board/Home" as HomeComponents
 
 import xtrabytes.xcite.xchat 1.0
 
-
 // TODO: Currently this is a low-performance proof of concept demonstrating scalability.
 // For production, this should be refactored to make proper use of Loaders, limit the use of JavaScript functions, etc.
 // More information: http://doc.qt.io/qt-5/scalability.html
@@ -22,107 +21,8 @@ Item {
         anchors.fill: parent
         spacing: 15
 
-        Rectangle {
-            // Diode navigation
-            id: navRectangle
-            color: "#3A3E47"
-            Layout.fillHeight: true
-            Layout.minimumWidth: 90
-            Layout.preferredWidth: 90
-            Layout.maximumWidth: 90
-
-            ColumnLayout {
-                width: parent.width
-                Layout.fillHeight: true
-                anchors.left: parent.left
-                anchors.top: parent.top
-                spacing: 40
-
-                Controls.ButtonDiode {
-                    id: logobutton
-                    imageSource: "logos/xby_logo.svg"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    Layout.topMargin: 15
-                    changeColorOnClick: false
-                    hoverEnabled: false
-                    size: 70
-                    height: 40
-                }
-
-                Controls.ButtonDiode {
-                    id: xBoardHomeButtonDiode
-                    imageSource: "icons/dollar-pointer.svg"
-                    // This is a placeholder image
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    isSelected: true
-                    hasLabel: true
-                    labelText: qsTr("HOME")
-                    onButtonClicked: {
-                        xChatPopup.focus()
-                        xBoardHome.visible = true
-                        tools.visible = false
-                        xBoardNodes.visible = false
-                        xBoardNodesButtonDiode.isSelected = false
-                    }
-                }
-
-                Controls.ButtonDiode {
-                    id: xBoardNodesButtonDiode
-                    imageSource: "icons/share.svg"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    isSelected: false
-                    hasLabel: true
-                    labelText: qsTr("NODES")
-                    onButtonClicked: {
-                        xBoardHome.visible = false
-                        tools.visible = false
-                        xBoardNodes.visible = true
-                        xBoardHomeButtonDiode.isSelected = false
-                    }
-                }
-            }
-
-            ColumnLayout {
-                width: parent.width
-                Layout.fillHeight: true
-                Layout.minimumHeight: 200
-                Layout.preferredHeight: 200
-                anchors.left: parent.left
-                anchors.bottom: parent.bottom
-                spacing: 40
-
-                Controls.ButtonDiode {
-                    id: settingsButton
-                    imageSource: "icons/lock.svg"
-                    // This is a placeholder image
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    isSelected: false
-                    hasLabel: true
-                    labelText: qsTr("SETTINGS")
-                    onButtonClicked: {
-
-                    }
-                }
-
-                Controls.ButtonDiode {
-                    id: wifiButton
-                    imageSource: "icons/wifi.svg"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    isSelected: false
-                    hasLabel: true
-                    labelText: qsTr("ONLINE")
-                    onButtonClicked: {
-
-                    }
-                }
-
-                Switch {
-                    id: killSwitch
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                    checked: true
-                    padding: 0
-                }
-            }
+        Controls.SideMenu {
+            id: sideMenu
         }
 
         ColumnLayout {
@@ -260,20 +160,41 @@ Item {
                 }
             }
 
-            // X-Board Home
+            // X-Board
+
+            // Home
 
             HomeComponents.Layout {
                 id: xBoardHome
+                visible: sideMenu.selected === this
             }
 
-            // X-Board Nodes
+            // Send Coins
+
+            Item {
+                id: xBoardSendCoins
+            }
+
+            // Receive Coins
+
+            Item {
+                id: xBoardReceiveCoins
+            }
+
+            // History
+
+            Item {
+                id: xBoardHistory
+            }
+
+            // Nodes
 
             ColumnLayout {
                 id: xBoardNodes
                 anchors.left: parent.left
                 anchors.right: parent.right
                 spacing: 15
-                visible: false
+                visible: sideMenu.selected === this
 
                 RowLayout {
                     id: xBoardNodesHeader
@@ -336,6 +257,12 @@ Item {
                         id: nodeNetworkStatus
                     }
                 }
+            }
+
+            // Settings
+
+            Item {
+                id: moduleSettings
             }
 
             ColumnLayout {

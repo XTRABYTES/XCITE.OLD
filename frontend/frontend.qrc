@@ -37,5 +37,7 @@
         <file>X-Chat/Conversation.qml</file>
         <file>X-Chat/Header.qml</file>
         <file>X-Board/Home/ChartDiode.qml</file>
+        <file>Controls/SideMenu.qml</file>
+        <file>Controls/SideMenuButton.qml</file>
     </qresource>
 </RCC>

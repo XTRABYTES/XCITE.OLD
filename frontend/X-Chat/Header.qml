@@ -28,27 +28,25 @@ ColumnLayout {
 
         RowLayout {
             anchors.right: parent.right
-            anchors.rightMargin: 55
             anchors.verticalCenter: parent.verticalCenter
+            anchors.rightMargin: 55
             spacing: 10
 
             Controls.ButtonDiode {
-                id: xchatUsersButton
                 imageSource: "../icons/friend-request.svg"
                 size: 25
-                isSelected: false
+                isSelected: xChatPopup.mode === "friends"
                 onButtonClicked: {
-                    xchatBotsButton.isSelected = false
+                    xChatPopup.mode = "friends";
                 }
             }
 
             Controls.ButtonDiode {
-                id: xchatBotsButton
                 imageSource: "../icons/robot.svg"
                 size: 25
-                isSelected: true
+                isSelected: xChatPopup.mode === "robot"
                 onButtonClicked: {
-                    xchatUsersButton.isSelected = false
+                    xChatPopup.mode = "robot";
                 }
             }
         }
