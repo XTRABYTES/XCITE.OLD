@@ -15,6 +15,10 @@ ApplicationWindow {
     title: qsTr("Hello XCITE")
     color: "#2B2C31"
     
+    overlay.modal: Rectangle {
+        color: "#c92a2c31"
+    }
+
     StackView {
         id: mainRoot
         initialItem: LoginComponents.LoginForm {}
