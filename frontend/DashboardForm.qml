@@ -188,8 +188,11 @@ Item {
             }
 
             // Nodes
+            NodeComponents.Layout{
+                id:xBoardNodes
+            }
 
-            ColumnLayout {
+           /* ColumnLayout {
                 id: xBoardNodes
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -257,7 +260,7 @@ Item {
                         id: nodeNetworkStatus
                     }
                 }
-            }
+            }*/
 
             // Settings
 

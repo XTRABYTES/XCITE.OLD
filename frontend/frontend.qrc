@@ -39,5 +39,6 @@
         <file>X-Board/Home/ChartDiode.qml</file>
         <file>Controls/SideMenu.qml</file>
         <file>Controls/SideMenuButton.qml</file>
+        <file>X-Board/Nodes/Layout.qml</file>
     </qresource>
 </RCC>
