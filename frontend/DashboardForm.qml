@@ -173,23 +173,27 @@ Item {
 
             Item {
                 id: xBoardSendCoins
+                visible: sideMenu.selected === this
             }
 
             // Receive Coins
 
             Item {
                 id: xBoardReceiveCoins
+                visible: sideMenu.selected === this
             }
 
             // History
 
             Item {
                 id: xBoardHistory
+                visible: sideMenu.selected === this
             }
 
             // Nodes
             NodeComponents.Layout{
-                id:xBoardNodes
+                id: xBoardNodes
+                visible: sideMenu.selected === this
             }
 
            /* ColumnLayout {
