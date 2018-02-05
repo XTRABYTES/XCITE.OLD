@@ -9,16 +9,16 @@ Rectangle {
     color: "#3A3E47"
 
     Layout.fillHeight: true
-    Layout.minimumWidth: 90
-    Layout.preferredWidth: 90
-    Layout.maximumWidth: 90
+    Layout.minimumWidth: sideMenuWidth
+    Layout.preferredWidth: sideMenuWidth
+    Layout.maximumWidth: sideMenuWidth
 
     ColumnLayout {
         Layout.fillHeight: true
         anchors.left: parent.left
         anchors.right: parent.right
 
-        spacing: 40
+        spacing: 25
 
         ButtonDiode {
             id: logobutton
@@ -32,40 +32,41 @@ Rectangle {
         }
 
         SideMenuButton {
+            Layout.topMargin: 10
             module: xBoardHome
             imageSource: "../icons/menu-home.svg"
             labelText: qsTr("HOME")
-            size: 38
+            size: 32
         }
 
         SideMenuButton {
             module: xBoardSendCoins
-            // TODO: Waiting on new icon for this
-            imageSource: "../icons/menu-transfers.svg"
+            imageSource: "../icons/menu-sendcoins.svg"
             labelText: qsTr("SEND COINS")
-            size: 35
+            imageOffsetX: -6
+            size: 25
 
             // Force the label to wrap
             anchors.leftMargin: 20
             anchors.rightMargin: 20
 
             // ButtonDiode height uses childrenRect.height to size itself, but this seems incorrect if the text wraps, adjust to compensate
-            height: 75
+            height: 65
         }
 
         SideMenuButton {
             module: xBoardReceiveCoins
-            // TODO: Waiting on new icon for this
-            imageSource: "../icons/menu-transfers.svg"
+            imageSource: "../icons/menu-receivecoins.svg"
             labelText: qsTr("RECEIVE COINS")
-            size: 35
+            imageOffsetX: 5
+            size: 25
 
             // Force the label to wrap
             anchors.leftMargin: 20
             anchors.rightMargin: 20
 
             // ButtonDiode height uses childrenRect.height to size itself, but this seems incorrect if the text wraps, adjust to compensate
-            height: 75
+            height: 65
         }
 
         SideMenuButton {
@@ -79,7 +80,7 @@ Rectangle {
             imageSource: "../icons/share.svg"
             module: xBoardNodes
             labelText: qsTr("NODES")
-            size: 35
+            size: 30
         }
     }
 

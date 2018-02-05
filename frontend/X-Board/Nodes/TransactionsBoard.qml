@@ -18,8 +18,8 @@ Rectangle{
     radius:5
     color: cBoardBackground
 
-    Controls.BoardHeader {
-        id: boardHeader
+    Controls.DiodeHeader {
+        id: diodeHeader
         text: qsTr("TRANSACTIONS")
         menuLabelText: qsTr("Complete View")
     }
@@ -45,7 +45,7 @@ Rectangle{
         alternatingRowColors: false
         frameVisible: false
 
-        anchors.top: boardHeader.bottom
+        anchors.top: diodeHeader.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom

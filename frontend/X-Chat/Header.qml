@@ -6,7 +6,7 @@ import "../Controls" as Controls
 ColumnLayout {
     anchors.fill: parent
 
-    Controls.BoardHeader {
+    Controls.DiodeHeader {
         text: qsTr("X-CHAT")
         cHeaderText: "#ffffff"
         anchors.top: parent.top
@@ -34,7 +34,7 @@ ColumnLayout {
 
             Controls.ButtonDiode {
                 imageSource: "../icons/friend-request.svg"
-                size: 25
+                size: 22
                 isSelected: xChatPopup.mode === "friends"
                 onButtonClicked: {
                     xChatPopup.mode = "friends";
@@ -59,10 +59,13 @@ ColumnLayout {
 
         RowLayout {
             anchors.fill: parent
+            anchors.rightMargin: 20
+            anchors.leftMargin: 5
 
-            Item {
-                // < Icon/button goes here
-                width: 26
+            Controls.IconButton {
+                anchors.verticalCenter: parent.verticalCenter
+                icon.source: "../icons/left-arrow.svg"
+                icon.sourceSize.height: 10
                 height: parent.height
             }
 
@@ -74,9 +77,11 @@ ColumnLayout {
                 font.pixelSize: 12
             }
 
-            Item {
-                // Call icon goes here
-                width: 50
+            Controls.IconButton {
+                anchors.verticalCenter: parent.verticalCenter
+                icon.source: "../icons/phone-call.svg"
+                icon.sourceSize.width: 22
+                iconColor: "#acb6ce"
                 height: parent.height
             }
         }

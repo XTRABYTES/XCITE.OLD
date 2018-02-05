@@ -2,17 +2,15 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import "../../Controls" as Controls
 
-// Balance board used on the Home/wallet page (left hand side)
-
 Rectangle {
     width: 376
     height: 313
-    color: cBoardBackground
+    color: cDiodeBackground
     radius: 5
     Layout.minimumHeight: 313
     Layout.fillHeight: true
 
-    Controls.BoardHeader {
+    Controls.DiodeHeader {
         text: qsTr("BALANCE")
         menuLabelText: qsTr("XBY")
     }
