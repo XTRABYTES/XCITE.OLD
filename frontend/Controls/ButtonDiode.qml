@@ -5,99 +5,82 @@ import QtGraphicalEffects 1.0
 import QtQuick.Window 2.1
 
 Item {
-    id: root
-    width: size
-    height:
-        if (hasLabel) {
-            (size + label.height)
-        } else {
-            size
-        }
+    readonly property bool hasLabel: labelText.length > 0
+    property string labelText
+    property bool isSelected: false
+    property bool changeColorOnClick: true
+    property int size: 40
 
-    property alias isSelected: overlay.visible
     property alias imageSource: image.source
     property alias hoverEnabled: mouseArea.hoverEnabled
-    property bool changeColorOnClick: true
-    property bool hasLabel: false
-    property string labelText
-    property int size: 40
+    property alias cursorShape: mouseArea.cursorShape
+
+    id: button
+    height: hasLabel ? childrenRect.height : image.height
+    width: size
+
     signal buttonClicked
+
+    function getColor() {
+        switch (state) {
+        case 'hover':
+            return "#0eefe9";
+        default:
+            return isSelected ? "#0ED8D2" : "#A9AAAD";
+        }
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        onClicked: buttonClicked()
+        cursorShape: Qt.PointingHandCursor
+
+        hoverEnabled: true
+        onEntered: { button.state = 'hover' }
+        onExited: { button.state = '' }
+    }
+
+    states: [
+        State { name: "hover" }
+    ]
 
     Image {
         id: image
+
         smooth: true
         mipmap: true
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        fillMode: Image.PreserveAspectFit
+        height: size
+
         sourceSize.width: size
         sourceSize.height: size
-        horizontalAlignment: Image.AlignHCenter
-        verticalAlignment: Image.AlignVCenter
+    }
 
-        MouseArea {
-            id: mouseArea
-            anchors.fill: parent
-            onClicked: {
-                if (changeColorOnClick) {
-                    overlay.visible = !overlay.visible
-                    hoverOverlay.visible = false
-                }
-                root.buttonClicked()
-            }
-            hoverEnabled: true
-            onHoveredChanged: {
-                if (containsMouse) {
-                    hoverOverlay.visible = true
-                    if (hasLabel) {
-                        label.color = "#0eefe9"
-                    }
-                }
-                else {
-                    hoverOverlay.visible = false
-                }
-            }
-        }
+    ColorOverlay {
+        anchors.fill: image
+        source: image
+        color: getColor()
     }
 
     Text {
         id: label
         visible: hasLabel
         text: labelText
+        width: parent.width
+
         anchors.top: image.bottom
         anchors.topMargin: 10
-        anchors.horizontalCenter: image.horizontalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        horizontalAlignment: Text.AlignHCenter
+
         font.family: "Roboto"
-        font.pixelSize: 14
-        color: "#CFD0D2"
-    }
+        font.pixelSize: 12
+        wrapMode: Text.WordWrap
 
-    ColorOverlay {
-        id: overlay
-        anchors.fill: image
-        source: image
-        color: "#0ED8D2"
-        visible: false
-        onVisibleChanged: {
-            if (hasLabel && overlay.visible) {
-                label.color = "#0ED8D2"
-            } else if (hasLabel) {
-                label.color = "#CFD0D2"
-            }
-        }
-    }
-
-    ColorOverlay {
-        id: hoverOverlay
-        anchors.fill: image
-        source: image
-        color: "#0eefe9"
-        visible: false
-        onVisibleChanged: {
-            if (hasLabel && hoverOverlay.visible) {
-                label.color = "#0eefe9"
-            } else if (hasLabel && overlay.visible && isSelected) {
-                label.color = "#0ED8D2"
-            } else if (hasLabel) {
-                label.color = "#CFD0D2"
-            }
-        }
+        color: getColor()
     }
 }
