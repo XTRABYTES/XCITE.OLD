@@ -2,12 +2,13 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 
 ColumnLayout {
-    readonly property color cBoardBackground: "#3a3e46"
+    readonly property color cDiodeBackground: "#3a3e46"
 
     id: xBoardHome
     anchors.left: parent.left
     anchors.right: parent.right
     Layout.rightMargin: layoutGridSpacing
+    Layout.bottomMargin: layoutGridSpacing
     spacing: layoutGridSpacing
 
     RowLayout {
@@ -15,14 +16,14 @@ ColumnLayout {
         ColumnLayout {
             spacing: layoutGridSpacing
 
-            BalanceBoard {
+            BalanceDiode {
             }
 
-            BalanceValueBoard {
+            BalanceValueDiode {
             }
         }
 
-        RecentTransactionsBoard {
+        RecentTransactionsDiode {
         }
     }
 

@@ -1,4 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.8
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.3
 
 Rectangle {
     property color cHeaderText: "#e2e2e2"
@@ -28,28 +30,35 @@ Rectangle {
         color: cHeaderLine
     }
 
-    Item {
+    RowLayout {
         id: currencyDropdownWidget
         anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
         height: parent.height
-
-        Rectangle {
-            color: cHeaderLine
-            width: 1
-            height: 22.06
-            anchors.right: parent.right
-            anchors.rightMargin: 40.87
-            anchors.verticalCenter: parent.verticalCenter
-        }
+        spacing: 0
 
         Text {
             id: menuLabel
             color: cHeaderText
             font.family: "Roboto"
             font.pixelSize: 12
+            rightPadding: 10
+        }
+
+        Rectangle {
+            color: cHeaderLine
+            width: 1
+            height: 22.06
             anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-            anchors.rightMargin: 55
+        }
+
+        IconButton {
+            anchors.verticalCenter: parent.verticalCenter
+            height: parent.height
+            Layout.preferredWidth: 40
+
+            icon.source: "../icons/dropdown-arrow.svg"
+            icon.sourceSize.width: 10
         }
     }
 }

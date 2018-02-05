@@ -27,11 +27,7 @@
         <file>Controls/ImagePolygonal.qml</file>
         <file>Controls/ImageLogo.qml</file>
         <file>Controls/BalanceItem.qml</file>
-        <file>Controls/BoardHeader.qml</file>
-        <file>X-Board/Home/BalanceBoard.qml</file>
-        <file>X-Board/Home/BalanceValueBoard.qml</file>
         <file>X-Board/Home/Layout.qml</file>
-        <file>X-Board/Home/RecentTransactionsBoard.qml</file>
         <file>support/sortfilterproxymodel.cpp</file>
         <file>support/sortfilterproxymodel.hpp</file>
         <file>X-Chat/Conversation.qml</file>
@@ -40,5 +36,11 @@
         <file>Controls/SideMenu.qml</file>
         <file>Controls/SideMenuButton.qml</file>
         <file>X-Board/Nodes/Layout.qml</file>
+        <file>Controls/IconButton.qml</file>
+        <file>Controls/DiodeHeader.qml</file>
+        <file>X-Board/Home/RecentTransactionsDiode.qml</file>
+        <file>X-Board/Home/BalanceValueDiode.qml</file>
+        <file>X-Board/Home/BalanceDiode.qml</file>
+        <file>Controls/Popup.qml</file>
     </qresource>
 </RCC>

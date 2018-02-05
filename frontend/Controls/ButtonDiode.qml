@@ -10,6 +10,7 @@ Item {
     property bool isSelected: false
     property bool changeColorOnClick: true
     property int size: 40
+    property int imageOffsetX: 0
 
     property alias imageSource: image.source
     property alias hoverEnabled: mouseArea.hoverEnabled
@@ -51,6 +52,7 @@ Item {
         smooth: true
         mipmap: true
         anchors.horizontalCenter: parent.horizontalCenter
+        transform: Translate { x: imageOffsetX }
 
         fillMode: Image.PreserveAspectFit
         height: size
@@ -63,6 +65,8 @@ Item {
         anchors.fill: image
         source: image
         color: getColor()
+
+        transform: Translate { x: imageOffsetX }
     }
 
     Text {

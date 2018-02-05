@@ -15,6 +15,7 @@ import xtrabytes.xcite.xchat 1.0
 
 Item {
     readonly property int layoutGridSpacing: 15
+    readonly property int sideMenuWidth: 90
 
     RowLayout {
         id: rootLayout
@@ -200,6 +201,7 @@ Item {
                 id: xBoardNodes
                 anchors.left: parent.left
                 anchors.right: parent.right
+
                 spacing: 15
                 visible: sideMenu.selected === this
 
@@ -387,65 +389,13 @@ Item {
                     }
                 }
             }
-
-            Rectangle {
-                // Filler
-                width: 15
-                color: "transparent"
-            }
-
-            RowLayout {
-                // Footer
-                height: 40
-                anchors.left: parent.left
-                anchors.bottom: parent.bottom
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 40
-                    color: "#0DD8D2"
-                    radius: 2
-
-                    RowLayout {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 20
-
-                        Text {
-                            text: qsTr("Notice!")
-                            font.family: "Roboto"
-                            font.weight: Font.Bold
-                            font.pixelSize: 18
-                            color: "#335F5E"
-                        }
-
-                        Text {
-                            text: qsTr("This is a pre-release version of XCITE for testing only.")
-                            font.family: "Roboto"
-                            font.pixelSize: 18
-                            color: "#335F5E"
-                        }
-
-                        Controls.ButtonPlainText {
-                            width: webLinkText.width
-                            onButtonClicked: {
-                                Qt.openUrlExternally("https://xtrabytes.global")
-                            }
-
-                            Text {
-                                id: webLinkText
-                                anchors.topMargin: 5
-                                text: qsTr("xtrabytes.global")
-                                font.family: "Roboto"
-                                font.weight: Font.Bold
-                                font.pixelSize: 18
-                                color: "#335F5E"
-                            }
-                        }
-                    }
-                }
-            }
         }
+    }
+
+    Controls.Popup {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.leftMargin: sideMenuWidth + layoutGridSpacing
     }
 
     XchatPopup {
