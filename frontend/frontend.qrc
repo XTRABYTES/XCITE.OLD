@@ -42,5 +42,7 @@
         <file>X-Board/Home/BalanceValueDiode.qml</file>
         <file>X-Board/Home/BalanceDiode.qml</file>
         <file>Controls/Popup.qml</file>
+        <file>Controls/ConfirmationModal.qml</file>
+        <file>Controls/ButtonModal.qml</file>
     </qresource>
 </RCC>
