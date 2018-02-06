@@ -22,10 +22,13 @@ After installing Qt, clone this repository and open xcite.pro using Qt Creator.
 ## Screenshots
 
 ##### X-Board -> Home
-![x-board-home-20180201](https://user-images.githubusercontent.com/17502298/35703298-94e0892e-0769-11e8-9a48-da4da4d1faa8.png)
+![image](https://user-images.githubusercontent.com/17502298/35881872-43b765d2-0b50-11e8-814d-ab8d21c6b341.png)
+
+##### X-Board -> X-Chat Popup
+![image](https://user-images.githubusercontent.com/17502298/35882148-34667f04-0b51-11e8-9a93-a0bc395d81bd.png)
 
 ##### X-Board -> Nodes
-![xcite-node-ui](https://user-images.githubusercontent.com/17502298/35520404-efc47ee0-04e4-11e8-854c-598959929a02.png)
+![image](https://user-images.githubusercontent.com/17502298/35881909-6768340c-0b50-11e8-8a65-2307d5053db3.png)
 
 ## Contributing
 
