@@ -12,7 +12,7 @@ ApplicationWindow {
     visible: true
     width: 1440
     height: 1024
-    title: qsTr("Hello XCITE")
+    title: qsTr("XCITE")
     color: "#2B2C31"
     
     overlay.modal: Rectangle {
