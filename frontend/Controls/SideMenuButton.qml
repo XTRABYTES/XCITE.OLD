@@ -2,16 +2,16 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 
 ButtonDiode {
-    property var module
+    property string name
 
     anchors.left: parent.left
     anchors.right: parent.right
 
-    isSelected: selected === module
+    isSelected: selectedView === this.name
     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
     onButtonClicked: {
-        selected = module;
-        xChatPopup.focus();
+        selectView(this.name);
     }
+
 }
