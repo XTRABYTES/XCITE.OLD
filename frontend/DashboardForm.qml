@@ -5,7 +5,7 @@ import QtQuick.Window 2.1
 import QtQuick.Controls.Material 2.1
 import "Controls" as Controls
 import "X-Board/Nodes" as NodeComponents
-import "X-Board/Receive" as ReceiveComponents
+import "X-Board/ReceiveCoins" as ReceiveComponents
 import "X-Board/Home" as HomeComponents
 import 'X-Board' as XBoard
 import 'X-Change' as XChange

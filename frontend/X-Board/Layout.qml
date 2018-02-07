@@ -5,7 +5,7 @@ import "Nodes" as Nodes
 import "Home" as Home
 import "SendCoins" as SendCoins
 import "History" as History
-import "Receive" as ReceiveCoins
+import "ReceiveCoins" as ReceiveCoins
 
 Item {
     readonly property string defaultView: "home"
