@@ -7,6 +7,8 @@ import "Controls" as Controls
 import "X-Board/Nodes" as NodeComponents
 import "X-Board/Receive" as ReceiveComponents
 import "X-Board/Home" as HomeComponents
+import 'X-Board' as XBoard
+import 'X-Change' as XChange
 
 import xtrabytes.xcite.xchat 1.0
 
@@ -18,6 +20,16 @@ Item {
     readonly property int layoutGridSpacing: 15
     readonly property int sideMenuWidth: 90
 
+    id: dashboard
+
+    signal selectView(string path)
+
+    Connections {
+        Component.onCompleted: {
+            selectView("xBoard.home");
+        }
+    }
+
     RowLayout {
         id: rootLayout
         anchors.fill: parent
@@ -25,189 +37,44 @@ Item {
 
 
         Controls.SideMenu {
-            id: sideMenu
         }
 
         ColumnLayout {
-            id: rootColumnLayout
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             Layout.fillHeight: true
 
-            Rectangle {
-                id: mainNav
-                // Main navigation
-                Layout.fillWidth: true
-                Layout.maximumWidth: parent.width
-                Layout.minimumHeight: 70
-                Layout.preferredHeight: 70
-                Layout.maximumHeight: 70
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.bottomMargin: -15
-                color: "transparent"
-
-                Rectangle {
-                    height: 44
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    width: navRowLayout.width
-                    radius: 5
-                    color: "#3A3E47"
-
-                    RowLayout {
-                        id: navRowLayout
-                        anchors.left: parent.left
-                        anchors.top: parent.top
-                        height: parent.height
-                        spacing: 0
-
-                        Controls.ButtonNavigation {
-                            id: homeNavButton
-                            height: 44
-                            text: qsTr("X-BOARD")
-                            isSelected: true
-                            onButtonClicked: {
-                                homeNavButton.isSelected = true
-                                xchangeNavButton.isSelected = false
-                                xchatNavButton.isSelected = false
-                                xVaultNavButton.isSelected = false
-                                moreNavButton.isSelected = false
-                                xBoardHome.visible = true
-                                tools.visible = false
-                                xBoardNodes.visible = false
-                            }
-                        }
-
-                        Controls.ButtonNavigation {
-                            id: xchangeNavButton
-                            height: 44
-                            text: qsTr("X-CHANGE")
-                            onButtonClicked: {
-                                homeNavButton.isSelected = false
-                                xchangeNavButton.isSelected = true
-                                xchatNavButton.isSelected = false
-                                xVaultNavButton.isSelected = false
-                                moreNavButton.isSelected = false
-                                xBoardHome.visible = false
-                                tools.visible = false
-                                xBoardNodes.visible = false
-                            }
-                        }
-
-                        Controls.ButtonNavigation {
-                            id: xchatNavButton
-                            height: 44
-                            text: qsTr("X-CHAT")
-                            onButtonClicked: {
-                                homeNavButton.isSelected = false
-                                xchangeNavButton.isSelected = false
-                                xchatNavButton.isSelected = true
-                                xVaultNavButton.isSelected = false
-                                moreNavButton.isSelected = false
-                                xBoardHome.visible = false
-                                tools.visible = false
-                                xBoardNodes.visible = false
-                            }
-                        }
-                        Controls.ButtonNavigation {
-                            id: xVaultNavButton
-                            height: 44
-                            text: qsTr("X-VAULT")
-                            onButtonClicked: {
-                                homeNavButton.isSelected = false
-                                xchangeNavButton.isSelected = false
-                                xchatNavButton.isSelected = false
-                                xVaultNavButton.isSelected = true
-                                moreNavButton.isSelected = false
-                                xBoardHome.visible = false
-                                tools.visible = false
-                                xBoardNodes.visible = false
-                            }
-                        }
-
-                        Controls.ButtonNavigation {
-                            id: moreNavButton
-                            height: 44
-                            text: qsTr("MORE")
-                            onButtonClicked: {
-                                homeNavButton.isSelected = false
-                                xchangeNavButton.isSelected = false
-                                xchatNavButton.isSelected = false
-                                xVaultNavButton.isSelected = false
-                                moreNavButton.isSelected = true
-                                xBoardHome.visible = false
-                                tools.visible = true
-                                xBoardNodes.visible = false
-                            }
-                        }
-
-                    }
-                }
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    Layout.maximumWidth: 300
-                    Layout.minimumWidth: 200
-                    Layout.preferredWidth: 200
-                    anchors.right: parent.right
-                    height: parent.height
-                    spacing: 30
-
-                    Controls.SearchBox {
-                        id: searchBox
-                        placeholder: qsTr("Search for something...")
-                        anchors.right: parent.right
-                        anchors.rightMargin: 15
-                    }
-                }
+            Controls.ModuleMenu {
             }
 
-            // X-Board
-
-            // Home
-
-            HomeComponents.Layout {
-                id: xBoardHome
-                visible: sideMenu.selected === this
+            XBoard.Layout {
             }
 
-            // Send Coins
+            XChange.Layout {
 
-            Item {
-                id: xBoardSendCoins
-                visible: sideMenu.selected === this
-            }
-
-            // Receive Coins
 
             ReceiveComponents.Layout {
-                id: xBoardReceiveCoins
-                visible: sideMenu.selected === this
+
             }
 
             // History
 
             Item {
                 id: xBoardHistory
-                visible: sideMenu.selected === this
-            }
 
-            // Nodes
+            }
             NodeComponents.Layout{
-                id: xBoardNodes
-                visible: sideMenu.selected === this
             }
 
 
-
-
-
+        }
             // Settings
 
             Item {
                 id: moduleSettings
             }
+
+            // More
 
             ColumnLayout {
                 id: tools
