@@ -22,7 +22,6 @@
         <file>Controls/ButtonSimple.qml</file>
         <file>Controls/ButtonDiode.qml</file>
         <file>Controls/ButtonDock.qml</file>
-        <file>Controls/ButtonNavigation.qml</file>
         <file>Controls/ButtonPlainText.qml</file>
         <file>Controls/ImagePolygonal.qml</file>
         <file>Controls/ImageLogo.qml</file>
@@ -44,5 +43,12 @@
         <file>Controls/Popup.qml</file>
         <file>Controls/ConfirmationModal.qml</file>
         <file>Controls/ButtonModal.qml</file>
+        <file>X-Board/Layout.qml</file>
+        <file>X-Board/History/Layout.qml</file>
+        <file>X-Board/SendCoins/Layout.qml</file>
+        <file>Controls/ModuleMenu.qml</file>
+        <file>Controls/ModuleMenuButton.qml</file>
+        <file>X-Change/Layout.qml</file>
+        <file>X-Change/Home/Layout.qml</file>
     </qresource>
 </RCC>

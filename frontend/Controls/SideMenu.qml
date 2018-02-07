@@ -3,15 +3,24 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 Rectangle {
-    property var selected: xBoardHome
+    property string selectedView
+    property string selectedModule
 
-    id: menu
-    color: "#3A3E47"
+    Connections {
+        target: dashboard
+        onSelectView: {
+            var parts = path.split('.');
+
+            selectedModule = parts[0];
+            selectedView = path;
+        }
+    }
 
     Layout.fillHeight: true
     Layout.minimumWidth: sideMenuWidth
     Layout.preferredWidth: sideMenuWidth
     Layout.maximumWidth: sideMenuWidth
+    color: "#3A3E47"
 
     ColumnLayout {
         Layout.fillHeight: true
@@ -32,15 +41,17 @@ Rectangle {
         }
 
         SideMenuButton {
+            name: "xBoard.home"
+            visible: selectedModule === 'xBoard'
             Layout.topMargin: 10
-            module: xBoardHome
             imageSource: "../icons/menu-home.svg"
             labelText: qsTr("HOME")
             size: 32
         }
 
         SideMenuButton {
-            module: xBoardSendCoins
+            name: "xBoard.sendCoins"
+            visible: selectedModule === 'xBoard'
             imageSource: "../icons/menu-sendcoins.svg"
             labelText: qsTr("SEND COINS")
             imageOffsetX: -6
@@ -55,7 +66,8 @@ Rectangle {
         }
 
         SideMenuButton {
-            module: xBoardReceiveCoins
+            name: "xBoard.receiveCoins"
+            visible: selectedModule === 'xBoard'
             imageSource: "../icons/menu-receivecoins.svg"
             labelText: qsTr("RECEIVE COINS")
             imageOffsetX: 5
@@ -70,19 +82,33 @@ Rectangle {
         }
 
         SideMenuButton {
+            name: "xBoard.history"
+            visible: selectedModule === 'xBoard'
             imageSource: "../icons/menu-history.svg"
-            module: xBoardHistory
             labelText: qsTr("HISTORY")
             size: 28
         }
 
         SideMenuButton {
+            name: "xBoard.nodes"
+            visible: selectedModule === 'xBoard'
             imageSource: "../icons/share.svg"
-            module: xBoardNodes
             labelText: qsTr("NODES")
             size: 30
         }
+
+        SideMenuButton {
+            name: "xChange.home"
+            visible: selectedModule === 'xChange'
+            Layout.topMargin: 10
+            imageSource: "../icons/menu-home.svg"
+            labelText: qsTr("HOME")
+            size: 32
+        }
+
+
     }
+
 
     ColumnLayout {
         width: parent.width
@@ -95,8 +121,8 @@ Rectangle {
         spacing: 25
 
         SideMenuButton {
+            name: "xBoard.settings"
             imageSource: "../icons/menu-settings.svg"
-            module: moduleSettings
             labelText: qsTr("SETTINGS")
             size: 32
         }
