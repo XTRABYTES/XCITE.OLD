@@ -3,10 +3,9 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.1
 import QtQuick.Controls.Material 2.1
+
 import "Controls" as Controls
-import "X-Board/Nodes" as NodeComponents
-import "X-Board/ReceiveCoins" as ReceiveComponents
-import "X-Board/Home" as HomeComponents
+
 import 'X-Board' as XBoard
 import 'X-Change' as XChange
 
@@ -35,7 +34,6 @@ Item {
         anchors.fill: parent
         spacing: 15
 
-
         Controls.SideMenu {
         }
 
@@ -51,23 +49,8 @@ Item {
             }
 
             XChange.Layout {
-
-
-            ReceiveComponents.Layout {
-
             }
 
-            // History
-
-            Item {
-                id: xBoardHistory
-
-            }
-            NodeComponents.Layout{
-            }
-
-
-        }
             // Settings
 
             Item {
