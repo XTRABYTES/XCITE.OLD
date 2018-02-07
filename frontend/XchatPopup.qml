@@ -8,6 +8,7 @@ import "Controls" as Controls
 
 Item {
     readonly property color cBackground: "#3a3e47"
+    property string mode: "robot"
 
     id: xChatPopup
     anchors.right: parent.right
@@ -97,14 +98,13 @@ Item {
 
                     anchors.verticalCenter: parent.verticalCenter
 
-                    Rectangle {
-                        // Left button
-                        width: 27.59
-                        radius: width*0.5
-                        height: width
-                        border.width: 2
-                        border.color: "#d4d4d4"
-                        color: "transparent"
+                    Controls.IconButton {
+                        anchors.verticalCenter: parent.verticalCenter
+                        height: parent.height
+                        Layout.preferredWidth: 40
+
+                        icon.source: "../icons/plus-button.svg"
+                        icon.sourceSize.width: 28
                     }
 
                     Rectangle {
@@ -151,7 +151,7 @@ Item {
                         // TODO: We'll likely want to make a reusable component for buttons
                         MouseArea {
                             anchors.fill: parent
-                            cursorShape:Qt.PointingHandCursor
+                            cursorShape: Qt.PointingHandCursor
                             onPressed: mouse.accepted = false
                         }
 

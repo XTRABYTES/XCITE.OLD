@@ -35,8 +35,8 @@ Rectangle {
             width: 220
             y:0
 
-            font.pointSize: 9
-            font.family: "Roboto Thin"
+            font.pointSize: 14
+            font.family: "Roboto"
             placeholderText: placeholder
             anchors.left: parent.left
             anchors.leftMargin:15

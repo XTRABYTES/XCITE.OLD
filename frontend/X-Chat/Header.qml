@@ -6,7 +6,7 @@ import "../Controls" as Controls
 ColumnLayout {
     anchors.fill: parent
 
-    Controls.BoardHeader {
+    Controls.DiodeHeader {
         text: qsTr("X-CHAT")
         cHeaderText: "#ffffff"
         anchors.top: parent.top
@@ -28,27 +28,25 @@ ColumnLayout {
 
         RowLayout {
             anchors.right: parent.right
-            anchors.rightMargin: 55
             anchors.verticalCenter: parent.verticalCenter
+            anchors.rightMargin: 55
             spacing: 10
 
             Controls.ButtonDiode {
-                id: xchatUsersButton
                 imageSource: "../icons/friend-request.svg"
-                size: 25
-                isSelected: false
+                size: 22
+                isSelected: xChatPopup.mode === "friends"
                 onButtonClicked: {
-                    xchatBotsButton.isSelected = false
+                    xChatPopup.mode = "friends";
                 }
             }
 
             Controls.ButtonDiode {
-                id: xchatBotsButton
                 imageSource: "../icons/robot.svg"
                 size: 25
-                isSelected: true
+                isSelected: xChatPopup.mode === "robot"
                 onButtonClicked: {
-                    xchatUsersButton.isSelected = false
+                    xChatPopup.mode = "robot";
                 }
             }
         }
@@ -61,10 +59,13 @@ ColumnLayout {
 
         RowLayout {
             anchors.fill: parent
+            anchors.rightMargin: 20
+            anchors.leftMargin: 5
 
-            Item {
-                // < Icon/button goes here
-                width: 26
+            Controls.IconButton {
+                anchors.verticalCenter: parent.verticalCenter
+                icon.source: "../icons/left-arrow.svg"
+                icon.sourceSize.height: 10
                 height: parent.height
             }
 
@@ -76,9 +77,11 @@ ColumnLayout {
                 font.pixelSize: 12
             }
 
-            Item {
-                // Call icon goes here
-                width: 50
+            Controls.IconButton {
+                anchors.verticalCenter: parent.verticalCenter
+                icon.source: "../icons/phone-call.svg"
+                icon.sourceSize.width: 22
+                iconColor: "#acb6ce"
                 height: parent.height
             }
         }

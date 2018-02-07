@@ -5,14 +5,20 @@ import xtrabytes.xcite.xchat 1.0
 import "Login" as LoginComponents
 
 ApplicationWindow {
+    property bool isNetworkActive: true
+
     id: xcite
 
     visible: true
     width: 1440
     height: 1024
-    title: qsTr("Hello XCITE")
+    title: qsTr("XCITE")
     color: "#2B2C31"
     
+    overlay.modal: Rectangle {
+        color: "#c92a2c31"
+    }
+
     StackView {
         id: mainRoot
         initialItem: LoginComponents.LoginForm {}

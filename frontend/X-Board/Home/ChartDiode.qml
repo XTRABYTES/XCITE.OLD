@@ -10,7 +10,7 @@ Rectangle {
     color: "#3A3E47"
     radius: 5
 
-    Controls.BoardHeader {
+    Controls.DiodeHeader {
         id: header
         text: qsTr("XTRABYTES CHART")
     }

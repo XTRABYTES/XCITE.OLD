@@ -56,5 +56,14 @@
         <file>aiml/Stack.aiml</file>
         <file>aiml/That.aiml</file>
         <file>backgrounds/wallet-graph-placeholder.png</file>
+        <file>icons/menu-home.svg</file>
+        <file>icons/menu-transfers.svg</file>
+        <file>icons/menu-history.svg</file>
+        <file>icons/menu-settings.svg</file>
+        <file>icons/dropdown-arrow.svg</file>
+        <file>icons/left-arrow.svg</file>
+        <file>icons/menu-sendcoins.svg</file>
+        <file>icons/menu-receivecoins.svg</file>
+        <file>icons/cross.svg</file>
     </qresource>
 </RCC>

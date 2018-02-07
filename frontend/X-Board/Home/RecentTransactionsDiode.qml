@@ -8,15 +8,15 @@ import QtQuick.Dialogs 1.1
 import "../../Controls" as Controls
 
 Rectangle {
-    color: cBoardBackground
+    color: cDiodeBackground
     radius: 5
     Layout.minimumHeight: 465
     Layout.minimumWidth: 928.26
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    Controls.BoardHeader {
-        id: boardHeader
+    Controls.DiodeHeader {
+        id: diodeHeader
         text: qsTr("RECENT TRANSACTIONS")
         menuLabelText: qsTr("Complete View")
     }
@@ -48,7 +48,7 @@ Rectangle {
         alternatingRowColors: false
         frameVisible: false
 
-        anchors.top: boardHeader.bottom
+        anchors.top: diodeHeader.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
