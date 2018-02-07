@@ -35,8 +35,8 @@
         <file>Controls/SideMenu.qml</file>
         <file>Controls/SideMenuButton.qml</file>
         <file>X-Board/Nodes/Layout.qml</file>
-        <file>X-Board/Receive/Layout.qml</file>
-        <file>X-Board/Receive/ReceiveCoinsDiode.qml</file>
+        <file>X-Board/ReceiveCoins/Layout.qml</file>
+        <file>X-Board/ReceiveCoins/ReceiveCoinsDiode.qml</file>
         <file>Controls/TextBox.qml</file>
         <file>Controls/IconButton.qml</file>
         <file>Controls/DiodeHeader.qml</file>
