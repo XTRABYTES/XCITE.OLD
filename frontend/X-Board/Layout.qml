@@ -5,6 +5,7 @@ import "Nodes" as Nodes
 import "Home" as Home
 import "SendCoins" as SendCoins
 import "History" as History
+import "ReceiveCoins" as ReceiveCoins
 
 Item {
     readonly property string defaultView: "home"
@@ -46,7 +47,7 @@ Item {
 
     // Receive Coins
 
-    Item {
+    ReceiveCoins.Layout {
         id: xBoardReceiveCoins
         visible: selectedView === "receiveCoins"
     }
