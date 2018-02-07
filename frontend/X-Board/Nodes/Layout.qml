@@ -24,13 +24,4 @@ ColumnLayout {
     RowLayout{
         NetworkStatusBoard{}
     }
-
-    /*RowLayout {
-        Layout.fillHeight: true
-        anchors.left: parent.left
-        spacing: layoutGridSpacing
-
-       /* ChartDiode {
-        }*/
-   // }*/
 }

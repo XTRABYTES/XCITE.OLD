@@ -5,6 +5,7 @@ import QtQuick.Window 2.1
 import QtQuick.Controls.Material 2.1
 import "Controls" as Controls
 import "X-Board/Nodes" as NodeComponents
+import "X-Board/Receive" as ReceiveComponents
 import "X-Board/Home" as HomeComponents
 
 import xtrabytes.xcite.xchat 1.0
@@ -62,6 +63,7 @@ Item {
                         xBoardHome.visible = true
                         tools.visible = false
                         xBoardNodes.visible = false
+                        xBoardReceive.visible = false;
                         xBoardNodesButtonDiode.isSelected = false
                     }
                 }
@@ -76,7 +78,8 @@ Item {
                     onButtonClicked: {
                         xBoardHome.visible = false
                         tools.visible = false
-                        xBoardNodes.visible = true
+                        //xBoardNodes.visible = true
+                        xBoardReceive.visible = true;
                         xBoardHomeButtonDiode.isSelected = false
                     }
                 }
@@ -271,75 +274,9 @@ Item {
                 id:xBoardNodes
             }
 
-           /* ColumnLayout {
-                id: xBoardNodes
-                anchors.left: parent.left
-                anchors.right: parent.right
-                spacing: 15
-                visible: false
-
-                RowLayout {
-                    id: xBoardNodesHeader
-                    height: 50
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    spacing: 15
-
-                    Controls.ButtonSimple {
-                        text: qsTr("Register Node")
-                        onButtonClicked: {
-                            xBoardNodesHeader.visible = false
-                            nodeBalanceBoard.visible = false
-                            nodeTransactionsBoard.visible = false
-                            nodeRegistrationLevel.visible = true
-                            xBoardNodesRow2.visible = false
-                        }
-                    }
-                }
-
-                RowLayout {
-                    id: xBoardNodesRow1
-                    Layout.fillHeight: true
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    spacing: 15
-
-                    NodeComponents.BalanceBoard {
-                        id: nodeBalanceBoard
-                    }
-
-                    NodeComponents.TransactionsBoard {
-                        id: nodeTransactionsBoard
-                    }
-
-                    NodeComponents.RegistrationLevel {
-                        id: nodeRegistrationLevel
-                        visible: false
-                    }
-
-                    NodeComponents.RegistrationDetails {
-                        id: nodeRegistrationDetails
-                        visible: false
-                    }
-
-                    NodeComponents.RegistrationConfirmation {
-                        id: nodeRegistrationConfirmation
-                        visible: false
-                    }
-                }
-
-                RowLayout {
-                    id: xBoardNodesRow2
-                    Layout.fillHeight: true
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    spacing: 15
-
-                    NodeComponents.NetworkStatusBoard {
-                        id: nodeNetworkStatus
-                    }
-                }
-            }*/
+            ReceiveComponents.Layout{
+                id:xBoardReceive
+            }
 
             ColumnLayout {
                 id: tools

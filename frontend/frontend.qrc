@@ -38,5 +38,8 @@
         <file>X-Chat/Header.qml</file>
         <file>X-Board/Home/ChartDiode.qml</file>
         <file>X-Board/Nodes/Layout.qml</file>
+        <file>X-Board/Receive/Layout.qml</file>
+        <file>X-Board/Receive/ReceiveBoard.qml</file>
+        <file>Controls/TextBox.qml</file>
     </qresource>
 </RCC>
