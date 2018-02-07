@@ -5,7 +5,7 @@ import "../../Controls" as Controls
 import "../Home" as Home
 ColumnLayout {
 
-    readonly property color cBoardBackground: "#3a3e46"
+    readonly property color cDiodeBackground: "#3a3e46"
 
     id: xBoardReceive
     anchors.left: parent.left
@@ -24,17 +24,18 @@ ColumnLayout {
 
 
             spacing: layoutGridSpacing
-            Home.BalanceBoard {
-                id:balanceBoard
+            Home.BalanceDiode {
+
+                id:balanceDiode
                 Layout.maximumHeight: 330
             }
 
-            Home.BalanceValueBoard {
+            Home.BalanceValueDiode {
             }
         }
 
 
-        ReceiveBoard{
+       ReceiveCoinsDiode{
            // color:"green"
         }
 

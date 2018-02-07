@@ -181,7 +181,7 @@ Item {
 
             // Receive Coins
 
-            Item {
+            ReceiveComponents.Layout {
                 id: xBoardReceiveCoins
                 visible: sideMenu.selected === this
             }
@@ -199,82 +199,9 @@ Item {
                 visible: sideMenu.selected === this
             }
 
-<<<<<<< HEAD
-            ReceiveComponents.Layout{
-                id:xBoardReceive
-            }
-=======
-           /* ColumnLayout {
-                id: xBoardNodes
-                anchors.left: parent.left
-                anchors.right: parent.right
 
-                spacing: 15
-                visible: sideMenu.selected === this
 
-                RowLayout {
-                    id: xBoardNodesHeader
-                    height: 50
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    spacing: 15
 
-                    Controls.ButtonSimple {
-                        text: qsTr("Register Node")
-                        onButtonClicked: {
-                            xBoardNodesHeader.visible = false
-                            nodeBalanceBoard.visible = false
-                            nodeTransactionsBoard.visible = false
-                            nodeRegistrationLevel.visible = true
-                            xBoardNodesRow2.visible = false
-                        }
-                    }
-                }
-
-                RowLayout {
-                    id: xBoardNodesRow1
-                    Layout.fillHeight: true
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    spacing: 15
-
-                    NodeComponents.BalanceBoard {
-                        id: nodeBalanceBoard
-                    }
-
-                    NodeComponents.TransactionsBoard {
-                        id: nodeTransactionsBoard
-                    }
-
-                    NodeComponents.RegistrationLevel {
-                        id: nodeRegistrationLevel
-                        visible: false
-                    }
-
-                    NodeComponents.RegistrationDetails {
-                        id: nodeRegistrationDetails
-                        visible: false
-                    }
-
-                    NodeComponents.RegistrationConfirmation {
-                        id: nodeRegistrationConfirmation
-                        visible: false
-                    }
-                }
-
-                RowLayout {
-                    id: xBoardNodesRow2
-                    Layout.fillHeight: true
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    spacing: 15
-
-                    NodeComponents.NetworkStatusBoard {
-                        id: nodeNetworkStatus
-                    }
-                }
-            }*/
->>>>>>> bddc67e8845c47dcaf20033a2b8db49af69e15c1
 
             // Settings
 
