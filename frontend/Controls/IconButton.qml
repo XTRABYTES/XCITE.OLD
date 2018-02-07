@@ -24,7 +24,6 @@ Button {
         hoverEnabled: true
         onEntered: { button.state = 'hover' }
         onExited: { button.state = '' }
-
     }
 
     ColorOverlay {
