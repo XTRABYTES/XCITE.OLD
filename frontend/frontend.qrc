@@ -54,5 +54,8 @@
         <file>Controls/ModuleMenuButton.qml</file>
         <file>X-Change/Layout.qml</file>
         <file>X-Change/Home/Layout.qml</file>
+        <file>Controls/Diode.qml</file>
+        <file>X-Board/History/FilterTransactionsDiode.qml</file>
+        <file>Controls/DatePicker.qml</file>
     </qresource>
 </RCC>

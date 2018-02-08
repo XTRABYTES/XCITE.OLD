@@ -10,10 +10,6 @@ import "../../Controls" as Controls
 Rectangle {
     color: cDiodeBackground
     radius: 5
-    Layout.minimumHeight: 465
-    Layout.minimumWidth: 928.26
-    Layout.fillHeight: true
-    Layout.fillWidth: true
 
     Controls.DiodeHeader {
         id: diodeHeader

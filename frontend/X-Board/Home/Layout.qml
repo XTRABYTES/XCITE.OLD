@@ -5,10 +5,9 @@ ColumnLayout {
     readonly property color cDiodeBackground: "#3a3e46"
 
     id: xBoardHome
-    anchors.left: parent.left
-    anchors.right: parent.right
-    Layout.rightMargin: layoutGridSpacing
-    Layout.bottomMargin: layoutGridSpacing
+
+    Layout.fillHeight: true
+    Layout.fillWidth: true
     spacing: layoutGridSpacing
 
     RowLayout {
@@ -24,6 +23,10 @@ ColumnLayout {
         }
 
         RecentTransactionsDiode {
+            Layout.preferredHeight: 465
+            Layout.preferredWidth: 928.26
+            Layout.fillHeight: true
+            Layout.fillWidth: true
         }
     }
 

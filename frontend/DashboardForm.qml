@@ -16,10 +16,10 @@ import xtrabytes.xcite.xchat 1.0
 // More information: http://doc.qt.io/qt-5/scalability.html
 
 Item {
+    id: dashboard
+
     readonly property int layoutGridSpacing: 15
     readonly property int sideMenuWidth: 90
-
-    id: dashboard
 
     signal selectView(string path)
 
@@ -32,6 +32,8 @@ Item {
     RowLayout {
         id: rootLayout
         anchors.fill: parent
+        anchors.rightMargin: layoutGridSpacing
+        anchors.bottomMargin: layoutGridSpacing
         spacing: 15
 
         Controls.SideMenu {

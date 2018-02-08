@@ -32,6 +32,7 @@ Rectangle {
 
     RowLayout {
         id: currencyDropdownWidget
+        visible: menuLabelText.length > 0
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         height: parent.height
