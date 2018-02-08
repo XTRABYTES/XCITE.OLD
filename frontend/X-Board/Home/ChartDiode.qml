@@ -7,6 +7,7 @@ Rectangle {
     Layout.fillHeight: true
     Layout.minimumHeight: 200
     Layout.preferredHeight: 400
+
     color: "#3A3E47"
     radius: 5
 
