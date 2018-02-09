@@ -3,7 +3,7 @@ import QtQuick.Layouts 1.3
 
 import "../../Controls" as Controls
 import "../Home" as Home
-ColumnLayout {
+RowLayout {
 
     readonly property color cDiodeBackground: "#3a3e46"
 
@@ -21,12 +21,13 @@ ColumnLayout {
 
         ColumnLayout {
             id:boardColumn
-
-
             spacing: layoutGridSpacing
-            Home.BalanceDiode {
+            anchors.top:parent.top
 
+            Home.BalanceDiode {
                 id:balanceDiode
+                anchors.top:parent.top
+
                 Layout.maximumHeight: 330
             }
 
@@ -37,6 +38,7 @@ ColumnLayout {
 
        ReceiveCoinsDiode{
            // color:"green"
+             Layout.fillWidth: true
         }
 
 
