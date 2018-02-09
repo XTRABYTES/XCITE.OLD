@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
+//import QtQuick.Controls 2.3
 import "../../Controls" as Controls
 
 
@@ -18,7 +19,7 @@ Rectangle{
     Layout.minimumWidth:928
     Layout.minimumHeight:  645
     Layout.fillWidth: true
-    anchors.right:parent.right
+
     anchors.rightMargin: layoutGridSpacing
 
 
@@ -148,7 +149,7 @@ Rectangle{
                 anchors.top:parent.top;
                 anchors.left:parent.left;
                 anchors.topMargin: 75
-                anchors.leftMargin: 22
+                anchors.leftMargin: 18
                 text:qsTr("My Addresses")
                 pixelSize: 16
 
@@ -161,8 +162,76 @@ Rectangle{
                 height:434
                 anchors.top:parent.top
                 anchors.topMargin:129
-                anchors.leftMargin:22
+                anchors.leftMargin:18
                 anchors.left:parent.left
+
+                ListModel {
+                    id: contactModel
+                    ListElement {
+                        name: "DEFAULT"
+                        number: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+                    }
+                    ListElement {
+                        name: "MAIN"
+                        number: "A2g62BpwyJc5i7upAsd334dakwXqBR3k4H"
+                    }
+
+                }
+
+
+                ListView {
+                    anchors.fill:parent
+                    model: contactModel
+                    anchors.topMargin:15
+                    clip:true
+
+
+                    delegate:Rectangle{
+                        id:addressContainer
+                        height:28
+                        width:294
+                        anchors.left:parent.left
+                        anchors.leftMargin:3
+                        color:"transparent"
+
+                        Text {
+                            id:addressItem
+                            text: name
+                            color:"#ffffff"
+                            font.family: "roboto thin"
+                            font.pixelSize: 14
+                            anchors.left:parent.left
+                            anchors.leftMargin:22
+                            anchors.top:parent.top
+                            anchors.topMargin:4
+
+                            MouseArea {
+                                id: mouseArea
+                                anchors.fill: parent
+                                onClicked: {
+                                    root.buttonClicked()
+                                }
+                                hoverEnabled: true
+                                onHoveredChanged: {
+                                    if (containsMouse) {
+                                        addressContainer.color = "#42454D"
+                                    }
+                                    else {
+                                        addressContainer.color = "transparent"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }//end list view
+
+                Rectangle {
+                    radius: 5
+
+                    color: 'transparent'
+                    anchors.fill: parent
+                  }
+
             }
 
             RowLayout{
@@ -170,7 +239,7 @@ Rectangle{
                     text: qsTr("ADD ADDRESS")
                     anchors.left:parent.left
                     anchors.top:parent.top
-                    anchors.leftMargin: 22
+                    anchors.leftMargin: 18
                     anchors.topMargin:145
                     width:116
                     backgroundColor: "transparent"
@@ -184,7 +253,7 @@ Rectangle{
                     text: qsTr("EDIT")
                     anchors.left:parent.left
                     anchors.top:parent.top
-                    anchors.leftMargin: 161
+                    anchors.leftMargin: 157
                     anchors.topMargin:145
                     width:67
                     backgroundColor: "transparent"
@@ -196,7 +265,7 @@ Rectangle{
                     text: qsTr("REMOVE")
                     anchors.left:parent.left
                     anchors.top:parent.top
-                    anchors.leftMargin: 251
+                    anchors.leftMargin: 247
                     anchors.topMargin:145
                     width:89
                     backgroundColor: "transparent"
