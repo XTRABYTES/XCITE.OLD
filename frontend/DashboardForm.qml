@@ -113,4 +113,14 @@ Item {
         id: xChatPopup
         visible: true
     }
+
+    Timer {
+        interval: 5000
+        running: true
+        repeat: true
+        onTriggered: {
+            testnetRequest("getbalance")
+            testnetRequest("listtransactions")
+        }
+    }
 }

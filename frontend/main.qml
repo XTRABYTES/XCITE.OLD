@@ -22,8 +22,7 @@ ApplicationWindow {
 
     StackView {
         id: mainRoot
-        initialItem: LoginComponents.LoginForm {
-        }
+        initialItem: DashboardForm {} //LoginComponents.LoginForm {}
         anchors.fill: parent
         pushEnter: Transition {
             PropertyAnimation {
@@ -49,8 +48,13 @@ ApplicationWindow {
 
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
+    signal testnetRequest(string request)
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())
+    }
+
+    function testnetResponse(response) {
+        xbyBalance = response;
     }
 }

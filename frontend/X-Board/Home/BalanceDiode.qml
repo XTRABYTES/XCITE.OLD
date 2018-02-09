@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
+
 import "../../Controls" as Controls
 
 Rectangle {
@@ -18,7 +19,7 @@ Rectangle {
         id: balance
         text: qsTr("Balance")
         valuePrefix: qsTr("XBY")
-        value: "175,314"
+        value: wallet.balance.toLocaleString()
         anchors.top: parent.top
         anchors.topMargin: 63
     }
@@ -27,14 +28,14 @@ Rectangle {
         id: unconfirmedBalance
         text: qsTr("Unconfirmed")
         valuePrefix: qsTr("XBY")
-        value: "22,695"
+        value: wallet.unconfirmed.toLocaleString()
         anchors.top: balance.bottom
     }
 
     Controls.BalanceItem {
         id: totalBalance
         text: qsTr("Total")
-        value: "198,009"
+        value: (wallet.balance + wallet.unconfirmed).toLocaleString()
         valueColor: "#0ED8D2"
         valuePrefix: qsTr("XBY")
         valueFont.family: "Roboto"

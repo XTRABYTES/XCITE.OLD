@@ -43,7 +43,10 @@ SOURCES += main/main.cpp \
             backend/p2p/p2p.cpp \
             frontend/support/sortfilterproxymodel.cpp \
             backend/xchat/xchatconversationmodel.cpp \
-    backend/xboard/nodes/nodetransaction.cpp
+            backend/xboard/nodes/nodetransaction.cpp \
+            3rdparty/qjsonrpc/src/qjsonrpchttpclient.cpp \
+            backend/testnet/testnet.cpp \
+    backend/testnet/transactionmodel.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -53,9 +56,18 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/p2p/p2p.hpp \
             frontend/support/sortfilterproxymodel.hpp \
             backend/xchat/xchatconversationmodel.hpp \
-    backend/xboard/nodes/nodetransaction.h
+            backend/xboard/nodes/nodetransaction.h \
+            backend/testnet/testnet.hpp \
+    backend/testnet/transactionmodel.hpp
 
 DISTFILES += \
     xcite.ico
 
 RC_ICONS = xcite.ico
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/3rdparty/build-qjsonrpc-Desktop_Qt_5_9_3_clang_64bit-Debug/src/release/ -lqjsonrpc.1.1.0
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/3rdparty/build-qjsonrpc-Desktop_Qt_5_9_3_clang_64bit-Debug/src/debug/ -lqjsonrpc.1.1.0
+else:unix: LIBS += -L$$PWD/3rdparty/build-qjsonrpc-Desktop_Qt_5_9_3_clang_64bit-Debug/src/ -lqjsonrpc.1.1.0
+
+INCLUDEPATH += $$PWD/3rdparty/qjsonrpc/src
+DEPENDPATH += $$PWD/3rdparty/qjsonrpc/src
