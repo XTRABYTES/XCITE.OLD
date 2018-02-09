@@ -1,8 +1,8 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Styles 1.4
 import xtrabytes.xcite.xchat 1.0
-import "Login" as LoginComponents
 
 ApplicationWindow {
     property bool isNetworkActive: true
@@ -19,26 +19,10 @@ ApplicationWindow {
         color: "#c92a2c31"
     }
 
-    StackView {
-        id: mainRoot
-        initialItem: LoginComponents.LoginForm {}
+    Loader {
+        id: rootLoader
         anchors.fill: parent
-        pushEnter: Transition {
-            PropertyAnimation {
-                property: "opacity"
-                from: 0
-                to:1
-                duration: 200
-            }
-        }
-        pushExit: Transition {
-            PropertyAnimation {
-                property: "opacity"
-                from: 1
-                to:0
-                duration: 200
-            }
-        }
+        source: "Login/LoginForm.qml";
     }
 
     Xchat {

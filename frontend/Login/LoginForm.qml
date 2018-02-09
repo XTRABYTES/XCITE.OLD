@@ -42,7 +42,7 @@ Controls.ImagePolygonal {
             hoverBackgroundColor: "#1A10B9C5"
             anchors.horizontalCenter: parent.horizontalCenter
             onButtonClicked: {
-                mainRoot.push("TwoFactorAuthForm.qml")
+                rootLoader.source = "TwoFactorAuthForm.qml"
             }
         }
 
@@ -50,7 +50,7 @@ Controls.ImagePolygonal {
             anchors.horizontalCenter: parent.horizontalCenter
             width: forgotPasswordText.width
             onButtonClicked: {
-                mainRoot.push("ForgotPasswordForm.qml")
+                rootLoader.source = "ForgotPasswordForm.qml"
             }
 
             Text {
@@ -68,7 +68,7 @@ Controls.ImagePolygonal {
             anchors.horizontalCenter: parent.horizontalCenter
             width: (dontHaveAccountText.width + signUpText.width)
             onButtonClicked: {
-                mainRoot.push("SignUpForm.qml")
+                rootLoader.source = "SignUpForm.qml"
             }
 
             RowLayout {

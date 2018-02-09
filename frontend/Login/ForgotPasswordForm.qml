@@ -45,7 +45,7 @@ Controls.ImagePolygonal {
             hoverBackgroundColor: "#1A10B9C5"
             anchors.horizontalCenter: parent.horizontalCenter
             onButtonClicked: {
-                mainRoot.replace("LoginForm.qml")
+                rootLoader.source = "LoginForm.qml"
             }
         }
 
@@ -53,7 +53,7 @@ Controls.ImagePolygonal {
             anchors.horizontalCenter: parent.horizontalCenter
             width: (rememberedPasswordText.width + goBackText.width)
             onButtonClicked: {
-                mainRoot.push("LoginForm.qml")
+                rootLoader.source = "LoginForm.qml"
             }
 
             RowLayout {

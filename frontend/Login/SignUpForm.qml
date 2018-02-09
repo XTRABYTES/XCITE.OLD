@@ -3,6 +3,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.0
 import QtQuick.Layouts 1.3
 import "../Controls" as Controls
+import "../Login" as LoginComponents
 
 Controls.ImagePolygonal {
     id: root
@@ -60,7 +61,7 @@ Controls.ImagePolygonal {
             hoverForegroundColor: "#273A3B"
             anchors.horizontalCenter: parent.horizontalCenter
             onButtonClicked: {
-                mainRoot.replace("DashboardForm.qml")
+                rootLoader.source = "../DashboardForm.qml"
             }
         }
 
@@ -68,7 +69,7 @@ Controls.ImagePolygonal {
             anchors.horizontalCenter: parent.horizontalCenter
             width: (alreadyMemberText.width + loginText.width)
             onButtonClicked: {
-                mainRoot.push("LoginForm.qml")
+                rootLoader.source = "LoginForm.qml"
             }
 
             RowLayout {
