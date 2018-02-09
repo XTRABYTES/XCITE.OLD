@@ -25,9 +25,6 @@ Item {
 
     Connections {
         Component.onCompleted: {
-            // Set the current module to X-Board
-            viewLoader.source = "X-Board/Layout.qml"
-
             // Set the current view to X-Board -> Home
             selectView("xBoard.home");
         }
