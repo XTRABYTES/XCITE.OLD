@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
 
-ButtonDiode {
+ButtonIcon {
     property string name
 
     anchors.left: parent.left
@@ -11,7 +11,6 @@ ButtonDiode {
     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
     onButtonClicked: {
-        selectView(this.name);
+        selectView(this.name)
     }
-
 }

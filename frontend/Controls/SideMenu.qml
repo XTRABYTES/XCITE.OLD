@@ -9,10 +9,10 @@ Rectangle {
     Connections {
         target: dashboard
         onSelectView: {
-            var parts = path.split('.');
+            var parts = path.split('.')
 
-            selectedModule = parts[0];
-            selectedView = path;
+            selectedModule = parts[0]
+            selectedView = path
         }
     }
 
@@ -29,7 +29,7 @@ Rectangle {
 
         spacing: 25
 
-        ButtonDiode {
+        ButtonIcon {
             id: logobutton
             imageSource: "../logos/xby_logo.svg"
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
@@ -61,7 +61,7 @@ Rectangle {
             anchors.leftMargin: 20
             anchors.rightMargin: 20
 
-            // ButtonDiode height uses childrenRect.height to size itself, but this seems incorrect if the text wraps, adjust to compensate
+            // ButtonIcon height uses childrenRect.height to size itself, but this seems incorrect if the text wraps, adjust to compensate
             height: 65
         }
 
@@ -77,7 +77,7 @@ Rectangle {
             anchors.leftMargin: 20
             anchors.rightMargin: 20
 
-            // ButtonDiode height uses childrenRect.height to size itself, but this seems incorrect if the text wraps, adjust to compensate
+            // ButtonIcon height uses childrenRect.height to size itself, but this seems incorrect if the text wraps, adjust to compensate
             height: 65
         }
 
@@ -105,10 +105,7 @@ Rectangle {
             labelText: qsTr("HOME")
             size: 32
         }
-
-
     }
-
 
     ColumnLayout {
         width: parent.width
@@ -127,14 +124,14 @@ Rectangle {
             size: 32
         }
 
-        ButtonDiode {
+        ButtonIcon {
             id: wifiButton
             imageSource: "../icons/wifi.svg"
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
             isSelected: xcite.isNetworkActive
             labelText: xcite.isNetworkActive ? qsTr("ONLINE") : qsTr("OFFLINE")
             onButtonClicked: {
-                xcite.isNetworkActive = !xcite.isNetworkActive;
+                xcite.isNetworkActive = !xcite.isNetworkActive
             }
         }
 
@@ -144,28 +141,28 @@ Rectangle {
             checked: true
             padding: 0
             onClicked: {
-                var component = Qt.createComponent("ConfirmationModal.qml");
+                var component = Qt.createComponent("ConfirmationModal.qml")
 
                 if (component.status === Component.Ready) {
                     var modal = component.createObject(xcite, {
-                        width: 511,
-                        height: 238,
-                        title: killSwitch.checked ? qsTr("ACTIVATE?") : qsTr("DEACTIVATE?"),
-                        text: qsTr("Are you sure?"),
-                        confirmText: qsTr("YES"),
-                        cancelText: qsTr("NO"),
-                    });
+                                                           width: 511,
+                                                           height: 238,
+                                                           title: killSwitch.checked ? qsTr("ACTIVATE?") : qsTr("DEACTIVATE?"),
+                                                                                       text: qsTr("Are you sure?"),
+                                                                                       confirmText: qsTr("YES"),
+                                                                                       cancelText: qsTr("NO")
+                                                       })
 
-                    modal.confirmed.connect(function() {
-                        modal.close();
-                    });
+                    modal.confirmed.connect(function () {
+                        modal.close()
+                    })
 
-                    modal.cancelled.connect(function() {
-                        killSwitch.checked = !killSwitch.checked;
-                        modal.close();
-                    });
+                    modal.cancelled.connect(function () {
+                        killSwitch.checked = !killSwitch.checked
+                        modal.close()
+                    })
 
-                    modal.open();
+                    modal.open()
                 }
             }
         }

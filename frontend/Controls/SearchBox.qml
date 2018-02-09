@@ -23,7 +23,7 @@ Rectangle {
         id: searchFieldContainer
         Layout.fillWidth: true
         height: 44
-        width:367
+        width: 367
         color: "transparent"
         anchors.top: parent.top
         anchors.left: parent.left
@@ -33,13 +33,13 @@ Rectangle {
             id: searchField
             height: parent.height
             width: 220
-            y:0
+            y: 0
 
             font.pointSize: 14
             font.family: "Roboto"
             placeholderText: placeholder
             anchors.left: parent.left
-            anchors.leftMargin:15
+            anchors.leftMargin: 15
             style: TextFieldStyle {
                 textColor: "#7B7D82"
                 placeholderTextColor: "#7B7D82"
@@ -66,8 +66,6 @@ Rectangle {
         */
     }
 
-
-
     Rectangle {
         id: searchButtonContainer
         width: 30
@@ -76,7 +74,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.right: parent.right
 
-        Controls.ButtonDiode {
+        Controls.ButtonIcon {
             id: searchButton
             imageSource: "../icons/search.svg"
 
