@@ -17,43 +17,42 @@ Item {
     Layout.fillWidth: true
     visible: selectedModule === 'xBoard'
 
-    // Home
-
     Connections {
         target: dashboard
         onSelectView: {
-            var parts = path.split('.');
+            var parts = path.split('.')
 
-            selectedModule = parts[0];
+            selectedModule = parts[0]
             if (parts.length === 2) {
-                selectedView = parts[1];
+                selectedView = parts[1]
             } else {
                 selectedView = defaultView
             }
         }
     }
 
+    // Home
     Home.Layout {
         id: home
         visible: selectedView === "home"
     }
 
-    // Send Coins
 
+    // Send Coins
     SendCoins.Layout {
         id: xBoardSendCoins
         visible: selectedView === "sendCoins"
     }
 
-    // Receive Coins
 
+    // Receive Coins
     ReceiveCoins.Layout {
         id: xBoardReceiveCoins
         visible: selectedView === "receiveCoins"
     }
 
-    // History
 
+    // History
     History.Layout {
         id: xBoardHistory
         visible: selectedView === "history"
