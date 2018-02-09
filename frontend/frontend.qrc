@@ -20,7 +20,6 @@
         <file>X-Board/Nodes/NetworkStatusBoard.qml</file>
         <file>Controls/TextInputBlue.qml</file>
         <file>Controls/ButtonSimple.qml</file>
-        <file>Controls/ButtonDiode.qml</file>
         <file>Controls/ButtonDock.qml</file>
         <file>Controls/ButtonPlainText.qml</file>
         <file>Controls/ImagePolygonal.qml</file>
@@ -57,6 +56,7 @@
         <file>Controls/Diode.qml</file>
         <file>X-Board/History/FilterTransactionsDiode.qml</file>
         <file>Controls/DatePicker.qml</file>
+        <file>Controls/ButtonIcon.qml</file>
         <file>tools/Layout.qml</file>
     </qresource>
 </RCC>

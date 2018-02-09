@@ -17,9 +17,9 @@ ColumnLayout {
             id: mouseArea
             anchors.fill: parent
             hoverEnabled: xChatPopup.visible === false
-            cursorShape:Qt.PointingHandCursor
+            cursorShape: Qt.PointingHandCursor
 
-            onClicked: xChatPopup.toggle();
+            onClicked: xChatPopup.toggle()
 
             onHoveredChanged: {
                 parent.color = containsMouse ? "#434751" : "#3A3E47"
@@ -32,21 +32,21 @@ ColumnLayout {
             anchors.rightMargin: 55
             spacing: 10
 
-            Controls.ButtonDiode {
+            Controls.ButtonIcon {
                 imageSource: "../icons/friend-request.svg"
                 size: 22
                 isSelected: xChatPopup.mode === "friends"
                 onButtonClicked: {
-                    xChatPopup.mode = "friends";
+                    xChatPopup.mode = "friends"
                 }
             }
 
-            Controls.ButtonDiode {
+            Controls.ButtonIcon {
                 imageSource: "../icons/robot.svg"
                 size: 25
                 isSelected: xChatPopup.mode === "robot"
                 onButtonClicked: {
-                    xChatPopup.mode = "robot";
+                    xChatPopup.mode = "robot"
                 }
             }
         }
