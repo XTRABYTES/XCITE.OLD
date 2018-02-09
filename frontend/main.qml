@@ -14,20 +14,21 @@ ApplicationWindow {
     height: 1024
     title: qsTr("XCITE")
     color: "#2B2C31"
-    
+
     overlay.modal: Rectangle {
         color: "#c92a2c31"
     }
 
     StackView {
         id: mainRoot
-        initialItem: LoginComponents.LoginForm {}
+        initialItem: LoginComponents.LoginForm {
+        }
         anchors.fill: parent
         pushEnter: Transition {
             PropertyAnimation {
                 property: "opacity"
                 from: 0
-                to:1
+                to: 1
                 duration: 200
             }
         }
@@ -35,7 +36,7 @@ ApplicationWindow {
             PropertyAnimation {
                 property: "opacity"
                 from: 1
-                to:0
+                to: 0
                 duration: 200
             }
         }
@@ -49,6 +50,6 @@ ApplicationWindow {
     signal xChatMessageReceived(string message, date datetime)
 
     function xchatResponse(response) {
-        xChatMessageReceived(response, new Date());
+        xChatMessageReceived(response, new Date())
     }
 }

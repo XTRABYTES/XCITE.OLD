@@ -57,5 +57,6 @@
         <file>Controls/Diode.qml</file>
         <file>X-Board/History/FilterTransactionsDiode.qml</file>
         <file>Controls/DatePicker.qml</file>
+        <file>tools/Layout.qml</file>
     </qresource>
 </RCC>
