@@ -30,22 +30,25 @@ Item {
                 selectedView = defaultView
             }
 
+            // Set the current view based on the new selection
             if (selectedView === "home") {
-                xBoardLoader.source = "Home/Layout.qml";
+                xBoardViewLoader.source = "Home/Layout.qml";
             } else if (selectedView === "sendCoins") {
-                xBoardLoader.source = "SendCoins/Layout.qml";
+                xBoardViewLoader.source = "SendCoins/Layout.qml";
             } else if (selectedView === "receiveCoins") {
-                xBoardLoader.source = "ReceiveCoins/Layout.qml";
+                xBoardViewLoader.source = "ReceiveCoins/Layout.qml";
             } else if (selectedView === "history") {
-                xBoardLoader.source = "History/Layout.qml";
+                xBoardViewLoader.source = "History/Layout.qml";
             } else if (selectedView === "nodes") {
-                xBoardLoader.source = "Nodes/Layout.qml";
+                xBoardViewLoader.source = "Nodes/Layout.qml";
             }
         }
     }
 
+    // Set the source of this loader to change the X-Board view
+
     Loader {
-        id: xBoardLoader
+        id: xBoardViewLoader
         Layout.fillHeight: true
         Layout.fillWidth: true
     }

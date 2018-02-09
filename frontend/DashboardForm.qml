@@ -25,7 +25,10 @@ Item {
 
     Connections {
         Component.onCompleted: {
-            dashboardLoader.source = "X-Board/Layout.qml"
+            // Set the current module to X-Board
+            moduleLoader.source = "X-Board/Layout.qml"
+
+            // Set the current view to X-Board -> Home
             selectView("xBoard.home");
         }
     }
@@ -48,22 +51,19 @@ Item {
             Controls.ModuleMenu {
             }
 
+
             Loader {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                id: dashboardLoader
-            }
-
-            // Settings
-
-            Item {
-                id: moduleSettings
+                id: moduleLoader
             }
 
             // More
 
-            /*
+            // Commented out until we decide if we need this.
+            // If so, refactor it into its own separate view
 
+            /*
             ColumnLayout {
                 id: tools
                 anchors.left: parent.left
