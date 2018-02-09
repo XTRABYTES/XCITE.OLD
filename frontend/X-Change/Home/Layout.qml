@@ -5,8 +5,6 @@ import "../../Controls" as Controls
 ColumnLayout {
     readonly property color cDiodeBackground: "#3a3e46"
 
-    anchors.left: parent.left
-    anchors.right: parent.right
     Layout.rightMargin: layoutGridSpacing
     Layout.bottomMargin: layoutGridSpacing
     spacing: layoutGridSpacing
