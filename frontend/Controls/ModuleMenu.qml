@@ -7,9 +7,9 @@ Item {
     Connections {
         target: dashboard
         onSelectView: {
-            var parts = path.split(".");
+            var parts = path.split(".")
 
-            selected = parts[0];
+            selected = parts[0]
         }
     }
 
@@ -64,7 +64,7 @@ Item {
 
             ModuleMenuButton {
                 name: "xMore"
-                target: "xMore.TBD"
+                target: "tools.TBD"
                 text: qsTr("MORE")
             }
         }
