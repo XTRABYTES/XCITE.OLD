@@ -25,6 +25,7 @@ Item {
 
     Connections {
         Component.onCompleted: {
+            dashboardLoader.source = "X-Board/Layout.qml"
             selectView("xBoard.home");
         }
     }
@@ -47,10 +48,10 @@ Item {
             Controls.ModuleMenu {
             }
 
-            XBoard.Layout {
-            }
-
-            XChange.Layout {
+            Loader {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                id: dashboardLoader
             }
 
             // Settings
@@ -60,6 +61,8 @@ Item {
             }
 
             // More
+
+            /*
 
             ColumnLayout {
                 id: tools
@@ -176,6 +179,8 @@ Item {
                     }
                 }
             }
+
+            */
         }
     }
 

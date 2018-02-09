@@ -15,7 +15,6 @@ Item {
 
     Layout.fillHeight: true
     Layout.fillWidth: true
-    visible: selectedModule === 'xBoard'
 
     // Home
 
@@ -30,38 +29,24 @@ Item {
             } else {
                 selectedView = defaultView
             }
+
+            if (selectedView === "home") {
+                xBoardLoader.source = "Home/Layout.qml";
+            } else if (selectedView === "sendCoins") {
+                xBoardLoader.source = "SendCoins/Layout.qml";
+            } else if (selectedView === "receiveCoins") {
+                xBoardLoader.source = "ReceiveCoins/Layout.qml";
+            } else if (selectedView === "history") {
+                xBoardLoader.source = "History/Layout.qml";
+            } else if (selectedView === "nodes") {
+                xBoardLoader.source = "Nodes/Layout.qml";
+            }
         }
     }
 
-    Home.Layout {
-        id: home
-        visible: selectedView === "home"
-    }
-
-    // Send Coins
-
-    SendCoins.Layout {
-        id: xBoardSendCoins
-        visible: selectedView === "sendCoins"
-    }
-
-    // Receive Coins
-
-    ReceiveCoins.Layout {
-        id: xBoardReceiveCoins
-        visible: selectedView === "receiveCoins"
-    }
-
-    // History
-
-    History.Layout {
-        id: xBoardHistory
-        visible: selectedView === "history"
-    }
-
-    // Nodes
-    Nodes.Layout {
-        id: xBoardNodes
-        visible: selectedView === "nodes"
+    Loader {
+        id: xBoardLoader
+        Layout.fillHeight: true
+        Layout.fillWidth: true
     }
 }

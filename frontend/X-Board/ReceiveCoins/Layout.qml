@@ -8,37 +8,25 @@ ColumnLayout {
     readonly property color cDiodeBackground: "#3a3e46"
 
     id: xBoardReceive
-    anchors.left: parent.left
-    anchors.right: parent.right
     Layout.rightMargin: layoutGridSpacing
     spacing: layoutGridSpacing
-    visible:false;
+
+    ColumnLayout {
+        id:boardColumn
 
 
+        spacing: layoutGridSpacing
+        Home.BalanceDiode {
 
-        //Layout.alignment: Qt.AlignTop
-        //spacing: layoutGridSpacing
-
-        ColumnLayout {
-            id:boardColumn
-
-
-            spacing: layoutGridSpacing
-            Home.BalanceDiode {
-
-                id:balanceDiode
-                Layout.maximumHeight: 330
-            }
-
-            Home.BalanceValueDiode {
-            }
+            id:balanceDiode
+            Layout.maximumHeight: 330
         }
 
-
-       ReceiveCoinsDiode{
-           // color:"green"
+        Home.BalanceValueDiode {
         }
+    }
 
-
-
+   ReceiveCoinsDiode{
+       // color:"green"
+    }
 }
