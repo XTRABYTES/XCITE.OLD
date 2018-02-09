@@ -7,7 +7,11 @@ ButtonDiode {
     anchors.left: parent.left
     anchors.right: parent.right
 
-    isSelected: selectedView === this.name
+    isSelected: {
+        var fullName = selectedModule + '.' + selectedView
+        return fullName === this.name
+    }
+
     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
     onButtonClicked: {

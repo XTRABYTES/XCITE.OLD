@@ -12,7 +12,49 @@ Rectangle {
             var parts = path.split('.');
 
             selectedModule = parts[0];
-            selectedView = path;
+            if (parts.length === 2) {
+                selectedView = parts[1];
+            } else {
+                selectedView = "home"
+            }
+
+            if (selectedModule == "xBoard") {
+                if (selectedView === "home") {
+                    viewLoader.source = "../X-Board/Home/Layout.qml";
+                } else if (selectedView === "sendCoins") {
+                    viewLoader.source = "../X-Board/SendCoins/Layout.qml";
+                } else if (selectedView === "receiveCoins") {
+                    viewLoader.source = "../X-Board/ReceiveCoins/Layout.qml";
+                } else if (selectedView === "history") {
+                    viewLoader.source = "../X-Board/History/Layout.qml";
+                } else if (selectedView === "nodes") {
+                    viewLoader.source = "../X-Board/Nodes/Layout.qml";
+                }
+            }
+
+            if (selectedModule == "xChange") {
+                if (selectedView === "home") {
+                    viewLoader.source = "../X-Change/Home/Layout.qml";
+                }
+            }
+
+            if (selectedModule == "xChat") {
+                if (selectedView === "home") {
+                    // Not implemented yet
+                }
+            }
+
+            if (selectedModule == "xVault") {
+                if (selectedView === "home") {
+                    // Not implemented yet
+                }
+            }
+
+            if (selectedModule == "xMore") {
+                if (selectedView === "home") {
+                    // Not implemented yet
+                }
+            }
         }
     }
 

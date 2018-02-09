@@ -2,14 +2,29 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 
 Item {
-    property var selected
+    property string selectedView
+    property string selectedModule
 
     Connections {
         target: dashboard
         onSelectView: {
             var parts = path.split(".");
 
-            selected = parts[0];
+            selectedModule = parts[0];
+
+            // Set the current module based on the new selection
+
+            if (selectedModule === "xBoard") {
+                viewLoader.source = "../X-Board/Home/Layout.qml";
+            } else if (selectedModule === "xChange") {
+                viewLoader.source = "../X-Change/Home/Layout.qml";
+            } else if (selectedModule === "xChat") {
+                // Not implemented yet
+            } else if (selectedModule === "xVault") {
+                // Not implemented yet
+            } else if (selectedModule === "xMore") {
+                // Not implemented yet
+            }
         }
     }
 

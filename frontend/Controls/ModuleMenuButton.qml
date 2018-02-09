@@ -7,7 +7,7 @@ Rectangle {
     property string target
     property alias text: label.text
 
-    property bool isSelected: selected === this.name
+    property bool isSelected: selectedModule === this.name
 
     anchors.verticalCenter: parent.Center
 
@@ -36,7 +36,9 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
 
         onClicked: {
-            selectView(target);
+            if (!isSelected) {
+                selectView(target);
+            }
         }
 
         hoverEnabled: true
