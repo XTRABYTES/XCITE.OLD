@@ -5,154 +5,144 @@ import QtQuick.Controls.Styles 1.4
 //import QtQuick.Controls 2.3
 import "../../Controls" as Controls
 
-
-Rectangle{
-    id:receiveCoinsDiode
-    color:cDiodeBackground
-    width:928
-    height:645
-    radius:6
-    anchors.left:parent.left
-    anchors.top:parent.top
-    anchors.leftMargin:389
+Rectangle {
+    id: receiveCoinsDiode
+    color: cDiodeBackground
+    width: 928
+    height: 645
+    radius: 6
+    anchors.left: parent.left
+    anchors.top: parent.top
+    anchors.leftMargin: 389
     anchors.topMargin: 0
-    Layout.minimumWidth:928
-    Layout.minimumHeight:  645
+    Layout.minimumWidth: 928
+    Layout.minimumHeight: 645
     Layout.fillWidth: true
 
     anchors.rightMargin: layoutGridSpacing
-
 
     Controls.DiodeHeader {
         id: boardHeader
         text: qsTr("RECEIVE XBY")
         menuLabelText: qsTr("XBY")
-        Layout.minimumWidth:928
+        Layout.minimumWidth: 928
     }
 
-    RowLayout{
-        ColumnLayout{
-            anchors.top:parent.top
-            Layout.minimumWidth:568
-            Controls.LabelUnderlined{
-                anchors.top:parent.top;
-                anchors.left:parent.left;
+    RowLayout {
+        ColumnLayout {
+            anchors.top: parent.top
+            Layout.minimumWidth: 568
+            Controls.LabelUnderlined {
+                anchors.top: parent.top
+                anchors.left: parent.left
                 anchors.topMargin: 75
                 anchors.leftMargin: 22
-                text:qsTr("Main")
+                text: qsTr("Main")
                 pixelSize: 16
             }
 
-            Rectangle{
-               color:"#2A2C31"
-               anchors.top:parent.top;
-               anchors.left:parent.left;
-               anchors.topMargin: 129
-               anchors.leftMargin: 22
-               Layout.minimumWidth:516
-               Layout.minimumHeight: 56
-               radius:5
+            Rectangle {
+                color: "#2A2C31"
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.topMargin: 129
+                anchors.leftMargin: 22
+                Layout.minimumWidth: 516
+                Layout.minimumHeight: 56
+                radius: 5
 
-               TextField{
-                   placeholderText: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+                TextField {
+                    placeholderText: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
 
-                   anchors.top:parent.top
-                   anchors.left:parent.left
-                   anchors.topMargin:10
-                   anchors.leftMargin:16
-                   width:500
-                   font.pointSize:18
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.topMargin: 10
+                    anchors.leftMargin: 16
+                    width: 500
+                    font.pointSize: 18
                     font.family: "Roboto Thin"
-                   style: TextFieldStyle {
-                      textColor: "#ffffff"
-                      placeholderTextColor: "#ffffff"
-                      background: Rectangle {
-                          color: "transparent"
-                          width:485
-                      }
-                   }
-
-               }
-
+                    style: TextFieldStyle {
+                        textColor: "#ffffff"
+                        placeholderTextColor: "#ffffff"
+                        background: Rectangle {
+                            color: "transparent"
+                            width: 485
+                        }
+                    }
+                }
             }
 
-            RowLayout{
-                anchors.left:parent.left;
-                anchors.top:parent.top
-                anchors.leftMargin:22
-                anchors.topMargin:196
+            RowLayout {
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.leftMargin: 22
+                anchors.topMargin: 196
 
                 Layout.minimumWidth: 516
-                Text{
+                Text {
                     font.pixelSize: 12
                     font.family: "Roboto"
                     font.weight: Font.Light
                     text: "Copy address to clipboard"
                     color: "#E3E3E3"
-                    anchors.top:parent.top
-                    anchors.left:parent.left
-                    anchors.leftMargin:24
-
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.leftMargin: 24
                 }
 
-                Text{
+                Text {
                     font.pixelSize: 12
                     font.family: "Roboto"
                     font.weight: Font.Light
                     text: "Or change to another address from your list"
                     color: "#E3E3E3"
-                    anchors.top:parent.top
-                    anchors.left:parent.left
-                    anchors.leftMargin:256
-
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.leftMargin: 256
                 }
             }
 
-
-            Controls.LabelUnderlined{
-                anchors.top:parent.top;
-                anchors.left:parent.left;
+            Controls.LabelUnderlined {
+                anchors.top: parent.top
+                anchors.left: parent.left
                 anchors.topMargin: 250
                 anchors.leftMargin: 22
-                text:qsTr("QR Code")
+                text: qsTr("QR Code")
                 pixelSize: 16
-
             }
 
-            Text{
+            Text {
                 font.pixelSize: 12
                 font.family: "Roboto"
                 font.weight: Font.Light
                 text: "Simply send money to this address by scanning this QR code"
                 color: "#E3E3E3"
-                anchors.top:parent.top
-                anchors.left:parent.left
-                anchors.topMargin:298
-                anchors.leftMargin:22
-
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.topMargin: 298
+                anchors.leftMargin: 22
             }
         }
 
-        Rectangle{
-            width:1
-            height:562
-            color:"#535353"
-            anchors.left:parent.left;
-            anchors.leftMargin:569
-            anchors.top:parent.top
-            anchors.topMargin:59
+        Rectangle {
+            width: 1
+            height: 562
+            color: "#535353"
+            anchors.left: parent.left
+            anchors.leftMargin: 569
+            anchors.top: parent.top
+            anchors.topMargin: 59
         }
 
-        ColumnLayout{
-            anchors.top:parent.top;
-            Controls.LabelUnderlined{
-                anchors.top:parent.top;
-                anchors.left:parent.left;
+        ColumnLayout {
+            anchors.top: parent.top
+            Controls.LabelUnderlined {
+                anchors.top: parent.top
+                anchors.left: parent.left
                 anchors.topMargin: 75
                 anchors.leftMargin: 18
-                text:qsTr("My Addresses")
+                text: qsTr("My Addresses")
                 pixelSize: 16
-
             }
 
             Controls.ListViewCoins{
@@ -166,14 +156,14 @@ Rectangle{
                 anchors.leftMargin:18
             }
 
-            RowLayout{
-                Controls.ButtonIconText{
+            RowLayout {
+                Controls.ButtonIconText {
                     text: qsTr("ADD ADDRESS")
-                    anchors.left:parent.left
-                    anchors.top:parent.top
+                    anchors.left: parent.left
+                    anchors.top: parent.top
                     anchors.leftMargin: 18
-                    anchors.topMargin:145
-                    width:116
+                    anchors.topMargin: 145
+                    width: 116
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
                     onButtonClicked: {
@@ -181,36 +171,28 @@ Rectangle{
                     }
                 }
 
-                Controls.ButtonIconText{
+                Controls.ButtonIconText {
                     text: qsTr("EDIT")
-                    anchors.left:parent.left
-                    anchors.top:parent.top
+                    anchors.left: parent.left
+                    anchors.top: parent.top
                     anchors.leftMargin: 157
-                    anchors.topMargin:145
-                    width:67
+                    anchors.topMargin: 145
+                    width: 67
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
-
                 }
 
-                Controls.ButtonIconText{
+                Controls.ButtonIconText {
                     text: qsTr("REMOVE")
-                    anchors.left:parent.left
-                    anchors.top:parent.top
+                    anchors.left: parent.left
+                    anchors.top: parent.top
                     anchors.leftMargin: 247
-                    anchors.topMargin:145
-                    width:89
+                    anchors.topMargin: 145
+                    width: 89
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
-
                 }
             }
         }
     }
-
-
-
-
-
-
 }

@@ -1,7 +1,7 @@
 import QtQuick 2.0
+
 //Component for text with a blue underline below it.
 Item {
-
     //Allows easy setting of the text from a parent object
     property alias text: label.text
     //Allows setting of the text pixel size from parent
@@ -24,9 +24,4 @@ Item {
             color: "#24B9C3"
         }
     }
-
-
-
-
-
 }

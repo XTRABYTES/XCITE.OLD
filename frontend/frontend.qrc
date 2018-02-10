@@ -59,5 +59,9 @@
         <file>Controls/ButtonIcon.qml</file>
         <file>tools/Layout.qml</file>
         <file>Controls/ListViewCoins.qml</file>
+        <file>X-Board/SendCoins/SendDiode.qml</file>
+        <file>Controls/DiodeHeaderMenu.qml</file>
+        <file>Controls/TextInput.qml</file>
+        <file>Controls/FormLabel.qml</file>
     </qresource>
 </RCC>

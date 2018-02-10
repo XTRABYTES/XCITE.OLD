@@ -8,7 +8,6 @@ Rectangle {
     color: cDiodeBackground
     radius: 5
     Layout.minimumHeight: 313
-    Layout.fillHeight: true
 
     Controls.DiodeHeader {
         text: qsTr("BALANCE")

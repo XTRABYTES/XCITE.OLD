@@ -4,9 +4,12 @@ import QtQuick.Layouts 1.3
 
 Button {
     property bool isPrimary: false
-    property alias label: label.text
+    property alias label: label
+    property alias labelText: label.text
+    property real buttonHeight: parent.height
 
     Layout.fillWidth: true
+    height: buttonHeight
 
     signal buttonClicked
 
@@ -21,8 +24,10 @@ Button {
     background: Rectangle {
         color: isPrimary ? "#0ED8D2" : "transparent"
         radius: 4
+        height: buttonHeight
         border.width: 1
         border.color: isPrimary ? "#0ED8D2" : "#616878"
+        anchors.verticalCenter: parent.verticalCenter
     }
 
     Text {

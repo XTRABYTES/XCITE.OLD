@@ -44,6 +44,7 @@ Item {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             Layout.fillHeight: true
+            Layout.fillWidth: true
 
             Controls.ModuleMenu {
             }

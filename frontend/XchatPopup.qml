@@ -2,7 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-import 'X-Chat' as XChat
+import "X-Chat" as XChat
 
 import "Controls" as Controls
 
@@ -16,16 +16,22 @@ Item {
     width: 318
     smooth: true
 
-    state: "full"
+    state: "minimal"
     states: [
         State {
             name: "minimal"
-            PropertyChanges { target: xChatPopup; height: 48 }
+            PropertyChanges {
+                target: xChatPopup
+                height: 48
+            }
         },
 
         State {
             name: "full"
-            PropertyChanges { target: xChatPopup; height: 639 }
+            PropertyChanges {
+                target: xChatPopup
+                height: 639
+            }
         }
     ]
 
@@ -38,20 +44,20 @@ Item {
     }
 
     function toggle() {
-        state = state === 'full' ? 'minimal' : 'full';
+        state = state === 'full' ? 'minimal' : 'full'
     }
 
     function focus(e) {
-        xChatTextInput.forceActiveFocus();
+        xChatTextInput.forceActiveFocus()
     }
 
     function onSubmitUserInput(e) {
-        var text = xChatTextInput.text.trim();
+        var text = xChatTextInput.text.trim()
 
         if (text.length > 0) {
-            conversation.add(text, new Date(), true);
-            xchatSubmitMsgSignal(text, '');
-            xChatTextInput.text = '';
+            conversation.add(text, new Date(), true)
+            xchatSubmitMsgSignal(text, '')
+            xChatTextInput.text = ''
         }
     }
 
@@ -172,12 +178,12 @@ Item {
     }
 
     DropShadow {
-      anchors.fill: innerPopupContainer
-      horizontalOffset: -5
-      verticalOffset: -5
-      radius: 10
-      samples: 20
-      source: innerPopupContainer
-      color: "#32373d"
+        anchors.fill: innerPopupContainer
+        horizontalOffset: -5
+        verticalOffset: -5
+        radius: 10
+        samples: 20
+        source: innerPopupContainer
+        color: "#32373d"
     }
 }
