@@ -23,6 +23,7 @@ Rectangle{
 
 
     ListView {
+        id:root
         model: contactModel
         clip:true
         anchors.fill:parent
@@ -51,7 +52,7 @@ Rectangle{
                     id: mouseArea
                     anchors.fill: parent
                     onClicked: {
-                        root.buttonClicked()
+                        //root.buttonClicked()
                     }
                     hoverEnabled: true
                     onHoveredChanged: {

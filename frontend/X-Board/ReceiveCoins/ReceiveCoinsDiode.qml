@@ -113,8 +113,8 @@ Rectangle {
 
             Label {
                 font.pixelSize: 12
-                font.family: "Roboto"
-                font.weight: Font.Light
+                font.family: "roboto"
+//                font.weight: Font.Light
                 text: "Simply send money to this address by scanning this QR code"
                 color: "#E3E3E3"
                 anchors.top: parent.top
@@ -183,6 +183,7 @@ Rectangle {
                     width: 116
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
+                    iconDirectory:"../../icons/circle-cross.svg"
                     onButtonClicked: {
 
                     }
@@ -197,6 +198,7 @@ Rectangle {
                     width: 67
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
+                    iconDirectory:"../../icons/pencil.svg"
                 }
 
                 Controls.ButtonIconText {
@@ -208,6 +210,7 @@ Rectangle {
                     width: 89
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
+                    iconDirectory:"../../icons/trash.svg"
                 }
             }
         }
