@@ -15,7 +15,7 @@ Rectangle {
     }
 
     Controls.BalanceItem {
-        id: dailyBalance
+        id: balance
         text: qsTr("Balance")
         valuePrefix: qsTr("XBY")
         value: "175,314"
@@ -28,7 +28,7 @@ Rectangle {
         text: qsTr("Unconfirmed")
         valuePrefix: qsTr("XBY")
         value: "22,695"
-        anchors.top: dailyBalance.bottom
+        anchors.top: balance.bottom
     }
 
     Controls.BalanceItem {
