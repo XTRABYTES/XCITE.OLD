@@ -111,7 +111,7 @@ Rectangle {
                 pixelSize: 16
             }
 
-            Text {
+            Label {
                 font.pixelSize: 12
                 font.family: "Roboto"
                 font.weight: Font.Light
@@ -121,7 +121,24 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.topMargin: 298
                 anchors.leftMargin: 22
+
+
             }
+
+            Image {
+                fillMode: Image.PreserveAspectFit
+                source: "../../icons/right-arrow2.svg"
+                width: 19
+                height: 13
+                sourceSize.width: 19
+                sourceSize.height: 13
+                anchors.right: parent.right
+                anchors.top:parent.top;
+                anchors.topMargin:196
+                anchors.rightMargin: 30
+            }
+
+
         }
 
         Rectangle {

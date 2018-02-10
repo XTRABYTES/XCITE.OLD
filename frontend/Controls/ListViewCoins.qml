@@ -26,7 +26,7 @@ Rectangle{
         model: contactModel
         clip:true
         anchors.fill:parent
-        anchors.topMargin:15
+        anchors.topMargin:10
 
         delegate:Rectangle{
             id:addressContainer
