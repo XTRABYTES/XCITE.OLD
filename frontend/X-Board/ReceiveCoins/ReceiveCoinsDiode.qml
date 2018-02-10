@@ -155,83 +155,15 @@ Rectangle{
 
             }
 
-            Rectangle{
+            Controls.ListViewCoins{
                 color:"#2A2C31"
                 radius:5
                 width:317
                 height:434
                 anchors.top:parent.top
+                anchors.left:parent.left
                 anchors.topMargin:129
                 anchors.leftMargin:18
-                anchors.left:parent.left
-
-                ListModel {
-                    id: contactModel
-                    ListElement {
-                        name: "DEFAULT"
-                        number: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
-                    }
-                    ListElement {
-                        name: "MAIN"
-                        number: "A2g62BpwyJc5i7upAsd334dakwXqBR3k4H"
-                    }
-
-                }
-
-
-                ListView {
-                    anchors.fill:parent
-                    model: contactModel
-                    anchors.topMargin:15
-                    clip:true
-
-
-                    delegate:Rectangle{
-                        id:addressContainer
-                        height:28
-                        width:294
-                        anchors.left:parent.left
-                        anchors.leftMargin:3
-                        color:"transparent"
-
-                        Text {
-                            id:addressItem
-                            text: name
-                            color:"#ffffff"
-                            font.family: "roboto thin"
-                            font.pixelSize: 14
-                            anchors.left:parent.left
-                            anchors.leftMargin:22
-                            anchors.top:parent.top
-                            anchors.topMargin:4
-
-                            MouseArea {
-                                id: mouseArea
-                                anchors.fill: parent
-                                onClicked: {
-                                    root.buttonClicked()
-                                }
-                                hoverEnabled: true
-                                onHoveredChanged: {
-                                    if (containsMouse) {
-                                        addressContainer.color = "#42454D"
-                                    }
-                                    else {
-                                        addressContainer.color = "transparent"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }//end list view
-
-                Rectangle {
-                    radius: 5
-
-                    color: 'transparent'
-                    anchors.fill: parent
-                  }
-
             }
 
             RowLayout{
