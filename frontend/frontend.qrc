@@ -58,5 +58,6 @@
         <file>Controls/DatePicker.qml</file>
         <file>Controls/ButtonIcon.qml</file>
         <file>tools/Layout.qml</file>
+        <file>Controls/ListViewCoins.qml</file>
     </qresource>
 </RCC>
