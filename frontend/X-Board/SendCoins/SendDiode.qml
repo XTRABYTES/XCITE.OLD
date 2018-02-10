@@ -23,24 +23,36 @@ Controls.Diode {
             Layout.rightMargin: 22
             Layout.bottomMargin: 20
 
-            Column {
+            ColumnLayout {
                 anchors.top: parent.top
-                Layout.fillWidth: true
                 spacing: 5
 
                 Controls.FormLabel {
+                    Layout.topMargin: 10
+                    Layout.bottomMargin: 25
                     text: qsTr("Amount")
                 }
 
                 Controls.TextInput {
+                    Layout.preferredWidth: 516
+                    topPadding: 5
+                    bottomPadding: 5
                     text: qsTr("745,34")
-                    width: parent.width
+
+                    TextXBY {
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.rightMargin: 12
+                        anchors.bottomMargin: 5
+                    }
                 }
 
                 Slider {
                 }
 
                 Controls.FormLabel {
+                    Layout.topMargin: 10
+                    Layout.bottomMargin: 25
                     text: qsTr("Pay to")
                 }
 
@@ -53,28 +65,51 @@ Controls.Diode {
 
                 Controls.TextInput {
                     font.pixelSize: 24
-                    width: parent.width
+                    Layout.preferredWidth: 516
                     text: qsTr("BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS")
+                    topPadding: 10
+                    bottomPadding: 10
                 }
 
                 Label {
+                    Layout.topMargin: 6
+                    Layout.preferredWidth: 516
                     anchors.right: parent.right
+                    horizontalAlignment: Text.AlignRight
+                    rightPadding: 20
                     font.pixelSize: 12
                     font.family: "Roboto"
                     text: qsTr("Or add a recipient from your address book")
-                    topPadding: 10
-                    bottomPadding: 50
+
+                    Image {
+                        fillMode: Image.PreserveAspectFit
+                        source: "../../icons/right-arrow2.svg"
+                        width: 19
+                        height: 13
+                        sourceSize.width: 19
+                        sourceSize.height: 13
+                        anchors.right: parent.right
+                    }
                 }
 
                 Controls.FormLabel {
+                    Layout.topMargin: 40
+                    Layout.bottomMargin: 25
                     text: qsTr("Total")
                 }
 
-                Label {
-                    text: qsTr("746,34")
-                    font.family: "Roboto"
-                    font.weight: Font.Light
-                    font.pixelSize: 36
+                RowLayout {
+                    TextXBY {
+                        Layout.alignment: Qt.AlignBottom
+                        Layout.bottomMargin: 5
+                    }
+
+                    Label {
+                        text: qsTr("746,34")
+                        font.family: "Roboto"
+                        font.weight: Font.Light
+                        font.pixelSize: 36
+                    }
                 }
 
                 Label {
@@ -96,10 +131,19 @@ Controls.Diode {
 
                 Layout.preferredWidth: 360
                 Layout.preferredHeight: 113.5
+                Layout.fillHeight: true
+                Layout.fillWidth: true
 
                 Controls.LabelUnderlined {
                     text: qsTr("Address book")
                     pixelSize: 16
+                }
+
+                Controls.ListViewCoins {
+                    color: "#2A2C31"
+                    radius: 5
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                 }
             }
         }
@@ -115,7 +159,7 @@ Controls.Diode {
         Controls.ButtonModal {
             Layout.fillWidth: true
             Layout.topMargin: 35
-            Layout.bottomMargin: 25
+            Layout.bottomMargin: 35
             Layout.leftMargin: 172
             Layout.rightMargin: 172
             label.font.family: "Roboto"
@@ -124,6 +168,15 @@ Controls.Diode {
             label.text: qsTr("SEND PAYMENT")
             isPrimary: true
             buttonHeight: 60
+
+            onButtonClicked: {
+                confirmationModal({
+                                      title: qsTr("PAYMENT CONFIRMATION"),
+                                      text: qsTr("Are you sure you want to send 745,34 XBY to Lachelle Hamblin (BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS)?"),
+                                      confirmText: qsTr("YES, SEND"),
+                                      cancelText: qsTr("NO, CANCEL")
+                                  })
+            }
         }
     }
 }

@@ -66,5 +66,6 @@
         <file>icons/menu-receivecoins.svg</file>
         <file>icons/cross.svg</file>
         <file>icons/calendar.svg</file>
+        <file>icons/right-arrow2.svg</file>
     </qresource>
 </RCC>

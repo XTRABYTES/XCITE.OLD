@@ -30,7 +30,7 @@ ColumnLayout {
         SendDiode {
             anchors.top: parent.top
             Layout.fillWidth: true
-            Layout.preferredHeight: 750
+            height: childrenRect.height
         }
     }
 }

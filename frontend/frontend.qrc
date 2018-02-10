@@ -63,5 +63,6 @@
         <file>Controls/DiodeHeaderMenu.qml</file>
         <file>Controls/TextInput.qml</file>
         <file>Controls/FormLabel.qml</file>
+        <file>X-Board/SendCoins/TextXBY.qml</file>
     </qresource>
 </RCC>

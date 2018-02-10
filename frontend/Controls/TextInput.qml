@@ -10,7 +10,6 @@ TextField {
     topPadding: 0
     bottomPadding: 0
     verticalAlignment: Text.AlignVCenter
-    height: 50
 
     background: Rectangle {
         color: "#2A2C31"

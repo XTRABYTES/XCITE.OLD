@@ -141,29 +141,16 @@ Rectangle {
             checked: true
             padding: 0
             onClicked: {
-                var component = Qt.createComponent("ConfirmationModal.qml")
-
-                if (component.status === Component.Ready) {
-                    var modal = component.createObject(xcite, {
-                                                           width: 511,
-                                                           height: 238,
-                                                           title: killSwitch.checked ? qsTr("ACTIVATE?") : qsTr("DEACTIVATE?"),
-                                                                                       text: qsTr("Are you sure?"),
-                                                                                       confirmText: qsTr("YES"),
-                                                                                       cancelText: qsTr("NO")
-                                                       })
-
-                    modal.confirmed.connect(function () {
-                        modal.close()
-                    })
-
-                    modal.cancelled.connect(function () {
-                        killSwitch.checked = !killSwitch.checked
-                        modal.close()
-                    })
-
-                    modal.open()
-                }
+                var title = killSwitch.checked ? qsTr("ACTIVATE?") : qsTr(
+                                                     "DEACTIVATE?")
+                confirmationModal({
+                                      title: title,
+                                      text: qsTr("Are you sure?"),
+                                      confirmText: qsTr("YES"),
+                                      cancelText: qsTr("NO")
+                                  }, null, function (modal) {
+                                      killSwitch.checked = !killSwitch.checked
+                                  })
             }
         }
     }
