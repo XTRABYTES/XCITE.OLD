@@ -64,5 +64,6 @@
         <file>Controls/TextInput.qml</file>
         <file>Controls/FormLabel.qml</file>
         <file>X-Board/SendCoins/TextXBY.qml</file>
+        <file>Controls/AddressBook.qml</file>
     </qresource>
 </RCC>

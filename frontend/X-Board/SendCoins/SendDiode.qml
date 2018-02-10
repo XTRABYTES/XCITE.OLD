@@ -5,6 +5,10 @@ import QtQuick.Layouts 1.3
 import "../../Controls" as Controls
 
 Controls.Diode {
+    property int networkFee: 1
+    property real totalAmount: networkFee + (formAmount.text.length > 0 ? parseFloat(
+                                                                              formAmount.text) : 0)
+
     title: qsTr("SEND XBY")
     menuLabelText: qsTr("XBY")
 
@@ -23,10 +27,12 @@ Controls.Diode {
             Layout.rightMargin: 22
             Layout.bottomMargin: 20
 
+            // Form
             ColumnLayout {
                 anchors.top: parent.top
                 spacing: 5
 
+                // Amount
                 Controls.FormLabel {
                     Layout.topMargin: 10
                     Layout.bottomMargin: 25
@@ -34,10 +40,11 @@ Controls.Diode {
                 }
 
                 Controls.TextInput {
+                    id: formAmount
                     Layout.preferredWidth: 516
                     topPadding: 5
                     bottomPadding: 5
-                    text: qsTr("745,34")
+                    text: "0"
 
                     TextXBY {
                         anchors.right: parent.right
@@ -50,6 +57,7 @@ Controls.Diode {
                 Slider {
                 }
 
+                // Pay To
                 Controls.FormLabel {
                     Layout.topMargin: 10
                     Layout.bottomMargin: 25
@@ -64,9 +72,9 @@ Controls.Diode {
                 }
 
                 Controls.TextInput {
+                    id: formAddress
                     font.pixelSize: 24
                     Layout.preferredWidth: 516
-                    text: qsTr("BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS")
                     topPadding: 10
                     bottomPadding: 10
                 }
@@ -92,6 +100,7 @@ Controls.Diode {
                     }
                 }
 
+                // Total
                 Controls.FormLabel {
                     Layout.topMargin: 40
                     Layout.bottomMargin: 25
@@ -105,7 +114,7 @@ Controls.Diode {
                     }
 
                     Label {
-                        text: qsTr("746,34")
+                        text: totalAmount
                         font.family: "Roboto"
                         font.weight: Font.Light
                         font.pixelSize: 36
@@ -116,38 +125,53 @@ Controls.Diode {
                     topPadding: 10
                     font.pixelSize: 12
                     font.family: "Roboto"
-                    text: qsTr("Transaction fee: 1 XBY")
+                    text: qsTr("Transaction fee:") + " " + networkFee + " " + qsTr(
+                              "XBY")
                 }
             }
 
+            // Divider
             Rectangle {
                 Layout.fillHeight: true
                 width: 1
                 color: "#535353"
             }
 
-            Item {
+            // Address Book
+            ColumnLayout {
                 anchors.top: parent.top
 
-                Layout.preferredWidth: 360
-                Layout.preferredHeight: 113.5
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                Controls.LabelUnderlined {
+                Controls.FormLabel {
                     text: qsTr("Address book")
-                    pixelSize: 16
+                    Layout.bottomMargin: 25
                 }
 
-                Controls.ListViewCoins {
-                    color: "#2A2C31"
-                    radius: 5
-                    Layout.fillWidth: true
+                Item {
                     Layout.fillHeight: true
+                    Layout.fillWidth: true
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 4
+                        color: "#2A2C31"
+                    }
+
+                    Controls.AddressBook {
+                        id: addressBook
+
+                        onCurrentItemChanged: {
+                            var item = model.get(currentIndex)
+                            formAddress.text = item.address
+                        }
+                    }
                 }
             }
         }
 
+        // Bottom Divider
         Rectangle {
             Layout.fillWidth: true
             Layout.leftMargin: 22
@@ -156,6 +180,7 @@ Controls.Diode {
             color: "#535353"
         }
 
+        // Send Payment
         Controls.ButtonModal {
             Layout.fillWidth: true
             Layout.topMargin: 35
@@ -170,9 +195,15 @@ Controls.Diode {
             buttonHeight: 60
 
             onButtonClicked: {
+                var item = addressBook.currentItem.item
+
+                var text = qsTr(
+                            "Are you sure you want to send") + " " + totalAmount
+                        + " " + "to" + " " + item.name + " (" + item.address + ")?"
+
                 confirmationModal({
                                       title: qsTr("PAYMENT CONFIRMATION"),
-                                      text: qsTr("Are you sure you want to send 745,34 XBY to Lachelle Hamblin (BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS)?"),
+                                      text: text,
                                       confirmText: qsTr("YES, SEND"),
                                       cancelText: qsTr("NO, CANCEL")
                                   })
