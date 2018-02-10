@@ -9,7 +9,6 @@
         <file>icons/cloud-computing.svg</file>
         <file>icons/dollar-pointer.svg</file>
         <file>icons/download.svg</file>
-        <file>icons/edit (1).svg</file>
         <file>icons/edit.svg</file>
         <file>icons/email icon.svg</file>
         <file>icons/envelope.svg</file>
@@ -67,5 +66,9 @@
         <file>icons/cross.svg</file>
         <file>icons/calendar.svg</file>
         <file>icons/right-arrow2.svg</file>
+        <file>icons/circle-cross.svg</file>
+        <file>icons/copy-clipboard.svg</file>
+        <file>icons/pencil.svg</file>
+        <file>icons/trash.svg</file>
     </qresource>
 </RCC>
