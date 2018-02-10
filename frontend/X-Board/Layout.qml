@@ -15,6 +15,7 @@ Item {
 
     Layout.fillHeight: true
     Layout.fillWidth: true
+
     visible: selectedModule === 'xBoard'
 
     Connections {
@@ -37,20 +38,17 @@ Item {
         visible: selectedView === "home"
     }
 
-
     // Send Coins
     SendCoins.Layout {
         id: xBoardSendCoins
         visible: selectedView === "sendCoins"
     }
 
-
     // Receive Coins
     ReceiveCoins.Layout {
         id: xBoardReceiveCoins
         visible: selectedView === "receiveCoins"
     }
-
 
     // History
     History.Layout {

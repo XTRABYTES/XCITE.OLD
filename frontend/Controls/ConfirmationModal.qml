@@ -6,8 +6,8 @@ Popup {
     property int modalPadding: 20
     property alias text: prompt.text
     property alias title: title.text
-    property alias confirmText: btnConfirm.label
-    property alias cancelText: btnCancel.label
+    property alias confirmText: btnConfirm.labelText
+    property alias cancelText: btnCancel.labelText
 
     id: popup
     x: (parent.width - width) / 2
@@ -55,7 +55,7 @@ Popup {
             icon.sourceSize.width: 10
 
             onClicked: {
-                cancelled();
+                cancelled()
             }
         }
     }
@@ -90,7 +90,7 @@ Popup {
                 id: btnConfirm
                 isPrimary: true
                 onButtonClicked: {
-                    confirmed();
+                    confirmed()
                 }
             }
 
@@ -98,7 +98,7 @@ Popup {
                 id: btnCancel
                 isPrimary: false
                 onButtonClicked: {
-                    cancelled();
+                    cancelled()
                 }
             }
         }

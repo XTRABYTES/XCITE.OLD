@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="19px" height="15px" viewBox="0 0 19 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
+    <title>right-arrow2</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="right-arrow2" fill-rule="nonzero" fill="#A9AAAD">
+            <g id="path0_fill-link" transform="translate(9.500000, 7.500000) rotate(-90.000000) translate(-9.500000, -7.500000) translate(2.000000, -2.000000)">
+                <path d="M0.31337,10.7626 C-0.104457,11.1794 -0.104457,11.8572 0.31337,12.2741 L6.74148,18.6879 C6.95147,18.8974 7.22573,19 7.5,19 C7.77426,19 8.04853,18.8952 8.25852,18.6879 L14.6866,12.2741 C15.1045,11.8572 15.1045,11.1794 14.6866,10.7626 L14.6823,10.7626 C14.2645,10.3457 13.5853,10.3457 13.1675,10.7626 L8.56921,15.3506 L8.56921,1.06897 C8.56921,0.478896 8.08924,0 7.49786,0 C6.90647,0 6.4265,0.478896 6.4265,1.06897 L6.4265,15.3506 L1.82826,10.7626 C1.41043,10.3457 0.731198,10.3457 0.31337,10.7626 Z" id="path0_fill"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -24,6 +24,43 @@ Item {
 
     signal selectView(string path)
 
+    function confirmationModal(options, onConfirm, onCancel) {
+        var component = Qt.createComponent(
+                    "../../Controls/ConfirmationModal.qml")
+
+        if (!options.width) {
+            options.width = 511
+        }
+
+        if (!options.height) {
+            options.height = 238
+        }
+
+        if (component.status === Component.Ready) {
+            var modal = component.createObject(xcite, options)
+
+            modal.confirmed.connect(function () {
+                if (typeof onConfirm == 'function') {
+                    onConfirm(modal)
+                }
+
+                modal.close()
+                modal.destroy()
+            })
+
+            modal.cancelled.connect(function () {
+                if (typeof onCancel == 'function') {
+                    onCancel(modal)
+                }
+
+                modal.close()
+                modal.destroy()
+            })
+
+            modal.open()
+        }
+    }
+
     Connections {
         Component.onCompleted: {
             selectView("xBoard.home")
@@ -44,6 +81,7 @@ Item {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             Layout.fillHeight: true
+            Layout.fillWidth: true
 
             Controls.ModuleMenu {
             }

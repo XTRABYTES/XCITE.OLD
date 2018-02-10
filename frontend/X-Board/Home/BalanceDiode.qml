@@ -8,7 +8,6 @@ Rectangle {
     color: cDiodeBackground
     radius: 5
     Layout.minimumHeight: 313
-    Layout.fillHeight: true
 
     Controls.DiodeHeader {
         text: qsTr("BALANCE")
@@ -16,7 +15,7 @@ Rectangle {
     }
 
     Controls.BalanceItem {
-        id: dailyBalance
+        id: balance
         text: qsTr("Balance")
         valuePrefix: qsTr("XBY")
         value: "175,314"
@@ -29,7 +28,7 @@ Rectangle {
         text: qsTr("Unconfirmed")
         valuePrefix: qsTr("XBY")
         value: "22,695"
-        anchors.top: dailyBalance.bottom
+        anchors.top: balance.bottom
     }
 
     Controls.BalanceItem {
