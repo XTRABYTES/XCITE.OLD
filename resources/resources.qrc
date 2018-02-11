@@ -70,5 +70,7 @@
         <file>icons/copy-clipboard.svg</file>
         <file>icons/pencil.svg</file>
         <file>icons/trash.svg</file>
+        <file>icons/circle-check.svg</file>
+        <file>icons/placeholder-qr.png</file>
     </qresource>
 </RCC>

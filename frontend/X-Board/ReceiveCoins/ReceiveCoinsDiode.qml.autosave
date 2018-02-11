@@ -260,7 +260,7 @@ Rectangle {
                     hoverBackgroundColor: "#0ED8D2"
                     iconDirectory:"../../icons/circle-cross.svg"
                     onButtonClicked: {
-
+                        
                     }
                 }
 
