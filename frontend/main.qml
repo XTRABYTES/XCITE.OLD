@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import QtQuick.Window 2.0
 import xtrabytes.xcite.xchat 1.0
 import "Login" as LoginComponents
 
@@ -10,8 +11,8 @@ ApplicationWindow {
     id: xcite
 
     visible: true
-    width: 1440
-    height: 1024
+    width: Screen.width-100
+    height: Screen.height-100
     title: qsTr("XCITE")
     color: "#2B2C31"
 
