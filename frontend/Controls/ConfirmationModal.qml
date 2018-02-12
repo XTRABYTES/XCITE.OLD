@@ -55,7 +55,7 @@ Popup {
             icon.sourceSize.width: 10
 
             onClicked: {
-                cancelled()
+                popup.cancelled()
             }
         }
     }
@@ -90,7 +90,7 @@ Popup {
                 id: btnConfirm
                 isPrimary: true
                 onButtonClicked: {
-                    confirmed()
+                    popup.confirmed()
                 }
             }
 
@@ -98,7 +98,7 @@ Popup {
                 id: btnCancel
                 isPrimary: false
                 onButtonClicked: {
-                    cancelled()
+                    popup.cancelled()
                 }
             }
         }

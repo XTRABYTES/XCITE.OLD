@@ -260,7 +260,17 @@ Rectangle {
                     hoverBackgroundColor: "#0ED8D2"
                     iconDirectory:"../../icons/circle-cross.svg"
                     onButtonClicked: {
+                        var item = addressBook.currentItem.item
 
+                        var text = qsTr("Are you sure you want to send")
+
+                        confirmationModal({
+                                              title: qsTr("PAYMENT CONFIRMATION"),
+                                              text: text,
+                                              confirmText: qsTr("CONFIRM"),
+                                              cancelText: qsTr("CANCEL")
+
+                                          })
                     }
                 }
 
@@ -277,6 +287,7 @@ Rectangle {
                 }
 
                 Controls.ButtonIconText {
+                    id:removeButton
                     text: qsTr("REMOVE")
                     anchors.left: parent.left
                     anchors.top: parent.top
@@ -286,6 +297,25 @@ Rectangle {
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
                     iconDirectory:"../../icons/trash.svg"
+
+                    onButtonClicked: {
+                        var item = addressBook.currentItem.item
+
+                        var text = qsTr("Are you sure you want to remove this address")
+
+                        confirmationModal({
+                                              title: qsTr("PAYMENT CONFIRMATION"),
+                                              text: text,
+                                              confirmText: qsTr("CONFIRM"),
+                                              cancelText: qsTr("CANCEL"),
+                                          },
+                                          function(modal){   //OnConfirmed
+
+                                              if(addressBook.currentItem != null){
+                                                  addressModel.remove(addressBook.currentIndex);
+                                              }
+                                          })
+                    }
                 }
             }
         }
