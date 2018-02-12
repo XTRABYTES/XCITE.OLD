@@ -27,18 +27,14 @@ ApplicationWindow {
         anchors.fill: parent
         pushEnter: Transition {
             PropertyAnimation {
-                property: "opacity"
                 from: 0
                 to: 1
-                duration: 200
             }
         }
         pushExit: Transition {
             PropertyAnimation {
-                property: "opacity"
                 from: 1
                 to: 0
-                duration: 200
             }
         }
     }
