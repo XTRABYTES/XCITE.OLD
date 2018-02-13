@@ -2,7 +2,6 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
-//import QtQuick.Controls 2.3
 import "../../Controls" as Controls
 
 Rectangle {
@@ -262,20 +261,26 @@ Rectangle {
                     onButtonClicked: {
                         var item = addressBook.currentItem.item
 
-                        var text = qsTr("Are you sure you want to send")
+                        var text = qsTr("Enter the name of the address")
 
                         confirmationModal({
-                                              title: qsTr("PAYMENT CONFIRMATION"),
+                                              title: qsTr("ADD ADDRESS CONFIRMATION"),
                                               text: text,
                                               confirmText: qsTr("CONFIRM"),
-                                              cancelText: qsTr("CANCEL")
+                                              cancelText: qsTr("CANCEL"),
+                                              showInput:true
+                                          },
+                                          function(modal, inputValue){   //OnConfirmed
 
+                                              if(inputValue != ""){
+                                                  addressModel.append({"name":inputValue, "address":"upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"});
+                                              }
                                           })
                     }
                 }
 
                 Controls.ButtonIconText {
-                    text: qsTr("EDIT")
+                     text: qsTr("EDIT")
                     anchors.left: parent.left
                     anchors.top: parent.top
                     anchors.leftMargin: 157
@@ -284,6 +289,29 @@ Rectangle {
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
                     iconDirectory:"../../icons/pencil.svg"
+
+                    onButtonClicked: {
+                        var item = addressBook.currentItem.item
+
+                        var text = qsTr("Edit the name of the address")
+                        var itemValue = addressBook.currentItem.item;
+                        confirmationModal({
+                                              title: qsTr("EDIT ADDRESS CONFIRMATION"),
+                                              text: text,
+                                              confirmText: qsTr("CONFIRM"),
+                                              cancelText: qsTr("CANCEL"),
+                                              showInput:true,
+                                              inputValue:itemValue
+
+                                          },
+                                          function(modal, inputValue){   //OnConfirmed
+
+                                              if(inputValue != ""){
+                                                  addressModel.setProperty(addressBook.currentIndex,"name",inputValue)
+                                                  addressModel.sync()
+                                              }
+                                          })
+                    }
                 }
 
                 Controls.ButtonIconText {
@@ -301,13 +329,14 @@ Rectangle {
                     onButtonClicked: {
                         var item = addressBook.currentItem.item
 
-                        var text = qsTr("Are you sure you want to remove this address")
+                        var text = qsTr("Are you sure you want to remove this address?")
 
                         confirmationModal({
-                                              title: qsTr("PAYMENT CONFIRMATION"),
+                                              title: qsTr("REMOVE ADDRESS CONFIRMATION"),
                                               text: text,
                                               confirmText: qsTr("CONFIRM"),
                                               cancelText: qsTr("CANCEL"),
+
                                           },
                                           function(modal){   //OnConfirmed
 

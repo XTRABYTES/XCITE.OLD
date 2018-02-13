@@ -4,6 +4,8 @@ import QtQuick.Layouts 1.3
 
 Popup {
     property int modalPadding: 20
+    property bool showInput: false
+    property string inputValue: ""
     property alias text: prompt.text
     property alias title: title.text
     property alias confirmText: btnConfirm.labelText
@@ -18,7 +20,7 @@ Popup {
     closePolicy: Popup.CloseOnEscape
     padding: 0
 
-    signal confirmed
+    signal confirmed(string val)
     signal cancelled
 
     background: Rectangle {
@@ -43,6 +45,7 @@ Popup {
             color: "#E2E2E2"
             font.pixelSize: 15
             font.family: "Roboto"
+
         }
 
         IconButton {
@@ -55,7 +58,7 @@ Popup {
             icon.sourceSize.width: 10
 
             onClicked: {
-                popup.cancelled()
+                cancelled()
             }
         }
     }
@@ -74,13 +77,38 @@ Popup {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
+        ColumnLayout{
+            Text {
+                id: prompt
+                Layout.fillWidth: true
+                color: "#FFF7F7"
+                font.pixelSize: 18
+                wrapMode: Text.WordWrap
+            }
 
-        Text {
-            id: prompt
-            Layout.fillWidth: true
-            color: "#FFF7F7"
-            font.pixelSize: 18
-            wrapMode: Text.WordWrap
+
+            TextField {
+                id:inputField
+                visible: showInput
+                color: "white"
+                font.family: "Roboto"
+                font.weight: Font.Light
+                font.pixelSize: 36
+                leftPadding: 18
+                topPadding: 0
+                bottomPadding: 0
+                verticalAlignment: Text.AlignVCenter
+                width:350
+                Layout.minimumWidth:350
+                Layout.maximumWidth:350
+                text:"temp"
+                background: Rectangle {
+                    color: "#2A2C31"
+                    radius: 5
+                    width:parent.width
+                }
+            }
+
         }
 
         RowLayout {
@@ -90,7 +118,7 @@ Popup {
                 id: btnConfirm
                 isPrimary: true
                 onButtonClicked: {
-                    popup.confirmed()
+                    confirmed(inputField.text)
                 }
             }
 
@@ -98,7 +126,7 @@ Popup {
                 id: btnCancel
                 isPrimary: false
                 onButtonClicked: {
-                    popup.cancelled()
+                    cancelled()
                 }
             }
         }
