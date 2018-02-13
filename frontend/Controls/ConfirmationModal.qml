@@ -101,7 +101,7 @@ Popup {
                 width:350
                 Layout.minimumWidth:350
                 Layout.maximumWidth:350
-                text:"temp"
+                text:""
                 background: Rectangle {
                     color: "#2A2C31"
                     radius: 5
