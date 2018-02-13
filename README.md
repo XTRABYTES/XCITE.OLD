@@ -20,9 +20,16 @@ After installing Qt, clone this repository and open xcite.pro using Qt Creator.
 
 #### Qt Troubleshooting Advice
 
-To avoid the popular Qt QMake issues take the following steps: 
+QMake is a fundamental part of Qt that serves the function of creating a make file. QMake not installing properly is usually attributed to user error and can be simply solved. If you run into a QMake issue during your Qt installation process follow these troubleshooting tips. 
+
+If this issue arrises you should first try the following steps before performing a reinstallation of Qt:
+
 1.) Ensure antivirus did not keep QMake from installing during the installation process
-2.) Ensure a proper Kit is selected/detected and a compiler is installed by going to Tools --> Options --> Build & Run --> Kits and then checking Tools --> Options --> Build & Run --> Compilers
+2.) Ensure a proper Kit is selected/detected by going to Tools --> Options --> Build & Run --> Kits
+      a.) If no kit is selected or all kits are errored out, you will need to either manually install a kit or perform  a 
+          reinstallation. 
+3.) Ensure a compiler is installed by checking Tools --> Options --> Build & Run --> Compilers 
+      a.) If no compiler is installed you will need to either reinstall or manually install MinGW version 5.3.0
 
 ## Screenshots
 
