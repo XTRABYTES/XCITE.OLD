@@ -3,13 +3,12 @@
 #                X C I T E
 ####  XTRABYTES Consolidated Interactive TErminal
 
-XCITE is the core application utilizing the XTRABYTES Proof-of-Signature blockchain protocol. Built to support modules like a decentralized exchange and a fully-integrated chat protocol, the SHA512 encrypted network is quantum resistant and lightning fast. The code-fluid architecture means any developer looking to make a third-party DApp can use the XTRABYTES API to build out their dream project. XCITE is poised to be a top contender in the all-in-one decentralized applications industry.
-
+XCITE is the core application utilizing the XTRABYTES Proof-of-Signature blockchain protocol. Built to support modules like a decentralized exchange and a fully-integrated chat protocol, the SHA512 encrypted network is quantum resistant and lightning fast. The code-fluid architecture means any developer looking to make a third-party DApp can use the XTRABYTES API to build out their dream project. XCITE is poised to be a top contender in all-in-one decentralized applications.
 ## Getting Started
 
 #### Install Qt
 
-XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you download it from [here](https://www.qt.io/download-qt-installer) for free. 
+XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free. 
 
 #### Install Additional Features
 
@@ -18,6 +17,12 @@ During installation, be sure to pick the "Qt 5.9.3" component since that is the 
 #### Project Configuration
 
 After installing Qt, clone this repository and open xcite.pro using Qt Creator.
+
+#### Qt Troubleshooting Advice
+
+To avoid the popular Qt QMake issues take the following steps: 
+1.) Ensure antivirus did not keep QMake from installing during the installation process
+2.) Ensure a proper Kit is selected/detected and a compiler is installed by going to Tools --> Options --> Build & Run --> Kits and then checking Tools --> Options --> Build & Run --> Compilers
 
 ## Screenshots
 
