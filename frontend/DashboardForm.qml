@@ -39,9 +39,10 @@ Item {
         if (component.status === Component.Ready) {
             var modal = component.createObject(xcite, options)
 
-            modal.confirmed.connect(function () {
+            modal.confirmed.connect(function (inputValue) {
+
                 if (typeof onConfirm == 'function') {
-                    onConfirm(modal)
+                    onConfirm(modal, inputValue)
                 }
 
                 modal.close()
@@ -50,7 +51,7 @@ Item {
 
             modal.cancelled.connect(function () {
                 if (typeof onCancel == 'function') {
-                    onCancel(modal)
+                    onCancel(modal, modal.inputValue)
                 }
 
                 modal.close()
