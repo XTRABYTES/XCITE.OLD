@@ -2,7 +2,6 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
-//import QtQuick.Controls 2.3
 import "../../Controls" as Controls
 
 Rectangle {
@@ -52,6 +51,7 @@ Rectangle {
                 radius: 5
 
                 TextField {
+                    id: formAddress
                     placeholderText: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
 
                     anchors.top: parent.top
@@ -77,8 +77,8 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.leftMargin: 22
                 anchors.topMargin: 196
-
                 Layout.minimumWidth: 516
+
                 Text {
                     font.pixelSize: 12
                     font.family: "Roboto"
@@ -88,6 +88,37 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.leftMargin: 24
+
+                    Image {
+                        id:copyImage
+                        fillMode: Image.PreserveAspectFit
+                        source: "../../icons/copy-clipboard.svg"
+                        width: 19
+                        height: 13
+                        sourceSize.width: 19
+                        sourceSize.height: 13
+                        anchors.right: parent.left
+                        anchors.top:parent.top;
+                        anchors.topMargin:parent.Center
+                        anchors.rightMargin: 5
+
+                        MouseArea{
+                            anchors.fill:parent
+                            cursorShape:Qt.PointingHandCursor
+                            onClicked:{
+
+                                copyTextTimer.start()
+                                copyImage.source = "../../icons/circle-cross.svg"
+                            }
+                        }
+
+                        Timer {
+                            id:copyTextTimer
+                            interval: 3000; running: false; repeat: false
+                            onTriggered: copyImage.source = "../../icons/copy-clipboard.svg"
+                        }
+                    }
+
                 }
 
                 Text {
@@ -113,8 +144,8 @@ Rectangle {
 
             Label {
                 font.pixelSize: 12
-                font.family: "Roboto"
-                font.weight: Font.Light
+                font.family: "roboto"
+                //                font.weight: Font.Light
                 text: "Simply send money to this address by scanning this QR code"
                 color: "#E3E3E3"
                 anchors.top: parent.top
@@ -136,6 +167,19 @@ Rectangle {
                 anchors.top:parent.top;
                 anchors.topMargin:196
                 anchors.rightMargin: 30
+            }
+
+            Image {
+                fillMode: Image.PreserveAspectFit
+                source: "../../icons/placeholder-qr.png"
+                width: 264
+                height: 264
+                sourceSize.width: 264
+                sourceSize.height: 264
+                anchors.right: parent.right
+                anchors.top:parent.top;
+                anchors.topMargin:345
+                anchors.rightMargin: 159
             }
 
 
@@ -162,7 +206,7 @@ Rectangle {
                 pixelSize: 16
             }
 
-            Controls.ListViewCoins{
+            Rectangle{
                 color:"#2A2C31"
                 radius:5
                 width:317
@@ -171,6 +215,36 @@ Rectangle {
                 anchors.left:parent.left
                 anchors.topMargin:129
                 anchors.leftMargin:18
+                Controls.AddressBook{
+                    id: addressBook
+                    onCurrentItemChanged: {
+                        var item = model.get(currentIndex)
+                        formAddress.text = item.address
+                    }
+                    model:addressModel
+                }
+
+                ListModel {
+                    id: addressModel
+
+                    ListElement {
+                        name: "Default"
+                        address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+                    }
+
+                    ListElement {
+                        name: "Main"
+                        address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
+                    }
+
+                    ListElement {
+                        name: "Secondary"
+                        address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
+                    }
+
+
+                }
+
             }
 
             RowLayout {
@@ -183,13 +257,30 @@ Rectangle {
                     width: 116
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
+                    iconDirectory:"../../icons/circle-cross.svg"
                     onButtonClicked: {
+                        var item = addressBook.currentItem.item
 
+                        var text = qsTr("Enter the name of the address")
+
+                        confirmationModal({
+                                              title: qsTr("ADD ADDRESS CONFIRMATION"),
+                                              text: text,
+                                              confirmText: qsTr("CONFIRM"),
+                                              cancelText: qsTr("CANCEL"),
+                                              showInput:true
+                                          },
+                                          function(modal, inputValue){   //OnConfirmed
+
+                                              if(inputValue != ""){
+                                                  addressModel.append({"name":inputValue, "address":"upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"});
+                                              }
+                                          })
                     }
                 }
 
                 Controls.ButtonIconText {
-                    text: qsTr("EDIT")
+                     text: qsTr("EDIT")
                     anchors.left: parent.left
                     anchors.top: parent.top
                     anchors.leftMargin: 157
@@ -197,9 +288,34 @@ Rectangle {
                     width: 67
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
+                    iconDirectory:"../../icons/pencil.svg"
+
+                    onButtonClicked: {
+                        var item = addressBook.currentItem.item
+
+                        var text = qsTr("Edit the name of the address")
+                        var itemValue = addressBook.currentItem.item;
+                        confirmationModal({
+                                              title: qsTr("EDIT ADDRESS CONFIRMATION"),
+                                              text: text,
+                                              confirmText: qsTr("CONFIRM"),
+                                              cancelText: qsTr("CANCEL"),
+                                              showInput:true,
+                                              inputValue:itemValue
+
+                                          },
+                                          function(modal, inputValue){   //OnConfirmed
+
+                                              if(inputValue != ""){
+                                                  addressModel.setProperty(addressBook.currentIndex,"name",inputValue)
+                                                  addressModel.sync()
+                                              }
+                                          })
+                    }
                 }
 
                 Controls.ButtonIconText {
+                    id:removeButton
                     text: qsTr("REMOVE")
                     anchors.left: parent.left
                     anchors.top: parent.top
@@ -208,6 +324,27 @@ Rectangle {
                     width: 89
                     backgroundColor: "transparent"
                     hoverBackgroundColor: "#0ED8D2"
+                    iconDirectory:"../../icons/trash.svg"
+
+                    onButtonClicked: {
+                        var item = addressBook.currentItem.item
+
+                        var text = qsTr("Are you sure you want to remove this address?")
+
+                        confirmationModal({
+                                              title: qsTr("REMOVE ADDRESS CONFIRMATION"),
+                                              text: text,
+                                              confirmText: qsTr("CONFIRM"),
+                                              cancelText: qsTr("CANCEL"),
+
+                                          },
+                                          function(modal){   //OnConfirmed
+
+                                              if(addressBook.currentItem != null){
+                                                  addressModel.remove(addressBook.currentIndex);
+                                              }
+                                          })
+                    }
                 }
             }
         }
