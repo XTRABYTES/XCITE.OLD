@@ -18,4 +18,4 @@
 - Follow the coding guidelines in our [Style Guide](https://github.com/borzalom/xcite/blob/master/STYLEGUIDE.md)
 - Create a Pull Request
 - Include a detailed description that describes your feature / improvement
-- Include the relavant issue number (Fixes #13, Closes #16, etc.)
+- Include the relevant issue number (Fixes #13, Closes #16, etc.)
