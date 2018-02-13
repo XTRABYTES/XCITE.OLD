@@ -164,6 +164,7 @@ Controls.Diode {
 
                     Rectangle {
                         anchors.fill: parent
+                        anchors.bottomMargin: 60
                         radius: 4
                         color: "#2A2C31"
                     }
@@ -175,7 +176,41 @@ Controls.Diode {
                             var item = model.get(currentIndex)
                             formAddress.text = item.address
                         }
-                    }
+                    RowLayout {
+                         Controls.ButtonIconText {
+                            text: qsTr("ADD RECIPIENT")
+                            anchors.left: parent.left
+                            anchors.top: parent.bottom
+                            anchors.leftMargin: 0
+                            anchors.topMargin: 405
+                            width: 116
+                            backgroundColor: "transparent"
+                            hoverBackgroundColor: "#0ED8D2"
+                            onButtonClicked: {
+                            }
+                         }
+                         Controls.ButtonIconText {
+                            text: qsTr("EDIT")
+                            anchors.left: parent.left
+                            anchors.top: parent.bottom
+                            anchors.leftMargin: 136
+                            anchors.topMargin: 405
+                            width: 67
+                            backgroundColor: "transparent"
+                            hoverBackgroundColor: "#0ED8D2"
+                         }
+                         Controls.ButtonIconText {
+                            text: qsTr("REMOVE")
+                            anchors.left: parent.left
+                            anchors.top: parent.bottom
+                            anchors.leftMargin: 225
+                            anchors.topMargin: 405
+                            width: 89
+                            backgroundColor: "transparent"
+                            hoverBackgroundColor: "#0ED8D2"
+                         }
+                      }
+                   }
                 }
             }
         }
