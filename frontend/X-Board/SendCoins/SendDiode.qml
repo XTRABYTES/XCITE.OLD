@@ -9,7 +9,7 @@ Controls.Diode {
     property real balance: 175314
     property real totalAmount: networkFee + (formAmount.text.length > 0 ? parseFloat(
                                                                               formAmount.text) : 0)
-
+                                                                              
     title: qsTr("SEND XBY")
     menuLabelText: qsTr("XBY")
 
@@ -167,49 +167,43 @@ Controls.Diode {
                         anchors.bottomMargin: 60
                         radius: 4
                         color: "#2A2C31"
+
                     }
 
                     Controls.AddressBook {
                         id: addressBook
-
+                            model:addressModel
                         onCurrentItemChanged: {
                             var item = model.get(currentIndex)
                             formAddress.text = item.address
+
                         }
-                    RowLayout {
-                         Controls.ButtonIconText {
-                            text: qsTr("ADD RECIPIENT")
-                            anchors.left: parent.left
-                            anchors.top: parent.bottom
-                            anchors.leftMargin: 0
-                            anchors.topMargin: 405
-                            width: 116
-                            backgroundColor: "transparent"
-                            hoverBackgroundColor: "#0ED8D2"
-                            onButtonClicked: {
-                            }
+
+                    ListModel {
+                                       id: addressModel
+
+                                       ListElement {
+                                           name: "Default"
+                                           address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+                                       }
+
+                                       ListElement {
+                                           name: "Main"
+                                           address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
+                                       }
+
+                                       ListElement {
+                                           name: "Secondary"
+                                           address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
+                                       }
+                   }
+                       RowLayout {
+                                Controls.AddressButton {
+                                       anchors.top: parent.bottom
+                                       anchors.topMargin: 435
+                                       Layout.leftMargin: -17
+                                 }
                          }
-                         Controls.ButtonIconText {
-                            text: qsTr("EDIT")
-                            anchors.left: parent.left
-                            anchors.top: parent.bottom
-                            anchors.leftMargin: 136
-                            anchors.topMargin: 405
-                            width: 67
-                            backgroundColor: "transparent"
-                            hoverBackgroundColor: "#0ED8D2"
-                         }
-                         Controls.ButtonIconText {
-                            text: qsTr("REMOVE")
-                            anchors.left: parent.left
-                            anchors.top: parent.bottom
-                            anchors.leftMargin: 225
-                            anchors.topMargin: 405
-                            width: 89
-                            backgroundColor: "transparent"
-                            hoverBackgroundColor: "#0ED8D2"
-                         }
-                      }
                    }
                 }
             }
@@ -255,3 +249,4 @@ Controls.Diode {
         }
     }
 }
+
