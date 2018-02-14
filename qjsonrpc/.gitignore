@@ -1,0 +1,15 @@
+build
+Makefile
+qjsonrpc.pro.user
+src/libqjsonrpc.prl
+src/moc_predefs.h
+src/moc_qjsonrpchttpclient.cpp
+src/moc_qjsonrpchttpserver.cpp
+src/moc_qjsonrpchttpserver_p.cpp
+src/moc_qjsonrpclocalserver.cpp
+src/moc_qjsonrpcservice.cpp
+src/moc_qjsonrpcservicereply.cpp
+src/moc_qjsonrpcsocket.cpp
+src/moc_qjsonrpctcpserver.cpp
+src/pkgconfig/
+src/qjsonrpchttpclient.moc
