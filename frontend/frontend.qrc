@@ -66,5 +66,6 @@
         <file>X-Board/SendCoins/TextXBY.qml</file>
         <file>Controls/AddressBook.qml</file>
         <file>Controls/SliderAmount.qml</file>
+        <file>Controls/AddressButton.qml</file>
     </qresource>
 </RCC>
