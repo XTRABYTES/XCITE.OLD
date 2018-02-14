@@ -131,7 +131,20 @@ Rectangle {
             isSelected: xcite.isNetworkActive
             labelText: xcite.isNetworkActive ? qsTr("ONLINE") : qsTr("OFFLINE")
             onButtonClicked: {
-                xcite.isNetworkActive = !xcite.isNetworkActive
+                if (xcite.isNetworkActive) {
+                    xcite.isNetworkActive = false
+                    return
+                }
+
+                confirmationModal({
+                                      title: qsTr("CONNECT?"),
+                                      bodyText: qsTr("Please ensure your Testnet wallet is running with RPC enabled at http://127.0.0.1:2222"),
+                                      confirmText: qsTr("LET'S DO THIS!"),
+                                      cancelText: qsTr("CANCEL")
+                                  }, function () {
+                                      xcite.isNetworkActive = !xcite.isNetworkActive
+                                      pollWallet(true)
+                                  })
             }
         }
 
@@ -145,7 +158,7 @@ Rectangle {
                                                      "DEACTIVATE?")
                 confirmationModal({
                                       title: title,
-                                      text: qsTr("Are you sure?"),
+                                      bodyText: qsTr("Are you sure?"),
                                       confirmText: qsTr("YES"),
                                       cancelText: qsTr("NO")
                                   }, null, function (modal) {

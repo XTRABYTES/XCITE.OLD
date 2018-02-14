@@ -3,12 +3,13 @@
 #include "testnet.hpp"
 
 void Testnet::request(QString command) {
-//    qDebug() << "Request: " << command;
+    qDebug() << "Request: " << command;
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest(command);
     QJsonRpcMessage res = client->sendMessageBlocking(message);
 
     if (res.type() == QJsonRpcMessage::Error) {
+        walletError(res.errorData().toString());
         qDebug() << res.errorData();
         return;
     }

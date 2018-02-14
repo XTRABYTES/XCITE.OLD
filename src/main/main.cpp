@@ -26,11 +26,9 @@ int main(int argc, char *argv[])
     xchatobj.Initialize();
 
     Testnet wallet;
-    wallet.request("getbalance");
-    wallet.request("listtransactions");
     engine.rootContext()->setContextProperty("wallet", (QObject *)&wallet);
 
-    app.setWindowIcon(QIcon(":/xcite.ico"));
+    app.setWindowIcon(QIcon("xcite.ico"));
 
     QList<QObject*> transactionList;
     transactionList.append(new NodeTransaction("xghl32lk8dfss577g734j34","12:45 PM GMT 0","12:45 PM GMT 0","12:45 PM GMT 0",NodeTransaction::NodeTransactionType::XChat));
@@ -59,6 +57,7 @@ int main(int argc, char *argv[])
     // FauxWallet
     QObject::connect(engine.rootObjects().first(), SIGNAL(testnetRequest(QString)), &wallet, SLOT(request(QString)));
     QObject::connect(&wallet, SIGNAL(response(QVariant)), engine.rootObjects().first(), SLOT(testnetResponse(QVariant)));
+    QObject::connect(&wallet, SIGNAL(walletError(QVariant)), engine.rootObjects().first(), SLOT(walletError(QVariant)));
 
     return app.exec();
 }

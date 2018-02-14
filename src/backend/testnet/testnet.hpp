@@ -64,6 +64,7 @@ public:
 signals:
     void response(QVariant response);
     void walletChanged();
+    void walletError(QVariant response);
 
 public Q_SLOTS:
     void request(QString command);

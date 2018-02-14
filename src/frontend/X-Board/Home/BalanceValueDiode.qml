@@ -16,7 +16,7 @@ Rectangle {
     Controls.BalanceItem {
         id: unconfirmedBalance
         text: ""
-        value: (wallet.balance * 0.2).toLocaleString()
+        value: (wallet.balance * 0.2).toLocaleString(Qt.locale(), "f", 2)
         valuePrefix: qsTr("$")
         anchors.top: diodeHeader.bottom
     }

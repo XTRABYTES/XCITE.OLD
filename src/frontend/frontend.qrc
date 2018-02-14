@@ -67,5 +67,8 @@
         <file>Controls/AddressBook.qml</file>
         <file>Controls/SliderAmount.qml</file>
         <file>Controls/AddressButton.qml</file>
+        <file>Controls/ModalPopup.qml</file>
+        <file>Controls/ModalAlert.qml</file>
+        <file>Controls/ModalHeader.qml</file>
     </qresource>
 </RCC>

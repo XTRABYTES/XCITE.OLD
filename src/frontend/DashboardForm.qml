@@ -24,44 +24,6 @@ Item {
 
     signal selectView(string path)
 
-    function confirmationModal(options, onConfirm, onCancel) {
-        var component = Qt.createComponent(
-                    "../../Controls/ConfirmationModal.qml")
-
-        if (!options.width) {
-            options.width = 511
-        }
-
-        if (!options.height) {
-            options.height = 238
-        }
-
-        if (component.status === Component.Ready) {
-            var modal = component.createObject(xcite, options)
-
-            modal.confirmed.connect(function (inputValue) {
-
-                if (typeof onConfirm == 'function') {
-                    onConfirm(modal, inputValue)
-                }
-
-                modal.close()
-                modal.destroy()
-            })
-
-            modal.cancelled.connect(function () {
-                if (typeof onCancel == 'function') {
-                    onCancel(modal, modal.inputValue)
-                }
-
-                modal.close()
-                modal.destroy()
-            })
-
-            modal.open()
-        }
-    }
-
     Connections {
         Component.onCompleted: {
             selectView("xBoard.home")
@@ -115,12 +77,11 @@ Item {
     }
 
     Timer {
-        interval: 5000
-        running: true
+        interval: 3000
+        running: xcite.isNetworkActive
         repeat: true
         onTriggered: {
-            testnetRequest("getbalance")
-            testnetRequest("listtransactions")
+            pollWallet()
         }
     }
 }
