@@ -181,8 +181,6 @@ Rectangle {
                 anchors.topMargin:345
                 anchors.rightMargin: 159
             }
-
-
         }
 
         Rectangle {
@@ -248,105 +246,12 @@ Rectangle {
             }
 
             RowLayout {
-                Controls.ButtonIconText {
-                    text: qsTr("ADD ADDRESS")
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    anchors.leftMargin: 18
-                    anchors.topMargin: 145
-                    width: 116
-                    backgroundColor: "transparent"
-                    hoverBackgroundColor: "#0ED8D2"
-                    iconDirectory:"../../icons/circle-cross.svg"
-                    onButtonClicked: {
-                        var item = addressBook.currentItem.item
-
-                        var text = qsTr("Enter the name of the address")
-
-                        confirmationModal({
-                                              title: qsTr("ADD ADDRESS CONFIRMATION"),
-                                              text: text,
-                                              confirmText: qsTr("CONFIRM"),
-                                              cancelText: qsTr("CANCEL"),
-                                              showInput:true
-                                          },
-                                          function(modal, inputValue){   //OnConfirmed
-
-                                              if(inputValue != ""){
-                                                  addressModel.append({"name":inputValue, "address":"upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"});
-                                              }
-                                          })
-                    }
+                Controls.AddressButton {
+                anchors.top: parent.top
+                anchors.topMargin: 145
                 }
 
-                Controls.ButtonIconText {
-                     text: qsTr("EDIT")
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    anchors.leftMargin: 157
-                    anchors.topMargin: 145
-                    width: 67
-                    backgroundColor: "transparent"
-                    hoverBackgroundColor: "#0ED8D2"
-                    iconDirectory:"../../icons/pencil.svg"
-
-                    onButtonClicked: {
-                        var item = addressBook.currentItem.item
-
-                        var text = qsTr("Edit the name of the address")
-                        var itemValue = addressBook.currentItem.item;
-                        confirmationModal({
-                                              title: qsTr("EDIT ADDRESS CONFIRMATION"),
-                                              text: text,
-                                              confirmText: qsTr("CONFIRM"),
-                                              cancelText: qsTr("CANCEL"),
-                                              showInput:true,
-                                              inputValue:itemValue
-
-                                          },
-                                          function(modal, inputValue){   //OnConfirmed
-
-                                              if(inputValue != ""){
-                                                  addressModel.setProperty(addressBook.currentIndex,"name",inputValue)
-                                                  addressModel.sync()
-                                              }
-                                          })
-                    }
-                }
-
-                Controls.ButtonIconText {
-                    id:removeButton
-                    text: qsTr("REMOVE")
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    anchors.leftMargin: 247
-                    anchors.topMargin: 145
-                    width: 89
-                    backgroundColor: "transparent"
-                    hoverBackgroundColor: "#0ED8D2"
-                    iconDirectory:"../../icons/trash.svg"
-
-                    onButtonClicked: {
-                        var item = addressBook.currentItem.item
-
-                        var text = qsTr("Are you sure you want to remove this address?")
-
-                        confirmationModal({
-                                              title: qsTr("REMOVE ADDRESS CONFIRMATION"),
-                                              text: text,
-                                              confirmText: qsTr("CONFIRM"),
-                                              cancelText: qsTr("CANCEL"),
-
-                                          },
-                                          function(modal){   //OnConfirmed
-
-                                              if(addressBook.currentItem != null){
-                                                  addressModel.remove(addressBook.currentIndex);
-                                              }
-                                          })
-                    }
-                }
-            }
-        }
-    }
+             }
+         }
+     }
 }
