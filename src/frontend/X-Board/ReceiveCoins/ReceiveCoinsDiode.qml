@@ -90,7 +90,7 @@ Rectangle {
                     anchors.leftMargin: 24
 
                     Image {
-                        id:copyImage
+                        id: copyImage
                         fillMode: Image.PreserveAspectFit
                         source: "../../icons/copy-clipboard.svg"
                         width: 19
@@ -98,14 +98,14 @@ Rectangle {
                         sourceSize.width: 19
                         sourceSize.height: 13
                         anchors.right: parent.left
-                        anchors.top:parent.top;
-                        anchors.topMargin:parent.Center
+                        anchors.top: parent.top
+                        anchors.topMargin: parent.Center
                         anchors.rightMargin: 5
 
-                        MouseArea{
-                            anchors.fill:parent
-                            cursorShape:Qt.PointingHandCursor
-                            onClicked:{
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
 
                                 copyTextTimer.start()
                                 copyImage.source = "../../icons/circle-cross.svg"
@@ -113,12 +113,13 @@ Rectangle {
                         }
 
                         Timer {
-                            id:copyTextTimer
-                            interval: 3000; running: false; repeat: false
+                            id: copyTextTimer
+                            interval: 3000
+                            running: false
+                            repeat: false
                             onTriggered: copyImage.source = "../../icons/copy-clipboard.svg"
                         }
                     }
-
                 }
 
                 Text {
@@ -152,8 +153,6 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.topMargin: 298
                 anchors.leftMargin: 22
-
-
             }
 
             Image {
@@ -164,8 +163,8 @@ Rectangle {
                 sourceSize.width: 19
                 sourceSize.height: 13
                 anchors.right: parent.right
-                anchors.top:parent.top;
-                anchors.topMargin:196
+                anchors.top: parent.top
+                anchors.topMargin: 196
                 anchors.rightMargin: 30
             }
 
@@ -177,8 +176,8 @@ Rectangle {
                 sourceSize.width: 264
                 sourceSize.height: 264
                 anchors.right: parent.right
-                anchors.top:parent.top;
-                anchors.topMargin:345
+                anchors.top: parent.top
+                anchors.topMargin: 345
                 anchors.rightMargin: 159
             }
         }
@@ -204,54 +203,51 @@ Rectangle {
                 pixelSize: 16
             }
 
-            Rectangle{
-                color:"#2A2C31"
-                radius:5
-                width:317
-                height:434
-                anchors.top:parent.top
-                anchors.left:parent.left
-                anchors.topMargin:129
-                anchors.leftMargin:18
-                Controls.AddressBook{
+            Rectangle {
+                color: "#2A2C31"
+                radius: 5
+                width: 317
+                height: 434
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.topMargin: 129
+                anchors.leftMargin: 18
+                Controls.AddressBook {
                     id: addressBook
+                    model: addressModel
+
+                    ListModel {
+                        id: addressModel
+
+                        ListElement {
+                            name: "Default"
+                            address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+                        }
+
+                        ListElement {
+                            name: "Main"
+                            address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
+                        }
+
+                        ListElement {
+                            name: "Secondary"
+                            address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
+                        }
+                    }
+
                     onCurrentItemChanged: {
                         var item = model.get(currentIndex)
                         formAddress.text = item.address
                     }
-                    model:addressModel
                 }
-
-                ListModel {
-                    id: addressModel
-
-                    ListElement {
-                        name: "Default"
-                        address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
-                    }
-
-                    ListElement {
-                        name: "Main"
-                        address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
-                    }
-
-                    ListElement {
-                        name: "Secondary"
-                        address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
-                    }
-
-
-                }
-
             }
 
             RowLayout {
                 Controls.AddressButton {
-                anchors.top: parent.top
-                anchors.topMargin: 145
+                    anchors.top: parent.top
+                    anchors.topMargin: 145
                 }
-
-             }
-         }
-     }
+            }
+        }
+    }
 }

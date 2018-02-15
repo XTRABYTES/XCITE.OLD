@@ -65,9 +65,11 @@ signals:
     void response(QVariant response);
     void walletChanged();
     void walletError(QVariant response);
+    void walletSuccess(QVariant response);
 
 public Q_SLOTS:
     void request(QString command);
+    void sendFrom(QString account, QString address, qreal amount);
 
 public:
     TransactionModel *m_transactions;

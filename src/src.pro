@@ -47,7 +47,8 @@ SOURCES += main/main.cpp \
             backend/xchat/xchatconversationmodel.cpp \
             backend/xboard/nodes/nodetransaction.cpp \
             backend/testnet/testnet.cpp \
-            backend/testnet/transactionmodel.cpp
+            backend/testnet/transactionmodel.cpp \
+            backend/addressbook/addressbookmodel.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -59,7 +60,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/xchat/xchatconversationmodel.hpp \
             backend/xboard/nodes/nodetransaction.h \
             backend/testnet/testnet.hpp \
-            backend/testnet/transactionmodel.hpp
+            backend/testnet/transactionmodel.hpp \
+            backend/addressbook/addressbookmodel.hpp
 
 DISTFILES += \
     xcite.ico

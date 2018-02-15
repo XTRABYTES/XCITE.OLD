@@ -2,6 +2,28 @@
 #include <QDebug>
 #include "testnet.hpp"
 
+void Testnet::sendFrom(QString account, QString address, qreal amount) {
+    qDebug() << "SendFrom: " << account << ", " << address << "<" << amount;
+
+    QJsonArray args;
+    args.push_back(account);
+    args.push_back(address);
+    args.push_back(amount);
+    qDebug() << args;
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("sendfrom", args);
+    QJsonRpcMessage res = client->sendMessageBlocking(message);
+
+    if (res.type() == QJsonRpcMessage::Error) {
+        walletError(res.errorMessage());
+        return;
+    }
+
+    walletSuccess(res.result().toString());
+
+    qDebug() << res;
+}
+
 void Testnet::request(QString command) {
     qDebug() << "Request: " << command;
 
@@ -10,7 +32,7 @@ void Testnet::request(QString command) {
 
     if (res.type() == QJsonRpcMessage::Error) {
         walletError(res.errorData().toString());
-        qDebug() << res.errorData();
+        qDebug() << res;
         return;
     }
 

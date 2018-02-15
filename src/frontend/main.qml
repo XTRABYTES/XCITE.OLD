@@ -50,6 +50,7 @@ ApplicationWindow {
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
     signal testnetRequest(string request)
+    signal testnetSendFrom(string account, string address, real amount)
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())
@@ -68,11 +69,19 @@ ApplicationWindow {
                    })
     }
 
+    function walletSuccess(result) {
+        modalAlert({
+                       title: qsTr("SUCCESS!"),
+                       bodyText: "TXID: " + qsTr(result),
+                       buttonText: qsTr("OK")
+                   })
+    }
+
     function pollWallet(isInitial) {
-        testnetRequest("getbalance")
+        testnetRequest("getbalance", [])
 
         if (!isInitial) {
-            testnetRequest("listtransactions")
+            testnetRequest("listtransactions", [])
         }
     }
 

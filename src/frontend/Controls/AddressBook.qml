@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.2
+
 ListView {
     id: addressBook
     anchors.fill: parent
@@ -13,7 +14,6 @@ ListView {
 
     clip: true
 
-    model: model
     currentIndex: 0
 
     delegate: Label {
@@ -41,27 +41,7 @@ ListView {
         color: "#42454D"
     }
 
-    ListModel {
-        id: model
-
-        ListElement {
-            name: "Lachelle Hamblin"
-            address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
-        }
-
-        ListElement {
-            name: "Marg Apolinar"
-            address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
-        }
-
-        ListElement {
-            name: "Shanell Sanderfur"
-            address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
-        }
-
-        ListElement {
-            name: "Mickie Dehne"
-            address: "BpwyJc5i7uBMy2pNm5Vv8HMkwXqBR3kCxS"
-        }
+    function add(name, address) {
+        model.add(name, address)
     }
 }

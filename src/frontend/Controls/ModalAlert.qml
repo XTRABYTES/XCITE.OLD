@@ -25,7 +25,7 @@ ModalPopup {
             Layout.fillWidth: true
             color: "#FFF7F7"
             font.pixelSize: 18
-            wrapMode: Text.WordWrap
+            wrapMode: Text.Wrap
         }
 
         RowLayout {
