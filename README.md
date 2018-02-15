@@ -24,14 +24,14 @@ QMake is a fundamental part of Qt that serves the function of creating a make fi
 
 If this issue arises you should first try the following steps before performing a reinstallation of Qt:
 
-1.) Ensure antivirus did not keep QMake from installing during the installation process
+1. Ensure antivirus did not keep QMake from installing during the installation process
 
-2.) Ensure a proper Kit is selected/detected by going to Tools --> Options --> Build & Run --> Kits
+2. Ensure a proper Kit is selected/detected by going to Tools --> Options --> Build & Run --> Kits
 
 - If no kit is selected or all kits are errored out, you will need to either manually install a kit or perform  a 
         reinstallation. 
           
-3.) Ensure a compiler is installed by checking Tools --> Options --> Build & Run --> Compilers 
+3. Ensure a compiler is installed by checking Tools --> Options --> Build & Run --> Compilers 
 
 - If no compiler is installed you will need to either reinstall or manually install MinGW version 5.3.0
 
