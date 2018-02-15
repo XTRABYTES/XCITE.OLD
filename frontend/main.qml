@@ -25,13 +25,15 @@ ApplicationWindow {
         initialItem: LoginComponents.LoginForm {
         }
         anchors.fill: parent
-        pushEnter: Transition {
+        pushEnter: null 
+        Transition {
             PropertyAnimation {
                 from: 0
                 to: 1
             }
         }
-        pushExit: Transition {
+        pushExit: null
+        Transition {
             PropertyAnimation {
                 from: 1
                 to: 0
