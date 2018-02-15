@@ -26,19 +26,7 @@ ApplicationWindow {
         }
         anchors.fill: parent
         pushEnter: null 
-        Transition {
-            PropertyAnimation {
-                from: 0
-                to: 1
-            }
-        }
         pushExit: null
-        Transition {
-            PropertyAnimation {
-                from: 1
-                to: 0
-            }
-        }
     }
 
     Xchat {
