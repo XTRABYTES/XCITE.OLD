@@ -26,7 +26,7 @@ If this issue arises you should first try the following steps before performing 
 
 1. Ensure antivirus did not keep QMake from installing during the installation process
 
-2. Ensure a proper Kit is selected/detected by going to Tools --> Options --> Build & Run --> Kits
+2. Ensure proper Kit is selected/detected by going to Tools --> Options --> Build & Run --> Kits
 
 - If no kit is selected or all kits are errored out, you will need to either manually install a kit or perform  a 
         reinstallation. 
