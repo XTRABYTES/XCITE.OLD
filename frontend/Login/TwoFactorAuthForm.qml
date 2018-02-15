@@ -35,9 +35,9 @@ Controls.ImagePolygonal {
         }
 
         Controls.TextInputBlue {
-          anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: "******"
-          echoMode: TextInput.Password
+            anchors.horizontalCenter: parent.horizontalCenter
+            placeholder: "******"
+            echoMode: TextInput.Password
         }
 
         Controls.ButtonSimple {
@@ -52,7 +52,7 @@ Controls.ImagePolygonal {
 
         Controls.ButtonPlainText {
             anchors.horizontalCenter: parent.horizontalCenter
-            width: (anotherAccountText.width + goBackText.width)
+            width: (anotherAccountText.contentWidth + goBackText.contentWidth)
             onButtonClicked: {
                 mainRoot.push("LoginForm.qml")
             }
@@ -64,7 +64,9 @@ Controls.ImagePolygonal {
                     id: anotherAccountText
                     text: qsTr("Use another account?")
                     font.family: "Roboto Thin"
-                    font.pointSize: 10
+                    Component.onCompleted: {
+                        Component.pointSize = 10
+                    }
                     color: "#FFFFFF"
                     opacity: 0.8
                 }
