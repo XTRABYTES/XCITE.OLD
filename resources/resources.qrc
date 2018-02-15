@@ -71,6 +71,6 @@
         <file>icons/pencil.svg</file>
         <file>icons/trash.svg</file>
         <file>icons/circle-check.svg</file>
-        <file>icons/placeholder-qr.png</file>
+        <file>icons/placeholder-qr.svg</file>
     </qresource>
 </RCC>

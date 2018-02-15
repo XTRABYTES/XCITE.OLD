@@ -171,7 +171,7 @@ Rectangle {
 
             Image {
                 fillMode: Image.PreserveAspectFit
-                source: "../../icons/placeholder-qr.png"
+                source: "../../icons/placeholder-qr.svg"
                 width: 264
                 height: 264
                 sourceSize.width: 264
