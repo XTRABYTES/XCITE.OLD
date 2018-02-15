@@ -3,13 +3,12 @@
 #                X C I T E
 ####  XTRABYTES Consolidated Interactive TErminal
 
-XCITE is the core application utilizing the XTRABYTES Proof-of-Signature blockchain protocol. Built to support modules like a decentralized exchange and a fully-integrated chat protocol, the SHA512 encrypted network is quantum resistant and lightning fast. The code-fluid architecture means any developer looking to make a third-party DApp can use the XTRABYTES API to build out their dream project. XCITE is poised to be a top contender in the all-in-one decentralized applications industry.
-
+XCITE is the core application utilizing the XTRABYTES Proof-of-Signature blockchain protocol. Built to support modules like a decentralized exchange and a fully-integrated chat protocol, the SHA512 encrypted network is quantum resistant and lightning fast. The code-fluid architecture means any developer looking to make a third-party DApp can use the XTRABYTES API to build out their dream project. XCITE is poised to be a top contender in all-in-one decentralized applications.
 ## Getting Started
 
 #### Install Qt
 
-XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you download it from [here](https://www.qt.io/download-qt-installer) for free. 
+XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free. 
 
 #### Install Additional Features
 
@@ -18,6 +17,23 @@ During installation, be sure to pick the "Qt 5.9.3" component since that is the 
 #### Project Configuration
 
 After installing Qt, clone this repository and open xcite.pro using Qt Creator.
+
+#### Qt Troubleshooting Advice
+
+QMake is a fundamental part of Qt that serves the function of creating a make file. QMake not installing properly is usually attributed to user error and can be simply solved. If you run into a QMake issue during your Qt installation process follow these troubleshooting tips. 
+
+If this issue arises you should first try the following steps before performing a reinstallation of Qt:
+
+1. Ensure antivirus did not keep QMake from installing during the installation process
+
+2. Ensure proper Kit is selected/detected by going to Tools --> Options --> Build & Run --> Kits
+
+- If no kit is selected or all kits are errored out, you will need to either manually install a kit or perform  a 
+        reinstallation. 
+          
+3. Ensure a compiler is installed by checking Tools --> Options --> Build & Run --> Compilers 
+
+- If no compiler is installed you will need to either reinstall or manually install MinGW version 5.3.0
 
 ## Screenshots
 

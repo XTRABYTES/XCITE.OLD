@@ -66,7 +66,7 @@ Controls.ImagePolygonal {
 
         Controls.ButtonPlainText {
             anchors.horizontalCenter: parent.horizontalCenter
-            width: (dontHaveAccountText.width + signUpText.width)
+            width: (dontHaveAccountText.contentWidth + signUpText.contentWidth)
             onButtonClicked: {
                 mainRoot.push("SignUpForm.qml")
             }
