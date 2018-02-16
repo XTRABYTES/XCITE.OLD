@@ -170,7 +170,7 @@ Rectangle {
             }
 
             Image {
-                fillMode: Image.PreserveAspectFit
+                fillMode: Image.Pad
                 source: "../../icons/placeholder-qr.svg"
                 width: 264
                 height: 264
