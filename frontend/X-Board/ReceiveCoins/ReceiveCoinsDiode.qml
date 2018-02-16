@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Controls.Styles 1.4
 import "../../Controls" as Controls
 
@@ -51,44 +51,54 @@ Controls.Diode {
                     anchors.right: parent.right
                     Layout.topMargin: 6
 
-                    Text {
+                    Label {
+                        id: copyPasteButton
+
+                        readonly property string defaultText: qsTr("Copy address to clipboard")
+                        readonly property string altText: qsTr(
+                                                              "Address copied!")
+                        readonly property string defaultIcon: "../../icons/copy-clipboard.svg"
+                        readonly property string altIcon: "../../icons/circle-cross.svg"
+                        property bool isActive: false
+
                         font.pixelSize: 12
                         font.family: "Roboto"
-                        text: "Copy address to clipboard"
-                        color: "#E3E3E3"
+                        font.weight: isActive ? Font.Bold : Font.Normal
+                        text: isActive ? altText : defaultText
+                        color: isActive ? "#ffffff" : "#E3E3E3"
                         anchors.top: parent.top
                         anchors.left: parent.left
-                        anchors.leftMargin: 24
+                        leftPadding: 24
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                copyTextTimer.start()
+                                clipboard.text = formAddress.text
+                                parent.isActive = true
+                            }
+                        }
 
                         Image {
                             id: copyImage
                             fillMode: Image.PreserveAspectFit
-                            source: "../../icons/copy-clipboard.svg"
+                            source: parent.isActive ? parent.altIcon : parent.defaultIcon
                             width: 19
                             height: 13
                             sourceSize.width: 19
                             sourceSize.height: 13
-                            anchors.right: parent.left
+                            anchors.left: parent.left
                             anchors.top: parent.top
                             anchors.topMargin: parent.Center
                             anchors.rightMargin: 5
 
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-
-                                    copyTextTimer.start()
-                                    copyImage.source = "../../icons/circle-cross.svg"
-                                }
-                            }
-
                             Timer {
                                 id: copyTextTimer
-                                interval: 3000
+                                interval: 1500
                                 running: false
                                 repeat: false
-                                onTriggered: copyImage.source = "../../icons/copy-clipboard.svg"
+                                onTriggered: copyPasteButton.isActive = false
                             }
                         }
                     }

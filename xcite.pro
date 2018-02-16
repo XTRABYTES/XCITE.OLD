@@ -43,7 +43,8 @@ SOURCES += main/main.cpp \
             backend/p2p/p2p.cpp \
             frontend/support/sortfilterproxymodel.cpp \
             backend/xchat/xchatconversationmodel.cpp \
-    backend/xboard/nodes/nodetransaction.cpp
+    backend/xboard/nodes/nodetransaction.cpp \
+    backend/support/ClipboardProxy.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -53,7 +54,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/p2p/p2p.hpp \
             frontend/support/sortfilterproxymodel.hpp \
             backend/xchat/xchatconversationmodel.hpp \
-    backend/xboard/nodes/nodetransaction.h
+    backend/xboard/nodes/nodetransaction.h \
+    backend/support/ClipboardProxy.hpp
 
 DISTFILES += \
     xcite.ico

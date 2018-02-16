@@ -7,6 +7,7 @@
 #include "../backend/xchat/xchatconversationmodel.hpp"
 #include "../frontend/support/sortfilterproxymodel.hpp"
 #include "../backend/xboard/nodes/nodetransaction.h"
+#include "../backend/support/ClipboardProxy.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<Xchat>("xtrabytes.xcite.xchat", 1, 0, "Xchat");
     qmlRegisterType<SortFilterProxyModel>("SortFilterProxyModel", 0, 1, "SortFilterProxyModel");
     qmlRegisterType<XChatConversationModel>("XChatConversationModel", 0, 1, "XChatConversationModel");
+    qmlRegisterType<ClipboardProxy>("Clipboard", 1, 0, "Clipboard");
 
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/");
