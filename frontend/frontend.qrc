@@ -67,5 +67,9 @@
         <file>Controls/AddressBook.qml</file>
         <file>Controls/SliderAmount.qml</file>
         <file>Controls/AddressButton.qml</file>
+        <file>X-Chat/Layout.qml</file>
+        <file>X-Chat/Home/Layout.qml</file>
+        <file>X-Chat/Home/ChannelsDiode.qml</file>
+        <file>X-Chat/Home/ChatDiode.qml</file>
     </qresource>
 </RCC>

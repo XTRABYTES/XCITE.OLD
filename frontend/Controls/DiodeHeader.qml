@@ -8,6 +8,9 @@ Rectangle {
 
     property alias menuLabelText: menuLabel.text
     property alias text: label.text
+    property alias iconSource:menuLabel.iconSource
+    property alias iconSize:menuLabel.iconSize
+    property alias iconOnly:menuLabel.iconOnly
 
     color: "transparent"
     height: 44.5
@@ -32,6 +35,6 @@ Rectangle {
 
     DiodeHeaderMenu {
         id: menuLabel
-        visible: menuLabelText.length > 0
+        visible: menuLabelText.length > 0 || iconOnly == true
     }
 }

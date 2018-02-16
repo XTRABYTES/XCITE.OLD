@@ -8,6 +8,7 @@ import "Controls" as Controls
 
 import "X-Board" as XBoard
 import "X-Change" as XChange
+import "X-Chat" as XChat
 import "tools" as Tools
 
 import xtrabytes.xcite.xchat 1.0
@@ -92,6 +93,10 @@ Item {
 
             XChange.Layout {
             }
+
+            XChat.Layout {
+            }
+
 
             // Settings
             Item {
