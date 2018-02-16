@@ -64,9 +64,7 @@ Controls.ImagePolygonal {
                     id: anotherAccountText
                     text: qsTr("Use another account?")
                     font.family: "Roboto Thin"
-                    Component.onCompleted: {
-                        Component.pointSize = 10
-                    }
+                    font.pointSize: 10
                     color: "#FFFFFF"
                     opacity: 0.8
                 }
