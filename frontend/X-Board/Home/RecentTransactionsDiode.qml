@@ -293,7 +293,7 @@ Rectangle {
             ListElement {
                 type: "OUT"
                 typeLabel: qsTr("Sent")
-                date: "Wednesday, 24th of January"
+                date: "24/1/2017"
                 time: "12:45PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
