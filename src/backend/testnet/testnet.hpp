@@ -5,6 +5,7 @@
 #include <QAuthenticator>
 #include "qjsonrpchttpclient.h"
 #include "transactionmodel.hpp"
+#include "../addressbook/addressbookmodel.hpp"
 
 class HttpClient : public QJsonRpcHttpClient
 {
@@ -47,6 +48,8 @@ class Testnet : public QObject
     Q_PROPERTY(qlonglong balance MEMBER m_balance NOTIFY walletChanged)
     Q_PROPERTY(qlonglong unconfirmed MEMBER m_unconfirmed NOTIFY walletChanged)
     Q_PROPERTY(TransactionModel *transactions MEMBER m_transactions NOTIFY walletChanged)
+    Q_PROPERTY(AddressBookModel *accounts MEMBER m_accounts NOTIFY walletChanged)
+
 
 public:
     Testnet(QObject *parent = 0) : QObject(parent) {
@@ -57,6 +60,8 @@ public:
             qlonglong rnd = (qrand() % 100000) - 50000;
             m_transactions->add(rnd < 0 ? "OUT" : "IN", "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34", "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34", rnd, QDateTime::currentDateTime());
         }
+
+        m_accounts = new AddressBookModel;
     }
 
     ~Testnet() {}   
@@ -70,9 +75,12 @@ signals:
 public Q_SLOTS:
     void request(QString command);
     void sendFrom(QString account, QString address, qreal amount);
+    void getAccountAddress(QString account);
 
 public:
     TransactionModel *m_transactions;
+    AddressBookModel *m_accounts;
+    bool accountsLoaded = false;
 
 private:
     HttpClient *client;

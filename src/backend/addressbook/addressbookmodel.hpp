@@ -41,9 +41,15 @@ public:
     QHash<int, QByteArray> roleNames() const;
 
     Q_INVOKABLE void add(QString, QString);
+    Q_INVOKABLE void clear();
 
-private:
+    void updateAccountAddress(QString, QString);
+
     QVector<Address*> items;
+
+signals:
+    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
+    void setCurrentIndex(int idx);
 };
 
 #endif // ADDRESSMODEL_HPP

@@ -23,7 +23,7 @@ ListView {
         width: parent.width
         leftPadding: 20
         rightPadding: 20
-        text: name
+        text: name || "Default"
         font.family: "Roboto"
         font.weight: Font.Light
         font.pixelSize: 16

@@ -212,31 +212,41 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.topMargin: 129
                 anchors.leftMargin: 18
+
                 Controls.AddressBook {
                     id: addressBook
-                    model: addressModel
+                    model: wallet.accounts
 
-                    ListModel {
-                        id: addressModel
-
-                        ListElement {
-                            name: "Default"
-                            address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+                    Connections {
+                        Component.onCompleted: {
+                            addressBook.add(
+                                        "",
+                                        "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS")
+                            addressBook.add(
+                                        "Main",
+                                        "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS")
+                            addressBook.add(
+                                        "Secondary",
+                                        "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS")
+                            addressBook.currentIndex = 0
                         }
+                    }
 
-                        ListElement {
-                            name: "Main"
-                            address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
-                        }
-
-                        ListElement {
-                            name: "Secondary"
-                            address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
+                    Connections {
+                        target: wallet.accounts
+                        onSetCurrentIndex: {
+                            addressBook.currentIndex = idx
                         }
                     }
 
                     onCurrentItemChanged: {
                         var item = model.get(currentIndex)
+
+                        if (item.address === '') {
+                            testnetGetAccountAddress(item.name)
+                            item = model.get(currentIndex)
+                        }
+
                         formAddress.text = item.address
                     }
                 }

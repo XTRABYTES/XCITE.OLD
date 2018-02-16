@@ -14,13 +14,35 @@ Address::Address(QString name, QString address, QObject *parent) :
 
 void AddressBookModel::add(QString name, QString address)
 {
-    Address *addr = new Address();
+    Address *addr = new Address;
     addr->m_name = name;
     addr->m_address = address;
 
     beginInsertRows(QModelIndex(), 0, 0);
     items.push_back(addr);
     endInsertRows();
+}
+
+void AddressBookModel::updateAccountAddress(QString account, QString address) {
+    for (int i = 0; i < items.size(); i++) {
+        if (items[i]->m_name == account) {
+            items[i]->m_address = address;
+
+            QVector<int> roles;
+            roles.push_back(NameRole);
+
+            // TODO: I have no idea if this is correct but it seems to work
+            emit dataChanged(index(i), index(0), roles);
+            break;
+        }
+    }
+}
+
+void AddressBookModel::clear()
+{
+    beginRemoveRows(QModelIndex(), 0, items.size());
+    items.clear();
+    endRemoveRows();
 }
 
 AddressBookModel::AddressBookModel(QObject *parent) :

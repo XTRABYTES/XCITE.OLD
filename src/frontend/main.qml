@@ -37,6 +37,7 @@ ApplicationWindow {
     signal xChatMessageReceived(string message, date datetime)
     signal testnetRequest(string request)
     signal testnetSendFrom(string account, string address, real amount)
+    signal testnetGetAccountAddress(string account)
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())
@@ -64,10 +65,11 @@ ApplicationWindow {
     }
 
     function pollWallet(isInitial) {
-        testnetRequest("getbalance", [])
+        testnetRequest("getbalance")
 
         if (!isInitial) {
-            testnetRequest("listtransactions", [])
+            testnetRequest("listtransactions")
+            testnetRequest("listaccounts")
         }
     }
 

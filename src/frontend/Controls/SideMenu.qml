@@ -144,6 +144,7 @@ Rectangle {
                                   }, function () {
                                       xcite.isNetworkActive = !xcite.isNetworkActive
                                       pollWallet(true)
+                                      testnetRequest('listaccounts')
                                   })
             }
         }
