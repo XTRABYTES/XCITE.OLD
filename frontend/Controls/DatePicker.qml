@@ -17,9 +17,8 @@ TextField {
     background: Rectangle {
         color: "#2A2C31"
         radius: 6
-        implicitWidth: 112
+        implicitWidth: 132
         implicitHeight: 47
-
     }
 
     Button {
@@ -55,7 +54,7 @@ TextField {
             id: picker
             visible: false
             color: "#2a2c31"
-            width: 160
+            width: 200
             height: 150
             radius: 5
             z: 100
