@@ -183,17 +183,17 @@ Controls.Diode {
                                        id: addressModel
 
                                        ListElement {
-                                           name: "Default"
+                                           name: "Candice"
                                            address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
                                        }
 
                                        ListElement {
-                                           name: "Main"
+                                           name: "Susan"
                                            address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
                                        }
 
                                        ListElement {
-                                           name: "Secondary"
+                                           name: "Timothy"
                                            address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
                                        }
                    }
