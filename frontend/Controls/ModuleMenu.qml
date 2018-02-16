@@ -52,7 +52,7 @@ Item {
 
             ModuleMenuButton {
                 name: "xChat"
-                target: "xChat.TBD"
+                target: "xChat.home"
                 text: qsTr("X-CHAT")
             }
 
