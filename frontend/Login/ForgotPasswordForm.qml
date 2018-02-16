@@ -51,7 +51,7 @@ Controls.ImagePolygonal {
 
         Controls.ButtonPlainText {
             anchors.horizontalCenter: parent.horizontalCenter
-            width: (rememberedPasswordText.width + goBackText.width)
+            width: (rememberedPasswordText.contentWidth + goBackText.contentWidth)
             onButtonClicked: {
                 mainRoot.push("LoginForm.qml")
             }

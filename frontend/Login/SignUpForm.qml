@@ -60,7 +60,7 @@ Controls.ImagePolygonal {
             hoverForegroundColor: "#273A3B"
             anchors.horizontalCenter: parent.horizontalCenter
             onButtonClicked: {
-                mainRoot.replace("DashboardForm.qml")
+                mainRoot.replace("../DashboardForm.qml")
             }
         }
 
