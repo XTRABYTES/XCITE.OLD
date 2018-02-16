@@ -4,11 +4,13 @@ import QtQuick.Layouts 1.3
 import Qt.labs.calendar 1.0
 
 TextField {
+    property string dateFormat : "dd/MM/yyyy"
+
     id: dateField
     font.family: "Roboto"
     font.weight: Font.Light
     font.pixelSize: 16
-    text: Qt.formatDate(new Date(), "dd/MM/yy")
+    text: Qt.formatDate(new Date(), dateFormat)
     leftPadding: 10
     rightPadding: 10
     topPadding: 0
@@ -106,7 +108,7 @@ TextField {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                dateField.text = Qt.formatDate(model.date, "dd/MM/yy");
+                                dateField.text = Qt.formatDate(model.date, dateFormat);
                                 picker.visible = false;
                             }
                         }
