@@ -136,8 +136,8 @@ Controls.Diode {
                     Layout.bottomMargin: 25
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    fillMode: Image.PreserveAspectFit
-                    source: "../../icons/placeholder-qr.png"
+                    fillMode: Image.Pad
+                    source: "../../icons/placeholder-qr.svg"
                     width: 264
                     height: 264
                     sourceSize.width: 264
