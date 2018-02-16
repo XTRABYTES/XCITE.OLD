@@ -23,7 +23,7 @@ ApplicationWindow {
         initialItem: LoginComponents.LoginForm {
         }
         anchors.fill: parent
-        pushEnter: null 
+        pushEnter: null
         pushExit: null
     }
 

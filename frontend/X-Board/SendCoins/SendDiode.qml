@@ -9,7 +9,7 @@ Controls.Diode {
     property real balance: 175314
     property real totalAmount: networkFee + (formAmount.text.length > 0 ? parseFloat(
                                                                               formAmount.text) : 0)
-                                                                              
+
     title: qsTr("SEND XBY")
     menuLabelText: qsTr("XBY")
 
@@ -163,48 +163,50 @@ Controls.Diode {
                     Layout.fillWidth: true
 
                     Rectangle {
+                        id: addressBookContainer
+
                         anchors.fill: parent
                         anchors.bottomMargin: 60
                         radius: 4
                         color: "#2A2C31"
 
+                        Controls.AddressBook {
+                            id: addressBook
+                            model: addressModel
+                            onCurrentItemChanged: {
+                                var item = model.get(currentIndex)
+                                formAddress.text = item.address
+                            }
+
+                            ListModel {
+                                id: addressModel
+
+                                ListElement {
+                                    name: "Candice"
+                                    address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+                                }
+
+                                ListElement {
+                                    name: "Susan"
+                                    address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
+                                }
+
+                                ListElement {
+                                    name: "Timothy"
+                                    address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
+                                }
+                            }
+                        }
                     }
 
-                    Controls.AddressBook {
-                        id: addressBook
-                            model:addressModel
-                        onCurrentItemChanged: {
-                            var item = model.get(currentIndex)
-                            formAddress.text = item.address
+                    RowLayout {
+                        anchors.top: addressBookContainer.bottom
+                        anchors.topMargin: 10
 
+                        Controls.AddressButton {
+                            Layout.leftMargin: -17
                         }
-
-                    ListModel {
-                                       id: addressModel
-
-                                       ListElement {
-                                           name: "Candice"
-                                           address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
-                                       }
-
-                                       ListElement {
-                                           name: "Susan"
-                                           address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
-                                       }
-
-                                       ListElement {
-                                           name: "Timothy"
-                                           address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
-                                       }
-                   }
-                       RowLayout {
-                                Controls.AddressButton {
-                                       anchors.top: parent.bottom
-                                       anchors.topMargin: 435
-                                       Layout.leftMargin: -17
-                                 }
-                         }
-                   }
+                    }
                 }
             }
         }
@@ -249,4 +251,3 @@ Controls.Diode {
         }
     }
 }
-
