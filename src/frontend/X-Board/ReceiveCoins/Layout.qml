@@ -1,46 +1,35 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
 
-import "../../Controls" as Controls
-import "../Home" as Home
-RowLayout {
+import "../Home" as HomeComponents
 
+RowLayout {
     readonly property color cDiodeBackground: "#3a3e46"
 
-    id: xBoardReceive
-    anchors.left: parent.left
-    anchors.right: parent.right
-    Layout.rightMargin: layoutGridSpacing
+    anchors.fill: parent
     spacing: layoutGridSpacing
-    visible:false;
 
-
-
-        //Layout.alignment: Qt.AlignTop
-        //spacing: layoutGridSpacing
+    RowLayout {
+        anchors.top: parent.top
+        spacing: layoutGridSpacing
 
         ColumnLayout {
-            id:boardColumn
+            anchors.top: parent.top
+            Layout.preferredWidth: 376
+
             spacing: layoutGridSpacing
-            anchors.top:parent.top
 
-            Home.BalanceDiode {
-                id:balanceDiode
-                anchors.top:parent.top
-
-                Layout.maximumHeight: 330
+            HomeComponents.BalanceDiode {
             }
 
-            Home.BalanceValueDiode {
+            HomeComponents.BalanceValueDiode {
             }
         }
 
-
-       ReceiveCoinsDiode{
-           // color:"green"
-             Layout.fillWidth: true
+        ReceiveCoinsDiode {
+            anchors.top: parent.top
+            Layout.fillWidth: true
+            height: childrenRect.height
         }
-
-
-
+    }
 }

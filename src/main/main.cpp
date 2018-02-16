@@ -8,6 +8,7 @@
 #include "../frontend/support/sortfilterproxymodel.hpp"
 #include "../backend/xboard/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
+#include "../backend/support/ClipboardProxy.hpp"
 
 #include "../backend/testnet/testnet.hpp"
 
@@ -20,11 +21,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<SortFilterProxyModel>("SortFilterProxyModel", 0, 1, "SortFilterProxyModel");
     qmlRegisterType<XChatConversationModel>("XChatConversationModel", 0, 1, "XChatConversationModel");
     qmlRegisterType<AddressBookModel>("AddressBookModel", 0, 1, "AddressBookModel");
+    qmlRegisterType<ClipboardProxy>("Clipboard", 1, 0, "Clipboard");
 
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/");
-
-    XchatObject xchatobj;
+XchatObject xchatobj;
     xchatobj.Initialize();
 
     Testnet wallet;

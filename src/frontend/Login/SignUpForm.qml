@@ -60,13 +60,13 @@ Controls.ImagePolygonal {
             hoverForegroundColor: "#273A3B"
             anchors.horizontalCenter: parent.horizontalCenter
             onButtonClicked: {
-                mainRoot.replace("DashboardForm.qml")
+                mainRoot.replace("../DashboardForm.qml")
             }
         }
 
         Controls.ButtonPlainText {
             anchors.horizontalCenter: parent.horizontalCenter
-            width: (alreadyMemberText.width + loginText.width)
+            width: (alreadyMemberText.contentWidth + loginText.contentWidth)
             onButtonClicked: {
                 mainRoot.push("LoginForm.qml")
             }

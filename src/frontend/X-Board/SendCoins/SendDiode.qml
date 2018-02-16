@@ -165,46 +165,49 @@ Controls.Diode {
                     Layout.fillWidth: true
 
                     Rectangle {
+                        id: addressBookContainer
+
                         anchors.fill: parent
                         anchors.bottomMargin: 60
                         radius: 4
                         color: "#2A2C31"
+
+                        Controls.AddressBook {
+                            id: addressBook
+
+                            model: AddressBookModel {
+                            }
+
+                            Connections {
+                                // TODO: Temporary placeholder content
+                                Component.onCompleted: {
+                                    addressBook.add(
+                                                "@james87uk",
+                                                "XLGSfK2RhjvEbkGMe4WVk2R8k9auLESAsv")
+                                    addressBook.add(
+                                                "@posey",
+                                                "XJmqWTfBQwZk2QgU3eFnbtenUHXXPmsgPa")
+                                    addressBook.add(
+                                                "@nrocy",
+                                                "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ")
+
+                                    addressBook.currentIndex = 0
+                                }
+                            }
+
+                            onCurrentItemChanged: {
+                                var item = model.get(currentIndex)
+                                formAddress.text = item.address
+                            }
+                        }
                     }
 
-                    Controls.AddressBook {
-                        id: addressBook
+                    RowLayout {
+                        anchors.top: addressBookContainer.bottom
+                        anchors.topMargin: 10
 
-                        model: AddressBookModel {
-                        }
-
-                        Connections {
-                            // TODO: Temporary placeholder content
-                            Component.onCompleted: {
-                                addressBook.add(
-                                            "@james87uk",
-                                            "XLGSfK2RhjvEbkGMe4WVk2R8k9auLESAsv")
-                                addressBook.add(
-                                            "@posey",
-                                            "XJmqWTfBQwZk2QgU3eFnbtenUHXXPmsgPa")
-                                addressBook.add(
-                                            "@nrocy",
-                                            "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ")
-
-                                addressBook.currentIndex = 0
-                            }
-                        }
-
-                        onCurrentItemChanged: {
-                            var item = model.get(currentIndex)
-                            formAddress.text = item.address
-                        }
-
-                        RowLayout {
-                            Controls.AddressButton {
-                                anchors.top: parent.bottom
-                                anchors.topMargin: 435
-                                Layout.leftMargin: -17
-                            }
+                        Controls.AddressButton {
+                            Layout.leftMargin: -17
                         }
                     }
                 }

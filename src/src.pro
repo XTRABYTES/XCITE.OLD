@@ -48,7 +48,8 @@ SOURCES += main/main.cpp \
             backend/xboard/nodes/nodetransaction.cpp \
             backend/testnet/testnet.cpp \
             backend/testnet/transactionmodel.cpp \
-            backend/addressbook/addressbookmodel.cpp
+            backend/addressbook/addressbookmodel.cpp \
+            backend/support/ClipboardProxy.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -61,7 +62,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/xboard/nodes/nodetransaction.h \
             backend/testnet/testnet.hpp \
             backend/testnet/transactionmodel.hpp \
-            backend/addressbook/addressbookmodel.hpp
+            backend/addressbook/addressbookmodel.hpp \
+            backend/support/ClipboardProxy.hpp
 
 DISTFILES += \
     xcite.ico
