@@ -70,5 +70,6 @@
         <file>Controls/ModalPopup.qml</file>
         <file>Controls/ModalAlert.qml</file>
         <file>Controls/ModalHeader.qml</file>
+        <file>Controls/CheckBoxBlue.qml</file>
     </qresource>
 </RCC>
