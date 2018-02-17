@@ -4,11 +4,13 @@ import QtQuick.Layouts 1.3
 import Qt.labs.calendar 1.0
 
 TextField {
+    property string dateFormat : "dd/MM/yyyy"
+
     id: dateField
     font.family: "Roboto"
     font.weight: Font.Light
     font.pixelSize: 16
-    text: Qt.formatDate(new Date(), "dd/MM/yy")
+    text: Qt.formatDate(new Date(), dateFormat)
     leftPadding: 10
     rightPadding: 10
     topPadding: 0
@@ -17,9 +19,8 @@ TextField {
     background: Rectangle {
         color: "#2A2C31"
         radius: 6
-        implicitWidth: 112
+        implicitWidth: 132
         implicitHeight: 47
-
     }
 
     Button {
@@ -55,7 +56,7 @@ TextField {
             id: picker
             visible: false
             color: "#2a2c31"
-            width: 160
+            width: 200
             height: 150
             radius: 5
             z: 100
@@ -107,7 +108,7 @@ TextField {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                dateField.text = Qt.formatDate(model.date, "dd/MM/yy");
+                                dateField.text = Qt.formatDate(model.date, dateFormat);
                                 picker.visible = false;
                             }
                         }
