@@ -43,13 +43,8 @@ Controls.ImagePolygonal {
           echoMode: TextInput.Password
         }
 
-        CheckBox {
-            style: CheckBoxStyle {
-                        label: Text {
-                            color: "white"
-                            text: qsTr("I agree to the terms and conditions")
-                        }
-                    }
+        Controls.CheckBoxBlue {
+          text: qsTr("I agree to the terms and conditions")
         }
 
         Controls.ButtonSimple {

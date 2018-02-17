@@ -67,5 +67,6 @@
         <file>Controls/AddressBook.qml</file>
         <file>Controls/SliderAmount.qml</file>
         <file>Controls/AddressButton.qml</file>
+        <file>Controls/CheckBoxBlue.qml</file>
     </qresource>
 </RCC>
