@@ -10,39 +10,32 @@ ColumnLayout {
     Layout.fillWidth: true
     anchors.left: parent.left
     anchors.right: parent.right
+
     //height:parent.height
-
-
     spacing: layoutGridSpacing
 
     RowLayout {
-        anchors.top:parent.top
-        height:parent.height
+        anchors.top: parent.top
+        height: parent.height
         Layout.fillHeight: true
         Layout.fillWidth: true
         Layout.preferredWidth: 257
         spacing: layoutGridSpacing
 
         ColumnLayout {
-            anchors.top:parent.top
-            height:parent.height
+            anchors.top: parent.top
+            height: parent.height
             spacing: layoutGridSpacing
 
-            ChannelsDiode{
-
-
+            ChannelsDiode {
             }
-
-
-
-
         }
-        ColumnLayout{
-            anchors.top:parent.top
-            height:parent.height
+        ColumnLayout {
+            anchors.top: parent.top
+            height: parent.height
             spacing: layoutGridSpacing
-            ChatDiode{}
-
+            ChatDiode {
+            }
         }
     }
 }

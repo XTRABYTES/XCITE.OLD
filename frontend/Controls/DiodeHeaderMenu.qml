@@ -8,7 +8,7 @@ RowLayout {
     property alias text: menuLabel.text
     property string iconSource: "../icons/dropdown-arrow.svg"
     property int iconSize: 10
-    property bool iconOnly:false
+    property bool iconOnly: false
 
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
@@ -36,10 +36,10 @@ RowLayout {
         height: parent.height
         Layout.preferredWidth: 40
 
-        icon.source:iconSource
+        icon.source: iconSource
         icon.sourceSize.width: iconSize
-        MouseArea{
-            anchors.fill:parent
+        MouseArea {
+            anchors.fill: parent
         }
     }
 }

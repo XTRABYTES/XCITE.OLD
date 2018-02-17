@@ -13,16 +13,16 @@ Item {
     Layout.fillWidth: true
     visible: selectedModule === 'xChat'
 
-    // Home
 
+    // Home
     Connections {
         target: dashboard
         onSelectView: {
-            var parts = path.split('.');
+            var parts = path.split('.')
 
-            selectedModule = parts[0];
+            selectedModule = parts[0]
             if (parts.length === 2) {
-                selectedView = parts[1];
+                selectedView = parts[1]
             } else {
                 selectedView = defaultView
             }
