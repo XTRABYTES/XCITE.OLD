@@ -42,6 +42,22 @@ ListView {
     }
 
     function add(name, address) {
-        model.add(name, address)
+        currentIndex = model.append(name, address)
+    }
+
+    function update(name, address) {
+        if (currentItem) {
+            model.update(currentIndex, name, address)
+        }
+    }
+
+    function getSelectedItem() {
+        return model.get(currentIndex)
+    }
+
+    function removeSelected() {
+        if (currentItem) {
+            model.remove(currentIndex)
+        }
     }
 }

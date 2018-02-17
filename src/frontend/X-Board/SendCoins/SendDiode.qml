@@ -190,14 +190,12 @@ Controls.Diode {
                                     addressBook.add(
                                                 "@nrocy",
                                                 "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ")
-
                                     addressBook.currentIndex = 0
                                 }
                             }
 
                             onCurrentItemChanged: {
-                                var item = model.get(currentIndex)
-                                formAddress.text = item.address
+                                selectItem(addressBook.getSelectedItem())
                             }
                         }
                     }
@@ -208,6 +206,22 @@ Controls.Diode {
 
                         Controls.AddressButton {
                             Layout.leftMargin: -17
+                            currentItem: addressBook.currentItem
+
+                            Connections {
+                                onAddressAdded: {
+                                    addressBook.add(name, address)
+                                }
+
+                                onAddressUpdated: {
+                                    addressBook.update(name, address)
+                                    selectItem(addressBook.getSelectedItem())
+                                }
+
+                                onAddressRemoved: {
+                                    addressBook.removeSelected()
+                                }
+                            }
                         }
                     }
                 }
@@ -255,5 +269,9 @@ Controls.Diode {
                                   })
             }
         }
+    }
+
+    function selectItem(item) {
+        formAddress.text = item.address
     }
 }

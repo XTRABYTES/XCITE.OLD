@@ -12,15 +12,45 @@ Address::Address(QString name, QString address, QObject *parent) :
     m_address = address;
 }
 
-void AddressBookModel::add(QString name, QString address)
+int AddressBookModel::append(QString name, QString address)
 {
     Address *addr = new Address;
     addr->m_name = name;
     addr->m_address = address;
 
-    beginInsertRows(QModelIndex(), 0, 0);
-    items.push_back(addr);
+    int idx = items.size();
+
+    beginInsertRows(QModelIndex(), idx, idx);
+    items.append(addr);
     endInsertRows();
+
+    return idx;
+}
+
+int AddressBookModel::remove(int idx)
+{
+    Address *addr = items.at(idx);
+    if (addr != NULL) {
+        beginRemoveRows(QModelIndex(), idx, idx);
+        free(addr);
+        items.remove(idx);
+        endRemoveRows();
+    }
+
+    return (idx > 0 ? idx : 0);
+}
+
+void AddressBookModel::update(int idx, QString name, QString address)
+{
+    Address *addr = items.at(idx);
+    if (addr == NULL) {
+        return;
+    }
+
+    addr->m_name = name;
+    addr->m_address = address;
+
+    emit dataChanged(index(idx), index(idx));
 }
 
 void AddressBookModel::updateAccountAddress(QString account, QString address) {
@@ -29,10 +59,9 @@ void AddressBookModel::updateAccountAddress(QString account, QString address) {
             items[i]->m_address = address;
 
             QVector<int> roles;
-            roles.push_back(NameRole);
+            roles.append(NameRole);
 
-            // TODO: I have no idea if this is correct but it seems to work
-            emit dataChanged(index(i), index(0), roles);
+            emit dataChanged(index(i), index(i));
             break;
         }
     }

@@ -91,7 +91,7 @@ void Testnet::request(QString command) {
             QString name = keys.at(i);
             QString address = "";
 
-            m_accounts->add(name, address);
+            m_accounts->append(name, address);
         }
 
         m_accounts->setCurrentIndex(0);

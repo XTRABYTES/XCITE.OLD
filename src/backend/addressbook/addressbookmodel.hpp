@@ -40,7 +40,9 @@ public:
 
     QHash<int, QByteArray> roleNames() const;
 
-    Q_INVOKABLE void add(QString, QString);
+    Q_INVOKABLE int append(QString, QString);
+    Q_INVOKABLE void update(int, QString, QString);
+    Q_INVOKABLE int remove(int);
     Q_INVOKABLE void clear();
 
     void updateAccountAddress(QString, QString);
@@ -48,7 +50,6 @@ public:
     QVector<Address*> items;
 
 signals:
-    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
     void setCurrentIndex(int idx);
 };
 

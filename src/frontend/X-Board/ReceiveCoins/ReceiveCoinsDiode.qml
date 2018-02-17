@@ -213,14 +213,14 @@ Controls.Diode {
                             }
 
                             onCurrentItemChanged: {
-                                var item = model.get(currentIndex)
+                                var item = addressBook.getSelectedItem()
 
                                 if (item.address === '') {
                                     testnetGetAccountAddress(item.name)
-                                    item = model.get(currentIndex)
+                                    item = addressBook.getSelectedItem()
                                 }
 
-                                formAddress.text = item.address
+                                selectItem(item)
                             }
                         }
                     }
@@ -231,10 +231,30 @@ Controls.Diode {
 
                         Controls.AddressButton {
                             Layout.leftMargin: -17
+                            currentItem: addressBook.currentItem
+
+                            Connections {
+                                onAddressAdded: {
+                                    addressBook.add(name, address)
+                                }
+
+                                onAddressUpdated: {
+                                    addressBook.update(name, address)
+                                    selectItem(addressBook.getSelectedItem())
+                                }
+
+                                onAddressRemoved: {
+                                    addressBook.removeSelected()
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    function selectItem(item) {
+        formAddress.text = item.address
     }
 }
