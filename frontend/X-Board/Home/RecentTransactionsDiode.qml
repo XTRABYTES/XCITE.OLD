@@ -212,8 +212,8 @@ Rectangle {
             ListElement {
                 type: "IN"
                 typeLabel: qsTr("Received")
-                date: "Monday, 24th of January"
-                time: "12:45PM"
+                date: "24/1/2017"
+                time: "12:45 PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 value: 1000000
@@ -221,8 +221,8 @@ Rectangle {
             ListElement {
                 type: "OUT"
                 typeLabel: qsTr("Sent")
-                date: "Tuesday, 24th of January"
-                time: "12:45PM"
+                date: "24/1/2017"
+                time: "12:45 PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 value: -5000
@@ -230,8 +230,8 @@ Rectangle {
             ListElement {
                 type: "OUT"
                 typeLabel: qsTr("Sent")
-                date: "Wednesday, 24th of January"
-                time: "12:45PM"
+                date: "24/1/2017"
+                time: "12:45 PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 value: -6000
@@ -239,8 +239,8 @@ Rectangle {
             ListElement {
                 type: "IN"
                 typeLabel: qsTr("Received")
-                date: "Thursday, 24th of January"
-                time: "12:45PM"
+                date: "24/1/2017"
+                time: "12:45PM "
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 value: 15000
@@ -248,8 +248,8 @@ Rectangle {
             ListElement {
                 type: "OUT"
                 typeLabel: qsTr("Sent")
-                date: "Friday, 24th of January"
-                time: "12:45PM"
+                date: "24/1/2017"
+                time: "12:45 PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 value: -19000
@@ -257,8 +257,8 @@ Rectangle {
             ListElement {
                 type: "IN"
                 typeLabel: qsTr("Received")
-                date: "Saturday, 24th of January"
-                time: "12:45PM"
+                date: "24/1/2017"
+                time: "12:45 PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 value: 8000
@@ -266,8 +266,8 @@ Rectangle {
             ListElement {
                 type: "OUT"
                 typeLabel: qsTr("Sent")
-                date: "Sunday, 24th of January"
-                time: "12:45PM"
+                date: "24/1/2017"
+                time: "12:45 PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 value: -8005
@@ -275,8 +275,8 @@ Rectangle {
             ListElement {
                 type: "OUT"
                 typeLabel: qsTr("Sent")
-                date: "Monday, 24th of January"
-                time: "12:45PM"
+                date: "24/1/2017"
+                time: "12:45 PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 value: -1234.45
@@ -284,8 +284,8 @@ Rectangle {
             ListElement {
                 type: "IN"
                 typeLabel: qsTr("Received")
-                date: "Tuesday, 24th of January"
-                time: "12:45PM"
+                date: "24/1/2017"
+                time: "12:45 PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 value: 2345.34
@@ -293,7 +293,7 @@ Rectangle {
             ListElement {
                 type: "OUT"
                 typeLabel: qsTr("Sent")
-                date: "Wednesday, 24th of January"
+                date: "24/1/2017"
                 time: "12:45PM"
                 address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
                 transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
