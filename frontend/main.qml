@@ -2,7 +2,10 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.0
+
 import xtrabytes.xcite.xchat 1.0
+import Clipboard 1.0
+
 import "Login" as LoginComponents
 
 ApplicationWindow {
@@ -29,6 +32,10 @@ ApplicationWindow {
 
     Xchat {
         id: xchat
+    }
+
+    Clipboard {
+        id: clipboard
     }
 
     signal xchatSubmitMsgSignal(string msg)
