@@ -16,19 +16,18 @@ Item {
     property alias hoverEnabled: mouseArea.hoverEnabled
     property alias cursorShape: mouseArea.cursorShape
 
+    property string selectedColor: "#0ED8D2"
+    property string notSelectedColor: "#A9AAAD"
+    property string hoveringColor: "#0eefe9"
+
     id: button
     height: hasLabel ? childrenRect.height : image.height
     width: size
 
     signal buttonClicked
 
-    function getColor() {
-        switch (state) {
-        case 'hover':
-            return "#0eefe9";
-        default:
-            return isSelected ? "#0ED8D2" : "#A9AAAD";
-        }
+    function getDefaultColor() {
+        return isSelected ? selectedColor : notSelectedColor;
     }
 
     MouseArea {
@@ -38,13 +37,8 @@ Item {
         cursorShape: Qt.PointingHandCursor
 
         hoverEnabled: true
-        onEntered: { button.state = 'hover' }
-        onExited: { button.state = '' }
+        onHoveredChanged: containsMouse ? button.state = "Hovering" : button.state = "Default"
     }
-
-    states: [
-        State { name: "hover" }
-    ]
 
     Image {
         id: image
@@ -62,9 +56,10 @@ Item {
     }
 
     ColorOverlay {
+        id: colorOverlay
         anchors.fill: image
         source: image
-        color: getColor()
+        color: getDefaultColor()
 
         transform: Translate { x: imageOffsetX }
     }
@@ -85,6 +80,51 @@ Item {
         font.pixelSize: 12
         wrapMode: Text.WordWrap
 
-        color: getColor()
+        color: getDefaultColor()
     }
+
+    // Hovering animations
+
+    Behavior on scale {
+        NumberAnimation {
+            duration: 150
+            easing.type: Easing.InOutQuad
+        }
+    }
+
+    states: [
+        State {
+            name: "Hovering"
+            PropertyChanges {
+                target: colorOverlay
+                color: hoveringColor
+            }
+            PropertyChanges {
+                target: label
+                color: hoveringColor
+            }
+        },
+        State {
+            name: "Default"
+            PropertyChanges {
+                target: colorOverlay
+                color: getDefaultColor()
+            }
+            PropertyChanges {
+                target: label
+                color: getDefaultColor()
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "Default"; to: "Hovering"
+            ColorAnimation { duration: 150 }
+        },
+        Transition {
+            from: "Hovering"; to: "Default"
+            ColorAnimation { duration: 300 }
+        }
+    ]
 }
