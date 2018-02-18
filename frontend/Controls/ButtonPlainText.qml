@@ -30,7 +30,6 @@ Rectangle {
         anchors.bottom: parent.bottom
     }
 
-
     // Hovering animations
 
     Behavior on scale {
