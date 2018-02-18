@@ -81,7 +81,7 @@ Item {
 
         SearchBox {
             id: searchBox
-            placeholder: qsTr("Search for something...")
+            placeholder: qsTr("Search...")
             anchors.right: parent.right
             anchors.rightMargin: 15
         }
