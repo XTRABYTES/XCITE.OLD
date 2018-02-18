@@ -20,6 +20,7 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
         onClicked: {
             root.buttonClicked()
         }
@@ -37,8 +38,8 @@ Rectangle {
         opacity: 0.9
     }
 
-    // Hovering animations
 
+    // Hovering animations
     Behavior on scale {
         NumberAnimation {
             duration: 150
@@ -73,12 +74,18 @@ Rectangle {
 
     transitions: [
         Transition {
-            from: "Default"; to: "Hovering"
-            ColorAnimation { duration: 150 }
+            from: "Default"
+            to: "Hovering"
+            ColorAnimation {
+                duration: 150
+            }
         },
         Transition {
-            from: "Hovering"; to: "Default"
-            ColorAnimation { duration: 300 }
+            from: "Hovering"
+            to: "Default"
+            ColorAnimation {
+                duration: 300
+            }
         }
     ]
 }
