@@ -19,5 +19,6 @@ Rectangle {
         value: "37,621"
         valuePrefix: qsTr("$")
         anchors.top: diodeHeader.bottom
+        valueWidth: 340
     }
 }
