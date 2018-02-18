@@ -39,7 +39,7 @@ Controls.ImagePolygonal {
         Controls.ButtonSimple {
             text: qsTr("Login")
             backgroundColor: "transparent"
-            hoverBackgroundColor: "#1A10B9C5"
+            hoverBackgroundColor: "#3310B9C5"
             anchors.horizontalCenter: parent.horizontalCenter
             onButtonClicked: {
                 mainRoot.push("TwoFactorAuthForm.qml")

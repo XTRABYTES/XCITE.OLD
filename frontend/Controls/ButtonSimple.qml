@@ -15,6 +15,17 @@ Rectangle {
     border.color: "#10B9C5"
     border.width: 2
     color: backgroundColor
+    state: "Default"
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        onClicked: {
+            root.buttonClicked()
+        }
+        hoverEnabled: true
+        onHoveredChanged: containsMouse ? root.state = "Hovering" : root.state = "Default"
+    }
 
     Text {
         id: label
@@ -25,22 +36,49 @@ Rectangle {
         color: foregroundColor
         opacity: 0.9
     }
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        onClicked: {
-            root.buttonClicked()
-        }
-        hoverEnabled: true
-        onHoveredChanged: {
-            if (containsMouse) {
-                root.color = hoverBackgroundColor
-                label.color = hoverForegroundColor
-            }
-            else {
-                root.color = backgroundColor
-                label.color = foregroundColor
-            }
+
+    // Hovering animations
+
+    Behavior on scale {
+        NumberAnimation {
+            duration: 150
+            easing.type: Easing.InOutQuad
         }
     }
+
+    states: [
+        State {
+            name: "Hovering"
+            PropertyChanges {
+                target: root
+                color: hoverBackgroundColor
+            }
+            PropertyChanges {
+                target: label
+                color: hoverForegroundColor
+            }
+        },
+        State {
+            name: "Default"
+            PropertyChanges {
+                target: root
+                color: backgroundColor
+            }
+            PropertyChanges {
+                target: root
+                color: backgroundColor
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "Default"; to: "Hovering"
+            ColorAnimation { duration: 150 }
+        },
+        Transition {
+            from: "Hovering"; to: "Default"
+            ColorAnimation { duration: 300 }
+        }
+    ]
 }
