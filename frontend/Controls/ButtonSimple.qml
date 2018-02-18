@@ -27,7 +27,17 @@ Rectangle {
         onHoveredChanged: containsMouse ? root.state = "Hovering" : root.state = "Default"
     }
 
-    // Hoovering animations
+    Text {
+        id: label
+        anchors.centerIn: parent
+        text: "Start"
+        font.family: "Roboto Thin"
+        font.pointSize: 12
+        color: foregroundColor
+        opacity: 0.9
+    }
+
+    // Hovering animations
 
     Behavior on scale {
         NumberAnimation {
@@ -71,14 +81,4 @@ Rectangle {
             ColorAnimation { duration: 300 }
         }
     ]
-
-    Text {
-        id: label
-        anchors.centerIn: parent
-        text: "Start"
-        font.family: "Roboto Thin"
-        font.pointSize: 12
-        color: foregroundColor
-        opacity: 0.9
-    }
 }
