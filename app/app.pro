@@ -49,7 +49,8 @@ SOURCES += main/main.cpp \
             backend/testnet/testnet.cpp \
             backend/testnet/transactionmodel.cpp \
             backend/addressbook/addressbookmodel.cpp \
-            backend/support/ClipboardProxy.cpp
+            backend/support/ClipboardProxy.cpp \
+    backend/support/qrcode/QtQrCodeQuickItem.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -63,16 +64,18 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/testnet/testnet.hpp \
             backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
-            backend/support/ClipboardProxy.hpp
+            backend/support/ClipboardProxy.hpp \
+            backend/support/qrcode/QtQrCodeQuickItem.hpp
 
 DISTFILES += \
     xcite.ico
 
 RC_ICONS = xcite.ico
 
-win32:CONFIG(release, debug|release): LIBS += -L../qjsonrpc/src -lqjsonrpc
-else:win32:CONFIG(debug, debug|release): LIBS += -L../qjsonrpc/src -lqjsonrpc
-else:unix: LIBS += -L../qjsonrpc/src -lqjsonrpc
+win32:CONFIG(release, debug|release): LIBS += -L../qjsonrpc/src -L../qt-qrcode -lqjsonrpc -lqtqrcode
+else:win32:CONFIG(debug, debug|release): LIBS += -L../qjsonrpc/src  -L../qt-qrcode -lqjsonrpc -lqtqrcode
+else:unix: LIBS += -L../qjsonrpc/src -L../qt-qrcode -lqjsonrpc -lqtqrcode
 
 INCLUDEPATH += ../qjsonrpc/src
+INCLUDEPATH += ../qt-qrcode
 DEPENDPATH += ../qjsonrpc/src

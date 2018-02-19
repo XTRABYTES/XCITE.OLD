@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS = qjsonrpc src
+SUBDIRS = qjsonrpc qt-qrcode app
