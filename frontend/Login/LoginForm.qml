@@ -26,14 +26,14 @@ Controls.ImagePolygonal {
         }
 
         Controls.TextInputBlue {
-          anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: qsTr("john@email.com")
+            anchors.horizontalCenter: parent.horizontalCenter
+            placeholder: qsTr("john@email.com")
         }
 
         Controls.TextInputBlue {
-          anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: "**********"
-          echoMode: TextInput.Password
+            anchors.horizontalCenter: parent.horizontalCenter
+            placeholder: "**********"
+            echoMode: TextInput.Password
         }
 
         Controls.ButtonSimple {
@@ -93,5 +93,8 @@ Controls.ImagePolygonal {
                 }
             }
         }
+    }
+
+    Controls.Version {
     }
 }

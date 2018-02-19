@@ -4,7 +4,11 @@
 #
 #-------------------------------------------------
 
-VERSION = 0.0.0
+VERSION_MAJOR=0
+VERSION_MINOR=1
+VERSION_BUILD=2
+
+VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
 QT	+= core gui
 QT	+= xml
@@ -13,6 +17,9 @@ QT += svg
 CONFIG	+= c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
+    "VERSION_MINOR=$$VERSION_MINOR" \
+    "VERSION_BUILD=$$VERSION_BUILD"
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
