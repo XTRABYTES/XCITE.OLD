@@ -83,7 +83,6 @@ Item {
             id: searchBox
             placeholder: qsTr("Search...")
             anchors.right: parent.right
-            anchors.rightMargin: 15
         }
     }
 }
