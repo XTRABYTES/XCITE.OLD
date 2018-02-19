@@ -64,7 +64,7 @@ Item {
 
                 function showSearchResults() {
                     return searchField.text.length > 0 && searchField.focus
-                            && searchField.activeFocus
+                            && searchField.activeFocus && searchField.focus
                 }
 
                 onTextChanged: function () {
@@ -73,6 +73,10 @@ Item {
 
                 onFocusChanged: {
                     searchResultsBox.visible = showSearchResults()
+                }
+
+                onEditingFinished: {
+                    searchResultsBox.visible = false
                 }
             }
 
