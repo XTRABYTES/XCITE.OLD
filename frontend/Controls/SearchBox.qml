@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
@@ -61,6 +61,19 @@ Item {
                         color: "transparent"
                     }
                 }
+
+                function showSearchResults() {
+                    return searchField.text.length > 0 && searchField.focus
+                            && searchField.activeFocus
+                }
+
+                onTextChanged: function () {
+                    searchResultsBox.visible = showSearchResults()
+                }
+
+                onFocusChanged: {
+                    searchResultsBox.visible = showSearchResults()
+                }
             }
 
             /*
@@ -105,9 +118,51 @@ Item {
     }
 
     Rectangle {
+        id: searchResultsBox
+
         width: searchBoxId.width
-        height: 100
-        color: "red"
+        height: searchBoxResultsId.implicitHeight
+        radius: 5
+        color: "#61646a"
         anchors.top: searchBoxId.bottom
+        anchors.topMargin: 3
+        opacity: 0.9
+        visible: false
+
+        Column {
+            id: searchBoxResultsId
+            spacing: 2
+            leftPadding: 5
+
+            Rectangle {
+                width: searchResultsBox.width
+                radius: searchResultsBox.radius
+                color: "transparent"
+                height: textLabelId.implicitHeight
+                Text {
+                    id: textLabelId
+                    text: "Hello World!"
+                    font.family: "Helvetica"
+                    font.pointSize: 11
+                    color: "white"
+                    padding: 5
+                }
+            }
+
+            Rectangle {
+                width: searchResultsBox.width
+                color: "transparent"
+                radius: searchResultsBox.radius
+                height: textLabelId2.implicitHeight
+                Text {
+                    id: textLabelId2
+                    text: "Hello World 2"
+                    font.family: "Helvetica"
+                    font.pointSize: 11
+                    padding: 5
+                    color: "white"
+                }
+            }
+        }
     }
 }
