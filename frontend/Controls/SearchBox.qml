@@ -20,6 +20,8 @@ Item {
     anchors.left: parent.left
     anchors.topMargin: 13
 
+    z: 50
+
     Rectangle {
         id: searchBoxId
 
@@ -100,5 +102,12 @@ Item {
                 }
             }
         }
+    }
+
+    Rectangle {
+        width: searchBoxId.width
+        height: 100
+        color: "red"
+        anchors.top: searchBoxId.bottom
     }
 }
