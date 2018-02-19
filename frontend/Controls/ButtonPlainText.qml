@@ -4,7 +4,8 @@ Rectangle {
     id: root
 
     signal buttonClicked
-    width: 250; height: 25
+    width: 250
+    height: 25
     color: "transparent"
 
     property string defaultUnderlineColor: "transparent"
@@ -17,7 +18,7 @@ Rectangle {
         onClicked: {
             root.buttonClicked()
         }
-
+        cursorShape: Qt.PointingHandCursor
         hoverEnabled: true
         onHoveredChanged: containsMouse ? root.state = "Hovering" : root.state = "Default"
     }
@@ -30,8 +31,8 @@ Rectangle {
         anchors.bottom: parent.bottom
     }
 
-    // Hovering animations
 
+    // Hovering animations
     Behavior on scale {
         NumberAnimation {
             duration: 150
@@ -58,12 +59,18 @@ Rectangle {
 
     transitions: [
         Transition {
-            from: "Default"; to: "Hovering"
-            ColorAnimation { duration: 150 }
+            from: "Default"
+            to: "Hovering"
+            ColorAnimation {
+                duration: 150
+            }
         },
         Transition {
-            from: "Hovering"; to: "Default"
-            ColorAnimation { duration: 300 }
+            from: "Hovering"
+            to: "Default"
+            ColorAnimation {
+                duration: 300
+            }
         }
     ]
 }
