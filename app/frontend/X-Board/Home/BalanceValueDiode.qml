@@ -19,5 +19,6 @@ Rectangle {
         value: (wallet.balance * 0.2).toLocaleString(Qt.locale(), "f", 2)
         valuePrefix: qsTr("$")
         anchors.top: diodeHeader.bottom
+        valueWidth: 340
     }
 }

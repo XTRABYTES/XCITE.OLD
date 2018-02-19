@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
-
+import QtQuick.Controls 2.2
 import "../../Controls" as Controls
 
 Rectangle {
@@ -23,6 +23,7 @@ Rectangle {
                                              8).replace(/\.?0+$/, '')
         anchors.top: parent.top
         anchors.topMargin: 63
+        valueWidth: 225
     }
 
     Controls.BalanceItem {
@@ -32,6 +33,7 @@ Rectangle {
         value: wallet.unconfirmed.toLocaleString(Qt.locale(), 'f',
                                                  8).replace(/\.?0+$/, '')
         anchors.top: balance.bottom
+        valueWidth: 180
     }
 
     Controls.BalanceItem {
@@ -45,5 +47,6 @@ Rectangle {
         valueFont.weight: Font.Normal
         anchors.top: unconfirmedBalance.bottom
         anchors.topMargin: 30
+        valueWidth: 250
     }
 }
