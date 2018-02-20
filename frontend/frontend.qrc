@@ -70,5 +70,6 @@
         <file>Controls/CheckBoxBlue.qml</file>
         <file>Controls/SearchBoxResults.qml</file>
         <file>Controls/SearchBoxResultsCategory.qml</file>
+        <file>Controls/SearchBoxResultsCategoryItem.qml</file>
     </qresource>
 </RCC>

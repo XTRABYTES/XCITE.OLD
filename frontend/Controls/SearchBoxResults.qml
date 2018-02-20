@@ -5,7 +5,7 @@ Rectangle {
     id: searchResultsBox
 
     width: parent.width
-    height: searchBoxResultsId.implicitHeight //searchBoxResultsId.implicitHeight
+    height: searchBoxResultsId.implicitHeight
 
     radius: 5
     color: "#3A3E46"
@@ -28,11 +28,13 @@ Rectangle {
     Column {
         // Box containing categories
         id: searchBoxResultsId
-        spacing: 2
-        leftPadding: 5
         visible: true
+
+        spacing: 2
+        padding: 5
+
         width: parent.width
-        height: searchResultsCategory.height
+        height: Column.height
 
         SearchBoxResultsCategory {
             text: "A category text"
