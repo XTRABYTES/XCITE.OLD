@@ -32,12 +32,14 @@ Rectangle {
             source: transactionModel.count > 0 ? transactionModel : null
             sortOrder: transactionTable.sortIndicatorOrder
             sortCaseSensitivity: Qt.CaseInsensitive
-            sortRole: transactionModel.count > 0 ? transactionTable.getColumn(transactionTable.sortIndicatorColumn).role : ""
+            sortRole: transactionModel.count
+                      > 0 ? transactionTable.getColumn(
+                                transactionTable.sortIndicatorColumn).role : ""
         }
 
         // TODO: This is just a placeholder to test out click-to-view a transaction
         onDoubleClicked: {
-            popup.open();
+            popup.open()
         }
 
         backgroundVisible: false
@@ -58,7 +60,7 @@ Rectangle {
             }
 
             // Scrollbar specific properties
-            transientScrollBars: true   // We use this because the default scrollbars look awful
+            transientScrollBars: true // We use this because the default scrollbars look awful
             handle: Item {
                 implicitWidth: 14
                 implicitHeight: 16
@@ -76,7 +78,7 @@ Rectangle {
             // Table header attributes
             headerDelegate: Rectangle {
                 height: 55
-                color: "#3A3E46"    // This needs to be set (non to avoid the rows being visible under the header
+                color: "#3A3E46" // This needs to be set (non to avoid the rows being visible under the header
 
                 Text {
                     color: "#FFF7F7"
@@ -90,7 +92,7 @@ Rectangle {
                     Rectangle {
                         anchors.top: parent.verticalCenter
                         anchors.topMargin: 20
-                        width: parent.width ? 60 : 0    // Avoid extraneous underline after last column
+                        width: parent.width ? 60 : 0 // Avoid extraneous underline after last column
                         height: 1
                         color: "#24B9C3"
                     }
@@ -125,12 +127,18 @@ Rectangle {
                         case 1:
                         case 6:
                             // Colour columns 1 and 6 (Type and value) based on the hidden type column. Keeps things language agnostic
-                            var row = transactionModel.get(styleData.row);
-                            row && row.type === "IN" ? "#0ED8D2" : "#F77E7E"
-                            break;
+                            if (styleData.value === "Received")
+                                "#0ED8D2"
+                            if (styleData.value === "Sent")
+                                "#F77E7E"
+                            if (styleData.value >= 0)
+                                "#0ED8D2"
+                            if (styleData.value <= 0)
+                                "#F77E7E"
+                            break
                         default:
                             "#ffffff"
-                            break;
+                            break
                         }
                     }
 
@@ -138,10 +146,11 @@ Rectangle {
                         switch (styleData.column) {
                         case 6:
                             // Add the + prefix and XBY suffix to column 6 (value)
-                            (styleData.value > 0 ? ("+" + styleData.value) : styleData.value) + " XBY";
-                            break;
+                            (styleData.value
+                             > 0 ? ("+" + styleData.value) : styleData.value) + " XBY"
+                            break
                         default:
-                            styleData.value;
+                            styleData.value
                         }
                     }
 
