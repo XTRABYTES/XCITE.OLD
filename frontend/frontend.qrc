@@ -69,5 +69,6 @@
         <file>Controls/AddressButton.qml</file>
         <file>Controls/CheckBoxBlue.qml</file>
         <file>Controls/SearchBoxResults.qml</file>
+        <file>Controls/SearchBoxResultsCategory.qml</file>
     </qresource>
 </RCC>
