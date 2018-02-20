@@ -4,7 +4,6 @@ import QtQuick.Controls 2.1
 import QtQuick.Controls.Styles 1.4
 
 import "../../Controls" as Controls
-import QtQrCode.Component 1.0
 
 Controls.Diode {
     id: receiveCoinsDiode
@@ -143,15 +142,17 @@ Controls.Diode {
                     color: "#E3E3E3"
                 }
 
-                QtQrCode {
+                Image {
                     Layout.topMargin: 25
                     Layout.bottomMargin: 25
                     anchors.horizontalCenter: parent.horizontalCenter
-                    data: formAddress.text
-                    background: "transparent"
-                    foreground: "#0ED8D2"
-                    width: 180
-                    height: 180
+
+                    fillMode: Image.Pad
+                    source: "../../icons/placeholder-qr.svg"
+                    width: 264
+                    height: 264
+                    sourceSize.width: 264
+                    sourceSize.height: 264
                 }
             }
 
