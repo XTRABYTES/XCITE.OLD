@@ -2,11 +2,13 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
+import AddressBookModel 0.1
+
 import "../../Controls" as Controls
 
 Controls.Diode {
     property int networkFee: 1
-    property real balance: 175314
+    property real balance: wallet.balance
     property real totalAmount: networkFee + (formAmount.text.length > 0 ? parseFloat(
                                                                               formAmount.text) : 0)
 
@@ -172,29 +174,28 @@ Controls.Diode {
 
                         Controls.AddressBook {
                             id: addressBook
-                            model: addressModel
-                            onCurrentItemChanged: {
-                                var item = model.get(currentIndex)
-                                formAddress.text = item.address
+
+                            model: AddressBookModel {
                             }
 
-                            ListModel {
-                                id: addressModel
-
-                                ListElement {
-                                    name: "Candice"
-                                    address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+                            Connections {
+                                // TODO: Temporary placeholder content
+                                Component.onCompleted: {
+                                    addressBook.add(
+                                                "@james87uk",
+                                                "XLGSfK2RhjvEbkGMe4WVk2R8k9auLESAsv")
+                                    addressBook.add(
+                                                "@posey",
+                                                "XJmqWTfBQwZk2QgU3eFnbtenUHXXPmsgPa")
+                                    addressBook.add(
+                                                "@nrocy",
+                                                "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ")
+                                    addressBook.currentIndex = 0
                                 }
+                            }
 
-                                ListElement {
-                                    name: "Susan"
-                                    address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
-                                }
-
-                                ListElement {
-                                    name: "Timothy"
-                                    address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
-                                }
+                            onCurrentItemChanged: {
+                                selectItem(addressBook.getSelectedItem())
                             }
                         }
                     }
@@ -205,6 +206,22 @@ Controls.Diode {
 
                         Controls.AddressButton {
                             Layout.leftMargin: -17
+                            currentItem: addressBook.currentItem
+
+                            Connections {
+                                onAddressAdded: {
+                                    addressBook.add(name, address)
+                                }
+
+                                onAddressUpdated: {
+                                    addressBook.update(name, address)
+                                    selectItem(addressBook.getSelectedItem())
+                                }
+
+                                onAddressRemoved: {
+                                    addressBook.removeSelected()
+                                }
+                            }
                         }
                     }
                 }
@@ -243,11 +260,18 @@ Controls.Diode {
 
                 confirmationModal({
                                       title: qsTr("PAYMENT CONFIRMATION"),
-                                      text: text,
+                                      bodyText: text,
                                       confirmText: qsTr("YES, SEND"),
                                       cancelText: qsTr("NO, CANCEL")
+                                  }, function () {
+                                      testnetSendFrom('', item.address,
+                                                      Number(formAmount.text))
                                   })
             }
         }
+    }
+
+    function selectItem(item) {
+        formAddress.text = item.address
     }
 }

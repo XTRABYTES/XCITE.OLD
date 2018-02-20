@@ -19,7 +19,8 @@ Rectangle {
         id: balance
         text: qsTr("Balance")
         valuePrefix: qsTr("XBY")
-        value: "175,314"
+        value: wallet.balance.toLocaleString(Qt.locale(), 'f',
+                                             8).replace(/\.?0+$/, '')
         anchors.top: parent.top
         anchors.topMargin: 63
         valueWidth: 225
@@ -29,7 +30,8 @@ Rectangle {
         id: unconfirmedBalance
         text: qsTr("Unconfirmed")
         valuePrefix: qsTr("XBY")
-        value: "22,695"
+        value: wallet.unconfirmed.toLocaleString(Qt.locale(), 'f',
+                                                 8).replace(/\.?0+$/, '')
         anchors.top: balance.bottom
         valueWidth: 180
     }
@@ -37,7 +39,8 @@ Rectangle {
     Controls.BalanceItem {
         id: totalBalance
         text: qsTr("Total")
-        value: "198,009"
+        value: (wallet.balance + wallet.unconfirmed).toLocaleString(
+                   Qt.locale(), 'f', 8).replace(/\.?0+$/, '')
         valueColor: "#0ED8D2"
         valuePrefix: qsTr("XBY")
         valueFont.family: "Roboto"
