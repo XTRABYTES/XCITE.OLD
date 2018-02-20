@@ -35,8 +35,8 @@ Controls.ImagePolygonal {
         }
 
         Controls.TextInputBlue {
-          anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: qsTr("john@email.com")
+            anchors.horizontalCenter: parent.horizontalCenter
+            placeholder: qsTr("john@email.com")
         }
 
         Controls.ButtonSimple {
@@ -78,5 +78,8 @@ Controls.ImagePolygonal {
                 }
             }
         }
+    }
+
+    Controls.Version {
     }
 }

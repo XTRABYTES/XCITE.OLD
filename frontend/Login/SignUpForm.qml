@@ -28,23 +28,23 @@ Controls.ImagePolygonal {
         }
 
         Controls.TextInputBlue {
-          anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: qsTr("username")
+            anchors.horizontalCenter: parent.horizontalCenter
+            placeholder: qsTr("username")
         }
 
         Controls.TextInputBlue {
-          anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: qsTr("e-mail")
+            anchors.horizontalCenter: parent.horizontalCenter
+            placeholder: qsTr("e-mail")
         }
 
         Controls.TextInputBlue {
-          anchors.horizontalCenter: parent.horizontalCenter
-          placeholder: qsTr("choose password")
-          echoMode: TextInput.Password
+            anchors.horizontalCenter: parent.horizontalCenter
+            placeholder: qsTr("choose password")
+            echoMode: TextInput.Password
         }
 
         Controls.CheckBoxBlue {
-          text: qsTr("I agree to the terms and conditions")
+            text: qsTr("I agree to the terms and conditions")
         }
 
         Controls.ButtonSimple {
@@ -88,5 +88,8 @@ Controls.ImagePolygonal {
                 }
             }
         }
+    }
+
+    Controls.Version {
     }
 }
