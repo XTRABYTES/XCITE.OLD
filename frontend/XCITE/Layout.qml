@@ -16,7 +16,7 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    visible: selectedModule === 'xBoard'
+    visible: selectedModule === 'xCite'
 
     Connections {
         target: dashboard
@@ -40,25 +40,25 @@ Item {
 
     // Send Coins
     SendCoins.Layout {
-        id: xBoardSendCoins
+        id: xCiteSendCoins
         visible: selectedView === "sendCoins"
     }
 
     // Receive Coins
     ReceiveCoins.Layout {
-        id: xBoardReceiveCoins
+        id: xCiteReceiveCoins
         visible: selectedView === "receiveCoins"
     }
 
     // History
     History.Layout {
-        id: xBoardHistory
+        id: xCiteHistory
         visible: selectedView === "history"
     }
 
     // Nodes
     Nodes.Layout {
-        id: xBoardNodes
+        id: xCiteNodes
         visible: selectedView === "nodes"
     }
 }

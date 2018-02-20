@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.3
 ColumnLayout {
     readonly property color cDiodeBackground: "#3a3e46"
 
-    id: xBoardHome
+    id: xCiteHome
 
     Layout.fillHeight: true
     Layout.fillWidth: true

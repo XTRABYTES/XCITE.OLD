@@ -4,12 +4,12 @@
         <file>DashboardForm.qml</file>
         <file>XchatPopup.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>X-Board/Nodes/RegistrationConfirmation.qml</file>
-        <file>X-Board/Nodes/RegistrationDetails.qml</file>
-        <file>X-Board/Nodes/RegistrationLevel.qml</file>
-        <file>X-Board/Nodes/RegistrationTermsConditions.qml</file>
-        <file>X-Board/Nodes/BalanceBoard.qml</file>
-        <file>X-Board/Nodes/TransactionsBoard.qml</file>
+        <file>XCITE/Nodes/RegistrationConfirmation.qml</file>
+        <file>XCITE/Nodes/RegistrationDetails.qml</file>
+        <file>XCITE/Nodes/RegistrationLevel.qml</file>
+        <file>XCITE/Nodes/RegistrationTermsConditions.qml</file>
+        <file>XCITE/Nodes/BalanceBoard.qml</file>
+        <file>XCITE/Nodes/TransactionsBoard.qml</file>
         <file>Login/ForgotPasswordForm.qml</file>
         <file>Login/LoginForm.qml</file>
         <file>Login/SignUpForm.qml</file>
@@ -17,7 +17,7 @@
         <file>Controls/LabelUnderlined.qml</file>
         <file>Controls/SearchBox.qml</file>
         <file>Controls/ButtonBalanceDate.qml</file>
-        <file>X-Board/Nodes/NetworkStatusBoard.qml</file>
+        <file>XCITE/Nodes/NetworkStatusBoard.qml</file>
         <file>Controls/TextInputBlue.qml</file>
         <file>Controls/ButtonSimple.qml</file>
         <file>Controls/ButtonDock.qml</file>
@@ -25,45 +25,45 @@
         <file>Controls/ImagePolygonal.qml</file>
         <file>Controls/ImageLogo.qml</file>
         <file>Controls/BalanceItem.qml</file>
-        <file>X-Board/Home/Layout.qml</file>
+        <file>XCITE/Home/Layout.qml</file>
         <file>support/sortfilterproxymodel.cpp</file>
         <file>support/sortfilterproxymodel.hpp</file>
         <file>X-Chat/Conversation.qml</file>
         <file>X-Chat/Header.qml</file>
-        <file>X-Board/Home/ChartDiode.qml</file>
+        <file>XCITE/Home/ChartDiode.qml</file>
         <file>Controls/SideMenu.qml</file>
         <file>Controls/SideMenuButton.qml</file>
-        <file>X-Board/Nodes/Layout.qml</file>
-        <file>X-Board/ReceiveCoins/Layout.qml</file>
-        <file>X-Board/ReceiveCoins/ReceiveCoinsDiode.qml</file>
+        <file>XCITE/Nodes/Layout.qml</file>
+        <file>XCITE/ReceiveCoins/Layout.qml</file>
+        <file>XCITE/ReceiveCoins/ReceiveCoinsDiode.qml</file>
         <file>Controls/TextBox.qml</file>
         <file>Controls/IconButton.qml</file>
         <file>Controls/DiodeHeader.qml</file>
-        <file>X-Board/Home/RecentTransactionsDiode.qml</file>
-        <file>X-Board/Home/BalanceValueDiode.qml</file>
-        <file>X-Board/Home/BalanceDiode.qml</file>
+        <file>XCITE/Home/RecentTransactionsDiode.qml</file>
+        <file>XCITE/Home/BalanceValueDiode.qml</file>
+        <file>XCITE/Home/BalanceDiode.qml</file>
         <file>Controls/Popup.qml</file>
         <file>Controls/ConfirmationModal.qml</file>
         <file>Controls/ButtonModal.qml</file>
         <file>Controls/ButtonIconText.qml</file>
-        <file>X-Board/Layout.qml</file>
-        <file>X-Board/History/Layout.qml</file>
-        <file>X-Board/SendCoins/Layout.qml</file>
+        <file>XCITE/Layout.qml</file>
+        <file>XCITE/History/Layout.qml</file>
+        <file>XCITE/SendCoins/Layout.qml</file>
         <file>Controls/ModuleMenu.qml</file>
         <file>Controls/ModuleMenuButton.qml</file>
         <file>X-Change/Layout.qml</file>
         <file>X-Change/Home/Layout.qml</file>
         <file>Controls/Diode.qml</file>
-        <file>X-Board/History/FilterTransactionsDiode.qml</file>
+        <file>XCITE/History/FilterTransactionsDiode.qml</file>
         <file>Controls/DatePicker.qml</file>
         <file>Controls/ButtonIcon.qml</file>
         <file>tools/Layout.qml</file>
         <file>Controls/ListViewCoins.qml</file>
-        <file>X-Board/SendCoins/SendDiode.qml</file>
+        <file>XCITE/SendCoins/SendDiode.qml</file>
         <file>Controls/DiodeHeaderMenu.qml</file>
         <file>Controls/TextInput.qml</file>
         <file>Controls/FormLabel.qml</file>
-        <file>X-Board/SendCoins/TextXBY.qml</file>
+        <file>XCITE/SendCoins/TextXBY.qml</file>
         <file>Controls/AddressBook.qml</file>
         <file>Controls/SliderAmount.qml</file>
         <file>Controls/AddressButton.qml</file>

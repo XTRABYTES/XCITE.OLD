@@ -17,10 +17,10 @@ ColumnLayout {
             spacing: layoutGridSpacing
 
             Controls.IconButton {
-                text: "Click here to jump to x-Board Nodes"
+                text: "Click here to jump to XCITE Nodes"
 
                 onClicked: {
-                    selectView('xBoard.nodes');
+                    selectView('xCite.nodes');
                 }
             }
         }

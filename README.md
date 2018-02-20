@@ -37,13 +37,13 @@ If this issue arises you should first try the following steps before performing 
 
 ## Screenshots
 
-##### X-Board -> Home
+##### XCITE -> Home
 ![image](https://user-images.githubusercontent.com/17502298/35881872-43b765d2-0b50-11e8-814d-ab8d21c6b341.png)
 
-##### X-Board -> X-Chat Popup
+##### X-Chat Popup
 ![image](https://user-images.githubusercontent.com/17502298/35882148-34667f04-0b51-11e8-9a93-a0bc395d81bd.png)
 
-##### X-Board -> Nodes
+##### XCITE -> Nodes
 ![image](https://user-images.githubusercontent.com/17502298/35881909-6768340c-0b50-11e8-8a65-2307d5053db3.png)
 
 ## Contributing
