@@ -63,20 +63,24 @@ Item {
                 }
 
                 function showSearchResults() {
-                    return searchField.text.length > 0 && searchField.focus
-                            && searchField.activeFocus && searchField.focus
+                    var showResults = searchField.text.length > 0
+                            && searchField.focus && searchField.activeFocus
+                            && searchField.focus
+
+                    searchResultsBox.visible = showResults
+                    searchResultsBox.text = showResults ? searchField.text : ""
                 }
 
                 onTextChanged: function () {
-                    searchResultsBox.visible = showSearchResults()
+                    showSearchResults()
                 }
 
                 onFocusChanged: {
-                    searchResultsBox.visible = showSearchResults()
+                    showSearchResults()
                 }
 
                 onEditingFinished: {
-                    searchResultsBox.visible = false
+                    showSearchResults()
                 }
             }
 
@@ -123,5 +127,6 @@ Item {
 
     SearchBoxResults {
         id: searchResultsBox
+        z: 51
     }
 }
