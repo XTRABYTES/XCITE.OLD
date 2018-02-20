@@ -39,9 +39,9 @@ Item {
             spacing: 0
 
             ModuleMenuButton {
-                name: "xBoard"
-                target: "xBoard.home"
-                text: qsTr("X-BOARD")
+                name: "xCite"
+                target: "xCite.home"
+                text: qsTr("XCITE")
             }
 
             ModuleMenuButton {

@@ -6,7 +6,7 @@ import QtQuick.Controls.Material 2.1
 
 import "Controls" as Controls
 
-import "X-Board" as XBoard
+import "XCITE" as XCITE
 import "X-Change" as XChange
 import "tools" as Tools
 
@@ -26,7 +26,7 @@ Item {
 
     Connections {
         Component.onCompleted: {
-            selectView("xBoard.home")
+            selectView("xCite.home")
         }
     }
 
@@ -49,7 +49,7 @@ Item {
             Controls.ModuleMenu {
             }
 
-            XBoard.Layout {
+            XCITE.Layout {
             }
 
             XChange.Layout {

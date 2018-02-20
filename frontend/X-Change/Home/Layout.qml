@@ -20,7 +20,7 @@ ColumnLayout {
                 text: "Click here to jump to x-Board Nodes"
 
                 onClicked: {
-                    selectView('xBoard.nodes');
+                    selectView('XCITE.nodes');
                 }
             }
         }

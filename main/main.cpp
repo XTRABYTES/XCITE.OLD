@@ -6,7 +6,7 @@
 #include "../backend/xchat/xchat.hpp"
 #include "../backend/xchat/xchatconversationmodel.hpp"
 #include "../frontend/support/sortfilterproxymodel.hpp"
-#include "../backend/xboard/nodes/nodetransaction.h"
+#include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
 #include "../backend/testnet/testnet.hpp"

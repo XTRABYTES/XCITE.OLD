@@ -50,7 +50,7 @@ SOURCES += main/main.cpp \
             backend/p2p/p2p.cpp \
             frontend/support/sortfilterproxymodel.cpp \
             backend/xchat/xchatconversationmodel.cpp \
-            backend/xboard/nodes/nodetransaction.cpp \
+            backend/XCITE/nodes/nodetransaction.cpp \
             backend/testnet/testnet.cpp \
             backend/testnet/transactionmodel.cpp \
             backend/addressbook/addressbookmodel.cpp \
@@ -64,7 +64,7 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/p2p/p2p.hpp \
             frontend/support/sortfilterproxymodel.hpp \
             backend/xchat/xchatconversationmodel.hpp \
-            backend/xboard/nodes/nodetransaction.h \
+            backend/XCITE/nodes/nodetransaction.h \
             backend/testnet/testnet.hpp \
             backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
