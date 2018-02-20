@@ -133,7 +133,7 @@ Rectangle {
                                 "#F77E7E"
                             if (styleData.value >= 0)
                                 "#0ED8D2"
-                            if (styleData.value <= 0)
+                            if (styleData.value < 0)
                                 "#F77E7E"
                             break
                         default:
