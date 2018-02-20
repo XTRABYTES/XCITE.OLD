@@ -13,6 +13,8 @@
 
 int main(int argc, char *argv[])
 {
+    QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
@@ -45,6 +47,7 @@ int main(int argc, char *argv[])
     transactionList.append(new NodeTransaction("xghl32lk8dfss577g734j34","12:45 PM GMT 0","12:45 PM GMT 0","12:45 PM GMT 0",NodeTransaction::NodeTransactionType::XCite));
     //app.set
     engine.rootContext()->setContextProperty("nodeTransactionModel", QVariant::fromValue(transactionList));
+    engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty()) {

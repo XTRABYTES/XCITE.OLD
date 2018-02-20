@@ -71,5 +71,6 @@
         <file>Controls/ModalAlert.qml</file>
         <file>Controls/ModalHeader.qml</file>
         <file>Controls/CheckBoxBlue.qml</file>
+        <file>Controls/Version.qml</file>
     </qresource>
 </RCC>

@@ -168,4 +168,9 @@ Rectangle {
             }
         }
     }
+
+    Version {
+        anchors.right: undefined
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
 }
