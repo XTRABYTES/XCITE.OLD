@@ -37,8 +37,6 @@ QML_IMPORT_PATH =
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
-INCLUDEPATH += qjsonrpc/src
-
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
@@ -50,7 +48,7 @@ SOURCES += main/main.cpp \
             backend/testnet/transactionmodel.cpp \
             backend/addressbook/addressbookmodel.cpp \
             backend/support/ClipboardProxy.cpp \
-    backend/support/qrcode/QtQrCodeQuickItem.cpp
+            backend/support/qrcode/QtQrCodeQuickItem.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -72,10 +70,8 @@ DISTFILES += \
 
 RC_ICONS = xcite.ico
 
-win32:CONFIG(release, debug|release): LIBS += -L../qjsonrpc/src -L../qt-qrcode -lqjsonrpc -lqtqrcode
-else:win32:CONFIG(debug, debug|release): LIBS += -L../qjsonrpc/src  -L../qt-qrcode -lqjsonrpc -lqtqrcode
-else:unix: LIBS += -L../qjsonrpc/src -L../qt-qrcode -lqjsonrpc -lqtqrcode
+win32:CONFIG(release, debug|release): LIBS += -L../qt-qrcode -lqtqrcode
+else:win32:CONFIG(debug, debug|release): LIBS += -L../qt-qrcode -lqtqrcode
+else:unix: LIBS += -L../qt-qrcode -lqtqrcode
 
-INCLUDEPATH += ../qjsonrpc/src
 INCLUDEPATH += ../qt-qrcode
-DEPENDPATH += ../qjsonrpc/src

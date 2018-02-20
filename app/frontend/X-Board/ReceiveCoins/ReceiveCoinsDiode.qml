@@ -212,6 +212,13 @@ Controls.Diode {
                                 }
                             }
 
+                            Connections {
+                                target: addressBook.model
+                                onDataChanged: {
+                                    selectItem(addressBook.getSelectedItem())
+                                }
+                            }
+
                             onCurrentItemChanged: {
                                 var item = addressBook.getSelectedItem()
 

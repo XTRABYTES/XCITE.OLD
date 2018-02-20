@@ -3,65 +3,33 @@
 #include "testnet.hpp"
 
 void Testnet::sendFrom(QString account, QString address, qreal amount) {
-    qDebug() << "SendFrom: " << account << ", " << address << "<" << amount;
+    QJsonArray params = {account, address, amount};
 
-    QJsonArray args;
-    args.push_back(account);
-    args.push_back(address);
-    args.push_back(amount);
-    qDebug() << args;
-
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("sendfrom", args);
-    QJsonRpcMessage res = client->sendMessageBlocking(message);
-
-    if (res.type() == QJsonRpcMessage::Error) {
-        walletError(res.errorMessage());
-        return;
-    }
-
-    walletSuccess(res.result().toString());
-
-    qDebug() << res;
+    client->request("sendfrom", params);
 }
 
 void Testnet::getAccountAddress(QString account) {
-    qDebug() << "getAccountAddress: " << account;
+    QJsonArray params = {
+        account
+    };
 
-    QJsonArray args;
-    args.push_back(account);
-
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("getaccountaddress", args);
-    QJsonRpcMessage res = client->sendMessageBlocking(message);
-
-    if (res.type() == QJsonRpcMessage::Error) {
-        walletError(res.errorMessage());
-        return;
-    }
-
-    m_accounts->updateAccountAddress(account, res.result().toString());
+    client->request("getaccountaddress", params);
 }
 
-void Testnet::request(QString command) {
-    // Wonky performance hack to avoid the overhead of pulling accounts continually
-    if ((command == "listaccounts") && accountsLoaded) {
-        return;
-    }
+void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
+{
+    QVariantMap reply = res.toVariantMap();
 
-    qDebug() << "Request: " << command;
-
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest(command);
-    QJsonRpcMessage res = client->sendMessageBlocking(message);
-
-    if (res.type() == QJsonRpcMessage::Error) {
-        walletError(res.errorData().toString());
+    if (!res["error"].isNull()) {
         qDebug() << res;
+        walletError(res["error"].toObject()["message"].toString());
         return;
     }
 
     if (command == "getbalance") {
-        setProperty("balance", res.result());
+        setProperty("balance", reply["result"]);
     } else if (command == "listtransactions") {
-        QJsonArray transactionList = res.toObject()["result"].toArray();
+        QJsonArray transactionList = res["result"].toArray();
 
         m_transactions->removeRows(0, m_transactions->m_transactions.size());
 
@@ -81,7 +49,7 @@ void Testnet::request(QString command) {
             );
         }
     } else if (command == "listaccounts") {
-        QJsonObject accounts = res.toObject()["result"].toObject();
+        QJsonObject accounts = res["result"].toObject();
 
         accountsLoaded = true;
         m_accounts->clear();
@@ -95,5 +63,18 @@ void Testnet::request(QString command) {
         }
 
         m_accounts->setCurrentIndex(0);
+    } else if (command == "getaccountaddress") {
+        m_accounts->updateAccountAddress(params[0].toString(), res["result"].toString());
+    } else if (command == "sendfrom") {
+        walletSuccess(res["result"].toString());
     }
+}
+
+void Testnet::request(QString command) {
+    // Wonky performance hack to avoid the overhead of pulling accounts continually
+    if ((command == "listaccounts") && accountsLoaded) {
+        return;
+    }
+
+    client->request(command, QJsonArray());
 }

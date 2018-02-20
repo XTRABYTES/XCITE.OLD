@@ -2,21 +2,36 @@
 #define TESTNET_HPP
 
 #include <QObject>
+
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QAuthenticator>
-#include "qjsonrpchttpclient.h"
+#include <QJsonDocument>
+#include <QSignalMapper>
+#include <QJsonObject>
+#include <QJsonArray>
+
 #include "transactionmodel.hpp"
 #include "../addressbook/addressbookmodel.hpp"
 
-class HttpClient : public QJsonRpcHttpClient
+class HttpClient : public QObject
 {
     Q_OBJECT
 public:
     HttpClient(const QString &endpoint, QObject *parent = 0)
-        : QJsonRpcHttpClient(endpoint, parent)
+        : QObject(parent)
     {
         // defaults added for my local test server
         m_username = "xcite";
         m_password = "xtrabytes";
+
+        req.setUrl(QUrl(endpoint));
+        req.setHeader(QNetworkRequest::ContentTypeHeader,"application/json;");
+        manager = new QNetworkAccessManager (this);
+
+        connect(manager, SIGNAL (authenticationRequired(QNetworkReply*,QAuthenticator*)),  SLOT (handleAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
+        connect(manager, SIGNAL (finished(QNetworkReply*)), this, SLOT (onResponse(QNetworkReply*)));
     }
 
      ~HttpClient() {}
@@ -29,8 +44,34 @@ public:
         m_password = password;
     }
 
+    void request(QString command, QJsonArray params) {
+        QJsonDocument json;
+        QJsonObject obj;
+
+        obj.insert("jsonrpc", QJsonValue::fromVariant("1.0"));
+        obj.insert("id", QJsonValue::fromVariant("xcite"));
+        obj.insert("method", QJsonValue::fromVariant(command));
+        obj.insert("params", QJsonValue::fromVariant(params));
+        json.setObject(obj);
+
+        QNetworkReply *reply = manager->post(req, json.toJson(QJsonDocument::Compact));
+        reply->setProperty("command", command);
+        reply->setProperty("params", params);
+    }
+
+signals:
+    void response(QString command, QJsonArray params, QJsonObject res);
+
+public Q_SLOTS:
+    void onResponse(QNetworkReply *res) {
+        QJsonDocument json = QJsonDocument::fromJson(res->readAll());
+        QJsonObject reply = json.object();
+
+        response(res->property("command").toString(), res->property("params").toJsonArray(), reply);
+    }
+
 private Q_SLOTS:
-    virtual void handleAuthenticationRequired(QNetworkReply *reply, QAuthenticator * authenticator)
+    virtual void handleAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
     {
         Q_UNUSED(reply)
         authenticator->setUser(m_username);
@@ -40,6 +81,8 @@ private Q_SLOTS:
 private:
     QString m_username;
     QString m_password;
+    QNetworkRequest req;
+    QNetworkAccessManager *manager;
 };
 
 class Testnet : public QObject
@@ -50,10 +93,11 @@ class Testnet : public QObject
     Q_PROPERTY(TransactionModel *transactions MEMBER m_transactions NOTIFY walletChanged)
     Q_PROPERTY(AddressBookModel *accounts MEMBER m_accounts NOTIFY walletChanged)
 
-
 public:
     Testnet(QObject *parent = 0) : QObject(parent) {
         client = new HttpClient("http://127.0.0.1:2222");
+        connect(client, SIGNAL (response(QString, QJsonArray, QJsonObject)), this, SLOT (onResponse(QString, QJsonArray, QJsonObject)));
+
         m_transactions = new TransactionModel;
 
         for (int i = 0; i < 10; i++) {
@@ -76,6 +120,7 @@ public Q_SLOTS:
     void request(QString command);
     void sendFrom(QString account, QString address, qreal amount);
     void getAccountAddress(QString account);
+    void onResponse(QString, QJsonArray, QJsonObject);
 
 public:
     TransactionModel *m_transactions;

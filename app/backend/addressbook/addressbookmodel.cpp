@@ -56,12 +56,7 @@ void AddressBookModel::update(int idx, QString name, QString address)
 void AddressBookModel::updateAccountAddress(QString account, QString address) {
     for (int i = 0; i < items.size(); i++) {
         if (items[i]->m_name == account) {
-            items[i]->m_address = address;
-
-            QVector<int> roles;
-            roles.append(NameRole);
-
-            emit dataChanged(index(i), index(i));
+            update(i, account, address);
             break;
         }
     }
