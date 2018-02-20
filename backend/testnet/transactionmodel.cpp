@@ -24,6 +24,13 @@ void TransactionModel::add(QString type, QString txid, QString address, qlonglon
 {
     Transaction *t = new Transaction(type, txid, address, amount, dt);
 
+    // TODO: Should probably use a hash or similar for faster lookups
+    for (int i = 0; i < m_transactions.size(); i++) {
+        if (m_transactions[i]->m_txid == txid) {
+            return;
+        }
+    }
+
     beginInsertRows(QModelIndex(), 0, 0);
     m_transactions.push_front(t);
     endInsertRows();
