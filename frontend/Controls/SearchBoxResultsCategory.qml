@@ -11,7 +11,7 @@ Rectangle {
     implicitHeight: textLabelId.implicitHeight + searhResultsCategoryRowLayoutId.implicitHeight
 
     color: "transparent"
-    visible: true
+    visible: false
 
     // Category name
     Text {
@@ -28,9 +28,26 @@ Rectangle {
         font.pointSize: 13
     }
 
-    // Content of category
+    function filterResult(textToSearch) {
+        //traverse results and set to visible
+        var isAnyChildVisible = false
+        for (var i = 0; i < searhResultsCategoryRowLayoutId.children.length; i++) {
+            var visibleChild = searhResultsCategoryRowLayoutId.children[i].filterResult(
+                        textToSearch)
 
-    // Results
+            if (visibleChild) {
+                isAnyChildVisible = true
+            }
+        }
+
+        // show category only if at least an item is visible
+        visible = isAnyChildVisible
+        return visible
+    }
+
+    // Results is content of category (can be added as children)
+    default property alias children: searhResultsCategoryRowLayoutId.children
+
     Column {
         id: searhResultsCategoryRowLayoutId
 
@@ -39,24 +56,5 @@ Rectangle {
         height: Column.height
 
         spacing: 1
-
-        //children: [
-        SearchBoxResultsCategoryItem {
-            //height: 12
-            text: "First item - click here for log"
-            function onSearchResultClicked() {
-                console.log("overwritten function onSearchResultClicked called!!")
-            }
-        }
-
-        SearchBoxResultsCategoryItem {
-            //height: 12
-            text: "Second item"
-        }
-
-        SearchBoxResultsCategoryItem {
-            //height: 12
-            text: "Third item"
-        }
     }
 }
