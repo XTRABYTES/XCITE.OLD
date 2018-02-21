@@ -72,7 +72,7 @@
         <file>Controls/ModalHeader.qml</file>
         <file>Controls/CheckBoxBlue.qml</file>
         <file>Controls/Version.qml</file>
-        <file>Controls/PopupPass.qml</file>
-        <file>Controls/PopupFail.qml</file>
+        <file>Controls/AddressForm.qml</file>
+        <file>Controls/AccountCreateForm.qml</file>
     </qresource>
 </RCC>
