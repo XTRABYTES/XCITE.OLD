@@ -41,8 +41,8 @@ Rectangle {
         }
 
         SideMenuButton {
-            name: "xBoard.home"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.home"
+            visible: selectedModule === 'xCite'
             Layout.topMargin: 10
             imageSource: "../icons/menu-home.svg"
             labelText: qsTr("HOME")
@@ -50,8 +50,8 @@ Rectangle {
         }
 
         SideMenuButton {
-            name: "xBoard.sendCoins"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.sendCoins"
+            visible: selectedModule === 'xCite'
             imageSource: "../icons/menu-sendcoins.svg"
             labelText: qsTr("SEND COINS")
             imageOffsetX: -6
@@ -66,8 +66,8 @@ Rectangle {
         }
 
         SideMenuButton {
-            name: "xBoard.receiveCoins"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.receiveCoins"
+            visible: selectedModule === 'xCite'
             imageSource: "../icons/menu-receivecoins.svg"
             labelText: qsTr("RECEIVE COINS")
             imageOffsetX: 5
@@ -82,16 +82,16 @@ Rectangle {
         }
 
         SideMenuButton {
-            name: "xBoard.history"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.history"
+            visible: selectedModule === 'xCite'
             imageSource: "../icons/menu-history.svg"
             labelText: qsTr("HISTORY")
             size: 28
         }
 
         SideMenuButton {
-            name: "xBoard.nodes"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.nodes"
+            visible: selectedModule === 'xCite'
             imageSource: "../icons/share.svg"
             labelText: qsTr("NODES")
             size: 30
@@ -118,7 +118,7 @@ Rectangle {
         spacing: 25
 
         SideMenuButton {
-            name: "xBoard.settings"
+            name: "xCite.settings"
             imageSource: "../icons/menu-settings.svg"
             labelText: qsTr("SETTINGS")
             size: 32
