@@ -101,11 +101,10 @@ Item {
         */
         }
 
-        Rectangle {
+        Item {
             id: searchButtonContainer
             width: 30
             height: parent.height
-            color: "transparent"
             anchors.top: parent.top
             anchors.right: parent.right
 
