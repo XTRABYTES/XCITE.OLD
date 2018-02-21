@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Styles 1.4
+
 import "../../Controls" as Controls
 
 Controls.Diode {
@@ -9,6 +10,18 @@ Controls.Diode {
 
     title: qsTr("RECEIVE XBY")
     menuLabelText: qsTr("XBY")
+
+    Connections {
+        target: accountCreateForm
+        onConfirmed: {
+            testnetGetAccountAddress(newItem.name)
+            accountCreateForm.close()
+        }
+
+        onCancelled: {
+            accountCreateForm.close()
+        }
+    }
 
     ColumnLayout {
         anchors.top: parent.top
@@ -40,6 +53,7 @@ Controls.Diode {
 
                 Controls.TextInput {
                     id: formAddress
+                    readOnly: true
                     font.pixelSize: 24
                     Layout.preferredWidth: 516
                     topPadding: 10
@@ -188,29 +202,46 @@ Controls.Diode {
 
                         Controls.AddressBook {
                             id: addressBook
-                            onCurrentItemChanged: {
-                                var item = model.get(currentIndex)
-                                formAddress.text = item.address
+                            model: wallet.accounts
+
+                            Connections {
+                                Component.onCompleted: {
+                                    addressBook.add(
+                                                "",
+                                                "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS")
+                                    addressBook.add(
+                                                "Main",
+                                                "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS")
+                                    addressBook.add(
+                                                "Secondary",
+                                                "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS")
+                                    addressBook.currentIndex = 0
+                                }
                             }
-                            model: addressModel
 
-                            ListModel {
-                                id: addressModel
+                            Connections {
+                                target: wallet.accounts
+                                onSetCurrentIndex: {
+                                    addressBook.currentIndex = idx
+                                }
+                            }
 
-                                ListElement {
-                                    name: "Default"
-                                    address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+                            Connections {
+                                target: addressBook.model
+                                onDataChanged: {
+                                    selectItem(addressBook.getSelectedItem())
+                                }
+                            }
+
+                            onCurrentItemChanged: {
+                                var item = addressBook.getSelectedItem()
+
+                                if (item.address === '') {
+                                    testnetGetAccountAddress(item.name)
+                                    item = addressBook.getSelectedItem()
                                 }
 
-                                ListElement {
-                                    name: "Main"
-                                    address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
-                                }
-
-                                ListElement {
-                                    name: "Secondary"
-                                    address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
-                                }
+                                selectItem(item)
                             }
                         }
                     }
@@ -220,11 +251,45 @@ Controls.Diode {
                         anchors.topMargin: 10
 
                         Controls.AddressButton {
+                            btnEditEnabled: false
                             Layout.leftMargin: -17
+                            currentItem: addressBook.currentItem
+
+                            Connections {
+                                onAddressAdded: {
+
+                                }
+
+                                onAddressUpdated: {
+                                    addressBook.update(name, address)
+                                    selectItem(addressBook.getSelectedItem())
+                                }
+
+                                onAddressRemoved: {
+                                    addressBook.removeSelected()
+                                }
+
+                                onBtnAddClicked: {
+                                    if (!xcite.isNetworkActive) {
+                                        modalAlert({
+                                                       bodyText: "Connect to the testnet wallet to create new addresses",
+                                                       title: qsTr("TESTNET REQUIRED"),
+                                                       buttonText: qsTr("OK")
+                                                   })
+                                        return
+                                    }
+
+                                    accountCreateForm.open()
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    function selectItem(item) {
+        formAddress.text = item.address
     }
 }

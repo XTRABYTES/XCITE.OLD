@@ -80,4 +80,7 @@ Controls.ImagePolygonal {
             }
         }
     }
+
+    Controls.Version {
+    }
 }

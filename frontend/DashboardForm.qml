@@ -6,7 +6,7 @@ import QtQuick.Controls.Material 2.1
 
 import "Controls" as Controls
 
-import "X-Board" as XBoard
+import "XCITE" as XCITE
 import "X-Change" as XChange
 import "tools" as Tools
 
@@ -24,47 +24,9 @@ Item {
 
     signal selectView(string path)
 
-    function confirmationModal(options, onConfirm, onCancel) {
-        var component = Qt.createComponent(
-                    "../../Controls/ConfirmationModal.qml")
-
-        if (!options.width) {
-            options.width = 511
-        }
-
-        if (!options.height) {
-            options.height = 238
-        }
-
-        if (component.status === Component.Ready) {
-            var modal = component.createObject(xcite, options)
-
-            modal.confirmed.connect(function (inputValue) {
-
-                if (typeof onConfirm == 'function') {
-                    onConfirm(modal, inputValue)
-                }
-
-                modal.close()
-                modal.destroy()
-            })
-
-            modal.cancelled.connect(function () {
-                if (typeof onCancel == 'function') {
-                    onCancel(modal, modal.inputValue)
-                }
-
-                modal.close()
-                modal.destroy()
-            })
-
-            modal.open()
-        }
-    }
-
     Connections {
         Component.onCompleted: {
-            selectView("xBoard.home")
+            selectView("xCite.home")
         }
     }
 
@@ -87,7 +49,7 @@ Item {
             Controls.ModuleMenu {
             }
 
-            XBoard.Layout {
+            XCITE.Layout {
             }
 
             XChange.Layout {
@@ -112,5 +74,14 @@ Item {
     XchatPopup {
         id: xChatPopup
         visible: true
+    }
+
+    Timer {
+        interval: 3000
+        running: xcite.isNetworkActive
+        repeat: true
+        onTriggered: {
+            pollWallet()
+        }
     }
 }

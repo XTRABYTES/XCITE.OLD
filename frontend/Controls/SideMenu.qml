@@ -41,8 +41,8 @@ Rectangle {
         }
 
         SideMenuButton {
-            name: "xBoard.home"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.home"
+            visible: selectedModule === 'xCite'
             Layout.topMargin: 10
             imageSource: "../icons/menu-home.svg"
             labelText: qsTr("HOME")
@@ -50,8 +50,8 @@ Rectangle {
         }
 
         SideMenuButton {
-            name: "xBoard.sendCoins"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.sendCoins"
+            visible: selectedModule === 'xCite'
             imageSource: "../icons/menu-sendcoins.svg"
             labelText: qsTr("SEND COINS")
             imageOffsetX: -6
@@ -66,8 +66,8 @@ Rectangle {
         }
 
         SideMenuButton {
-            name: "xBoard.receiveCoins"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.receiveCoins"
+            visible: selectedModule === 'xCite'
             imageSource: "../icons/menu-receivecoins.svg"
             labelText: qsTr("RECEIVE COINS")
             imageOffsetX: 5
@@ -82,16 +82,16 @@ Rectangle {
         }
 
         SideMenuButton {
-            name: "xBoard.history"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.history"
+            visible: selectedModule === 'xCite'
             imageSource: "../icons/menu-history.svg"
             labelText: qsTr("HISTORY")
             size: 28
         }
 
         SideMenuButton {
-            name: "xBoard.nodes"
-            visible: selectedModule === 'xBoard'
+            name: "xCite.nodes"
+            visible: selectedModule === 'xCite'
             imageSource: "../icons/share.svg"
             labelText: qsTr("NODES")
             size: 30
@@ -118,7 +118,7 @@ Rectangle {
         spacing: 25
 
         SideMenuButton {
-            name: "xBoard.settings"
+            name: "xCite.settings"
             imageSource: "../icons/menu-settings.svg"
             labelText: qsTr("SETTINGS")
             size: 32
@@ -131,7 +131,21 @@ Rectangle {
             isSelected: xcite.isNetworkActive
             labelText: xcite.isNetworkActive ? qsTr("ONLINE") : qsTr("OFFLINE")
             onButtonClicked: {
-                xcite.isNetworkActive = !xcite.isNetworkActive
+                if (xcite.isNetworkActive) {
+                    xcite.isNetworkActive = false
+                    return
+                }
+
+                confirmationModal({
+                                      title: qsTr("CONNECT?"),
+                                      bodyText: qsTr("Please ensure your Testnet wallet is running with RPC enabled at http://127.0.0.1:2222"),
+                                      confirmText: qsTr("LET'S DO THIS!"),
+                                      cancelText: qsTr("CANCEL")
+                                  }, function () {
+                                      xcite.isNetworkActive = !xcite.isNetworkActive
+                                      pollWallet(true)
+                                      testnetRequest('listaccounts')
+                                  })
             }
         }
 
@@ -145,7 +159,7 @@ Rectangle {
                                                      "DEACTIVATE?")
                 confirmationModal({
                                       title: title,
-                                      text: qsTr("Are you sure?"),
+                                      bodyText: qsTr("Are you sure?"),
                                       confirmText: qsTr("YES"),
                                       cancelText: qsTr("NO")
                                   }, null, function (modal) {
@@ -153,5 +167,10 @@ Rectangle {
                                   })
             }
         }
+    }
+
+    Version {
+        anchors.right: undefined
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 }

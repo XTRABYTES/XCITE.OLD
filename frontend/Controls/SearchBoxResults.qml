@@ -63,11 +63,11 @@ Rectangle {
             text: qsTr("Modules")
 
             SearchBoxResultsCategoryItem {
-                text: qsTr("X-BOARD")
+                text: qsTr("XCITE")
                 tags: "home board manage balance wallet"
 
                 function onSearchResultClicked() {
-                    selectView("xBoard.home")
+                    selectView("xCite.home")
                     searchResultsBox.visible = false
                 }
             }
