@@ -11,6 +11,18 @@ Controls.Diode {
     title: qsTr("RECEIVE XBY")
     menuLabelText: qsTr("XBY")
 
+    Connections {
+        target: accountCreateForm
+        onConfirmed: {
+            testnetGetAccountAddress(newItem.name)
+            accountCreateForm.close()
+        }
+
+        onCancelled: {
+            accountCreateForm.close()
+        }
+    }
+
     ColumnLayout {
         anchors.top: parent.top
         anchors.left: parent.left
@@ -41,6 +53,7 @@ Controls.Diode {
 
                 Controls.TextInput {
                     id: formAddress
+                    readOnly: true
                     font.pixelSize: 24
                     Layout.preferredWidth: 516
                     topPadding: 10
@@ -238,12 +251,13 @@ Controls.Diode {
                         anchors.topMargin: 10
 
                         Controls.AddressButton {
+                            btnEditEnabled: false
                             Layout.leftMargin: -17
                             currentItem: addressBook.currentItem
 
                             Connections {
                                 onAddressAdded: {
-                                    addressBook.add(name, address)
+
                                 }
 
                                 onAddressUpdated: {
@@ -253,6 +267,19 @@ Controls.Diode {
 
                                 onAddressRemoved: {
                                     addressBook.removeSelected()
+                                }
+
+                                onBtnAddClicked: {
+                                    if (!xcite.isNetworkActive) {
+                                        modalAlert({
+                                                       bodyText: "Connect to the testnet wallet to create new addresses",
+                                                       title: qsTr("TESTNET REQUIRED"),
+                                                       buttonText: qsTr("OK")
+                                                   })
+                                        return
+                                    }
+
+                                    accountCreateForm.open()
                                 }
                             }
                         }

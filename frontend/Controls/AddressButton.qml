@@ -8,10 +8,16 @@ Item {
     id: container
 
     property variant currentItem
+    property bool btnAddEnabled: true
+    property bool btnEditEnabled: true
+    property bool btnRemoveEnabled: true
 
     signal addressAdded(string name, string address)
     signal addressUpdated(string name, string address)
     signal addressRemoved
+
+    signal btnEditClicked
+    signal btnAddClicked
 
     Controls.ButtonIconText {
         id: addAddress
@@ -23,22 +29,7 @@ Item {
         hoverBackgroundColor: "#0ED8D2"
         iconDirectory: "../../icons/circle-cross.svg"
         onButtonClicked: {
-            var item = currentItem.item
-            var text = qsTr("Enter the name of the address")
-
-            confirmationModal({
-                                  title: qsTr("ADD ADDRESS CONFIRMATION"),
-                                  bodyText: text,
-                                  confirmText: qsTr("CONFIRM"),
-                                  cancelText: qsTr("CANCEL"),
-                                  showInput: true
-                              }, function (modal, inputValue) {
-
-                                  //OnConfirmed
-                                  if (inputValue !== "") {
-                                      addressAdded(inputValue, "newaddress")
-                                  }
-                              })
+            btnAddClicked()
         }
     }
 
@@ -48,32 +39,21 @@ Item {
         anchors.left: addAddress.left
         anchors.leftMargin: 135
         width: 67
+        opacity: btnEditEnabled ? 1 : 0
         backgroundColor: "transparent"
         hoverBackgroundColor: "#0ED8D2"
         iconDirectory: "../../icons/pencil.svg"
 
         onButtonClicked: {
+            if (!btnEditEnabled) {
+                return
+            }
+
             if (!currentItem) {
                 return
             }
 
-            var item = currentItem.item
-
-            var text = qsTr("Edit the name of the address")
-            var itemValue = currentItem.item
-            confirmationModal({
-                                  title: qsTr("EDIT ADDRESS CONFIRMATION"),
-                                  bodyText: text,
-                                  confirmText: qsTr("CONFIRM"),
-                                  cancelText: qsTr("CANCEL"),
-                                  showInput: true,
-                                  inputValue: itemValue
-                              }, function (modal, inputValue) {
-                                  //OnConfirmed
-                                  if (inputValue != "") {
-                                      addressUpdated(item.name, inputValue)
-                                  }
-                              })
+            btnEditClicked()
         }
     }
 
