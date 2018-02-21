@@ -9,7 +9,7 @@ ModalPopup {
 
     ModalHeader {
         id: header
-        text: title
+        text: title || qsTr("ERROR!")
     }
 
     ColumnLayout {

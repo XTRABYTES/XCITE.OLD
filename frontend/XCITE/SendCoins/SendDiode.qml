@@ -15,6 +15,27 @@ Controls.Diode {
     title: qsTr("SEND XBY")
     menuLabelText: qsTr("XBY")
 
+    Connections {
+        target: addressEditForm
+        onConfirmed: {
+            if (xcite.isNetworkActive) {
+                testnetValidateAddress(newItem.address)
+            }
+
+            if (newItem.isNew) {
+                addressBook.add(newItem.name, newItem.address)
+            } else {
+                addressBook.update(newItem.name, newItem.address)
+                selectItem(addressBook.getSelectedItem())
+            }
+            addressEditForm.close()
+        }
+
+        onCancelled: {
+            addressEditForm.close()
+        }
+    }
+
     ColumnLayout {
         anchors.top: parent.top
         anchors.left: parent.left
@@ -182,14 +203,20 @@ Controls.Diode {
                                 // TODO: Temporary placeholder content
                                 Component.onCompleted: {
                                     addressBook.add(
-                                                "@james87uk",
+                                                "dedpull",
+                                                "XV3Goey53xDt51oAZ6LfGm8G51k5QmMXmR")
+                                    addressBook.add(
+                                                "enervey",
+                                                "XZhRoyup9cbVguuqDUWWBuqhLmE483FtXW")
+                                    addressBook.add(
+                                                "james87uk",
                                                 "XLGSfK2RhjvEbkGMe4WVk2R8k9auLESAsv")
                                     addressBook.add(
-                                                "@posey",
-                                                "XJmqWTfBQwZk2QgU3eFnbtenUHXXPmsgPa")
-                                    addressBook.add(
-                                                "@nrocy",
+                                                "nrocy",
                                                 "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ")
+                                    addressBook.add(
+                                                "posey",
+                                                "XJmqWTfBQwZk2QgU3eFnbtenUHXXPmsgPa")
                                     addressBook.currentIndex = 0
                                 }
                             }
@@ -220,6 +247,22 @@ Controls.Diode {
 
                                 onAddressRemoved: {
                                     addressBook.removeSelected()
+                                }
+
+                                onBtnAddClicked: {
+                                    var newItem = {
+                                        name: '',
+                                        address: '',
+                                        isNew: true
+                                    }
+
+                                    addressEditForm.item = newItem
+                                    addressEditForm.open()
+                                }
+
+                                onBtnEditClicked: {
+                                    addressEditForm.item = addressBook.getSelectedItem()
+                                    addressEditForm.open()
                                 }
                             }
                         }
@@ -252,6 +295,15 @@ Controls.Diode {
             buttonHeight: 60
 
             onButtonClicked: {
+                if (!xcite.isNetworkActive) {
+                    modalAlert({
+                                   bodyText: "Connect to the testnet wallet to send coins",
+                                   title: qsTr("TESTNET REQUIRED"),
+                                   buttonText: qsTr("OK")
+                               })
+                    return
+                }
+
                 var item = addressBook.currentItem.item
 
                 var text = qsTr("Are you sure you want to send") + " " + Number(

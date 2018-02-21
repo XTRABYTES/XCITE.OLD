@@ -16,6 +16,14 @@ void Testnet::getAccountAddress(QString account) {
     client->request("getaccountaddress", params);
 }
 
+void Testnet::validateAddress(QString address) {
+    QJsonArray params = {
+        address
+    };
+
+    client->request("validateaddress", params);
+}
+
 void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
 {
     QVariantMap reply = res.toVariantMap();
@@ -65,6 +73,10 @@ void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
         m_accounts->setCurrentIndex(0);
     } else if (command == "getaccountaddress") {
         m_accounts->updateAccountAddress(params[0].toString(), res["result"].toString());
+    } else if (command == "validateaddress") {
+        if (!res["result"].toObject()["isvalid"].toBool()) {
+            walletError("Invalid address: " + params[0].toString());
+        }
     } else if (command == "sendfrom") {
         walletSuccess(res["result"].toString());
     }

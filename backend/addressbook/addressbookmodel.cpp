@@ -57,9 +57,13 @@ void AddressBookModel::updateAccountAddress(QString account, QString address) {
     for (int i = 0; i < items.size(); i++) {
         if (items[i]->m_name == account) {
             update(i, account, address);
-            break;
+            return;
         }
     }
+
+    // TODO: This is just a quick hack to make adding addresses work. Ought to be in a proper method
+    int idx = append(account, address);
+    emit setCurrentIndex(idx);
 }
 
 void AddressBookModel::clear()
