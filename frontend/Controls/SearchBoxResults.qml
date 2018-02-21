@@ -23,8 +23,6 @@ Rectangle {
     property string text: ""
 
     onTextChanged: {
-        console.log("text of search changed")
-
         filterResult(text)
     }
 

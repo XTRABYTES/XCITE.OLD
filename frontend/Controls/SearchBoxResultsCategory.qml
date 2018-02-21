@@ -8,7 +8,7 @@ Rectangle {
     property string text: "Category"
 
     width: parent.width
-    implicitHeight: textLabelId.implicitHeight + searhResultsCategoryRowLayoutId.implicitHeight
+    implicitHeight: textLabelId.implicitHeight + searchResultsCategoryRowLayoutId.implicitHeight
 
     color: "transparent"
     visible: false
@@ -29,10 +29,10 @@ Rectangle {
     }
 
     function filterResult(textToSearch) {
-        //traverse results and set to visible
+        // traverse results and set to visible
         var isAnyChildVisible = false
-        for (var i = 0; i < searhResultsCategoryRowLayoutId.children.length; i++) {
-            var visibleChild = searhResultsCategoryRowLayoutId.children[i].filterResult(
+        for (var i = 0; i < searchResultsCategoryRowLayoutId.children.length; i++) {
+            var visibleChild = searchResultsCategoryRowLayoutId.children[i].filterResult(
                         textToSearch)
 
             if (visibleChild) {
@@ -46,10 +46,10 @@ Rectangle {
     }
 
     // Results is content of category (can be added as children)
-    default property alias children: searhResultsCategoryRowLayoutId.children
+    default property alias children: searchResultsCategoryRowLayoutId.children
 
     Column {
-        id: searhResultsCategoryRowLayoutId
+        id: searchResultsCategoryRowLayoutId
 
         anchors.top: textLabelId.bottom
         width: parent.width
