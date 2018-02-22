@@ -7,6 +7,9 @@ TextField {
     property string dateFormat: "dd/MM/yyyy"
     property date value: new Date()
 
+    property string defaultBackgroundColor: "#2A2C31"
+    property string hoveringBackgroundColor: "#46464b"
+
     id: dateField
     font.family: "Roboto"
     font.weight: Font.Light
@@ -17,11 +20,20 @@ TextField {
     topPadding: 0
     bottomPadding: 0
 
+    state: "Default"
+
     background: Rectangle {
-        color: "#2A2C31"
+        id: dateFieldBackground
+        color: defaultBackgroundColor
         radius: 6
         implicitWidth: 132
         implicitHeight: 47
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        onHoveredChanged: containsMouse ? dateField.state = "Hovering" : dateField.state = "Default"
     }
 
     Button {
@@ -41,6 +53,10 @@ TextField {
             onClicked: {
                 picker.visible = true
             }
+
+            hoverEnabled: true
+            onHoveredChanged: containsMouse ? dateField.state
+                                              = "Hovering" : dateField.state = "Default"
         }
 
         Image {
@@ -144,4 +160,46 @@ TextField {
             }
         }
     }
+
+    // Hovering animations
+    Behavior on scale {
+        NumberAnimation {
+            duration: 150
+            easing.type: Easing.InOutQuad
+        }
+    }
+
+    states: [
+        State {
+            name: "Hovering"
+            PropertyChanges {
+                target: dateFieldBackground
+                color: hoveringBackgroundColor
+            }
+        },
+        State {
+            name: "Default"
+            PropertyChanges {
+                target: dateFieldBackground
+                color: defaultBackgroundColor
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "Default"
+            to: "Hovering"
+            ColorAnimation {
+                duration: 150
+            }
+        },
+        Transition {
+            from: "Hovering"
+            to: "Default"
+            ColorAnimation {
+                duration: 300
+            }
+        }
+    ]
 }
