@@ -74,5 +74,6 @@
         <file>Controls/Version.qml</file>
         <file>Controls/AddressForm.qml</file>
         <file>Controls/AccountCreateForm.qml</file>
+        <file>Controls/ScrollBar.qml</file>
     </qresource>
 </RCC>
