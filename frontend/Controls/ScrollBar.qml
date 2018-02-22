@@ -5,9 +5,11 @@ import QtQuick.Controls 2.3
 /**
   * Simple scrollbar preferably for use with flickables, reccommend using layout.fillWidth & Layout.fillHeight
   * Can be used on any item, recommend override anchors when needed
-  * Example usage: Controls.ScrollBar{
-  * Layout.fillHeight: true
-  * Layout.fillWidth: true }
+  * Example usage: 
+  * Controls.ScrollBar {
+  *   Layout.fillHeight: true
+  *   Layout.fillWidth: true 
+  * }
   */
 ListView {
     id: listView
