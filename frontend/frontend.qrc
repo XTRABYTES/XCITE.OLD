@@ -71,6 +71,9 @@
         <file>Controls/ModalAlert.qml</file>
         <file>Controls/ModalHeader.qml</file>
         <file>Controls/CheckBoxBlue.qml</file>
+        <file>Controls/SearchBoxResults.qml</file>
+        <file>Controls/SearchBoxResultsCategory.qml</file>
+        <file>Controls/SearchBoxResultsCategoryItem.qml</file>
         <file>Controls/Version.qml</file>
         <file>Controls/AddressForm.qml</file>
         <file>Controls/AccountCreateForm.qml</file>
