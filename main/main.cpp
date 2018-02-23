@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
     // FauxWallet
     QObject::connect(engine.rootObjects().first(), SIGNAL(testnetRequest(QString)), &wallet, SLOT(request(QString)));
     QObject::connect(engine.rootObjects().first(), SIGNAL(testnetSendFrom(QString, QString, qreal)), &wallet, SLOT(sendFrom(QString, QString, qreal)));
+    QObject::connect(engine.rootObjects().first(), SIGNAL(testnetSendToAddress(QString, qreal)), &wallet, SLOT(sendToAddress(QString, qreal)));
     QObject::connect(engine.rootObjects().first(), SIGNAL(testnetGetAccountAddress(QString)), &wallet, SLOT(getAccountAddress(QString)));
     QObject::connect(engine.rootObjects().first(), SIGNAL(testnetValidateAddress(QString)), &wallet, SLOT(validateAddress(QString)));
     QObject::connect(&wallet, SIGNAL(response(QVariant)), engine.rootObjects().first(), SLOT(testnetResponse(QVariant)));
