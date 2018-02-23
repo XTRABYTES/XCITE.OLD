@@ -24,7 +24,7 @@ Controls.Diode {
             text: qsTr("Type")
         }
 
-        ComboBox {
+        Controls.ComboBox {
             Layout.fillWidth: true
             model: ["Please select", "Foo", "Bar", "Baz"]
         }
@@ -63,7 +63,7 @@ Controls.Diode {
             text: qsTr("To")
         }
 
-        ComboBox {
+        Controls.ComboBox {
             z: 1
             Layout.fillWidth: true
             model: ["Select address"]
