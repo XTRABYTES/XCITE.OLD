@@ -2,16 +2,39 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
+import AddressBookModel 0.1
+
 import "../../Controls" as Controls
 
 Controls.Diode {
     property int networkFee: 1
-    property real balance: 175314
+    property real balance: wallet.balance
     property real totalAmount: networkFee + (formAmount.text.length > 0 ? parseFloat(
                                                                               formAmount.text) : 0)
-                                                                              
+
     title: qsTr("SEND XBY")
     menuLabelText: qsTr("XBY")
+
+    Connections {
+        target: addressEditForm
+        onConfirmed: {
+            if (xcite.isNetworkActive) {
+                testnetValidateAddress(newItem.address)
+            }
+
+            if (newItem.isNew) {
+                addressBook.add(newItem.name, newItem.address)
+            } else {
+                addressBook.update(newItem.name, newItem.address)
+                selectItem(addressBook.getSelectedItem())
+            }
+            addressEditForm.close()
+        }
+
+        onCancelled: {
+            addressEditForm.close()
+        }
+    }
 
     ColumnLayout {
         anchors.top: parent.top
@@ -163,48 +186,87 @@ Controls.Diode {
                     Layout.fillWidth: true
 
                     Rectangle {
+                        id: addressBookContainer
+
                         anchors.fill: parent
                         anchors.bottomMargin: 60
                         radius: 4
                         color: "#2A2C31"
 
+                        Controls.AddressBook {
+                            id: addressBook
+
+                            model: AddressBookModel {
+                            }
+
+                            Connections {
+                                // TODO: Temporary placeholder content
+                                Component.onCompleted: {
+                                    addressBook.add(
+                                                "dedpull",
+                                                "XV3Goey53xDt51oAZ6LfGm8G51k5QmMXmR")
+                                    addressBook.add(
+                                                "enervey",
+                                                "XZhRoyup9cbVguuqDUWWBuqhLmE483FtXW")
+                                    addressBook.add(
+                                                "james87uk",
+                                                "XLGSfK2RhjvEbkGMe4WVk2R8k9auLESAsv")
+                                    addressBook.add(
+                                                "nrocy",
+                                                "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ")
+                                    addressBook.add(
+                                                "posey",
+                                                "XJmqWTfBQwZk2QgU3eFnbtenUHXXPmsgPa")
+                                    addressBook.currentIndex = 0
+                                }
+                            }
+
+                            onCurrentItemChanged: {
+                                selectItem(addressBook.getSelectedItem())
+                            }
+                        }
                     }
 
-                    Controls.AddressBook {
-                        id: addressBook
-                            model:addressModel
-                        onCurrentItemChanged: {
-                            var item = model.get(currentIndex)
-                            formAddress.text = item.address
+                    RowLayout {
+                        anchors.top: addressBookContainer.bottom
+                        anchors.topMargin: 10
 
+                        Controls.AddressButton {
+                            Layout.leftMargin: -17
+                            currentItem: addressBook.currentItem
+
+                            Connections {
+                                onAddressAdded: {
+                                    addressBook.add(name, address)
+                                }
+
+                                onAddressUpdated: {
+                                    addressBook.update(name, address)
+                                    selectItem(addressBook.getSelectedItem())
+                                }
+
+                                onAddressRemoved: {
+                                    addressBook.removeSelected()
+                                }
+
+                                onBtnAddClicked: {
+                                    var newItem = {
+                                        name: '',
+                                        address: '',
+                                        isNew: true
+                                    }
+
+                                    addressEditForm.item = newItem
+                                    addressEditForm.open()
+                                }
+
+                                onBtnEditClicked: {
+                                    addressEditForm.item = addressBook.getSelectedItem()
+                                    addressEditForm.open()
+                                }
+                            }
                         }
-
-                    ListModel {
-                                       id: addressModel
-
-                                       ListElement {
-                                           name: "Candice"
-                                           address: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
-                                       }
-
-                                       ListElement {
-                                           name: "Susan"
-                                           address: "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS"
-                                       }
-
-                                       ListElement {
-                                           name: "Timothy"
-                                           address: "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS"
-                                       }
-                   }
-                       RowLayout {
-                                Controls.AddressButton {
-                                       anchors.top: parent.bottom
-                                       anchors.topMargin: 435
-                                       Layout.leftMargin: -17
-                                 }
-                         }
-                   }
+                    }
                 }
             }
         }
@@ -233,6 +295,15 @@ Controls.Diode {
             buttonHeight: 60
 
             onButtonClicked: {
+                if (!xcite.isNetworkActive) {
+                    modalAlert({
+                                   bodyText: "Connect to the testnet wallet to send coins",
+                                   title: qsTr("TESTNET REQUIRED"),
+                                   buttonText: qsTr("OK")
+                               })
+                    return
+                }
+
                 var item = addressBook.currentItem.item
 
                 var text = qsTr("Are you sure you want to send") + " " + Number(
@@ -241,12 +312,18 @@ Controls.Diode {
 
                 confirmationModal({
                                       title: qsTr("PAYMENT CONFIRMATION"),
-                                      text: text,
+                                      bodyText: text,
                                       confirmText: qsTr("YES, SEND"),
                                       cancelText: qsTr("NO, CANCEL")
+                                  }, function () {
+                                      testnetSendFrom('', item.address,
+                                                      Number(formAmount.text))
                                   })
             }
         }
     }
-}
 
+    function selectItem(item) {
+        formAddress.text = item.address
+    }
+}

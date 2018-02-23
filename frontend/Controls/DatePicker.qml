@@ -4,13 +4,14 @@ import QtQuick.Layouts 1.3
 import Qt.labs.calendar 1.0
 
 TextField {
-    property string dateFormat : "dd/MM/yyyy"
+    property string dateFormat: "dd/MM/yyyy"
+    property date value: new Date()
 
     id: dateField
     font.family: "Roboto"
     font.weight: Font.Light
     font.pixelSize: 16
-    text: Qt.formatDate(new Date(), dateFormat)
+    text: Qt.formatDate(value, dateFormat)
     leftPadding: 10
     rightPadding: 10
     topPadding: 0
@@ -60,12 +61,14 @@ TextField {
             height: 150
             radius: 5
             z: 100
+            border.width: 1
+            border.color: "#888"
 
             GridLayout {
                 columns: 1
                 anchors.fill: parent
-                anchors.leftMargin: 5
-                anchors.rightMargin: 5
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
 
                 DayOfWeekRow {
                     locale: grid.locale
@@ -95,6 +98,24 @@ TextField {
 
                     delegate: Label {
                         id: label
+
+                        readonly property color defaultColor: "#414245"
+                        readonly property color selectedColor: "#0ED8D2"
+
+                        function dateMatch() {
+                            var d1 = model.date.setHours(0, 0, 0, 0)
+                            var d2 = value.setHours(0, 0, 0, 0)
+                            return d1 === d2
+                        }
+
+                        function getBackgroundColor() {
+                            return dateMatch() ? selectedColor : defaultColor
+                        }
+
+                        function getColor() {
+                            return dateMatch() ? "#333" : "#bbb"
+                        }
+
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         opacity: model.month === grid.month ? 1 : 0
@@ -103,18 +124,19 @@ TextField {
                         font.weight: Font.Light
                         font.pixelSize: 7
                         padding: 5
+                        color: getColor()
 
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                dateField.text = Qt.formatDate(model.date, dateFormat);
-                                picker.visible = false;
+                                value = model.date
+                                picker.visible = false
                             }
                         }
 
                         background: Rectangle {
-                            color: "#414245"
+                            color: getBackgroundColor()
                             radius: 3
                         }
                     }

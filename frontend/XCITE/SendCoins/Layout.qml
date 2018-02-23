@@ -2,12 +2,12 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 
 import "../Home" as HomeComponents
+import "../../Controls" as Controls
 
-ColumnLayout {
+RowLayout {
     readonly property color cDiodeBackground: "#3a3e46"
 
     anchors.fill: parent
-
     spacing: layoutGridSpacing
 
     RowLayout {
@@ -32,5 +32,9 @@ ColumnLayout {
             Layout.fillWidth: true
             height: childrenRect.height
         }
+    }
+
+    Controls.AddressForm {
+        id: addressEditForm
     }
 }

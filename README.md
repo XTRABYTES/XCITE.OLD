@@ -35,16 +35,47 @@ If this issue arises you should first try the following steps before performing 
 
 - If no compiler is installed you will need to either reinstall or manually install MinGW version 5.3.0
 
+## Interacting with the XBY Testnet
+
+1. Download the normal testnet wallet [here](https://testnet.xtrabytes.global/)
+2. Run the testnet wallet and allow it to completely synchronize.
+3. Close the wallet and browse to your application data folder.
+    - **Windows:** %APPDATA%\xcite\
+    - **Mac:** Home/Library/Application Support/xcite/
+4. Within this folder, create a new file and name it "xcite.conf". **Make sure the file is not called "xcite.config.txt". The file must be saved with a ".conf" extension.** 
+    - **Windows:** In Notepad, go to File -> Save As ->  Set the "File name:" to xcite.conf, change the "Save as type:" dropdown to "All Files", then click Save.
+    - **Mac:** In TextEdit, click Format in the file bar -> Make Plain Text -> File -> Save -> Change "Save As:" to xcite.conf, then click Save.
+4. Edit the xcite.conf file, paste the following content into the file, then save and close it:
+
+    ```
+    rpcuser=xcite
+    rpcpassword=xtrabytes
+    server=1
+    ```
+
+5. Re-open the wallet and allow it to synchronize.
+6. Open XCITE (allow the XCITE wallet to continue running in the background)
+7. In XCITE, click the online indicator in the bottom-left to connect via RPC. If it works correctly the balance should be updated in XCITE and the Send Coins & History views should be functional.
+
 ## Screenshots
 
-##### X-Board -> Home
-![image](https://user-images.githubusercontent.com/17502298/35881872-43b765d2-0b50-11e8-814d-ab8d21c6b341.png)
+**Testnet Interaction**
+![xcite-testnet-2-21-18](https://user-images.githubusercontent.com/17502298/36481552-2c7ba1a0-16de-11e8-8848-102cfa4653e7.gif)
 
-##### X-Board -> X-Chat Popup
-![image](https://user-images.githubusercontent.com/17502298/35882148-34667f04-0b51-11e8-9a93-a0bc395d81bd.png)
+**XCITE-> Home**
+![image](https://user-images.githubusercontent.com/17502298/36481260-4a1cbc7c-16dd-11e8-841c-fbfdb077290c.png)
 
-##### X-Board -> Nodes
-![image](https://user-images.githubusercontent.com/17502298/35881909-6768340c-0b50-11e8-8a65-2307d5053db3.png)
+**XCITE-> Send Coins**
+![image](https://user-images.githubusercontent.com/17502298/36481289-640b4fcc-16dd-11e8-8706-d2c3b761072e.png)
+
+**XCITE-> Send Coins -> Send Confirmation**
+![image](https://user-images.githubusercontent.com/17502298/36481304-77d2afa0-16dd-11e8-983c-f1033efd5dc3.png)
+
+**XCITE-> Receive Coins**
+![image](https://user-images.githubusercontent.com/17502298/36481323-82b32742-16dd-11e8-8804-8440774b4d57.png)
+
+**XCITE-> History**
+![image](https://user-images.githubusercontent.com/17502298/36481337-8e668638-16dd-11e8-93e6-f3ab10588076.png)
 
 ## Contributing
 

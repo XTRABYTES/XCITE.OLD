@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.3
 Button {
     property bool isPrimary: false
     property alias label: label
-    property alias labelText: label.text
+    property string labelText: label.text || qsTr("OK")
     property real buttonHeight: parent.height
 
     Layout.fillWidth: true
@@ -35,6 +35,7 @@ Button {
         anchors.fill: parent
         color: isPrimary ? "#3e3e3e" : "#fff"
         font.pixelSize: 18
+        text: labelText
         font.family: "Roboto"
         font.weight: isPrimary ? Font.Medium : Font.Light
         verticalAlignment: Text.AlignVCenter

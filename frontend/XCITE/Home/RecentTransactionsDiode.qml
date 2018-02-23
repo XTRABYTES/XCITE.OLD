@@ -29,15 +29,18 @@ Rectangle {
 
         model: SortFilterProxyModel {
             id: proxyModel
-            source: transactionModel.count > 0 ? transactionModel : null
+            source: wallet.transactions.rowCount(
+                        ) > 0 ? wallet.transactions : null
             sortOrder: transactionTable.sortIndicatorOrder
             sortCaseSensitivity: Qt.CaseInsensitive
-            sortRole: transactionModel.count > 0 ? transactionTable.getColumn(transactionTable.sortIndicatorColumn).role : ""
+            sortRole: wallet.transactions.rowCount(
+                          ) > 0 ? transactionTable.getColumn(
+                                      transactionTable.sortIndicatorColumn).role : ""
         }
 
         // TODO: This is just a placeholder to test out click-to-view a transaction
         onDoubleClicked: {
-            popup.open();
+            popup.open()
         }
 
         backgroundVisible: false
@@ -58,7 +61,7 @@ Rectangle {
             }
 
             // Scrollbar specific properties
-            transientScrollBars: true   // We use this because the default scrollbars look awful
+            transientScrollBars: true // We use this because the default scrollbars look awful
             handle: Item {
                 implicitWidth: 14
                 implicitHeight: 16
@@ -76,7 +79,7 @@ Rectangle {
             // Table header attributes
             headerDelegate: Rectangle {
                 height: 55
-                color: "#3A3E46"    // This needs to be set (non to avoid the rows being visible under the header
+                color: "#3A3E46" // This needs to be set (non to avoid the rows being visible under the header
 
                 Text {
                     color: "#FFF7F7"
@@ -90,7 +93,7 @@ Rectangle {
                     Rectangle {
                         anchors.top: parent.verticalCenter
                         anchors.topMargin: 20
-                        width: parent.width ? 60 : 0    // Avoid extraneous underline after last column
+                        width: parent.width ? 60 : 0 // Avoid extraneous underline after last column
                         height: 1
                         color: "#24B9C3"
                     }
@@ -119,29 +122,43 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.rightMargin: 26
-
                     color: {
                         switch (styleData.column) {
                         case 1:
                         case 6:
-                            // Colour columns 1 and 6 (Type and value) based on the hidden type column. Keeps things language agnostic
-                            var row = transactionModel.get(styleData.row);
-                            row && row.type === "IN" ? "#0ED8D2" : "#F77E7E"
-                            break;
+                            if (styleData.value === "IN")
+                                "#0ED8D2"
+                            if (styleData.value === "OUT")
+                                "#F77E7E"
+                            if (styleData.value >= 0)
+                                "#0ED8D2"
+                            if (styleData.value < 0)
+                                "#F77E7E"
+                            break
                         default:
                             "#ffffff"
-                            break;
+                            break
                         }
                     }
-
                     text: {
                         switch (styleData.column) {
+                        case 1:
+                            styleData.value === "IN" ? qsTr("Receive") : qsTr(
+                                                           "Send")
+                            break
+                        case 2:
+                            Qt.formatDateTime(styleData.value, "dd MMMM yyyy")
+                            break
+                        case 3:
+                            Qt.formatDateTime(styleData.value, "h:mm a")
+                            break
                         case 6:
                             // Add the + prefix and XBY suffix to column 6 (value)
-                            (styleData.value > 0 ? ("+" + styleData.value) : styleData.value) + " XBY";
-                            break;
+                            (styleData.value
+                             > 0 ? ("+" + styleData.value) : styleData.value) + " XBY"
+                            break
                         default:
-                            styleData.value;
+                            styleData.value
                         }
                     }
 
@@ -165,21 +182,21 @@ Rectangle {
 
         TableViewColumn {
             title: qsTr("Type")
-            role: "typeLabel"
+            role: "type"
             width: 125
             resizable: false
         }
 
         TableViewColumn {
             title: qsTr("Date")
-            role: "date"
+            role: "timestamp"
             width: 150
             resizable: false
         }
 
         TableViewColumn {
             title: qsTr("Time")
-            role: "time"
+            role: "timestamp"
             width: 100
             resizable: false
         }
@@ -193,112 +210,16 @@ Rectangle {
 
         TableViewColumn {
             title: qsTr("Transaction ID")
-            role: "transactionID"
+            role: "txid"
             width: 175
             resizable: false
         }
 
         TableViewColumn {
             title: qsTr("Value")
-            role: "value"
+            role: "amount"
             width: 125
             resizable: false
-        }
-
-        ListModel {
-            id: transactionModel
-
-            // Placeholder data
-            ListElement {
-                type: "IN"
-                typeLabel: qsTr("Received")
-                date: "24/1/2017"
-                time: "12:45 PM"
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: 1000000
-            }
-            ListElement {
-                type: "OUT"
-                typeLabel: qsTr("Sent")
-                date: "24/1/2017"
-                time: "12:45 PM"
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: -5000
-            }
-            ListElement {
-                type: "OUT"
-                typeLabel: qsTr("Sent")
-                date: "24/1/2017"
-                time: "12:45 PM"
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: -6000
-            }
-            ListElement {
-                type: "IN"
-                typeLabel: qsTr("Received")
-                date: "24/1/2017"
-                time: "12:45PM "
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: 15000
-            }
-            ListElement {
-                type: "OUT"
-                typeLabel: qsTr("Sent")
-                date: "24/1/2017"
-                time: "12:45 PM"
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: -19000
-            }
-            ListElement {
-                type: "IN"
-                typeLabel: qsTr("Received")
-                date: "24/1/2017"
-                time: "12:45 PM"
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: 8000
-            }
-            ListElement {
-                type: "OUT"
-                typeLabel: qsTr("Sent")
-                date: "24/1/2017"
-                time: "12:45 PM"
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: -8005
-            }
-            ListElement {
-                type: "OUT"
-                typeLabel: qsTr("Sent")
-                date: "24/1/2017"
-                time: "12:45 PM"
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: -1234.45
-            }
-            ListElement {
-                type: "IN"
-                typeLabel: qsTr("Received")
-                date: "24/1/2017"
-                time: "12:45 PM"
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: 2345.34
-            }
-            ListElement {
-                type: "OUT"
-                typeLabel: qsTr("Sent")
-                date: "24/1/2017"
-                time: "12:45PM"
-                address: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                transactionID: "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34"
-                value: -1234.45
-            }
         }
     }
 }

@@ -1,10 +1,7 @@
 #ifndef NODETRANSACTION_H
 #define NODETRANSACTION_H
 
-#endif // NODETRANSACTIONITEM_H
-
 #include <QObject>
-
 
 class NodeTransaction: public QObject{
     Q_OBJECT
@@ -46,3 +43,5 @@ private:
 
 signals:
 };
+
+#endif // NODETRANSACTIONITEM_H
