@@ -15,5 +15,7 @@ TextField {
     background: Rectangle {
         color: "#2A2C31"
         radius: 4
+        border.width: parent.activeFocus ? 2 : 0
+        border.color: "#0ED8D2"
     }
 }
