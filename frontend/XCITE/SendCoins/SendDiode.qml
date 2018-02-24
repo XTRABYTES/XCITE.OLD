@@ -6,7 +6,6 @@ import QtQuick.Window 2.2
 import AddressBookModel 0.1
 
 import "../../Controls" as Controls
-import "../Home" as Home
 
 Controls.Diode {
     property int networkFee: 1
