@@ -44,6 +44,9 @@ QML_IMPORT_PATH =
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
+include(backend/support/qrcode/libqrencode.pri)
+include(backend/support/qrcode/qt-qrcode.pri)
+
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
@@ -54,8 +57,7 @@ SOURCES += main/main.cpp \
             backend/testnet/testnet.cpp \
             backend/testnet/transactionmodel.cpp \
             backend/addressbook/addressbookmodel.cpp \
-            backend/support/ClipboardProxy.cpp \
-            backend/support/qrcode/QtQrCodeQuickItem.cpp
+            backend/support/ClipboardProxy.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -69,8 +71,7 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/testnet/testnet.hpp \
             backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
-            backend/support/ClipboardProxy.hpp \
-            backend/support/qrcode/QtQrCodeQuickItem.hpp
+            backend/support/ClipboardProxy.hpp
 
 DISTFILES += \
     xcite.ico
@@ -82,9 +83,3 @@ CONFIG(debug, debug|release) {
 } else {
     DESTDIR = $$PWD/build/release
 }
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/backend/support/qrcode/qt-qrcode/lib -lqtqrcode
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/backend/support/qrcode/qt-qrcode/lib -lqtqrcode
-else:unix: LIBS += -L$$PWD/backend/support/qrcode/qt-qrcode/lib -lqtqrcode
-
-include(backend/support/qrcode/qt-qrcode/defaults.pri)

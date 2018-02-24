@@ -9,7 +9,7 @@
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
-#include "../backend/support/qrcode/QtQrCodeQuickItem.hpp"
+#include "../backend/support/qrcode/qt-qrcode/QtQrCodeQuickItem.hpp"
 #include "../backend/testnet/testnet.hpp"
 
 int main(int argc, char *argv[])
