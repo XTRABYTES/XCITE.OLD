@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 
 TextField {
+    id: component
     color: "white"
     font.family: "Roboto"
     font.weight: Font.Light
@@ -15,5 +16,11 @@ TextField {
     background: Rectangle {
         color: "#2A2C31"
         radius: 4
+    }
+
+    onActiveFocusChanged: {
+        if (component.focus) {
+            EventFilter.focus(this)
+        }
     }
 }
