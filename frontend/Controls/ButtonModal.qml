@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 
 Button {
     property bool isPrimary: false
+    property bool isDanger: false
     property alias label: label
     property string labelText: label.text || qsTr("OK")
     property real buttonHeight: parent.height
@@ -22,18 +23,18 @@ Button {
     }
 
     background: Rectangle {
-        color: isPrimary ? "#0ED8D2" : "transparent"
+        color: isDanger ? "#d80e0e" : (isPrimary ? "#0ED8D2" : "transparent")
         radius: 4
         height: buttonHeight
         border.width: 1
-        border.color: isPrimary ? "#0ED8D2" : "#616878"
+        border.color: isDanger ? "#d80e0e" : (isPrimary ? "#0ED8D2" : "#616878")
         anchors.verticalCenter: parent.verticalCenter
     }
 
     Text {
         id: label
         anchors.fill: parent
-        color: isPrimary ? "#3e3e3e" : "#fff"
+        color: isDanger ? "#fff" : (isPrimary ? "#3e3e3e" : "#fff")
         font.pixelSize: 18
         text: labelText
         font.family: "Roboto"
