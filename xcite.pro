@@ -76,3 +76,4 @@ DISTFILES += \
     xcite.ico
 
 RC_ICONS = xcite.ico
+ICON = xcite.icns
