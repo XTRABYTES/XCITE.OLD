@@ -1,6 +1,5 @@
 #include "globaleventfilter.hpp"
 
-#include <QDebug>
 #include <QEvent>
 #include <QApplication>
 
