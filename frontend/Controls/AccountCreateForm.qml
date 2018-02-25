@@ -48,7 +48,7 @@ ModalPopup {
             bottomPadding: 10
             Layout.topMargin: -20 // TODO: Hack - what's behind the spacing?
             anchors.topMargin: 0
-            text: item ? item.name : ''
+            text: '' // item ? item.name : ''
         }
 
         RowLayout {

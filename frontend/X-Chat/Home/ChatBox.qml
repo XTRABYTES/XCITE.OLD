@@ -1,0 +1,54 @@
+import QtQuick 2.0
+import QtQuick.Layouts 1.3
+import "../../Controls" as Controls
+
+ColumnLayout {
+
+    Layout.fillWidth: true
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 93
+    RowLayout {
+        anchors.fill: parent
+        Controls.IconButton {
+            id: messageChatButton
+            height: parent.height
+            icon.source: "../../icons/circle-cross.svg"
+            icon.sourceSize.width: 29
+            Layout.preferredWidth: 40
+            anchors.left: parent.left
+            anchors.leftMargin: 18
+            anchors.verticalCenter: parent.verticalCenter
+            MouseArea {
+                anchors.fill: parent
+            }
+        }
+
+        Controls.TextInput {
+            id: chatInput
+            color: "#A9AAAD"
+            font.pixelSize: 18
+            text: qsTr("Write something here...")
+            Layout.preferredWidth: 909
+            Layout.preferredHeight: 56
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: messageChatButton.right
+            anchors.leftMargin: 15
+        }
+
+        Controls.IconButton {
+            id: messageEmojiButton
+            height: parent.height
+            icon.source: "../../icons/circle-cross.svg"
+            icon.sourceSize.width: 29
+            Layout.preferredWidth: 40
+            anchors.right: parent.right
+            anchors.rightMargin: 15
+            anchors.verticalCenter: parent.verticalCenter
+            MouseArea {
+                anchors.fill: parent
+            }
+        }
+    }
+}

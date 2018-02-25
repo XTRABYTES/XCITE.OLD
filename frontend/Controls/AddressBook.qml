@@ -2,12 +2,23 @@ import QtQuick 2.4
 import QtQuick.Controls 2.2
 
 ListView {
+
+    property int delegateLeftPadding: 20
+    property int delegateRightPadding: 20
+    property int delegatePixelSize: 16
+    property string delegateColor: "white"
+    property string delegateHightlightColor: "#42454D"
+    property int delegateFontWeight: Font.Light
+    property int leftMargin: 3
+    property int rightMargin: 3
+    property double delegateLineHeight: 1.5
+
     id: addressBook
     anchors.fill: parent
     anchors.topMargin: 10
     anchors.bottomMargin: 10
-    anchors.leftMargin: 3
-    anchors.rightMargin: 3
+    anchors.leftMargin: leftMargin
+    anchors.rightMargin: rightMargin
 
     highlightMoveDuration: 0
     highlightResizeDuration: 0
@@ -21,14 +32,15 @@ ListView {
 
         verticalAlignment: Text.AlignVCenter
         width: parent.width
-        leftPadding: 20
-        rightPadding: 20
+
+        leftPadding: delegateLeftPadding
+        rightPadding: delegateRightPadding
         text: name || "Default"
         font.family: "Roboto"
-        font.weight: Font.Light
-        font.pixelSize: 16
-        color: "white"
-        lineHeight: 1.5
+        font.weight: delegateFontWeight
+        font.pixelSize: delegatePixelSize
+        color: delegateColor
+        lineHeight: delegateLineHeight
 
         MouseArea {
             anchors.fill: parent
@@ -38,7 +50,7 @@ ListView {
     }
 
     highlight: Rectangle {
-        color: "#42454D"
+        color: delegateHightlightColor
     }
 
     function add(name, address) {

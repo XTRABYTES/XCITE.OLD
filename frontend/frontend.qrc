@@ -74,5 +74,13 @@
         <file>Controls/Version.qml</file>
         <file>Controls/AddressForm.qml</file>
         <file>Controls/AccountCreateForm.qml</file>
+        <file>X-Chat/Channels.qml</file>
+        <file>X-Chat/Layout.qml</file>
+        <file>X-Chat/Home/ChannelGroup.qml</file>
+        <file>X-Chat/Home/ChannelList.qml</file>
+        <file>X-Chat/Home/ChannelsDiode.qml</file>
+        <file>X-Chat/Home/ChatDiode.qml</file>
+        <file>X-Chat/Home/Layout.qml</file>
+        <file>X-Chat/Home/ChatBox.qml</file>
     </qresource>
 </RCC>

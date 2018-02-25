@@ -22,8 +22,12 @@ Button {
         onPressed: mouse.accepted = false
         cursorShape: Qt.PointingHandCursor
         hoverEnabled: true
-        onEntered: { button.state = 'hover' }
-        onExited: { button.state = '' }
+        onEntered: {
+            button.state = 'hover'
+        }
+        onExited: {
+            button.state = ''
+        }
     }
 
     ColorOverlay {

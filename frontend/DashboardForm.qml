@@ -59,7 +59,6 @@ Item {
             XChat.Layout {
             }
 
-
             // Settings
             Item {
                 id: moduleSettings
