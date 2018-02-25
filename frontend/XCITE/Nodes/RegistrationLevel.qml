@@ -71,7 +71,7 @@ Rectangle {
     Controls.Diode {
         id: rectangle0
         title: qsTr("L1")
-        visible: pageTracker == 0 || levelSelect.model === "Level 1 Node"
+        visible: pageTracker == 0 
         anchors.left: image0.right
         anchors.top: image0.top
         width: 257
@@ -116,9 +116,7 @@ Rectangle {
     Controls.Diode {
         id: rectangle1
         title: qsTr("L2")
-        visible: (levelSelect.model === "Level 2 Node"
-                  || levelSelect2.model === "Level 2 Node"
-                  || levelSelect3.model === "Level 2 Node")
+        visible: false
         anchors.left: image0.right
         anchors.top: image0.top
         width: 257
@@ -169,9 +167,7 @@ Rectangle {
     Controls.Diode {
         id: rectangle2
         title: qsTr("L3")
-        visible: (levelSelect.model === "Level 3 Node"
-                  || levelSelect2.model === "Level 3 Node"
-                  || levelSelect3.model === "Level 3 Node")
+        visible: false
         anchors.left: image0.right
         anchors.top: image0.top
         width: 257
