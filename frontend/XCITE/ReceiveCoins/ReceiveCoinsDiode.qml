@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Styles 1.4
+import QtQrCode.Component 1.0
 
 import "../../Controls" as Controls
 
@@ -155,17 +156,15 @@ Controls.Diode {
                     color: "#E3E3E3"
                 }
 
-                Image {
+                QtQrCode {
                     Layout.topMargin: 25
                     Layout.bottomMargin: 25
                     anchors.horizontalCenter: parent.horizontalCenter
-
-                    fillMode: Image.Pad
-                    source: "../../icons/placeholder-qr.svg"
-                    width: 264
-                    height: 264
-                    sourceSize.width: 264
-                    sourceSize.height: 264
+                    data: formAddress.text
+                    background: "transparent"
+                    foreground: "#0ED8D2"
+                    width: 180
+                    height: 180
                 }
             }
 

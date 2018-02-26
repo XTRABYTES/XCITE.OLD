@@ -44,6 +44,9 @@ QML_IMPORT_PATH =
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
+include(backend/support/qrcode/libqrencode.pri)
+include(backend/support/qrcode/qt-qrcode.pri)
+
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
@@ -76,4 +79,9 @@ DISTFILES += \
     xcite.ico
 
 RC_ICONS = xcite.ico
+CONFIG(debug, debug|release) {
+    DESTDIR = $$PWD/build/debug
+} else {
+    DESTDIR = $$PWD/build/release
+}
 ICON = xcite.icns

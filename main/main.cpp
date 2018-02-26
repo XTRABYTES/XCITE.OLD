@@ -9,12 +9,15 @@
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
+#include "../backend/support/qrcode/qt-qrcode/QtQrCodeQuickItem.hpp"
 #include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 
 int main(int argc, char *argv[])
 {
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
+
+    QtQrCodeQuickItem::registerQmlTypes();
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
