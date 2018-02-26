@@ -11,6 +11,7 @@
 #include "../backend/support/ClipboardProxy.hpp"
 #include "../backend/support/qrcode/qt-qrcode/QtQrCodeQuickItem.hpp"
 #include "../backend/testnet/testnet.hpp"
+#include "../backend/support/globaleventfilter.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +21,9 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
+
+    GlobalEventFilter eventFilter;
+    app.installEventFilter(&eventFilter);
 
     qmlRegisterType<Xchat>("xtrabytes.xcite.xchat", 1, 0, "Xchat");
     qmlRegisterType<SortFilterProxyModel>("SortFilterProxyModel", 0, 1, "SortFilterProxyModel");
@@ -51,6 +55,7 @@ int main(int argc, char *argv[])
     //app.set
     engine.rootContext()->setContextProperty("nodeTransactionModel", QVariant::fromValue(transactionList));
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
+    engine.rootContext()->setContextProperty("EventFilter", &eventFilter);
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty()) {

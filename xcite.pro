@@ -57,7 +57,8 @@ SOURCES += main/main.cpp \
             backend/testnet/testnet.cpp \
             backend/testnet/transactionmodel.cpp \
             backend/addressbook/addressbookmodel.cpp \
-            backend/support/ClipboardProxy.cpp
+            backend/support/ClipboardProxy.cpp \
+            backend/support/globaleventfilter.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -71,15 +72,16 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/testnet/testnet.hpp \
             backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
-            backend/support/ClipboardProxy.hpp
+            backend/support/ClipboardProxy.hpp \
+            backend/support/globaleventfilter.hpp
 
 DISTFILES += \
     xcite.ico
 
 RC_ICONS = xcite.ico
-
 CONFIG(debug, debug|release) {
     DESTDIR = $$PWD/build/debug
 } else {
     DESTDIR = $$PWD/build/release
 }
+ICON = xcite.icns
