@@ -70,7 +70,8 @@
         <file>icons/copy-clipboard.svg</file>
         <file>icons/pencil.svg</file>
         <file>icons/trash.svg</file>
-        <file>icons/circle-check.svg</file>
-        <file>icons/placeholder-qr.svg</file>
+        <file>icons/blocks1.svg</file>
+        <file>icons/blocks2.svg</file>
+        <file>icons/blocks3.svg</file>
     </qresource>
 </RCC>
