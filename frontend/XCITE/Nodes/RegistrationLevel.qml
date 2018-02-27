@@ -99,7 +99,14 @@ Rectangle {
     // L1
     Controls.Diode {
         id: rectangle0
-
+        y: {
+            if (level1 == 0)
+                image0.y + 12
+            if (level1 == 1)
+                image1.y + 120
+            if (level1 == 2)
+                image2.y + 190
+        }
         title: {
             if (level1 == 0)
                 qsTr("L1")
@@ -108,7 +115,6 @@ Rectangle {
             if (level1 == 2)
                 qsTr("L3")
         }
-        visible: pageTracker == 0
         anchors.left: {
             if (level1 == 0)
                 image0.right
@@ -117,6 +123,7 @@ Rectangle {
             if (level1 == 2)
                 image2.right
         }
+        /**
         anchors.top: {
             if (level1 == 0)
                 image0.top
@@ -125,6 +132,7 @@ Rectangle {
             if (level1 == 2)
                 image2.top
         }
+*/
         width: 257
         height: 300
         radius: 5
