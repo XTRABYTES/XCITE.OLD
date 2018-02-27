@@ -134,53 +134,86 @@ Rectangle {
         }
 */
         width: 257
-        height: 300
+        height: 375
         radius: 5
         color: "#2A2C31"
         ColumnLayout {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.topMargin: 75
+            anchors.topMargin: 65
             anchors.leftMargin: 15
             anchors.rightMargin: 15
             Label {
+                id: label1
                 font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 16
+                bottomPadding: 5
                 text: {
                     if (level1 == 0)
-                        qsTr("Earnings:                    Low")
+                        qsTr("      Earnings:                    Low")
                     if (level1 == 1)
-                        qsTr("Earnings:                    Medium")
+                        qsTr("      Earnings:               Medium")
                     if (level1 == 2)
-                        qsTr("Earnings:                    High")
+                        qsTr("      Earnings:                    High")
+                }
+                Image {
+
+                    id: diamond
+                    visible: true
+                    anchors {
+                        left: parent.left
+                    }
+                    source: "../../icons/icon-diamond.svg"
                 }
             }
             Label {
+                id: label2
                 font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 16
+                bottomPadding: 5
                 text: {
                     if (level1 == 0)
-                        qsTr("Network Stake:            Low")
+                        qsTr("      Network Stake:            Low")
                     if (level1 == 1)
-                        qsTr("Network Stake:            Medium")
+                        qsTr("      Network Stake:       Medium")
                     if (level1 == 2)
-                        qsTr("Network Stake:            High")
+                        qsTr("      Network Stake:            High")
+                }
+                Image {
+
+                    id: network
+                    visible: true
+                    anchors {
+                        left: parent.left
+                    }
+                    source: "../../icons/icon-network.svg"
                 }
             }
             Label {
+                id: label3
                 font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 16
+                bottomPadding: 15
                 text: {
                     if (level1 == 0)
-                        qsTr("Transfer Rate:              Low")
+                        qsTr("      Transfer Rate:              Low")
                     if (level1 == 1)
-                        qsTr("Transfer Rate:              Medium")
+                        qsTr("      Transfer Rate:         Medium")
                     if (level1 == 2)
-                        qsTr("Transfer Rate:              High")
+                        qsTr("      Transfer Rate:              High")
+                }
+                Image {
+
+                    id: transfer
+                    visible: true
+                    anchors {
+                        left: parent.left
+                    }
+                    source: "../../icons/icon-transfer.svg"
                 }
             }
 
@@ -195,15 +228,37 @@ Rectangle {
                 font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 16
+                topPadding: 14
                 text: "Payment"
+            }
+            Label {
+                font.family: "Roboto"
+                font.weight: Font.Light
+                font.pixelSize: 10
+                bottomPadding: -10
+                color: "#24B9C3"
+                text: "XBY                                                     XBY+XFUEL"
             }
             // choose payment value for portion of node, needs input on if amount is static or not
             RangeSlider {
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                 }
+                from: 0
+                to: 100
                 first.value: 0
                 second.value: 550000
+            }
+            Controls.ButtonModal {
+                Layout.fillHeight: true
+                isPrimary: true
+                width: parent.width - 10
+                buttonHeight: 40
+                label.font.family: "Roboto"
+                label.font.weight: Font.Medium
+                label.font.letterSpacing: 3
+                label.text: qsTr("Select")
+                bottomPadding: 20
             }
         }
     }
@@ -211,7 +266,7 @@ Rectangle {
     Rectangle {
         id: divider
         x: 51
-        y: 104
+        y: 110
         width: 115
         height: 1
         color: "#24B9C3"
