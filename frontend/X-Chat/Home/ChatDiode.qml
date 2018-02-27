@@ -4,28 +4,43 @@ import "../../Controls" as Controls
 
 Controls.Diode {
     id: generalDiode
-    Layout.preferredHeight: 863
-    Layout.preferredWidth: 1046
+    Layout.minimumHeight: 863
+    Layout.minimumWidth: 1046
     Layout.fillHeight: true
     Layout.fillWidth: true
-    border.color: "black"
     Controls.DiodeHeader {
+        id: chatDiodeHeader
         text: "CHAT"
         iconSource: "../icons/menu-settings.svg"
         iconOnly: true
         iconSize: 20
     }
+    ColumnLayout {
+        spacing: 0
+        anchors.top: chatDiodeHeader.bottom
+        anchors.topMargin: 40
+        anchors.fill: parent
 
-    RowLayout {
-        Rectangle {
-            id: chat
-        }
-        Rectangle {
-            id: status
-        }
-    }
+        RowLayout {
+            //Layout.fillHeight: true
+            //Layout.fillWidth: true
+            Rectangle {
 
-    //Chatbox
-    ChatBox {
+                id: chat
+                color: "green"
+                Layout.fillWidth: true
+                Layout.preferredHeight: 730
+            }
+            Rectangle {
+                //Layout.preferredWidth:
+                id: status
+                Layout.preferredWidth: 259
+                Layout.preferredHeight: 730
+            }
+        }
+
+        //Chatbox
+        ChatBox {
+        }
     }
 } //Row Layout//Image//Rectangle -> chat box//Image

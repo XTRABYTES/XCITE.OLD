@@ -32,7 +32,7 @@ ColumnLayout {
         }
         ColumnLayout {
             anchors.top: parent.top
-            height: parent.height
+            Layout.fillHeight: true
             spacing: layoutGridSpacing
             ChatDiode {
             }

@@ -82,5 +82,6 @@
         <file>X-Chat/Home/ChatDiode.qml</file>
         <file>X-Chat/Home/Layout.qml</file>
         <file>X-Chat/Home/ChatBox.qml</file>
+        <file>X-Chat/Home/StatusBox.qml</file>
     </qresource>
 </RCC>
