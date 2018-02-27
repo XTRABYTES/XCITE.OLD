@@ -76,7 +76,7 @@ QList<QDomNode> elementsByTagName(QDomNode *node, const QString& tagName)
 {
     QList<QDomNode> list;
     QDomNodeList childNodes = node->toElement().elementsByTagName(tagName);
-    for (uint i = 0; i < childNodes.count(); i++)
+    for (int i = 0; i < childNodes.count(); i++)
     {
         QDomNode n = childNodes.item(i);
         if (n.parentNode() == *node)
@@ -369,7 +369,7 @@ QString XchatAIML::resolveNode(QDomNode* node, const QStringList &capturedTexts,
         if (condType)
         {
             QList<QDomNode> childNodes = elementsByTagName(node, "li");
-            for (uint i = 0; i < childNodes.count(); i++)
+            for (int i = 0; i < childNodes.count(); i++)
             {
                 QDomNode n = childNodes[i];
                 if (n.toElement().hasAttribute("value"))
@@ -397,7 +397,7 @@ QString XchatAIML::resolveNode(QDomNode* node, const QStringList &capturedTexts,
             htmlTag = true;
             ts << '<' << nodeName;
             const QDomNamedNodeMap &attributes = node->attributes();
-            for (uint i = 0; i < attributes.count(); i++)
+            for (int i = 0; i < attributes.count(); i++)
             {
                 ts << ' ';
                 attributes.item(i).save(ts, 0);
@@ -440,17 +440,17 @@ QString XchatAIML::resolveNode(QDomNode* node, const QStringList &capturedTexts,
         {
             if (nodeName == "star")
             {
-                uint index = element.attribute("index", "1").toUInt() - 1;
+                int index = element.attribute("index", "1").toInt() - 1;
                 result = index < capturedTexts.count() ? capturedTexts[index] : QString("");
             }
             else if (nodeName == "thatstar")
             {
-                uint index = element.attribute("index", "1").toUInt() - 1;
+                int index = element.attribute("index", "1").toInt() - 1;
                 result = index < capturedThatTexts.count() ? capturedThatTexts[index] : QString("");
             }
             else if (nodeName == "topicstar")
             {
-                uint index = element.attribute("index", "1").toUInt() - 1;
+                int index = element.attribute("index", "1").toInt() - 1;
                 result = index < capturedTopicTexts.count() ? capturedTopicTexts[index] : QString("");
             }
             else if (nodeName == "that")
@@ -458,8 +458,8 @@ QString XchatAIML::resolveNode(QDomNode* node, const QStringList &capturedTexts,
                 QString indexStr = element.attribute("index", "1,1");
                 if (!indexStr.contains(","))
                     indexStr = "1," + indexStr;
-                uint index1 = indexStr.section(',', 0, 0).toInt()-1;
-                uint index2 = indexStr.section(',', 1, 1).toInt()-1;
+                int index1 = indexStr.section(',', 0, 0).toInt()-1;
+                int index2 = indexStr.section(',', 1, 1).toInt()-1;
                 result = (index1 < thatList.count()) && (index2 < thatList[index1].count()) ?
                          thatList[index1][index2] : QString("");
             }
@@ -471,7 +471,7 @@ QString XchatAIML::resolveNode(QDomNode* node, const QStringList &capturedTexts,
                 result = capturedTexts.count() ? capturedTexts[0] : QString("");
             else if (nodeName == "input")
             {
-                uint index = element.attribute("index", "1").toUInt() - 1;
+                int index = element.attribute("index", "1").toInt() - 1;
                 result = index < inputList.count() ? inputList[index] : QString("");
             }
             //the following just to avoid warnings !
