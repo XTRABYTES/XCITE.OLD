@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQuick/QQuickWindow>
+#include <QQmlFileSelector>
 #include <qqmlcontext.h>
 #include <qqml.h>
 #include "../backend/xchat/xchat.hpp"
@@ -9,12 +10,15 @@
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
+#include "../backend/support/qrcode/qt-qrcode/QtQrCodeQuickItem.hpp"
 #include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 
 int main(int argc, char *argv[])
 {
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
+
+    QtQrCodeQuickItem::registerQmlTypes();
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
@@ -30,6 +34,11 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/");
+
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+    QQmlFileSelector *selector = new QQmlFileSelector(&engine);
+    selector->setExtraSelectors(QStringList() << "mobile");
+#endif
 
     XchatObject xchatobj;
     xchatobj.Initialize();

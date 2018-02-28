@@ -10,6 +10,8 @@ GlobalEventFilter::GlobalEventFilter(QObject *parent)
 
 bool GlobalEventFilter::eventFilter(QObject *target, QEvent *event)
 {
+    Q_UNUSED(target);
+
     if (focused == NULL) {
         return false;
     }

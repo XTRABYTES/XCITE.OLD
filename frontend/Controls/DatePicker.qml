@@ -115,8 +115,9 @@ TextField {
                     delegate: Label {
                         id: label
 
-                        readonly property color defaultColor: "#414245"
+                        readonly property color defaultColor: "#22414245"
                         readonly property color selectedColor: "#0ED8D2"
+                        readonly property color hoveringColor: "#414245"
 
                         function dateMatch() {
                             var d1 = model.date.setHours(0, 0, 0, 0)
@@ -140,21 +141,87 @@ TextField {
                         font.weight: Font.Light
                         font.pixelSize: 7
                         padding: 5
+
+                        state: dateMatch() ? "Selected" : "Default"
                         color: getColor()
 
                         MouseArea {
+                            id: labelMouseArea
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
+                                state: "Default"
                                 value = model.date
                                 picker.visible = false
+                            }
+                            hoverEnabled: true
+                            onHoveredChanged: {
+                                if (containsMouse && !dateMatch()) {
+                                    label.state = "Hovering"
+                                } else {
+                                    if (dateMatch()) {
+                                        label.state = "Selected"
+                                    } else {
+                                        label.state = "Default"
+                                    }
+                                }
                             }
                         }
 
                         background: Rectangle {
+                            id: labelBackground
                             color: getBackgroundColor()
                             radius: 3
                         }
+
+                        // Hovering animations
+                        Behavior on scale {
+                            NumberAnimation {
+                                duration: 150
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
+
+                        states: [
+                            State {
+                                name: "Hovering"
+                                PropertyChanges {
+                                    target: labelBackground
+                                    color: label.hoveringColor
+                                }
+                            },
+                            State {
+                                name: "Default"
+                                PropertyChanges {
+                                    target: labelBackground
+                                    color: label.defaultColor
+                                }
+                            },
+                            State {
+                                name: "Selected"
+                                PropertyChanges {
+                                    target: labelBackground
+                                    color: label.getBackgroundColor()
+                                }
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: "Default"
+                                to: "Hovering"
+                                ColorAnimation {
+                                    duration: 150
+                                }
+                            },
+                            Transition {
+                                from: "Hovering"
+                                to: "Default"
+                                ColorAnimation {
+                                    duration: 300
+                                }
+                            }
+                        ]
                     }
                 }
             }

@@ -13,7 +13,7 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 QT	+= core gui
 QT	+= xml
 QT	+= quick
-QT += svg
+QT      += svg
 CONFIG	+= c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -43,6 +43,9 @@ QML_IMPORT_PATH =
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
+
+include(backend/support/qrcode/libqrencode.pri)
+include(backend/support/qrcode/qt-qrcode.pri)
 
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
@@ -76,4 +79,20 @@ DISTFILES += \
     xcite.ico
 
 RC_ICONS = xcite.ico
-ICON = xcite.icns
+CONFIG(debug, debug|release) {
+    DESTDIR = $$PWD/build/debug
+} else {
+    DESTDIR = $$PWD/build/release
+}
+
+mac {
+    ICON = resources/ios/xcite.icns
+
+    macx {
+    }
+    else:ios {
+        QMAKE_INFO_PLIST = resources/ios/Info.plist
+        app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchscreen-logo.png
+        QMAKE_BUNDLE_DATA += app_launch_images
+    }
+}
