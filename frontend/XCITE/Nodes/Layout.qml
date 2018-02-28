@@ -25,93 +25,69 @@ ColumnLayout {
             visible: tracker == 0
         }
     }
+    /**
+    */
     RegistrationLevel {
         visible: tracker == 1
-
-        Controls.ButtonModal {
-            Layout.fillHeight: true
+        Controls.NavigateButtons {
             anchors.left: parent.left
             anchors.bottom: parent.bottom
-            isPrimary: true
-            width: 300
-            buttonHeight: 50
-            label.font.family: "Roboto"
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
             label.text: qsTr("<- Back")
-
+            isPrimary: true
+            width: 350
+            buttonHeight: 50
             onButtonClicked: {
                 tracker = 0
             }
         }
 
-        Controls.ButtonModal {
-            Layout.fillHeight: true
+        Controls.NavigateButtons {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
+            label.text: qsTr("   Registration Details ->")
             isPrimary: true
             width: 350
             buttonHeight: 50
-            label.font.family: "Roboto"
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
-            label.text: qsTr("   Registration Details ->")
-
             onButtonClicked: {
                 tracker = 2
             }
         }
     }
-
     RegistrationDetails {
         visible: tracker == 2
-        Controls.ButtonModal {
-            Layout.fillHeight: true
+        Controls.NavigateButtons {
             anchors.left: parent.left
             anchors.bottom: parent.bottom
-            isPrimary: true
-            width: 300
-            buttonHeight: 50
-            label.font.family: "Roboto"
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
             label.text: qsTr("<- Back")
-
+            isPrimary: true
+            width: 350
+            buttonHeight: 50
             onButtonClicked: {
                 tracker = 1
             }
         }
-        Controls.ButtonModal {
-            Layout.fillHeight: true
+        Controls.NavigateButtons {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
+            label.text: qsTr("Registration Confirmation ->")
             isPrimary: true
             width: 350
             buttonHeight: 50
-            label.font.family: "Roboto"
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
-            label.text: qsTr("Registration Confirmation ->")
-
             onButtonClicked: {
                 tracker = 3
             }
         }
     }
+
     RegistrationConfirmation {
         visible: tracker == 3
-        Controls.ButtonModal {
-            Layout.fillHeight: true
+        Controls.NavigateButtons {
             anchors.left: parent.left
             anchors.bottom: parent.bottom
-            isPrimary: true
-            width: 300
-            buttonHeight: 50
-            label.font.family: "Roboto"
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
             label.text: qsTr("<- Back")
-
+            isPrimary: true
+            width: 350
+            buttonHeight: 50
             onButtonClicked: {
                 tracker = 2
             }
@@ -121,18 +97,14 @@ ColumnLayout {
     RowLayout {
         NetworkStatusBoard {
             visible: tracker == 0
-            Controls.ButtonModal {
-                Layout.fillHeight: true
+
+            Controls.NavigateButtons {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
+                label.text: qsTr("   Register Node ->")
                 isPrimary: true
                 width: 350
                 buttonHeight: 50
-                label.font.family: "Roboto"
-                label.font.weight: Font.Medium
-                label.font.letterSpacing: 3
-                label.text: qsTr("   Register Node ->")
-
                 onButtonClicked: {
                     tracker = 1
                 }
