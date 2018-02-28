@@ -51,8 +51,6 @@ void AddressBookModel::update(int idx, QString name, QString address)
     addr->m_address = address;
 
     emit dataChanged(index(idx), index(idx));
-
-    save();
 }
 
 void AddressBookModel::updateAccountAddress(QString account, QString address) {

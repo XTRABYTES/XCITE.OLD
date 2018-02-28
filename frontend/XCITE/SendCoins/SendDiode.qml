@@ -28,6 +28,8 @@ Controls.Diode {
                 addressBook.update(newItem.name, newItem.address)
                 selectItem(addressBook.getSelectedItem())
             }
+
+            addressBook.save()
             addressEditForm.close()
         }
 
