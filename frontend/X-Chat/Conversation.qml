@@ -81,7 +81,7 @@ ColumnLayout {
             }
 
             Label {
-                font.pixelSize: 7
+                font.pixelSize: 10
                 font.family: "Roboto"
                 anchors.left: isMine ? undefined : parent.left
                 anchors.right: isMine ? parent.right : undefined
