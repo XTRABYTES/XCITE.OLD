@@ -1,4 +1,3 @@
-
 import QtQuick 2.6
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.1
@@ -8,21 +7,21 @@ ColumnLayout {
     Connections {
         target: xcite
         onXChatMessageReceived: {
-            add(message, datetime, false);
+            add(message, datetime, false)
         }
 
         // TODO: Temporary placeholder content
         Component.onCompleted: {
-            var now = Date.now();
+            var now = Date.now()
 
-            add("Heading downtown?", new Date(now - 180000), true);
-            add("Absolutely, catching a show.", new Date(now - 120000), false);
-            add("We'll catch up later!", new Date(now), true);
+            add("Heading downtown?", new Date(now - 180000), true)
+            add("Absolutely, catching a show.", new Date(now - 120000), false)
+            add("We'll catch up later!", new Date(now), true)
         }
     }
 
     function add(message, datetime, isMine) {
-        conversation.model.addMessage(message, datetime, isMine);
+        conversation.model.addMessage(message, datetime, isMine)
     }
 
     ListView {
@@ -37,7 +36,8 @@ ColumnLayout {
         Layout.bottomMargin: 5
 
         verticalLayoutDirection: ListView.BottomToTop
-        model: XChatConversationModel {}
+        model: XChatConversationModel {
+        }
 
         clip: true
 
@@ -73,14 +73,14 @@ ColumnLayout {
 
                     Component.onCompleted: {
                         if (paintedWidth > conversation.width) {
-                            width = conversation.width;
+                            width = conversation.width
                         }
                     }
                 }
             }
 
             Label {
-                font.pixelSize: 7
+                font.pixelSize: 10
                 font.family: "Roboto"
                 anchors.left: isMine ? undefined : parent.left
                 anchors.right: isMine ? parent.right : undefined
@@ -89,6 +89,7 @@ ColumnLayout {
             }
         }
 
-        ScrollBar.vertical: ScrollBar {}
+        ScrollBar.vertical: ScrollBar {
+        }
     }
 }
