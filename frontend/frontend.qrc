@@ -162,9 +162,6 @@
         <file>+mobile/DashboardForm.qml</file>
         <file>Theme/Theme.qml</file>
         <file>Theme/qmldir</file>
-    </qresource>
-</RCC>
-
         <file>Controls/NavigateButtons.qml</file>
     </qresource>
 </RCC>
