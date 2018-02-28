@@ -4,15 +4,16 @@ import QtQuick.Layouts 1.3
 ColumnLayout {
     readonly property color cDiodeBackground: "#3a3e46"
 
-    id: xCiteHome
-
-    Layout.fillHeight: true
-    Layout.fillWidth: true
+    anchors.fill: parent
     spacing: layoutGridSpacing
 
     RowLayout {
+        anchors.top: parent.top
         spacing: layoutGridSpacing
+
         ColumnLayout {
+            anchors.top: parent.top
+            Layout.preferredWidth: 376
             spacing: layoutGridSpacing
 
             BalanceDiode {
@@ -23,10 +24,11 @@ ColumnLayout {
         }
 
         RecentTransactionsDiode {
+            anchors.top: parent.top
+            Layout.fillWidth: true
             Layout.preferredHeight: 465
             Layout.preferredWidth: 928.26
             Layout.fillHeight: true
-            Layout.fillWidth: true
         }
     }
 
