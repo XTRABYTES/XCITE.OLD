@@ -78,5 +78,6 @@
         <file>Controls/AddressForm.qml</file>
         <file>Controls/AccountCreateForm.qml</file>
         <file>Controls/ComboBox.qml</file>
+        <file>+mobile/DashboardForm.qml</file>
     </qresource>
 </RCC>

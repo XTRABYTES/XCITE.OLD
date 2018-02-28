@@ -72,5 +72,7 @@
         <file>icons/trash.svg</file>
         <file>icons/circle-check.svg</file>
         <file>icons/placeholder-qr.svg</file>
+        <file>ios/LaunchScreen.storyboard</file>
+        <file>backgrounds/launchscreen-logo.png</file>
     </qresource>
 </RCC>

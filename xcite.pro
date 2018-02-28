@@ -13,7 +13,7 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 QT	+= core gui
 QT	+= xml
 QT	+= quick
-QT += svg
+QT      += svg
 CONFIG	+= c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -84,4 +84,15 @@ CONFIG(debug, debug|release) {
 } else {
     DESTDIR = $$PWD/build/release
 }
-ICON = xcite.icns
+
+mac {
+    ICON = resources/ios/xcite.icns
+
+    macx {
+    }
+    else:ios {
+        QMAKE_INFO_PLIST = resources/ios/Info.plist
+        app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchscreen-logo.png
+        QMAKE_BUNDLE_DATA += app_launch_images
+    }
+}
