@@ -5,8 +5,8 @@ import QtQuick.Window 2.0
 
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
-
 import "Login" as LoginComponents
+import "Theme" 1.0
 
 ApplicationWindow {
     property bool isNetworkActive: false
