@@ -28,6 +28,8 @@ Controls.Diode {
                 addressBook.update(newItem.name, newItem.address)
                 selectItem(addressBook.getSelectedItem())
             }
+
+            addressBook.save()
             addressEditForm.close()
         }
 
@@ -206,23 +208,8 @@ Controls.Diode {
                             }
 
                             Connections {
-                                // TODO: Temporary placeholder content
                                 Component.onCompleted: {
-                                    addressBook.add(
-                                                "dedpull",
-                                                "XV3Goey53xDt51oAZ6LfGm8G51k5QmMXmR")
-                                    addressBook.add(
-                                                "enervey",
-                                                "XZhRoyup9cbVguuqDUWWBuqhLmE483FtXW")
-                                    addressBook.add(
-                                                "james87uk",
-                                                "XLGSfK2RhjvEbkGMe4WVk2R8k9auLESAsv")
-                                    addressBook.add(
-                                                "nrocy",
-                                                "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ")
-                                    addressBook.add(
-                                                "posey",
-                                                "XJmqWTfBQwZk2QgU3eFnbtenUHXXPmsgPa")
+                                    addressBook.load()
                                     addressBook.currentIndex = 0
                                 }
                             }

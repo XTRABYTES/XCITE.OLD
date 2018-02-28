@@ -41,6 +41,14 @@ ListView {
         color: "#42454D"
     }
 
+    function load() {
+        model.load()
+    }
+
+    function save() {
+        model.save()
+    }
+
     function add(name, address) {
         currentIndex = model.append(name, address)
     }
