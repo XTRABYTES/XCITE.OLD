@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import "../Theme" 1.0
 
 Button {
     property bool isPrimary: false
@@ -23,11 +24,11 @@ Button {
     }
 
     background: Rectangle {
-        color: isDanger ? "#d80e0e" : (isPrimary ? "#0ED8D2" : "transparent")
+        color: isDanger ? "#d80e0e" : (isPrimary ? Theme.primaryHighlight : "transparent")
         radius: 4
         height: buttonHeight
         border.width: 1
-        border.color: isDanger ? "#d80e0e" : (isPrimary ? "#0ED8D2" : "#616878")
+        border.color: isDanger ? "#d80e0e" : (isPrimary ? Theme.primaryHighlight : "#616878")
         anchors.verticalCenter: parent.verticalCenter
     }
 

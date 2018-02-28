@@ -1,28 +1,28 @@
-
 import QtQuick 2.6
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.1
 import XChatConversationModel 0.1
+import "../Theme" 1.0
 
 ColumnLayout {
     Connections {
         target: xcite
         onXChatMessageReceived: {
-            add(message, datetime, false);
+            add(message, datetime, false)
         }
 
         // TODO: Temporary placeholder content
         Component.onCompleted: {
-            var now = Date.now();
+            var now = Date.now()
 
-            add("Heading downtown?", new Date(now - 180000), true);
-            add("Absolutely, catching a show.", new Date(now - 120000), false);
-            add("We'll catch up later!", new Date(now), true);
+            add("Heading downtown?", new Date(now - 180000), true)
+            add("Absolutely, catching a show.", new Date(now - 120000), false)
+            add("We'll catch up later!", new Date(now), true)
         }
     }
 
     function add(message, datetime, isMine) {
-        conversation.model.addMessage(message, datetime, isMine);
+        conversation.model.addMessage(message, datetime, isMine)
     }
 
     ListView {
@@ -37,7 +37,8 @@ ColumnLayout {
         Layout.bottomMargin: 5
 
         verticalLayoutDirection: ListView.BottomToTop
-        model: XChatConversationModel {}
+        model: XChatConversationModel {
+        }
 
         clip: true
 
@@ -58,7 +59,7 @@ ColumnLayout {
                     rightPadding: 8.05
 
                     background: Rectangle {
-                        color: isMine ? "transparent" : "#0ED8D2"
+                        color: isMine ? "transparent" : Theme.primaryHighlight
                         border.color: isMine ? "#727989" : "transparent"
                         anchors.fill: parent
                         radius: 2
@@ -73,7 +74,7 @@ ColumnLayout {
 
                     Component.onCompleted: {
                         if (paintedWidth > conversation.width) {
-                            width = conversation.width;
+                            width = conversation.width
                         }
                     }
                 }
@@ -89,6 +90,7 @@ ColumnLayout {
             }
         }
 
-        ScrollBar.vertical: ScrollBar {}
+        ScrollBar.vertical: ScrollBar {
+        }
     }
 }

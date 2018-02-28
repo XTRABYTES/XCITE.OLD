@@ -23,21 +23,21 @@ Rectangle {
     property string borderColor: "#616878"
     property int size: 40
     property int imageOffsetX: 0
-    property string iconDirectory: "../../icons/right-arrow2.svg"
+    property string iconFile: "../../icons/right-arrow2.svg"
 
     //Signals
     signal buttonClicked
 
-    radius: 5
+    radius: 6
     width: 250
     height: 29
     border.color: borderColor
-    border.width: 2
+    border.width: 1
     color: backgroundColor
 
     Image {
         fillMode: Image.PreserveAspectFit
-        source: iconDirectory
+        source: iconFile
         width: 19
         height: 13
         sourceSize.width: 19
