@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
     transactionList.append(new NodeTransaction("xghl32lk8dfss577g734j34","12:45 PM GMT 0","12:45 PM GMT 0","12:45 PM GMT 0",NodeTransaction::NodeTransactionType::XChange));
     transactionList.append(new NodeTransaction("xghl32lk8dfss577g734j34","12:45 PM GMT 0","12:45 PM GMT 0","12:45 PM GMT 0",NodeTransaction::NodeTransactionType::XChange));
     transactionList.append(new NodeTransaction("xghl32lk8dfss577g734j34","12:45 PM GMT 0","12:45 PM GMT 0","12:45 PM GMT 0",NodeTransaction::NodeTransactionType::XCite));
+
     //app.set
     engine.rootContext()->setContextProperty("nodeTransactionModel", QVariant::fromValue(transactionList));
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
@@ -68,6 +69,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+#else
     // X-Chat
     // connect QML signals to C++ slots
     QObject::connect(engine.rootObjects().first(),SIGNAL(xchatSubmitMsgSignal(QString)),&xchatobj,SLOT(SubmitMsgCall(QString)));
@@ -82,6 +85,7 @@ int main(int argc, char *argv[])
     QObject::connect(&wallet, SIGNAL(response(QVariant)), engine.rootObjects().first(), SLOT(testnetResponse(QVariant)));
     QObject::connect(&wallet, SIGNAL(walletError(QVariant)), engine.rootObjects().first(), SLOT(walletError(QVariant)));
     QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), engine.rootObjects().first(), SLOT(walletSuccess(QVariant)));
+#endif
 
     return app.exec();
 }

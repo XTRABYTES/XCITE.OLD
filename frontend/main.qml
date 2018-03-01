@@ -14,6 +14,7 @@ ApplicationWindow {
     id: xcite
 
     visible: true
+
     width: (Screen.width < 1440) ? Screen.width : 1440
     height: (Screen.height < 1024) ? Screen.height : 1024
     title: qsTr("XCITE")
