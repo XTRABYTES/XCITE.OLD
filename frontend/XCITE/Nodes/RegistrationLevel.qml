@@ -7,7 +7,7 @@ import "../../Controls" as Controls
 
 
 /**
-  * Initial concept, components need made
+  * Refactored, needs cleaning up on the Low, Medium High Texts, see line 136
   */
 Rectangle {
 
@@ -24,47 +24,38 @@ Rectangle {
     anchors.fill: parent
 
     // Second layer text
-    Text {
-        id: text1
-        x: 51
-        y: 80
-        width: 115
-        height: 18
-        color: "#e3e3e3"
-        text: qsTr("Select a node")
-        font.family: "Roboto"
-        font.weight: Font.Light
-        font.pixelSize: 19
-    }
+    ColumnLayout {
+        Text {
+            id: text2
+            Layout.topMargin: 10
+            Layout.leftMargin: 13
+            width: 143
+            height: 23
+            color: "#e2e2e2"
+            text: qsTr("Node Registration")
+            font.family: "Roboto"
+            font.pixelSize: 18
+        }
+        Rectangle {
+            id: rectangle
+            Layout.topMargin: 8
 
-    // top divider
-    Rectangle {
-        id: rectangle
-        x: 0
-        y: 44
-        width: 1320
-        height: 1
-        color: "#535353"
+            width: 1320
+            height: 1
+            color: "#535353"
+        }
+        Controls.FormLabel {
+            Layout.topMargin: 20
+            text: qsTr("Select a Node")
+            Layout.leftMargin: 51
+            font.pixelSize: 19
+        }
     }
-
-    // layer 1 text
-    Text {
-        id: text2
-        x: 15
-        y: 12
-        width: 143
-        height: 23
-        color: "#e2e2e2"
-        text: qsTr("Node Registration")
-        font.family: "Roboto"
-        font.pixelSize: 18
-    }
-
     // image in case of level 1 node
     Image {
 
         id: image0
-        visible: level1 == 0
+        visible: level1 == 1 || level1 == 0
         anchors {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
@@ -76,7 +67,7 @@ Rectangle {
     Image {
 
         id: image1
-        visible: level1 == 1
+        visible: level1 == 2
         anchors {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
@@ -88,7 +79,7 @@ Rectangle {
     Image {
 
         id: image2
-        visible: level1 == 2
+        visible: level1 == 3
         anchors {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
@@ -100,39 +91,30 @@ Rectangle {
     Controls.Diode {
         id: rectangle0
         y: {
-            if (level1 == 0)
+            if (level1 == 1 || level1 == 0)
                 image0.y + 12
-            if (level1 == 1)
-                image1.y + 120
             if (level1 == 2)
+                image1.y + 120
+            if (level1 == 3)
                 image2.y + 190
         }
         title: {
-            if (level1 == 0)
+            if (level1 == 1 || level1 == 0)
                 qsTr("L1")
-            if (level1 == 1)
-                qsTr("L2")
             if (level1 == 2)
+                qsTr("L2")
+            if (level1 == 3)
                 qsTr("L3")
         }
         anchors.left: {
-            if (level1 == 0)
+            if (level1 == 1 || level1 == 0)
                 image0.right
-            if (level1 == 1)
-                image1.right
             if (level1 == 2)
+                image1.right
+            if (level1 == 3)
                 image2.right
         }
-        /**
-        anchors.top: {
-            if (level1 == 0)
-                image0.top
-            if (level1 == 1)
-                image1.top
-            if (level1 == 2)
-                image2.top
-        }
-*/
+
         width: 257
         height: 375
         radius: 5
@@ -151,11 +133,11 @@ Rectangle {
                 font.pixelSize: 16
                 bottomPadding: 5
                 text: {
-                    if (level1 == 0)
+                    if (level1 == 3)
                         qsTr("      Earnings:                    Low")
-                    if (level1 == 1)
-                        qsTr("      Earnings:               Medium")
                     if (level1 == 2)
+                        qsTr("      Earnings:               Medium")
+                    if (level1 == 1 || level1 == 0)
                         qsTr("      Earnings:                    High")
                 }
                 Image {
@@ -175,11 +157,11 @@ Rectangle {
                 font.pixelSize: 16
                 bottomPadding: 5
                 text: {
-                    if (level1 == 0)
+                    if (level1 == 3)
                         qsTr("      Network Stake:            Low")
-                    if (level1 == 1)
-                        qsTr("      Network Stake:       Medium")
                     if (level1 == 2)
+                        qsTr("      Network Stake:       Medium")
+                    if (level1 == 1 || level1 == 0)
                         qsTr("      Network Stake:            High")
                 }
                 Image {
@@ -199,11 +181,11 @@ Rectangle {
                 font.pixelSize: 16
                 bottomPadding: 15
                 text: {
-                    if (level1 == 0)
+                    if (level1 == 3)
                         qsTr("      Transfer Rate:              Low")
-                    if (level1 == 1)
-                        qsTr("      Transfer Rate:         Medium")
                     if (level1 == 2)
+                        qsTr("      Transfer Rate:         Medium")
+                    if (level1 == 1 || level1 == 0)
                         qsTr("      Transfer Rate:              High")
                 }
                 Image {
@@ -222,7 +204,7 @@ Rectangle {
                 id: levelSelect
                 defaultBackgroundColor: "#3A3E47"
                 Layout.fillWidth: true
-                model: ["Level 1 Node", "Level 2 Node", "Level 3 Node"]
+                model: ["Select a Node", "Level 1 Node", "Level 2 Node", "Level 3 Node"]
             }
             Label {
                 font.family: "Roboto"
@@ -261,14 +243,5 @@ Rectangle {
                 bottomPadding: 20
             }
         }
-    }
-    // divider
-    Rectangle {
-        id: divider
-        x: 51
-        y: 110
-        width: 115
-        height: 1
-        color: "#24B9C3"
     }
 }
