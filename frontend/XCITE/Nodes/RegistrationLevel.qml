@@ -133,11 +133,11 @@ Rectangle {
                 font.pixelSize: 16
                 bottomPadding: 5
                 text: {
-                    if (level1 == 1 || level1 == 0)
+                    if (level1 == 3)
                         qsTr("      Earnings:                    Low")
                     if (level1 == 2)
                         qsTr("      Earnings:               Medium")
-                    if (level1 == 3)
+                    if (level1 == 1 || level1 == 0)
                         qsTr("      Earnings:                    High")
                 }
                 Image {
@@ -157,11 +157,11 @@ Rectangle {
                 font.pixelSize: 16
                 bottomPadding: 5
                 text: {
-                    if (level1 == 1 || level1 == 0)
+                    if (level1 == 3)
                         qsTr("      Network Stake:            Low")
                     if (level1 == 2)
                         qsTr("      Network Stake:       Medium")
-                    if (level1 == 3)
+                    if (level1 == 1 || level1 == 0)
                         qsTr("      Network Stake:            High")
                 }
                 Image {
@@ -181,11 +181,11 @@ Rectangle {
                 font.pixelSize: 16
                 bottomPadding: 15
                 text: {
-                    if (level1 == 1 || level1 == 0)
+                    if (level1 == 3)
                         qsTr("      Transfer Rate:              Low")
                     if (level1 == 2)
                         qsTr("      Transfer Rate:         Medium")
-                    if (level1 == 3)
+                    if (level1 == 1 || level1 == 0)
                         qsTr("      Transfer Rate:              High")
                 }
                 Image {
