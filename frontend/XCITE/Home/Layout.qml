@@ -26,9 +26,9 @@ ColumnLayout {
         RecentTransactionsDiode {
             anchors.top: parent.top
             Layout.fillWidth: true
-            Layout.preferredHeight: 465
+            Layout.preferredHeight: 463
             Layout.preferredWidth: 928.26
-            Layout.fillHeight: true
+            Layout.fillHeight: false
         }
     }
 
