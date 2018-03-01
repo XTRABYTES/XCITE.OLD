@@ -21,8 +21,6 @@ Popup {
 
     background: Rectangle {
         color: "#3A3E46"
-        radius: 5
-        border.color: "#4010B9C5"
-        border.width: 3
+        radius: 4
     }
 }
