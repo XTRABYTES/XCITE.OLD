@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import "../Theme" 1.0
 
 Button {
     id: buttonModalId
@@ -67,7 +68,7 @@ Button {
         height: buttonHeight
         border.width: 1
         opacity: 0.8
-        border.color: isDanger ? "#d80e0e" : (isPrimary ? "#0ED8D2" : "#616878")
+        border.color: isDanger ? "#d80e0e" : (isPrimary ? Theme.primaryHighlight : "#616878")
         anchors.verticalCenter: parent.verticalCenter
     }
 

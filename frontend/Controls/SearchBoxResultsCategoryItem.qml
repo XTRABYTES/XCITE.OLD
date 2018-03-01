@@ -1,26 +1,28 @@
 import QtQuick 2.7
+import "../Theme" 1.0
 
-Rectangle {
+Item {
     id: searchResultCategoryId
 
     implicitHeight: textLabelId.height
     implicitWidth: parent.width
 
-    color: "transparent"
     property string defaultColor: "white"
-    property string hoveringColor: "#0ed8d2"
+    property string hoveringColor: Theme.primaryHighlight
 
     function filterResult(textToSearch) {
-        var isVisible = text.toLowerCase().indexOf(textToSearch) !== -1 || tags.indexOf(
-                    textToSearch) !== -1
+        var isVisible = text.toLowerCase().indexOf(textToSearch) !== -1
+                || tags.indexOf(textToSearch) !== -1
 
         searchResultCategoryId.visible = isVisible
         return isVisible
     }
 
     // Intended to be overwritten
-    property string text // text can be any case, search is indiferent
-    property string tags // tags must be lower case, divided by space
+    property string text
+    // text can be any case, search is indiferent
+    property string tags
+    // tags must be lower case, divided by space
     function onSearchResultClicked() {}
 
     Text {

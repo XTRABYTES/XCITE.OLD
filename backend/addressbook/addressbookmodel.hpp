@@ -2,6 +2,12 @@
 #define ADDRESSMODEL_HPP
 
 #include <QAbstractListModel>
+#include <QFile>
+#include <QDir>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QStandardPaths>
 
 class Address : public QObject
 {
@@ -44,6 +50,8 @@ public:
     Q_INVOKABLE void update(int, QString, QString);
     Q_INVOKABLE int remove(int);
     Q_INVOKABLE void clear();
+    Q_INVOKABLE bool save();
+    Q_INVOKABLE bool load();
 
     void updateAccountAddress(QString, QString);
 

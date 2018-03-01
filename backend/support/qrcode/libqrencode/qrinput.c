@@ -731,6 +731,8 @@ static int QRinput_encodeModeStructure(QRinput_List *entry, BitStream *bstream, 
 
 static int QRinput_checkModeFNC1Second(int size, const unsigned char *data)
 {
+    (void)data;
+
 	if(size != 1) return -1;
 
 	/* No data check required. */

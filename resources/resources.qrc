@@ -70,7 +70,15 @@
         <file>icons/copy-clipboard.svg</file>
         <file>icons/pencil.svg</file>
         <file>icons/trash.svg</file>
+        <file>icons/blocks1.svg</file>
+        <file>icons/blocks2.svg</file>
+        <file>icons/blocks3.svg</file>
+        <file>icons/icon-transfer.svg</file>
+        <file>icons/icon-network.svg</file>
+        <file>icons/icon-diamond.svg</file>
         <file>icons/circle-check.svg</file>
         <file>icons/placeholder-qr.svg</file>
+        <file>ios/LaunchScreen.storyboard</file>
+        <file>backgrounds/launchscreen-logo.png</file>
     </qresource>
 </RCC>

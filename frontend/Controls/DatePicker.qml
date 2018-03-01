@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.calendar 1.0
+import "../Theme" 1.0
 
 TextField {
     property string dateFormat: "dd/MM/yyyy"
@@ -116,7 +117,7 @@ TextField {
                         id: label
 
                         readonly property color defaultColor: "#22414245"
-                        readonly property color selectedColor: "#0ED8D2"
+                        readonly property color selectedColor: Theme.primaryHighlight
                         readonly property color hoveringColor: "#414245"
 
                         function dateMatch() {

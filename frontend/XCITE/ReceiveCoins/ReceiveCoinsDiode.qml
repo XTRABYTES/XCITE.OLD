@@ -5,6 +5,7 @@ import QtQuick.Controls.Styles 1.4
 import QtQrCode.Component 1.0
 
 import "../../Controls" as Controls
+import "../../Theme" 1.0
 
 Controls.Diode {
     id: receiveCoinsDiode
@@ -162,7 +163,7 @@ Controls.Diode {
                     anchors.horizontalCenter: parent.horizontalCenter
                     data: formAddress.text
                     background: "transparent"
-                    foreground: "#0ED8D2"
+                    foreground: Theme.primaryHighlight
                     width: 180
                     height: 180
                 }
@@ -251,6 +252,7 @@ Controls.Diode {
 
                         Controls.AddressButton {
                             btnEditEnabled: false
+                            type: "ADDRESS"
                             Layout.leftMargin: -17
                             currentItem: addressBook.currentItem
 

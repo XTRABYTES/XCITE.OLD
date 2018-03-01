@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQuick/QQuickWindow>
+#include <QQmlFileSelector>
 #include <qqmlcontext.h>
 #include <qqml.h>
 #include "../backend/xchat/xchat.hpp"
@@ -33,6 +34,11 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/");
+
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+    QQmlFileSelector *selector = new QQmlFileSelector(&engine);
+    selector->setExtraSelectors(QStringList() << "mobile");
+#endif
 
     XchatObject xchatobj;
     xchatobj.Initialize();

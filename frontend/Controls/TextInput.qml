@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.2
+import "../Theme" 1.0
 
 TextField {
     id: component
@@ -17,7 +18,7 @@ TextField {
         color: "#2A2C31"
         radius: 4
         border.width: parent.activeFocus ? 2 : 0
-        border.color: "#0ED8D2"
+        border.color: Theme.primaryHighlight
     }
 
     onActiveFocusChanged: {
