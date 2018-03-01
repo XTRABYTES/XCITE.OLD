@@ -16,25 +16,72 @@ Button {
         color: "transparent"
     }
 
+    state: "Default"
+
     MouseArea {
         id: mouseArea
         anchors.fill: parent
         onPressed: mouse.accepted = false
         cursorShape: Qt.PointingHandCursor
         hoverEnabled: true
-        onEntered: { button.state = 'hover' }
-        onExited: { button.state = '' }
+        onEntered: {
+            button.state = 'Hovering'
+        }
+        onExited: {
+            button.state = 'Default'
+        }
     }
 
     ColorOverlay {
         id: overlay
         anchors.fill: image
         source: image
-        color: button.state === "hover" ? hoverColor : iconColor
     }
 
     Image {
         id: image
         anchors.centerIn: parent
     }
+
+    // Hovering animations
+    Behavior on scale {
+        NumberAnimation {
+            duration: 100
+            easing.type: Easing.InOutQuad
+        }
+    }
+
+    states: [
+        State {
+            name: "Hovering"
+            PropertyChanges {
+                target: overlay
+                color: hoverColor
+            }
+        },
+        State {
+            name: "Default"
+            PropertyChanges {
+                target: overlay
+                color: iconColor
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "Default"
+            to: "Hovering"
+            ColorAnimation {
+                duration: 100
+            }
+        },
+        Transition {
+            from: "Hovering"
+            to: "Default"
+            ColorAnimation {
+                duration: 200
+            }
+        }
+    ]
 }

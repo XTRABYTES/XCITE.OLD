@@ -60,6 +60,7 @@ ModalPopup {
             ButtonModal {
                 id: btnConfirm
                 isPrimary: true
+
                 onButtonClicked: {
                     confirmed(inputField.text)
                 }

@@ -25,11 +25,13 @@ Item {
         }
 
         IconButton {
+            id: dialogExitButton
             anchors.verticalCenter: parent.verticalCenter
             height: parent.height
             Layout.preferredWidth: 20
 
             iconColor: "#fff"
+            hoverColor: "#10B9C5"
             icon.source: "../icons/cross.svg"
             icon.sourceSize.width: 10
 
