@@ -80,5 +80,10 @@
         <file>icons/placeholder-qr.svg</file>
         <file>ios/LaunchScreen.storyboard</file>
         <file>backgrounds/launchscreen-logo.png</file>
+        <file>icons/mobile-receive.svg</file>
+        <file>icons/mobile-send.svg</file>
+        <file>backgrounds/mobile-chart-placeholder.png</file>
+        <file>icons/mobile-back.svg</file>
+        <file>icons/mobile-menu.svg</file>
     </qresource>
 </RCC>

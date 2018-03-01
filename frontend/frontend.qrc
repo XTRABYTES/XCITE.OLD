@@ -81,5 +81,12 @@
         <file>+mobile/DashboardForm.qml</file>
         <file>Theme/Theme.qml</file>
         <file>Theme/qmldir</file>
+        <file>Controls/+mobile/Balance.qml</file>
+        <file>Controls/+mobile/Header.qml</file>
+        <file>Controls/+mobile/BalanceValue.qml</file>
+        <file>Controls/+mobile/Transactions.qml</file>
+        <file>+mobile/main.qml</file>
+        <file>+mobile/SendCoins.qml</file>
+        <file>+mobile/ReceiveCoins.qml</file>
     </qresource>
 </RCC>

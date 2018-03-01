@@ -8,6 +8,7 @@ Rectangle {
     id: root
 
     //Alias
+    property alias label: label
     property alias text: label.text
 
     readonly property color cDiodeBackground: "#3a3e46"
@@ -35,28 +36,27 @@ Rectangle {
     border.width: 1
     color: backgroundColor
 
-    Image {
-        fillMode: Image.PreserveAspectFit
-        source: iconFile
-        width: 19
-        height: 13
-        sourceSize.width: 19
-        sourceSize.height: 13
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
-        anchors.leftMargin: 11
-    }
-
-    Text {
+    Label {
         id: label
         anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
-        anchors.rightMargin: 12
+        anchors.horizontalCenter: parent.horizontalCenter
         text: "Uninstantiated Text"
         font.family: "roboto"
         font.pixelSize: 10
         color: textColor
         opacity: 0.9
+        leftPadding: 25
+
+        Image {
+            fillMode: Image.PreserveAspectFit
+            source: iconFile
+            width: 19
+            height: 13
+            sourceSize.width: 19
+            sourceSize.height: 13
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+        }
     }
 
     MouseArea {
