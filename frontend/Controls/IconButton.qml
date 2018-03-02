@@ -6,7 +6,7 @@ Button {
     id: button
 
     property alias cursorShape: mouseArea.cursorShape
-    property alias icon: image
+    property alias img: image
     property color iconColor: "#666"
     property color hoverColor: "white"
 
@@ -22,8 +22,12 @@ Button {
         onPressed: mouse.accepted = false
         cursorShape: Qt.PointingHandCursor
         hoverEnabled: true
-        onEntered: { button.state = 'hover' }
-        onExited: { button.state = '' }
+        onEntered: {
+            button.state = 'hover'
+        }
+        onExited: {
+            button.state = ''
+        }
     }
 
     ColorOverlay {

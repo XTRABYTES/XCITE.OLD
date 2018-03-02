@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.1
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
 Popup {
@@ -10,6 +10,12 @@ Popup {
     property string inputValue
     property string bodyText
     property string title
+
+    Overlay.modal: Rectangle {
+        color: "#c92a2c31"
+    }
+
+    parent: Overlay.overlay
 
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2

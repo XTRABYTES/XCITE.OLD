@@ -34,8 +34,8 @@ RowLayout {
         height: parent.height
         Layout.preferredWidth: 40
 
-        icon.source: "../icons/cross.svg"
-        icon.sourceSize.width: 10
+        img.source: "../icons/cross.svg"
+        img.sourceSize.width: 10
 
         onClicked: {
             popup.visible = false

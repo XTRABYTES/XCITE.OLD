@@ -32,7 +32,7 @@ RowLayout {
         height: parent.height
         Layout.preferredWidth: 40
 
-        icon.source: "../icons/dropdown-arrow.svg"
-        icon.sourceSize.width: 10
+        img.source: "../icons/dropdown-arrow.svg"
+        img.sourceSize.width: 10
     }
 }

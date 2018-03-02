@@ -64,8 +64,8 @@ ColumnLayout {
 
             Controls.IconButton {
                 anchors.verticalCenter: parent.verticalCenter
-                icon.source: "../icons/left-arrow.svg"
-                icon.sourceSize.height: 10
+                img.source: "../icons/left-arrow.svg"
+                img.sourceSize.height: 10
                 height: parent.height
             }
 
@@ -79,8 +79,8 @@ ColumnLayout {
 
             Controls.IconButton {
                 anchors.verticalCenter: parent.verticalCenter
-                icon.source: "../icons/phone-call.svg"
-                icon.sourceSize.width: 22
+                img.source: "../icons/phone-call.svg"
+                img.sourceSize.width: 22
                 iconColor: "#acb6ce"
                 height: parent.height
             }

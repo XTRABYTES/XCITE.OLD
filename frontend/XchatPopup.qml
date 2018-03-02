@@ -109,8 +109,8 @@ Item {
                         height: parent.height
                         Layout.preferredWidth: 40
 
-                        icon.source: "../icons/plus-button.svg"
-                        icon.sourceSize.width: 28
+                        img.source: "../icons/plus-button.svg"
+                        img.sourceSize.width: 28
                     }
 
                     Rectangle {
