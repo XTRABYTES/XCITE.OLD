@@ -203,7 +203,7 @@ Controls.Diode {
                 isPrimary: true
                 Label {
                     anchors.bottom: parent.top
-                    text: "Price"
+                    text: "Total:"
                     color: "#FFFFFF"
                     bottomPadding: 10
 
@@ -224,7 +224,7 @@ Controls.Diode {
                 colorTracker: 1
                 Label {
                     anchors.bottom: parent.top
-                    text: "Price"
+                    text: "Total:"
                     color: "#FFFFFF"
                     bottomPadding: 10
 
