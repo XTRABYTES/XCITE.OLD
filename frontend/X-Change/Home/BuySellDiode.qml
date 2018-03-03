@@ -9,6 +9,10 @@ import "../../Controls" as Controls
 import "../../Theme" 1.0
 
 Controls.Diode {
+    property real sellTotal: parseFloat(sellPrice.text) * parseFloat(
+                                 sellAmount.text)
+    property real buyTotal: parseFloat(buyPrice.text) * parseFloat(
+                                buyAmount.text)
     id: cont
     width: 652
     height: 459
@@ -95,12 +99,15 @@ Controls.Diode {
             id: lay2
 
             Controls.TextInput {
+                id: buyPrice
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
                 Layout.topMargin: 60
                 Layout.preferredWidth: 175
+                text: "0"
                 Label {
+
                     anchors.bottom: parent.top
                     text: "Price"
                     color: "#FFFFFF"
@@ -110,7 +117,8 @@ Controls.Diode {
                 }
             }
             Controls.TextInput {
-
+                id: sellPrice
+                text: "0"
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
@@ -118,6 +126,7 @@ Controls.Diode {
                 Layout.preferredWidth: 175
 
                 Label {
+
                     anchors.bottom: parent.top
                     text: "Price"
                     color: "#FFFFFF"
@@ -132,12 +141,16 @@ Controls.Diode {
             id: lay3
 
             Controls.TextInput {
+                id: buyAmount
+                text: "0"
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
                 Layout.topMargin: 30
                 Layout.preferredWidth: 175
+
                 Label {
+
                     anchors.bottom: parent.top
                     text: "Amount"
                     color: "#FFFFFF"
@@ -147,12 +160,15 @@ Controls.Diode {
                 }
             }
             Controls.TextInput {
+                id: sellAmount
+                text: "0"
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
                 Layout.topMargin: 30
                 Layout.preferredWidth: 175
                 Label {
+
                     anchors.bottom: parent.top
                     text: "Amount"
                     color: "#FFFFFF"
@@ -173,7 +189,8 @@ Controls.Diode {
                 Layout.topMargin: 7
 
                 onMoved: {
-                    formAmount.text = Number(value).toFixed(2)
+
+                    // formAmount.text = Number(value).toFixed(2)
                 }
             }
             Controls.SliderAmount {
@@ -184,7 +201,8 @@ Controls.Diode {
                 Layout.topMargin: 7
 
                 onMoved: {
-                    formAmount.text = Number(value).toFixed(2)
+
+                    // formAmount.text = Number(value).toFixed(2)
                 }
             }
         }
@@ -203,7 +221,7 @@ Controls.Diode {
                 isPrimary: true
                 Label {
                     anchors.bottom: parent.top
-                    text: "Total:"
+                    text: "Total: " + Number(buyTotal).toFixed(2)
                     color: "#FFFFFF"
                     bottomPadding: 10
 
@@ -224,7 +242,7 @@ Controls.Diode {
                 colorTracker: 1
                 Label {
                     anchors.bottom: parent.top
-                    text: "Total:"
+                    text: "Total: " + Number(sellTotal).toFixed(2)
                     color: "#FFFFFF"
                     bottomPadding: 10
 
