@@ -88,10 +88,10 @@
         <file>+mobile/main.qml</file>
         <file>+mobile/SendCoins.qml</file>
         <file>+mobile/ReceiveCoins.qml</file>
-        <file>XCITE/X-Change/MarketsDiode.qml</file>
-        <file>XCITE/X-Change/OrderBookDiode.qml</file>
-        <file>XCITE/X-Change/ChartDiode.qml</file>
-        <file>XCITE/X-Change/BuySellDiode.qml</file>
+        <file>X-Change/MarketsDiode.qml</file>
+        <file>X-Change/OrderBookDiode.qml</file>
+        <file>X-Change/ChartDiode.qml</file>
+        <file>X-Change/BuySellDiode.qml</file>
     </qresource>
 </RCC>
 
