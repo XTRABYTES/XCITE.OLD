@@ -224,9 +224,8 @@ Controls.Diode {
                     text: "Total: " + Number(buyTotal).toFixed(2)
                     color: "#FFFFFF"
                     bottomPadding: 10
-
+                    font.bold: true
                     font.family: "Roboto"
-                    //font.weight: Font.100
                     font.pixelSize: 12
                 }
             }
@@ -245,9 +244,8 @@ Controls.Diode {
                     text: "Total: " + Number(sellTotal).toFixed(2)
                     color: "#FFFFFF"
                     bottomPadding: 10
-
+                    font.bold: true
                     font.family: "Roboto"
-                    //font.weight: 100
                     font.pixelSize: 12
                 }
             }
