@@ -26,23 +26,39 @@ Rectangle {
         filterResult(text)
     }
 
+    property int totalChildren: -1
+
+    function countTotalChildren() {
+        if (totalChildren >= 0) {
+            return totalChildren
+        }
+
+        totalChildren = 0
+
+        // Each category
+        for (var i = 0; i < searchBoxResultsId.children.length; i++) {
+            // Count items in each category
+            totalChildren += searchBoxResultsId.children[i].children.length
+        }
+        return totalChildren
+    }
+
     function filterResult(textToSearch) {
         //traverse results and set to visible
-        var isAnyCategoryVisible = false
+        var totalVisibleChildrenCount = 0
+
         textToSearch = textToSearch.toLowerCase()
         for (var i = 0; i < searchBoxResultsId.children.length; i++) {
 
             // Show or hide categories. They hide themselves if no child is visible or available
-            var isVisibleCategory = searchBoxResultsId.children[i].filterResult(
+            totalVisibleChildrenCount += searchBoxResultsId.children[i].filterResult(
                         textToSearch)
-
-            if (isVisibleCategory) {
-                isAnyCategoryVisible = true
-            }
         }
 
-        // hide results box if no category is visible
-        searchResultsBox.visible = isAnyCategoryVisible
+        // hide results box if search is not specific enough
+        var totalChildrenCount = countTotalChildren()
+        var matchRate = (totalVisibleChildrenCount / totalChildrenCount)
+        searchResultsBox.visible = matchRate > 0 && matchRate < 0.30
     }
 
     Column {

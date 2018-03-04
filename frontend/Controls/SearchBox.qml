@@ -78,22 +78,6 @@ Item {
                     showSearchResults()
                 }
             }
-
-            /*
-        MouseArea {
-            id: searchFieldMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-            onHoveredChanged: {
-                if (containsMouse) {
-                    root.color= "#454951"
-                }
-                else {
-                    root.color= "#3A3E46"
-                }
-            }
-        }
-        */
         }
 
         Item {
