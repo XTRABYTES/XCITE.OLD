@@ -31,18 +31,20 @@ Rectangle {
     function filterResult(textToSearch) {
         // traverse results and set to visible
         var isAnyChildVisible = false
+        var visibleChildrenCount = 0
         for (var i = 0; i < searchResultsCategoryRowLayoutId.children.length; i++) {
             var visibleChild = searchResultsCategoryRowLayoutId.children[i].filterResult(
                         textToSearch)
 
             if (visibleChild) {
                 isAnyChildVisible = true
+                visibleChildrenCount += 1
             }
         }
 
         // show category only if at least an item is visible
         visible = isAnyChildVisible
-        return visible
+        return visibleChildrenCount
     }
 
     // Results is content of category (can be added as children)
