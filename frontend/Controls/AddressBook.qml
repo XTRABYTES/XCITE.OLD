@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.2
+import "../Theme" 1.0
 
 ListView {
     id: addressBook
@@ -27,7 +28,7 @@ ListView {
         font.family: "Roboto"
         font.weight: Font.Light
         font.pixelSize: 16
-        color: "white"
+        color: addressBook.currentIndex == index ? "black" : "white"
         lineHeight: 1.5
 
         MouseArea {
@@ -38,7 +39,15 @@ ListView {
     }
 
     highlight: Rectangle {
-        color: "#42454D"
+        color: Theme.primaryHighlight
+    }
+
+    function load() {
+        model.load()
+    }
+
+    function save() {
+        model.save()
     }
 
     function add(name, address) {

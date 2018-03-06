@@ -2,10 +2,14 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.calendar 1.0
+import "../Theme" 1.0
 
 TextField {
     property string dateFormat: "dd/MM/yyyy"
     property date value: new Date()
+
+    property string defaultBackgroundColor: "#2A2C31"
+    property string hoveringBackgroundColor: "#46464b"
 
     id: dateField
     font.family: "Roboto"
@@ -17,11 +21,20 @@ TextField {
     topPadding: 0
     bottomPadding: 0
 
+    state: "Default"
+
     background: Rectangle {
-        color: "#2A2C31"
+        id: dateFieldBackground
+        color: defaultBackgroundColor
         radius: 6
         implicitWidth: 132
         implicitHeight: 47
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        onHoveredChanged: containsMouse ? dateField.state = "Hovering" : dateField.state = "Default"
     }
 
     Button {
@@ -41,6 +54,10 @@ TextField {
             onClicked: {
                 picker.visible = true
             }
+
+            hoverEnabled: true
+            onHoveredChanged: containsMouse ? dateField.state
+                                              = "Hovering" : dateField.state = "Default"
         }
 
         Image {
@@ -99,8 +116,9 @@ TextField {
                     delegate: Label {
                         id: label
 
-                        readonly property color defaultColor: "#414245"
-                        readonly property color selectedColor: "#0ED8D2"
+                        readonly property color defaultColor: "#22414245"
+                        readonly property color selectedColor: Theme.primaryHighlight
+                        readonly property color hoveringColor: "#414245"
 
                         function dateMatch() {
                             var d1 = model.date.setHours(0, 0, 0, 0)
@@ -124,24 +142,132 @@ TextField {
                         font.weight: Font.Light
                         font.pixelSize: 7
                         padding: 5
+
+                        state: dateMatch() ? "Selected" : "Default"
                         color: getColor()
 
                         MouseArea {
+                            id: labelMouseArea
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
+                                state: "Default"
                                 value = model.date
                                 picker.visible = false
+                            }
+                            hoverEnabled: true
+                            onHoveredChanged: {
+                                if (containsMouse && !dateMatch()) {
+                                    label.state = "Hovering"
+                                } else {
+                                    if (dateMatch()) {
+                                        label.state = "Selected"
+                                    } else {
+                                        label.state = "Default"
+                                    }
+                                }
                             }
                         }
 
                         background: Rectangle {
+                            id: labelBackground
                             color: getBackgroundColor()
                             radius: 3
                         }
+
+                        // Hovering animations
+                        Behavior on scale {
+                            NumberAnimation {
+                                duration: 150
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
+
+                        states: [
+                            State {
+                                name: "Hovering"
+                                PropertyChanges {
+                                    target: labelBackground
+                                    color: label.hoveringColor
+                                }
+                            },
+                            State {
+                                name: "Default"
+                                PropertyChanges {
+                                    target: labelBackground
+                                    color: label.defaultColor
+                                }
+                            },
+                            State {
+                                name: "Selected"
+                                PropertyChanges {
+                                    target: labelBackground
+                                    color: label.getBackgroundColor()
+                                }
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: "Default"
+                                to: "Hovering"
+                                ColorAnimation {
+                                    duration: 150
+                                }
+                            },
+                            Transition {
+                                from: "Hovering"
+                                to: "Default"
+                                ColorAnimation {
+                                    duration: 300
+                                }
+                            }
+                        ]
                     }
                 }
             }
         }
     }
+
+    // Hovering animations
+    Behavior on scale {
+        NumberAnimation {
+            duration: 150
+            easing.type: Easing.InOutQuad
+        }
+    }
+
+    states: [
+        State {
+            name: "Hovering"
+            PropertyChanges {
+                target: dateFieldBackground
+                color: hoveringBackgroundColor
+            }
+        },
+        State {
+            name: "Default"
+            PropertyChanges {
+                target: dateFieldBackground
+                color: defaultBackgroundColor
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "Default"
+            to: "Hovering"
+            ColorAnimation {
+                duration: 150
+            }
+        },
+        Transition {
+            from: "Hovering"
+            to: "Default"
+            ColorAnimation {
+                duration: 300
+            }
+        }
+    ]
 }

@@ -2,10 +2,11 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.0
+
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
-
 import "Login" as LoginComponents
+import "Theme" 1.0
 
 ApplicationWindow {
     property bool isNetworkActive: false
@@ -13,6 +14,7 @@ ApplicationWindow {
     id: xcite
 
     visible: true
+
     width: (Screen.width < 1440) ? Screen.width : 1440
     height: (Screen.height < 1024) ? Screen.height : 1024
     title: qsTr("XCITE")

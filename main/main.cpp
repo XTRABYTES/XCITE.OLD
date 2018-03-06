@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQuick/QQuickWindow>
+#include <QQmlFileSelector>
 #include <qqmlcontext.h>
 #include <qqml.h>
 #include "../backend/xchat/xchat.hpp"
@@ -9,14 +10,21 @@
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
+#include "../backend/support/qrcode/qt-qrcode/QtQrCodeQuickItem.hpp"
 #include "../backend/testnet/testnet.hpp"
+#include "../backend/support/globaleventfilter.hpp"
 
 int main(int argc, char *argv[])
 {
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
 
+    QtQrCodeQuickItem::registerQmlTypes();
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
+
+    GlobalEventFilter eventFilter;
+    app.installEventFilter(&eventFilter);
 
     qmlRegisterType<Xchat>("xtrabytes.xcite.xchat", 1, 0, "Xchat");
     qmlRegisterType<SortFilterProxyModel>("SortFilterProxyModel", 0, 1, "SortFilterProxyModel");
@@ -26,6 +34,11 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/");
+
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+    QQmlFileSelector *selector = new QQmlFileSelector(&engine);
+    selector->setExtraSelectors(QStringList() << "mobile");
+#endif
 
     XchatObject xchatobj;
     xchatobj.Initialize();
@@ -45,15 +58,19 @@ int main(int argc, char *argv[])
     transactionList.append(new NodeTransaction("xghl32lk8dfss577g734j34","12:45 PM GMT 0","12:45 PM GMT 0","12:45 PM GMT 0",NodeTransaction::NodeTransactionType::XChange));
     transactionList.append(new NodeTransaction("xghl32lk8dfss577g734j34","12:45 PM GMT 0","12:45 PM GMT 0","12:45 PM GMT 0",NodeTransaction::NodeTransactionType::XChange));
     transactionList.append(new NodeTransaction("xghl32lk8dfss577g734j34","12:45 PM GMT 0","12:45 PM GMT 0","12:45 PM GMT 0",NodeTransaction::NodeTransactionType::XCite));
+
     //app.set
     engine.rootContext()->setContextProperty("nodeTransactionModel", QVariant::fromValue(transactionList));
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
+    engine.rootContext()->setContextProperty("EventFilter", &eventFilter);
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty()) {
         return -1;
     }
 
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+#else
     // X-Chat
     // connect QML signals to C++ slots
     QObject::connect(engine.rootObjects().first(),SIGNAL(xchatSubmitMsgSignal(QString)),&xchatobj,SLOT(SubmitMsgCall(QString)));
@@ -68,6 +85,7 @@ int main(int argc, char *argv[])
     QObject::connect(&wallet, SIGNAL(response(QVariant)), engine.rootObjects().first(), SLOT(testnetResponse(QVariant)));
     QObject::connect(&wallet, SIGNAL(walletError(QVariant)), engine.rootObjects().first(), SLOT(walletError(QVariant)));
     QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), engine.rootObjects().first(), SLOT(walletSuccess(QVariant)));
+#endif
 
     return app.exec();
 }

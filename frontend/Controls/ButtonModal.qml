@@ -1,13 +1,15 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import "../Theme" 1.0
 
 Button {
     property bool isPrimary: false
+    property bool isDanger: false
     property alias label: label
     property string labelText: label.text || qsTr("OK")
     property real buttonHeight: parent.height
-
+    property int colorTracker: 0
     Layout.fillWidth: true
     height: buttonHeight
 
@@ -22,18 +24,41 @@ Button {
     }
 
     background: Rectangle {
-        color: isPrimary ? "#0ED8D2" : "transparent"
+
+        color: {
+            if (isDanger == true)
+                "#d80e0e"
+            if (isPrimary == true && isDanger == false)
+                Theme.primaryHighlight
+            if (isDanger == false && isPrimary == false && colorTracker == 0)
+                "#616878"
+            if (colorTracker == 1)
+                "#F77E7E"
+            if (colorTracker == 2)
+                "#2A2C31"
+        }
         radius: 4
         height: buttonHeight
         border.width: 1
-        border.color: isPrimary ? "#0ED8D2" : "#616878"
+        border.color: {
+            if (isDanger == true)
+                "#d80e0e"
+            if (isPrimary == true && isDanger == false)
+                Theme.primaryHighlight
+            if (isDanger == false && isPrimary == false && colorTracker == 0)
+                "#616878"
+            if (colorTracker == 1)
+                "#F77E7E"
+            if (colorTracker == 2)
+                "#2A2C31"
+        }
         anchors.verticalCenter: parent.verticalCenter
     }
 
     Text {
         id: label
         anchors.fill: parent
-        color: isPrimary ? "#3e3e3e" : "#fff"
+        color: isDanger ? "#fff" : (isPrimary ? "#3e3e3e" : "#fff")
         font.pixelSize: 18
         text: labelText
         font.family: "Roboto"

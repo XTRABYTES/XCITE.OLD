@@ -8,6 +8,7 @@ Rectangle {
     id: root
 
     //Alias
+    property alias label: label
     property alias text: label.text
 
     readonly property color cDiodeBackground: "#3a3e46"
@@ -23,40 +24,39 @@ Rectangle {
     property string borderColor: "#616878"
     property int size: 40
     property int imageOffsetX: 0
-    property string iconDirectory: "../../icons/right-arrow2.svg"
+    property string iconFile: "../../icons/right-arrow2.svg"
 
     //Signals
     signal buttonClicked
 
-    radius: 5
+    radius: 6
     width: 250
     height: 29
     border.color: borderColor
-    border.width: 2
+    border.width: 1
     color: backgroundColor
 
-    Image {
-        fillMode: Image.PreserveAspectFit
-        source: iconDirectory
-        width: 19
-        height: 13
-        sourceSize.width: 19
-        sourceSize.height: 13
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
-        anchors.leftMargin: 11
-    }
-
-    Text {
+    Label {
         id: label
         anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
-        anchors.rightMargin: 12
+        anchors.horizontalCenter: parent.horizontalCenter
         text: "Uninstantiated Text"
         font.family: "roboto"
         font.pixelSize: 10
         color: textColor
         opacity: 0.9
+        leftPadding: 25
+
+        Image {
+            fillMode: Image.PreserveAspectFit
+            source: iconFile
+            width: 19
+            height: 13
+            sourceSize.width: 19
+            sourceSize.height: 13
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+        }
     }
 
     MouseArea {

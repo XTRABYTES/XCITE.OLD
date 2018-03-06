@@ -1,28 +1,30 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
-import "../../Controls" as Controls
 
-ColumnLayout {
-    readonly property color cDiodeBackground: "#3a3e46"
+Item {
+    readonly property color cBoardBackground: "#3a3e46"
 
-    anchors.left: parent.left
-    anchors.right: parent.right
-    Layout.rightMargin: layoutGridSpacing
-    Layout.bottomMargin: layoutGridSpacing
-    spacing: layoutGridSpacing
+    id: xChange
+    anchors.fill: parent
 
-    RowLayout {
-        spacing: layoutGridSpacing
-        ColumnLayout {
-            spacing: layoutGridSpacing
-
-            Controls.IconButton {
-                text: "Click here to jump to XCITE Nodes"
-
-                onClicked: {
-                    selectView('xCite.nodes');
-                }
+    visible: false
+    height: parent.height - 100
+    ColumnLayout {
+        anchors.left: markets.right
+        anchors.right: parent.right
+        anchors.leftMargin: 10
+        ChartDiode {
+        }
+        RowLayout {
+            BuySellDiode {
+            }
+            OrderBookDiode {
             }
         }
+    }
+
+    MarketsDiode {
+        id: markets
+        anchors.left: parent.left
     }
 }

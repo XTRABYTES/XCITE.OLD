@@ -23,6 +23,8 @@ Item {
     anchors.top: parent.top
     anchors.bottomMargin: -15
 
+    z: 50
+
     Rectangle {
         height: 44
         anchors.verticalCenter: parent.verticalCenter
@@ -81,9 +83,8 @@ Item {
 
         SearchBox {
             id: searchBox
-            placeholder: qsTr("Search for something...")
+            placeholder: qsTr("Search...")
             anchors.right: parent.right
-            anchors.rightMargin: 15
         }
     }
 }

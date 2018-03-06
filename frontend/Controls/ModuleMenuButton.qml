@@ -14,11 +14,17 @@ Rectangle {
     width: 140
     height: 44
 
-    color: isSelected ? "#0DD8D2" : (state == 'hover' ? "#302f2f" : "transparent")
+    color: isSelected ? "#0DD8D2" : (state == "hover" ? "#302f2f" : "transparent")
     radius: 5
 
     states: [
-        State { name: "hover" }
+        State {
+            name: "hover"
+            PropertyChanges {
+                target: button
+                color: isSelected ? "#0DD8D2" : (state == "hover" ? "#302f2f" : "transparent")
+            }
+        }
     ]
 
     Text {
@@ -36,11 +42,45 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
 
         onClicked: {
-            selectView(target);
+            selectView(target)
         }
 
         hoverEnabled: true
-        onEntered: { button.state = 'hover' }
-        onExited: { button.state = '' }
+        onHoveredChanged: {
+            button.state = containsMouse ? "hover" : ""
+        }
+        /*
+        onEntered: {
+            button.state = "hover"
+        }
+        onExited: {
+            button.state = ""
+        }
+*/
     }
+
+    // Hovering animations
+    Behavior on scale {
+        NumberAnimation {
+            duration: 150
+            easing.type: Easing.InOutQuad
+        }
+    }
+
+    transitions: [
+        Transition {
+            from: ""
+            to: "hover"
+            ColorAnimation {
+                duration: 150
+            }
+        },
+        Transition {
+            from: "hover"
+            to: ""
+            ColorAnimation {
+                duration: 150
+            }
+        }
+    ]
 }

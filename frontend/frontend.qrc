@@ -71,8 +71,27 @@
         <file>Controls/ModalAlert.qml</file>
         <file>Controls/ModalHeader.qml</file>
         <file>Controls/CheckBoxBlue.qml</file>
+        <file>Controls/SearchBoxResults.qml</file>
+        <file>Controls/SearchBoxResultsCategory.qml</file>
+        <file>Controls/SearchBoxResultsCategoryItem.qml</file>
         <file>Controls/Version.qml</file>
         <file>Controls/AddressForm.qml</file>
         <file>Controls/AccountCreateForm.qml</file>
+        <file>Controls/ComboBox.qml</file>
+        <file>+mobile/DashboardForm.qml</file>
+        <file>Theme/Theme.qml</file>
+        <file>Theme/qmldir</file>
+        <file>Controls/+mobile/Balance.qml</file>
+        <file>Controls/+mobile/Header.qml</file>
+        <file>Controls/+mobile/BalanceValue.qml</file>
+        <file>Controls/+mobile/Transactions.qml</file>
+        <file>+mobile/main.qml</file>
+        <file>+mobile/SendCoins.qml</file>
+        <file>+mobile/ReceiveCoins.qml</file>
+        <file>X-Change/Home/MarketsDiode.qml</file>
+        <file>X-Change/Home/OrderBookDiode.qml</file>
+        <file>X-Change/Home/ChartDiode.qml</file>
+        <file>X-Change/Home/BuySellDiode.qml</file>
     </qresource>
 </RCC>
+
