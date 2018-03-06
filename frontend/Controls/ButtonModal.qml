@@ -8,9 +8,8 @@ Button {
     property bool isDanger: false
     property alias label: label
     property string labelText: label.text || qsTr("OK")
-    property int colorTracker: 0
     property real buttonHeight: 40
-
+    property int colorTracker: 0
     Layout.fillWidth: true
     height: buttonHeight
 
