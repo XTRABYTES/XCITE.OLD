@@ -20,13 +20,8 @@ Column {
         font.family: "Roboto Thin"
         placeholderText: placeholder
         anchors.horizontalCenter: parent.horizontalCenter
-        style: TextFieldStyle {
-            textColor: "#10B9C5"
-            placeholderTextColor: "#10B9C5"
-            background: Rectangle {
-                color: "transparent"
-            }
-        }
+        color: "#10B9C5"
+        background: Rectangle { color: "transparent" }
     }
 
     Rectangle {

@@ -54,13 +54,8 @@ Item {
                 placeholderText: placeholder
                 anchors.left: parent.left
                 anchors.leftMargin: 15
-                style: TextFieldStyle {
-                    textColor: "#7B7D82"
-                    placeholderTextColor: "#7B7D82"
-                    background: Rectangle {
-                        color: "transparent"
-                    }
-                }
+                color: "#7B7D82"
+                background: Rectangle { color: "transparent" }
 
                 function showSearchResults() {
                     var showResults = searchField.text.length > 0
