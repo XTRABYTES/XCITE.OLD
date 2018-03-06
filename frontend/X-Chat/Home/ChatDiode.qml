@@ -18,24 +18,30 @@ Controls.Diode {
     ColumnLayout {
         spacing: 0
         anchors.top: chatDiodeHeader.bottom
-        anchors.topMargin: 40
+        anchors.topMargin: 45
         anchors.fill: parent
 
         RowLayout {
             //Layout.fillHeight: true
             //Layout.fillWidth: true
-            Rectangle {
+            ConversationBox {
 
                 id: chat
-                color: "green"
+                // color: "green"
                 Layout.fillWidth: true
-                Layout.preferredHeight: 730
+                Layout.fillHeight: true
+                z: 10
+                //Layout.preferredHeight: 720
             }
             Rectangle {
-                //Layout.preferredWidth:
+                Layout.preferredWidth: 1
+                Layout.preferredHeight: 704
+                anchors.bottom: parent.bottom
+                color: "#4F5152"
+            }
+
+            StatusBox {
                 id: status
-                Layout.preferredWidth: 259
-                Layout.preferredHeight: 730
             }
         }
 

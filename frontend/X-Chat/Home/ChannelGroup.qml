@@ -96,20 +96,5 @@ Item {
                 }
             }
         }
-
-        /*Controls.AddressBook {
-            id: addressBook
-            delegateLeftPadding: 18
-            delegateRightPadding: 0
-            delegatePixelSize: 12
-            delegateColor: "#E6E6E6"
-            delegateHightlightColor: "#666B78"
-            delegateFontWeight: Font.Normal
-            delegateLineHeight: 2.5
-            leftMargin: 0
-            rightMargin: 0
-            currentIndex: -1
-            interactive: false
-        }*/
     }
 }

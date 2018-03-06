@@ -73,5 +73,6 @@
         <file>icons/circle-check.svg</file>
         <file>icons/placeholder-qr.svg</file>
         <file>icons/happiness.svg</file>
+        <file>icons/chat-avatar.svg</file>
     </qresource>
 </RCC>

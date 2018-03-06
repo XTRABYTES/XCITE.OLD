@@ -9,6 +9,7 @@ ColumnLayout {
     anchors.left: parent.left
     anchors.right: parent.right
     Layout.preferredHeight: 93
+
     Rectangle {
         Layout.fillWidth: true
         height: 1

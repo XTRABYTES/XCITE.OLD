@@ -83,5 +83,7 @@
         <file>X-Chat/Home/Layout.qml</file>
         <file>X-Chat/Home/ChatBox.qml</file>
         <file>X-Chat/Home/StatusBox.qml</file>
+        <file>X-Chat/Home/ConversationBox.qml</file>
+        <file>X-Chat/Home/StatusGroup.qml</file>
     </qresource>
 </RCC>
