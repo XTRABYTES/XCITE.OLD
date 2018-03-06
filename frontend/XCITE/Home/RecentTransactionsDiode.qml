@@ -24,7 +24,7 @@ Rectangle {
         title: "Test"
         text: "Item clicked"
     }
-
+    /*
     TableView {
         id: transactionTable
 
@@ -223,4 +223,5 @@ Rectangle {
             resizable: false
         }
     }
+    */
 }
