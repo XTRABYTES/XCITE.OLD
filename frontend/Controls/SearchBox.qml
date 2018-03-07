@@ -18,6 +18,7 @@ Item {
 
     anchors.top: parent.top
     anchors.left: parent.left
+    anchors.topMargin: 13
 
     z: 50
 
@@ -46,16 +47,15 @@ Item {
                 id: searchField
                 height: parent.height
                 width: 220
-                y: 0
+                anchors.top: parent.top
+                anchors.topMargin: 3
 
                 font.pointSize: 14
                 font.family: "Roboto"
                 placeholderText: placeholder
                 anchors.left: parent.left
                 anchors.leftMargin: 15
-                topPadding: 15
                 color: "#7B7D82"
-
                 background: Rectangle {
                     color: "transparent"
                 }
