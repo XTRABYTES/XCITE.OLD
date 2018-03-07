@@ -48,7 +48,7 @@ Item {
                 height: parent.height
                 width: 220
                 anchors.top: parent.top
-                anchors.topMargin: 3
+                anchors.topMargin: 4
 
                 font.pointSize: 14
                 font.family: "Roboto"
