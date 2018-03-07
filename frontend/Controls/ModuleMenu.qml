@@ -83,6 +83,7 @@ Item {
 
         SearchBox {
             id: searchBox
+            anchors.topMargin: 13
             placeholder: qsTr("Search...")
             anchors.right: parent.right
         }
