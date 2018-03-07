@@ -76,6 +76,26 @@ ApplicationWindow {
         handler: wallet
     }
 
+
+    Component.onCompleted: {
+        ReleaseChecker.checkForUpdate()
+    }
+
+    Connections {
+        target: ReleaseChecker
+        onXciteUpdateAvailable: {
+            confirmationModal({
+                                  title: qsTr("UPDATE AVAILABLE"),
+                                  bodyText: qsTr("An updated version of XCITE is available for download!"),
+                                  confirmText: qsTr("DOWNLOAD"),
+                                  cancelText: qsTr("NOT NOW")
+                              }, function () {
+                                  Qt.openUrlExternally(
+                                              "https://github.com/borzalom/xcite/releases")
+                              })
+        }
+    }
+
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
     signal localeChange(string locale)
