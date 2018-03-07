@@ -1,6 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.3
 import QtQuick.Controls.Styles 1.4
 import SortFilterProxyModel 0.1
 import QtQuick.Dialogs 1.1
@@ -25,16 +25,11 @@ Rectangle {
         menuLabelText: qsTr("Complete View")
     }
 
+    /*
     TableView {
         id: nodeTransactionTable
 
-        model: nodeTransactionModel /*SortFilterProxyModel {
-                                    id: proxyModel
-                                                                                                source: nodeTransactionModel //nodeTransactionModel.count > 0 ? nodeTransactionModel : null
-                                                                                                                                                                                                       /* sortOrder: nodeTransactionTable.sortIndicatorOrder
-                                                                                                                                                                                                                                                                                                                                                                     sortCaseSensitivity: Qt.CaseInsensitive
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      sortRole: nodeTransactionModel.count > 0 ? nodeTransactionTable.getColumn(nodeTransactionTable.sortIndicatorColumn).role : ""*/
-        //}
+        model: nodeTransactionModel
 
         // TODO: This is just a placeholder to test out click-to-view a transaction
         onDoubleClicked: {
@@ -177,4 +172,6 @@ Rectangle {
             resizable: false
         }
     }
+    */
+
 }

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import "../../Controls" as Controls
 //Transactions status board used on the Nodes page (bottom)

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import "../Theme" 1.0
 
@@ -34,8 +34,8 @@ RowLayout {
         height: parent.height
         Layout.preferredWidth: 40
 
-        icon.source: "../icons/cross.svg"
-        icon.sourceSize.width: 10
+        img.source: "../icons/cross.svg"
+        img.sourceSize.width: 10
 
         onClicked: {
             popup.visible = false

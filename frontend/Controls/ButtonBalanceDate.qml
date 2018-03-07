@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 //Button representations of the optional dates in the balance board
 Item {
 

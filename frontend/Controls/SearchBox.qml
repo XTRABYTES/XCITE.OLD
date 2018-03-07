@@ -1,6 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.3
 import QtQuick.Controls.Styles 1.4
 import "../Controls" as Controls
 
@@ -54,13 +54,8 @@ Item {
                 placeholderText: placeholder
                 anchors.left: parent.left
                 anchors.leftMargin: 15
-                style: TextFieldStyle {
-                    textColor: "#7B7D82"
-                    placeholderTextColor: "#7B7D82"
-                    background: Rectangle {
-                        color: "transparent"
-                    }
-                }
+                color: "#7B7D82"
+                background: Rectangle { color: "transparent" }
 
                 function showSearchResults() {
                     var showResults = searchField.text.length > 0
