@@ -320,7 +320,8 @@ Controls.Diode {
                                       confirmText: qsTr("YES, SEND"),
                                       cancelText: qsTr("NO, CANCEL")
                                   }, function () {
-                                      testnetSendFrom('', address, amount)
+                                      testnetSendToAddress(item.address, Number(
+                                                               formAmount.text))
                                   })
             }
         }

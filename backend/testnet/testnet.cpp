@@ -8,6 +8,12 @@ void Testnet::sendFrom(QString account, QString address, qreal amount) {
     client->request("sendfrom", params);
 }
 
+void Testnet::sendToAddress(QString address, qreal amount) {
+    QJsonArray params = {address, amount};
+
+    client->request("sendtoaddress", params);
+}
+
 void Testnet::getAccountAddress(QString account) {
     QJsonArray params = {
         account
@@ -78,6 +84,8 @@ void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
             walletError("Invalid address: " + params[0].toString());
         }
     } else if (command == "sendfrom") {
+        walletSuccess(res["result"].toString());
+    } else if (command == "sendtoaddress") {
         walletSuccess(res["result"].toString());
     }
 }
