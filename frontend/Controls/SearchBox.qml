@@ -18,7 +18,6 @@ Item {
 
     anchors.top: parent.top
     anchors.left: parent.left
-    anchors.topMargin: 13
 
     z: 50
 
@@ -54,8 +53,12 @@ Item {
                 placeholderText: placeholder
                 anchors.left: parent.left
                 anchors.leftMargin: 15
+                topPadding: 15
                 color: "#7B7D82"
-                background: Rectangle { color: "transparent" }
+
+                background: Rectangle {
+                    color: "transparent"
+                }
 
                 function showSearchResults() {
                     var showResults = searchField.text.length > 0
