@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 
 //Component for text with a blue underline below it.
 Item {

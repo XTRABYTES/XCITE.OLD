@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.1
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import "../Theme" 1.0
 
@@ -8,7 +8,7 @@ Button {
     property bool isDanger: false
     property alias label: label
     property string labelText: label.text || qsTr("OK")
-    property real buttonHeight: parent.height
+    property real buttonHeight: 40
     property int colorTracker: 0
     Layout.fillWidth: true
     height: buttonHeight

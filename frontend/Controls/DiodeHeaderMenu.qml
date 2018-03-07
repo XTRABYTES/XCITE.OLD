@@ -1,5 +1,5 @@
 import QtQuick 2.8
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
 RowLayout {
@@ -32,7 +32,7 @@ RowLayout {
         height: parent.height
         Layout.preferredWidth: 40
 
-        icon.source: "../icons/dropdown-arrow.svg"
-        icon.sourceSize.width: 10
+        img.source: "../icons/dropdown-arrow.svg"
+        img.sourceSize.width: 10
     }
 }

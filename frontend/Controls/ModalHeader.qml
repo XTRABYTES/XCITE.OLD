@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 
 Item {
@@ -30,8 +30,8 @@ Item {
             Layout.preferredWidth: 20
 
             iconColor: "#fff"
-            icon.source: "../icons/cross.svg"
-            icon.sourceSize.width: 10
+            img.source: "../icons/cross.svg"
+            img.sourceSize.width: 10
 
             onClicked: {
                 cancelled()
