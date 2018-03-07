@@ -10,10 +10,7 @@ VERSION_BUILD=2
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui
-QT	+= xml
-QT	+= quick
-QT      += svg
+QT	+= core gui xml quick svg charts
 CONFIG	+= c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
