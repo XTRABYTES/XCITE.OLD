@@ -3,6 +3,7 @@
 #include <QtQuick/QQuickWindow>
 #include <QQmlFileSelector>
 #include <qqmlcontext.h>
+#include <QDebug>
 #include <qqml.h>
 #include "../backend/xchat/xchat.hpp"
 #include "../backend/xchat/xchatconversationmodel.hpp"
@@ -72,6 +73,7 @@ int main(int argc, char *argv[])
 
     QObject *localeSelector = engine.rootObjects().first()->findChild<QObject *>("localeSelector");
     if (!localeSelector) {
+        qDebug() << "couldn't load language";
         return -1;
     }
 

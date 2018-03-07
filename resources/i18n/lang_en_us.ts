@@ -373,6 +373,26 @@
         <source>   Register Node -&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../frontend/Settings/Layout.qml" line="36"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../frontend/Settings/Layout.qml" line="49"/>
+        <source>Select your language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../frontend/Settings/Layout.qml" line="62"/>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../frontend/Settings/Layout.qml" line="66"/>
+        <source>Dutch</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LoginForm</name>
@@ -803,29 +823,6 @@ Are you sure you want to send</source>
     </message>
 </context>
 <context>
-    <name>Settings</name>
-    <message>
-        <location filename="../../frontend/Settings/Settings.qml" line="9"/>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/Settings/Settings.qml" line="22"/>
-        <source>Select your language</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/Settings/Settings.qml" line="35"/>
-        <source>English</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/Settings/Settings.qml" line="39"/>
-        <source>Dutch</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>SideMenu</name>
     <message>
         <location filename="../../frontend/Controls/SideMenu.qml" line="48"/>
@@ -983,31 +980,6 @@ Are you sure you want to send</source>
     <message>
         <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="25"/>
         <source>Complete View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="146"/>
-        <source>Address</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="153"/>
-        <source>Time In</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="160"/>
-        <source>Process</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="167"/>
-        <source>Executed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="174"/>
-        <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

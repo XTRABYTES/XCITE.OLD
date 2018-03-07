@@ -9,6 +9,7 @@ import "Controls" as Controls
 import "XCITE" as XCITE
 import "X-Change" as XChange
 import "tools" as Tools
+import "Settings" as Settings
 
 import xtrabytes.xcite.xchat 1.0
 
@@ -55,9 +56,7 @@ Item {
             XChange.Layout {
             }
 
-            // Settings
-            Item {
-                id: moduleSettings
+            Settings.Layout {
             }
 
             Tools.Layout {

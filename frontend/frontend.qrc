@@ -93,6 +93,5 @@
         <file>X-Change/Home/ChartDiode.qml</file>
         <file>X-Change/Home/BuySellDiode.qml</file>
         <file>Settings/Layout.qml</file>
-        <file>Settings/Settings.qml</file>
     </qresource>
 </RCC>

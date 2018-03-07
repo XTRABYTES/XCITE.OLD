@@ -193,7 +193,7 @@
     <message>
         <location filename="../../frontend/Controls/ButtonModal.qml" line="10"/>
         <source>OK</source>
-        <translation type="unfinished">JA</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -374,20 +374,24 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../frontend/Settings/Layout.qml" line="36"/>
         <source>Settings</source>
-        <translation type="vanished">Instellingen</translation>
+        <translation>Instellingen</translation>
     </message>
     <message>
+        <location filename="../../frontend/Settings/Layout.qml" line="49"/>
         <source>Select your language</source>
-        <translation type="vanished">Kies je taal</translation>
+        <translation>Kies je taal</translation>
     </message>
     <message>
+        <location filename="../../frontend/Settings/Layout.qml" line="62"/>
         <source>English</source>
-        <translation type="vanished">Engels</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../frontend/Settings/Layout.qml" line="66"/>
         <source>Dutch</source>
-        <translation type="vanished">Nederlands</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -530,7 +534,7 @@
     <message>
         <location filename="../../frontend/XCITE/ReceiveCoins/ReceiveCoinsDiode.qml" line="278"/>
         <source>OK</source>
-        <translation type="unfinished">JA</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -690,7 +694,7 @@
     <message>
         <location filename="../../frontend/Controls/SearchBoxResults.qml" line="80"/>
         <source>XCITE</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../frontend/Controls/SearchBoxResults.qml" line="90"/>
@@ -788,7 +792,7 @@ Ex: BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS </source>
     <message>
         <location filename="../../frontend/XCITE/SendCoins/SendDiode.qml" line="297"/>
         <source>OK</source>
-        <translation type="unfinished">JA</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../frontend/XCITE/SendCoins/SendDiode.qml" line="307"/>
@@ -816,29 +820,6 @@ Are you sure you want to send</source>
         <location filename="../../frontend/XCITE/SendCoins/SendDiode.qml" line="321"/>
         <source>NO, CANCEL</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Settings</name>
-    <message>
-        <location filename="../../frontend/Settings/Settings.qml" line="9"/>
-        <source>Settings</source>
-        <translation type="unfinished">Instellingen</translation>
-    </message>
-    <message>
-        <location filename="../../frontend/Settings/Settings.qml" line="22"/>
-        <source>Select your language</source>
-        <translation type="unfinished">Kies je taal</translation>
-    </message>
-    <message>
-        <location filename="../../frontend/Settings/Settings.qml" line="35"/>
-        <source>English</source>
-        <translation type="unfinished">Engels</translation>
-    </message>
-    <message>
-        <location filename="../../frontend/Settings/Settings.qml" line="39"/>
-        <source>Dutch</source>
-        <translation type="unfinished">Nederlands</translation>
     </message>
 </context>
 <context>
@@ -935,7 +916,7 @@ Are you sure you want to send</source>
     <message>
         <location filename="../../frontend/Login/SignUpForm.qml" line="23"/>
         <source>XCITE</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../frontend/Login/SignUpForm.qml" line="32"/>
@@ -1001,38 +982,13 @@ Are you sure you want to send</source>
         <source>Complete View</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="146"/>
-        <source>Address</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="153"/>
-        <source>Time In</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="160"/>
-        <source>Process</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="167"/>
-        <source>Executed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../frontend/XCITE/Nodes/TransactionsBoard.qml" line="174"/>
-        <source>Type</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>TwoFactorAuthForm</name>
     <message>
         <location filename="../../frontend/Login/TwoFactorAuthForm.qml" line="21"/>
         <source>XCITE</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../frontend/Login/TwoFactorAuthForm.qml" line="30"/>
@@ -1080,7 +1036,7 @@ Are you sure you want to send</source>
         <location filename="../../frontend/main.qml" line="61"/>
         <location filename="../../frontend/main.qml" line="69"/>
         <source>OK</source>
-        <translation type="unfinished">JA</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../frontend/main.qml" line="67"/>
