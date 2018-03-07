@@ -6,7 +6,7 @@ Settings::Settings(QQmlApplicationEngine *engine, QObject *parent) :
     m_engine = engine;
 }
 
-void Settings::onLocaleChange(QString locale) {
+void Settings::setLocale(QString locale) {
     if (!m_translator.isEmpty()) {
         QCoreApplication::removeTranslator(&m_translator);
     }
@@ -21,4 +21,8 @@ void Settings::onLocaleChange(QString locale) {
     }
 
     m_engine->retranslate();
+}
+
+void Settings::onLocaleChange(QString locale) {
+    setLocale(locale);
 }

@@ -50,8 +50,21 @@ Item {
             }
 
             ComboBox {
+                id: control
                 currentIndex: 0
                 textRole: "text"
+
+                Connections {
+                    Component.onCompleted: {
+                        for (var i = 0; i < languageOptions.count; i++) {
+                            if (languageOptions.get(
+                                        i).locale === settings.locale) {
+                                control.currentIndex = i
+                                break
+                            }
+                        }
+                    }
+                }
 
                 model: ListModel {
                     id: languageOptions
@@ -66,7 +79,9 @@ Item {
                 }
 
                 onCurrentIndexChanged: {
-                    localeChange(languageOptions.get(currentIndex).locale)
+                    var locale = languageOptions.get(currentIndex).locale
+                    localeChange(locale)
+                    settings.locale = locale
                 }
             }
         }

@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
+import Qt.labs.settings 1.0
 
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
@@ -35,6 +36,15 @@ ApplicationWindow {
 
     Clipboard {
         id: clipboard
+    }
+
+    Settings {
+        id: settings
+        property alias x: xcite.x
+        property alias y: xcite.y
+        property alias width: xcite.width
+        property alias height: xcite.height
+        property string locale: "en_us"
     }
 
     signal xchatSubmitMsgSignal(string msg)
