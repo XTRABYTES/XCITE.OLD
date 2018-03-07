@@ -50,11 +50,8 @@ Item {
             }
 
             ComboBox {
-                objectName: "localeSelector"
                 currentIndex: 0
                 textRole: "text"
-
-                signal localeChange(string locale)
 
                 model: ListModel {
                     id: languageOptions

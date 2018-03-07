@@ -3,7 +3,6 @@
 #include <QtQuick/QQuickWindow>
 #include <QQmlFileSelector>
 #include <qqmlcontext.h>
-#include <QDebug>
 #include <qqml.h>
 #include "../backend/xchat/xchat.hpp"
 #include "../backend/xchat/xchatconversationmodel.hpp"
@@ -71,14 +70,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    QObject *localeSelector = engine.rootObjects().first()->findChild<QObject *>("localeSelector");
-    if (!localeSelector) {
-        qDebug() << "couldn't load language";
-        return -1;
-    }
-
     Settings settings(&engine);
-    QObject::connect(localeSelector, SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
+    QObject::connect(engine.rootObjects().first(), SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 #else

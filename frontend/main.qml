@@ -43,6 +43,7 @@ ApplicationWindow {
     signal testnetSendFrom(string account, string address, real amount)
     signal testnetValidateAddress(string address)
     signal testnetGetAccountAddress(string account)
+    signal localeChange(string locale)
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())
