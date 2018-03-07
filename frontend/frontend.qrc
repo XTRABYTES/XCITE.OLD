@@ -92,6 +92,6 @@
         <file>X-Change/Home/OrderBookDiode.qml</file>
         <file>X-Change/Home/ChartDiode.qml</file>
         <file>X-Change/Home/BuySellDiode.qml</file>
+        <file>Settings/Layout.qml</file>
     </qresource>
 </RCC>
-

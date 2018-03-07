@@ -13,6 +13,7 @@
 #include "../backend/support/qrcode/qt-qrcode/QtQrCodeQuickItem.hpp"
 #include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
+#include "../backend/support/settings.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -68,6 +69,9 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty()) {
         return -1;
     }
+
+    Settings settings(&engine);
+    QObject::connect(engine.rootObjects().first(), SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 #else
