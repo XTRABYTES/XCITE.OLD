@@ -68,6 +68,9 @@ Controls.Diode {
                 Controls.TextInput {
                     id: formAmount
                     Layout.preferredWidth: 516
+                    validator: DoubleValidator {
+                        bottom: 0
+                    }
                     topPadding: 5
                     bottomPadding: 5
                     text: "0"
