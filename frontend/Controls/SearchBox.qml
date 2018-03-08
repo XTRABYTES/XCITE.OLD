@@ -4,82 +4,57 @@ import QtQuick.Controls 2.3
 import QtQuick.Controls.Styles 1.4
 import "../Controls" as Controls
 
+import "../Theme" 1.0
+
 Item {
     id: searchBoxWithResults
 
     property alias text: searchField.text
     property alias placeholder: searchField.placeholderText
 
-    anchors.verticalCenter: parent.Center
-    Layout.fillWidth: true
-    Layout.maximumWidth: 367
-    Layout.minimumWidth: 367
-    Layout.preferredWidth: 367
-
-    anchors.top: parent.top
-    anchors.left: parent.left
-    anchors.topMargin: 13
-
     z: 50
 
     Rectangle {
         id: searchBoxId
-
-        width: parent.width
-        height: 44
-        radius: 5
-
-        color: "#3A3E46"
+        anchors.fill: parent
+        anchors.verticalCenter: parent.verticalCenter
+        color: Theme.panelBackground
 
         signal buttonClicked
 
-        Rectangle {
-            id: searchFieldContainer
-            Layout.fillWidth: true
-            height: 44
-            width: 367
-            color: "transparent"
-            anchors.top: parent.top
-            anchors.left: parent.left
-            radius: 5
+        TextField {
+            id: searchField
+            anchors.fill: parent
+            topPadding: 16
+            leftPadding: 8
+            rightPadding: 8
+            font.pointSize: 14
 
-            TextField {
-                id: searchField
-                height: parent.height
-                width: 220
-                anchors.top: parent.top
-                anchors.topMargin: 4
+            color: "#7B7D82"
 
-                font.pointSize: 14
-                font.family: "Roboto"
-                placeholderText: placeholder
-                anchors.left: parent.left
-                anchors.leftMargin: 15
-                color: "#7B7D82"
-                background: Rectangle {
-                    color: "transparent"
-                }
+            background: Rectangle {
+                color: "transparent"
+            }
 
-                function showSearchResults() {
-                    var showResults = searchField.text.length > 0
-                            && searchField.focus && searchField.activeFocus
-                            && searchField.focus
+            function showSearchResults() {
+                var showResults = searchField.text.length > 0
+                        && searchField.focus && searchField.activeFocus
+                        && searchField.focus
 
-                    searchResultsBox.visible = showResults
-                    searchResultsBox.text = showResults ? searchField.text : ""
-                }
+                searchResultsBox.visible = showResults
+                searchResultsBox.text = showResults ? searchField.text : ""
+            }
 
-                onTextChanged: function () {
-                    showSearchResults()
-                }
+            onTextChanged: function () {
+                showSearchResults()
+            }
 
-                onFocusChanged: {
-                    showSearchResults()
-                }
+            onFocusChanged: {
+                showSearchResults()
+            }
 
-                onEditingFinished: {
-                    showSearchResults()
-                }
+            onEditingFinished: {
+                showSearchResults()
             }
         }
 

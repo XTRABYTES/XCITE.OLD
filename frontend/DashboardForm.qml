@@ -1,8 +1,5 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
-import QtQuick.Window 2.2
-import QtQuick.Controls.Material 2.3
 
 import "Controls" as Controls
 
@@ -20,8 +17,11 @@ import xtrabytes.xcite.xchat 1.0
 Item {
     id: dashboard
 
-    readonly property int layoutGridSpacing: 15
-    readonly property int sideMenuWidth: 90
+    readonly property int layoutGridSpacing: 8
+    readonly property int sideMenuWidth: 86
+    readonly property int panelBorderRadius: 0
+    readonly property int diodeHeaderHeight: 46
+    readonly property int moduleMenuHeight: 49
 
     signal selectView(string path)
 
@@ -34,18 +34,18 @@ Item {
     RowLayout {
         id: rootLayout
         anchors.fill: parent
-        anchors.rightMargin: layoutGridSpacing
-        anchors.bottomMargin: layoutGridSpacing
-        spacing: 15
+        spacing: layoutGridSpacing
 
         Controls.SideMenu {
+            Layout.fillHeight: true
+            width: sideMenuWidth
         }
 
         ColumnLayout {
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
             Layout.fillHeight: true
             Layout.fillWidth: true
+            Layout.rightMargin: layoutGridSpacing
+            spacing: layoutGridSpacing
 
             Controls.ModuleMenu {
             }

@@ -4,14 +4,12 @@ import QtQuick.Layouts 1.3
 import "../Home" as HomeComponents
 import "../../Controls" as Controls
 
-RowLayout {
-    readonly property color cDiodeBackground: "#3a3e46"
-
+ColumnLayout {
     anchors.fill: parent
     spacing: layoutGridSpacing
 
     RowLayout {
-        anchors.top: parent.top
+        anchors.fill: parent
         spacing: layoutGridSpacing
 
         ColumnLayout {

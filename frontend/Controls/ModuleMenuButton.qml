@@ -1,4 +1,5 @@
 import QtQuick 2.7
+import "../Theme" 1.0
 
 Rectangle {
     id: button
@@ -9,13 +10,11 @@ Rectangle {
 
     property bool isSelected: selected === this.name
 
-    anchors.verticalCenter: parent.Center
+    height: 49
+    width: 123
 
-    width: 140
-    height: 44
-
-    color: isSelected ? "#0DD8D2" : (state == "hover" ? "#302f2f" : "transparent")
-    radius: 5
+    color: isSelected ? "transparent" : (state == "hover" ? "#302f2f" : Theme.panelBackground)
+    radius: panelBorderRadius
 
     states: [
         State {
@@ -30,10 +29,9 @@ Rectangle {
     Text {
         id: label
         anchors.centerIn: parent
-        text: "Start"
-        font.family: "Roboto"
         font.pixelSize: 16
-        color: isSelected ? "#38414A" : "#62DED6"
+        font.family: Theme.fontCondensed
+        color: isSelected ? Theme.primaryHighlight : "#A9ADAA"
     }
 
     MouseArea {
@@ -49,14 +47,6 @@ Rectangle {
         onHoveredChanged: {
             button.state = containsMouse ? "hover" : ""
         }
-        /*
-        onEntered: {
-            button.state = "hover"
-        }
-        onExited: {
-            button.state = ""
-        }
-*/
     }
 
     // Hovering animations

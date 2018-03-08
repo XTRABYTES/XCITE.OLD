@@ -8,15 +8,9 @@ import QtQuick.Dialogs 1.1
 import "../../Controls" as Controls
 import "../../Theme" 1.0
 
-Rectangle {
-    color: cDiodeBackground
-    radius: 5
-
-    Controls.DiodeHeader {
-        id: diodeHeader
-        text: qsTr("RECENT TRANSACTIONS")
-        menuLabelText: qsTr("Complete View")
-    }
+Controls.Diode {
+    title: qsTr("RECENT TRANSACTIONS")
+    menuLabelText: qsTr("Complete View")
 
     // TODO: This will be replaced by a bespoke dialog
     MessageDialog {
@@ -44,16 +38,15 @@ Rectangle {
             popup.open()
         }
 
+        anchors.fill: parent
+        anchors.topMargin: diodeHeaderHeight + 10
+        anchors.leftMargin: 20
+        anchors.bottomMargin: 20
+        anchors.rightMargin: 20
+
         backgroundVisible: false
         alternatingRowColors: false
         frameVisible: false
-
-        anchors.top: diodeHeader.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.margins: 15
-        anchors.leftMargin: 22
 
         style: TableViewStyle {
             scrollBarBackground: Item {

@@ -27,12 +27,13 @@ RowLayout {
         anchors.verticalCenter: parent.verticalCenter
     }
 
-    IconButton {
-        anchors.verticalCenter: parent.verticalCenter
-        height: parent.height
-        Layout.preferredWidth: 40
+    ButtonIcon {
+        width: 40
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        imageOffsetY: parent.height / 2 - 2.5 // TODO: This shouldn't be necessary but need to refactor ButtonIcon first
 
-        img.source: "../icons/dropdown-arrow.svg"
-        img.sourceSize.width: 10
+        imageSource: "../icons/dropdown-arrow.svg"
+        size: 5
     }
 }

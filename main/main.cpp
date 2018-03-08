@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
+    app.setFont(QFont("Roboto"));
+
     GlobalEventFilter eventFilter;
     app.installEventFilter(&eventFilter);
 

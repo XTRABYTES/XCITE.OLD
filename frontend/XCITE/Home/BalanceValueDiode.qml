@@ -1,24 +1,20 @@
 import QtQuick 2.7
 import "../../Controls" as Controls
+import "../../Theme" 1.0
 
-Rectangle {
-    width: 376
-    height: 135
-    color: cDiodeBackground
-    radius: 5
-
-    Controls.DiodeHeader {
-        id: diodeHeader
-        text: qsTr("BALANCE VALUE")
-        menuLabelText: qsTr("USD")
-    }
+Controls.Diode {
+    title: qsTr("FIAT VALUE")
+    menuLabelText: "USD"
 
     Controls.BalanceItem {
-        id: unconfirmedBalance
-        text: ""
-        value: (wallet.balance * 0.2).toLocaleString(Qt.locale(), "f", 2)
-        valuePrefix: qsTr("$")
-        anchors.top: diodeHeader.bottom
-        valueWidth: 340
+        anchors.fill: parent
+        anchors.topMargin: diodeHeaderHeight
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
+
+        value.text: (wallet.balance * 0.2).toLocaleString(Qt.locale(), "f", 2)
+        value.font.pixelSize: 36
+        prefix.font.pixelSize: 36
+        prefix.text: "$"
     }
 }

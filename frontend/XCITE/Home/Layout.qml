@@ -2,42 +2,42 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 
 ColumnLayout {
-    readonly property color cDiodeBackground: "#3a3e46"
-
     anchors.fill: parent
     spacing: layoutGridSpacing
 
     RowLayout {
-        anchors.top: parent.top
+        anchors.fill: parent
+        Layout.preferredHeight: 432
+        Layout.minimumHeight: 432
         spacing: layoutGridSpacing
 
         ColumnLayout {
-            anchors.top: parent.top
-            Layout.preferredWidth: 376
+            Layout.maximumWidth: 300
+            Layout.alignment: Qt.AlignTop
+            Layout.fillHeight: true
             spacing: layoutGridSpacing
 
             BalanceDiode {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
             }
 
             BalanceValueDiode {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 110
             }
         }
 
         RecentTransactionsDiode {
-            anchors.top: parent.top
             Layout.fillWidth: true
-            Layout.preferredHeight: 463
-            Layout.preferredWidth: 928.26
-            Layout.fillHeight: false
+            Layout.fillHeight: true
         }
     }
 
-    RowLayout {
+    ChartDiode {
+        Layout.fillWidth: true
         Layout.fillHeight: true
-        anchors.left: parent.left
-        spacing: layoutGridSpacing
-
-        ChartDiode {
-        }
+        Layout.preferredHeight: 400
+        Layout.maximumHeight: 750
     }
 }
