@@ -87,5 +87,6 @@
         <file>icons/graph5.svg</file>
         <file>i18n/lang_nl_nl.qm</file>
         <file>i18n/lang_en_us.qm</file>
+        <file>icons/Star.svg</file>
     </qresource>
 </RCC>
