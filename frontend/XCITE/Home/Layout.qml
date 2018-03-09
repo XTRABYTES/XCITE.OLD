@@ -5,29 +5,7 @@ ColumnLayout {
     anchors.fill: parent
     spacing: layoutGridSpacing
 
-    RowLayout {
-        anchors.fill: parent
-        Layout.preferredHeight: 432
-        Layout.minimumHeight: 432
-        spacing: layoutGridSpacing
-
-        ColumnLayout {
-            Layout.maximumWidth: 300
-            Layout.alignment: Qt.AlignTop
-            Layout.fillHeight: true
-            spacing: layoutGridSpacing
-
-            BalanceDiode {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
-
-            BalanceValueDiode {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 110
-            }
-        }
-
+    LayoutBalanceLeft {
         RecentTransactionsDiode {
             Layout.fillWidth: true
             Layout.fillHeight: true

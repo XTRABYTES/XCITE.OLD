@@ -8,27 +8,12 @@ ColumnLayout {
     anchors.fill: parent
     spacing: layoutGridSpacing
 
-    RowLayout {
-        anchors.fill: parent
-        spacing: layoutGridSpacing
+    HomeComponents.LayoutBalanceLeft {
+        Layout.maximumHeight: 620
 
-        ColumnLayout {
-            anchors.top: parent.top
-            Layout.preferredWidth: 376
-
-            spacing: layoutGridSpacing
-
-            HomeComponents.BalanceDiode {
-            }
-
-            HomeComponents.BalanceValueDiode {
-            }
-        }
-
-        ReceiveCoinsDiode {
-            anchors.top: parent.top
+        ReceiveDiode {
+            Layout.fillHeight: true
             Layout.fillWidth: true
-            height: childrenRect.height
         }
     }
 

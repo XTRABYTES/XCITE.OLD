@@ -23,7 +23,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         width: 5
-        color: Theme.primaryHighlight
+        color: Theme.secondaryHighlight
     }
 
     ButtonIcon {

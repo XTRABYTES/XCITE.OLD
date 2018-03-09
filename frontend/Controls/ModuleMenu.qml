@@ -23,7 +23,7 @@ Item {
         anchors.fill: parent
 
         RowLayout {
-            spacing: 3
+            spacing: 2
 
             ModuleMenuButton {
                 name: "xCite"
