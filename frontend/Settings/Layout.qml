@@ -84,6 +84,17 @@ Item {
                     settings.locale = locale
                 }
             }
+
+            Controls.FormLabel {
+                text: qsTr("Developer Settings")
+            }
+
+            CheckBox {
+                id: skipLoginCheckbox
+                text: "Skip login screens on startup"
+                checked: developerSettings.skipLogin
+                onClicked: developerSettings.skipLogin = this.checked
+            }
         }
     }
 }

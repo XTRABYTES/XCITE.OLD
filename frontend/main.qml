@@ -23,11 +23,26 @@ ApplicationWindow {
 
     StackView {
         id: mainRoot
-        initialItem: LoginComponents.LoginForm {
-        }
+
         anchors.fill: parent
         pushEnter: null
         pushExit: null
+
+        Component.onCompleted: {
+            this.push(developerSettings.skipLogin ? dashboardForm : loginForm)
+        }
+    }
+
+    Component {
+        id: dashboardForm
+        DashboardForm {
+        }
+    }
+
+    Component {
+        id: loginForm
+        LoginComponents.LoginForm {
+        }
     }
 
     Xchat {
@@ -45,6 +60,12 @@ ApplicationWindow {
         property alias width: xcite.width
         property alias height: xcite.height
         property string locale: "en_us"
+    }
+
+    Settings {
+        id: developerSettings
+        category: "developer"
+        property bool skipLogin: false
     }
 
     signal xchatSubmitMsgSignal(string msg)
