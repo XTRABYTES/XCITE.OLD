@@ -30,7 +30,7 @@ RowLayout {
         SendDiode {
             anchors.top: parent.top
             Layout.fillWidth: true
-            height: childrenRect.height
+            height: xcite.height < 850 ? xcite.height : childrenRect.height
         }
     }
 

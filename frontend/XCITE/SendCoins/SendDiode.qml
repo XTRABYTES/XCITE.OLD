@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
+import QtQuick.Window 2.2
 
 import AddressBookModel 0.1
 
@@ -274,17 +275,18 @@ Controls.Diode {
             Layout.fillWidth: true
             Layout.leftMargin: 22
             Layout.rightMargin: 22
-            height: 1
+            height: (xcite.height > 850) ? 1 : 0
             color: "#535353"
         }
 
         // Send Payment
         Controls.ButtonModal {
             Layout.fillWidth: true
-            Layout.topMargin: 35
+            Layout.topMargin: xcite.height > 850 ? 35 : -75
+            width: Screen.height < 850 ? 500 : -200
             Layout.bottomMargin: 35
-            Layout.leftMargin: 172
-            Layout.rightMargin: 172
+            Layout.leftMargin: 175
+            Layout.rightMargin: xcite.height < 850 ? 400 : 175
             label.font.family: "Roboto"
             label.font.weight: Font.Medium
             label.font.letterSpacing: 3
