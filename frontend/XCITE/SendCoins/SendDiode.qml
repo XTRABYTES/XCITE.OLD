@@ -218,7 +218,9 @@ Controls.Diode {
                             }
 
                             onCurrentItemChanged: {
-                                selectItem(addressBook.getSelectedItem())
+                                if (currentIndex >= 0) {
+                                    selectItem(addressBook.getSelectedItem())
+                                }
                             }
                         }
                     }
@@ -323,7 +325,7 @@ Controls.Diode {
                                       confirmText: qsTr("YES, SEND"),
                                       cancelText: qsTr("NO, CANCEL")
                                   }, function () {
-                                      testnetSendToAddress(item.address, Number(
+                                      testnetSendToAddress(address, Number(
                                                                formAmount.text))
                                   })
             }
