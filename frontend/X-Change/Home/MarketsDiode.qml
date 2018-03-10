@@ -24,21 +24,18 @@ Controls.Diode {
             }
             Label {
                 text: "XBY"
-                font.family: "Roboto"
                 color: "#99A5BA"
             }
             Label {
                 anchors.left: parent.left
                 anchors.leftMargin: 80
                 text: "1.00"
-                font.family: "Roboto"
                 color: "#99A5BA"
             }
             Label {
                 anchors.left: parent.left
                 anchors.leftMargin: 160
                 text: "+0.00%"
-                font.family: "Roboto"
             }
         }
         RowLayout {
@@ -50,23 +47,19 @@ Controls.Diode {
             Label {
                 text: "XFUEL"
                 color: "#99A5BA"
-                font.family: "Roboto"
             }
             Label {
                 anchors.left: parent.left
                 anchors.leftMargin: 80
                 text: "0.99"
-                font.family: "Roboto"
                 color: "#99A5BA"
             }
             Label {
                 anchors.left: parent.left
                 anchors.leftMargin: 160
                 text: "-0.03%"
-                font.family: "Roboto"
                 color: "#F77E7E"
             }
         }
     }
 }
-

@@ -43,7 +43,6 @@ Slider {
                 anchors.topMargin: 27
                 anchors.leftMargin: 3
                 color: "#E0E0E0"
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 10
                 text: "0%"
@@ -67,7 +66,6 @@ Slider {
                 anchors.topMargin: 27
                 anchors.leftMargin: 3
                 color: "#E0E0E0"
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 10
                 text: "25%"
@@ -91,7 +89,6 @@ Slider {
                 anchors.topMargin: 27
                 anchors.leftMargin: 3
                 color: "#E0E0E0"
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 10
                 text: "50%"
@@ -115,7 +112,6 @@ Slider {
                 anchors.topMargin: 27
                 anchors.leftMargin: 3
                 color: "#E0E0E0"
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 10
                 text: "75%"
@@ -139,7 +135,6 @@ Slider {
                 anchors.topMargin: 27
                 anchors.leftMargin: 3
                 color: "#E0E0E0"
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 10
                 text: "100%"

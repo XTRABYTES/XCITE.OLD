@@ -21,7 +21,6 @@ Item {
             verticalAlignment: Text.AlignVCenter
             color: "#E2E2E2"
             font.pixelSize: 15
-            font.family: "Roboto"
         }
 
         IconButton {

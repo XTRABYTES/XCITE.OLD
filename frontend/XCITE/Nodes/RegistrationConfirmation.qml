@@ -32,7 +32,6 @@ Rectangle {
             height: 23
             color: "#e2e2e2"
             text: qsTr("Node Registration")
-            font.family: "Roboto"
             font.pixelSize: 18
         }
         Rectangle {
@@ -58,19 +57,16 @@ Rectangle {
             text: qsTr("Confirmation")
             Layout.leftMargin: 25
             font.pixelSize: 19
-            font.family: "Roboto"
         }
         Label {
             Layout.leftMargin: 25
             Layout.topMargin: 15
-            font.family: "Roboto"
             font.pixelSize: 16
             text: "Static registration string"
         }
         TextArea {
             id: regString
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            font.family: "Roboto"
             width: contentWidth + 20
 
             Layout.leftMargin: 25
@@ -101,7 +97,6 @@ Rectangle {
             }
 
             font.pixelSize: 12
-            font.family: "Roboto"
             Layout.leftMargin: 45
             Layout.topMargin: 5
             text: "Copy string to clipboard"
@@ -111,14 +106,12 @@ Rectangle {
         Label {
             Layout.leftMargin: 25
             Layout.topMargin: 20
-            font.family: "Roboto"
             font.pixelSize: 16
             text: "Deposit Transaction ID"
         }
         TextArea {
             id: depID
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            font.family: "Roboto"
             width: contentWidth + 20
 
             Layout.leftMargin: 25
@@ -149,7 +142,6 @@ Rectangle {
             }
 
             font.pixelSize: 12
-            font.family: "Roboto"
             Layout.leftMargin: 45
             Layout.topMargin: 5
             text: "Copy string to clipboard"
@@ -159,14 +151,12 @@ Rectangle {
         Label {
             Layout.leftMargin: 25
             Layout.topMargin: 20
-            font.family: "Roboto"
             font.pixelSize: 16
             text: "Fee Transaction ID"
         }
         TextArea {
             id: feeTrans
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            font.family: "Roboto"
             width: contentWidth + 20
 
             Layout.leftMargin: 25
@@ -197,7 +187,6 @@ Rectangle {
             }
 
             font.pixelSize: 12
-            font.family: "Roboto"
             Layout.leftMargin: 45
             Layout.topMargin: 5
             text: "Copy string to clipboard"
@@ -207,14 +196,12 @@ Rectangle {
         Label {
             Layout.leftMargin: 25
             Layout.topMargin: 20
-            font.family: "Roboto"
             font.pixelSize: 16
             text: "Public Static Key"
         }
         TextArea {
             id: pubKey
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            font.family: "Roboto"
             width: contentWidth + 20
 
             Layout.leftMargin: 25
@@ -245,7 +232,6 @@ Rectangle {
             }
 
             font.pixelSize: 12
-            font.family: "Roboto"
             Layout.leftMargin: 45
             Layout.topMargin: 5
             text: "Copy string to clipboard"
@@ -255,14 +241,12 @@ Rectangle {
         Label {
             Layout.leftMargin: 25
             Layout.topMargin: 20
-            font.family: "Roboto"
             font.pixelSize: 16
             text: "Placeholder"
         }
         TextArea {
             id: holderKey
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            font.family: "Roboto"
             width: contentWidth + 20
 
             Layout.leftMargin: 25
@@ -293,7 +277,6 @@ Rectangle {
             }
 
             font.pixelSize: 12
-            font.family: "Roboto"
             Layout.leftMargin: 45
             Layout.topMargin: 5
             text: "Copy string to clipboard"
@@ -313,7 +296,6 @@ Rectangle {
         }
         Controls.ButtonModal {
             font.pixelSize: 18
-            font.family: "Roboto"
             Layout.leftMargin: 25
             Layout.topMargin: 15
             labelText: "DONE"

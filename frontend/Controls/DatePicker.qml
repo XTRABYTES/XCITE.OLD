@@ -12,7 +12,6 @@ TextField {
     property string hoveringBackgroundColor: "#46464b"
 
     id: dateField
-    font.family: "Roboto"
     font.weight: Font.Light
     font.pixelSize: 16
     text: Qt.formatDate(value, dateFormat)
@@ -98,7 +97,6 @@ TextField {
                         text: model.narrowName
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        font.family: "Roboto"
                         font.weight: Font.Medium
                         font.pixelSize: 8
                         padding: 5
@@ -138,7 +136,6 @@ TextField {
                         verticalAlignment: Text.AlignVCenter
                         opacity: model.month === grid.month ? 1 : 0
                         text: model.day
-                        font.family: "Roboto"
                         font.weight: Font.Light
                         font.pixelSize: 7
                         padding: 5

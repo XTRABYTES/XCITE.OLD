@@ -18,13 +18,11 @@ RowLayout {
 
     Text {
         text: title
-        font.family: "Roboto"
         font.weight: Font.Bold
         font.pixelSize: 20
     }
 
     Text {
-        font.family: "Roboto"
         font.pixelSize: 16
         text: message
     }

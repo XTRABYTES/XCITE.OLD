@@ -64,7 +64,6 @@ Controls.Diode {
                     text: "Available: "
                     color: "#8592A5"
                     topPadding: 15
-                    font.family: "Roboto"
                     font.weight: Font.Medium
                 }
                 Label {
@@ -74,7 +73,6 @@ Controls.Diode {
                     text: "Deposit"
                     color: "#1AF1EB"
                     topPadding: 15
-                    font.family: "Roboto"
                     font.weight: Font.Medium
                 }
             }
@@ -106,7 +104,6 @@ Controls.Diode {
                     text: "Available: "
                     color: "#8592A5"
                     topPadding: 15
-                    font.family: "Roboto"
                     font.weight: Font.Medium
                 }
                 Label {
@@ -116,7 +113,6 @@ Controls.Diode {
                     text: "Deposit"
                     color: "#1AF1EB"
                     topPadding: 15
-                    font.family: "Roboto"
                     font.weight: Font.Medium
                 }
             }
@@ -142,7 +138,6 @@ Controls.Diode {
                     text: "Price"
                     color: "#FFFFFF"
                     bottomPadding: 8
-                    font.family: "Roboto"
                     font.weight: Font.Medium
                 }
             }
@@ -164,7 +159,6 @@ Controls.Diode {
                     text: "Price"
                     color: "#FFFFFF"
                     bottomPadding: 8
-                    font.family: "Roboto"
                     font.weight: Font.Medium
                 }
             }
@@ -191,7 +185,6 @@ Controls.Diode {
                     text: "Amount"
                     color: "#FFFFFF"
                     bottomPadding: 8
-                    font.family: "Roboto"
                     font.weight: Font.Light
                 }
             }
@@ -212,7 +205,6 @@ Controls.Diode {
                     text: "Amount"
                     color: "#FFFFFF"
                     bottomPadding: 8
-                    font.family: "Roboto"
                     font.weight: Font.Light
                 }
             }
@@ -266,7 +258,6 @@ Controls.Diode {
                     color: "#FFFFFF"
                     bottomPadding: 10
                     font.bold: true
-                    font.family: "Roboto"
                     font.pixelSize: 12
                 }
             }
@@ -286,7 +277,6 @@ Controls.Diode {
                     color: "#FFFFFF"
                     bottomPadding: 10
                     font.bold: true
-                    font.family: "Roboto"
                     font.pixelSize: 12
                 }
             }

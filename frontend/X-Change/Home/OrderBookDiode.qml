@@ -33,7 +33,6 @@ Controls.Diode {
                 font.pointSize: 13
                 text: "Full Order Book"
                 color: "#13D6D0"
-                font.family: "Roboto"
                 topPadding: 30
                 rightPadding: 15
                 anchors.top: parent.bottom
@@ -61,43 +60,32 @@ Controls.Diode {
                     font.pointSize: 11
                     text: "Sell 5"
                     color: "#F77E7E"
-                    font.family: "Roboto"
                     topPadding: 30
                     rightPadding: 15
-
-                    //font.weight: bold
                 }
 
                 Label {
                     font.pointSize: 11
                     text: "Sell 4"
                     color: "#F77E7E"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
 
                 Label {
                     font.pointSize: 11
                     text: "Sell 3"
                     color: "#F77E7E"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
 
                 Label {
                     font.pointSize: 11
                     text: "Sell 2"
                     color: "#F77E7E"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
 
                 Label {
                     font.pointSize: 11
                     text: "Sell 1"
                     color: "#F77E7E"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
             }
             ColumnLayout {
@@ -105,45 +93,33 @@ Controls.Diode {
                     font.pointSize: 11
                     text: "Price(XFUEL)"
                     color: "#8592A5"
-                    font.family: "Roboto"
                     bottomPadding: 10
                     rightPadding: 15
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
             }
             ColumnLayout {
@@ -151,45 +127,33 @@ Controls.Diode {
                     font.pointSize: 11
                     text: "Amount(XBY)"
                     color: "#8592A5"
-                    font.family: "Roboto"
                     bottomPadding: 10
                     rightPadding: 15
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "545.38"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "12"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "45349.3"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "345"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "12"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
             }
             ColumnLayout {
@@ -197,53 +161,38 @@ Controls.Diode {
                     font.pointSize: 11
                     text: "Sum(XBY)"
                     color: "#8592A5"
-                    font.family: "Roboto"
                     bottomPadding: 10
                     rightPadding: 15
-                    //font.weight: bold
                 }
 
                 Label {
                     font.pointSize: 11
                     text: "583.5566"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "12.84"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "48523.751"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "369.15"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "12.84"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
             }
         }
 
-        //DIV
-        //DIV
-        //DIV
         RowLayout {
             anchors.top: parent.bottom
             anchors.topMargin: -110
@@ -261,43 +210,32 @@ Controls.Diode {
                     font.pointSize: 11
                     text: "Buy 5"
                     color: "#13D6D0"
-                    font.family: "Roboto"
                     topPadding: 30
                     rightPadding: 15
-
-                    //font.weight: bold
                 }
 
                 Label {
                     font.pointSize: 11
                     text: "Buy 4"
                     color: "#13D6D0"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
 
                 Label {
                     font.pointSize: 11
                     text: "Buy 3"
                     color: "#13D6D0"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
 
                 Label {
                     font.pointSize: 11
                     text: "Buy 2"
                     color: "#13D6D0"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
 
                 Label {
                     font.pointSize: 11
                     text: "Buy 1"
                     color: "#13D6D0"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
             }
             ColumnLayout {
@@ -306,45 +244,33 @@ Controls.Diode {
                     font.pointSize: 11
                     text: "Price(XFUEL)"
                     color: "#8592A5"
-                    font.family: "Roboto"
                     bottomPadding: 10
                     rightPadding: 15
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "1.07"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
             }
             ColumnLayout {
@@ -352,45 +278,33 @@ Controls.Diode {
                     font.pointSize: 11
                     text: "Amount(XBY)"
                     color: "#8592A5"
-                    font.family: "Roboto"
                     bottomPadding: 10
                     rightPadding: 15
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "545.38"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "12"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "45349.3"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "345"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "12"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
             }
             ColumnLayout {
@@ -398,45 +312,33 @@ Controls.Diode {
                     font.pointSize: 11
                     text: "Sum(XBY)"
                     color: "#8592A5"
-                    font.family: "Roboto"
                     bottomPadding: 10
                     rightPadding: 15
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "583.5566"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "12.84"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "48523.751"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "369.15"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
                 Label {
                     font.pointSize: 11
                     text: "12.84"
                     color: "#FFFFFF"
-                    font.family: "Roboto"
-                    //font.weight: bold
                 }
             }
         }

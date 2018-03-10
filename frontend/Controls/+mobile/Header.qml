@@ -12,7 +12,6 @@ Item {
 
     Label {
         id: label
-        font.family: "Roboto"
         font.pixelSize: 16
         anchors.fill: parent
         color: "white"

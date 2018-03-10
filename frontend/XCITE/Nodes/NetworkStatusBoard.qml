@@ -1,8 +1,10 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import "../../Controls" as Controls
-//Transactions status board used on the Nodes page (bottom)
+import "../../Theme" 1.0
 
+
+//Transactions status board used on the Nodes page (bottom)
 Rectangle {
     id: networkStatusBoardId
     Layout.fillWidth: true
@@ -19,7 +21,7 @@ Rectangle {
         text: qsTr("NETWORK STATUS")
         anchors.left: parent.left
         anchors.leftMargin: 21
-        font.family: "Roboto Condensed"
+        font.family: Theme.fontCondensed
         font.pixelSize: 15
     }
 

@@ -35,7 +35,7 @@ Rectangle {
         text: qsTr("BALANCE")
         anchors.left: parent.left
         anchors.leftMargin: 21
-        font.family: "Roboto Condensed"
+        font.family: Theme.fontCondensed
         font.pixelSize: 15
     }
 
@@ -47,7 +47,6 @@ Rectangle {
         text: qsTr("Day, Week, Month")
         anchors.right: parent.right
         anchors.rightMargin: 59
-        font.family: "Roboto"
         font.pixelSize: 12
     }
 

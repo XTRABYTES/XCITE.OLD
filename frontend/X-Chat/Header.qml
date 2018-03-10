@@ -73,7 +73,6 @@ ColumnLayout {
                 Layout.fillWidth: true
                 text: "John Doe"
                 color: "#e6e6e6"
-                font.family: "Roboto"
                 font.pixelSize: 12
             }
 

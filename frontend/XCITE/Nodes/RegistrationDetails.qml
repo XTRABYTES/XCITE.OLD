@@ -32,7 +32,6 @@ Rectangle {
             height: 23
             color: "#e2e2e2"
             text: qsTr("Node Registration")
-            font.family: "Roboto"
             font.pixelSize: 18
         }
         Rectangle {
@@ -58,12 +57,10 @@ Rectangle {
             text: qsTr("Registration Details")
             Layout.leftMargin: 25
             font.pixelSize: 19
-            font.family: "Roboto"
         }
         Label {
             Layout.leftMargin: 25
             Layout.topMargin: 30
-            font.family: "Roboto"
             font.pixelSize: 16
             text: "Static registration string"
         }
@@ -71,7 +68,6 @@ Rectangle {
             Layout.leftMargin: 25
             Layout.topMargin: 6
             font.pixelSize: 12
-            font.family: "Roboto"
             text: "Save this code in a safe location"
             font.weight: Font.Medium
             color: "#FFFFFF"
@@ -80,7 +76,6 @@ Rectangle {
         TextArea {
             id: regString
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            font.family: "Roboto"
             width: contentWidth + 20
 
             Layout.leftMargin: 25
@@ -111,7 +106,6 @@ Rectangle {
             }
 
             font.pixelSize: 12
-            font.family: "Roboto"
             Layout.leftMargin: 45
             Layout.topMargin: 5
             text: "Copy string to clipboard"
@@ -120,7 +114,6 @@ Rectangle {
         }
         Label {
             font.pixelSize: 16
-            font.family: "Roboto"
             Layout.leftMargin: 25
             Layout.topMargin: 20
             text: "XBY Deposit Address"
@@ -131,8 +124,6 @@ Rectangle {
 
             width: contentWidth + 20
             Layout.leftMargin: 25
-
-            font.family: "Roboto"
             Layout.topMargin: 10
             background: Rectangle {
                 width: addString.width + 20
@@ -145,14 +136,12 @@ Rectangle {
 
         Label {
             font.pixelSize: 16
-            font.family: "Roboto"
             Layout.leftMargin: 25
             Layout.topMargin: 20
             text: "Accept transaction fee"
         }
         Label {
             font.pixelSize: 12
-            font.family: "Roboto"
             Layout.leftMargin: 25
             Layout.topMargin: 3
             text: "Save this code in a safe location"
@@ -177,21 +166,18 @@ Rectangle {
 
         Label {
             font.pixelSize: 16
-            font.family: "Roboto"
             Layout.leftMargin: 25
             Layout.topMargin: 20
             text: "Total Deposit"
         }
         Label {
             font.pixelSize: 14
-            font.family: "Roboto"
             Layout.leftMargin: 25
             Layout.topMargin: 10
             text: "XBY "
         }
         Controls.ButtonModal {
             font.pixelSize: 18
-            font.family: "Roboto"
             Layout.leftMargin: 25
             Layout.topMargin: 35
             labelText: "CONFIRM"
