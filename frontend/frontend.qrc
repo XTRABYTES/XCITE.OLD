@@ -102,5 +102,6 @@
         <file>XCITE/SendCoins/AddressBook.qml</file>
         <file>XCITE/SendCoins/Form.qml</file>
         <file>XCITE/Home/TransactionTable.qml</file>
+        <file>Controls/Switch.qml</file>
     </qresource>
 </RCC>
