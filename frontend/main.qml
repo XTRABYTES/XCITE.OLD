@@ -138,7 +138,6 @@ ApplicationWindow {
                     onCancel(modal, modal.inputValue)
                 }
 
-                console.log('close')
                 modal.close()
             })
 
