@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QtQuick/QQuickWindow>
 #include <QQmlFileSelector>
+#include <QSettings>
 #include <qqmlcontext.h>
 #include <qqml.h>
 #include "../backend/xchat/xchat.hpp"
@@ -23,6 +24,10 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
+
+    app.setOrganizationName("Xtrabytes");
+    app.setOrganizationDomain("xtrabytes.global");
+    app.setApplicationName("XCITE");
 
     app.setFont(QFont("Roboto"));
 
@@ -74,6 +79,10 @@ int main(int argc, char *argv[])
 
     Settings settings(&engine);
     QObject::connect(engine.rootObjects().first(), SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
+
+    // Set last locale
+    QSettings appSettings;
+    settings.setLocale(appSettings.value("locale").toString());
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 #else

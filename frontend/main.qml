@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
+import Qt.labs.settings 1.0
 
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
@@ -25,11 +26,26 @@ ApplicationWindow {
 
     StackView {
         id: mainRoot
-        initialItem: LoginComponents.LoginForm {
-        }
+
         anchors.fill: parent
         pushEnter: null
         pushExit: null
+
+        Component.onCompleted: {
+            this.push(developerSettings.skipLogin ? dashboardForm : loginForm)
+        }
+    }
+
+    Component {
+        id: dashboardForm
+        DashboardForm {
+        }
+    }
+
+    Component {
+        id: loginForm
+        LoginComponents.LoginForm {
+        }
     }
 
     Xchat {
@@ -38,6 +54,22 @@ ApplicationWindow {
 
     Clipboard {
         id: clipboard
+    }
+
+    Settings {
+        id: settings
+        property alias x: xcite.x
+        property alias y: xcite.y
+        property alias width: xcite.width
+        property alias height: xcite.height
+        property string locale: "en_us"
+    }
+
+    Settings {
+        id: developerSettings
+        category: "developer"
+        property bool skipLogin: false
+        property string initialView: "xCite.home"
     }
 
     signal xchatSubmitMsgSignal(string msg)

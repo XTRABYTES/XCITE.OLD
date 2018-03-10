@@ -36,22 +36,34 @@ Item {
         title: qsTr("Settings")
 
         ColumnLayout {
-            spacing: 30
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.topMargin: 75
             anchors.leftMargin: 20
             anchors.rightMargin: 20
-            anchors.bottomMargin: 20
+            spacing: 20
 
             Controls.FormLabel {
                 text: qsTr("Select your language")
             }
 
             ComboBox {
+                id: control
                 currentIndex: 0
                 textRole: "text"
+
+                Connections {
+                    Component.onCompleted: {
+                        for (var i = 0; i < languageOptions.count; i++) {
+                            if (languageOptions.get(
+                                        i).locale === settings.locale) {
+                                control.currentIndex = i
+                                break
+                            }
+                        }
+                    }
+                }
 
                 model: ListModel {
                     id: languageOptions
@@ -66,8 +78,14 @@ Item {
                 }
 
                 onCurrentIndexChanged: {
-                    localeChange(languageOptions.get(currentIndex).locale)
+                    var locale = languageOptions.get(currentIndex).locale
+                    localeChange(locale)
+                    settings.locale = locale
                 }
+            }
+
+            DeveloperSettings {
+                Layout.topMargin: 20
             }
         }
     }
