@@ -5,11 +5,12 @@ import "../../Controls" as Controls
 import "../../Theme" 1.0
 
 Controls.Diode {
-    title: qsTr("XBY/BTC")
+    title: qsTr("XBY/USD")
 
     Item {
         anchors.fill: parent
         anchors.topMargin: diodeHeaderHeight + 2
+        anchors.bottomMargin: 10
         clip: true
 
         ChartView {
@@ -25,7 +26,7 @@ Controls.Diode {
             anchors.margins: 0
 
             theme: ChartView.ChartThemeDark
-            legend.alignment: Qt.AlignBottom
+            legend.visible: false
             antialiasing: true
             backgroundColor: Theme.panelBackground
             backgroundRoundness: panelBorderRadius
@@ -36,10 +37,22 @@ Controls.Diode {
                     format: "dd MMM"
                     tickCount: priceChartView.width
                                > 768 ? 10 : (priceChartView.width < 576 ? 3 : 5)
+                    labelsFont.pixelSize: 12
+                    gridLineColor: "#565a63"
+                    labelsColor: "#8591A5"
+                    lineVisible: false
+                    minorGridVisible: false
+                    titleVisible: false
                 }
                 axisY: ValueAxis {
                     min: 0.12
                     max: 0.24
+                    labelsFont.pixelSize: 12
+                    gridVisible: false
+                    labelsColor: "#8591A5"
+                    lineVisible: false
+                    minorGridVisible: false
+                    titleVisible: false
                 }
                 color: Theme.primaryHighlight
                 width: 3.5
