@@ -15,8 +15,11 @@ ApplicationWindow {
 
     visible: true
 
-    width: (Screen.width < 1440) ? Screen.width : 1440
-    height: (Screen.height < 1024) ? Screen.height : 1024
+    width: 940
+    height: 692
+    minimumWidth: 940
+    minimumHeight: 500
+
     title: qsTr("XCITE")
     color: "#2B2C31"
 
