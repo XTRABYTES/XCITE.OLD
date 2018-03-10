@@ -19,7 +19,7 @@ import xtrabytes.xcite.xchat 1.0
 Item {
     id: dashboard
 
-    readonly property int layoutGridSpacing: 8
+    readonly property int layoutGridSpacing: 12
     readonly property int sideMenuWidth: 86
     readonly property int panelBorderRadius: 0
     readonly property int diodeHeaderHeight: 46

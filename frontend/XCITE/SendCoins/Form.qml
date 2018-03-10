@@ -36,8 +36,8 @@ ColumnLayout {
     }
 
     Controls.SliderAmount {
-        visible: xcite.height > 746
-        Layout.fillWidth: true
+        id: slider
+        Layout.preferredWidth: parent.width
         Layout.bottomMargin: 10
         Layout.topMargin: 10
         totalAmount: balance
