@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import AddressBookModel 0.1
 
 import "../../Controls" as Controls
+import "../../Theme" 1.0
 
 Controls.Diode {
     property int networkFee: 1
@@ -38,117 +39,144 @@ Controls.Diode {
         }
     }
 
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.topMargin: diodeHeaderHeight + 15
+    ScrollBar {
+        id: verticalScrollBar
+        policy: ScrollBar.AsNeeded
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.right
+        anchors.leftMargin: 3
 
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: 0
-            Layout.alignment: Qt.AlignTop
+        width: 6
 
-            Form {
-                id: form
+        contentItem: Rectangle {
+            radius: 4
+            color: Theme.secondaryHighlight
+        }
+    }
+
+    ScrollView {
+        id: scrollView
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+
+        anchors.topMargin: diodeHeaderHeight
+        ScrollBar.vertical: verticalScrollBar
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        clip: true
+
+        ColumnLayout {
+            width: scrollView.width
+
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.minimumWidth: 273
-                Layout.preferredWidth: 500
-                Layout.leftMargin: 20
-                Layout.topMargin: 20
-                Layout.bottomMargin: 20
-                Layout.rightMargin: 10
+
                 Layout.alignment: Qt.AlignTop
+                spacing: 10
+
+                Form {
+                    id: form
+                    Layout.alignment: Qt.AlignTop
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.topMargin: 40
+                    Layout.minimumWidth: 273
+                    Layout.leftMargin: 20
+                    Layout.rightMargin: 10
+                }
+
+                // Divider
+                Rectangle {
+                    visible: parent.width > 800
+                    height: parent.height - 40
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.leftMargin: 8
+                    Layout.rightMargin: 12
+
+                    width: 1
+                    color: "#535353"
+                }
+
+                AddressBook {
+                    id: addressBook
+
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 197
+                    Layout.topMargin: 40
+                    Layout.bottomMargin: 20
+                    Layout.rightMargin: 20
+                    Layout.alignment: Qt.AlignTop
+                    Layout.maximumHeight: 504
+                }
             }
 
-            // Divider
+            // Bottom Divider
             Rectangle {
-                visible: xcite.width > 1275
-                Layout.fillHeight: true
-                Layout.bottomMargin: 20
-                Layout.leftMargin: 10
-                Layout.rightMargin: 5
-
-                width: 1
+                Layout.fillWidth: true
+                Layout.leftMargin: 22
+                Layout.rightMargin: 22
+                Layout.topMargin: 20
+                Layout.bottomMargin: 32
+                height: 1
                 color: "#535353"
             }
 
-            AddressBook {
-                id: addressBook
-
-                Layout.fillHeight: true
+            // Send Payment
+            Controls.ButtonModal {
                 Layout.fillWidth: true
-                Layout.minimumWidth: 197
-                Layout.topMargin: 20
-                Layout.bottomMargin: 20
-                Layout.rightMargin: 20
-                Layout.leftMargin: 10
-                Layout.alignment: Qt.AlignTop
-                Layout.maximumHeight: 504
-            }
-        }
+                Layout.bottomMargin: 40
 
-        // Bottom Divider
-        Rectangle {
-            visible: xcite.height > 746
-            Layout.fillWidth: true
-            Layout.leftMargin: 22
-            Layout.rightMargin: 22
-            Layout.bottomMargin: 22
-            height: 1
-            color: "#535353"
-        }
+                Layout.maximumWidth: 300
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
+                label.font.weight: Font.Medium
+                label.font.letterSpacing: 3
+                label.text: addressBook.control.currentIndex < 0 ? qsTr(
+                                                                       "SEND QUICK PAYMENT") : qsTr(
+                                                                       "SEND PAYMENT")
+                isPrimary: true
+                isDanger: addressBook.control.currentIndex < 0
+                buttonHeight: 40
 
-        // Send Payment
-        Controls.ButtonModal {
-            Layout.fillWidth: true
-            Layout.bottomMargin: 35
+                onButtonClicked: {
+                    if (!xcite.isNetworkActive) {
+                        modalAlert({
+                                       bodyText: "Connect to the testnet wallet to send coins",
+                                       title: qsTr("TESTNET REQUIRED"),
+                                       buttonText: qsTr("OK")
+                                   })
+                        return
+                    }
 
-            Layout.maximumWidth: 300
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
-            label.text: addressBook.control.currentIndex < 0 ? qsTr("SEND QUICK PAYMENT") : qsTr(
-                                                                   "SEND PAYMENT")
-            isPrimary: true
-            isDanger: addressBook.control.currentIndex < 0
-            buttonHeight: 40
+                    var address, text, amount = Number(form.amount.text)
 
-            onButtonClicked: {
-                if (!xcite.isNetworkActive) {
-                    modalAlert({
-                                   bodyText: "Connect to the testnet wallet to send coins",
-                                   title: qsTr("TESTNET REQUIRED"),
-                                   buttonText: qsTr("OK")
-                               })
-                    return
+                    if (addressBook.control.currentIndex < 0) {
+                        // Quick send
+                        address = form.address.text.trim()
+                        text = qsTr("This address is not in your addressbook.\n\nAre you sure you want to send")
+                                + " " + amount + "XBY " + "to " + address + "?"
+                    } else {
+                        var item = addressBook.control.currentItem.item
+                        address = item.address
+
+                        text = qsTr("Are you sure you want to send") + " " + amount + "XBY "
+                                + "to" + " " + item.name + " (" + address + ")?"
+                    }
+
+                    confirmationModal({
+                                          title: qsTr("PAYMENT CONFIRMATION"),
+                                          bodyText: text,
+                                          confirmText: qsTr("YES, SEND"),
+                                          cancelText: qsTr("NO, CANCEL")
+                                      }, function () {
+                                          testnetSendToAddress(
+                                                      address,
+                                                      Number(form.amount.text))
+                                      })
                 }
-
-                var address, text, amount = Number(form.amount.text)
-
-                if (addressBook.control.currentIndex < 0) {
-                    // Quick send
-                    address = form.address.text.trim()
-                    text = qsTr("This address is not in your addressbook.\n\nAre you sure you want to send")
-                            + " " + amount + "XBY " + "to " + address + "?"
-                } else {
-                    var item = addressBook.control.currentItem.item
-                    address = item.address
-
-                    text = qsTr("Are you sure you want to send") + " " + amount
-                            + "XBY " + "to" + " " + item.name + " (" + address + ")?"
-                }
-
-                confirmationModal({
-                                      title: qsTr("PAYMENT CONFIRMATION"),
-                                      bodyText: text,
-                                      confirmText: qsTr("YES, SEND"),
-                                      cancelText: qsTr("NO, CANCEL")
-                                  }, function () {
-                                      testnetSendToAddress(
-                                                  address,
-                                                  Number(form.amount.text))
-                                  })
             }
         }
     }

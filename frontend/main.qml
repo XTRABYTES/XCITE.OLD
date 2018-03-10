@@ -17,7 +17,7 @@ ApplicationWindow {
     visible: true
 
     width: 940
-    height: 692
+    height: 500
     minimumWidth: 940
     minimumHeight: 500
 
@@ -26,7 +26,6 @@ ApplicationWindow {
 
     StackView {
         id: mainRoot
-
         anchors.fill: parent
         pushEnter: null
         pushExit: null
