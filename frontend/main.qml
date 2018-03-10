@@ -66,6 +66,7 @@ ApplicationWindow {
         id: developerSettings
         category: "developer"
         property bool skipLogin: false
+        property string initialView: "xCite.home"
     }
 
     signal xchatSubmitMsgSignal(string msg)

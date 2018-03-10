@@ -27,7 +27,7 @@ Item {
 
     Connections {
         Component.onCompleted: {
-            selectView("xCite.home")
+            selectView(developerSettings.initialView)
         }
     }
 

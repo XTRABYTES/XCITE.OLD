@@ -36,14 +36,13 @@ Item {
         title: qsTr("Settings")
 
         ColumnLayout {
-            spacing: 30
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.topMargin: 75
             anchors.leftMargin: 20
             anchors.rightMargin: 20
-            anchors.bottomMargin: 20
+            spacing: 20
 
             Controls.FormLabel {
                 text: qsTr("Select your language")
@@ -85,15 +84,8 @@ Item {
                 }
             }
 
-            Controls.FormLabel {
-                text: qsTr("Developer Settings")
-            }
-
-            CheckBox {
-                id: skipLoginCheckbox
-                text: "Skip login screens on startup"
-                checked: developerSettings.skipLogin
-                onClicked: developerSettings.skipLogin = this.checked
+            DeveloperSettings {
+                Layout.topMargin: 20
             }
         }
     }
