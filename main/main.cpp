@@ -25,6 +25,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
+    app.setOrganizationName("Xtrabytes");
+    app.setOrganizationDomain("xtrabytes.global");
+    app.setApplicationName("XCITE");
+
     GlobalEventFilter eventFilter;
     app.installEventFilter(&eventFilter);
 
