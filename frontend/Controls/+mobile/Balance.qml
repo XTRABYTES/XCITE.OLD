@@ -35,7 +35,7 @@ Item {
                     }
 
                     Label {
-                        font.family: "Roboto Condensed"
+                        font.family: Theme.fontCondensed
                         font.pixelSize: 26
                         text: qsTr("4,739.35")
                     }
@@ -68,7 +68,7 @@ Item {
                         Label {
                             anchors.right: parent.right
                             anchors.verticalCenter: parent.verticalCenter
-                            font.family: "Roboto Condensed"
+                            font.family: Theme.fontCondensed
                             font.pixelSize: 15
                             text: qsTr("0")
                         }
@@ -98,7 +98,7 @@ Item {
                         Label {
                             anchors.right: parent.right
                             anchors.verticalCenter: parent.verticalCenter
-                            font.family: "Roboto Condensed"
+                            font.family: Theme.fontCondensed
                             font.pixelSize: 15
                             text: qsTr("4,739.15")
                         }

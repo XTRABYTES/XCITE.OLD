@@ -15,7 +15,6 @@ RowLayout {
     Text {
         id: menuLabel
         color: cHeaderText
-        font.family: "Roboto"
         font.pixelSize: 12
         rightPadding: 10
     }

@@ -18,7 +18,6 @@ Controls.Diode {
         anchors.rightMargin: 15
 
         Label {
-            font.family: "Roboto"
             font.weight: Font.Light
             font.pixelSize: 16
             text: qsTr("Type")
@@ -32,7 +31,6 @@ Controls.Diode {
         Label {
             topPadding: 15
             bottomPadding: 5
-            font.family: "Roboto"
             font.weight: Font.Light
             font.pixelSize: 16
             text: qsTr("Dates between")
@@ -45,7 +43,6 @@ Controls.Diode {
         Label {
             topPadding: 5
             bottomPadding: 5
-            font.family: "Roboto"
             font.weight: Font.Light
             font.pixelSize: 16
             text: qsTr("and")
@@ -57,7 +54,6 @@ Controls.Diode {
 
         Label {
             topPadding: 15
-            font.family: "Roboto"
             font.weight: Font.Light
             font.pixelSize: 16
             text: qsTr("To")
@@ -71,7 +67,6 @@ Controls.Diode {
 
         Label {
             topPadding: 20
-            font.family: "Roboto"
             font.weight: Font.Light
             font.pixelSize: 16
             text: qsTr("Transaction value")

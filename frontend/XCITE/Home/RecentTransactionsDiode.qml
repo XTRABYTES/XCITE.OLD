@@ -81,7 +81,6 @@ Controls.Diode {
                     height: parent.height
                     text: styleData.value
                     font.pixelSize: 16
-                    font.family: "Roboto"
                     font.weight: Font.Light
 
                     Rectangle {
@@ -159,9 +158,7 @@ Controls.Diode {
                     // Ensure ellipsis are applied
                     elide: styleData.elideMode
                     width: parent.width
-
                     font.pixelSize: 12
-                    font.family: "Roboto"
                 }
             }
         }

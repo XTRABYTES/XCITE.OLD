@@ -25,7 +25,6 @@ ListView {
         leftPadding: 20
         rightPadding: 20
         text: name || "Default"
-        font.family: "Roboto"
         font.weight: Font.Light
         font.pixelSize: 16
         color: addressBook.currentIndex == index ? "black" : "white"

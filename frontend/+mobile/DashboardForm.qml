@@ -34,7 +34,7 @@ Item {
                     border.width: 0
                     radius: 0
                     label.font.letterSpacing: 0.92
-                    label.font.family: "Roboto Condensed"
+                    label.font.family: Theme.fontCondensed
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     text: qsTr("SEND XBY")
@@ -51,7 +51,7 @@ Item {
                     border.width: 0
                     radius: 0
                     label.font.letterSpacing: 0.92
-                    label.font.family: "Roboto Condensed"
+                    label.font.family: Theme.fontCondensed
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     text: qsTr("RECEIVE XBY")

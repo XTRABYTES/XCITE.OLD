@@ -35,7 +35,6 @@ ModalPopup {
                 id: inputField
                 visible: showInput
                 color: "white"
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 36
                 leftPadding: 18

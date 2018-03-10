@@ -35,7 +35,6 @@ ColumnLayout {
             isPrimary: true
             width: 300
             buttonHeight: 50
-            label.font.family: "Roboto"
             label.font.weight: Font.Medium
             label.font.letterSpacing: 3
             label.text: qsTr("<- Back")
@@ -52,7 +51,6 @@ ColumnLayout {
             isPrimary: true
             width: 350
             buttonHeight: 50
-            label.font.family: "Roboto"
             label.font.weight: Font.Medium
             label.font.letterSpacing: 3
             label.text: qsTr("   Registration Details ->")
@@ -72,7 +70,6 @@ ColumnLayout {
             isPrimary: true
             width: 300
             buttonHeight: 50
-            label.font.family: "Roboto"
             label.font.weight: Font.Medium
             label.font.letterSpacing: 3
             label.text: qsTr("<- Back")
@@ -88,7 +85,6 @@ ColumnLayout {
             isPrimary: true
             width: 350
             buttonHeight: 50
-            label.font.family: "Roboto"
             label.font.weight: Font.Medium
             label.font.letterSpacing: 3
             label.text: qsTr("Registration Confirmation ->")
@@ -107,7 +103,6 @@ ColumnLayout {
             isPrimary: true
             width: 300
             buttonHeight: 50
-            label.font.family: "Roboto"
             label.font.weight: Font.Medium
             label.font.letterSpacing: 3
             label.text: qsTr("<- Back")
@@ -128,7 +123,6 @@ ColumnLayout {
                 isPrimary: true
                 width: 350
                 buttonHeight: 50
-                label.font.family: "Roboto"
                 label.font.weight: Font.Medium
                 label.font.letterSpacing: 3
                 label.text: qsTr("   Register Node ->")

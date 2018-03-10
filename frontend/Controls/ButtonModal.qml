@@ -61,7 +61,6 @@ Button {
         color: isDanger ? "#fff" : (isPrimary ? "#3e3e3e" : "#fff")
         font.pixelSize: 18
         text: labelText
-        font.family: "Roboto"
         font.weight: isPrimary ? Font.Medium : Font.Light
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter

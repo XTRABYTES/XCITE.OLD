@@ -12,7 +12,6 @@ Rectangle {
     Text {
         text: qsTr("Confirmation Placeholder")
         anchors.centerIn: parent
-        font.family: "Roboto"
         font.weight: Font.Bold
         font.pixelSize: 12
         color: "#62DED6"
