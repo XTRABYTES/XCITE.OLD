@@ -13,6 +13,7 @@ Controls.Diode {
                                  sellAmount.text)
     property real buyTotal: parseFloat(buyPrice.text) * parseFloat(
                                 buyAmount.text)
+    property int vis: 0
     id: cont
     width: 652
     height: 459
@@ -42,6 +43,20 @@ Controls.Diode {
                 buttonHeight: 50
                 labelText: "LIMIT ORDER"
                 colorTracker: 2
+                onButtonClicked: {
+                    buyPrice.text = "0"
+                    sellPrice.text = "0"
+                    vis = 1
+                }
+                Rectangle {
+                    anchors.top: parent.bottom
+                    height: 2
+                    width: parent.width
+                    color: "#13D6D0"
+                    visible: vis == 1
+                    anchors.topMargin: 10
+                }
+
                 Label {
                     anchors.top: parent.bottom
                     anchors.left: parent.left
@@ -69,7 +84,19 @@ Controls.Diode {
                 buttonHeight: 50
                 labelText: "MARKET ORDER"
                 colorTracker: 2
-
+                onButtonClicked: {
+                    buyPrice.text = "Market Price"
+                    sellPrice.text = "Market Price"
+                    vis = 2
+                }
+                Rectangle {
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 10
+                    height: 2
+                    width: parent.width
+                    color: "#13D6D0"
+                    visible: vis == 2
+                }
                 Label {
                     anchors.top: parent.bottom
                     anchors.left: parent.left
@@ -256,3 +283,4 @@ Controls.Diode {
         }
     }
 }
+

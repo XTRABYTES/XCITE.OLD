@@ -88,5 +88,7 @@
         <file>i18n/lang_nl_nl.qm</file>
         <file>i18n/lang_en_us.qm</file>
         <file>icons/Star.svg</file>
+        <file>icons/Rectangle7.png</file>
+        <file>icons/Rectangle8.png</file>
     </qresource>
 </RCC>
