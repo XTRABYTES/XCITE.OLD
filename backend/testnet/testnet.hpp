@@ -102,7 +102,7 @@ public:
 
         for (int i = 0; i < 10; i++) {
             qlonglong rnd = (qrand() % 100000) - 50000;
-            m_transactions->add(rnd < 0 ? "OUT" : "IN", "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34", "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34", rnd, QDateTime::currentDateTime());
+            m_transactions->add(rnd < 0 ? "OUT" : "IN", QString::number(rnd) + "xghl32lk8dfss577g734j34xghl32lk8dfss577g73", "aghl32lk8dfss577g734j34xghl32lk8dfss577g734j34", rnd, QDateTime::currentDateTime());
         }
 
         m_accounts = new AddressBookModel;
