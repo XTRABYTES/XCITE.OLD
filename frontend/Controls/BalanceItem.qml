@@ -1,52 +1,50 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.3
+import QtQuick.Layouts 1.3
 import "../Controls" as Controls
+import "../Theme" 1.0
 
 Item {
     readonly property color cBalanceValue: "#d5d5d5"
 
-    property alias text: label.text
-    property alias value: value.text
-    property alias valueFont: value.font
-    property alias valueColor: value.color
-    property alias valuePrefix: prefix.text
-    property alias valueWidth: value.width
+    property alias label: label
+    property alias value: value
+    property alias prefix: prefix
 
-    anchors.left: parent.left
-    anchors.right: parent.right
-    anchors.topMargin: 10
-    anchors.rightMargin: 15
-    anchors.leftMargin: 33.9
-    height: 63
+    RowLayout {
+        anchors.fill: parent
 
-    Controls.LabelUnderlined {
-        id: label
-        pixelSize: 19
-        anchors.top: parent.top
-        anchors.topMargin: 16
-    }
-
-    Label {
-        id: value
-        color: cBalanceValue
-        font.family: 'Roboto Condensed'
-        font.weight: Font.Light
-        font.pixelSize: 54
-        minimumPixelSize: 10
-        fontSizeMode: Text.Fit
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignRight
-        anchors.right: parent.right
-        leftPadding: 30
+        Controls.LabelUnderlined {
+            id: label
+            visible: text !== ''
+            pixelSize: 19
+            width: 90
+            Layout.fillHeight: true
+        }
 
         Label {
-            id: prefix
-            anchors.fill: parent
+            id: value
+
+            Layout.fillWidth: true
             verticalAlignment: Text.AlignVCenter
-            color: "#e3e3e3"
-            font.pixelSize: 14
-            font.family: "Roboto"
+
+            color: cBalanceValue
+            font.family: Theme.fontCondensed
             font.weight: Font.Light
+            font.pixelSize: 24
+            minimumPixelSize: 10
+            fontSizeMode: Text.Fit
+            horizontalAlignment: Text.AlignRight
+            leftPadding: 60
+
+            Label {
+                id: prefix
+                anchors.fill: parent
+                verticalAlignment: Text.AlignVCenter
+                color: "#bfbfbf"
+                font.pixelSize: 18
+                font.weight: Font.Light
+            }
         }
     }
 }

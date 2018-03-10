@@ -4,13 +4,13 @@ import QtQuick.Layouts 1.3
 
 Rectangle {
     property color cHeaderText: "#e2e2e2"
-    readonly property color cHeaderLine: "#535353"
+    readonly property color cHeaderLine: "#2A2C31"
 
     property alias menuLabelText: menuLabel.text
     property alias text: label.text
 
-    color: "transparent"
-    height: 44.5
+    color: "#3F434D"
+    height: diodeHeaderHeight
     width: parent.width
 
     Text {
@@ -21,13 +21,6 @@ Rectangle {
         color: cHeaderText
         font.family: "Roboto Regular"
         font.pixelSize: 15
-    }
-
-    Rectangle {
-        width: parent.width
-        anchors.top: parent.bottom
-        height: 1
-        color: cHeaderLine
     }
 
     DiodeHeaderMenu {

@@ -16,8 +16,11 @@ ApplicationWindow {
 
     visible: true
 
-    width: 960
-    height: 650
+    width: 940
+    height: 692
+    minimumWidth: 940
+    minimumHeight: 500
+
     title: qsTr("XCITE")
     color: "#2B2C31"
 
@@ -167,7 +170,6 @@ ApplicationWindow {
                     onCancel(modal, modal.inputValue)
                 }
 
-                console.log('close')
                 modal.close()
             })
 

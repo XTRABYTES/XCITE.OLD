@@ -100,6 +100,9 @@ Controls.Diode {
 
             Controls.TextInput {
                 id: buyPrice
+                validator: DoubleValidator {
+                    bottom: 0
+                }
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
@@ -118,6 +121,9 @@ Controls.Diode {
             }
             Controls.TextInput {
                 id: sellPrice
+                validator: DoubleValidator {
+                    bottom: 0
+                }
                 text: "0"
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
@@ -142,6 +148,9 @@ Controls.Diode {
 
             Controls.TextInput {
                 id: buyAmount
+                validator: DoubleValidator {
+                    bottom: 0
+                }
                 text: "0"
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
@@ -161,6 +170,9 @@ Controls.Diode {
             }
             Controls.TextInput {
                 id: sellAmount
+                validator: DoubleValidator {
+                    bottom: 0
+                }
                 text: "0"
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
@@ -190,6 +202,7 @@ Controls.Diode {
 
                 onMoved: {
 
+
                     // formAmount.text = Number(value).toFixed(2)
                 }
             }
@@ -201,6 +214,7 @@ Controls.Diode {
                 Layout.topMargin: 7
 
                 onMoved: {
+
 
                     // formAmount.text = Number(value).toFixed(2)
                 }

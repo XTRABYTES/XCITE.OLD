@@ -29,6 +29,8 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("xtrabytes.global");
     app.setApplicationName("XCITE");
 
+    app.setFont(QFont("Roboto"));
+
     GlobalEventFilter eventFilter;
     app.installEventFilter(&eventFilter);
 

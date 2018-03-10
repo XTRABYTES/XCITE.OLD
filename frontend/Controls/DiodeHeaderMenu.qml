@@ -22,17 +22,18 @@ RowLayout {
 
     Rectangle {
         color: cHeaderLine
-        width: 1
-        height: 22.06
+        width: 2
+        height: parent.height
         anchors.verticalCenter: parent.verticalCenter
     }
 
-    IconButton {
-        anchors.verticalCenter: parent.verticalCenter
-        height: parent.height
-        Layout.preferredWidth: 40
+    ButtonIcon {
+        width: parent.height
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        imageOffsetY: parent.height / 2 - 2.5 // TODO: This shouldn't be necessary but need to refactor ButtonIcon first
 
-        img.source: "../icons/dropdown-arrow.svg"
-        img.sourceSize.width: 10
+        imageSource: "../icons/dropdown-arrow.svg"
+        size: 5
     }
 }
