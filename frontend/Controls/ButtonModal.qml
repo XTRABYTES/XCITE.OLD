@@ -27,7 +27,7 @@ Button {
 
         color: {
             if (isDanger == true)
-                "#d80e0e"
+                Theme.primaryDanger
             if (isPrimary == true && isDanger == false)
                 Theme.primaryHighlight
             if (isDanger == false && isPrimary == false && colorTracker == 0)

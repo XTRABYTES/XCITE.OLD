@@ -13,15 +13,16 @@ Rectangle {
     height: 49
     width: 123
 
-    color: isSelected ? "transparent" : (state == "hover" ? "#302f2f" : Theme.panelBackground)
+    color: isSelected ? "transparent" : (state
+                                         == "hover" ? Theme.panelBackground : Theme.panelBackground)
     radius: panelBorderRadius
 
     states: [
         State {
             name: "hover"
             PropertyChanges {
-                target: button
-                color: isSelected ? "#0DD8D2" : (state == "hover" ? "#302f2f" : "transparent")
+                target: label
+                color: isSelected ? Theme.primaryHighlight : (state == "hover" ? Theme.panelBackground : Theme.primaryHighlight)
             }
         }
     ]

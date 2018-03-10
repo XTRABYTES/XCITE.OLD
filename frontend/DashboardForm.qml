@@ -5,6 +5,8 @@ import "Controls" as Controls
 
 import "XCITE" as XCITE
 import "X-Change" as XChange
+import "X-Chat" as XChat
+import "X-Vault" as XVault
 import "tools" as Tools
 import "Settings" as Settings
 
@@ -56,6 +58,12 @@ Item {
             XChange.Layout {
             }
 
+            XChat.Layout {
+            }
+
+            XVault.Layout {
+            }
+
             Settings.Layout {
             }
 
@@ -68,11 +76,11 @@ Item {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.leftMargin: sideMenuWidth + layoutGridSpacing
+        visible: false
     }
 
     XchatPopup {
         id: xChatPopup
-        visible: true
     }
 
     Timer {

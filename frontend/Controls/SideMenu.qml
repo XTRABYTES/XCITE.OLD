@@ -74,7 +74,6 @@ Rectangle {
         SideMenuButton {
             name: "xChange.home"
             visible: selectedModule === 'xChange'
-            Layout.topMargin: 10
             imageSource: "../icons/menu-home.svg"
             labelText: qsTr("HOME")
             size: 32
@@ -82,7 +81,7 @@ Rectangle {
     }
 
     ColumnLayout {
-        visible: xcite.height > 750
+        visible: xcite.height > 600
         width: parent.width
         Layout.fillHeight: true
         Layout.minimumHeight: 200
@@ -124,24 +123,24 @@ Rectangle {
             }
         }
 
-        Switch {
-            id: killSwitch
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            checked: true
-            padding: 0
-            onClicked: {
-                var title = killSwitch.checked ? qsTr("ACTIVATE?") : qsTr(
-                                                     "DEACTIVATE?")
-                confirmationModal({
-                                      title: title,
-                                      bodyText: qsTr("Are you sure?"),
-                                      confirmText: qsTr("YES"),
-                                      cancelText: qsTr("NO")
-                                  }, null, function (modal) {
-                                      killSwitch.checked = !killSwitch.checked
-                                  })
-            }
-        }
+        //        Switch {
+        //            id: killSwitch
+        //            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+        //            checked: true
+        //            padding: 0
+        //            onClicked: {
+        //                var title = killSwitch.checked ? qsTr("ACTIVATE?") : qsTr(
+        //                                                     "DEACTIVATE?")
+        //                confirmationModal({
+        //                                      title: title,
+        //                                      bodyText: qsTr("Are you sure?"),
+        //                                      confirmText: qsTr("YES"),
+        //                                      cancelText: qsTr("NO")
+        //                                  }, null, function (modal) {
+        //                                      killSwitch.checked = !killSwitch.checked
+        //                                  })
+        //            }
+        //        }
     }
 
     Version {

@@ -23,13 +23,14 @@ Item {
 
     RowLayout {
         Layout.fillWidth: true
+        spacing: 15
 
         Controls.ButtonIconText {
             id: addAddress
-            text: qsTr("ADD" + (xcite.width > 1236 ? " " + type : ""))
-            Layout.maximumWidth: (xcite.width > 1236 ? 116 : 80)
-            backgroundColor: "transparent"
-            hoverBackgroundColor: Theme.primaryHighlight
+            width: 55
+            border.width: 0
+            size: 16
+            backgroundColor: Theme.primaryHighlight
             iconFile: "../../icons/circle-cross.svg"
             onButtonClicked: {
                 btnAddClicked()
@@ -39,13 +40,11 @@ Item {
         Controls.ButtonIconText {
             id: editButton
             visible: type === "RECIPIENT"
-            text: qsTr("EDIT")
-            anchors.left: addAddress.left
-            anchors.leftMargin: 135
-            Layout.maximumWidth: 67
+            width: 55
+            border.width: 0
+            size: 16
             opacity: btnEditEnabled ? 1 : 0
-            backgroundColor: "transparent"
-            hoverBackgroundColor: Theme.primaryHighlight
+            backgroundColor: Theme.primaryHighlight
             iconFile: "../../icons/pencil.svg"
 
             onButtonClicked: {
@@ -63,11 +62,11 @@ Item {
 
         Controls.ButtonIconText {
             id: removeButton
-            text: qsTr("REMOVE")
-            Layout.maximumWidth: 89
-            backgroundColor: "transparent"
-            hoverBackgroundColor: Theme.primaryHighlight
+            width: 55
+            size: 16
+            backgroundColor: Theme.primaryDanger
             iconFile: "../../icons/trash.svg"
+            border.width: 0
 
             onButtonClicked: {
                 var item = currentItem.item
