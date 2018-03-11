@@ -26,12 +26,18 @@ public:
    ~XchatObject();
     
    void Initialize();
+   bool m_BalanceRequested = false;
+   QString m_lastUserMessage;
 
 signals:
     void xchatResponseSignal(QVariant text);
 
 public slots:
     void SubmitMsgCall(const QString &msg);
+    void SubmitMsg(const QString &msg);
+    bool CheckUserInputForKeyWord(const QString msg);
+    bool CheckAIInputForKeyWord(const QString msg);
+    QString HarmonizeKeyWords(const QString msg);
 
 private:
     QObject *window;

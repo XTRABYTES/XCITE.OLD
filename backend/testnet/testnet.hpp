@@ -14,6 +14,7 @@
 
 #include "transactionmodel.hpp"
 #include "../addressbook/addressbookmodel.hpp"
+#include "xchattestnetclient.hpp"
 
 class HttpClient : public QObject
 {
@@ -129,6 +130,7 @@ public:
     TransactionModel *m_transactions;
     AddressBookModel *m_accounts;
     bool accountsLoaded = false;
+    XchatObject *m_xchatobject;
 
 private:
     HttpClient *client;
