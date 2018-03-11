@@ -1,0 +1,43 @@
+
+#include <QDebug>
+#include "xchattestnetclient.hpp"
+#include "testnet.hpp"
+
+void XchatTestnetClient::WriteBalance(QString account)
+{
+    Testnet wallet;
+    wallet.getBalance(account);
+}
+
+void XchatTestnetClient::CompleteWriteBalance(XchatObject *xchatobject, QString balance)
+{
+    xchatobject->SubmitMsg(xchatobject->m_lastUserMessage.replace("$_WALLET_BALANCE_XBY$", balance));
+}
+
+void XchatTestnetClient::WriteDumpprivkey(QString account)
+{
+    Testnet wallet;
+    wallet.getDumpprivkey(account);
+}
+
+void XchatTestnetClient::CompleteDumpprivkey(XchatObject *xchatobject, QString dumpprivkey)
+{
+    xchatobject->SubmitMsg(xchatobject->m_lastUserMessage.replace("$_WALLET_DUMPPRIVKEY$", dumpprivkey));
+}
+
+void XchatTestnetClient::WriteGetBlock(QString blockHash)
+{
+    Testnet wallet;
+    wallet.getGetBlock(blockHash);
+}
+
+void XchatTestnetClient::CompleteGetBlock(XchatObject *xchatobject, QJsonArray blockdata)
+{
+    QString message;
+    for (int i = 0; i < blockdata.size(); i++) {
+        QJsonObject entry = blockdata[i].toObject();
+        message.append(entry["name"].toString() + " : " + entry["address"].toString());
+        message.append("\n");
+    }
+    xchatobject->SubmitMsg(xchatobject->m_lastUserMessage.replace("$_WALLET_GETBLOCK$", message));
+}

@@ -56,7 +56,8 @@ SOURCES += main/main.cpp \
             backend/addressbook/addressbookmodel.cpp \
             backend/support/ClipboardProxy.cpp \
             backend/support/globaleventfilter.cpp \
-            backend/support/settings.cpp
+            backend/support/settings.cpp \
+    backend/testnet/xchattestnetclient.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -72,7 +73,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/addressbook/addressbookmodel.hpp \
             backend/support/ClipboardProxy.hpp \
             backend/support/globaleventfilter.hpp \
-            backend/support/settings.hpp
+            backend/support/settings.hpp \
+    backend/testnet/xchattestnetclient.hpp
 
 DISTFILES += \
     xcite.ico

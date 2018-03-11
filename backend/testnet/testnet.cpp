@@ -30,6 +30,31 @@ void Testnet::validateAddress(QString address) {
     client->request("validateaddress", params);
 }
 
+void Testnet::getBalance(QString account) {
+    QJsonArray params = {
+        account
+    };
+
+    client->request("getbalance", params);
+}
+
+void Testnet::getDumpprivkey(QString account) {
+    QJsonArray params = {
+        account
+    };
+
+    client->request("dumpprivkey", params);
+}
+
+void Testnet::getGetBlock(QString blockhash)
+{
+    QJsonArray params = {
+        blockhash
+    };
+
+    client->request("getblock", params);
+}
+
 void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
 {
     QVariantMap reply = res.toVariantMap();
@@ -42,7 +67,25 @@ void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
 
     if (command == "getbalance") {
         setProperty("balance", reply["result"]);
-    } else if (command == "listtransactions") {
+        if(m_xchatobject->m_BalanceRequested)
+        {
+            m_xchatobject->m_BalanceRequested = false;
+            XchatTestnetClient client;
+            client.CompleteWriteBalance(m_xchatobject, reply["result"].toString());
+        }
+
+    }
+    else if (command == "dumpprivkey")
+    {
+        XchatTestnetClient client;
+        client.CompleteDumpprivkey(m_xchatobject, reply["result"].toString());
+    }
+    else if (command == "getblock")
+    {
+        XchatTestnetClient client;
+        client.CompleteGetBlock(m_xchatobject, res["result"].toArray());
+    }
+    else if (command == "listtransactions") {
         QJsonArray transactionList = res["result"].toArray();
 
         m_transactions->removeRows(0, m_transactions->m_transactions.size());

@@ -14,6 +14,7 @@
 
 #include "transactionmodel.hpp"
 #include "../addressbook/addressbookmodel.hpp"
+#include "xchattestnetclient.hpp"
 
 class HttpClient : public QObject
 {
@@ -121,6 +122,9 @@ public Q_SLOTS:
     void sendFrom(QString account, QString address, qreal amount);
     void sendToAddress(QString address, qreal amount);
     void getAccountAddress(QString account);
+    void getBalance(QString account);
+    void getDumpprivkey(QString account);
+    void getGetBlock(QString block);
     void validateAddress(QString);
     void onResponse(QString, QJsonArray, QJsonObject);
 
@@ -128,6 +132,7 @@ public:
     TransactionModel *m_transactions;
     AddressBookModel *m_accounts;
     bool accountsLoaded = false;
+    XchatObject *m_xchatobject;
 
 private:
     HttpClient *client;

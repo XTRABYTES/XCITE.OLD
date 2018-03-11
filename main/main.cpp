@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 #else
     // X-Chat
+    wallet.m_xchatobject = &xchatobj;
     // connect QML signals to C++ slots
     QObject::connect(engine.rootObjects().first(),SIGNAL(xchatSubmitMsgSignal(QString)),&xchatobj,SLOT(SubmitMsgCall(QString)));
     // connect C++ signals to QML slots
