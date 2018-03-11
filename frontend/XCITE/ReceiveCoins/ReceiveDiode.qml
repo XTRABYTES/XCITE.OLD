@@ -13,7 +13,7 @@ Controls.Diode {
     Connections {
         target: accountCreateForm
         onConfirmed: {
-            testnetGetAccountAddress(newItem.name)
+            network.getAccountAddress(newItem.name)
             accountCreateForm.close()
         }
 

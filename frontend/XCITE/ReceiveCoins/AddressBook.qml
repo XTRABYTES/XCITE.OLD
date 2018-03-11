@@ -53,7 +53,7 @@ ColumnLayout {
                 var item = addressBook.getSelectedItem()
 
                 if (item.address === '') {
-                    testnetGetAccountAddress(item.name)
+                    network.getAccountAddress(item.name)
                     item = addressBook.getSelectedItem()
                 }
 

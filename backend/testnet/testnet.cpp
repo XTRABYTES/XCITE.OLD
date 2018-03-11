@@ -2,34 +2,6 @@
 #include <QDebug>
 #include "testnet.hpp"
 
-void Testnet::sendFrom(QString account, QString address, qreal amount) {
-    QJsonArray params = {account, address, amount};
-
-    client->request("sendfrom", params);
-}
-
-void Testnet::sendToAddress(QString address, qreal amount) {
-    QJsonArray params = {address, amount};
-
-    client->request("sendtoaddress", params);
-}
-
-void Testnet::getAccountAddress(QString account) {
-    QJsonArray params = {
-        account
-    };
-
-    client->request("getaccountaddress", params);
-}
-
-void Testnet::validateAddress(QString address) {
-    QJsonArray params = {
-        address
-    };
-
-    client->request("validateaddress", params);
-}
-
 void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
 {
     QVariantMap reply = res.toVariantMap();
@@ -90,11 +62,11 @@ void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
     }
 }
 
-void Testnet::request(QString command) {
+void Testnet::request(QString command, QVariantList args) {
     // Wonky performance hack to avoid the overhead of pulling accounts continually
     if ((command == "listaccounts") && accountsLoaded) {
         return;
     }
 
-    client->request(command, QJsonArray());
+    client->request(command, args);
 }
