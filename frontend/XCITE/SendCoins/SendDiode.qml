@@ -20,7 +20,7 @@ Controls.Diode {
         target: addressEditForm
         onConfirmed: {
             if (xcite.isNetworkActive) {
-                testnetValidateAddress(newItem.address)
+                network.validateAddress(newItem.address)
             }
 
             if (newItem.isNew) {
@@ -172,7 +172,7 @@ Controls.Diode {
                                           confirmText: qsTr("YES, SEND"),
                                           cancelText: qsTr("NO, CANCEL")
                                       }, function () {
-                                          testnetSendToAddress(
+                                          network.sendToAddress(
                                                       address,
                                                       Number(form.amount.text))
                                       })

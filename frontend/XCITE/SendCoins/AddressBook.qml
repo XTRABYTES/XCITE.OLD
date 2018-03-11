@@ -64,6 +64,7 @@ ColumnLayout {
 
                 onAddressRemoved: {
                     addressBook.removeSelected()
+                    addressBook.save()
                 }
 
                 onBtnAddClicked: {

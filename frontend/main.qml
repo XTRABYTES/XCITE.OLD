@@ -71,13 +71,13 @@ ApplicationWindow {
         property string initialView: "xCite.home"
     }
 
+    Network {
+        id: network
+        handler: wallet
+    }
+
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
-    signal testnetRequest(string request)
-    signal testnetSendFrom(string account, string address, real amount)
-    signal testnetSendToAddress(string address, real amount)
-    signal testnetValidateAddress(string address)
-    signal testnetGetAccountAddress(string account)
     signal localeChange(string locale)
 
     function xchatResponse(response) {
@@ -106,11 +106,11 @@ ApplicationWindow {
     }
 
     function pollWallet(isInitial) {
-        testnetRequest("getbalance")
+        network.getBalance()
 
         if (!isInitial) {
-            testnetRequest("listtransactions")
-            testnetRequest("listaccounts")
+            network.listTransactions()
+            network.listAccounts()
         }
     }
 
