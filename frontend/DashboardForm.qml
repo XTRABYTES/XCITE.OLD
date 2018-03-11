@@ -24,6 +24,8 @@ Item {
     readonly property int panelBorderRadius: 0
     readonly property int diodeHeaderHeight: 46
     readonly property int moduleMenuHeight: 49
+    readonly property int diodeTopMargin: 40
+    readonly property int diodePadding: 20
 
     signal selectView(string path)
 

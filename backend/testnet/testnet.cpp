@@ -133,11 +133,11 @@ void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
     }
 }
 
-void Testnet::request(QString command) {
+void Testnet::request(QString command, QVariantList args) {
     // Wonky performance hack to avoid the overhead of pulling accounts continually
     if ((command == "listaccounts") && accountsLoaded) {
         return;
     }
 
-    client->request(command, QJsonArray());
+    client->request(command, args);
 }

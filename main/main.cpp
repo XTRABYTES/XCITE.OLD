@@ -18,8 +18,6 @@
 
 int main(int argc, char *argv[])
 {
-    QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
-
     QtQrCodeQuickItem::registerQmlTypes();
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -28,8 +26,8 @@ int main(int argc, char *argv[])
     app.setOrganizationName("Xtrabytes");
     app.setOrganizationDomain("xtrabytes.global");
     app.setApplicationName("XCITE");
-
     app.setFont(QFont("Roboto"));
+    app.setWindowIcon(QIcon("xcite.ico"));
 
     GlobalEventFilter eventFilter;
     app.installEventFilter(&eventFilter);
@@ -51,13 +49,15 @@ int main(int argc, char *argv[])
     XchatObject xchatobj;
     xchatobj.Initialize();
 
+    // wire-up testnet wallet
     Testnet wallet;
-    engine.rootContext()->setContextProperty("wallet", (QObject *)&wallet);
+    engine.rootContext()->setContextProperty("wallet", &wallet);
 
-    app.setWindowIcon(QIcon("xcite.ico"));
-
-    //app.set
+    // set app version
+    QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
+
+    // register event filter
     engine.rootContext()->setContextProperty("EventFilter", &eventFilter);
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
@@ -82,11 +82,6 @@ int main(int argc, char *argv[])
     QObject::connect(&xchatobj, SIGNAL(xchatResponseSignal(QVariant)),engine.rootObjects().first(), SLOT(xchatResponse(QVariant)));
 
     // FauxWallet
-    QObject::connect(engine.rootObjects().first(), SIGNAL(testnetRequest(QString)), &wallet, SLOT(request(QString)));
-    QObject::connect(engine.rootObjects().first(), SIGNAL(testnetSendFrom(QString, QString, qreal)), &wallet, SLOT(sendFrom(QString, QString, qreal)));
-    QObject::connect(engine.rootObjects().first(), SIGNAL(testnetSendToAddress(QString, qreal)), &wallet, SLOT(sendToAddress(QString, qreal)));
-    QObject::connect(engine.rootObjects().first(), SIGNAL(testnetGetAccountAddress(QString)), &wallet, SLOT(getAccountAddress(QString)));
-    QObject::connect(engine.rootObjects().first(), SIGNAL(testnetValidateAddress(QString)), &wallet, SLOT(validateAddress(QString)));
     QObject::connect(&wallet, SIGNAL(response(QVariant)), engine.rootObjects().first(), SLOT(testnetResponse(QVariant)));
     QObject::connect(&wallet, SIGNAL(walletError(QVariant)), engine.rootObjects().first(), SLOT(walletError(QVariant)));
     QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), engine.rootObjects().first(), SLOT(walletSuccess(QVariant)));

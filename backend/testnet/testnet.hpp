@@ -45,9 +45,14 @@ public:
         m_password = password;
     }
 
-    void request(QString command, QJsonArray params) {
+    void request(QString command, QVariantList args) {
         QJsonDocument json;
+        QJsonArray params;
         QJsonObject obj;
+
+        for (int i = 0; i < args.size(); ++i) {
+            params.push_back(args.at(i).toJsonValue());
+        }
 
         obj.insert("jsonrpc", QJsonValue::fromVariant("1.0"));
         obj.insert("id", QJsonValue::fromVariant("xcite"));
@@ -126,6 +131,7 @@ public Q_SLOTS:
     void getDumpprivkey(QString account);
     void getGetBlock(QString block);
     void validateAddress(QString);
+    void request(QString, QVariantList);
     void onResponse(QString, QJsonArray, QJsonObject);
 
 public:

@@ -8,16 +8,6 @@ import "../../Controls" as Controls
 import "../../Theme" 1.0
 
 ColumnLayout {
-    Layout.fillHeight: true
-    Layout.fillWidth: true
-    Layout.minimumWidth: 197
-    Layout.topMargin: 20
-    Layout.bottomMargin: 20
-    Layout.rightMargin: 20
-    Layout.leftMargin: 10
-    Layout.alignment: Qt.AlignTop
-    Layout.maximumHeight: 504
-
     Controls.FormLabel {
         text: qsTr("Address Book")
         Layout.bottomMargin: 25
@@ -28,6 +18,7 @@ ColumnLayout {
 
         Layout.fillHeight: true
         Layout.fillWidth: true
+        Layout.minimumHeight: 250
 
         radius: 4
         color: "#2A2C31"
@@ -36,15 +27,12 @@ ColumnLayout {
             id: addressBook
             model: wallet.accounts
 
-            Connections {
-                Component.onCompleted: {
-                    addressBook.add("", "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS")
-                    addressBook.add("Main",
-                                    "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS")
-                    addressBook.add("Secondary",
-                                    "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS")
-                    addressBook.currentIndex = 0
-                }
+            Component.onCompleted: {
+                addressBook.add("", "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS")
+                addressBook.add("Main", "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS")
+                addressBook.add("Secondary",
+                                "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS")
+                addressBook.currentIndex = 0
             }
 
             Connections {
@@ -65,7 +53,7 @@ ColumnLayout {
                 var item = addressBook.getSelectedItem()
 
                 if (item.address === '') {
-                    testnetGetAccountAddress(item.name)
+                    network.getAccountAddress(item.name)
                     item = addressBook.getSelectedItem()
                 }
 

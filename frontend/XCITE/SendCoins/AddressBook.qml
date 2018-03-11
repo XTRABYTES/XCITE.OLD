@@ -18,6 +18,7 @@ ColumnLayout {
 
         Layout.fillHeight: true
         Layout.fillWidth: true
+        Layout.minimumHeight: 250
 
         radius: 4
         color: "#2A2C31"
@@ -28,11 +29,9 @@ ColumnLayout {
             model: AddressBookModel {
             }
 
-            Connections {
-                Component.onCompleted: {
-                    addressBook.load()
-                    addressBook.currentIndex = 0
-                }
+            Component.onCompleted: {
+                addressBook.load()
+                addressBook.currentIndex = 0
             }
 
             onCurrentItemChanged: {
@@ -64,6 +63,7 @@ ColumnLayout {
 
                 onAddressRemoved: {
                     addressBook.removeSelected()
+                    addressBook.save()
                 }
 
                 onBtnAddClicked: {

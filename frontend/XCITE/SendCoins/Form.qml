@@ -19,8 +19,8 @@ ColumnLayout {
     Controls.TextInput {
         id: formAmount
 
-        Layout.maximumWidth: parent.width
-        Layout.fillWidth: true
+        anchors.left: parent.left
+        anchors.right: parent.right
         text: "0"
 
         validator: DoubleValidator {
@@ -65,7 +65,6 @@ ColumnLayout {
 
         anchors.left: parent.left
         anchors.right: parent.right
-        //        Layout.fillWidth: true
         font.pixelSize: 24
 
         Connections {
