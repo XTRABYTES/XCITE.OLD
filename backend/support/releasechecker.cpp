@@ -1,5 +1,7 @@
 #include "releasechecker.hpp"
 
+#include <QDebug>
+
 ReleaseChecker::ReleaseChecker(QString currentVersion, QObject *parent)
     : QObject(parent)
 {
@@ -11,6 +13,7 @@ ReleaseChecker::~ReleaseChecker() {
 }
 
 void ReleaseChecker::checkForUpdate() {
+    qDebug() << "checking for update...";
     m_downloader = new FileDownloader(m_url, this);
     connect(m_downloader, SIGNAL(downloaded()), this, SLOT(dataLoaded()));
 }
@@ -27,7 +30,10 @@ void ReleaseChecker::dataLoaded() {
         QJsonObject latestRelease = entries[0].toObject();
         int latestVersion = latestRelease["tag_name"].toString().remove(QRegExp("[^\\d]")).toInt();
         if (m_currentVersion < latestVersion) {
+            qDebug() << "update available";
             emit xciteUpdateAvailable();
+        } else {
+            qDebug() << "no update available";
         }
     }
 }
