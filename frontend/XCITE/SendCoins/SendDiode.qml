@@ -14,7 +14,7 @@ Controls.Diode {
                                                        form.amount.text) : 0)
 
     title: qsTr("SEND COINS")
-    menuLabelText: qsTr("XBY")
+    menuLabelText: "XBY"
 
     Connections {
         target: addressEditForm
@@ -39,28 +39,14 @@ Controls.Diode {
         }
     }
 
-    ScrollBar {
+    Controls.DiodeVerticalScrollBar {
         id: verticalScrollBar
-        policy: ScrollBar.AsNeeded
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.right
-        anchors.leftMargin: 3
-
-        width: 6
-
-        contentItem: Rectangle {
-            radius: 4
-            color: Theme.secondaryHighlight
-        }
     }
 
     ScrollView {
         id: scrollView
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
+
+        anchors.fill: parent
 
         anchors.topMargin: diodeHeaderHeight
         ScrollBar.vertical: verticalScrollBar
@@ -82,9 +68,9 @@ Controls.Diode {
                     Layout.alignment: Qt.AlignTop
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.topMargin: 40
+                    Layout.topMargin: diodeTopMargin
                     Layout.minimumWidth: 273
-                    Layout.leftMargin: 20
+                    Layout.leftMargin: diodePadding
                     Layout.rightMargin: 10
                 }
 
@@ -106,9 +92,9 @@ Controls.Diode {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     Layout.minimumWidth: 197
-                    Layout.topMargin: 40
-                    Layout.bottomMargin: 20
-                    Layout.rightMargin: 20
+                    Layout.topMargin: diodeTopMargin
+                    Layout.bottomMargin: diodePadding
+                    Layout.rightMargin: diodePadding
                     Layout.alignment: Qt.AlignTop
                     Layout.maximumHeight: 504
                 }

@@ -1,17 +1,14 @@
 import QtQuick 2.7
-import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.3
-import QtQuick.Controls.Styles 1.4
-import QtQrCode.Component 1.0
+import QtQuick.Layouts 1.3
 
 import "../../Controls" as Controls
 import "../../Theme" 1.0
 
 Controls.Diode {
     id: receiveCoinsDiode
-
     title: qsTr("RECEIVE COINS")
-    menuLabelText: qsTr("XBY")
+    menuLabelText: "XBY"
 
     Connections {
         target: accountCreateForm
@@ -25,29 +22,72 @@ Controls.Diode {
         }
     }
 
-    RowLayout {
-        anchors.topMargin: diodeHeaderHeight + 15
+    Controls.DiodeVerticalScrollBar {
+        id: verticalScrollBar
+    }
+
+    ScrollView {
+        id: scrollView
+
         anchors.fill: parent
 
-        Form {
-            id: form
-        }
+        anchors.topMargin: diodeHeaderHeight
+        ScrollBar.vertical: verticalScrollBar
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        clip: true
 
-        Rectangle {
-            visible: xcite.width > 1275
-            Layout.fillHeight: true
-            Layout.bottomMargin: 20
-            Layout.leftMargin: 10
-            Layout.rightMargin: 5
-            width: 1
-            color: "#535353"
-        }
+        ColumnLayout {
+            width: scrollView.width
 
-        AddressBook {
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                Layout.alignment: Qt.AlignTop
+                spacing: 10
+
+                Form {
+                    id: form
+                    Layout.alignment: Qt.AlignTop
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.topMargin: diodeTopMargin
+                    Layout.minimumWidth: 273
+                    Layout.leftMargin: diodePadding
+                    Layout.rightMargin: 10
+                }
+
+                // Divider
+                Rectangle {
+                    visible: parent.width > 800
+                    height: parent.height - 40
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.leftMargin: 8
+                    Layout.rightMargin: 12
+
+                    width: 1
+                    color: "#535353"
+                }
+
+                AddressBook {
+                    id: addressBook
+
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 197
+                    Layout.topMargin: diodeTopMargin
+                    Layout.bottomMargin: diodePadding
+                    Layout.rightMargin: diodePadding
+                    Layout.alignment: Qt.AlignTop
+                    Layout.maximumHeight: 504
+                }
+            }
         }
     }
 
     function selectItem(item) {
-        form.address.text = item.address
+        if (item) {
+            form.address.text = item.address
+        }
     }
 }

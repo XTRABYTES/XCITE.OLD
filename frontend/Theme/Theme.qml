@@ -7,5 +7,6 @@ QtObject {
     property color secondaryHighlight: "#3FCCC4"
     property color primaryDanger: "#EB5757"
     property color panelBackground: "#3A3E46"
+    property color diodeHeaderBackground: "#3F434C"
     property string fontCondensed: "Roboto Condensed"
 }
