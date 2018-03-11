@@ -11,28 +11,22 @@ ColumnLayout {
     property alias address: formAddress
 
     Layout.fillWidth: true
-    Layout.fillHeight: true
-    Layout.minimumWidth: 264
-    Layout.maximumWidth: 550
-    Layout.leftMargin: 20
-    Layout.topMargin: 20
-    Layout.bottomMargin: 20
-    Layout.rightMargin: 10
-    Layout.alignment: Qt.AlignTop
 
     Controls.FormLabel {
         Layout.bottomMargin: 25
-        text: qsTr("Main")
+        text: qsTr("Address")
     }
 
     Controls.TextInput {
-        Layout.fillWidth: true
+        anchors.left: parent.left
+        anchors.right: parent.right
         id: formAddress
         readOnly: true
     }
 
     RowLayout {
         Layout.topMargin: 6
+        Layout.maximumWidth: parent.width
 
         Label {
             id: copyPasteButton
@@ -82,11 +76,12 @@ ColumnLayout {
         }
 
         Label {
-            Layout.fillWidth: true
+            id: chooseFromAddressBookLabel
             font.weight: Font.Light
             visible: xcite.width > 1100
             color: "#E3E3E3"
             horizontalAlignment: Text.AlignRight
+            anchors.right: parent.right
             rightPadding: 20
             font.pixelSize: 12
 
@@ -105,7 +100,7 @@ ColumnLayout {
     }
 
     Controls.FormLabel {
-        Layout.topMargin: 40
+        Layout.topMargin: 40 - (xcite.width > 1100 ? chooseFromAddressBookLabel.height + 1 : 0)
         Layout.bottomMargin: 25
         text: qsTr("QR Code")
     }

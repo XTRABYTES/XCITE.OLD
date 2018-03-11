@@ -24,10 +24,11 @@ TableView {
     }
 
     anchors.fill: parent
-    anchors.topMargin: diodeHeaderHeight + 10
-    anchors.leftMargin: 20
-    anchors.bottomMargin: 20
-    anchors.rightMargin: 20
+    anchors.topMargin: diodeHeaderHeight + diodePadding
+    anchors.leftMargin: diodePadding
+    anchors.bottomMargin: diodePadding
+    anchors.rightMargin: diodePadding
+
     backgroundVisible: false
     alternatingRowColors: false
     frameVisible: false

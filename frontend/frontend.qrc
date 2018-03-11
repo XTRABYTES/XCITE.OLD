@@ -103,5 +103,6 @@
         <file>XCITE/SendCoins/Form.qml</file>
         <file>XCITE/Home/TransactionTable.qml</file>
         <file>Controls/Switch.qml</file>
+        <file>Controls/DiodeVerticalScrollBar.qml</file>
     </qresource>
 </RCC>
