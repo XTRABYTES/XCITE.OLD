@@ -17,24 +17,22 @@ Item {
     Rectangle {
         id: searchBoxId
         anchors.fill: parent
-        anchors.verticalCenter: parent.verticalCenter
         color: Theme.panelBackground
 
         signal buttonClicked
 
         TextField {
             id: searchField
-            anchors.fill: parent
+            width: parent.width - searchButtonContainer.width
             topPadding: 16
             leftPadding: 8
             rightPadding: 8
-            font.pointSize: 14
-
+            font.pixelSize: 16
             color: "#7B7D82"
-
             background: Rectangle {
                 color: "transparent"
             }
+            selectByMouse: true
 
             function showSearchResults() {
                 var showResults = searchField.text.length > 0
