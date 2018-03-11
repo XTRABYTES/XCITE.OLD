@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import Qt.labs.calendar 1.0
 
@@ -24,7 +24,7 @@ Controls.Diode {
             text: qsTr("Type")
         }
 
-        ComboBox {
+        Controls.ComboBox {
             Layout.fillWidth: true
             model: ["Please select", "Foo", "Bar", "Baz"]
         }
@@ -63,7 +63,7 @@ Controls.Diode {
             text: qsTr("To")
         }
 
-        ComboBox {
+        Controls.ComboBox {
             z: 1
             Layout.fillWidth: true
             model: ["Select address"]

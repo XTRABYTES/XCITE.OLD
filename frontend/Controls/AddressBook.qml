@@ -1,5 +1,6 @@
-import QtQuick 2.4
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.3
+import "../Theme" 1.0
 
 ListView {
 
@@ -37,10 +38,14 @@ ListView {
         rightPadding: delegateRightPadding
         text: name || "Default"
         font.family: "Roboto"
-        font.weight: delegateFontWeight
+       /* font.weight: delegateFontWeight
         font.pixelSize: delegatePixelSize
         color: delegateColor
-        lineHeight: delegateLineHeight
+        lineHeight: delegateLineHeight*/
+        font.weight: Font.Light
+        font.pixelSize: 16
+        color: addressBook.currentIndex == index ? "black" : "white"
+        lineHeight: 1.5
 
         MouseArea {
             anchors.fill: parent
@@ -50,7 +55,15 @@ ListView {
     }
 
     highlight: Rectangle {
-        color: delegateHightlightColor
+        color: Theme.primaryHighlight
+    }
+
+    function load() {
+        model.load()
+    }
+
+    function save() {
+        model.save()
     }
 
     function add(name, address) {

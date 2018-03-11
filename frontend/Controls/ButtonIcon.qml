@@ -1,8 +1,9 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-import QtQuick.Window 2.1
+import QtQuick.Window 2.2
+import "../Theme" 1.0
 
 Item {
     readonly property bool hasLabel: labelText.length > 0
@@ -16,7 +17,7 @@ Item {
     property alias hoverEnabled: mouseArea.hoverEnabled
     property alias cursorShape: mouseArea.cursorShape
 
-    property string selectedColor: "#0ED8D2"
+    property string selectedColor: Theme.primaryHighlight
     property string notSelectedColor: "#A9AAAD"
     property string hoveringColor: "#0eefe9"
 
@@ -27,7 +28,7 @@ Item {
     signal buttonClicked
 
     function getDefaultColor() {
-        return isSelected ? selectedColor : notSelectedColor;
+        return isSelected ? selectedColor : notSelectedColor
     }
 
     MouseArea {
@@ -46,7 +47,9 @@ Item {
         smooth: true
         mipmap: true
         anchors.horizontalCenter: parent.horizontalCenter
-        transform: Translate { x: imageOffsetX }
+        transform: Translate {
+            x: imageOffsetX
+        }
 
         fillMode: Image.PreserveAspectFit
         height: size
@@ -61,7 +64,9 @@ Item {
         source: image
         color: getDefaultColor()
 
-        transform: Translate { x: imageOffsetX }
+        transform: Translate {
+            x: imageOffsetX
+        }
     }
 
     Text {
@@ -83,8 +88,8 @@ Item {
         color: getDefaultColor()
     }
 
-    // Hovering animations
 
+    // Hovering animations
     Behavior on scale {
         NumberAnimation {
             duration: 150
@@ -119,12 +124,18 @@ Item {
 
     transitions: [
         Transition {
-            from: "Default"; to: "Hovering"
-            ColorAnimation { duration: 150 }
+            from: "Default"
+            to: "Hovering"
+            ColorAnimation {
+                duration: 150
+            }
         },
         Transition {
-            from: "Hovering"; to: "Default"
-            ColorAnimation { duration: 300 }
+            from: "Hovering"
+            to: "Default"
+            ColorAnimation {
+                duration: 300
+            }
         }
     ]
 }

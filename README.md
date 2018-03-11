@@ -8,11 +8,11 @@ XCITE is the core application utilizing the XTRABYTES Proof-of-Signature blockch
 
 #### Install Qt
 
-XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free. 
+XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free.
 
 #### Install Additional Features
 
-During installation, be sure to pick the "Qt 5.9.3" component since that is the version our development is currently targeting. If you plan to compile Windows binaries, also include the Tools -> MinGW 5.3.0 component.
+During installation, be sure to pick the "Qt 5.10.1" component since that is the version our development is currently targeting. If you plan to compile Windows binaries, also include the Tools -> MinGW 5.3.0 component.
 
 #### Project Configuration
 
@@ -20,7 +20,7 @@ After installing Qt, clone this repository and open xcite.pro using Qt Creator.
 
 #### Qt Troubleshooting Advice
 
-QMake is a fundamental part of Qt that serves the function of creating a make file. QMake not installing properly is usually attributed to user error and can be simply solved. If you run into a QMake issue during your Qt installation process follow these troubleshooting tips. 
+QMake is a fundamental part of Qt that serves the function of creating a make file. QMake not installing properly is usually attributed to user error and can be simply solved. If you run into a QMake issue during your Qt installation process follow these troubleshooting tips.
 
 If this issue arises you should first try the following steps before performing a reinstallation of Qt:
 
@@ -28,10 +28,10 @@ If this issue arises you should first try the following steps before performing 
 
 2. Ensure proper Kit is selected/detected by going to Tools --> Options --> Build & Run --> Kits
 
-- If no kit is selected or all kits are errored out, you will need to either manually install a kit or perform  a 
-        reinstallation. 
-          
-3. Ensure a compiler is installed by checking Tools --> Options --> Build & Run --> Compilers 
+- If no kit is selected or all kits are errored out, you will need to either manually install a kit or perform  a
+        reinstallation.
+
+3. Ensure a compiler is installed by checking Tools --> Options --> Build & Run --> Compilers
 
 - If no compiler is installed you will need to either reinstall or manually install MinGW version 5.3.0
 
@@ -42,7 +42,7 @@ If this issue arises you should first try the following steps before performing 
 3. Close the wallet and browse to your application data folder.
     - **Windows:** %APPDATA%\xcite\
     - **Mac:** Home/Library/Application Support/xcite/
-4. Within this folder, create a new file and name it "xcite.conf". **Make sure the file is not called "xcite.config.txt". The file must be saved with a ".conf" extension.** 
+4. Within this folder, create a new file and name it "xcite.conf". **Make sure the file is not called "xcite.config.txt". The file must be saved with a ".conf" extension.**
     - **Windows:** In Notepad, go to File -> Save As ->  Set the "File name:" to xcite.conf, change the "Save as type:" dropdown to "All Files", then click Save.
     - **Mac:** In TextEdit, click Format in the file bar -> Make Plain Text -> File -> Save -> Change "Save As:" to xcite.conf, then click Save.
 4. Edit the xcite.conf file, paste the following content into the file, then save and close it:
@@ -86,7 +86,7 @@ If you would like to contribute to XCITE development, please [contact us](mailto
 **1. Where is the rest of the source code?**
 
    Since the Proof of Signature consensus algorithm is still closed-source, this repository does not yet include the complete source code. We understand that the public needs to be able to review the source code and will publish the remaining source code as soon as it's ready.
-   
+
 **2. What platforms does XCITE plan to support?**
    - Linux Desktop
    - Android devices

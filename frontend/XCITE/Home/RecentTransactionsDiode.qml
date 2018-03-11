@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
@@ -6,6 +6,7 @@ import SortFilterProxyModel 0.1
 import QtQuick.Dialogs 1.1
 
 import "../../Controls" as Controls
+import "../../Theme" 1.0
 
 Rectangle {
     color: cDiodeBackground
@@ -67,7 +68,7 @@ Rectangle {
                 implicitHeight: 16
 
                 Rectangle {
-                    color: "#0ED8D2"
+                    color: Theme.primaryHighlight
                     opacity: 0.6
                     anchors.fill: parent
                     anchors.leftMargin: 5
@@ -127,11 +128,11 @@ Rectangle {
                         case 1:
                         case 6:
                             if (styleData.value === "IN")
-                                "#0ED8D2"
+                                Theme.primaryHighlight
                             if (styleData.value === "OUT")
                                 "#F77E7E"
                             if (styleData.value >= 0)
-                                "#0ED8D2"
+                                Theme.primaryHighlight
                             if (styleData.value < 0)
                                 "#F77E7E"
                             break

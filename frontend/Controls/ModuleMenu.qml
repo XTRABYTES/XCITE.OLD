@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 
 Item {
@@ -22,6 +22,8 @@ Item {
     anchors.left: parent.left
     anchors.top: parent.top
     anchors.bottomMargin: -15
+
+    z: 50
 
     Rectangle {
         height: 44
@@ -81,9 +83,9 @@ Item {
 
         SearchBox {
             id: searchBox
-            placeholder: qsTr("Search for something...")
+            anchors.topMargin: 13
+            placeholder: qsTr("Search...")
             anchors.right: parent.right
-            anchors.rightMargin: 15
         }
     }
 }

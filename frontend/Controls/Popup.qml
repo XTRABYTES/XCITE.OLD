@@ -1,5 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
+import "../Theme" 1.0
 
 RowLayout {
     id: popup
@@ -11,7 +12,7 @@ RowLayout {
 
     Rectangle {
         anchors.fill: parent
-        color: "#0ed8d2"
+        color: Theme.primaryHighlight
         radius: 2
     }
 
@@ -33,9 +34,11 @@ RowLayout {
         height: parent.height
         Layout.preferredWidth: 40
 
-        icon.source: "../icons/cross.svg"
-        icon.sourceSize.width: 10
+        img.source: "../icons/cross.svg"
+        img.sourceSize.width: 10
 
-        onClicked: { popup.visible = false; }
+        onClicked: {
+            popup.visible = false
+        }
     }
 }

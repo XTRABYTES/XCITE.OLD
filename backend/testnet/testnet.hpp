@@ -119,6 +119,7 @@ signals:
 public Q_SLOTS:
     void request(QString command);
     void sendFrom(QString account, QString address, qreal amount);
+    void sendToAddress(QString address, qreal amount);
     void getAccountAddress(QString account);
     void validateAddress(QString);
     void onResponse(QString, QJsonArray, QJsonObject);

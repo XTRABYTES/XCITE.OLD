@@ -1,7 +1,8 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.3
 import "../../Controls" as Controls
+import "../../Theme" 1.0
 
 Rectangle {
     width: 376
@@ -41,7 +42,7 @@ Rectangle {
         text: qsTr("Total")
         value: (wallet.balance + wallet.unconfirmed).toLocaleString(
                    Qt.locale(), 'f', 8).replace(/\.?0+$/, '')
-        valueColor: "#0ED8D2"
+        valueColor: Theme.primaryHighlight
         valuePrefix: qsTr("XBY")
         valueFont.family: "Roboto"
         valueFont.weight: Font.Normal

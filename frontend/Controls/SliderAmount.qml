@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.0
+import "../Theme" 1.0
 
 Slider {
     id: slider
@@ -159,7 +160,7 @@ Slider {
         implicitWidth: blobWidth
         implicitHeight: blobWidth
         radius: blobWidth / 2
-        color: slider.pressed ? "#0ED8D2" : "#0ED8D2"
+        color: Theme.primaryHighlight
         border.width: 0
 
         // left ray
@@ -170,7 +171,7 @@ Slider {
             implicitHeight: 4
             width: implicitWidth
             height: implicitHeight
-            color: "#0ED8D2"
+            color: Theme.primaryHighlight
 
             LinearGradient {
                 anchors.fill: parent
@@ -179,7 +180,7 @@ Slider {
                 gradient: Gradient {
                     GradientStop {
                         position: 0.0
-                        color: "#0ED8D2"
+                        color: Theme.primaryHighlight
                     }
                     GradientStop {
                         position: 1.0
@@ -197,7 +198,7 @@ Slider {
             implicitHeight: 4
             width: implicitWidth
             height: implicitHeight
-            color: "#0ED8D2"
+            color: Theme.primaryHighlight
 
             LinearGradient {
                 anchors.fill: parent
@@ -206,7 +207,7 @@ Slider {
                 gradient: Gradient {
                     GradientStop {
                         position: 0.0
-                        color: "#0ED8D2"
+                        color: Theme.primaryHighlight
                     }
                     GradientStop {
                         position: 1.0

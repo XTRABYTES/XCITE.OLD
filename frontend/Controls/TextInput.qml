@@ -1,7 +1,9 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.3
+import "../Theme" 1.0
 
 TextField {
+    id: component
     color: "white"
     font.family: "Roboto"
     font.weight: Font.Light
@@ -15,5 +17,13 @@ TextField {
     background: Rectangle {
         color: "#2A2C31"
         radius: 4
+        border.width: parent.activeFocus ? 2 : 0
+        border.color: Theme.primaryHighlight
+    }
+
+    onActiveFocusChanged: {
+        if (component.focus) {
+            EventFilter.focus(this)
+        }
     }
 }

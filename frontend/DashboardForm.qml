@@ -1,8 +1,8 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
-import QtQuick.Window 2.1
-import QtQuick.Controls.Material 2.1
+import QtQuick.Window 2.2
+import QtQuick.Controls.Material 2.3
 
 import "Controls" as Controls
 
@@ -10,6 +10,7 @@ import "XCITE" as XCITE
 import "X-Change" as XChange
 import "X-Chat" as XChat
 import "tools" as Tools
+import "Settings" as Settings
 
 import xtrabytes.xcite.xchat 1.0
 
@@ -56,12 +57,11 @@ Item {
             XChange.Layout {
             }
 
+
             XChat.Layout {
             }
 
-            // Settings
-            Item {
-                id: moduleSettings
+            Settings.Layout {
             }
 
             Tools.Layout {

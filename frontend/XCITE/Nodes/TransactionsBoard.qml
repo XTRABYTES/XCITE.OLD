@@ -1,21 +1,22 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.3
 import QtQuick.Controls.Styles 1.4
 import SortFilterProxyModel 0.1
 import QtQuick.Dialogs 1.1
 import "../../Controls" as Controls
+import "../../Theme" 1.0
 
-Rectangle{
-    id:nodeTransactionsBoardId
+Rectangle {
+    id: nodeTransactionsBoardId
     Layout.fillWidth: true
     Layout.fillHeight: true
     Layout.minimumHeight: 100
     Layout.minimumWidth: 800
 
-    anchors.rightMargin:15
-    anchors.topMargin:50
-    radius:5
+    anchors.rightMargin: 15
+    anchors.topMargin: 50
+    radius: 5
     color: cBoardBackground
 
     Controls.DiodeHeader {
@@ -24,21 +25,15 @@ Rectangle{
         menuLabelText: qsTr("Complete View")
     }
 
-
+    /*
     TableView {
         id: nodeTransactionTable
 
-        model:nodeTransactionModel/*SortFilterProxyModel {
-            id: proxyModel
-            source: nodeTransactionModel //nodeTransactionModel.count > 0 ? nodeTransactionModel : null
-           /* sortOrder: nodeTransactionTable.sortIndicatorOrder
-            sortCaseSensitivity: Qt.CaseInsensitive
-            sortRole: nodeTransactionModel.count > 0 ? nodeTransactionTable.getColumn(nodeTransactionTable.sortIndicatorColumn).role : ""*/
-        //}
+        model: nodeTransactionModel
 
         // TODO: This is just a placeholder to test out click-to-view a transaction
         onDoubleClicked: {
-            popup.open();
+            popup.open()
         }
 
         backgroundVisible: false
@@ -59,13 +54,13 @@ Rectangle{
             }
 
             // Scrollbar specific properties
-            transientScrollBars: true   // We use this because the default scrollbars look awful
+            transientScrollBars: true // We use this because the default scrollbars look awful
             handle: Item {
                 implicitWidth: 14
                 implicitHeight: 16
 
                 Rectangle {
-                    color: "#0ED8D2"
+                    color: Theme.primaryHighlight
                     opacity: 0.6
                     anchors.fill: parent
                     anchors.leftMargin: 5
@@ -77,7 +72,7 @@ Rectangle{
             // Table header attributes
             headerDelegate: Rectangle {
                 height: 55
-                color: "#3A3E46"    // This needs to be set (non to avoid the rows being visible under the header
+                color: "#3A3E46" // This needs to be set (non to avoid the rows being visible under the header
 
                 Text {
                     color: "#FFF7F7"
@@ -91,7 +86,7 @@ Rectangle{
                     Rectangle {
                         anchors.top: parent.verticalCenter
                         anchors.topMargin: 20
-                        width: parent.width ? 60 : 0    // Avoid extraneous underline after last column
+                        width: parent.width ? 60 : 0 // Avoid extraneous underline after last column
                         height: 1
                         color: "#24B9C3"
                     }
@@ -121,32 +116,8 @@ Rectangle{
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.rightMargin: 26
 
-                    /*color: {
-                        switch (styleData.column) {
-                        case 1:
-                        case 6:
-                            // Colour columns 1 and 6 (Type and value) based on the hidden type column. Keeps things language agnostic
-                            var row = transactionModel.get(styleData.row);
-                            row && row.type === "IN" ? "#0ED8D2" : "#F77E7E"
-                            break;
-                        default:
-                            "#ffffff"
-                            break;
-                        }
-                    }
-
-                    text: {
-                        switch (styleData.column) {
-                        case 6:
-                            // Add the + prefix and XBY suffix to column 6 (value)
-                            (styleData.value > 0 ? ("+" + styleData.value) : styleData.value) + " XBY";
-                            break;
-                        default:
-                            styleData.value;
-                        }
-                    }*/
-                    color:"white"
-                    text:styleData.value
+                    color: "white"
+                    text: styleData.value
 
                     // Ensure ellipsis are applied
                     elide: styleData.elideMode
@@ -201,6 +172,6 @@ Rectangle{
             resizable: false
         }
     }
-
+    */
 
 }

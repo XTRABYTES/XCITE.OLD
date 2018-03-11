@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
 import AddressBookModel 0.1
@@ -28,6 +28,8 @@ Controls.Diode {
                 addressBook.update(newItem.name, newItem.address)
                 selectItem(addressBook.getSelectedItem())
             }
+
+            addressBook.save()
             addressEditForm.close()
         }
 
@@ -66,6 +68,9 @@ Controls.Diode {
                 Controls.TextInput {
                     id: formAmount
                     Layout.preferredWidth: 516
+                    validator: DoubleValidator {
+                        bottom: 0
+                    }
                     topPadding: 5
                     bottomPadding: 5
                     text: "0"
@@ -109,6 +114,12 @@ Controls.Diode {
                     Layout.preferredWidth: 516
                     topPadding: 10
                     bottomPadding: 10
+
+                    Connections {
+                        onTextEdited: {
+                            addressBook.currentIndex = -1
+                        }
+                    }
                 }
 
                 Label {
@@ -200,23 +211,8 @@ Controls.Diode {
                             }
 
                             Connections {
-                                // TODO: Temporary placeholder content
                                 Component.onCompleted: {
-                                    addressBook.add(
-                                                "dedpull",
-                                                "XV3Goey53xDt51oAZ6LfGm8G51k5QmMXmR")
-                                    addressBook.add(
-                                                "enervey",
-                                                "XZhRoyup9cbVguuqDUWWBuqhLmE483FtXW")
-                                    addressBook.add(
-                                                "james87uk",
-                                                "XLGSfK2RhjvEbkGMe4WVk2R8k9auLESAsv")
-                                    addressBook.add(
-                                                "nrocy",
-                                                "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ")
-                                    addressBook.add(
-                                                "posey",
-                                                "XJmqWTfBQwZk2QgU3eFnbtenUHXXPmsgPa")
+                                    addressBook.load()
                                     addressBook.currentIndex = 0
                                 }
                             }
@@ -290,8 +286,10 @@ Controls.Diode {
             label.font.family: "Roboto"
             label.font.weight: Font.Medium
             label.font.letterSpacing: 3
-            label.text: qsTr("SEND PAYMENT")
+            label.text: addressBook.currentIndex < 0 ? qsTr("SEND QUICK PAYMENT") : qsTr(
+                                                           "SEND PAYMENT")
             isPrimary: true
+            isDanger: addressBook.currentIndex < 0
             buttonHeight: 60
 
             onButtonClicked: {
@@ -304,11 +302,20 @@ Controls.Diode {
                     return
                 }
 
-                var item = addressBook.currentItem.item
+                var address, text, amount = Number(formAmount.text)
 
-                var text = qsTr("Are you sure you want to send") + " " + Number(
-                            formAmount.text).toFixed(
-                            2) + " " + "to" + " " + item.name + " (" + item.address + ")?"
+                if (addressBook.currentIndex < 0) {
+                    // Quick send
+                    address = formAddress.text.trim()
+                    text = qsTr("This address is not in your addressbook.\n\nAre you sure you want to send")
+                            + " " + amount + "XBY " + "to " + address + "?"
+                } else {
+                    var item = addressBook.currentItem.item
+                    address = item.address
+
+                    text = qsTr("Are you sure you want to send") + " " + amount
+                            + "XBY " + "to" + " " + item.name + " (" + address + ")?"
+                }
 
                 confirmationModal({
                                       title: qsTr("PAYMENT CONFIRMATION"),
@@ -316,14 +323,16 @@ Controls.Diode {
                                       confirmText: qsTr("YES, SEND"),
                                       cancelText: qsTr("NO, CANCEL")
                                   }, function () {
-                                      testnetSendFrom('', item.address,
-                                                      Number(formAmount.text))
+                                      testnetSendToAddress(item.address, Number(
+                                                               formAmount.text))
                                   })
             }
         }
     }
 
     function selectItem(item) {
-        formAddress.text = item.address
+        if (item) {
+            formAddress.text = item.address
+        }
     }
 }

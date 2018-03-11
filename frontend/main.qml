@@ -1,11 +1,12 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
-import QtQuick.Window 2.0
+import QtQuick.Window 2.2
+
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
-
 import "Login" as LoginComponents
+import "Theme" 1.0
 
 ApplicationWindow {
     property bool isNetworkActive: false
@@ -13,14 +14,11 @@ ApplicationWindow {
     id: xcite
 
     visible: true
+
     width: (Screen.width < 1440) ? Screen.width : 1440
     height: (Screen.height < 1024) ? Screen.height : 1024
     title: qsTr("XCITE")
     color: "#2B2C31"
-
-    overlay.modal: Rectangle {
-        color: "#c92a2c31"
-    }
 
     StackView {
         id: mainRoot
@@ -43,8 +41,10 @@ ApplicationWindow {
     signal xChatMessageReceived(string message, date datetime)
     signal testnetRequest(string request)
     signal testnetSendFrom(string account, string address, real amount)
+    signal testnetSendToAddress(string address, real amount)
     signal testnetValidateAddress(string address)
     signal testnetGetAccountAddress(string account)
+    signal localeChange(string locale)
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())
@@ -100,7 +100,6 @@ ApplicationWindow {
                 }
 
                 modal.close()
-                modal.destroy()
             })
 
             modal.open()
@@ -129,7 +128,6 @@ ApplicationWindow {
                 }
 
                 modal.close()
-                modal.destroy()
             })
 
             modal.cancelled.connect(function () {
@@ -137,8 +135,8 @@ ApplicationWindow {
                     onCancel(modal, modal.inputValue)
                 }
 
+                console.log('close')
                 modal.close()
-                modal.destroy()
             })
 
             modal.open()
