@@ -2,59 +2,6 @@
 #include <QDebug>
 #include "testnet.hpp"
 
-void Testnet::sendFrom(QString account, QString address, qreal amount) {
-    QJsonArray params = {account, address, amount};
-
-    client->request("sendfrom", params);
-}
-
-void Testnet::sendToAddress(QString address, qreal amount) {
-    QJsonArray params = {address, amount};
-
-    client->request("sendtoaddress", params);
-}
-
-void Testnet::getAccountAddress(QString account) {
-    QJsonArray params = {
-        account
-    };
-
-    client->request("getaccountaddress", params);
-}
-
-void Testnet::validateAddress(QString address) {
-    QJsonArray params = {
-        address
-    };
-
-    client->request("validateaddress", params);
-}
-
-void Testnet::getBalance(QString account) {
-    QJsonArray params = {
-        account
-    };
-
-    client->request("getbalance", params);
-}
-
-void Testnet::getDumpprivkey(QString account) {
-    QJsonArray params = {
-        account
-    };
-
-    client->request("dumpprivkey", params);
-}
-
-void Testnet::getGetBlock(QString blockhash)
-{
-    QJsonArray params = {
-        blockhash
-    };
-
-    client->request("getblock", params);
-}
-
 void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
 {
     QVariantMap reply = res.toVariantMap();

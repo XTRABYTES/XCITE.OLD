@@ -5,8 +5,10 @@
 
 void XchatTestnetClient::WriteBalance(QString account)
 {
+    QVariantList params = { account };
+
     Testnet wallet;
-    wallet.getBalance(account);
+    wallet.request("getbalance", params);
 }
 
 void XchatTestnetClient::CompleteWriteBalance(XchatObject *xchatobject, QString balance)
@@ -16,8 +18,10 @@ void XchatTestnetClient::CompleteWriteBalance(XchatObject *xchatobject, QString 
 
 void XchatTestnetClient::WriteDumpprivkey(QString account)
 {
+    QVariantList params = { account };
+
     Testnet wallet;
-    wallet.getDumpprivkey(account);
+    wallet.request("dumpprivkey", params);
 }
 
 void XchatTestnetClient::CompleteDumpprivkey(XchatObject *xchatobject, QString dumpprivkey)
@@ -27,8 +31,10 @@ void XchatTestnetClient::CompleteDumpprivkey(XchatObject *xchatobject, QString d
 
 void XchatTestnetClient::WriteGetBlock(QString blockHash)
 {
+    QVariantList params = { blockHash };
+
     Testnet wallet;
-    wallet.getGetBlock(blockHash);
+    wallet.request("getblock", params);
 }
 
 void XchatTestnetClient::CompleteGetBlock(XchatObject *xchatobject, QJsonArray blockdata)

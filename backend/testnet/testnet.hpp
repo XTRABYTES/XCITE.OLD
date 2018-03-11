@@ -123,14 +123,6 @@ signals:
     void walletSuccess(QVariant response);
 
 public Q_SLOTS:
-    void request(QString command);
-    void sendFrom(QString account, QString address, qreal amount);
-    void sendToAddress(QString address, qreal amount);
-    void getAccountAddress(QString account);
-    void getBalance(QString account);
-    void getDumpprivkey(QString account);
-    void getGetBlock(QString block);
-    void validateAddress(QString);
     void request(QString, QVariantList);
     void onResponse(QString, QJsonArray, QJsonObject);
 
