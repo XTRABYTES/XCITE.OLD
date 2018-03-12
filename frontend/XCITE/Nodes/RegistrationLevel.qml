@@ -33,7 +33,6 @@ Rectangle {
             height: 23
             color: "#e2e2e2"
             text: qsTr("Node Registration")
-            font.family: "Roboto"
             font.pixelSize: 18
         }
         Rectangle {
@@ -128,7 +127,6 @@ Rectangle {
             anchors.rightMargin: 15
             Label {
                 id: label1
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 16
                 bottomPadding: 5
@@ -152,7 +150,6 @@ Rectangle {
             }
             Label {
                 id: label2
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 16
                 bottomPadding: 5
@@ -176,7 +173,6 @@ Rectangle {
             }
             Label {
                 id: label3
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 16
                 bottomPadding: 15
@@ -207,14 +203,12 @@ Rectangle {
                 model: ["Select a Node", "Level 1 Node", "Level 2 Node", "Level 3 Node"]
             }
             Label {
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 16
                 topPadding: 14
                 text: "Payment"
             }
             Label {
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 10
                 bottomPadding: -10
@@ -236,7 +230,6 @@ Rectangle {
                 isPrimary: true
                 width: parent.width - 10
                 buttonHeight: 40
-                label.font.family: "Roboto"
                 label.font.weight: Font.Medium
                 label.font.letterSpacing: 3
                 label.text: qsTr("Select")

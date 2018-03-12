@@ -1,10 +1,13 @@
 import QtQuick 2.8
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
+
+import "../Theme" 1.0
 
 Rectangle {
     property color cHeaderText: "#e2e2e2"
-    readonly property color cHeaderLine: "#535353"
+    readonly property color cHeaderLine: "#2A2C31"
 
     property alias menuLabelText: menuLabel.text
     property alias text: label.text
@@ -12,8 +15,8 @@ Rectangle {
     property alias iconSize: menuLabel.iconSize
     property alias iconOnly: menuLabel.iconOnly
 
-    color: "transparent"
-    height: 44.5
+    color: Theme.diodeHeaderBackground
+    height: diodeHeaderHeight
     width: parent.width
 
     Text {
@@ -22,19 +25,19 @@ Rectangle {
         anchors.leftMargin: 20.68
         anchors.verticalCenter: parent.verticalCenter
         color: cHeaderText
-        font.family: "Roboto Regular"
         font.pixelSize: 15
-    }
-
-    Rectangle {
-        width: parent.width
-        anchors.top: parent.bottom
-        height: 1
-        color: cHeaderLine
     }
 
     DiodeHeaderMenu {
         id: menuLabel
         visible: menuLabelText.length > 0 || iconOnly == true
+    }
+
+    layer.enabled: true
+    layer.effect: DropShadow {
+        horizontalOffset: 0
+        verticalOffset: 2
+        radius: 10
+        color: "#1A000000"
     }
 }

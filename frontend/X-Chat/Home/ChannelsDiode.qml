@@ -9,11 +9,10 @@ Controls.Diode {
     Layout.preferredHeight: 843
     Layout.preferredWidth: 257
     Layout.fillHeight: true
-    //color:"red"
     Controls.DiodeHeader {
         id: channelHeader
         text: "CHANNELS"
-        iconSource: "../icons/menu-settings.svg"
+        iconSource: "../../icons/menu-settings.svg"
         iconOnly: true
         iconSize: 20
     }

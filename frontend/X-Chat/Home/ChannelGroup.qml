@@ -38,17 +38,15 @@ Item {
             font.pixelSize: 13
         }
 
-        Controls.IconButton {
+        Controls.ButtonIcon {
             id: iconButton
             Layout.preferredWidth: 35
 
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: 12
-
-            icon.source: iconSource
-            icon.sourceSize.width: iconSize
-
+            imageSource: iconSource
+            size: iconSize
             MouseArea {
                 anchors.fill: parent
             }

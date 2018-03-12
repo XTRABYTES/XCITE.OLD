@@ -1,7 +1,6 @@
-import QtQuick 2.0
-import QtQuick.Layouts 1.3
-
 import "Home" as Home
+import QtQuick 2.7
+import QtQuick.Layouts 1.3
 
 Item {
     readonly property string defaultView: "home"
@@ -11,10 +10,9 @@ Item {
 
     Layout.fillHeight: true
     Layout.fillWidth: true
+
     visible: selectedModule === 'xChat'
 
-
-    // Home
     Connections {
         target: dashboard
         onSelectView: {

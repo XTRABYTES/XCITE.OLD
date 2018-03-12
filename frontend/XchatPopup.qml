@@ -140,7 +140,6 @@ Item {
                             clip: true
 
                             font.pixelSize: 11
-                            font.family: "Roboto"
                             color: "#ffffff"
 
                             Keys.onReturnPressed: onSubmitUserInput()
@@ -164,7 +163,6 @@ Item {
                         contentItem: Text {
                             text: xChatBtnSend.text
                             color: xChatBtnSend.enabled ? (xChatBtnSend.down ? "#ffffff" : "#24B9C3") : "#777"
-                            font.family: "Roboto"
                             font.pixelSize: 12
                         }
 

@@ -67,7 +67,6 @@ ColumnLayout {
 
                     text: model.message
                     color: isMine ? "white" : "black"
-                    font.family: "Roboto"
                     font.pixelSize: 11
                     lineHeight: 1.2
                     wrapMode: Label.WordWrap
@@ -82,7 +81,6 @@ ColumnLayout {
 
             Label {
                 font.pixelSize: 10
-                font.family: "Roboto"
                 anchors.left: isMine ? undefined : parent.left
                 anchors.right: isMine ? parent.right : undefined
                 text: Qt.formatDateTime(model.datetime, 'h:mm ap')

@@ -44,9 +44,14 @@ public:
         m_password = password;
     }
 
-    void request(QString command, QJsonArray params) {
+    void request(QString command, QVariantList args) {
         QJsonDocument json;
+        QJsonArray params;
         QJsonObject obj;
+
+        for (int i = 0; i < args.size(); ++i) {
+            params.push_back(args.at(i).toJsonValue());
+        }
 
         obj.insert("jsonrpc", QJsonValue::fromVariant("1.0"));
         obj.insert("id", QJsonValue::fromVariant("xcite"));
@@ -102,7 +107,7 @@ public:
 
         for (int i = 0; i < 10; i++) {
             qlonglong rnd = (qrand() % 100000) - 50000;
-            m_transactions->add(rnd < 0 ? "OUT" : "IN", "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34", "xghl32lk8dfss577g734j34xghl32lk8dfss577g734j34", rnd, QDateTime::currentDateTime());
+            m_transactions->add(rnd < 0 ? "OUT" : "IN", QString::number(rnd) + "xghl32lk8dfss577g734j34xghl32lk8dfss577g73", "aghl32lk8dfss577g734j34xghl32lk8dfss577g734j34", rnd, QDateTime::currentDateTime());
         }
 
         m_accounts = new AddressBookModel;
@@ -117,11 +122,7 @@ signals:
     void walletSuccess(QVariant response);
 
 public Q_SLOTS:
-    void request(QString command);
-    void sendFrom(QString account, QString address, qreal amount);
-    void sendToAddress(QString address, qreal amount);
-    void getAccountAddress(QString account);
-    void validateAddress(QString);
+    void request(QString, QVariantList);
     void onResponse(QString, QJsonArray, QJsonObject);
 
 public:

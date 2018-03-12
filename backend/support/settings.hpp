@@ -11,6 +11,8 @@ class Settings : public QObject
     Q_OBJECT
 public:
     Settings(QQmlApplicationEngine *engine, QObject *parent = 0);
+    void setLocale(QString);
+
 public slots:
     void onLocaleChange(QString);
 

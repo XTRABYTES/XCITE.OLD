@@ -7,7 +7,7 @@ RowLayout {
 
     property alias text: menuLabel.text
     property string iconSource: "../icons/dropdown-arrow.svg"
-    property int iconSize: 10
+    property int iconSize: 5
     property bool iconOnly: false
 
     anchors.right: parent.right
@@ -18,27 +18,22 @@ RowLayout {
     Text {
         id: menuLabel
         color: cHeaderText
-        font.family: "Roboto"
         font.pixelSize: 12
         rightPadding: 10
     }
 
     Rectangle {
         color: cHeaderLine
-        width: 1
-        height: 22.06
+        width: 2
+        height: parent.height
         anchors.verticalCenter: parent.verticalCenter
         visible: !iconOnly
     }
 
-    IconButton {
+    ButtonIcon {
+        width: parent.height
         anchors.verticalCenter: parent.verticalCenter
-        height: parent.height
-        Layout.preferredWidth: 40
-        icon.source: iconSource
-        icon.sourceSize.width: iconSize
-        MouseArea {
-            anchors.fill: parent
-        }
+        imageSource: iconSource
+        size: iconSize
     }
 }

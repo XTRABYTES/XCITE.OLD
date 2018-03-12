@@ -12,6 +12,7 @@ Item {
     property bool changeColorOnClick: true
     property int size: 40
     property int imageOffsetX: 0
+    property int imageOffsetY: 0
 
     property alias imageSource: image.source
     property alias hoverEnabled: mouseArea.hoverEnabled
@@ -47,8 +48,10 @@ Item {
         smooth: true
         mipmap: true
         anchors.horizontalCenter: parent.horizontalCenter
+
         transform: Translate {
             x: imageOffsetX
+            y: imageOffsetY
         }
 
         fillMode: Image.PreserveAspectFit
@@ -66,6 +69,7 @@ Item {
 
         transform: Translate {
             x: imageOffsetX
+            y: imageOffsetY
         }
     }
 
@@ -76,18 +80,17 @@ Item {
         width: parent.width
 
         anchors.top: image.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 7
         anchors.horizontalCenter: parent.horizontalCenter
 
         horizontalAlignment: Text.AlignHCenter
 
-        font.family: "Roboto"
-        font.pixelSize: 12
+        font.pixelSize: 10
         wrapMode: Text.WordWrap
+        font.weight: Font.Medium
 
         color: getDefaultColor()
     }
-
 
     // Hovering animations
     Behavior on scale {

@@ -3,13 +3,6 @@ import QtQuick.Controls 2.3
 import "../Theme" 1.0
 
 ListView {
-
-    property int delegateLeftPadding: 20
-    property int delegateRightPadding: 20
-    property int delegatePixelSize: 16
-    property string delegateColor: "white"
-    property string delegateHightlightColor: "#42454D"
-    property int delegateFontWeight: Font.Light
     property int leftMargin: 3
     property int rightMargin: 3
     property double delegateLineHeight: 1.5
@@ -34,14 +27,10 @@ ListView {
         verticalAlignment: Text.AlignVCenter
         width: parent.width
 
-        leftPadding: delegateLeftPadding
-        rightPadding: delegateRightPadding
+        leftPadding: 20
+        rightPadding: 20
         text: name || "Default"
         font.family: "Roboto"
-       /* font.weight: delegateFontWeight
-        font.pixelSize: delegatePixelSize
-        color: delegateColor
-        lineHeight: delegateLineHeight*/
         font.weight: Font.Light
         font.pixelSize: 16
         color: addressBook.currentIndex == index ? "black" : "white"

@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 import "../../Controls" as Controls
 
 ColumnLayout {
@@ -18,20 +19,32 @@ ColumnLayout {
 
     RowLayout {
         anchors.fill: parent
-        Controls.IconButton {
+        Image {
             id: messageChatButton
-            height: parent.height
-            icon.source: "../../icons/circle-cross.svg"
-            icon.sourceSize.width: 29
+            fillMode: Image.PreserveAspectFit
+            source: "../../icons/circle-cross.svg"
+            width: 25
+            sourceSize.width: 29
+            sourceSize.height: 29
             Layout.preferredWidth: 40
             anchors.left: parent.left
             anchors.leftMargin: 18
             anchors.verticalCenter: parent.verticalCenter
             MouseArea {
                 anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
             }
         }
-
+        /*Controls.ButtonIcon {
+            id: messageChatButton
+            width: parent.height
+            imageSource: "../../icons/circle-cross.svg"
+            size: 29
+            Layout.preferredWidth: 40
+            anchors.left: parent.left
+            anchors.leftMargin: 18
+            anchors.verticalCenter: parent.verticalCenter
+        }*/
         Controls.TextInput {
             id: chatInput
             color: "#A9AAAD"
@@ -47,13 +60,30 @@ ColumnLayout {
             anchors.rightMargin: 15
         }
 
-        Controls.IconButton {
+        Image {
+            id: messageEmojiButton
+            fillMode: Image.PreserveAspectFit
+            source: "../../icons/circle-cross.svg"
+            width: 25
+            sourceSize.width: 29
+            sourceSize.height: 29
+            Layout.preferredWidth: 40
+            anchors.right: parent.right
+            anchors.rightMargin: 15
+            anchors.verticalCenter: parent.verticalCenter
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+            }
+        }
+
+        /*Controls.IconButton {
             id: messageEmojiButton
             height: parent.height
-            icon.source: "../../icons/circle-cross.svg"
             iconColor: "#9FA0A3"
             hoverColor: "red"
-            icon.sourceSize.width: 29
+            img.source: "../../icons/circle-cross.svg"
+            img.sourceSize.width: 29
             Layout.preferredWidth: 40
             anchors.right: parent.right
             anchors.rightMargin: 15
@@ -61,6 +91,6 @@ ColumnLayout {
             MouseArea {
                 anchors.fill: parent
             }
-        }
+        }*/
     }
 }

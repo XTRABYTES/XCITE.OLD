@@ -35,7 +35,6 @@
         <file>Controls/SideMenuButton.qml</file>
         <file>XCITE/Nodes/Layout.qml</file>
         <file>XCITE/ReceiveCoins/Layout.qml</file>
-        <file>XCITE/ReceiveCoins/ReceiveCoinsDiode.qml</file>
         <file>Controls/TextBox.qml</file>
         <file>Controls/IconButton.qml</file>
         <file>Controls/DiodeHeader.qml</file>
@@ -104,5 +103,18 @@
         <file>X-Change/Home/ChartDiode.qml</file>
         <file>X-Change/Home/BuySellDiode.qml</file>
         <file>Settings/Layout.qml</file>
+        <file>Settings/DeveloperSettings.qml</file>
+        <file>XCITE/Home/LayoutBalanceLeft.qml</file>
+        <file>XCITE/ReceiveCoins/ReceiveDiode.qml</file>
+        <file>X-Chat/Layout.qml</file>
+        <file>X-Vault/Layout.qml</file>
+        <file>XCITE/ReceiveCoins/Form.qml</file>
+        <file>XCITE/ReceiveCoins/AddressBook.qml</file>
+        <file>XCITE/SendCoins/AddressBook.qml</file>
+        <file>XCITE/SendCoins/Form.qml</file>
+        <file>XCITE/Home/TransactionTable.qml</file>
+        <file>Controls/Switch.qml</file>
+        <file>Network.qml</file>
+        <file>Controls/DiodeVerticalScrollBar.qml</file>
     </qresource>
 </RCC>
