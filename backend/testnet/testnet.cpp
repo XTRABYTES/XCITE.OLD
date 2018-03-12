@@ -14,7 +14,25 @@ void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
 
     if (command == "getbalance") {
         setProperty("balance", reply["result"]);
-    } else if (command == "listtransactions") {
+        if(m_xchatobject->m_BalanceRequested)
+        {
+            m_xchatobject->m_BalanceRequested = false;
+            XchatTestnetClient client;
+            client.CompleteWriteBalance(m_xchatobject, reply["result"].toString());
+        }
+
+    }
+    else if (command == "dumpprivkey")
+    {
+        XchatTestnetClient client;
+        client.CompleteDumpprivkey(m_xchatobject, reply["result"].toString());
+    }
+    else if (command == "getblock")
+    {
+        XchatTestnetClient client;
+        client.CompleteGetBlock(m_xchatobject, res["result"].toArray());
+    }
+    else if (command == "listtransactions") {
         QJsonArray transactionList = res["result"].toArray();
 
         m_transactions->removeRows(0, m_transactions->m_transactions.size());
