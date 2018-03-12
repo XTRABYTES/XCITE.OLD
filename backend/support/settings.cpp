@@ -20,7 +20,7 @@ void Settings::setLocale(QString locale) {
         QCoreApplication::installTranslator(&m_translator);
     }
 
-    //m_engine->retranslate();
+    m_engine->retranslate();
 }
 
 void Settings::onLocaleChange(QString locale) {
