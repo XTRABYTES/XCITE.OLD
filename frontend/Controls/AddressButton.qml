@@ -1,6 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.3
 import QtQuick.Controls.Styles 1.4
 import "../Theme" 1.0
 import "../Controls" as Controls
@@ -21,71 +21,72 @@ Item {
     signal btnEditClicked
     signal btnAddClicked
 
-    Controls.ButtonIconText {
-        id: addAddress
-        text: qsTr("ADD " + type)
-        anchors.left: parent.left
-        anchors.leftMargin: 20
-        width: 116
-        backgroundColor: "transparent"
-        hoverBackgroundColor: Theme.primaryHighlight
-        iconFile: "../../icons/circle-cross.svg"
-        onButtonClicked: {
-            btnAddClicked()
-        }
-    }
+    RowLayout {
+        Layout.fillWidth: true
+        spacing: 15
 
-    Controls.ButtonIconText {
-        id: editButton
-        text: qsTr("EDIT")
-        anchors.left: addAddress.left
-        anchors.leftMargin: 135
-        width: 67
-        opacity: btnEditEnabled ? 1 : 0
-        backgroundColor: "transparent"
-        hoverBackgroundColor: Theme.primaryHighlight
-        iconFile: "../../icons/pencil.svg"
-
-        onButtonClicked: {
-            if (!btnEditEnabled) {
-                return
+        Controls.ButtonIconText {
+            id: addAddress
+            width: 55
+            border.width: 0
+            size: 16
+            backgroundColor: Theme.primaryHighlight
+            iconFile: "../../icons/circle-cross.svg"
+            onButtonClicked: {
+                btnAddClicked()
             }
-
-            if (!currentItem) {
-                return
-            }
-
-            btnEditClicked()
         }
-    }
 
-    Controls.ButtonIconText {
-        id: removeButton
-        text: qsTr("REMOVE")
-        anchors.left: editButton.left
-        anchors.leftMargin: 85
-        width: 89
-        backgroundColor: "transparent"
-        hoverBackgroundColor: Theme.primaryHighlight
-        iconFile: "../../icons/trash.svg"
+        Controls.ButtonIconText {
+            id: editButton
+            visible: type === "RECIPIENT"
+            width: 55
+            border.width: 0
+            size: 16
+            opacity: btnEditEnabled ? 1 : 0
+            backgroundColor: Theme.primaryHighlight
+            iconFile: "../../icons/pencil.svg"
 
-        onButtonClicked: {
-            var item = currentItem.item
+            onButtonClicked: {
+                if (!btnEditEnabled) {
+                    return
+                }
 
-            var text = qsTr("Are you sure you want to remove this address?")
+                if (!currentItem) {
+                    return
+                }
 
-            confirmationModal({
-                                  title: qsTr("REMOVE ADDRESS CONFIRMATION"),
-                                  bodyText: text,
-                                  confirmText: qsTr("CONFIRM"),
-                                  cancelText: qsTr("CANCEL")
-                              }, function (modal) {
+                btnEditClicked()
+            }
+        }
 
-                                  //OnConfirmed
-                                  if (currentItem !== null) {
-                                      addressRemoved()
-                                  }
-                              })
+        Controls.ButtonIconText {
+            id: removeButton
+            width: 55
+            size: 16
+            backgroundColor: Theme.primaryDanger
+            iconFile: "../../icons/trash.svg"
+            border.width: 0
+
+            onButtonClicked: {
+                var item = currentItem.item
+
+                var text = qsTr("Are you sure you want to remove this address?")
+
+                confirmationModal({
+                                      title: qsTr(
+                                                 "REMOVE ADDRESS CONFIRMATION"),
+                                      bodyText: text,
+                                      confirmText: qsTr("CONFIRM"),
+                                      cancelText: qsTr("CANCEL")
+                                  }, function (modal) {
+
+                                      //OnConfirmed
+                                      if (currentItem !== null) {
+                                          addressRemoved()
+                                      }
+                                  })
+            }
         }
     }
 }

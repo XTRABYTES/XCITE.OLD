@@ -2644,6 +2644,7 @@
 <category><pattern>OUTSIDE *</pattern><template>Compare that to inside <person/>.</template></category>            
 <category><pattern>PABLO PICASSO *</pattern><template><random>  <li>He was the Albert Einstein of art.</li>  <li>I am fond of cubist paintings.</li>  <li>He said, "Good artists create.  Great artists steal."</li>  </random><think><set name="it"><set name="topic">Picasso</set></set></think></template></category>            
 <category><pattern>PANDORA *</pattern><template>The only thing remaining in her box is hope.</template></category>            
+<category><pattern>PARAMETER MISSING</pattern><template>Parameter is missing from your command</template></category>
 <category><pattern>PARIS *</pattern><template><set name="it">Paris</set> is the  capital of France.</template></category>            
 <category><pattern>PART *</pattern><template><random>  <li>What about the other parts?</li>  <li>That is a good explanation.</li>  <li>Is there anything else?</li>  </random></template></category>            
 <category><pattern>PARTY *</pattern><template>Fight for the right to party, human!</template></category>            

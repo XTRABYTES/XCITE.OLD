@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import "../Theme" 1.0
 
@@ -18,13 +18,11 @@ RowLayout {
 
     Text {
         text: title
-        font.family: "Roboto"
         font.weight: Font.Bold
         font.pixelSize: 20
     }
 
     Text {
-        font.family: "Roboto"
         font.pixelSize: 16
         text: message
     }
@@ -34,8 +32,8 @@ RowLayout {
         height: parent.height
         Layout.preferredWidth: 40
 
-        icon.source: "../icons/cross.svg"
-        icon.sourceSize.width: 10
+        img.source: "../icons/cross.svg"
+        img.sourceSize.width: 10
 
         onClicked: {
             popup.visible = false

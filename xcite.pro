@@ -6,14 +6,11 @@
 
 VERSION_MAJOR=0
 VERSION_MINOR=1
-VERSION_BUILD=2
+VERSION_BUILD=4
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui
-QT	+= xml
-QT	+= quick
-QT      += svg
+QT	+= core gui xml quick svg charts
 CONFIG	+= c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -58,7 +55,9 @@ SOURCES += main/main.cpp \
             backend/testnet/transactionmodel.cpp \
             backend/addressbook/addressbookmodel.cpp \
             backend/support/ClipboardProxy.cpp \
-            backend/support/globaleventfilter.cpp
+            backend/support/globaleventfilter.cpp \
+            backend/support/settings.cpp \
+    backend/testnet/xchattestnetclient.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -73,7 +72,9 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
             backend/support/ClipboardProxy.hpp \
-            backend/support/globaleventfilter.hpp
+            backend/support/globaleventfilter.hpp \
+            backend/support/settings.hpp \
+    backend/testnet/xchattestnetclient.hpp
 
 DISTFILES += \
     xcite.ico

@@ -15,24 +15,51 @@ Controls.Diode {
         Controls.DiodeHeader {
             text: "MARKET"
         }
-        /**
+
         RowLayout {
-            Layout.leftMargin: 15
-            Layout.topMargin: 5
-            Text {
-                font.pointSize: 11
+            Layout.leftMargin: 10
+            Layout.topMargin: 10
+            Image {
+                source: "../../icons/Star.svg"
+            }
+            Label {
                 text: "XBY"
-                color: "#FFFFFF"
-                font.family: "Roboto"
-                //font.weight: bold
+                color: "#99A5BA"
             }
-            Text {
-                font.pointSize: 11
+            Label {
+                anchors.left: parent.left
+                anchors.leftMargin: 80
+                text: "1.00"
+                color: "#99A5BA"
+            }
+            Label {
+                anchors.left: parent.left
+                anchors.leftMargin: 160
+                text: "+0.00%"
+            }
+        }
+        RowLayout {
+            Layout.leftMargin: 10
+            Layout.topMargin: 2
+            Image {
+                source: "../../icons/Star.svg"
+            }
+            Label {
                 text: "XFUEL"
-                color: "#FFFFFF"
-                font.family: "Roboto"
-                //font.weight: bold
+                color: "#99A5BA"
             }
-        }*/
+            Label {
+                anchors.left: parent.left
+                anchors.leftMargin: 80
+                text: "0.99"
+                color: "#99A5BA"
+            }
+            Label {
+                anchors.left: parent.left
+                anchors.leftMargin: 160
+                text: "-0.03%"
+                color: "#F77E7E"
+            }
+        }
     }
 }

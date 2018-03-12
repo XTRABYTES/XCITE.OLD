@@ -1,5 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
+import "../Theme" 1.0
 
 Item {
     property var selected
@@ -14,31 +15,15 @@ Item {
     }
 
     Layout.fillWidth: true
-    Layout.maximumWidth: parent.width
-    Layout.minimumHeight: 70
-    Layout.preferredHeight: 70
-    Layout.maximumHeight: 70
-
-    anchors.left: parent.left
-    anchors.top: parent.top
-    anchors.bottomMargin: -15
+    height: moduleMenuHeight
 
     z: 50
 
-    Rectangle {
-        height: 44
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
-        width: navRowLayout.width
-        radius: 5
-        color: "#3A3E47"
+    RowLayout {
+        anchors.fill: parent
 
         RowLayout {
-            id: navRowLayout
-            anchors.left: parent.left
-            anchors.top: parent.top
-            height: parent.height
-            spacing: 0
+            spacing: 2
 
             ModuleMenuButton {
                 name: "xCite"
@@ -66,25 +51,19 @@ Item {
 
             ModuleMenuButton {
                 name: "xMore"
+                visible: xcite.width > 1065
                 target: "tools.TBD"
                 text: qsTr("MORE")
             }
         }
-    }
-
-    RowLayout {
-        Layout.fillWidth: true
-        Layout.maximumWidth: 300
-        Layout.minimumWidth: 200
-        Layout.preferredWidth: 200
-        anchors.right: parent.right
-        height: parent.height
-        spacing: 30
 
         SearchBox {
-            id: searchBox
             placeholder: qsTr("Search...")
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
             anchors.right: parent.right
+            Layout.fillWidth: true
+            Layout.maximumWidth: 340
         }
     }
 }

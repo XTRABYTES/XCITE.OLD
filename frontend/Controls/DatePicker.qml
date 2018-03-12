@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import Qt.labs.calendar 1.0
 import "../Theme" 1.0
@@ -12,7 +12,6 @@ TextField {
     property string hoveringBackgroundColor: "#46464b"
 
     id: dateField
-    font.family: "Roboto"
     font.weight: Font.Light
     font.pixelSize: 16
     text: Qt.formatDate(value, dateFormat)
@@ -98,7 +97,6 @@ TextField {
                         text: model.narrowName
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        font.family: "Roboto"
                         font.weight: Font.Medium
                         font.pixelSize: 8
                         padding: 5
@@ -138,7 +136,6 @@ TextField {
                         verticalAlignment: Text.AlignVCenter
                         opacity: model.month === grid.month ? 1 : 0
                         text: model.day
-                        font.family: "Roboto"
                         font.weight: Font.Light
                         font.pixelSize: 7
                         padding: 5

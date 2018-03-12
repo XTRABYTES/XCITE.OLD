@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
+import "../Theme" 1.0
 
 Rectangle {
     property string selectedView
@@ -16,34 +17,21 @@ Rectangle {
         }
     }
 
-    Layout.fillHeight: true
-    Layout.minimumWidth: sideMenuWidth
-    Layout.preferredWidth: sideMenuWidth
-    Layout.maximumWidth: sideMenuWidth
-    color: "#3A3E47"
+    color: Theme.panelBackground
 
     ColumnLayout {
-        Layout.fillHeight: true
+        anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.topMargin: moduleMenuHeight + 7
+        spacing: 0
 
-        spacing: 25
-
-        ButtonIcon {
-            id: logobutton
-            imageSource: "../logos/xby_logo.svg"
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            Layout.topMargin: 15
-            isSelected: true
-            cursorShape: Qt.ArrowCursor
-            hoverEnabled: false
-            size: 40
-        }
-
+        //        Label {
+        //            text: xcite.width + "," + xcite.height
+        //        }
         SideMenuButton {
             name: "xCite.home"
             visible: selectedModule === 'xCite'
-            Layout.topMargin: 10
             imageSource: "../icons/menu-home.svg"
             labelText: qsTr("HOME")
             size: 32
@@ -53,32 +41,18 @@ Rectangle {
             name: "xCite.sendCoins"
             visible: selectedModule === 'xCite'
             imageSource: "../icons/menu-sendcoins.svg"
-            labelText: qsTr("SEND COINS")
+            labelText: qsTr("SEND")
             imageOffsetX: -6
             size: 25
-
-            // Force the label to wrap
-            anchors.leftMargin: 20
-            anchors.rightMargin: 20
-
-            // ButtonIcon height uses childrenRect.height to size itself, but this seems incorrect if the text wraps, adjust to compensate
-            height: 65
         }
 
         SideMenuButton {
             name: "xCite.receiveCoins"
             visible: selectedModule === 'xCite'
             imageSource: "../icons/menu-receivecoins.svg"
-            labelText: qsTr("RECEIVE COINS")
+            labelText: qsTr("RECEIVE")
             imageOffsetX: 5
             size: 25
-
-            // Force the label to wrap
-            anchors.leftMargin: 20
-            anchors.rightMargin: 20
-
-            // ButtonIcon height uses childrenRect.height to size itself, but this seems incorrect if the text wraps, adjust to compensate
-            height: 65
         }
 
         SideMenuButton {
@@ -100,7 +74,6 @@ Rectangle {
         SideMenuButton {
             name: "xChange.home"
             visible: selectedModule === 'xChange'
-            Layout.topMargin: 10
             imageSource: "../icons/menu-home.svg"
             labelText: qsTr("HOME")
             size: 32
@@ -108,6 +81,7 @@ Rectangle {
     }
 
     ColumnLayout {
+        visible: xcite.height > 600
         width: parent.width
         Layout.fillHeight: true
         Layout.minimumHeight: 200
@@ -144,29 +118,29 @@ Rectangle {
                                   }, function () {
                                       xcite.isNetworkActive = !xcite.isNetworkActive
                                       pollWallet(true)
-                                      testnetRequest('listaccounts')
+                                      network.listAccounts()
                                   })
             }
         }
 
-        Switch {
-            id: killSwitch
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            checked: true
-            padding: 0
-            onClicked: {
-                var title = killSwitch.checked ? qsTr("ACTIVATE?") : qsTr(
-                                                     "DEACTIVATE?")
-                confirmationModal({
-                                      title: title,
-                                      bodyText: qsTr("Are you sure?"),
-                                      confirmText: qsTr("YES"),
-                                      cancelText: qsTr("NO")
-                                  }, null, function (modal) {
-                                      killSwitch.checked = !killSwitch.checked
-                                  })
-            }
-        }
+        //        Switch {
+        //            id: killSwitch
+        //            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+        //            checked: true
+        //            padding: 0
+        //            onClicked: {
+        //                var title = killSwitch.checked ? qsTr("ACTIVATE?") : qsTr(
+        //                                                     "DEACTIVATE?")
+        //                confirmationModal({
+        //                                      title: title,
+        //                                      bodyText: qsTr("Are you sure?"),
+        //                                      confirmText: qsTr("YES"),
+        //                                      cancelText: qsTr("NO")
+        //                                  }, null, function (modal) {
+        //                                      killSwitch.checked = !killSwitch.checked
+        //                                  })
+        //            }
+        //        }
     }
 
     Version {

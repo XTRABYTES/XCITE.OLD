@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 
 import "Nodes" as Nodes
@@ -6,6 +6,7 @@ import "Home" as Home
 import "SendCoins" as SendCoins
 import "History" as History
 import "ReceiveCoins" as ReceiveCoins
+import "../Settings" as Settings
 
 Item {
     readonly property string defaultView: "home"
@@ -54,6 +55,11 @@ Item {
     History.Layout {
         id: xCiteHistory
         visible: selectedView === "history"
+    }
+
+    Settings.Layout {
+        id: xCiteSettings
+        visible: selectedView === "settings"
     }
 
     // Nodes

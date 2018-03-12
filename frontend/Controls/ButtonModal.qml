@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.1
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import "../Theme" 1.0
 
@@ -8,7 +8,7 @@ Button {
     property bool isDanger: false
     property alias label: label
     property string labelText: label.text || qsTr("OK")
-    property real buttonHeight: parent.height
+    property real buttonHeight: 40
     property int colorTracker: 0
     Layout.fillWidth: true
     height: buttonHeight
@@ -27,7 +27,7 @@ Button {
 
         color: {
             if (isDanger == true)
-                "#d80e0e"
+                Theme.primaryDanger
             if (isPrimary == true && isDanger == false)
                 Theme.primaryHighlight
             if (isDanger == false && isPrimary == false && colorTracker == 0)
@@ -61,7 +61,6 @@ Button {
         color: isDanger ? "#fff" : (isPrimary ? "#3e3e3e" : "#fff")
         font.pixelSize: 18
         text: labelText
-        font.family: "Roboto"
         font.weight: isPrimary ? Font.Medium : Font.Light
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter

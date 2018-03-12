@@ -1,4 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.7
+import QtQuick.Controls 2.3
+
 
 //Component for text with a blue underline below it.
 Item {
@@ -7,15 +9,12 @@ Item {
     //Allows setting of the text pixel size from parent
     property alias pixelSize: label.font.pixelSize
 
-    Text {
+    Label {
         id: label
         font.pixelSize: 19
-        font.family: "Roboto"
         font.weight: Font.Light
-        text: "Uninstantiated Text"
         color: "#E3E3E3"
 
-        //Blue Rectangle located underneath the text
         Rectangle {
             x: 0
             y: 30.29

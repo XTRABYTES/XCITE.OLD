@@ -1,15 +1,14 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
-import QtQuick.Window 2.1
-import QtQuick.Controls.Material 2.1
 
 import "Controls" as Controls
 
 import "XCITE" as XCITE
 import "X-Change" as XChange
 import "X-Chat" as XChat
+import "X-Vault" as XVault
 import "tools" as Tools
+import "Settings" as Settings
 
 import xtrabytes.xcite.xchat 1.0
 
@@ -20,32 +19,37 @@ import xtrabytes.xcite.xchat 1.0
 Item {
     id: dashboard
 
-    readonly property int layoutGridSpacing: 15
-    readonly property int sideMenuWidth: 90
+    readonly property int layoutGridSpacing: 12
+    readonly property int sideMenuWidth: 86
+    readonly property int panelBorderRadius: 0
+    readonly property int diodeHeaderHeight: 46
+    readonly property int moduleMenuHeight: 49
+    readonly property int diodeTopMargin: 40
+    readonly property int diodePadding: 20
 
     signal selectView(string path)
 
     Connections {
         Component.onCompleted: {
-            selectView("xCite.home")
+            selectView(developerSettings.initialView)
         }
     }
 
     RowLayout {
         id: rootLayout
         anchors.fill: parent
-        anchors.rightMargin: layoutGridSpacing
-        anchors.bottomMargin: layoutGridSpacing
-        spacing: 15
+        spacing: layoutGridSpacing
 
         Controls.SideMenu {
+            Layout.fillHeight: true
+            width: sideMenuWidth
         }
 
         ColumnLayout {
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
             Layout.fillHeight: true
             Layout.fillWidth: true
+            Layout.rightMargin: layoutGridSpacing
+            spacing: layoutGridSpacing
 
             Controls.ModuleMenu {
             }
@@ -55,14 +59,11 @@ Item {
 
             XChange.Layout {
             }
-
             XChat.Layout {
             }
-
-
-            // Settings
-            Item {
-                id: moduleSettings
+            XVault.Layout {
+            }
+            Settings.Layout {
             }
 
             Tools.Layout {
@@ -74,11 +75,11 @@ Item {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.leftMargin: sideMenuWidth + layoutGridSpacing
+        visible: false
     }
 
     XchatPopup {
         id: xChatPopup
-        visible: true
     }
 
     Timer {

@@ -1,7 +1,8 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
-import QtQuick.Window 2.0
+import QtQuick.Window 2.2
+import Qt.labs.settings 1.0
 
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
@@ -15,22 +16,35 @@ ApplicationWindow {
 
     visible: true
 
-    width: (Screen.width < 1440) ? Screen.width : 1440
-    height: (Screen.height < 1024) ? Screen.height : 1024
+    width: 940
+    height: 500
+    minimumWidth: 940
+    minimumHeight: 500
+
     title: qsTr("XCITE")
     color: "#2B2C31"
 
-    overlay.modal: Rectangle {
-        color: "#c92a2c31"
-    }
-
     StackView {
         id: mainRoot
-        initialItem: LoginComponents.LoginForm {
-        }
         anchors.fill: parent
         pushEnter: null
         pushExit: null
+
+        Component.onCompleted: {
+            this.push(developerSettings.skipLogin ? dashboardForm : loginForm)
+        }
+    }
+
+    Component {
+        id: dashboardForm
+        DashboardForm {
+        }
+    }
+
+    Component {
+        id: loginForm
+        LoginComponents.LoginForm {
+        }
     }
 
     Xchat {
@@ -41,12 +55,30 @@ ApplicationWindow {
         id: clipboard
     }
 
+    Settings {
+        id: settings
+        property alias x: xcite.x
+        property alias y: xcite.y
+        property alias width: xcite.width
+        property alias height: xcite.height
+        property string locale: "en_us"
+    }
+
+    Settings {
+        id: developerSettings
+        category: "developer"
+        property bool skipLogin: false
+        property string initialView: "xCite.home"
+    }
+
+    Network {
+        id: network
+        handler: wallet
+    }
+
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
-    signal testnetRequest(string request)
-    signal testnetSendFrom(string account, string address, real amount)
-    signal testnetValidateAddress(string address)
-    signal testnetGetAccountAddress(string account)
+    signal localeChange(string locale)
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())
@@ -74,11 +106,11 @@ ApplicationWindow {
     }
 
     function pollWallet(isInitial) {
-        testnetRequest("getbalance")
+        network.getBalance()
 
         if (!isInitial) {
-            testnetRequest("listtransactions")
-            testnetRequest("listaccounts")
+            network.listTransactions()
+            network.listAccounts()
         }
     }
 
@@ -102,7 +134,6 @@ ApplicationWindow {
                 }
 
                 modal.close()
-                modal.destroy()
             })
 
             modal.open()
@@ -131,7 +162,6 @@ ApplicationWindow {
                 }
 
                 modal.close()
-                modal.destroy()
             })
 
             modal.cancelled.connect(function () {
@@ -140,7 +170,6 @@ ApplicationWindow {
                 }
 
                 modal.close()
-                modal.destroy()
             })
 
             modal.open()

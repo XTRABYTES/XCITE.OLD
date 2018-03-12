@@ -1,8 +1,8 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-import QtQuick.Window 2.1
+import QtQuick.Window 2.2
 
 Rectangle {
     id: root
@@ -40,22 +40,27 @@ Rectangle {
         id: label
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "Uninstantiated Text"
-        font.family: "roboto"
+        text: ""
         font.pixelSize: 10
         color: textColor
-        opacity: 0.9
-        leftPadding: 25
+
+        leftPadding: text === "" ? 0 : 25
 
         Image {
+            id: icon
             fillMode: Image.PreserveAspectFit
             source: iconFile
-            width: 19
-            height: 13
-            sourceSize.width: 19
-            sourceSize.height: 13
+            height: size
+            sourceSize.width: size
+            sourceSize.height: size
             anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
+            anchors.horizontalCenter: text === "" ? parent.horizontalCenter : undefined
+        }
+
+        ColorOverlay {
+            anchors.fill: icon
+            source: icon
+            color: "#333333"
         }
     }
 

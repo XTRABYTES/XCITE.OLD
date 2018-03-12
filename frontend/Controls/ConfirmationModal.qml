@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.1
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
 ModalPopup {
@@ -35,7 +35,6 @@ ModalPopup {
                 id: inputField
                 visible: showInput
                 color: "white"
-                font.family: "Roboto"
                 font.weight: Font.Light
                 font.pixelSize: 36
                 leftPadding: 18

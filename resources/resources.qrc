@@ -54,7 +54,6 @@
         <file>aiml/Sex.aiml</file>
         <file>aiml/Stack.aiml</file>
         <file>aiml/That.aiml</file>
-        <file>backgrounds/wallet-graph-placeholder.png</file>
         <file>icons/menu-home.svg</file>
         <file>icons/menu-transfers.svg</file>
         <file>icons/menu-history.svg</file>
@@ -78,6 +77,8 @@
         <file>icons/icon-diamond.svg</file>
         <file>icons/circle-check.svg</file>
         <file>icons/placeholder-qr.svg</file>
+        <file>icons/happiness.svg</file>
+        <file>icons/chat-avatar.svg</file>
         <file>ios/LaunchScreen.storyboard</file>
         <file>backgrounds/launchscreen-logo.png</file>
         <file>icons/mobile-receive.svg</file>
@@ -86,5 +87,10 @@
         <file>icons/mobile-back.svg</file>
         <file>icons/mobile-menu.svg</file>
         <file>icons/graph5.svg</file>
+        <file>i18n/lang_nl_nl.qm</file>
+        <file>i18n/lang_en_us.qm</file>
+        <file>icons/Star.svg</file>
+        <file>icons/Rectangle7.png</file>
+        <file>icons/Rectangle8.png</file>
     </qresource>
 </RCC>

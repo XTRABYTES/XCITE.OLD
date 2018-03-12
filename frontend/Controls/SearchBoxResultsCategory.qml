@@ -24,7 +24,6 @@ Rectangle {
         leftPadding: 7
 
         color: "#10B9C5"
-        font.family: "Roboto"
         font.pointSize: 13
     }
 

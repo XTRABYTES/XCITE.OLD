@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import "../Controls" as Controls
 
@@ -64,8 +64,8 @@ ColumnLayout {
 
             Controls.IconButton {
                 anchors.verticalCenter: parent.verticalCenter
-                icon.source: "../icons/left-arrow.svg"
-                icon.sourceSize.height: 10
+                img.source: "../icons/left-arrow.svg"
+                img.sourceSize.height: 10
                 height: parent.height
             }
 
@@ -73,14 +73,13 @@ ColumnLayout {
                 Layout.fillWidth: true
                 text: "John Doe"
                 color: "#e6e6e6"
-                font.family: "Roboto"
                 font.pixelSize: 12
             }
 
             Controls.IconButton {
                 anchors.verticalCenter: parent.verticalCenter
-                icon.source: "../icons/phone-call.svg"
-                icon.sourceSize.width: 22
+                img.source: "../icons/phone-call.svg"
+                img.sourceSize.width: 22
                 iconColor: "#acb6ce"
                 height: parent.height
             }

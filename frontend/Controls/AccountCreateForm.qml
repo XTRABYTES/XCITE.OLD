@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.1
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
 import "./" as Controls
@@ -48,6 +48,7 @@ ModalPopup {
             bottomPadding: 10
             Layout.topMargin: -20 // TODO: Hack - what's behind the spacing?
             anchors.topMargin: 0
+            text: '' // item ? item.name : ''
         }
 
         RowLayout {

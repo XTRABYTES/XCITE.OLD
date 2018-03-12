@@ -1,14 +1,18 @@
-import QtQuick 2.4
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.3
 import "../Theme" 1.0
 
 ListView {
+    property int leftMargin: 3
+    property int rightMargin: 3
+    property double delegateLineHeight: 1.5
+
     id: addressBook
     anchors.fill: parent
     anchors.topMargin: 10
     anchors.bottomMargin: 10
-    anchors.leftMargin: 3
-    anchors.rightMargin: 3
+    anchors.leftMargin: leftMargin
+    anchors.rightMargin: rightMargin
 
     highlightMoveDuration: 0
     highlightResizeDuration: 0
@@ -22,6 +26,7 @@ ListView {
 
         verticalAlignment: Text.AlignVCenter
         width: parent.width
+
         leftPadding: 20
         rightPadding: 20
         text: name || "Default"

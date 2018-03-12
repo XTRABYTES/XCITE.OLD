@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import "X-Chat" as XChat
@@ -109,8 +109,8 @@ Item {
                         height: parent.height
                         Layout.preferredWidth: 40
 
-                        icon.source: "../icons/plus-button.svg"
-                        icon.sourceSize.width: 28
+                        img.source: "../icons/plus-button.svg"
+                        img.sourceSize.width: 28
                     }
 
                     Rectangle {
@@ -140,7 +140,6 @@ Item {
                             clip: true
 
                             font.pixelSize: 11
-                            font.family: "Roboto"
                             color: "#ffffff"
 
                             Keys.onReturnPressed: onSubmitUserInput()
@@ -164,7 +163,6 @@ Item {
                         contentItem: Text {
                             text: xChatBtnSend.text
                             color: xChatBtnSend.enabled ? (xChatBtnSend.down ? "#ffffff" : "#24B9C3") : "#777"
-                            font.family: "Roboto"
                             font.pixelSize: 12
                         }
 
