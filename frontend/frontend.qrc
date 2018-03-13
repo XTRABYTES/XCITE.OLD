@@ -106,7 +106,6 @@
         <file>Settings/DeveloperSettings.qml</file>
         <file>XCITE/Home/LayoutBalanceLeft.qml</file>
         <file>XCITE/ReceiveCoins/ReceiveDiode.qml</file>
-        <file>X-Chat/Layout.qml</file>
         <file>X-Vault/Layout.qml</file>
         <file>XCITE/ReceiveCoins/Form.qml</file>
         <file>XCITE/ReceiveCoins/AddressBook.qml</file>
