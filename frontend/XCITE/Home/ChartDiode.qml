@@ -32,6 +32,7 @@ Controls.Diode {
             backgroundRoundness: panelBorderRadius
 
             SplineSeries {
+                id: doesntmatterwhatyoucallthis
                 name: "Price (USD)"
                 axisX: DateTimeAxis {
                     format: "dd MMM"
