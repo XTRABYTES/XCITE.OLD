@@ -3,6 +3,7 @@
 #include <QtQuick/QQuickWindow>
 #include <QQmlFileSelector>
 #include <QSettings>
+#include <QThread>
 #include <qqmlcontext.h>
 #include <qqml.h>
 #include "../backend/xchat/xchat.hpp"

@@ -6,20 +6,29 @@ ReleaseChecker::ReleaseChecker(QString currentVersion, QObject *parent)
     : QObject(parent)
 {
     m_currentVersion = currentVersion.remove(QRegExp("[^\\d]")).toInt();
-    m_url = "https://api.github.com/repos/borzalom/xcite/releases";
+    m_url = QUrl("https://api.github.com/repos/borzalom/xcite/releases");
 }
 
 ReleaseChecker::~ReleaseChecker() {
 }
 
 void ReleaseChecker::checkForUpdate() {
-    qDebug() << "checking for update...";
-    m_downloader = new FileDownloader(m_url, this);
-    connect(m_downloader, SIGNAL(downloaded()), this, SLOT(dataLoaded()));
+    qDebug() << "checking for xcite update...";
+
+    thread = new QThread;
+    m_worker = new FileDownloader(m_url);
+    m_worker->moveToThread(thread);
+
+    connect(m_worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+    connect(thread, SIGNAL(started()), m_worker, SLOT(download()));
+    connect(m_worker, SIGNAL(finished()), this, SLOT(dataLoaded()));
+    connect(m_worker, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    thread->start();
 }
 
 void ReleaseChecker::dataLoaded() {
-    QJsonDocument releaseInfo(QJsonDocument::fromJson(m_downloader->downloadedData()));
+    QJsonDocument releaseInfo(QJsonDocument::fromJson(m_worker->downloadedData()));
     if (!releaseInfo.isArray()) {
         qWarning("Failed to parse release data from GitHub");
         return;
@@ -36,4 +45,6 @@ void ReleaseChecker::dataLoaded() {
             qDebug() << "no update available";
         }
     }
+
+    delete m_worker;
 }

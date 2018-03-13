@@ -76,7 +76,6 @@ ApplicationWindow {
         handler: wallet
     }
 
-
     Component.onCompleted: {
         ReleaseChecker.checkForUpdate()
     }

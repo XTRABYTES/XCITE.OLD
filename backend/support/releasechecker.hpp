@@ -5,11 +5,14 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QThread>
 #include "filedownloader.hpp"
 
 class ReleaseChecker : public QObject
 {
     Q_OBJECT
+    QThread *thread;
+
 public:
     ReleaseChecker(QString currentVersion, QObject *parent = 0);
     ~ReleaseChecker();
@@ -21,8 +24,12 @@ public slots:
     void checkForUpdate();
     void dataLoaded();
 
+    void errorString(QString err) {
+        qDebug() << "error" << err;
+    }
+
 private:
-    FileDownloader *m_downloader;
+    FileDownloader *m_worker;
     int m_currentVersion;
     QUrl m_url;
 };

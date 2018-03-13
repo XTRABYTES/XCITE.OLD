@@ -16,14 +16,19 @@ public:
     QByteArray downloadedData() const;
 
 signals:
-    void downloaded();
+    void finished();
+    void error(QString err);
+
+public slots:
+    void download();
 
 private slots:
     void fileDownloaded(QNetworkReply *reply);
 
 private:
-    QNetworkAccessManager *m_nam;
+    QNetworkAccessManager *m_manager;
     QByteArray m_data;
+    QUrl m_url;
 };
 
 #endif // FILEDOWNLOADER_HPP

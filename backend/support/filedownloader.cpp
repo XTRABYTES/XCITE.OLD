@@ -1,23 +1,26 @@
 #include "filedownloader.hpp"
 
-#include <QDebug>
+void FileDownloader::download() {
+    m_manager = new QNetworkAccessManager;
+    connect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileDownloaded(QNetworkReply*)));
+    m_manager->get(QNetworkRequest(m_url));
+}
 
 FileDownloader::FileDownloader(QUrl url, QObject *parent) :
     QObject(parent)
 {
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileDownloaded(QNetworkReply*)));
-
-    manager->get(QNetworkRequest(url));
+    m_url = url;
 }
 
-FileDownloader::~FileDownloader() {}
+FileDownloader::~FileDownloader() {
+    delete m_manager;
+}
 
 void FileDownloader::fileDownloaded(QNetworkReply *reply) {
     m_data = reply->readAll();
 
     reply->deleteLater();
-    emit downloaded();
+    emit finished();
 }
 
 QByteArray FileDownloader::downloadedData() const {
