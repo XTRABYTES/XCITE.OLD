@@ -6,6 +6,9 @@ RowLayout {
     id: currencyDropdownWidget
 
     property alias text: menuLabel.text
+    property string iconSource: "../icons/dropdown-arrow.svg"
+    property int iconSize: 5
+    property bool iconOnly: false
 
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
@@ -24,15 +27,13 @@ RowLayout {
         width: 2
         height: parent.height
         anchors.verticalCenter: parent.verticalCenter
+        visible: !iconOnly
     }
 
     ButtonIcon {
         width: parent.height
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        imageOffsetY: parent.height / 2 - 2.5 // TODO: This shouldn't be necessary but need to refactor ButtonIcon first
-
-        imageSource: "../icons/dropdown-arrow.svg"
-        size: 5
+        anchors.verticalCenter: parent.verticalCenter
+        imageSource: iconSource
+        size: iconSize
     }
 }
