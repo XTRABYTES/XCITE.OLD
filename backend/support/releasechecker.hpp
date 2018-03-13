@@ -8,6 +8,8 @@
 #include <QThread>
 #include "filedownloader.hpp"
 
+#include <QDebug>
+
 class ReleaseChecker : public QObject
 {
     Q_OBJECT

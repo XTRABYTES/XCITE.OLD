@@ -38,6 +38,7 @@ void ReleaseChecker::dataLoaded() {
     if (entries.count() > 0) {
         QJsonObject latestRelease = entries[0].toObject();
         int latestVersion = latestRelease["tag_name"].toString().remove(QRegExp("[^\\d]")).toInt();
+        qDebug() << "local=" << m_currentVersion << " remote=" << latestVersion;
         if (m_currentVersion < latestVersion) {
             qDebug() << "update available";
             emit xciteUpdateAvailable();
