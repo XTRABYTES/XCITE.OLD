@@ -76,6 +76,17 @@
         <file>Controls/Version.qml</file>
         <file>Controls/AddressForm.qml</file>
         <file>Controls/AccountCreateForm.qml</file>
+        <file>X-Chat/Channels.qml</file>
+        <file>X-Chat/Layout.qml</file>
+        <file>X-Chat/Home/ChannelGroup.qml</file>
+        <file>X-Chat/Home/ChannelList.qml</file>
+        <file>X-Chat/Home/ChannelsDiode.qml</file>
+        <file>X-Chat/Home/ChatDiode.qml</file>
+        <file>X-Chat/Home/Layout.qml</file>
+        <file>X-Chat/Home/ChatBox.qml</file>
+        <file>X-Chat/Home/StatusBox.qml</file>
+        <file>X-Chat/Home/ConversationBox.qml</file>
+        <file>X-Chat/Home/StatusGroup.qml</file>
         <file>Controls/ComboBox.qml</file>
         <file>+mobile/DashboardForm.qml</file>
         <file>Theme/Theme.qml</file>
@@ -95,7 +106,6 @@
         <file>Settings/DeveloperSettings.qml</file>
         <file>XCITE/Home/LayoutBalanceLeft.qml</file>
         <file>XCITE/ReceiveCoins/ReceiveDiode.qml</file>
-        <file>X-Chat/Layout.qml</file>
         <file>X-Vault/Layout.qml</file>
         <file>XCITE/ReceiveCoins/Form.qml</file>
         <file>XCITE/ReceiveCoins/AddressBook.qml</file>

@@ -7,6 +7,7 @@ Button {
 
     property alias cursorShape: mouseArea.cursorShape
     property alias img: image
+
     property color iconColor: "#666"
     property color hoverColor: "white"
 

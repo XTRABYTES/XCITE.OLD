@@ -59,13 +59,10 @@ Item {
 
             XChange.Layout {
             }
-
             XChat.Layout {
             }
-
             XVault.Layout {
             }
-
             Settings.Layout {
             }
 
