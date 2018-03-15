@@ -99,7 +99,7 @@ Rectangle {
                 text: qsTr("X-CHAT")
                 tags: "conversation communication communicate comm speak talk"
                 function onSearchResultClicked() {
-                    selectView("xChat.TBD")
+                    selectView("xChat.home")
                     searchResultsBox.visible = false
                 }
             }
