@@ -114,6 +114,15 @@ Rectangle {
             }
 
             SearchBoxResultsCategoryItem {
+                text: qsTr("SETTINGS")
+                tags: "config option fix adjust"
+                function onSearchResultClicked() {
+                    selectView("xCite.settings")
+                    searchResultsBox.visible = false
+                }
+            }
+
+            SearchBoxResultsCategoryItem {
                 text: qsTr("MORE")
                 tags: "test bot script miscellaneous additional"
                 function onSearchResultClicked() {
