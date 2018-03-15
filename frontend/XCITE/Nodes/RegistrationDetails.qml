@@ -11,11 +11,13 @@ import QtQuick.Extras 1.4
 /**
   * Refactored, needs cleaning up on the Low, Medium High Texts, see line 136
   */
-Rectangle {
+Controls.Diode {
 
     // primary rectangle properties
     property int pageTracker: 0
-    id: regDetails
+    property int level1
+    level1: levelSelect.currentIndex
+    id: regLevel
     width: parent.width - 100
     height: parent.height - 500
     Layout.minimumHeight: 100
@@ -33,14 +35,6 @@ Rectangle {
             color: "#e2e2e2"
             text: qsTr("Node Registration")
             font.pixelSize: 18
-        }
-        Rectangle {
-            id: rectangle
-            Layout.topMargin: 8
-
-            width: 1320
-            height: 1
-            color: "#535353"
         }
     }
     // Second layer text
@@ -139,6 +133,7 @@ Rectangle {
             Layout.leftMargin: 25
             Layout.topMargin: 20
             text: "Accept transaction fee"
+            visible: xcite.width > 1100
         }
         Label {
             font.pixelSize: 12
@@ -191,3 +186,4 @@ Rectangle {
         }
     }
 }
+
