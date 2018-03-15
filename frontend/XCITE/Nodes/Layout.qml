@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.3
 import Qt.labs.calendar 1.0
 import "../../Controls" as Controls
+import "../../Theme" 1.0
 
 ColumnLayout {
     readonly property color cBoardBackground: "#3a3e46"
@@ -28,7 +29,9 @@ ColumnLayout {
         }
     }
     RegistrationLevel {
+
         visible: tracker == 1
+
         Label {
             id: back1
 
@@ -41,7 +44,7 @@ ColumnLayout {
             font.pixelSize: 12
             font.weight: isActive ? Font.Bold : Font.Normal
             text: isActive ? altText : defaultText
-            color: "#0ED8D2"
+            color: Theme.primaryHighlight
 
             MouseArea {
                 anchors.fill: parent
@@ -61,7 +64,7 @@ ColumnLayout {
             font.pixelSize: 12
             font.weight: isActive ? Font.Bold : Font.Normal
             text: isActive ? altText : defaultText
-            color: "#0ED8D2"
+            color: Theme.primaryHighlight
             rightPadding: 50
             topPadding: 60
 
@@ -90,7 +93,7 @@ ColumnLayout {
             font.pixelSize: 12
             font.weight: isActive ? Font.Bold : Font.Normal
             text: isActive ? altText : defaultText
-            color: "#0ED8D2"
+            color: Theme.primaryHighlight
             leftPadding: 35
             topPadding: 60
 
@@ -113,7 +116,7 @@ ColumnLayout {
             font.pixelSize: 12
             font.weight: isActive ? Font.Bold : Font.Normal
             text: isActive ? altText : defaultText
-            color: "#0ED8D2"
+            color: Theme.primaryHighlight
             rightPadding: 50
             topPadding: 60
 
@@ -140,7 +143,7 @@ ColumnLayout {
             font.pixelSize: 12
             font.weight: isActive ? Font.Bold : Font.Normal
             text: isActive ? altText : defaultText
-            color: "#0ED8D2"
+            color: Theme.primaryHighlight
             leftPadding: 35
             topPadding: 60
 
@@ -170,9 +173,15 @@ ColumnLayout {
 
                 onButtonClicked: {
                     tracker = 1
+
+                    modalAlert({
+                                   bodyText: "This portion of XCite is not yet functioning, expect it soon",
+                                   title: qsTr("Module Alert"),
+                                   buttonText: qsTr("OK")
+                               })
+                    return
                 }
             }
         }
     }
 }
-
