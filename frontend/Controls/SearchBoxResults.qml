@@ -18,8 +18,8 @@ Rectangle {
     opacity: 0.9
     color: "#3A3E46"
 
-    default property alias children: searchBoxResultsCategoryId.children
-    property alias childCont: searchBoxResultsCategoryId
+    default property alias children: searchBoxResultsId.children
+    property alias childCont: searchBoxResultsId
     property string text: ""
 
     onTextChanged: {
@@ -73,7 +73,7 @@ Rectangle {
         height: Column.height
 
         SearchBoxResultsCategory {
-            id: searchBoxResultsCategoryId
+            id: searchBoxResultsModulesCategoryId
             text: qsTr("Modules")
 
             SearchBoxResultsCategoryItem {
@@ -119,6 +119,49 @@ Rectangle {
                 function onSearchResultClicked() {
                     selectView("tools.TBD")
                     searchResultsBox.visible = false
+                }
+            }
+        }
+
+        SearchBoxResultsCategory {
+            id: searchBoxResultsLinksCategoryId
+            text: qsTr("Links")
+
+            SearchBoxResultsCategoryItem {
+                text: qsTr("Official Website")
+                tags: "official site web help about net coin about"
+                function onSearchResultClicked() {
+                    searchResultsBox.visible = false
+                    Qt.openUrlExternally("https://xtrabytes.global")
+                }
+            }
+
+            SearchBoxResultsCategoryItem {
+                text: qsTr("FAQ")
+                tags: "question answer qa q&a help"
+                function onSearchResultClicked() {
+                    searchResultsBox.visible = false
+                    Qt.openUrlExternally(
+                                "https://support.xtrabytes.global/hc/en-us/categories/360000009431-FAQ")
+                }
+            }
+
+            SearchBoxResultsCategoryItem {
+                text: qsTr("Block Explorer")
+                tags: "blockchain transaction history browse"
+                function onSearchResultClicked() {
+                    searchResultsBox.visible = false
+                    Qt.openUrlExternally(
+                                "https://blockexplorer.xtrabytes.global")
+                }
+            }
+
+            SearchBoxResultsCategoryItem {
+                text: qsTr("Blog")
+                tags: "blog news xtrabytes today"
+                function onSearchResultClicked() {
+                    searchResultsBox.visible = false
+                    Qt.openUrlExternally("https://blog.xtrabytes.global")
                 }
             }
         }
