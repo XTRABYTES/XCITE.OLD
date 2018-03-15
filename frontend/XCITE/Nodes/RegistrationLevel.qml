@@ -9,7 +9,7 @@ import "../../Controls" as Controls
 /**
   * Refactored, needs cleaning up on the Low, Medium High Texts, see line 136
   */
-Rectangle {
+Controls.Diode {
 
     // primary rectangle properties
     property int pageTracker: 0
@@ -35,16 +35,9 @@ Rectangle {
             text: qsTr("Node Registration")
             font.pixelSize: 18
         }
-        Rectangle {
-            id: rectangle
-            Layout.topMargin: 8
 
-            width: 1320
-            height: 1
-            color: "#535353"
-        }
         Controls.FormLabel {
-            Layout.topMargin: 20
+            Layout.topMargin: 55
             text: qsTr("Select a Node")
             Layout.leftMargin: 51
             font.pixelSize: 19
