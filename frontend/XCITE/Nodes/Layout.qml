@@ -1,5 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.3
+import Qt.labs.calendar 1.0
 import "../../Controls" as Controls
 
 ColumnLayout {
@@ -27,88 +29,127 @@ ColumnLayout {
     }
     RegistrationLevel {
         visible: tracker == 1
+        Label {
+            id: back1
 
-        Controls.ButtonModal {
-            Layout.fillHeight: true
+            readonly property string defaultText: qsTr("< Back")
+            property bool isActive: false
+            anchors.top: parent.top
             anchors.left: parent.left
-            anchors.bottom: parent.bottom
-            isPrimary: true
-            width: 300
-            buttonHeight: 50
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
-            label.text: qsTr("<- Back")
+            topPadding: 60
+            leftPadding: 35
+            font.pixelSize: 12
+            font.weight: isActive ? Font.Bold : Font.Normal
+            text: isActive ? altText : defaultText
+            color: "#0ED8D2"
 
-            onButtonClicked: {
-                tracker = 0
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    tracker = 0
+                }
             }
         }
+        Label {
+            id: regdetails
 
-        Controls.ButtonModal {
-            Layout.fillHeight: true
+            readonly property string defaultText: qsTr("Registration Details >")
+            property bool isActive: false
+
             anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            isPrimary: true
-            width: 350
-            buttonHeight: 50
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
-            label.text: qsTr("   Registration Details ->")
+            font.pixelSize: 12
+            font.weight: isActive ? Font.Bold : Font.Normal
+            text: isActive ? altText : defaultText
+            color: "#0ED8D2"
+            rightPadding: 50
+            topPadding: 60
 
-            onButtonClicked: {
-                tracker = 2
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    tracker = 2
+                }
             }
         }
     }
 
     RegistrationDetails {
         visible: tracker == 2
-        Controls.ButtonModal {
-            Layout.fillHeight: true
-            anchors.left: parent.left
-            anchors.bottom: parent.bottom
-            isPrimary: true
-            width: 300
-            buttonHeight: 50
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
-            label.text: qsTr("<- Back")
+        height: parent.height + 50
 
-            onButtonClicked: {
-                tracker = 1
+        Label {
+            id: back2
+
+            readonly property string defaultText: qsTr("< Back")
+
+            property bool isActive: false
+            anchors.left: parent.left
+            anchors.top: parent.top
+            font.pixelSize: 12
+            font.weight: isActive ? Font.Bold : Font.Normal
+            text: isActive ? altText : defaultText
+            color: "#0ED8D2"
+            leftPadding: 35
+            topPadding: 60
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    tracker = 1
+                }
             }
         }
-        Controls.ButtonModal {
-            Layout.fillHeight: true
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            isPrimary: true
-            width: 350
-            buttonHeight: 50
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
-            label.text: qsTr("Registration Confirmation ->")
+        Label {
+            id: regconfirmation
 
-            onButtonClicked: {
-                tracker = 3
+            readonly property string defaultText: qsTr("Node Confirmation >")
+
+            property bool isActive: false
+            anchors.top: parent.top
+            anchors.right: parent.right
+            font.pixelSize: 12
+            font.weight: isActive ? Font.Bold : Font.Normal
+            text: isActive ? altText : defaultText
+            color: "#0ED8D2"
+            rightPadding: 50
+            topPadding: 60
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    tracker = 3
+                }
             }
         }
     }
     RegistrationConfirmation {
         visible: tracker == 3
-        Controls.ButtonModal {
-            Layout.fillHeight: true
-            anchors.left: parent.left
-            anchors.bottom: parent.bottom
-            isPrimary: true
-            width: 300
-            buttonHeight: 50
-            label.font.weight: Font.Medium
-            label.font.letterSpacing: 3
-            label.text: qsTr("<- Back")
+        height: parent.height + 50
+        Label {
+            id: back3
 
-            onButtonClicked: {
-                tracker = 2
+            readonly property string defaultText: qsTr("< Back")
+
+            property bool isActive: false
+            anchors.left: parent.left
+            anchors.top: parent.top
+            font.pixelSize: 12
+            font.weight: isActive ? Font.Bold : Font.Normal
+            text: isActive ? altText : defaultText
+            color: "#0ED8D2"
+            leftPadding: 35
+            topPadding: 60
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    tracker = 2
+                }
             }
         }
     }
@@ -134,3 +175,4 @@ ColumnLayout {
         }
     }
 }
+
