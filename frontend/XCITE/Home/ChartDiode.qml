@@ -11,6 +11,8 @@ Controls.Diode {
     ChartView {
         id: priceChartView
 
+        readonly property string updateUrl: "https://ticker.xtrabytes.global/data.json"
+
         anchors.fill: parent
         anchors.topMargin: diodeHeaderHeight
 
@@ -24,6 +26,28 @@ Controls.Diode {
         antialiasing: true
         backgroundColor: Theme.panelBackground
         backgroundRoundness: panelBorderRadius
+
+        BusyIndicator {
+            running: !updateTimer.loaded
+            anchors.centerIn: parent
+            width: 100
+            height: 100
+
+            Image {
+                opacity: parent.running ? 1 : 0
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: (parent.height / 2) - (width / 2) + 5
+                source: "../../icons/xby.png"
+                width: 50
+                height: 43
+
+                Behavior on opacity {
+                    PropertyAnimation {
+                    }
+                }
+            }
+        }
 
         MouseArea {
             id: mouse
@@ -85,7 +109,9 @@ Controls.Diode {
                 tickCount: priceChartView.width > 768 ? 10 : (priceChartView.width < 576 ? 3 : 5)
                 labelsFont.pixelSize: 12
                 gridLineColor: "#565a63"
+                gridVisible: updateTimer.loaded
                 labelsColor: "#8591A5"
+                labelsVisible: updateTimer.loaded
                 lineVisible: false
                 minorGridVisible: false
                 titleVisible: false
@@ -98,6 +124,7 @@ Controls.Diode {
                 gridVisible: false
                 labelsColor: "#8591A5"
                 lineVisible: false
+                labelsVisible: updateTimer.loaded
                 minorGridVisible: false
                 titleVisible: false
             }
@@ -109,13 +136,16 @@ Controls.Diode {
     }
 
     Timer {
+        id: updateTimer
+        property bool loaded: false
+
         interval: 15 * 60 * 60 * 1000
         repeat: true
         running: true
         triggeredOnStart: true
         onTriggered: {
             var xhr = new XMLHttpRequest
-            xhr.open("GET", "http://localhost:1337/data.json")
+            xhr.open("GET", priceChartView.updateUrl)
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     var data = JSON.parse(xhr.responseText)
@@ -152,6 +182,8 @@ Controls.Diode {
 
                     priceSeries.axisY.min = Math.max(0, minValue * .8)
                     priceSeries.axisY.max = maxValue * 1.05
+
+                    loaded = true
                 }
             }
             xhr.send()
