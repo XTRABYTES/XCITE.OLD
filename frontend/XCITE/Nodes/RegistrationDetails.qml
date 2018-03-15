@@ -16,7 +16,6 @@ Controls.Diode {
     // primary rectangle properties
     property int pageTracker: 0
     property int level1
-    level1: levelSelect.currentIndex
     id: regLevel
     width: parent.width - 100
     height: parent.height - 500
