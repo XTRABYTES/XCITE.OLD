@@ -7,7 +7,7 @@ import "../../Theme" 1.0
 Controls.Diode {
     id: parentDiode
     width: 257
-    height: 924
+    height: 910
     radius: 5
     color: "#3A3E47"
     Layout.fillWidth: true
