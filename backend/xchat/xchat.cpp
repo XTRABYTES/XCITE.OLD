@@ -1,7 +1,5 @@
 #include "xchat.hpp"
 #include "../testnet/xchattestnetclient.hpp"
-#include "../zendesk/zendeskintegration.hpp"
-#include "../integrations/fiatvalueintegration.hpp"
 
 Xchat::Xchat(QObject *parent) :
     QObject(parent)
