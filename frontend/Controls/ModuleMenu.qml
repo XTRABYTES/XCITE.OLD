@@ -31,19 +31,19 @@ Item {
                 text: qsTr("XCITE")
             }
 
-            ModuleMenuButton {
+            UnfinishedModuleMenuButton {
                 name: "xChange"
                 target: "xChange.home"
                 text: qsTr("X-CHANGE")
             }
 
-            ModuleMenuButton {
+            UnfinishedModuleMenuButton {
                 name: "xChat"
                 target: "xChat.home"
                 text: qsTr("X-CHAT")
             }
 
-            ModuleMenuButton {
+            UnfinishedModuleMenuButton {
                 name: "xVault"
                 target: "xVault.TBD"
                 text: qsTr("X-VAULT")
