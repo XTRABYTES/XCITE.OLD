@@ -7,6 +7,7 @@ RowLayout {
 
     property alias text: menuLabel.text
     property string iconSource: "../icons/dropdown-arrow.svg"
+    property int iconRotation: 0
     property int iconSize: 5
     property bool iconOnly: false
 
@@ -31,9 +32,11 @@ RowLayout {
     }
 
     ButtonIcon {
+        id: icon
         width: parent.height
         anchors.verticalCenter: parent.verticalCenter
         imageSource: iconSource
+        imageRotation: iconRotation
         size: iconSize
     }
 }
