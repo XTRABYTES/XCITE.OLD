@@ -41,13 +41,18 @@ Item {
         Controls.SideMenu {
             Layout.fillHeight: true
             width: sideMenuWidth
-            visible: selectedModule == "xCite" || selectedModule == "xChat"
-                     || selectedModule == "xVault" || selectedModule == "tools"
+            visible: selectedModule == "xCite" || selectedModule == "xVault"
+                     || selectedModule == "tools"
         }
         Controls.SideMenuXChange {
             Layout.fillHeight: true
             width: sideMenuWidth
             visible: selectedModule == "xChange"
+        }
+        Controls.SideMenuXChat {
+            Layout.fillHeight: true
+            width: sideMenuWidth
+            visible: selectedModule == "xChat"
         }
 
         ColumnLayout {
