@@ -115,5 +115,6 @@
         <file>Controls/Switch.qml</file>
         <file>Network.qml</file>
         <file>Controls/DiodeVerticalScrollBar.qml</file>
+        <file>Controls/UnfinishedModuleMenuButton.qml</file>
     </qresource>
 </RCC>
