@@ -60,7 +60,7 @@ Rectangle {
             visible: selectedModule === 'xChange'
             imageSource: "../icons/icon-market-trades.svg"
             labelText: qsTr("MARKET\nTRADES")
-            size: 28
+            size: 25
         }
 
         SideMenuButton {
