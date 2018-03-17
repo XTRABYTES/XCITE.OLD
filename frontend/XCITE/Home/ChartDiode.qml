@@ -86,17 +86,17 @@ Controls.Diode {
 
                 var pos = priceChartView.mapToPosition(pt)
 
-                tooltip.x = (pos.x + tooltip.width
-                             > priceChartView.width) ? pos.x - tooltip.width : pos.x
-                tooltip.y = mouse.y
-                price.text = "$" + pt.y.toFixed(5)
-
-                bullet.x = pos.x - (bullet.width / 2)
-                bullet.y = pos.y - (bullet.height / 2)
-
                 var d = new Date()
                 d.setTime(pt.x)
                 date.text = d.toString()
+                price.text = "$" + pt.y.toFixed(5)
+
+                tooltip.x = (pos.x + tooltip.width
+                             > priceChartView.width) ? pos.x - tooltip.width : pos.x
+                tooltip.y = mouse.y
+
+                bullet.x = pos.x - (bullet.width / 2)
+                bullet.y = pos.y - (bullet.height / 2)
             }
         }
 
@@ -205,7 +205,7 @@ Controls.Diode {
         id: tooltip
         color: "#2A2C31"
         height: 45
-        width: 210
+        width: childrenRect.width
         radius: 4
         visible: false
 
