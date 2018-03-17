@@ -1,8 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
-
 import "Controls" as Controls
-
 import "XCITE" as XCITE
 import "X-Change" as XChange
 import "X-Chat" as XChat
@@ -43,6 +41,13 @@ Item {
         Controls.SideMenu {
             Layout.fillHeight: true
             width: sideMenuWidth
+            visible: selectedModule == "xCite" || selectedModule == "xChat"
+                     || selectedModule == "xVault" || selectedModule == "tools"
+        }
+        Controls.SideMenuXChange {
+            Layout.fillHeight: true
+            width: sideMenuWidth
+            visible: selectedModule == "xChange"
         }
 
         ColumnLayout {
