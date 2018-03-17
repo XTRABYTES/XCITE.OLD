@@ -15,6 +15,7 @@
 #include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 #include "../backend/support/settings.hpp"
+#include "../backend/integrations/fiatvalueintegration.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -71,6 +72,10 @@ int main(int argc, char *argv[])
     // Set last locale
     QSettings appSettings;
     settings.setLocale(appSettings.value("locale").toString());
+
+    FiatValueIntegration fiat;
+    fiat.findXBYValue();
+    engine.rootContext()->setContextProperty("fiatValue", &fiat);
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 #else
