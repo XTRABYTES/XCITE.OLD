@@ -5,7 +5,7 @@ import "../../Theme" 1.0
 
 
 //Transactions status board used on the Nodes page (bottom)
-Rectangle {
+Controls.Diode {
     id: networkStatusBoardId
     Layout.fillWidth: true
     Layout.fillHeight: true
@@ -14,23 +14,9 @@ Rectangle {
     color: "#3A3E47"
     radius: 5
 
-    Text {
-        id: headerTextId
-        y: 16
-        color: "#e2e2e2"
+    Controls.DiodeHeader {
+        id: diodeHeader
         text: qsTr("NETWORK STATUS")
-        anchors.left: parent.left
-        anchors.leftMargin: 21
-        font.family: Theme.fontCondensed
-        font.pixelSize: 15
-    }
-
-    Rectangle {
-        x: 0
-        y: 45
-        width: parent.width
-        height: 1
-        color: "#9fa0a3"
-        opacity: 0.2
+        menuLabelText: qsTr("Complete View")
     }
 }
