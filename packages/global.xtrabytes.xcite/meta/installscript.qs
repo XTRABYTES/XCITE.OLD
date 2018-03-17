@@ -30,3 +30,27 @@ Component.prototype.checkAccepted = function (checked) {
     if (page != null)
         page.complete = checked;
 }
+
+Component.prototype.createOperations = function()
+{
+    try {
+        component.createOperations();
+
+        if (systemInfo.productType === "windows") {
+            // Create desktop shortcut
+            try {
+                var userProfile = installer.environmentVariable("USERPROFILE");
+                installer.setValue("UserProfile", userProfile);
+                component.addOperation("CreateShortcut", "@TargetDir@/XCITE.exe", "@UserProfile@/Desktop/XCITE.lnk");
+            } catch (e) {
+                // Do nothing if key doesn't exist
+            }
+
+
+            // Create start menu shortcut
+            component.addOperation("CreateShortcut", "@TargetDir@/XCITE.exe", "@StartMenuDir@/XCITE.lnk");
+        }
+    } catch (e) {
+        print(e);
+    }
+}
