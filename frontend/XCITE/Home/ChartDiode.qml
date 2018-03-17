@@ -86,6 +86,11 @@ Controls.Diode {
 
                 var pos = priceChartView.mapToPosition(pt)
 
+                var d = new Date()
+                d.setTime(pt.x)
+                date.text = d.toString()
+                price.text = "$" + pt.y.toFixed(5)
+
                 tooltip.x = (pos.x + tooltip.width
                              > priceChartView.width) ? pos.x - tooltip.width : pos.x
                 tooltip.y = priceChartView.plotArea.bottom - 20
@@ -205,7 +210,7 @@ Controls.Diode {
         id: tooltip
         color: "#2A2C31"
         height: 45
-        width: 210
+        width: childrenRect.width
         radius: 4
         visible: false
 
