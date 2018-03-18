@@ -120,5 +120,6 @@
         <file>AddressBook/ButtonRemove.qml</file>
         <file>AddressBook/ButtonBar.qml</file>
         <file>AddressBook/ButtonDivider.qml</file>
+        <file>Controls/UnfinishedModuleMenuButton.qml</file>
     </qresource>
 </RCC>
