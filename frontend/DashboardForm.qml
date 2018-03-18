@@ -41,7 +41,6 @@ Item {
         Controls.SideMenu {
             Layout.fillHeight: true
             width: sideMenuWidth
-            visible: true
         }
 
         ColumnLayout {
