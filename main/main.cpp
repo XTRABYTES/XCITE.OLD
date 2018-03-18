@@ -15,6 +15,7 @@
 #include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 #include "../backend/support/settings.hpp"
+#include "../backend/integrations/MarketValue.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -53,6 +54,11 @@ int main(int argc, char *argv[])
     // wire-up testnet wallet
     Testnet wallet;
     engine.rootContext()->setContextProperty("wallet", &wallet);
+
+    // load market value
+    MarketValue marketValue;
+    marketValue.findXBYValue();
+    engine.rootContext()->setContextProperty("marketValue", &marketValue);
 
     // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
