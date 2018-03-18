@@ -17,8 +17,5 @@ ModuleMenuButton {
         }
 
         hoverEnabled: true
-        onHoveredChanged: {
-            button.state = containsMouse ? "hover" : ""
-        }
     }
 }
