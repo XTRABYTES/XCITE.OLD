@@ -115,8 +115,6 @@
         <file>Controls/Switch.qml</file>
         <file>Network.qml</file>
         <file>Controls/DiodeVerticalScrollBar.qml</file>
-        <file>Controls/SideMenuXChange.qml</file>
-        <file>Controls/SideMenuXChat.qml</file>
         <file>X-Change/OpenOrders/Layout.qml</file>
         <file>X-Change/MarketTrades/Layout.qml</file>
         <file>X-Change/OrderHistory/Layout.qml</file>
