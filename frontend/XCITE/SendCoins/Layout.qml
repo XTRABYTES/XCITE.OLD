@@ -9,8 +9,8 @@ ColumnLayout {
     spacing: layoutGridSpacing
 
     HomeComponents.LayoutBalanceLeft {
-        Layout.preferredHeight: 620
-        Layout.maximumHeight: 720
+        Layout.preferredHeight: 600
+        Layout.maximumHeight: 750
 
         SendDiode {
             Layout.fillHeight: true

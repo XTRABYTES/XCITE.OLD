@@ -5,6 +5,7 @@ import QtQuick.Controls.Styles 1.4
 import QtQrCode.Component 1.0
 
 import "../../Controls" as Controls
+import "../../AddressBook" as AddressBook
 import "../../Theme" 1.0
 
 ColumnLayout {
@@ -23,82 +24,78 @@ ColumnLayout {
         radius: 4
         color: "#2A2C31"
 
-        Controls.AddressBook {
-            id: addressBook
-            model: wallet.accounts
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 0
 
-            Component.onCompleted: {
-                addressBook.add("", "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS")
-                addressBook.add("Main", "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS")
-                addressBook.add("Secondary",
-                                "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS")
-                addressBook.currentIndex = 0
-            }
+            Controls.AddressBook {
+                id: addressBook
+                model: wallet.accounts
 
-            Connections {
-                target: wallet.accounts
-                onSetCurrentIndex: {
-                    addressBook.currentIndex = idx
-                }
-            }
-
-            Connections {
-                target: addressBook.model
-                onDataChanged: {
-                    selectItem(addressBook.getSelectedItem())
-                }
-            }
-
-            onCurrentItemChanged: {
-                var item = addressBook.getSelectedItem()
-
-                if (item.address === '') {
-                    network.getAccountAddress(item.name)
-                    item = addressBook.getSelectedItem()
+                Component.onCompleted: {
+                    addressBook.add("", "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS")
+                    addressBook.add("Main",
+                                    "Jc5i7upNmBMy2Bpwy5Vv8HMkwXqBR3kCxS")
+                    addressBook.add("Secondary",
+                                    "upNm5Vv8HMkBMy2BpwyJc5i7wXqBR3kCxS")
+                    addressBook.currentIndex = 0
                 }
 
-                selectItem(item)
-            }
-        }
-    }
-
-    RowLayout {
-        Layout.fillWidth: true
-        Layout.topMargin: 4
-        Layout.maximumHeight: 29
-        Layout.minimumHeight: 29
-        Layout.alignment: Qt.AlignLeft
-
-        Controls.AddressButton {
-            btnEditEnabled: false
-            type: "ADDRESS"
-            currentItem: addressBook.currentItem
-
-            Connections {
-                onAddressAdded: {
-
+                Connections {
+                    target: wallet.accounts
+                    onSetCurrentIndex: {
+                        addressBook.currentIndex = idx
+                    }
                 }
 
-                onAddressUpdated: {
-                    addressBook.update(name, address)
-                    selectItem(addressBook.getSelectedItem())
+                Connections {
+                    target: addressBook.model
+                    onDataChanged: {
+                        selectItem(addressBook.getSelectedItem())
+                    }
                 }
 
-                onAddressRemoved: {
-                    addressBook.removeSelected()
-                }
+                onCurrentItemChanged: {
+                    var item = addressBook.getSelectedItem()
 
-                onBtnAddClicked: {
-                    if (!xcite.isNetworkActive) {
-                        modalAlert({
-                                       bodyText: "Connect to the testnet wallet to create new addresses",
-                                       title: qsTr("TESTNET REQUIRED"),
-                                       buttonText: qsTr("OK")
-                                   })
-                        return
+                    if (item.address === '') {
+                        network.getAccountAddress(item.name)
+                        item = addressBook.getSelectedItem()
                     }
 
-                    accountCreateForm.open()
+                    selectItem(item)
+                }
+            }
+
+            AddressBook.ButtonBar {
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: 0
+
+                    AddressBook.ButtonAdd {
+                        Layout.maximumWidth: parent.width / 2
+                        text: "Create Address"
+                        onButtonClicked: {
+                            if (!xcite.isNetworkActive) {
+                                modalAlert({
+                                               bodyText: "Connect to the testnet wallet to create new addresses",
+                                               title: qsTr("TESTNET REQUIRED"),
+                                               buttonText: qsTr("OK")
+                                           })
+                                return
+                            }
+
+                            accountCreateForm.open()
+                        }
+                    }
+
+                    AddressBook.ButtonDivider {
+                    }
+
+                    AddressBook.ButtonRemove {
+                        Layout.maximumWidth: parent.width / 2
+                        text: "Delete Address"
+                    }
                 }
             }
         }
