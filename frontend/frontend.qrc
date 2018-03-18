@@ -65,7 +65,6 @@
         <file>XCITE/SendCoins/TextXBY.qml</file>
         <file>Controls/AddressBook.qml</file>
         <file>Controls/SliderAmount.qml</file>
-        <file>Controls/AddressButton.qml</file>
         <file>Controls/ModalPopup.qml</file>
         <file>Controls/ModalAlert.qml</file>
         <file>Controls/ModalHeader.qml</file>
@@ -115,6 +114,12 @@
         <file>Controls/Switch.qml</file>
         <file>Network.qml</file>
         <file>Controls/DiodeVerticalScrollBar.qml</file>
+        <file>Controls/AddressBookButton.qml</file>
+        <file>AddressBook/ButtonAdd.qml</file>
+        <file>AddressBook/ButtonEdit.qml</file>
+        <file>AddressBook/ButtonRemove.qml</file>
+        <file>AddressBook/ButtonBar.qml</file>
+        <file>AddressBook/ButtonDivider.qml</file>
         <file>Controls/UnfinishedModuleMenuButton.qml</file>
     </qresource>
 </RCC>

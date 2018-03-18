@@ -35,6 +35,16 @@ ColumnLayout {
         }
     }
 
+    Label {
+        Layout.topMargin: 6
+        anchors.right: parent.right
+        horizontalAlignment: Text.AlignRight
+        color: "#e0e0e0"
+        font.pixelSize: 12
+        text: qsTr("Total:") + " " + Number(totalAmount).toFixed(
+                  8) + " (1 XBY " + qsTr("in fees") + ")"
+    }
+
     Controls.SliderAmount {
         id: slider
         Layout.preferredWidth: parent.width
@@ -80,6 +90,7 @@ ColumnLayout {
         anchors.right: parent.right
         horizontalAlignment: Text.AlignRight
         rightPadding: 20
+        color: "#e0e0e0"
         font.pixelSize: 12
         text: qsTr("Or add a recipient from your address book")
 
@@ -93,31 +104,5 @@ ColumnLayout {
             sourceSize.height: 13
             anchors.right: parent.right
         }
-    }
-
-    // Total
-    Controls.FormLabel {
-        Layout.topMargin: 40 - (xcite.width > 1100 ? chooseFromAddressBookLabel.height + 1 : 0)
-        Layout.bottomMargin: 25
-        text: qsTr("Total")
-    }
-
-    RowLayout {
-        TextXBY {
-            Layout.alignment: Qt.AlignBottom
-            Layout.bottomMargin: 5
-        }
-
-        Label {
-            text: Number(totalAmount).toFixed(2)
-            font.weight: Font.Light
-            font.pixelSize: 36
-        }
-    }
-
-    Label {
-        topPadding: 10
-        font.pixelSize: 12
-        text: qsTr("Transaction fee:") + " " + networkFee + " " + qsTr("XBY")
     }
 }
