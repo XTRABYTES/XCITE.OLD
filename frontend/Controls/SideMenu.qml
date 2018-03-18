@@ -19,13 +19,16 @@ Rectangle {
 
     color: Theme.panelBackground
 
+    /**
+      * XCite/Board Menu
+      */
     ColumnLayout {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.topMargin: moduleMenuHeight + 7
         spacing: 0
-
+        visible: selectedModule = 'xCite'
         //        Label {
         //            text: xcite.width + "," + xcite.height
         //        }
@@ -80,6 +83,106 @@ Rectangle {
         }
     }
 
+    /**
+      * XChange menu
+      */
+    ColumnLayout {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.topMargin: moduleMenuHeight + 7
+        spacing: 0
+        visible: selectedModule = 'xChange'
+        //        Label {
+        //            text: xcite.width + "," + xcite.height
+        //        }
+        SideMenuButton {
+            name: "xChange.home"
+            visible: selectedModule === 'xChange'
+            imageSource: "../icons/menu-home.svg"
+            labelText: qsTr("HOME")
+            size: 32
+        }
+
+        SideMenuButton {
+            name: "xChange.openOrders"
+            visible: selectedModule === 'xChange'
+            imageSource: "../icons/icon-open-orders.svg"
+            labelText: qsTr("OPEN\nORDERS")
+
+            size: 25
+        }
+
+        SideMenuButton {
+            name: "xChange.orderHistory"
+            visible: selectedModule === 'xChange'
+            imageSource: "../icons/icon-order-history.svg"
+            labelText: qsTr("ORDER\nHISTORY")
+
+            size: 25
+        }
+
+        SideMenuButton {
+            name: "xChange.marketTrades"
+            visible: selectedModule === 'xChange'
+            imageSource: "../icons/icon-market-trades.svg"
+            labelText: qsTr("MARKET\nTRADES")
+            size: 25
+        }
+
+        SideMenuButton {
+            name: "xChange.orderBooks"
+            visible: selectedModule === 'xChange'
+            imageSource: "../icons/menu-history.svg"
+            labelText: qsTr("ORDER\nBOOKS")
+            size: 30
+        }
+    }
+
+    /**
+      * Chat Menu
+      */
+    ColumnLayout {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.topMargin: moduleMenuHeight + 7
+        spacing: 0
+        visible: selectedModule = 'xChat'
+        //        Label {
+        //            text: xcite.width + "," + xcite.height
+        //        }
+        SideMenuButton {
+            name: "xCite.home"
+            visible: selectedModule === 'xChat'
+            imageSource: "../icons/menu-home.svg"
+            labelText: qsTr("HOME")
+            size: 32
+        }
+    }
+
+    /**
+      * Vault Menu
+      */
+    ColumnLayout {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.topMargin: moduleMenuHeight + 7
+        spacing: 0
+        visible: selectedModule = 'xVault'
+
+        //        Label {
+        //            text: xcite.width + "," + xcite.height
+        //        }
+        SideMenuButton {
+            name: "xCite.home"
+            visible: selectedModule === 'xVault'
+            imageSource: "../icons/menu-home.svg"
+            labelText: qsTr("HOME")
+            size: 32
+        }
+    }
     ColumnLayout {
         visible: xcite.height > 600
         width: parent.width
