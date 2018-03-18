@@ -28,7 +28,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.topMargin: moduleMenuHeight + 7
         spacing: 0
-        visible: selectedModule = 'xCite'
+        visible: selectedModule == 'xCite'
 
         SideMenuButton {
             name: "xCite.home"
@@ -66,13 +66,6 @@ Rectangle {
             labelText: qsTr("NODES")
             size: 30
         }
-
-        SideMenuButton {
-            name: "xChange.home"
-            imageSource: "../icons/menu-home.svg"
-            labelText: qsTr("HOME")
-            size: 32
-        }
     }
 
     /**
@@ -84,7 +77,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.topMargin: moduleMenuHeight + 7
         spacing: 0
-
+        visible: selectedModule == 'xChange'
         SideMenuButton {
             name: "xChange.home"
             imageSource: "../icons/menu-home.svg"
@@ -132,7 +125,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.topMargin: moduleMenuHeight + 7
         spacing: 0
-        visible: selectedModule = 'xChat'
+        visible: selectedModule == 'xChat'
 
         SideMenuButton {
             name: "xCite.home"
@@ -151,7 +144,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.topMargin: moduleMenuHeight + 7
         spacing: 0
-        visible: selectedModule = 'xVault'
+        visible: selectedModule == 'xVault'
 
         SideMenuButton {
             name: "xCite.home"
