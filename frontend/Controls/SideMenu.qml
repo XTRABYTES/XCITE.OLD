@@ -128,7 +128,7 @@ Rectangle {
         visible: selectedModule == 'xChat'
 
         SideMenuButton {
-            name: "xCite.home"
+            name: "xChat.home"
             imageSource: "../icons/menu-home.svg"
             labelText: qsTr("HOME")
             size: 32
@@ -147,7 +147,7 @@ Rectangle {
         visible: selectedModule == 'xVault'
 
         SideMenuButton {
-            name: "xCite.home"
+            name: "xVault.home"
             imageSource: "../icons/menu-home.svg"
             labelText: qsTr("HOME")
             size: 32
