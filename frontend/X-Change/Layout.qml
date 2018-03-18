@@ -2,6 +2,11 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 
 import "Home" as Home
+import "MarketTrades" as MarketTrades
+import "OpenOrders" as OpenOrders
+import "OrderBooks" as OrderBooks
+import "OrderHistory" as OrderHistory
+import "../Controls" as Controls
 
 Item {
     readonly property string defaultView: "home"
@@ -14,15 +19,14 @@ Item {
     visible: selectedModule === 'xChange'
 
     // Home
-
     Connections {
         target: dashboard
         onSelectView: {
-            var parts = path.split('.');
+            var parts = path.split('.')
 
-            selectedModule = parts[0];
+            selectedModule = parts[0]
             if (parts.length === 2) {
-                selectedView = parts[1];
+                selectedView = parts[1]
             } else {
                 selectedView = defaultView
             }
@@ -32,5 +36,27 @@ Item {
     Home.Layout {
         id: home
         visible: selectedView === "home"
+    }
+    // Send Coins
+    OpenOrders.Layout {
+        id: xCiteOpenOrders
+        visible: selectedView === "openOrders"
+    }
+
+    // Receive Coins
+    OrderHistory.Layout {
+        id: xCiteOrderHistory
+        visible: selectedView === "orderHistory"
+    }
+
+    // History
+    MarketTrades.Layout {
+        id: xCiteMarketTrades
+        visible: selectedView === "marketTrades"
+    }
+
+    OrderBooks.Layout {
+        id: xCiteOrderBooks
+        visible: selectedView === "orderBooks"
     }
 }
