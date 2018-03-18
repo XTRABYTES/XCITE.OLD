@@ -119,5 +119,6 @@
         <file>X-Change/MarketTrades/Layout.qml</file>
         <file>X-Change/OrderHistory/Layout.qml</file>
         <file>X-Change/OrderBooks/Layout.qml</file>
+        <file>Controls/UnfinishedModuleMenuButton.qml</file>
     </qresource>
 </RCC>
