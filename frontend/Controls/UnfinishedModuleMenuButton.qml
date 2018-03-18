@@ -2,6 +2,7 @@ import QtQuick 2.7
 import "../Theme" 1.0
 
 ModuleMenuButton {
+    id: button
     MouseArea {
         id: mouseArea
         anchors.fill: parent
@@ -15,7 +16,9 @@ ModuleMenuButton {
                        })
             selectView(target)
         }
-
+        onHoveredChanged: {
+            button.state = containsMouse ? "hover" : ""
+        }
         hoverEnabled: true
     }
 }
