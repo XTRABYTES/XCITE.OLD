@@ -4,26 +4,26 @@ Item {
     property var handler
 
     function getAccountAddress(name) {
-        handler.request('getaccountaddress', [name])
+        handler.request('ui', 'getaccountaddress', [name])
     }
 
     function getBalance() {
-        handler.request('getbalance', [])
+        handler.request('ui', 'getbalance', [])
     }
 
     function listAccounts() {
-        handler.request('listaccounts', [])
+        handler.request('ui', 'listaccounts', [])
     }
 
     function listTransactions() {
-        handler.request('listtransactions', [])
+        handler.request('ui', 'listtransactions', [])
     }
 
     function sendToAddress(address, amount) {
-        handler.request('sendtoaddress', [address, amount])
+        handler.request('ui', 'sendtoaddress', [address, amount])
     }
 
     function validateAddress(address) {
-        handler.request('validateaddress', [address])
+        handler.request('ui', 'validateaddress', [address])
     }
 }

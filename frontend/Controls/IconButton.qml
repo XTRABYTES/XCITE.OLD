@@ -13,8 +13,7 @@ Button {
 
     text: ""
 
-    background: Rectangle {
-        color: "transparent"
+    background: Item {
     }
 
     MouseArea {

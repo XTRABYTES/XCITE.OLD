@@ -79,7 +79,6 @@ Item {
 
     XchatPopup {
         id: xChatPopup
-        visible: false
     }
 
     Timer {

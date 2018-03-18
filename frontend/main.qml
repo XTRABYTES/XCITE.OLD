@@ -71,6 +71,13 @@ ApplicationWindow {
         property string initialView: "xCite.home"
     }
 
+    Settings {
+        id: xChatSettings
+        category: "xchat"
+        property string sizeState: "minimal"
+        property string activeTab: "robot"
+    }
+
     Network {
         id: network
         handler: wallet
@@ -88,13 +95,15 @@ ApplicationWindow {
         xbyBalance = response
     }
 
-    function walletError(status) {
-        xcite.isNetworkActive = false
-        modalAlert({
-                       title: qsTr("NETWORK ERROR"),
-                       bodyText: qsTr(status),
-                       buttonText: qsTr("OK")
-                   })
+    function walletError(sender, status) {
+        //        xcite.isNetworkActive = false
+        if (sender === "ui") {
+            modalAlert({
+                           title: qsTr("NETWORK ERROR"),
+                           bodyText: qsTr(status),
+                           buttonText: qsTr("OK")
+                       })
+        }
     }
 
     function walletSuccess(result) {

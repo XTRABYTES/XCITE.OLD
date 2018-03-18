@@ -1,88 +1,86 @@
-import QtQuick 2.6
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.3
-import XChatConversationModel 0.1
 import "../Theme" 1.0
 
 ColumnLayout {
-    Connections {
-        target: xcite
-        onXChatMessageReceived: {
-            add(message, datetime, false)
-        }
+    property alias model: view.model
+    property alias view: view
 
-        // TODO: Temporary placeholder content
-        Component.onCompleted: {
-            var now = Date.now()
+    property color localTextColor: '#fff'
+    property color localBorderColor: '#727989'
+    property color localBackgroundColor: 'transparent'
+    property color remoteTextColor: '#000'
+    property color remoteBackgroundColor: Theme.primaryHighlight
+    property color remoteBorderColor: 'transparent'
+    property int messageSpacing: 12
+    property int timestampSpacing: 4
+    property bool simpleLayout: false
 
-            add("Heading downtown?", new Date(now - 180000), true)
-            add("Absolutely, catching a show.", new Date(now - 120000), false)
-            add("We'll catch up later!", new Date(now), true)
-        }
-    }
+    anchors.fill: parent
 
     function add(message, datetime, isMine) {
-        conversation.model.addMessage(message, datetime, isMine)
+        if (model) {
+            model.addMessage(message, datetime, isMine)
+        }
     }
 
     ListView {
-        id: conversation
-        spacing: 12
+        id: view
+        spacing: messageSpacing
 
         Layout.fillHeight: true
         Layout.fillWidth: true
-        Layout.leftMargin: 18.9
-        Layout.rightMargin: 18.9
+        Layout.leftMargin: viewMargin
+        Layout.rightMargin: viewMargin
         Layout.topMargin: 5
         Layout.bottomMargin: 5
-
         verticalLayoutDirection: ListView.BottomToTop
-        model: XChatConversationModel {
-        }
-
         clip: true
 
         delegate: Column {
-            anchors.left: isMine ? undefined : parent.left
-            anchors.right: isMine ? parent.right : undefined
-            spacing: 4.7
+            spacing: timestampSpacing
+
+            anchors.left: simpleLayout ? undefined : (model.isMine ? undefined : parent.left)
+            anchors.right: simpleLayout ? undefined : (model.isMine ? parent.right : undefined)
 
             Row {
-                anchors.left: isMine ? undefined : parent.left
-                anchors.right: isMine ? parent.right : undefined
+                TextArea {
+                    text: model.message
+                    readOnly: true
+                    persistentSelection: true
+                    selectByMouse: true
+                    color: model.isMine ? localTextColor : remoteTextColor
+                    wrapMode: TextEdit.Wrap
+                    font.pixelSize: 11
+                    selectionColor: Theme.primaryHighlight
+                    selectedTextColor: '#000'
 
-                Label {
-                    id: messageText
-                    topPadding: 7.3
-                    bottomPadding: 6
-                    leftPadding: 7.05
-                    rightPadding: 8.05
+                    topPadding: simpleLayout ? 0 : 7.3
+                    bottomPadding: simpleLayout ? 0 : 6
+                    leftPadding: simpleLayout ? 0 : 7.05
+                    rightPadding: simpleLayout ? 0 : 8.05
 
                     background: Rectangle {
-                        color: isMine ? "transparent" : Theme.primaryHighlight
-                        border.color: isMine ? "#727989" : "transparent"
                         anchors.fill: parent
+                        color: model.isMine ? localBackgroundColor : remoteBackgroundColor
+                        border.color: model.isMine ? localBorderColor : remoteBorderColor
                         radius: 2
                     }
 
-                    text: model.message
-                    color: isMine ? "white" : "black"
-                    font.pixelSize: 11
-                    lineHeight: 1.2
-                    wrapMode: Label.WordWrap
-
                     Component.onCompleted: {
-                        if (paintedWidth > conversation.width) {
-                            width = conversation.width
+                        if (width > view.width) {
+                            width = view.width
                         }
                     }
                 }
             }
 
             Label {
+                visible: model.datetime
                 font.pixelSize: 10
-                anchors.left: isMine ? undefined : parent.left
-                anchors.right: isMine ? parent.right : undefined
+                anchors.left: model.isMine ? undefined : parent.left
+                anchors.right: model.isMine ? parent.right : undefined
                 text: Qt.formatDateTime(model.datetime, 'h:mm ap')
                 color: "white"
             }
