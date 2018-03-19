@@ -18,9 +18,8 @@ ColumnLayout {
     }
 
     Controls.TextInput {
-        anchors.left: parent.left
-        anchors.right: parent.right
         id: formAddress
+        Layout.fillWidth: true
         readOnly: true
     }
 
