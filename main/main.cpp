@@ -56,7 +56,6 @@ int main(int argc, char *argv[])
 
     // load market value
     MarketValue marketValue;
-    marketValue.findXBYValue();
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
 
     // set app version
@@ -73,6 +72,9 @@ int main(int argc, char *argv[])
 
     Settings settings(&engine);
     QObject::connect(engine.rootObjects().first(), SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
+
+    // connect QML signals for market value
+    QObject::connect(engine.rootObjects().first(), SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findXBYValue(QString)));
 
     // Set last locale
     QSettings appSettings;

@@ -76,6 +76,7 @@ ApplicationWindow {
         handler: wallet
     }
 
+    signal marketValueChangedSignal(string currency)
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
     signal localeChange(string locale)
