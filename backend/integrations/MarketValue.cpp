@@ -13,6 +13,7 @@ void MarketValue::findXBYValue(QString currency)
 
     QNetworkAccessManager *restclient = new QNetworkAccessManager(this);
     connect(restclient, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
+
     QNetworkReply* reply = restclient->get(request);
     reply->setProperty("selectedCurrency", currency);
 }

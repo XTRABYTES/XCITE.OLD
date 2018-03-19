@@ -2,13 +2,20 @@
 #include <QDebug>
 #include "testnet.hpp"
 
-void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
+void Testnet::onResponse(QString sender, QString command, QJsonArray params, QJsonObject res)
 {
     QVariantMap reply = res.toVariantMap();
 
+    if (sender == "console") {
+        QJsonDocument doc(res);
+
+        return consoleResponse(res);
+    }
+
     if (!res["error"].isNull()) {
         qDebug() << res;
-        walletError(res["error"].toObject()["message"].toString());
+
+        walletError(sender, res["error"].toObject()["message"].toString());
         return;
     }
 
@@ -71,7 +78,7 @@ void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
         m_accounts->updateAccountAddress(params[0].toString(), res["result"].toString());
     } else if (command == "validateaddress") {
         if (!res["result"].toObject()["isvalid"].toBool()) {
-            walletError("Invalid address: " + params[0].toString());
+            walletError(sender, "Invalid address: " + params[0].toString());
         }
     } else if (command == "sendfrom") {
         walletSuccess(res["result"].toString());
@@ -80,11 +87,11 @@ void Testnet::onResponse(QString command, QJsonArray params, QJsonObject res)
     }
 }
 
-void Testnet::request(QString command, QVariantList args) {
+void Testnet::request(QString sender, QString command, QVariantList args) {
     // Wonky performance hack to avoid the overhead of pulling accounts continually
     if ((command == "listaccounts") && accountsLoaded) {
         return;
     }
 
-    client->request(command, args);
+    client->request(sender, command, args);
 }

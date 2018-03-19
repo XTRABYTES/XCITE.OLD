@@ -70,7 +70,7 @@ Controls.Diode {
                         && (mouse.x <= (area.x + area.width))
 
                 tooltip.visible = isVisible
-                bullet.visible = isVisible
+                marker.visible = isVisible
 
                 if (!isVisible) {
                     return
@@ -86,13 +86,18 @@ Controls.Diode {
 
                 var pos = priceChartView.mapToPosition(pt)
 
-                tooltip.x = (pos.x + tooltip.width
-                             > priceChartView.width) ? pos.x - tooltip.width : pos.x
-                tooltip.y = mouse.y
+                var d = new Date()
+                d.setTime(pt.x)
+                date.text = d.toString()
                 price.text = "$" + pt.y.toFixed(5)
 
-                bullet.x = pos.x - (bullet.width / 2)
-                bullet.y = pos.y - (bullet.height / 2)
+                tooltip.x = (pos.x + tooltip.width
+                             > priceChartView.width) ? pos.x - tooltip.width : pos.x
+                tooltip.y = priceChartView.plotArea.bottom - 20
+                price.text = "$" + pt.y.toFixed(5)
+
+                marker.x = pos.x - (marker.width / 2)
+                marker.y = pos.y - (marker.height / 2)
 
                 var d = new Date()
                 d.setTime(pt.x)
@@ -191,21 +196,21 @@ Controls.Diode {
     }
 
     Rectangle {
-        id: bullet
+        id: marker
         parent: priceChartView
         width: 8
         visible: false
-        height: 8
-        radius: width * 0.5
-        color: '#F7F7F7'
-        opacity: 0.8
+        anchors.top: priceChartView.top
+        anchors.bottom: priceChartView.bottom
+        color: '#000'
+        opacity: 0.2
     }
 
     Rectangle {
         id: tooltip
         color: "#2A2C31"
         height: 45
-        width: 210
+        width: childrenRect.width
         radius: 4
         visible: false
 

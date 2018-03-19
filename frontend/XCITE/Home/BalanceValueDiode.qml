@@ -38,6 +38,7 @@ Controls.Diode {
 
         value.text: (wallet.balance * marketValue.marketValue).toLocaleString(
                         Qt.locale(), "f", 2)
+
         value.font.pixelSize: 36
         prefix.font.pixelSize: 36
     }

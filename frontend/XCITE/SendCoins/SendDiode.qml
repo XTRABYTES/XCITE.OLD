@@ -57,7 +57,6 @@ Controls.Diode {
             width: scrollView.width
 
             RowLayout {
-                Layout.fillWidth: true
                 Layout.fillHeight: true
 
                 Layout.alignment: Qt.AlignTop
@@ -65,11 +64,13 @@ Controls.Diode {
 
                 Form {
                     id: form
-                    Layout.alignment: Qt.AlignTop
-                    Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.topMargin: diodeTopMargin
+                    Layout.fillWidth: true
                     Layout.minimumWidth: 273
+                    Layout.preferredWidth: 500
+
+                    Layout.alignment: Qt.AlignTop
+                    Layout.topMargin: diodeTopMargin
                     Layout.leftMargin: diodePadding
                     Layout.rightMargin: 10
                 }
@@ -92,10 +93,12 @@ Controls.Diode {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     Layout.minimumWidth: 197
+                    Layout.preferredWidth: 300
+
+                    Layout.alignment: Qt.AlignTop
                     Layout.topMargin: diodeTopMargin
                     Layout.bottomMargin: diodePadding
                     Layout.rightMargin: diodePadding
-                    Layout.alignment: Qt.AlignTop
                     Layout.maximumHeight: 504
                 }
             }
