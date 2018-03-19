@@ -120,5 +120,9 @@
         <file>X-Change/OrderHistory/Layout.qml</file>
         <file>X-Change/OrderBooks/Layout.qml</file>
         <file>Controls/UnfinishedModuleMenuButton.qml</file>
+        <file>X-Change/OpenOrders/OpenOrdersDiode.qml</file>
+        <file>X-Change/OpenOrders/OrderHistoryDiode.qml</file>
+        <file>X-Change/OpenOrders/OrderBooksDiode.qml</file>
+        <file>X-Change/OpenOrders/MarketTradesDiode.qml</file>
     </qresource>
 </RCC>
