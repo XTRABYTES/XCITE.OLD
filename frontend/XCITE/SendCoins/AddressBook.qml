@@ -52,9 +52,14 @@ ColumnLayout {
                     anchors.fill: parent
                     spacing: 0
 
-                    AddressBook.ButtonAdd {
+                    AddressBook.Button {
+                        Layout.fillWidth: true
                         Layout.maximumWidth: parent.width / 3
                         text: "Add Recipient"
+
+                        icon.source: "../../icons/circle-cross.svg"
+                        icon.sourceSize.width: 17
+                        icon.sourceSize.height: 17
 
                         onButtonClicked: {
                             var newItem = {
@@ -71,9 +76,16 @@ ColumnLayout {
                     AddressBook.ButtonDivider {
                     }
 
-                    AddressBook.ButtonEdit {
+                    AddressBook.Button {
+                        Layout.fillWidth: true
                         Layout.maximumWidth: parent.width / 3
                         text: "Edit Recipient"
+
+                        enabled: addressBook.currentItem ? true : false
+
+                        icon.source: "../../icons/pencil.svg"
+                        icon.sourceSize.width: 15
+                        icon.sourceSize.height: 15
 
                         onButtonClicked: {
                             if (!addressBook.currentItem) {
@@ -88,9 +100,16 @@ ColumnLayout {
                     AddressBook.ButtonDivider {
                     }
 
-                    AddressBook.ButtonRemove {
+                    AddressBook.Button {
+                        Layout.fillWidth: true
                         Layout.maximumWidth: parent.width / 3
                         text: "Remove Recipient"
+
+                        enabled: addressBook.currentItem ? true : false
+
+                        icon.source: "../../icons/trash.svg"
+                        icon.sourceSize.width: 13
+                        icon.sourceSize.height: 17
 
                         onButtonClicked: {
                             if (!addressBook.currentItem) {

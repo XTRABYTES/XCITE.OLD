@@ -72,9 +72,15 @@ ColumnLayout {
                     anchors.fill: parent
                     spacing: 0
 
-                    AddressBook.ButtonAdd {
+                    AddressBook.Button {
+                        Layout.fillWidth: true
                         Layout.maximumWidth: parent.width / 2
                         text: "Create Address"
+
+                        icon.source: "../../icons/circle-cross.svg"
+                        icon.sourceSize.width: 17
+                        icon.sourceSize.height: 17
+
                         onButtonClicked: {
                             if (!xcite.isNetworkActive) {
                                 modalAlert({
@@ -92,9 +98,16 @@ ColumnLayout {
                     AddressBook.ButtonDivider {
                     }
 
-                    AddressBook.ButtonRemove {
+                    AddressBook.Button {
+                        Layout.fillWidth: true
                         Layout.maximumWidth: parent.width / 2
                         text: "Delete Address"
+
+                        enabled: addressBook.currentItem ? true : false
+
+                        icon.source: "../../icons/trash.svg"
+                        icon.sourceSize.width: 13
+                        icon.sourceSize.height: 17
                     }
                 }
             }
