@@ -111,14 +111,18 @@ ColumnLayout {
         color: "#E3E3E3"
     }
 
-    QtQrCode {
+    Item {
+        width: 240
+        height: 240
         Layout.topMargin: 25
         Layout.bottomMargin: 25
         anchors.horizontalCenter: parent.horizontalCenter
-        data: formAddress.text
-        background: "transparent"
-        foreground: Theme.primaryHighlight
-        width: 240
-        height: 240
+
+        QtQrCode {
+            anchors.fill: parent
+            data: formAddress.text
+            background: "transparent"
+            foreground: Theme.primaryHighlight
+        }
     }
 }
