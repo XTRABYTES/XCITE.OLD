@@ -6,13 +6,15 @@ import SortFilterProxyModel 0.1
 import QtQuick.Dialogs 1.1
 import "../../Controls" as Controls
 import "../../Theme" 1.0
+import QtQuick.Controls 1.4
+import "../Home" as Home
 
 Rectangle {
     id: nodeTransactionsBoardId
     Layout.fillWidth: true
     Layout.fillHeight: true
     Layout.minimumHeight: 100
-    Layout.minimumWidth: 800
+    Layout.minimumWidth: 200
 
     anchors.rightMargin: 15
     anchors.topMargin: 50
@@ -21,7 +23,9 @@ Rectangle {
 
     Controls.DiodeHeader {
         id: diodeHeader
-        text: qsTr("TRANSACTIONS")
+        text: qsTr("NODE TRANSACTIONS")
         menuLabelText: qsTr("Complete View")
+    }
+    Home.TransactionTable {
     }
 }

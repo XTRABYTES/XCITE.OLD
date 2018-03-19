@@ -10,9 +10,14 @@ XCITE is the core application utilizing the XTRABYTES Proof-of-Signature blockch
 
 XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free.
 
-#### Install Additional Features
+Our development is currently targeting Qt 5.10.1. When the Qt installer asks which Qt components to install, select the following components and a compiler suitable to your development environment:
 
-During installation, be sure to pick the "Qt 5.10.1" component since that is the version our development is currently targeting. If you plan to compile Windows binaries, also include the Tools -> MinGW 5.3.0 component.
+- Qt 5.10.1 -> Qt Charts (Required)
+- Qt 5.10.1 -> MinGW 5.3.0 32 bit  (Windows compiler)
+- Tools -> MinGW 5.3.0 (Windows compiler)
+- Qt 5.10.1 -> macOS (Mac compiler)
+- Qt 5.10.1 -> iOS (iOS compiler)
+- Qt 5.10.1 -> Android ARMv7 (Android compiler)
 
 #### Project Configuration
 

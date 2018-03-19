@@ -92,5 +92,10 @@
         <file>icons/Star.svg</file>
         <file>icons/Rectangle7.png</file>
         <file>icons/Rectangle8.png</file>
+        <file>icons/xby.png</file>
+        <file>icons/icon-market-trades.svg</file>
+        <file>icons/icon-open-orders.svg</file>
+        <file>icons/icon-order-books.svg</file>
+        <file>icons/icon-order-history.svg</file>
     </qresource>
 </RCC>

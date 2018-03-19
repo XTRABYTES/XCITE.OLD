@@ -5,7 +5,7 @@ import "../../Theme" 1.0
 
 
 //Balance board used on the Nodes page (left hand side)
-Rectangle {
+Controls.Diode {
     id: rectangle
     x: 0
     y: 0
@@ -17,28 +17,12 @@ Rectangle {
     Layout.minimumHeight: 470
     Layout.fillHeight: true
 
-    //Horizontal gray ruler
-    Rectangle {
-        id: rectangle1
-        x: 0
-        y: 45
-        width: parent.width
-        height: 1
-        color: "#9fa0a3"
-        opacity: 0.2
-    }
-    //Balance header text
-    Text {
-        id: text1
-        y: 16
-        color: "#e2e2e2"
+    Controls.DiodeHeader {
+        id: diodeHeader
         text: qsTr("BALANCE")
-        anchors.left: parent.left
-        anchors.leftMargin: 21
-        font.family: Theme.fontCondensed
-        font.pixelSize: 15
     }
 
+    //Horizontal gray ruler
     Text {
         id: text2
         x: 222
