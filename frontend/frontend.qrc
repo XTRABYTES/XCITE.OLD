@@ -117,5 +117,10 @@
         <file>AddressBook/Button.qml</file>
         <file>AddressBook/ButtonBar.qml</file>
         <file>AddressBook/ButtonDivider.qml</file>
+        <file>X-Change/OpenOrders/Layout.qml</file>
+        <file>X-Change/MarketTrades/Layout.qml</file>
+        <file>X-Change/OrderHistory/Layout.qml</file>
+        <file>X-Change/OrderBooks/Layout.qml</file>
+        <file>Controls/UnfinishedModuleMenuButton.qml</file>
     </qresource>
 </RCC>

@@ -7,18 +7,19 @@ import "../../Theme" 1.0
 Controls.Diode {
     id: parentDiode
     width: 257
-    height: 924
+    height: 910
     radius: 5
     color: "#3A3E47"
     Layout.fillWidth: true
+    Controls.DiodeHeader {
+        text: "MARKET"
+    }
     ColumnLayout {
-        Controls.DiodeHeader {
-            text: "MARKET"
-        }
 
         RowLayout {
-            Layout.leftMargin: 10
+            Layout.leftMargin: 4
             Layout.topMargin: 10
+            /**
             Image {
                 source: "../../icons/Star.svg"
             }
@@ -37,10 +38,12 @@ Controls.Diode {
                 anchors.leftMargin: 160
                 text: "+0.00%"
             }
+            */
         }
         RowLayout {
             Layout.leftMargin: 10
             Layout.topMargin: 2
+            /**
             Image {
                 source: "../../icons/Star.svg"
             }
@@ -60,6 +63,8 @@ Controls.Diode {
                 text: "-0.03%"
                 color: "#F77E7E"
             }
+            */
         }
     }
 }
+
