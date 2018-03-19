@@ -11,6 +11,7 @@ Rectangle {
 
     property alias menuLabelText: menuLabel.text
     property alias text: label.text
+    property alias iconRotation: menuLabel.iconRotation
     property alias iconSource: menuLabel.iconSource
     property alias iconSize: menuLabel.iconSize
     property alias iconOnly: menuLabel.iconOnly

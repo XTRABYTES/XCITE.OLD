@@ -13,6 +13,7 @@ Item {
     property int size: 40
     property int imageOffsetX: 0
     property int imageOffsetY: 0
+    property int imageRotation: 0
 
     property alias imageSource: image.source
     property alias hoverEnabled: mouseArea.hoverEnabled
@@ -49,6 +50,8 @@ Item {
         mipmap: true
         anchors.horizontalCenter: parent.horizontalCenter
 
+        rotation: imageRotation
+
         transform: Translate {
             x: imageOffsetX
             y: imageOffsetY
@@ -67,6 +70,7 @@ Item {
         source: image
         color: getDefaultColor()
 
+        rotation: imageRotation
         transform: Translate {
             x: imageOffsetX
             y: imageOffsetY

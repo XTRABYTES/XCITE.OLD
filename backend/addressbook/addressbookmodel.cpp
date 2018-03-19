@@ -32,9 +32,9 @@ int AddressBookModel::remove(int idx)
     Address *addr = items.at(idx);
     if (addr != NULL) {
         beginRemoveRows(QModelIndex(), idx, idx);
-        free(addr);
         items.remove(idx);
         endRemoveRows();
+        free(addr);
     }
 
     return (idx > 0 ? idx : 0);
