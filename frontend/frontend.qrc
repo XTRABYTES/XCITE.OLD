@@ -127,5 +127,6 @@
         <file>X-Change/OrderBooks/OrderBooksDiode.qml</file>
         <file>X-Change/MarketTrades/MarketTradesDiode.qml</file>
         <file>Controls/SideMenuButtonSmall.qml</file>
+        <file>Onboarding/Introduction.qml</file>
     </qresource>
 </RCC>

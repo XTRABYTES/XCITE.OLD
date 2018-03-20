@@ -66,6 +66,7 @@ ColumnLayout {
     Label {
         font.pixelSize: 12
         bottomPadding: 10
+        color: "#d5d5d5"
         text: qsTr("Enter a XTRABYTES address in here.\nEx: BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS ")
     }
 
@@ -91,7 +92,7 @@ ColumnLayout {
         color: "#e0e0e0"
         font.pixelSize: 12
         text: qsTr("Or add a recipient from your address book")
-
+        color: "#d5d5d5"
         visible: xcite.width > 1100
         Image {
             fillMode: Image.PreserveAspectFit
