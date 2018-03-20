@@ -46,8 +46,41 @@ Column {
         labelText: "LET'S DO THIS"
         anchors.horizontalCenter: parent.horizontalCenter
         isPrimary: true
+        visible: settings.onboardingCompleted == false
         onButtonClicked: {
+            settings.onboardingCompleted = true
             mainRoot.push("../DashboardForm.qml")
+        }
+    }
+
+    Timer {
+        interval: 1000
+        running: Component.Ready && settings.onboardingCompleted == true
+        repeat: false
+        onTriggered: {
+            mainRoot.pushEnter = fadeInTransition
+            mainRoot.pushExit = fadeOutTransition
+            mainRoot.push("../DashboardForm.qml")
+        }
+    }
+
+    Transition {
+        id: fadeInTransition
+        PropertyAnimation {
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: 200
+        }
+    }
+
+    Transition {
+        id: fadeOutTransition
+        PropertyAnimation {
+            property: "opacity"
+            from: 1
+            to: 0
+            duration: 200
         }
     }
 }
