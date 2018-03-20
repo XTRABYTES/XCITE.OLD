@@ -32,8 +32,7 @@ ApplicationWindow {
         pushExit: null
 
         Component.onCompleted: {
-            //this.push(developerSettings.skipLogin ? dashboardForm : loginForm)
-            this.push(onboarding)
+            this.push(developerSettings.skipOnboarding ? dashboardForm : onboarding)
         }
     }
 
@@ -70,11 +69,13 @@ ApplicationWindow {
         property alias width: xcite.width
         property alias height: xcite.height
         property string locale: "en_us"
+        property bool onboardingCompleted: false
     }
 
     Settings {
         id: developerSettings
         category: "developer"
+        property bool skipOnboarding: false
         property bool skipLogin: false
         property string initialView: "xCite.home"
     }
