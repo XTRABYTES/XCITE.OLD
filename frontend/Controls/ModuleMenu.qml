@@ -49,7 +49,7 @@ Item {
                 text: qsTr("X-VAULT")
             }
 
-            ModuleMenuButton {
+            UnfinishedModuleMenuButton {
                 name: "xMore"
                 visible: xcite.width > 1065
                 target: "tools.TBD"
