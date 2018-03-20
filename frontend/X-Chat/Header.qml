@@ -22,9 +22,7 @@ ColumnLayout {
 
         MouseArea {
             id: mouseArea
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
+            anchors.fill: parent
             width: 48
             hoverEnabled: xChatPopup.visible === false
             cursorShape: Qt.PointingHandCursor
@@ -37,14 +35,19 @@ ColumnLayout {
         }
 
         RowLayout {
+            anchors.top: parent.top
             anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.bottom: parent.bottom
             anchors.rightMargin: 55
-            spacing: 10
+            spacing: 0
 
             Controls.ButtonIcon {
                 imageSource: "../icons/friend-request.svg"
                 size: 22
+                width: 40
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                image.anchors.verticalCenter: this.verticalCenter
                 isSelected: xChatPopup.activeTab === "friends"
                 onButtonClicked: tabChanged('friends')
             }
@@ -52,6 +55,10 @@ ColumnLayout {
             Controls.ButtonIcon {
                 imageSource: "../icons/robot.svg"
                 size: 25
+                width: 45
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                image.anchors.verticalCenter: this.verticalCenter
                 isSelected: xChatPopup.activeTab === "robot"
                 onButtonClicked: tabChanged('robot')
             }
