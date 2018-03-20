@@ -11,7 +11,8 @@ Controls.Diode {
     ChartView {
         id: priceChartView
 
-        readonly property string updateUrl: "https://ticker.xtrabytes.global/data.json"
+        // TODO: Temporary until we sort out SSL issues on windows and https redirects can be reenabled on the domain
+        readonly property string updateUrl: "http://ticker.xtrabytes.global/data.json"
 
         anchors.fill: parent
         anchors.topMargin: diodeHeaderHeight
