@@ -6,6 +6,7 @@ import Qt.labs.settings 1.0
 
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
+import "Onboarding" as Onboarding
 import "Login" as LoginComponents
 import "Theme" 1.0
 
@@ -31,13 +32,19 @@ ApplicationWindow {
         pushExit: null
 
         Component.onCompleted: {
-            this.push(developerSettings.skipLogin ? dashboardForm : loginForm)
+            this.push(developerSettings.skipOnboarding ? dashboardForm : onboarding)
         }
     }
 
     Component {
         id: dashboardForm
         DashboardForm {
+        }
+    }
+
+    Component {
+        id: onboarding
+        Onboarding.Introduction {
         }
     }
 
@@ -62,11 +69,13 @@ ApplicationWindow {
         property alias width: xcite.width
         property alias height: xcite.height
         property string locale: "en_us"
+        property bool onboardingCompleted: false
     }
 
     Settings {
         id: developerSettings
         category: "developer"
+        property bool skipOnboarding: false
         property bool skipLogin: false
         property string initialView: "xCite.home"
     }
