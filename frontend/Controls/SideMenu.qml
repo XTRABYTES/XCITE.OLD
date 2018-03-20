@@ -19,6 +19,13 @@ Rectangle {
 
     color: Theme.panelBackground
 
+    Version {
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.right: undefined
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+
     /**
       * XCite/Board Menu
       */
@@ -26,7 +33,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.topMargin: moduleMenuHeight + 7
+        anchors.topMargin: moduleMenuHeight + 6
         spacing: 0
         visible: selectedModule == 'xCite'
 
@@ -153,6 +160,41 @@ Rectangle {
             size: 32
         }
     }
+
+    Item {
+        visible: xcite.height <= 600
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 76
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 0
+
+            SideMenuButtonSmall {
+                text: qsTr("SETTINGS")
+                isActive: (selectedView === "xCite.settings")
+
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                onButtonClicked: {
+                    selectView("xCite.settings")
+                }
+            }
+
+            SideMenuButtonSmall {
+                text: xcite.isNetworkActive ? qsTr("ONLINE") : qsTr("OFFLINE")
+                isLit: xcite.isNetworkActive
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                onButtonClicked: toggleNetwork()
+            }
+        }
+    }
+
     ColumnLayout {
         visible: xcite.height > 600
         width: parent.width
@@ -162,7 +204,7 @@ Rectangle {
         anchors.bottomMargin: 32.5
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        spacing: 25
+        spacing: 10
 
         SideMenuButton {
             name: "xCite.settings"
@@ -177,28 +219,25 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
             isSelected: xcite.isNetworkActive
             labelText: xcite.isNetworkActive ? qsTr("ONLINE") : qsTr("OFFLINE")
-            onButtonClicked: {
-                if (xcite.isNetworkActive) {
-                    xcite.isNetworkActive = false
-                    return
-                }
-
-                confirmationModal({
-                                      title: qsTr("CONNECT?"),
-                                      bodyText: qsTr("Please ensure your Testnet wallet is running with RPC enabled at http://127.0.0.1:2222"),
-                                      confirmText: qsTr("LET'S DO THIS!"),
-                                      cancelText: qsTr("CANCEL")
-                                  }, function () {
-                                      xcite.isNetworkActive = !xcite.isNetworkActive
-                                      pollWallet(true)
-                                      network.listAccounts()
-                                  })
-            }
+            onButtonClicked: toggleNetwork()
         }
     }
 
-    Version {
-        anchors.right: undefined
-        anchors.horizontalCenter: parent.horizontalCenter
+    function toggleNetwork() {
+        if (xcite.isNetworkActive) {
+            xcite.isNetworkActive = false
+            return
+        }
+
+        confirmationModal({
+                              title: qsTr("CONNECT?"),
+                              bodyText: qsTr("Please ensure your Testnet wallet is running with RPC enabled at http://127.0.0.1:2222"),
+                              confirmText: qsTr("LET'S DO THIS!"),
+                              cancelText: qsTr("CANCEL")
+                          }, function () {
+                              xcite.isNetworkActive = !xcite.isNetworkActive
+                              pollWallet(true)
+                              network.listAccounts()
+                          })
     }
 }

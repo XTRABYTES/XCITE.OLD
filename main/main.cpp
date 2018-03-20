@@ -57,6 +57,11 @@ int main(int argc, char *argv[])
 
     // load market value
     MarketValue marketValue;
+<<<<<<< HEAD
+=======
+    // TODO: Temporary until we sort out SSL issues on windows and this can be reenabled
+    //marketValue.findXBYValue();
+>>>>>>> 81ed7bcec2ed11e95771814a9467db55138dc03c
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
 
     // set app version

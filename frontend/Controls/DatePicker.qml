@@ -19,6 +19,7 @@ TextField {
     rightPadding: 10
     topPadding: 0
     bottomPadding: 0
+    color: "#d5d5d5"
 
     state: "Default"
 

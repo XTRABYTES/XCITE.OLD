@@ -4,17 +4,27 @@ import QtQuick.Layouts 1.3
 import Qt.labs.calendar 1.0
 
 ComboBox {
-    id: comboBoxId
+    id: control
+    contentItem: Text {
+        text: control.displayText
+        color: control.pressed ? "white" : "#d5d5d5"
+        verticalAlignment: Text.AlignVCenter
+        font.weight: Font.Light
+        font.pixelSize: 16
+        leftPadding: 10
+        rightPadding: 10
+        elide: Text.ElideRight
+    }
 
     onHoveredChanged: {
-        hovered ? comboBoxBackgroundId.state = "Hovering" : comboBoxBackgroundId.state = "Default"
+        hovered ? background.state = "Hovering" : background.state = "Default"
     }
 
     property string defaultBackgroundColor: "#2A2C31"
     property string hoveringBackgroundColor: "#46464b"
 
     background: Rectangle {
-        id: comboBoxBackgroundId
+        id: background
         radius: 6
         color: "#2A2C31"
         implicitHeight: 47
@@ -33,14 +43,14 @@ ComboBox {
             State {
                 name: "Hovering"
                 PropertyChanges {
-                    target: comboBoxBackgroundId
+                    target: background
                     color: hoveringBackgroundColor
                 }
             },
             State {
                 name: "Default"
                 PropertyChanges {
-                    target: comboBoxBackgroundId
+                    target: background
                     color: defaultBackgroundColor
                 }
             }

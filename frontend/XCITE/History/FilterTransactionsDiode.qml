@@ -20,6 +20,7 @@ Controls.Diode {
         Label {
             font.weight: Font.Light
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: qsTr("Type")
         }
 
@@ -33,6 +34,7 @@ Controls.Diode {
             bottomPadding: 5
             font.weight: Font.Light
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: qsTr("Dates between")
         }
 
@@ -45,6 +47,7 @@ Controls.Diode {
             bottomPadding: 5
             font.weight: Font.Light
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: qsTr("and")
         }
 
@@ -56,6 +59,7 @@ Controls.Diode {
             topPadding: 15
             font.weight: Font.Light
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: qsTr("To")
         }
 
@@ -69,6 +73,7 @@ Controls.Diode {
             topPadding: 20
             font.weight: Font.Light
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: qsTr("Transaction value")
         }
 
