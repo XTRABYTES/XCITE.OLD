@@ -73,6 +73,7 @@ Controls.Diode {
             topPadding: 20
             font.weight: Font.Light
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: qsTr("Transaction value")
         }
 
