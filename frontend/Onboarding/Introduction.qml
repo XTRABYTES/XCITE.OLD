@@ -5,11 +5,10 @@ import "../Controls" as Controls
 
 Column {
     id: onboardingIntroduction
-    readonly property color cDiodeBackground: "#2B2C31"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
     height: 500
-    spacing: 40
+    spacing: 30
 
     Image {
         smooth: true
@@ -32,11 +31,13 @@ Column {
     Label {
         font.pixelSize: 20
         color: "white"
-        width: 780
+        width: 540
         wrapMode: Text.WordWrap
         anchors.bottomMargin: 40
         anchors.horizontalCenter: parent.horizontalCenter
-        text: qsTr("This pre-release version of XCITE includes temporary builds of our XCITE, X-CHAT and X-CHANGE modules.")
+        horizontalAlignment: Text.AlignHCenter
+        lineHeight: 1.3
+        text: qsTr("This pre-release version of XCITE showcases development builds of our XCITE, X-CHAT and X-CHANGE modules.")
     }
 
     Controls.ButtonModal {
@@ -46,7 +47,7 @@ Column {
         labelText: "LET'S DO THIS"
         anchors.horizontalCenter: parent.horizontalCenter
         isPrimary: true
-        visible: settings.onboardingCompleted == false
+        visible: settings.onboardingCompleted === false
         onButtonClicked: {
             settings.onboardingCompleted = true
             mainRoot.push("../DashboardForm.qml")
@@ -55,7 +56,7 @@ Column {
 
     Timer {
         interval: 1000
-        running: Component.Ready && settings.onboardingCompleted == true
+        running: Component.Ready && settings.onboardingCompleted === true
         repeat: false
         onTriggered: {
             mainRoot.pushEnter = fadeInTransition
