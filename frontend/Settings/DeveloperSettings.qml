@@ -34,6 +34,13 @@ ColumnLayout {
     }
 
     CheckBox {
+        id: skipOnboardingCheckbox
+        text: "Skip onboarding screens on startup"
+        checked: developerSettings.skipOnboarding
+        onClicked: developerSettings.skipOnboarding = this.checked
+    }
+
+    CheckBox {
         id: skipLoginCheckbox
         text: "Skip login screens on startup"
         checked: developerSettings.skipLogin
