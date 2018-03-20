@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import AddressBookModel 0.1
 
 import "../../Controls" as Controls
+import "../../AddressBook" as AddressBook
 
 ColumnLayout {
     property alias control: addressBook
@@ -23,63 +24,116 @@ ColumnLayout {
         radius: 4
         color: "#2A2C31"
 
-        Controls.AddressBook {
-            id: addressBook
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 0
 
-            model: AddressBookModel {
-            }
+            Controls.AddressBook {
+                id: addressBook
+                Layout.fillHeight: true
 
-            Component.onCompleted: {
-                addressBook.load()
-                addressBook.currentIndex = 0
-            }
+                model: AddressBookModel {
+                }
 
-            onCurrentItemChanged: {
-                if (currentIndex >= 0) {
-                    selectItem(addressBook.getSelectedItem())
+                Component.onCompleted: {
+                    addressBook.load()
+                    addressBook.currentIndex = 0
+                }
+
+                onCurrentItemChanged: {
+                    if (currentIndex >= 0) {
+                        selectItem(addressBook.getSelectedItem())
+                    }
                 }
             }
-        }
-    }
 
-    RowLayout {
-        Layout.fillWidth: true
-        Layout.topMargin: 4
-        Layout.maximumHeight: 29
-        Layout.minimumHeight: 29
-        Layout.alignment: Qt.AlignLeft
+            AddressBook.ButtonBar {
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: 0
 
-        Controls.AddressButton {
-            currentItem: addressBook.currentItem
+                    AddressBook.Button {
+                        Layout.fillWidth: true
+                        Layout.maximumWidth: parent.width / 3
+                        text: "Add Recipient"
 
-            Connections {
-                onAddressAdded: {
-                    addressBook.add(name, address)
-                }
+                        icon.source: "../../icons/circle-cross.svg"
+                        icon.sourceSize.width: 17
+                        icon.sourceSize.height: 17
 
-                onAddressUpdated: {
-                    selectItem(addressBook.getSelectedItem())
-                }
+                        onButtonClicked: {
+                            var newItem = {
+                                name: '',
+                                address: '',
+                                isNew: true
+                            }
 
-                onAddressRemoved: {
-                    addressBook.removeSelected()
-                    addressBook.save()
-                }
-
-                onBtnAddClicked: {
-                    var newItem = {
-                        name: '',
-                        address: '',
-                        isNew: true
+                            addressEditForm.item = newItem
+                            addressEditForm.open()
+                        }
                     }
 
-                    addressEditForm.item = newItem
-                    addressEditForm.open()
-                }
+                    AddressBook.ButtonDivider {
+                    }
 
-                onBtnEditClicked: {
-                    addressEditForm.item = addressBook.getSelectedItem()
-                    addressEditForm.open()
+                    AddressBook.Button {
+                        Layout.fillWidth: true
+                        Layout.maximumWidth: parent.width / 3
+                        text: "Edit Recipient"
+
+                        enabled: addressBook.currentItem ? true : false
+
+                        icon.source: "../../icons/pencil.svg"
+                        icon.sourceSize.width: 15
+                        icon.sourceSize.height: 15
+
+                        onButtonClicked: {
+                            if (!addressBook.currentItem) {
+                                return
+                            }
+
+                            addressEditForm.item = addressBook.getSelectedItem()
+                            addressEditForm.open()
+                        }
+                    }
+
+                    AddressBook.ButtonDivider {
+                    }
+
+                    AddressBook.Button {
+                        Layout.fillWidth: true
+                        Layout.maximumWidth: parent.width / 3
+                        text: "Remove Recipient"
+
+                        enabled: addressBook.currentItem ? true : false
+
+                        icon.source: "../../icons/trash.svg"
+                        icon.sourceSize.width: 13
+                        icon.sourceSize.height: 17
+
+                        onButtonClicked: {
+                            if (!addressBook.currentItem) {
+                                return
+                            }
+
+                            var item = addressBook.currentItem.item
+
+                            var text = qsTr(
+                                        "Are you sure you want to remove this address?")
+
+                            confirmationModal({
+                                                  title: qsTr("REMOVE ADDRESS CONFIRMATION"),
+                                                  bodyText: text,
+                                                  confirmText: qsTr("CONFIRM"),
+                                                  cancelText: qsTr("CANCEL")
+                                              }, function (modal) {
+                                                  if (addressBook.currentItem !== null) {
+                                                      addressBook.removeSelected()
+                                                      addressBook.save()
+                                                  }
+                                              })
+                        }
+                    }
                 }
             }
         }

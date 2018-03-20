@@ -83,8 +83,12 @@ Controls.Diode {
                     Layout.topMargin: diodeTopMargin
                     Layout.bottomMargin: diodePadding
                     Layout.rightMargin: diodePadding
-                    Layout.maximumHeight: 504
                 }
+            }
+
+            Item {
+                // spacer to stop XChat obscuring addressbook buttons
+                height: 100
             }
         }
     }
