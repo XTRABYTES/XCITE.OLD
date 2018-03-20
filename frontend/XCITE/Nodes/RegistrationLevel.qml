@@ -123,6 +123,7 @@ Controls.Diode {
                 font.weight: Font.Light
                 font.pixelSize: 16
                 bottomPadding: 5
+                color: "#d5d5d5"
                 text: {
                     if (level1 == 3)
                         qsTr("      Earnings:                    Low")
@@ -146,6 +147,7 @@ Controls.Diode {
                 font.weight: Font.Light
                 font.pixelSize: 16
                 bottomPadding: 5
+                color: "#d5d5d5"
                 text: {
                     if (level1 == 3)
                         qsTr("      Network Stake:            Low")
@@ -169,6 +171,7 @@ Controls.Diode {
                 font.weight: Font.Light
                 font.pixelSize: 16
                 bottomPadding: 15
+                color: "#d5d5d5"
                 text: {
                     if (level1 == 3)
                         qsTr("      Transfer Rate:              Low")
@@ -199,6 +202,7 @@ Controls.Diode {
                 font.weight: Font.Light
                 font.pixelSize: 16
                 topPadding: 14
+                color: "#d5d5d5"
                 text: "Payment"
             }
             Label {
