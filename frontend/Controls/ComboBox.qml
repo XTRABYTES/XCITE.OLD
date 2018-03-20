@@ -1,10 +1,14 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Styles 1.4
 import Qt.labs.calendar 1.0
 
 ComboBox {
     id: comboBoxId
+    style: ComboBoxStyle {
+        textColor: "#d5d5d5"
+    }
 
     onHoveredChanged: {
         hovered ? comboBoxBackgroundId.state = "Hovering" : comboBoxBackgroundId.state = "Default"

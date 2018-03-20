@@ -56,6 +56,7 @@ ColumnLayout {
     Label {
         font.pixelSize: 12
         bottomPadding: 10
+        color: "#d5d5d5"
         text: qsTr("Enter a XTRABYTES address in here.\nEx: BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS ")
     }
 
@@ -80,7 +81,7 @@ ColumnLayout {
         rightPadding: 20
         font.pixelSize: 12
         text: qsTr("Or add a recipient from your address book")
-
+        color: "#d5d5d5"
         visible: xcite.width > 1100
         Image {
             fillMode: Image.PreserveAspectFit
@@ -110,12 +111,14 @@ ColumnLayout {
             text: Number(totalAmount).toFixed(2)
             font.weight: Font.Light
             font.pixelSize: 36
+            color: "#d5d5d5"
         }
     }
 
     Label {
         topPadding: 10
         font.pixelSize: 12
+        color: "#d5d5d5"
         text: qsTr("Transaction fee:") + " " + networkFee + " " + qsTr("XBY")
     }
 }

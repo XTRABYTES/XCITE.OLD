@@ -54,10 +54,12 @@ Controls.Diode {
             Layout.leftMargin: 25
             Layout.topMargin: 15
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: "Static registration string"
         }
         TextArea {
             id: regString
+            color: "#d5d5d5"
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
             width: contentWidth + 20
 
@@ -99,10 +101,12 @@ Controls.Diode {
             Layout.leftMargin: 25
             Layout.topMargin: 20
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: "Deposit Transaction ID"
         }
         TextArea {
             id: depID
+            color: "#d5d5d5"
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
             width: contentWidth + 20
 
@@ -144,10 +148,12 @@ Controls.Diode {
             Layout.leftMargin: 25
             Layout.topMargin: 20
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: "Fee Transaction ID"
         }
         TextArea {
             id: feeTrans
+            color: "#d5d5d5"
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
             width: contentWidth + 20
 
@@ -189,10 +195,12 @@ Controls.Diode {
             Layout.leftMargin: 25
             Layout.topMargin: 20
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: "Public Static Key"
         }
         TextArea {
             id: pubKey
+            color: "#d5d5d5"
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
             width: contentWidth + 20
 
@@ -234,10 +242,12 @@ Controls.Diode {
             Layout.leftMargin: 25
             Layout.topMargin: 20
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: "Placeholder"
         }
         TextArea {
             id: holderKey
+            color: "#d5d5d5"
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
             width: contentWidth + 20
 
@@ -283,6 +293,7 @@ Controls.Diode {
             Label {
                 anchors.left: parent.right
                 anchors.leftMargin: 10
+                color: "#d5d5d5"
                 text: "I have copied and saved all strings above to multiple secure locations that only I have access to"
             }
         }
