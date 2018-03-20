@@ -100,7 +100,6 @@ Controls.Diode {
                     Layout.topMargin: diodeTopMargin
                     Layout.bottomMargin: diodePadding
                     Layout.rightMargin: diodePadding
-                    Layout.alignment: Qt.AlignTop
                 }
             }
 

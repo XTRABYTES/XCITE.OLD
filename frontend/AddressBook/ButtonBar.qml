@@ -2,7 +2,9 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 
 Rectangle {
-    Layout.fillWidth: true
+    anchors.left: parent.left
+    anchors.right: parent.right
+
     color: "#25272C"
     height: 69
 
