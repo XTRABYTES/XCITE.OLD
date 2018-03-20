@@ -7,8 +7,10 @@ Column {
     id: onboardingIntroduction
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
+    anchors.top: parent.top
+    anchors.topMargin: 15
     height: 500
-    spacing: 30
+    spacing: 20
 
     Image {
         smooth: true
@@ -22,8 +24,6 @@ Column {
         id: versionLabel
         font.pixelSize: 24
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: 30
-        anchors.bottomMargin: 30
         color: "white"
         text: qsTr("XCITE - Version " + AppVersion)
     }
@@ -33,10 +33,9 @@ Column {
         color: "white"
         width: 540
         wrapMode: Text.WordWrap
-        anchors.bottomMargin: 40
         anchors.horizontalCenter: parent.horizontalCenter
         horizontalAlignment: Text.AlignHCenter
-        lineHeight: 1.3
+        lineHeight: 1.25
         text: qsTr("This pre-release version of XCITE showcases development builds of our XCITE, X-CHAT and X-CHANGE modules.")
     }
 
