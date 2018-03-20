@@ -6,6 +6,7 @@ import Qt.labs.settings 1.0
 
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
+import "Onboarding" as Onboarding
 import "Login" as LoginComponents
 import "Theme" 1.0
 
@@ -31,13 +32,20 @@ ApplicationWindow {
         pushExit: null
 
         Component.onCompleted: {
-            this.push(developerSettings.skipLogin ? dashboardForm : loginForm)
+            //this.push(developerSettings.skipLogin ? dashboardForm : loginForm)
+            this.push(onboarding)
         }
     }
 
     Component {
         id: dashboardForm
         DashboardForm {
+        }
+    }
+
+    Component {
+        id: onboarding
+        Onboarding.Introduction {
         }
     }
 
