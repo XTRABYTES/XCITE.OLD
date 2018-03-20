@@ -3,7 +3,8 @@
 
 MarketValue::MarketValue(QObject *parent) : QObject(parent)
 {
-
+    // TODO: Temporary until we sort out SSL issues on windows and this can be reenabled
+    m_marketValue = "0.12";
 }
 
 void MarketValue::findXBYValue()
