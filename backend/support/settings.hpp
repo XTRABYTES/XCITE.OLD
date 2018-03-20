@@ -5,20 +5,23 @@
 #include <QTranslator>
 #include <QCoreApplication>
 #include <QQmlApplicationEngine>
+#include <QSettings>
 
 class Settings : public QObject
 {
     Q_OBJECT
 public:
-    Settings(QQmlApplicationEngine *engine, QObject *parent = 0);
+    Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent = 0);
     void setLocale(QString);
 
 public slots:
     void onLocaleChange(QString);
+    void onClearAllSettings();
 
 private:
     QTranslator m_translator;
     QQmlApplicationEngine *m_engine;
+    QSettings *m_settings;
 };
 
 #endif // SETTINGS_HPP

@@ -1,9 +1,10 @@
 #include "settings.hpp"
 
-Settings::Settings(QQmlApplicationEngine *engine, QObject *parent) :
+Settings::Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent) :
     QObject(parent)
 {
     m_engine = engine;
+    m_settings = settings;
 }
 
 void Settings::setLocale(QString locale) {
@@ -25,4 +26,21 @@ void Settings::setLocale(QString locale) {
 
 void Settings::onLocaleChange(QString locale) {
     setLocale(locale);
+}
+
+void Settings::onClearAllSettings() {
+    bool fallbacks = m_settings->fallbacksEnabled();
+    m_settings->setFallbacksEnabled(false);
+
+    m_settings->remove("developer");
+    m_settings->remove("xchat");
+    m_settings->remove("width");
+    m_settings->remove("height");
+    m_settings->remove("locale");
+    m_settings->remove("x");
+    m_settings->remove("y");
+    m_settings->remove("onboardingCompleted");
+    m_settings->sync();
+
+    m_settings->setFallbacksEnabled(fallbacks);
 }

@@ -32,6 +32,19 @@ ApplicationWindow {
         pushExit: null
 
         Component.onCompleted: {
+            var idealHeight = 800
+            var idealWidth = 1000
+
+            var h = Math.min(screen.height - 100, idealHeight)
+            var w = Math.min(screen.width - 100, idealWidth)
+
+            if (!settings.onboardingCompleted) {
+                xcite.width = w
+                xcite.height = h
+                xcite.x = (screen.width / 2) - (w / 2)
+                xcite.y = (screen.height / 2) - (h / 2)
+            }
+
             this.push(developerSettings.skipOnboarding ? dashboardForm : onboarding)
         }
     }
@@ -95,6 +108,7 @@ ApplicationWindow {
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
     signal localeChange(string locale)
+    signal clearAllSettings
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())
