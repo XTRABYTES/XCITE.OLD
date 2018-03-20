@@ -89,7 +89,6 @@ ColumnLayout {
         anchors.right: parent.right
         horizontalAlignment: Text.AlignRight
         rightPadding: 20
-        color: "#e0e0e0"
         font.pixelSize: 12
         text: qsTr("Or add a recipient from your address book")
         color: "#d5d5d5"
