@@ -124,5 +124,6 @@
         <file>X-Change/OrderHistory/OrderHistoryDiode.qml</file>
         <file>X-Change/OrderBooks/OrderBooksDiode.qml</file>
         <file>X-Change/MarketTrades/MarketTradesDiode.qml</file>
+        <file>Controls/SideMenuButtonSmall.qml</file>
     </qresource>
 </RCC>

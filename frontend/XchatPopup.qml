@@ -53,7 +53,7 @@ Item {
             name: "full"
             PropertyChanges {
                 target: xChatPopup
-                height: 639
+                height: xcite.height < 700 ? xcite.height - 50 : 639
             }
         }
     ]

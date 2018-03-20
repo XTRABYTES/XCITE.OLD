@@ -13,7 +13,7 @@ Rectangle {
 
     anchors.left: parent.left
     anchors.right: parent.right
-    height: 78
+    height: 74
 
     color: isActive ? "#2F3238" : "transparent"
 
