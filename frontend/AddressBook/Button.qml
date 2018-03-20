@@ -19,6 +19,8 @@ Label {
     horizontalAlignment: Text.AlignHCenter
     font.pixelSize: 12
     topPadding: 26
+    leftPadding: 10
+    rightPadding: 10
 
     Image {
         id: icon
