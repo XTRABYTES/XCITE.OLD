@@ -12,7 +12,7 @@ Button {
     property int colorTracker: 0
     Layout.fillWidth: true
     height: buttonHeight
-
+    Layout.fillHeight: true
     signal buttonClicked
 
     MouseArea {
