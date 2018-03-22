@@ -61,7 +61,7 @@ Controls.Diode {
                     anchors.top: parent.bottom
                     anchors.left: parent.left
                     anchors.leftMargin: 5
-                    text: "Available: "
+                    text: "Available: 0 XFUEL"
                     color: "#8592A5"
                     topPadding: 15
                     font.weight: Font.Medium
@@ -101,7 +101,9 @@ Controls.Diode {
                     anchors.top: parent.bottom
                     anchors.left: parent.left
                     anchors.leftMargin: 5
-                    text: "Available: "
+                    text: "Available: " + wallet.balance.toLocaleString(
+                              Qt.locale(), 'f', 8).replace(/\.?0+$/,
+                                                           '') + " XBY"
                     color: "#8592A5"
                     topPadding: 15
                     font.weight: Font.Medium
@@ -283,4 +285,5 @@ Controls.Diode {
         }
     }
 }
+
 
