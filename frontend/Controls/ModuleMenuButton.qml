@@ -74,4 +74,14 @@ Rectangle {
             }
         }
     ]
+
+    Rectangle {
+        visible: isSelected
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.left: parent.left
+        height: 5
+        width: parent.width
+        color: Theme.secondaryHighlight
+    }
 }
