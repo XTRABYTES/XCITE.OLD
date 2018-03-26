@@ -210,7 +210,7 @@ Controls.Diode {
     Rectangle {
         id: tooltip
         color: "#2A2C31"
-        height: 45
+        height: (date.height + price.height + 10)
         width: childrenRect.width
         radius: 4
         visible: false
