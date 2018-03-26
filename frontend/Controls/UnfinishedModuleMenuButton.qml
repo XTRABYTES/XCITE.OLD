@@ -10,7 +10,7 @@ ModuleMenuButton {
 
         onClicked: {
             modalAlert({
-                           bodyText: "This portion of XCite is not yet functioning, expect it soon",
+                           bodyText: "This portion of XCITE is not yet functioning. Expect it soon!",
                            title: qsTr("Module Alert"),
                            buttonText: qsTr("OK")
                        })
