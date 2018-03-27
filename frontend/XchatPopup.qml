@@ -26,6 +26,12 @@ Item {
     smooth: true
     z: 100
 
+    MouseArea {
+        propagateComposedEvents: false
+        anchors.fill: parent
+        hoverEnabled: true
+    }
+
     Connections {
         target: header
         onTabChanged: {
