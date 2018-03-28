@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>XCITE</Name>
+    <Version>0.2.0</Version>
+    <Title>XCITE</Title>
+    <Publisher>XTRABYTES, Ltd</Publisher>
+    <ProductUrl>https://xtrabytes.global</ProductUrl>
+    <StartMenuDir>XTRABYTES</StartMenuDir>
+    <TargetDir>@HomeDir@/XTRABYTES/XCITE</TargetDir>
+    <Logo>logo.png</Logo>
+    <Banner>banner.png</Banner>
+    <WizardStyle>Modern</WizardStyle>
+    <TitleColor>#0ED8D2</TitleColor>
+</Installer>

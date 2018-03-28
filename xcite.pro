@@ -79,7 +79,13 @@ HEADERS  += backend/xchat/xchat.hpp \
     backend/integrations/MarketValue.hpp
 
 DISTFILES += \
-    xcite.ico
+    xcite.ico \
+    packages/global.xtrabytes.xcite/meta/package.xml \
+    config/config.xml \
+    packages/global.xtrabytes.xcite/meta/installscript.qs \
+    packages/global.xtrabytes.xcite/meta/license.txt \
+    config/banner.png \
+    config/logo.png
 
 RC_ICONS = xcite.ico
 CONFIG(debug, debug|release) {
@@ -99,3 +105,6 @@ mac {
         QMAKE_BUNDLE_DATA += app_launch_images
     }
 }
+
+FORMS += \
+    packages/global.xtrabytes.xcite/meta/feedbackpage.ui
