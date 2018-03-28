@@ -13,7 +13,9 @@ Item {
     property int size: 40
     property int imageOffsetX: 0
     property int imageOffsetY: 0
+    property int imageRotation: 0
 
+    property alias image: image
     property alias imageSource: image.source
     property alias hoverEnabled: mouseArea.hoverEnabled
     property alias cursorShape: mouseArea.cursorShape
@@ -37,6 +39,7 @@ Item {
         anchors.fill: parent
         onClicked: buttonClicked()
         cursorShape: Qt.PointingHandCursor
+        propagateComposedEvents: false
 
         hoverEnabled: true
         onHoveredChanged: containsMouse ? button.state = "Hovering" : button.state = "Default"
@@ -48,6 +51,8 @@ Item {
         smooth: true
         mipmap: true
         anchors.horizontalCenter: parent.horizontalCenter
+
+        rotation: imageRotation
 
         transform: Translate {
             x: imageOffsetX
@@ -67,6 +72,7 @@ Item {
         source: image
         color: getDefaultColor()
 
+        rotation: imageRotation
         transform: Translate {
             x: imageOffsetX
             y: imageOffsetY

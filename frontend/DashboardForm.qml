@@ -1,8 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
-
 import "Controls" as Controls
-
+import "Onboarding" as Onboarding
 import "XCITE" as XCITE
 import "X-Change" as XChange
 import "X-Chat" as XChat
@@ -59,10 +58,13 @@ Item {
 
             XChange.Layout {
             }
+
             XChat.Layout {
             }
+
             XVault.Layout {
             }
+
             Settings.Layout {
             }
 
@@ -80,7 +82,6 @@ Item {
 
     XchatPopup {
         id: xChatPopup
-        visible: false
     }
 
     Timer {

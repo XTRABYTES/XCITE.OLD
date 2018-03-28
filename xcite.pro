@@ -5,8 +5,8 @@
 #-------------------------------------------------
 
 VERSION_MAJOR=0
-VERSION_MINOR=1
-VERSION_BUILD=4
+VERSION_MINOR=2
+VERSION_BUILD=0
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
@@ -57,7 +57,8 @@ SOURCES += main/main.cpp \
             backend/support/ClipboardProxy.cpp \
             backend/support/globaleventfilter.cpp \
             backend/support/settings.cpp \
-            backend/testnet/xchattestnetclient.cpp
+            backend/testnet/xchattestnetclient.cpp \
+    backend/integrations/MarketValue.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -74,7 +75,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/support/ClipboardProxy.hpp \
             backend/support/globaleventfilter.hpp \
             backend/support/settings.hpp \
-            backend/testnet/xchattestnetclient.hpp
+            backend/testnet/xchattestnetclient.hpp \
+    backend/integrations/MarketValue.hpp
 
 DISTFILES += \
     xcite.ico \

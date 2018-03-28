@@ -11,6 +11,7 @@ Rectangle {
 
     property alias menuLabelText: menuLabel.text
     property alias text: label.text
+    property alias iconRotation: menuLabel.iconRotation
     property alias iconSource: menuLabel.iconSource
     property alias iconSize: menuLabel.iconSize
     property alias iconOnly: menuLabel.iconOnly
@@ -37,7 +38,9 @@ Rectangle {
     layer.effect: DropShadow {
         horizontalOffset: 0
         verticalOffset: 2
+        samples: 5
         radius: 10
+        cached: true
         color: "#1A000000"
     }
 }

@@ -6,6 +6,7 @@ import Qt.labs.settings 1.0
 
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
+import "Onboarding" as Onboarding
 import "Login" as LoginComponents
 import "Theme" 1.0
 
@@ -31,13 +32,32 @@ ApplicationWindow {
         pushExit: null
 
         Component.onCompleted: {
-            this.push(developerSettings.skipLogin ? dashboardForm : loginForm)
+            var idealHeight = 800
+            var idealWidth = 1000
+
+            var h = Math.min(screen.height - 100, idealHeight)
+            var w = Math.min(screen.width - 100, idealWidth)
+
+            if (!settings.onboardingCompleted) {
+                xcite.width = w
+                xcite.height = h
+                xcite.x = (screen.width / 2) - (w / 2)
+                xcite.y = (screen.height / 2) - (h / 2)
+            }
+
+            this.push(developerSettings.skipOnboarding ? dashboardForm : onboarding)
         }
     }
 
     Component {
         id: dashboardForm
         DashboardForm {
+        }
+    }
+
+    Component {
+        id: onboarding
+        Onboarding.Introduction {
         }
     }
 
@@ -62,13 +82,22 @@ ApplicationWindow {
         property alias width: xcite.width
         property alias height: xcite.height
         property string locale: "en_us"
+        property bool onboardingCompleted: false
     }
 
     Settings {
         id: developerSettings
         category: "developer"
+        property bool skipOnboarding: false
         property bool skipLogin: false
         property string initialView: "xCite.home"
+    }
+
+    Settings {
+        id: xChatSettings
+        category: "xchat"
+        property string sizeState: "minimal"
+        property string activeTab: "robot"
     }
 
     Network {
@@ -79,6 +108,7 @@ ApplicationWindow {
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
     signal localeChange(string locale)
+    signal clearAllSettings
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())
@@ -88,13 +118,15 @@ ApplicationWindow {
         xbyBalance = response
     }
 
-    function walletError(status) {
-        xcite.isNetworkActive = false
-        modalAlert({
-                       title: qsTr("NETWORK ERROR"),
-                       bodyText: qsTr(status),
-                       buttonText: qsTr("OK")
-                   })
+    function walletError(sender, status) {
+        //        xcite.isNetworkActive = false
+        if (sender === "ui") {
+            modalAlert({
+                           title: qsTr("NETWORK ERROR"),
+                           bodyText: qsTr(status),
+                           buttonText: qsTr("OK")
+                       })
+        }
     }
 
     function walletSuccess(result) {

@@ -30,7 +30,6 @@ ListView {
         leftPadding: 20
         rightPadding: 20
         text: name || "Default"
-        font.family: "Roboto"
         font.weight: Font.Light
         font.pixelSize: 16
         color: addressBook.currentIndex == index ? "black" : "white"
@@ -71,7 +70,12 @@ ListView {
 
     function removeSelected() {
         if (currentItem) {
-            model.remove(currentIndex)
+            var idxToRemove = currentIndex
+
+            // Prevent highlight flicker
+            currentIndex--
+
+            model.remove(idxToRemove)
         }
     }
 }

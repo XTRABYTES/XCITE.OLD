@@ -30,7 +30,6 @@ void XchatObject::Initialize() {
 }
 
 void XchatObject::SubmitMsgCall(const QString &msg) {
-
     QString message;
     bool keyWordUsedUserInput = this->CheckUserInputForKeyWord(msg);
     bool keyWordUsedAIInput = this->CheckAIInputForKeyWord(m_pXchatAiml->getResponse(msg));

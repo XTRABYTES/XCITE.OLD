@@ -15,6 +15,7 @@
 #include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 #include "../backend/support/settings.hpp"
+#include "../backend/integrations/MarketValue.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -46,12 +47,19 @@ int main(int argc, char *argv[])
     selector->setExtraSelectors(QStringList() << "mobile");
 #endif
 
-    XchatObject xchatobj;
-    xchatobj.Initialize();
+    XchatObject xchatRobot;
+    xchatRobot.Initialize();
+    engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
 
     // wire-up testnet wallet
     Testnet wallet;
     engine.rootContext()->setContextProperty("wallet", &wallet);
+
+    // load market value
+    MarketValue marketValue;
+    // TODO: Temporary until we sort out SSL issues on windows and this can be reenabled
+    //marketValue.findXBYValue();
+    engine.rootContext()->setContextProperty("marketValue", &marketValue);
 
     // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
@@ -65,26 +73,25 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    Settings settings(&engine);
-    QObject::connect(engine.rootObjects().first(), SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
+    QObject *rootObject = engine.rootObjects().first();
+
+    QSettings appSettings;
+    Settings settings(&engine, &appSettings);
+    QObject::connect(rootObject, SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
+    QObject::connect(rootObject, SIGNAL(clearAllSettings()), &settings, SLOT(onClearAllSettings()));
 
     // Set last locale
-    QSettings appSettings;
     settings.setLocale(appSettings.value("locale").toString());
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 #else
     // X-Chat
-    wallet.m_xchatobject = &xchatobj;
-    // connect QML signals to C++ slots
-    QObject::connect(engine.rootObjects().first(),SIGNAL(xchatSubmitMsgSignal(QString)),&xchatobj,SLOT(SubmitMsgCall(QString)));
-    // connect C++ signals to QML slots
-    QObject::connect(&xchatobj, SIGNAL(xchatResponseSignal(QVariant)),engine.rootObjects().first(), SLOT(xchatResponse(QVariant)));
+    wallet.m_xchatobject = &xchatRobot;
 
     // FauxWallet
-    QObject::connect(&wallet, SIGNAL(response(QVariant)), engine.rootObjects().first(), SLOT(testnetResponse(QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletError(QVariant)), engine.rootObjects().first(), SLOT(walletError(QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), engine.rootObjects().first(), SLOT(walletSuccess(QVariant)));
+    QObject::connect(&wallet, SIGNAL(response(QVariant)), rootObject, SLOT(testnetResponse(QVariant)));
+    QObject::connect(&wallet, SIGNAL(walletError(QVariant, QVariant)), rootObject, SLOT(walletError(QVariant, QVariant)));
+    QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), rootObject, SLOT(walletSuccess(QVariant)));
 #endif
 
     return app.exec();

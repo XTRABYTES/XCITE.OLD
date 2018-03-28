@@ -19,8 +19,7 @@ ColumnLayout {
     Controls.TextInput {
         id: formAmount
 
-        anchors.left: parent.left
-        anchors.right: parent.right
+        Layout.fillWidth: true
         text: "0"
 
         validator: DoubleValidator {
@@ -33,6 +32,16 @@ ColumnLayout {
             anchors.rightMargin: 12
             anchors.bottomMargin: 5
         }
+    }
+
+    Label {
+        Layout.topMargin: 6
+        anchors.right: parent.right
+        horizontalAlignment: Text.AlignRight
+        color: "#e0e0e0"
+        font.pixelSize: 12
+        text: qsTr("Total:") + " " + Number(totalAmount).toFixed(
+                  8) + " (1 XBY " + qsTr("in fees") + ")"
     }
 
     Controls.SliderAmount {
@@ -57,14 +66,14 @@ ColumnLayout {
     Label {
         font.pixelSize: 12
         bottomPadding: 10
+        color: "#d5d5d5"
         text: qsTr("Enter a XTRABYTES address in here.\nEx: BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS ")
     }
 
     Controls.TextInput {
         id: formAddress
 
-        anchors.left: parent.left
-        anchors.right: parent.right
+        Layout.fillWidth: true
         font.pixelSize: 24
 
         Connections {
@@ -82,7 +91,7 @@ ColumnLayout {
         rightPadding: 20
         font.pixelSize: 12
         text: qsTr("Or add a recipient from your address book")
-
+        color: "#d5d5d5"
         visible: xcite.width > 1100
         Image {
             fillMode: Image.PreserveAspectFit
@@ -93,31 +102,5 @@ ColumnLayout {
             sourceSize.height: 13
             anchors.right: parent.right
         }
-    }
-
-    // Total
-    Controls.FormLabel {
-        Layout.topMargin: 40 - (xcite.width > 1100 ? chooseFromAddressBookLabel.height + 1 : 0)
-        Layout.bottomMargin: 25
-        text: qsTr("Total")
-    }
-
-    RowLayout {
-        TextXBY {
-            Layout.alignment: Qt.AlignBottom
-            Layout.bottomMargin: 5
-        }
-
-        Label {
-            text: Number(totalAmount).toFixed(2)
-            font.weight: Font.Light
-            font.pixelSize: 36
-        }
-    }
-
-    Label {
-        topPadding: 10
-        font.pixelSize: 12
-        text: qsTr("Transaction fee:") + " " + networkFee + " " + qsTr("XBY")
     }
 }

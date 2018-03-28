@@ -55,6 +55,7 @@ Controls.Diode {
             Layout.leftMargin: 25
             Layout.topMargin: 30
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: "Static registration string"
         }
         Label {
@@ -68,6 +69,7 @@ Controls.Diode {
 
         TextArea {
             id: regString
+            color: "#d5d5d5"
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
             width: contentWidth + 20
 
@@ -109,12 +111,13 @@ Controls.Diode {
             font.pixelSize: 16
             Layout.leftMargin: 25
             Layout.topMargin: 20
+            color: "#d5d5d5"
             text: "XBY Deposit Address"
         }
         TextArea {
             id: addString
+            color: "#d5d5d5"
             text: "   BMy2BpwyJc5i8upNm5Vv8HMkwXqBR3kCxS"
-
             width: contentWidth + 20
             Layout.leftMargin: 25
             Layout.topMargin: 10
@@ -131,6 +134,7 @@ Controls.Diode {
             font.pixelSize: 16
             Layout.leftMargin: 25
             Layout.topMargin: 20
+            color: "#d5d5d5"
             text: "Accept transaction fee"
             visible: xcite.width > 1100
         }
@@ -149,11 +153,13 @@ Controls.Diode {
             Label {
                 anchors.right: parent.left
                 anchors.rightMargin: 10
+                color: "#d5d5d5"
                 text: "No"
             }
             Label {
                 anchors.left: parent.right
                 anchors.leftMargin: 10
+                color: "#d5d5d5"
                 text: "Yes"
             }
         }
@@ -162,12 +168,14 @@ Controls.Diode {
             font.pixelSize: 16
             Layout.leftMargin: 25
             Layout.topMargin: 20
+            color: "#d5d5d5"
             text: "Total Deposit"
         }
         Label {
             font.pixelSize: 14
             Layout.leftMargin: 25
             Layout.topMargin: 10
+            color: "#d5d5d5"
             text: "XBY "
         }
         Controls.ButtonModal {
