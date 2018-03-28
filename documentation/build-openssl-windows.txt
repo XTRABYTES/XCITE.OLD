@@ -4,6 +4,7 @@ Building OpenSSL on Windowsmak
 - Run MSYS2 MinGW 32-bit
 - Get latest OpenSSL 1.0.x from https://www.openssl.org/source/
 
+$ pacman -S wget
 $ wget "https://www.openssl.org/source/openssl-1.0.2o.tar.gz" 
 
 - Set paths for gcc
