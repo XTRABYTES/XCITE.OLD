@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>XCITE</DisplayName>
     <Description>XCITE Core</Description>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <ReleaseDate>2018-03-17</ReleaseDate>
     <Licenses>
         <License name="License Agreement" file="license.txt" />
