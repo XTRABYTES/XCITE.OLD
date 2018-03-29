@@ -28,7 +28,7 @@ cd build/release && \
 	mv /tmp/xcite.exe . && \
 	windeployqt.exe --compiler-runtime --release --qmldir ../../frontend xcite.exe && \
 	cp ../../support/{lib,ssl}eay32.dll . && \
-	archivegen.exe ${ARCHIVE_PATH} . && \
+	archivegen.exe "${ARCHIVE_PATH}" . && \
 	popd && \
 	binarycreator.exe -c config/config.xml -p packages XCITE-${VERSION}-Windows.exe
 	
