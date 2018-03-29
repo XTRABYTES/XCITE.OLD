@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ARCHIVE_DIR="${PWD}/packages/global.xtrabytes.xcite"
-VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" ${ARCHIVE_DIR}/meta/package.xml)
+VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" "${ARCHIVE_DIR}/meta/package.xml")
 ARCHIVE_PATH="${ARCHIVE_DIR}/data/XCITE-${VERSION}-windows.7z"
 INSTALLER_PATH="${PWD}/XCITE-${VERSION}-Windows.exe"
 
