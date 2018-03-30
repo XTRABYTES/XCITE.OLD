@@ -128,5 +128,6 @@
         <file>X-Change/MarketTrades/MarketTradesDiode.qml</file>
         <file>Controls/SideMenuButtonSmall.qml</file>
         <file>Onboarding/Introduction.qml</file>
+        <file>Browser/Layout.qml</file>
     </qresource>
 </RCC>

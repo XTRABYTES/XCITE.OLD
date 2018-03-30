@@ -91,6 +91,9 @@ ApplicationWindow {
         property bool skipOnboarding: false
         property bool skipLogin: false
         property string initialView: "xCite.home"
+        property string zendeskCompanyID: "xtrabytes"
+        property string zendeskClientID: "xcite_integration_for_zendesk"
+        property string zendeskRedirectURI: "https://ticker.xtrabytes.global/zendesk-auth.php"
     }
 
     Settings {
@@ -108,6 +111,7 @@ ApplicationWindow {
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
     signal localeChange(string locale)
+    signal zendeskAccessTokenSet(string accessToken)
     signal clearAllSettings
 
     function xchatResponse(response) {

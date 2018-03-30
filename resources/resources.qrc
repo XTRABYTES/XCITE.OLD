@@ -97,5 +97,6 @@
         <file>icons/icon-open-orders.svg</file>
         <file>icons/icon-order-books.svg</file>
         <file>icons/icon-order-history.svg</file>
+        <file>icons/help.svg</file>
     </qresource>
 </RCC>

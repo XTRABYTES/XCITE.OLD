@@ -8,6 +8,7 @@ import "X-Chat" as XChat
 import "X-Vault" as XVault
 import "tools" as Tools
 import "Settings" as Settings
+import "Browser" as Browser
 
 import xtrabytes.xcite.xchat 1.0
 
@@ -69,6 +70,9 @@ Item {
             }
 
             Tools.Layout {
+            }
+
+            Browser.Layout {
             }
         }
     }
