@@ -59,11 +59,25 @@ Item {
 
         SearchBox {
             placeholder: qsTr("Search...")
+            anchors.right: helpButton.left
+            anchors.rightMargin: 10
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            anchors.right: parent.right
             Layout.fillWidth: true
             Layout.maximumWidth: 340
+        }
+
+        ButtonIcon {
+            id: helpButton
+            imageSource: "../icons/help.svg"
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            opacity: 0.4
+            size: 26
+
+            onButtonClicked: {
+                selectView("browser.index")
+            }
         }
     }
 }

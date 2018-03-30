@@ -5,6 +5,10 @@
 #include <QSettings>
 #include <qqmlcontext.h>
 #include <qqml.h>
+
+#include <QtWebView/QtWebView>
+#include "../backend/integrations/Zendesk.hpp"
+
 #include "../backend/xchat/xchat.hpp"
 #include "../backend/xchat/xchatconversationmodel.hpp"
 #include "../frontend/support/sortfilterproxymodel.hpp"
@@ -23,6 +27,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
+    QtWebView::initialize();
 
     app.setOrganizationName("Xtrabytes");
     app.setOrganizationDomain("xtrabytes.global");
@@ -86,6 +91,9 @@ int main(int argc, char *argv[])
         marketValue.findXBYValue(appSettings.value("defaultCurrency").toString());
     else
         marketValue.findXBYValue("USD");
+
+    Zendesk zd(&appSettings);
+    QObject::connect(rootObject, SIGNAL(zendeskAccessTokenSet(QString)), &zd, SLOT(onAccessTokenSet(QString)));
 
     // Set last locale
     settings.setLocale(appSettings.value("locale").toString());
