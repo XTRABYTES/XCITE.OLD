@@ -35,57 +35,59 @@ Item {
         anchors.fill: parent
         title: qsTr("Settings")
 
-        ColumnLayout {
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
+        RowLayout {
+            anchors.fill: parent
             anchors.topMargin: 75
             anchors.leftMargin: 20
             anchors.rightMargin: 20
-            spacing: 20
 
-            Controls.FormLabel {
-                text: qsTr("Select your language")
-            }
+            ColumnLayout {
+                Layout.alignment: Qt.AlignTop
+                spacing: 20
 
-            ComboBox {
-                id: control
-                currentIndex: 0
-                textRole: "text"
+                Controls.FormLabel {
+                    text: qsTr("Select your language")
+                }
 
-                Connections {
-                    Component.onCompleted: {
-                        for (var i = 0; i < languageOptions.count; i++) {
-                            if (languageOptions.get(
-                                        i).locale === settings.locale) {
-                                control.currentIndex = i
-                                break
+                ComboBox {
+                    id: control
+                    currentIndex: 0
+                    textRole: "text"
+
+                    Connections {
+                        Component.onCompleted: {
+                            for (var i = 0; i < languageOptions.count; i++) {
+                                if (languageOptions.get(
+                                            i).locale === settings.locale) {
+                                    control.currentIndex = i
+                                    break
+                                }
                             }
                         }
                     }
-                }
 
-                model: ListModel {
-                    id: languageOptions
-                    ListElement {
-                        text: qsTr("English")
-                        locale: "en_us"
+                    model: ListModel {
+                        id: languageOptions
+                        ListElement {
+                            text: qsTr("English")
+                            locale: "en_us"
+                        }
+                        ListElement {
+                            text: qsTr("Dutch")
+                            locale: "nl_nl"
+                        }
                     }
-                    ListElement {
-                        text: qsTr("Dutch")
-                        locale: "nl_nl"
-                    }
-                }
 
-                onCurrentIndexChanged: {
-                    var locale = languageOptions.get(currentIndex).locale
-                    localeChange(locale)
-                    settings.locale = locale
+                    onCurrentIndexChanged: {
+                        var locale = languageOptions.get(currentIndex).locale
+                        localeChange(locale)
+                        settings.locale = locale
+                    }
                 }
             }
 
             DeveloperSettings {
-                Layout.topMargin: 20
+                Layout.alignment: Qt.AlignTop
             }
         }
     }

@@ -1,4 +1,5 @@
 import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtCharts 2.2
 import QtQuick.Layouts 1.3
 import "../../Controls" as Controls
@@ -7,180 +8,224 @@ import "../../Theme" 1.0
 Controls.Diode {
     title: qsTr("XBY/USD")
 
-    Item {
+    ChartView {
+        id: priceChartView
+
+        readonly property string updateUrl: "https://ticker.xtrabytes.global/data.json"
+
         anchors.fill: parent
-        anchors.topMargin: diodeHeaderHeight + 2
-        anchors.bottomMargin: 10
-        clip: true
+        anchors.topMargin: diodeHeaderHeight
 
-        ChartView {
-            id: priceChartView
+        margins.top: 0
+        margins.bottom: 0
+        margins.left: 0
+        margins.right: 0
 
-            // This is a dirty hack required to remove the excessive margins around the ChartView.
-            // Documentation states margins can be set but they appear to be read-only.
-            // We nest the ChartView in a parent Item that clips off the excess and position it such that it crops
-            x: -20
-            y: -10
-            width: parent.width + 40
-            height: parent.height + 40
-            anchors.margins: 0
+        theme: ChartView.ChartThemeDark
+        legend.visible: false
+        antialiasing: true
+        backgroundColor: Theme.panelBackground
+        backgroundRoundness: panelBorderRadius
 
-            theme: ChartView.ChartThemeDark
-            legend.visible: false
-            antialiasing: true
-            backgroundColor: Theme.panelBackground
-            backgroundRoundness: panelBorderRadius
+        BusyIndicator {
+            running: !updateTimer.loaded
+            anchors.centerIn: parent
+            width: 100
+            height: 100
 
-            SplineSeries {
-                name: "Price (USD)"
-                axisX: DateTimeAxis {
-                    format: "dd MMM"
-                    tickCount: priceChartView.width
-                               > 768 ? 10 : (priceChartView.width < 576 ? 3 : 5)
-                    labelsFont.pixelSize: 12
-                    gridLineColor: "#565a63"
-                    labelsColor: "#8591A5"
-                    lineVisible: false
-                    minorGridVisible: false
-                    titleVisible: false
-                }
-                axisY: ValueAxis {
-                    min: 0.12
-                    max: 0.24
-                    labelsFont.pixelSize: 12
-                    gridVisible: false
-                    labelsColor: "#8591A5"
-                    lineVisible: false
-                    minorGridVisible: false
-                    titleVisible: false
-                }
-                color: Theme.primaryHighlight
-                width: 3.5
+            Image {
+                opacity: parent.running ? 1 : 0
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: (parent.height / 2) - (width / 2) + 5
+                source: "../../icons/xby.png"
+                width: 50
+                height: 43
 
-                XYPoint {
-                    x: 1517702400000
-                    y: 0.2221
+                Behavior on opacity {
+                    PropertyAnimation {
+                    }
                 }
-                XYPoint {
-                    x: 1517788800000
-                    y: 0.1586
+            }
+        }
+
+        MouseArea {
+            id: mouse
+            cursorShape: Qt.CrossCursor
+            property int mx
+            property int my
+
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onMouseXChanged: updateToolTip(mouse)
+            onMouseYChanged: updateToolTip(mouse)
+
+            function updateToolTip(mouse) {
+                var area = priceChartView.plotArea
+
+                var isVisible = (mouse.y >= area.y)
+                        && (mouse.y <= (area.y + area.height))
+                        && (mouse.x >= area.x)
+                        && (mouse.x <= (area.x + area.width))
+
+                tooltip.visible = isVisible
+                marker.visible = isVisible
+
+                if (!isVisible) {
+                    return
                 }
-                XYPoint {
-                    x: 1517875200000
-                    y: 0.1876
+
+                var series = priceChartView.series("Price (USD)")
+                var delta = priceChartView.plotArea.width / (series.count - 1)
+                var idx = Math.round(
+                            (mouse.x - priceChartView.plotArea.x) / delta)
+
+                var pt = series.at(idx)
+                var isVisible = !(pt.x === 0 && pt.y === 0)
+
+                var pos = priceChartView.mapToPosition(pt)
+
+                var d = new Date()
+                d.setTime(pt.x)
+                date.text = d.toString()
+                price.text = "$" + pt.y.toFixed(5)
+
+                tooltip.x = (pos.x + tooltip.width
+                             > priceChartView.width) ? pos.x - tooltip.width : pos.x
+                tooltip.y = priceChartView.plotArea.bottom - 20
+                price.text = "$" + pt.y.toFixed(5)
+
+                marker.x = pos.x - (marker.width / 2)
+                marker.y = pos.y - (marker.height / 2)
+
+                var d = new Date()
+                d.setTime(pt.x)
+                date.text = d.toString()
+            }
+        }
+
+        LineSeries {
+            name: "Price (USD)"
+            pointsVisible: false
+
+            axisX: DateTimeAxis {
+                format: "dd MMM hh:mm"
+                tickCount: priceChartView.width > 768 ? 10 : (priceChartView.width < 576 ? 3 : 5)
+                labelsFont.pixelSize: 12
+                gridLineColor: "#565a63"
+                gridVisible: updateTimer.loaded
+                labelsColor: "#8591A5"
+                labelsVisible: updateTimer.loaded
+                lineVisible: false
+                minorGridVisible: false
+                titleVisible: false
+            }
+
+            axisY: ValueAxis {
+                min: 0
+                max: 1
+                labelsFont.pixelSize: 12
+                gridVisible: false
+                labelsColor: "#8591A5"
+                lineVisible: false
+                labelsVisible: updateTimer.loaded
+                minorGridVisible: false
+                titleVisible: false
+            }
+
+            color: Theme.primaryHighlight
+
+            width: 1.5
+        }
+    }
+
+    Timer {
+        id: updateTimer
+        property bool loaded: false
+
+        interval: 15 * 60 * 60 * 1000
+        repeat: true
+        running: true
+        triggeredOnStart: true
+        onTriggered: {
+            var xhr = new XMLHttpRequest
+            xhr.open("GET", priceChartView.updateUrl)
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var data = JSON.parse(xhr.responseText)
+
+                    var priceSeries = priceChartView.series("Price (USD)")
+                    priceSeries.clear()
+
+                    var minTime = Number.MAX_VALUE
+                    var maxTime = Number.MIN_VALUE
+                    var minValue = Number.MAX_VALUE
+                    var maxValue = Number.MIN_VALUE
+
+                    for (var i = 0; i < data.length; i++) {
+                        var row = data[i]
+
+                        if (row[0] && row[1]) {
+                            minTime = Math.min(row[0], minTime)
+                            maxTime = Math.max(row[0], maxTime)
+
+                            minValue = Math.min(row[1], minValue)
+                            maxValue = Math.max(row[1], maxValue)
+
+                            priceSeries.append(row[0], row[1])
+                        }
+                    }
+
+                    var dateStart = new Date()
+                    dateStart.setTime(minTime)
+                    priceSeries.axisX.min = dateStart
+
+                    var dateEnd = new Date()
+                    dateEnd.setTime(maxTime)
+                    priceSeries.axisX.max = dateEnd
+
+                    priceSeries.axisY.min = Math.max(0, minValue * .8)
+                    priceSeries.axisY.max = maxValue * 1.05
+
+                    loaded = true
                 }
-                XYPoint {
-                    x: 1517961600000
-                    y: 0.1907
-                }
-                XYPoint {
-                    x: 1518048000000
-                    y: 0.184
-                }
-                XYPoint {
-                    x: 1518134400000
-                    y: 0.2057
-                }
-                XYPoint {
-                    x: 1518220800000
-                    y: 0.1884
-                }
-                XYPoint {
-                    x: 1518307200000
-                    y: 0.1851
-                }
-                XYPoint {
-                    x: 1518393600000
-                    y: 0.2145
-                }
-                XYPoint {
-                    x: 1518480000000
-                    y: 0.2021
-                }
-                XYPoint {
-                    x: 1518566400000
-                    y: 0.2324
-                }
-                XYPoint {
-                    x: 1518652800000
-                    y: 0.2157
-                }
-                XYPoint {
-                    x: 1518739200000
-                    y: 0.2215
-                }
-                XYPoint {
-                    x: 1518825600000
-                    y: 0.23
-                }
-                XYPoint {
-                    x: 1518912000000
-                    y: 0.2068
-                }
-                XYPoint {
-                    x: 1518998400000
-                    y: 0.2127
-                }
-                XYPoint {
-                    x: 1519084800000
-                    y: 0.183
-                }
-                XYPoint {
-                    x: 1519171200000
-                    y: 0.1816
-                }
-                XYPoint {
-                    x: 1519257600000
-                    y: 0.1511
-                }
-                XYPoint {
-                    x: 1519344000000
-                    y: 0.1696
-                }
-                XYPoint {
-                    x: 1519430400000
-                    y: 0.153
-                }
-                XYPoint {
-                    x: 1519516800000
-                    y: 0.1624
-                }
-                XYPoint {
-                    x: 1519603200000
-                    y: 0.1733
-                }
-                XYPoint {
-                    x: 1519689600000
-                    y: 0.1774
-                }
-                XYPoint {
-                    x: 1519776000000
-                    y: 0.1592
-                }
-                XYPoint {
-                    x: 1519862400000
-                    y: 0.1637
-                }
-                XYPoint {
-                    x: 1519948800000
-                    y: 0.152
-                }
-                XYPoint {
-                    x: 1520035200000
-                    y: 0.1568
-                }
-                XYPoint {
-                    x: 1520121600000
-                    y: 0.1517
-                }
-                XYPoint {
-                    x: 1520208000000
-                    y: 0.1495
-                }
-                XYPoint {
-                    x: 1520294400000
-                    y: 0.1323
-                }
+            }
+            xhr.send()
+        }
+    }
+
+    Rectangle {
+        id: marker
+        parent: priceChartView
+        width: 8
+        visible: false
+        anchors.top: priceChartView.top
+        anchors.bottom: priceChartView.bottom
+        color: '#000'
+        opacity: 0.2
+    }
+
+    Rectangle {
+        id: tooltip
+        color: "#2A2C31"
+        height: (date.height + price.height + 10)
+        width: childrenRect.width
+        radius: 4
+        visible: false
+
+        Column {
+            padding: 5
+
+            spacing: 2
+            Label {
+                id: date
+                color: "#fff"
+            }
+
+            Label {
+                id: price
+                color: "#fff"
             }
         }
     }

@@ -14,6 +14,8 @@ Controls.Diode {
     property real buyTotal: parseFloat(buyPrice.text) * parseFloat(
                                 buyAmount.text)
     property int vis: 0
+    property alias amount: sellAmount
+
     id: cont
     width: 652
     height: 459
@@ -61,7 +63,7 @@ Controls.Diode {
                     anchors.top: parent.bottom
                     anchors.left: parent.left
                     anchors.leftMargin: 5
-                    text: "Available: "
+                    text: "Available: 0 XFUEL"
                     color: "#8592A5"
                     topPadding: 15
                     font.weight: Font.Medium
@@ -101,7 +103,9 @@ Controls.Diode {
                     anchors.top: parent.bottom
                     anchors.left: parent.left
                     anchors.leftMargin: 5
-                    text: "Available: "
+                    text: "Available: " + wallet.balance.toLocaleString(
+                              Qt.locale(), 'f', 8).replace(/\.?0+$/,
+                                                           '') + " XBY"
                     color: "#8592A5"
                     topPadding: 15
                     font.weight: Font.Medium
@@ -131,7 +135,7 @@ Controls.Diode {
                 Layout.rightMargin: 5
                 Layout.topMargin: 60
                 Layout.preferredWidth: 175
-                text: "0"
+                text: "0.00"
                 Label {
 
                     anchors.bottom: parent.top
@@ -146,7 +150,7 @@ Controls.Diode {
                 validator: DoubleValidator {
                     bottom: 0
                 }
-                text: "0"
+                text: "0.00"
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
@@ -172,7 +176,7 @@ Controls.Diode {
                 validator: DoubleValidator {
                     bottom: 0
                 }
-                text: "0"
+                text: "0.00"
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
@@ -193,7 +197,7 @@ Controls.Diode {
                 validator: DoubleValidator {
                     bottom: 0
                 }
-                text: "0"
+                text: "0.00"
                 Layout.fillWidth: true
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
@@ -231,11 +235,9 @@ Controls.Diode {
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
                 Layout.topMargin: 7
-
+                totalAmount: wallet.balance
                 onMoved: {
-
-
-                    // formAmount.text = Number(value).toFixed(2)
+                    sellAmount.text = Number(value).toFixed(2)
                 }
             }
         }
@@ -283,4 +285,6 @@ Controls.Diode {
         }
     }
 }
+
+
 

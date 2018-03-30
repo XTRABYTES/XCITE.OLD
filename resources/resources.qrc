@@ -77,6 +77,8 @@
         <file>icons/icon-diamond.svg</file>
         <file>icons/circle-check.svg</file>
         <file>icons/placeholder-qr.svg</file>
+        <file>icons/happiness.svg</file>
+        <file>icons/chat-avatar.svg</file>
         <file>ios/LaunchScreen.storyboard</file>
         <file>backgrounds/launchscreen-logo.png</file>
         <file>icons/mobile-receive.svg</file>
@@ -90,5 +92,10 @@
         <file>icons/Star.svg</file>
         <file>icons/Rectangle7.png</file>
         <file>icons/Rectangle8.png</file>
+        <file>icons/xby.png</file>
+        <file>icons/icon-market-trades.svg</file>
+        <file>icons/icon-open-orders.svg</file>
+        <file>icons/icon-order-books.svg</file>
+        <file>icons/icon-order-history.svg</file>
     </qresource>
 </RCC>

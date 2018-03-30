@@ -1,6 +1,5 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.3
-import QtQuick.Controls.Styles 1.4
 
 Column {
     id: column
@@ -21,7 +20,9 @@ Column {
         placeholderText: placeholder
         anchors.horizontalCenter: parent.horizontalCenter
         color: "#10B9C5"
-        background: Rectangle { color: "transparent" }
+        background: Rectangle {
+            color: "transparent"
+        }
     }
 
     Rectangle {
@@ -31,5 +32,3 @@ Column {
         anchors.horizontalCenter: parent.horizontalCenter
     }
 }
-
-

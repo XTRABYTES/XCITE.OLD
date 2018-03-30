@@ -2,21 +2,50 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
+import XChatConversationModel 0.1
+
 import "X-Chat" as XChat
+import "Theme" 1.0
 
 import "Controls" as Controls
 
 Item {
     readonly property color cBackground: "#3a3e47"
-    property string mode: "robot"
+    readonly property real viewMargin: 10
+    property string activeTab: xChatSettings.activeTab
+
+    property var consoleCommandBuffer: []
+    property var consoleCommandCompletion: ['addmultisigaddress', 'addnode', 'backupwallet', 'createmultisig', 'createrawtransaction', 'decoderawtransaction', 'dumpprivkey', 'encryptwallet', 'getaccount', 'getaccountaddress', 'getaddednodeinfo', 'getaddressesbyaccount', 'getbalance', 'getbestblockhash', 'getblock', 'getblockcount', 'getblockhash', 'getconnectioncount', 'getinfo', 'getnewaddress', 'getpeerinfo', 'getrawmempool', 'getrawtransaction', 'getreceivedbyaccount', 'getreceivedbyaddress', 'gettransaction', 'gettxout', 'gettxoutsetinfo', 'help', 'importprivkey', 'keypoolrefill', 'listaccounts', 'listaddressgroupings', 'listlockunspent', 'listreceivedbyaccount', 'listreceivedbyaddress', 'listsinceblock', 'listtransactions', 'listunspent', 'lockunspent', 'makekeypair', 'move', 'sendalert', 'sendfrom', 'sendmany', 'sendrawtransaction', 'sendtoaddress', 'setaccount', 'setmininput', 'settxfee', 'signmessage', 'signrawtransaction', 'stop', 'validateaddress', 'verifychain', 'verifymessage']
+
+    property int consoleCommandBufferIdx: -1
 
     id: xChatPopup
     anchors.right: parent.right
     anchors.bottom: parent.bottom
     width: 318
     smooth: true
+    z: 100
 
-    state: "minimal"
+    MouseArea {
+        propagateComposedEvents: false
+        anchors.fill: parent
+        hoverEnabled: true
+    }
+
+    Connections {
+        target: header
+        onTabChanged: {
+            xChatSettings.activeTab = newActiveTab
+            xChatTextInput.forceActiveFocus()
+        }
+    }
+
+    Component.onCompleted: {
+        xChatTextInput.forceActiveFocus()
+    }
+
+    state: xChatSettings.sizeState
+
     states: [
         State {
             name: "minimal"
@@ -30,7 +59,7 @@ Item {
             name: "full"
             PropertyChanges {
                 target: xChatPopup
-                height: 639
+                height: xcite.height < 700 ? xcite.height - 50 : 639
             }
         }
     ]
@@ -45,6 +74,7 @@ Item {
 
     function toggle() {
         state = state === 'full' ? 'minimal' : 'full'
+        xChatSettings.sizeState = state
     }
 
     function focus(e) {
@@ -55,10 +85,16 @@ Item {
         var text = xChatTextInput.text.trim()
 
         if (text.length > 0) {
-            conversation.add(text, new Date(), true)
-            xchatSubmitMsgSignal(text, '')
+            var isRobot = activeTab === 'robot'
+            var activeConversation = isRobot ? robot : conversation
+
+            activeConversation.add(text, isRobot ? null : new Date(), true)
+            activeConversation.submit(text)
+
             xChatTextInput.text = ''
         }
+
+        xChatTextInput.forceActiveFocus()
     }
 
     Rectangle {
@@ -73,11 +109,95 @@ Item {
             anchors.fill: parent
 
             XChat.Header {
+                id: header
+                Layout.fillWidth: true
             }
 
-            XChat.Conversation {
-                id: conversation
+            Item {
+                Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                XChat.Conversation {
+                    id: conversation
+
+                    model: XChatConversationModel {
+                        id: conversationModel
+                    }
+
+                    function submit(input) {
+                        XChatRobot.SubmitMsgCall(input, '')
+                    }
+
+                    Connections {
+                        target: XChatRobot
+                        onXchatResponseSignal: {
+                            conversation.add(text, new Date(), false)
+                        }
+                    }
+
+                    visible: (activeTab == 'friends')
+
+                    // TODO: Temporary placeholder content
+                    Component.onCompleted: {
+                        var now = Date.now()
+
+                        conversation.add("Heading downtown?",
+                                         new Date(now - 180000), true)
+                        conversation.add("Absolutely, catching a show.",
+                                         new Date(now - 120000), false)
+                        conversation.add("We'll catch up later!",
+                                         new Date(now), true)
+                    }
+                }
+
+                XChat.Conversation {
+                    id: robot
+
+                    localTextColor: '#fff'
+                    localBackgroundColor: 'transparent'
+                    localBorderColor: 'transparent'
+                    remoteTextColor: Theme.primaryHighlight
+                    remoteBackgroundColor: 'transparent'
+                    remoteBorderColor: 'transparent'
+                    messageSpacing: 6
+                    timestampSpacing: 0
+                    simpleLayout: true
+
+                    model: XChatConversationModel {
+                        id: robotModel
+                    }
+
+                    Connections {
+                        target: wallet
+                        onConsoleResponse: {
+                            var text = response.error ? (response.error.message + ': '
+                                                         + response.error.code) : response.result
+
+                            if (typeof text === 'object') {
+                                text = JSON.stringify(text, null, 2)
+                            }
+
+                            robot.add(text)
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        robot.add("XCITE ready", null, false)
+                    }
+
+                    function submit(input) {
+                        consoleCommandBuffer.unshift(input)
+                        consoleCommandBufferIdx = -1
+
+                        var args = input.split(' ').filter(function (x) {
+                            return x.length > 0
+                        })
+
+                        wallet.request("console", args[0], args.slice(1))
+                    }
+
+                    visible: (activeTab == 'robot')
+                }
             }
 
             // Bottom controls
@@ -85,8 +205,8 @@ Item {
                 id: xChatUserInput
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.leftMargin: 18.9
-                anchors.rightMargin: 18.9
+                anchors.leftMargin: viewMargin
+                anchors.rightMargin: viewMargin
                 height: 61
 
                 Rectangle {
@@ -111,6 +231,7 @@ Item {
 
                         img.source: "../icons/plus-button.svg"
                         img.sourceSize.width: 28
+                        img.sourceSize.height: 29
                     }
 
                     Rectangle {
@@ -143,6 +264,56 @@ Item {
                             color: "#ffffff"
 
                             Keys.onReturnPressed: onSubmitUserInput()
+                            Keys.onTabPressed: {
+                                // TODO: Poor man's tab completion, make better later
+                                var input = xChatTextInput.text
+                                var parts = input.split(' ')
+                                var matches = []
+
+                                for (var i = 0; i < consoleCommandCompletion.length; i++) {
+                                    var cmd = consoleCommandCompletion[i]
+
+                                    if (cmd.indexOf(parts[0]) === 0) {
+                                        matches.push(cmd)
+                                    }
+                                }
+
+                                if (matches.length === 1) {
+                                    xChatTextInput.text = input.replace(
+                                                parts[0], matches[0])
+                                } else if (matches.length > 1) {
+                                    robot.add('Commands:\n' + matches.join(
+                                                  '\n'))
+                                }
+                            }
+
+                            Keys.onUpPressed: {
+                                if (consoleCommandBuffer.length === 0) {
+                                    return
+                                }
+
+                                if (consoleCommandBufferIdx < consoleCommandBuffer.length - 1) {
+                                    consoleCommandBufferIdx++
+
+                                    xChatTextInput.text
+                                            = consoleCommandBuffer[consoleCommandBufferIdx]
+                                }
+                            }
+                            Keys.onDownPressed: {
+                                if (consoleCommandBuffer.length === 0) {
+                                    return
+                                }
+
+                                if (consoleCommandBufferIdx > 0) {
+                                    consoleCommandBufferIdx--
+
+                                    xChatTextInput.text
+                                            = consoleCommandBuffer[consoleCommandBufferIdx]
+                                } else {
+                                    consoleCommandBufferIdx = -1
+                                    xChatTextInput.text = ''
+                                }
+                            }
                         }
                     }
 
@@ -179,6 +350,7 @@ Item {
         anchors.fill: innerPopupContainer
         horizontalOffset: -5
         verticalOffset: -5
+        cached: true
         radius: 10
         samples: 20
         source: innerPopupContainer

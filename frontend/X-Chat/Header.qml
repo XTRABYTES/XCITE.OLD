@@ -4,7 +4,12 @@ import QtQuick.Layouts 1.3
 import "../Controls" as Controls
 
 ColumnLayout {
-    anchors.fill: parent
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    Layout.maximumHeight: 46
+
+    signal tabChanged(string newActiveTab)
 
     Controls.DiodeHeader {
         text: qsTr("X-CHAT")
@@ -12,10 +17,13 @@ ColumnLayout {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
+        iconRotation: xChatPopup.state === "minimal" ? 180 : 0
+        iconOnly: true
 
         MouseArea {
             id: mouseArea
             anchors.fill: parent
+            width: 48
             hoverEnabled: xChatPopup.visible === false
             cursorShape: Qt.PointingHandCursor
 
@@ -27,35 +35,42 @@ ColumnLayout {
         }
 
         RowLayout {
+            anchors.top: parent.top
             anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.bottom: parent.bottom
             anchors.rightMargin: 55
-            spacing: 10
+            spacing: 0
 
             Controls.ButtonIcon {
                 imageSource: "../icons/friend-request.svg"
                 size: 22
-                isSelected: xChatPopup.mode === "friends"
-                onButtonClicked: {
-                    xChatPopup.mode = "friends"
-                }
+                width: 40
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                image.anchors.verticalCenter: this.verticalCenter
+                isSelected: xChatPopup.activeTab === "friends"
+                onButtonClicked: tabChanged('friends')
             }
 
             Controls.ButtonIcon {
                 imageSource: "../icons/robot.svg"
                 size: 25
-                isSelected: xChatPopup.mode === "robot"
-                onButtonClicked: {
-                    xChatPopup.mode = "robot"
-                }
+                width: 45
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                image.anchors.verticalCenter: this.verticalCenter
+                isSelected: xChatPopup.activeTab === "robot"
+                onButtonClicked: tabChanged('robot')
             }
         }
     }
 
+    /*
     Item {
         // Contact details
+        visible: false
         Layout.fillWidth: true
-        height: 44.5
+        Layout.preferredHeight: 44.5
 
         RowLayout {
             anchors.fill: parent
@@ -65,7 +80,8 @@ ColumnLayout {
             Controls.IconButton {
                 anchors.verticalCenter: parent.verticalCenter
                 img.source: "../icons/left-arrow.svg"
-                img.sourceSize.height: 10
+                img.sourceSize.height: 11
+                img.sourceSize.width: 10
                 height: parent.height
             }
 
@@ -80,9 +96,11 @@ ColumnLayout {
                 anchors.verticalCenter: parent.verticalCenter
                 img.source: "../icons/phone-call.svg"
                 img.sourceSize.width: 22
+                img.sourceSize.height: 22
                 iconColor: "#acb6ce"
                 height: parent.height
             }
         }
     }
+    */
 }

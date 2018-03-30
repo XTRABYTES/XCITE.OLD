@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>XCITE</DisplayName>
+    <Description>XCITE Core</Description>
+    <Version>0.2.1</Version>
+    <ReleaseDate>2018-03-17</ReleaseDate>
+    <Licenses>
+        <License name="License Agreement" file="license.txt" />
+    </Licenses>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+    <UserInterfaces>
+        <UserInterface>feedbackpage.ui</UserInterface>
+    </UserInterfaces>
+</Package>

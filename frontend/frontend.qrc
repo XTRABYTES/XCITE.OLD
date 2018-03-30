@@ -65,7 +65,6 @@
         <file>XCITE/SendCoins/TextXBY.qml</file>
         <file>Controls/AddressBook.qml</file>
         <file>Controls/SliderAmount.qml</file>
-        <file>Controls/AddressButton.qml</file>
         <file>Controls/ModalPopup.qml</file>
         <file>Controls/ModalAlert.qml</file>
         <file>Controls/ModalHeader.qml</file>
@@ -76,6 +75,17 @@
         <file>Controls/Version.qml</file>
         <file>Controls/AddressForm.qml</file>
         <file>Controls/AccountCreateForm.qml</file>
+        <file>X-Chat/Channels.qml</file>
+        <file>X-Chat/Layout.qml</file>
+        <file>X-Chat/Home/ChannelGroup.qml</file>
+        <file>X-Chat/Home/ChannelList.qml</file>
+        <file>X-Chat/Home/ChannelsDiode.qml</file>
+        <file>X-Chat/Home/ChatDiode.qml</file>
+        <file>X-Chat/Home/Layout.qml</file>
+        <file>X-Chat/Home/ChatBox.qml</file>
+        <file>X-Chat/Home/StatusBox.qml</file>
+        <file>X-Chat/Home/ConversationBox.qml</file>
+        <file>X-Chat/Home/StatusGroup.qml</file>
         <file>Controls/ComboBox.qml</file>
         <file>+mobile/DashboardForm.qml</file>
         <file>Theme/Theme.qml</file>
@@ -95,7 +105,6 @@
         <file>Settings/DeveloperSettings.qml</file>
         <file>XCITE/Home/LayoutBalanceLeft.qml</file>
         <file>XCITE/ReceiveCoins/ReceiveDiode.qml</file>
-        <file>X-Chat/Layout.qml</file>
         <file>X-Vault/Layout.qml</file>
         <file>XCITE/ReceiveCoins/Form.qml</file>
         <file>XCITE/ReceiveCoins/AddressBook.qml</file>
@@ -105,5 +114,19 @@
         <file>Controls/Switch.qml</file>
         <file>Network.qml</file>
         <file>Controls/DiodeVerticalScrollBar.qml</file>
+        <file>AddressBook/Button.qml</file>
+        <file>AddressBook/ButtonBar.qml</file>
+        <file>AddressBook/ButtonDivider.qml</file>
+        <file>X-Change/OpenOrders/Layout.qml</file>
+        <file>X-Change/MarketTrades/Layout.qml</file>
+        <file>X-Change/OrderHistory/Layout.qml</file>
+        <file>X-Change/OrderBooks/Layout.qml</file>
+        <file>Controls/UnfinishedModuleMenuButton.qml</file>
+        <file>X-Change/OpenOrders/OpenOrdersDiode.qml</file>
+        <file>X-Change/OrderHistory/OrderHistoryDiode.qml</file>
+        <file>X-Change/OrderBooks/OrderBooksDiode.qml</file>
+        <file>X-Change/MarketTrades/MarketTradesDiode.qml</file>
+        <file>Controls/SideMenuButtonSmall.qml</file>
+        <file>Onboarding/Introduction.qml</file>
     </qresource>
 </RCC>

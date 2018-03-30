@@ -28,6 +28,8 @@ ColumnLayout {
     }
 
     RowLayout {
+        visible: false
+
         id: toolsRow1
         Layout.fillHeight: true
         anchors.left: parent.left
@@ -49,24 +51,30 @@ ColumnLayout {
                 ColumnLayout {
                     Layout.margins: 15
                     Label {
+                        color: "#d5d5d5"
                         text: qsTr("XBY Transfer Amount (e.g. 1 or 1000):")
                     }
                     TextField {
                         id: transferAmount
+                        color: "#d5d5d5"
                         text: "1"
                     }
                     Label {
+                        color: "#d5d5d5"
                         text: qsTr("XBY Transfer Cycles (e.g. 5000):")
                     }
                     TextField {
                         id: transferCycles
+                        color: "#d5d5d5"
                         text: "5000"
                     }
                     Label {
+                        color: "#d5d5d5"
                         text: qsTr("Transactions Per Minute (Use a number between 1 and 1000 to prevent your system from freezing)")
                     }
                     TextField {
                         id: transactionsPerMin
+                        color: "#d5d5d5"
                         text: "500"
                     }
                     Label {

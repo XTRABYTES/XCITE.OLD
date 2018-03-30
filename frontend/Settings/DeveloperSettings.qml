@@ -10,7 +10,7 @@ ColumnLayout {
     }
 
     Text {
-        Layout.topMargin: 10
+        Layout.topMargin: 20
         color: "#F46472"
         text: "Leave these alone unless you know what you're doing"
     }
@@ -24,8 +24,6 @@ ColumnLayout {
         id: initialView
         font.pixelSize: 16
         Layout.preferredWidth: 150
-        leftPadding: 4
-        rightPadding: 4
         text: developerSettings.initialView
 
         onAccepted: {
@@ -34,9 +32,21 @@ ColumnLayout {
     }
 
     CheckBox {
+        id: skipOnboardingCheckbox
+        text: "Skip onboarding screens on startup"
+        checked: developerSettings.skipOnboarding
+        onClicked: developerSettings.skipOnboarding = this.checked
+    }
+
+    CheckBox {
         id: skipLoginCheckbox
         text: "Skip login screens on startup"
         checked: developerSettings.skipLogin
         onClicked: developerSettings.skipLogin = this.checked
+    }
+
+    Button {
+        text: "Reset All Settings"
+        onClicked: clearAllSettings()
     }
 }

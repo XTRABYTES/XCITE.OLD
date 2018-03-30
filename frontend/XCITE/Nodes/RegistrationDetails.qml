@@ -11,11 +11,12 @@ import QtQuick.Extras 1.4
 /**
   * Refactored, needs cleaning up on the Low, Medium High Texts, see line 136
   */
-Rectangle {
+Controls.Diode {
 
     // primary rectangle properties
     property int pageTracker: 0
-    id: regDetails
+    property int level1
+    id: regLevel
     width: parent.width - 100
     height: parent.height - 500
     Layout.minimumHeight: 100
@@ -33,14 +34,6 @@ Rectangle {
             color: "#e2e2e2"
             text: qsTr("Node Registration")
             font.pixelSize: 18
-        }
-        Rectangle {
-            id: rectangle
-            Layout.topMargin: 8
-
-            width: 1320
-            height: 1
-            color: "#535353"
         }
     }
     // Second layer text
@@ -62,6 +55,7 @@ Rectangle {
             Layout.leftMargin: 25
             Layout.topMargin: 30
             font.pixelSize: 16
+            color: "#d5d5d5"
             text: "Static registration string"
         }
         Label {
@@ -75,6 +69,7 @@ Rectangle {
 
         TextArea {
             id: regString
+            color: "#d5d5d5"
             text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
             width: contentWidth + 20
 
@@ -116,12 +111,13 @@ Rectangle {
             font.pixelSize: 16
             Layout.leftMargin: 25
             Layout.topMargin: 20
+            color: "#d5d5d5"
             text: "XBY Deposit Address"
         }
         TextArea {
             id: addString
+            color: "#d5d5d5"
             text: "   BMy2BpwyJc5i8upNm5Vv8HMkwXqBR3kCxS"
-
             width: contentWidth + 20
             Layout.leftMargin: 25
             Layout.topMargin: 10
@@ -138,7 +134,9 @@ Rectangle {
             font.pixelSize: 16
             Layout.leftMargin: 25
             Layout.topMargin: 20
+            color: "#d5d5d5"
             text: "Accept transaction fee"
+            visible: xcite.width > 1100
         }
         Label {
             font.pixelSize: 12
@@ -155,11 +153,13 @@ Rectangle {
             Label {
                 anchors.right: parent.left
                 anchors.rightMargin: 10
+                color: "#d5d5d5"
                 text: "No"
             }
             Label {
                 anchors.left: parent.right
                 anchors.leftMargin: 10
+                color: "#d5d5d5"
                 text: "Yes"
             }
         }
@@ -168,12 +168,14 @@ Rectangle {
             font.pixelSize: 16
             Layout.leftMargin: 25
             Layout.topMargin: 20
+            color: "#d5d5d5"
             text: "Total Deposit"
         }
         Label {
             font.pixelSize: 14
             Layout.leftMargin: 25
             Layout.topMargin: 10
+            color: "#d5d5d5"
             text: "XBY "
         }
         Controls.ButtonModal {
@@ -191,3 +193,4 @@ Rectangle {
         }
     }
 }
+
