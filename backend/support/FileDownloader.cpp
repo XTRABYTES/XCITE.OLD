@@ -1,4 +1,4 @@
-#include "filedownloader.hpp"
+#include "FileDownloader.hpp"
 
 void FileDownloader::download() {
     m_manager = new QNetworkAccessManager;

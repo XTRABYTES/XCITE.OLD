@@ -16,7 +16,7 @@
 #include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 #include "../backend/support/settings.hpp"
-#include "../backend/support/releasechecker.hpp"
+#include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
 
 int main(int argc, char *argv[])
@@ -69,8 +69,9 @@ int main(int argc, char *argv[])
     // register event filter
     engine.rootContext()->setContextProperty("EventFilter", &eventFilter);
 
-    ReleaseChecker rc(APP_VERSION);
-    engine.rootContext()->setContextProperty("ReleaseChecker", &rc);
+    ReleaseChecker releaseChecker(APP_VERSION);
+    engine.rootContext()->setContextProperty("ReleaseChecker", &releaseChecker);
+    releaseChecker.checkForUpdate();
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty()) {

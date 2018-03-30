@@ -1,4 +1,4 @@
-#include "releasechecker.hpp"
+#include "ReleaseChecker.hpp"
 
 #include <QDebug>
 

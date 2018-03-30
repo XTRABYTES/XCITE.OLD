@@ -6,7 +6,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QThread>
-#include "filedownloader.hpp"
+#include "FileDownloader.hpp"
 
 #include <QDebug>
 
