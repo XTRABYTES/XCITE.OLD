@@ -11,14 +11,18 @@ Controls.Diode {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        anchors.topMargin: 0
         anchors.leftMargin: 200
         anchors.rightMargin: 0
+        anchors.topMargin: (diodeHeaderHeight / 2) - 12
 
         Controls.ComboBox {
             id: currencySelection
             Layout.fillWidth: true
-            font.pixelSize: 10
+            background: Rectangle {
+                radius: 1
+                color: "transparent"
+                height: diodeHeaderHeight
+            }
             model: ["USD", "EUR", "AUD", "BRL", "CAD", "CHF", "CLP", "CNY", "CZK", "DKK", "GBP", "HKD", "HUF", "IDR", "ILS", "INR", "JPY", "KRW", "MXN", "MYR", "NOK", "NZD", "PHP", "PKR", "PLN", "RUB", "SEK", "SGD", "THB", "TRY", "TWD", "ZAR"]
             onCurrentTextChanged: {
                 onMarketValueChanged(currentText)
