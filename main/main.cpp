@@ -55,8 +55,7 @@ int main(int argc, char *argv[])
     Testnet wallet;
     engine.rootContext()->setContextProperty("wallet", &wallet);
 
-    // load market value
-    //marketValue.findXBYValue();
+    // wire-up market value
     MarketValue marketValue;
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
 
