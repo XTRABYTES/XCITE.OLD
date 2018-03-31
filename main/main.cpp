@@ -56,12 +56,8 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("wallet", &wallet);
 
     // load market value
-    MarketValue marketValue;
-<<<<<<< HEAD
-=======
-    // TODO: Temporary until we sort out SSL issues on windows and this can be reenabled
     //marketValue.findXBYValue();
->>>>>>> 81ed7bcec2ed11e95771814a9467db55138dc03c
+    MarketValue marketValue;
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
 
     // set app version
@@ -76,14 +72,18 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    Settings settings(&engine);
-    QObject::connect(engine.rootObjects().first(), SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
+    QObject *rootObject = engine.rootObjects().first();
 
     // connect QML signals for market value
     QObject::connect(engine.rootObjects().first(), SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findXBYValue(QString)));
 
     // Set last locale
     QSettings appSettings;
+    Settings settings(&engine, &appSettings);
+    QObject::connect(rootObject, SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
+    QObject::connect(rootObject, SIGNAL(clearAllSettings()), &settings, SLOT(onClearAllSettings()));
+
+    // Set last locale
     settings.setLocale(appSettings.value("locale").toString());
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
@@ -92,9 +92,9 @@ int main(int argc, char *argv[])
     wallet.m_xchatobject = &xchatRobot;
 
     // FauxWallet
-    QObject::connect(&wallet, SIGNAL(response(QVariant)), engine.rootObjects().first(), SLOT(testnetResponse(QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletError(QVariant, QVariant)), engine.rootObjects().first(), SLOT(walletError(QVariant, QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), engine.rootObjects().first(), SLOT(walletSuccess(QVariant)));
+    QObject::connect(&wallet, SIGNAL(response(QVariant)), rootObject, SLOT(testnetResponse(QVariant)));
+    QObject::connect(&wallet, SIGNAL(walletError(QVariant, QVariant)), rootObject, SLOT(walletError(QVariant, QVariant)));
+    QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), rootObject, SLOT(walletSuccess(QVariant)));
 #endif
 
     return app.exec();

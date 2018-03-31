@@ -35,6 +35,7 @@
 Makefile
 .qmake.stash
 build/release/*
+packages/global.xtrabytes.xcite/data/*
 android
 
 # Qt

@@ -28,6 +28,8 @@ ColumnLayout {
     }
 
     RowLayout {
+        visible: false
+
         id: toolsRow1
         Layout.fillHeight: true
         anchors.left: parent.left
