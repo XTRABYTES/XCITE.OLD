@@ -17,7 +17,9 @@ Controls.Diode {
         anchors.leftMargin: 15
         anchors.rightMargin: 15
         Label {
+
             id: earningsLabel
+            leftPadding: 30
             font.weight: Font.Light
             font.pixelSize: 16
             bottomPadding: 5
@@ -36,6 +38,7 @@ Controls.Diode {
         }
         Label {
             id: networkLabel
+            leftPadding: 30
             font.weight: Font.Light
             font.pixelSize: 16
             bottomPadding: 5
@@ -54,6 +57,7 @@ Controls.Diode {
         }
         Label {
             id: transferLabel
+            leftPadding: 30
             font.weight: Font.Light
             font.pixelSize: 16
             bottomPadding: 15
