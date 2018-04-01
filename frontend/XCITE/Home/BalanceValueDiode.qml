@@ -13,16 +13,19 @@ Controls.Diode {
 
         anchors.leftMargin: 200
         anchors.rightMargin: 0
-        anchors.topMargin: (diodeHeaderHeight / 2) - 12
+        anchors.topMargin: 0
 
         Controls.ComboBox {
             id: currencySelection
             Layout.fillWidth: true
-            background: Rectangle {
-                radius: 1
-                color: "transparent"
-                height: diodeHeaderHeight
+            defaultBackgroundColor: "transparent"
+
+            onHoveredChanged: {
+                background.radius = 1
+                if (hovered)
+                    background.color = "#2A2C31"
             }
+
             model: ["USD", "EUR", "AUD", "BRL", "CAD", "CHF", "CLP", "CNY", "CZK", "DKK", "GBP", "HKD", "HUF", "IDR", "ILS", "INR", "JPY", "KRW", "MXN", "MYR", "NOK", "NZD", "PHP", "PKR", "PLN", "RUB", "SEK", "SGD", "THB", "TRY", "TWD", "ZAR"]
             onCurrentTextChanged: {
                 onMarketValueChanged(currentText)
