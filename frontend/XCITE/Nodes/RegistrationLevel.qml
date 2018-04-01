@@ -95,9 +95,9 @@ Controls.Diode {
         height: 397
         radius: 5
         color: "#2A2C31"
-        earningsText: qsTr("      Earnings:")
-        transferText: qsTr("      Transfer Rate:")
-        networkText: qsTr("      Network Stake:")
+        earningsText: qsTr("Earnings:")
+        transferText: qsTr("Transfer Rate:")
+        networkText: qsTr("Network Stake:")
     }
     RegLevelBox {
         id: rectangle1
@@ -110,9 +110,9 @@ Controls.Diode {
         height: 397
         radius: 5
         color: "#2A2C31"
-        earningsText: qsTr("      Earnings:")
-        transferText: qsTr("      Transfer Rate:")
-        networkText: qsTr("      Network Stake:")
+        earningsText: qsTr("Earnings:")
+        transferText: qsTr("Transfer Rate:")
+        networkText: qsTr("Network Stake:")
     }
 
     RegLevelBox {
@@ -126,9 +126,9 @@ Controls.Diode {
         height: 397
         radius: 5
         color: "#2A2C31"
-        earningsText: qsTr("      Earnings:")
-        transferText: qsTr("      Transfer Rate:")
-        networkText: qsTr("      Network Stake:")
+        earningsText: qsTr("Earnings:")
+        transferText: qsTr("Transfer Rate:")
+        networkText: qsTr("Network Stake:")
     }
 }
 
