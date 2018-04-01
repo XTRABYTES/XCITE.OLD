@@ -1,9 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.3
-import Qt.labs.calendar 1.0
-import QtQuick.Controls.Styles 1.2
-import QtQuick.Controls 1.4
 import "../../Controls" as Controls
 
 Controls.Diode {
@@ -123,3 +120,4 @@ Controls.Diode {
         }
     }
 }
+
