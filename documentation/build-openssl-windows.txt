@@ -1,0 +1,29 @@
+Building OpenSSL on Windows
+
+- Install MSYS2: https://www.msys2.org/
+- Run MSYS2 MinGW 32-bit
+- Get latest OpenSSL 1.0.x from https://www.openssl.org/source/
+
+$ pacman -S wget base-devel
+$ wget "https://www.openssl.org/source/openssl-1.0.2o.tar.gz"
+
+- Set paths for gcc
+$ export PATH="/c/Qt/Tools/mingw530_32/bin:$PATH"
+
+- Check GCC is in the path
+$ gcc
+
+- Expected output:
+
+gcc.exe: fatal error: no input files
+compilation terminated.
+
+- Unpack and build as per http://wiki.qt.io/Compiling_OpenSSL_with_MinGW
+
+$ tar zxf openssl-1.0.2o.tar.gz
+$ cd openssl-1.0.2o
+$ mkdir dist
+$ ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared mingw
+$ make depend && make && make install
+
+- Copy out dist/bin/libeay32.dll and dist/bin/ssleay32.dll to the xcite build dir
