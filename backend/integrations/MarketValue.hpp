@@ -28,7 +28,7 @@ public:
 signals:
     void marketValueChanged();
 public slots:
-    void findXBYValue();
+    void findXBYValue(QString currency);
     void onFinished(QNetworkReply* reply);
 private:
     QString m_marketValue;
