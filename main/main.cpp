@@ -55,9 +55,8 @@ int main(int argc, char *argv[])
     Testnet wallet;
     engine.rootContext()->setContextProperty("wallet", &wallet);
 
-    // load market value
+    // wire-up market value
     MarketValue marketValue;
-    marketValue.findXBYValue();
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
 
     // set app version
@@ -74,6 +73,10 @@ int main(int argc, char *argv[])
 
     QObject *rootObject = engine.rootObjects().first();
 
+    // connect QML signals for market value
+    QObject::connect(engine.rootObjects().first(), SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findXBYValue(QString)));
+
+    // Set last locale
     QSettings appSettings;
     Settings settings(&engine, &appSettings);
     QObject::connect(rootObject, SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
