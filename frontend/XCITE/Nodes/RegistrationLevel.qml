@@ -84,7 +84,7 @@ Controls.Diode {
         height: 216
     }
 
-    RegLevelBox {
+    RegistrationLevelBox {
         id: rectangle0
         visible: parent.width > 1125
         title: qsTr("L1")
@@ -99,7 +99,7 @@ Controls.Diode {
         transferText: qsTr("Transfer Rate:")
         networkText: qsTr("Network Stake:")
     }
-    RegLevelBox {
+    RegistrationLevelBox {
         id: rectangle1
         visible: parent.width > 600
         title: qsTr("L2")
@@ -115,7 +115,7 @@ Controls.Diode {
         networkText: qsTr("Network Stake:")
     }
 
-    RegLevelBox {
+    RegistrationLevelBox {
         id: rectangle2
         visible: parent.width > 600
         title: qsTr("L3")
