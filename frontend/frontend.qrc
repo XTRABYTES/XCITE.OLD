@@ -16,7 +16,6 @@
         <file>Controls/LabelUnderlined.qml</file>
         <file>Controls/SearchBox.qml</file>
         <file>Controls/ButtonBalanceDate.qml</file>
-        <file>XCITE/Nodes/NetworkStatusBoard.qml</file>
         <file>Controls/TextInputBlue.qml</file>
         <file>Controls/ButtonSimple.qml</file>
         <file>Controls/ButtonDock.qml</file>
