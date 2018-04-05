@@ -33,20 +33,17 @@ ColumnLayout {
             MyPayments {
                 visible: tracker == 0
                 Layout.topMargin: -440
-            }
-
-            Controls.ChartDiode {
-                visible: tracker == 0
                 Controls.ButtonModal {
                     Layout.fillHeight: true
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 10
                     isPrimary: true
-                    width: 300
+                    width: parent.width
                     buttonHeight: 50
                     label.font.weight: Font.Medium
                     label.font.letterSpacing: 3
-                    label.text: qsTr("   Register Node ->")
+                    label.text: qsTr("   Register Node")
 
                     onButtonClicked: {
                         tracker = 1
@@ -59,6 +56,10 @@ ColumnLayout {
                         return
                     }
                 }
+            }
+
+            Controls.ChartDiode {
+                visible: tracker == 0
             }
         }
     }
