@@ -39,13 +39,13 @@ ColumnLayout {
                     buttonHeight: 50
                     label.font.weight: Font.Medium
                     label.font.letterSpacing: 3
-                    label.text: qsTr("   Node Registration")
+                    label.text: qsTr("Node Registration")
 
                     onButtonClicked: {
                         tracker = 1
 
                         modalAlert({
-                                       bodyText: "This portion of XCite is not yet functioning, expect it soon",
+                                       bodyText: "This portion of XCITE is not yet functioning, expect it soon!",
                                        title: qsTr("Module Alert"),
                                        buttonText: qsTr("OK")
                                    })
