@@ -41,7 +41,6 @@ Controls.Diode {
     // image in case of level 1 node
     Image {
         id: image0
-        visible: parent.width > 1125
         z: 1
         anchors {
             right: image1.left
@@ -86,7 +85,6 @@ Controls.Diode {
 
     RegistrationLevelBox {
         id: rectangle0
-        visible: parent.width > 1125
         title: qsTr("L1")
         anchors.top: image0.bottom
         anchors.topMargin: -20
@@ -98,10 +96,13 @@ Controls.Diode {
         earningsText: qsTr("Earnings:")
         transferText: qsTr("Transfer Rate:")
         networkText: qsTr("Network Stake:")
+        earningsLevel: qsTr("High")
+        transferLevel: qsTr("High")
+        networkLevel: qsTr("High")
+        paddingLevel: 245
     }
     RegistrationLevelBox {
         id: rectangle1
-        visible: parent.width > 600
         title: qsTr("L2")
         anchors.top: image1.bottom
         anchors.topMargin: -20
@@ -113,11 +114,14 @@ Controls.Diode {
         earningsText: qsTr("Earnings:")
         transferText: qsTr("Transfer Rate:")
         networkText: qsTr("Network Stake:")
+        earningsLevel: qsTr("Medium")
+        transferLevel: qsTr("Medium")
+        networkLevel: qsTr("Medium")
+        paddingLevel: 225
     }
 
     RegistrationLevelBox {
         id: rectangle2
-        visible: parent.width > 600
         title: qsTr("L3")
         anchors.top: image2.bottom
         anchors.topMargin: -20
@@ -129,7 +133,9 @@ Controls.Diode {
         earningsText: qsTr("Earnings:")
         transferText: qsTr("Transfer Rate:")
         networkText: qsTr("Network Stake:")
+        earningsLevel: qsTr("Low")
+        transferLevel: qsTr("Low")
+        networkLevel: qsTr("Low")
+        paddingLevel: 250
     }
 }
-
-
