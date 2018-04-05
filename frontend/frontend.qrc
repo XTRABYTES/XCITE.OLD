@@ -8,7 +8,6 @@
         <file>XCITE/Nodes/RegistrationDetails.qml</file>
         <file>XCITE/Nodes/RegistrationLevel.qml</file>
         <file>XCITE/Nodes/RegistrationTermsConditions.qml</file>
-        <file>XCITE/Nodes/BalanceBoard.qml</file>
         <file>XCITE/Nodes/TransactionsBoard.qml</file>
         <file>Login/ForgotPasswordForm.qml</file>
         <file>Login/LoginForm.qml</file>
@@ -99,7 +98,6 @@
         <file>+mobile/ReceiveCoins.qml</file>
         <file>X-Change/Home/MarketsDiode.qml</file>
         <file>X-Change/Home/OrderBookDiode.qml</file>
-        <file>X-Change/Home/ChartDiode.qml</file>
         <file>X-Change/Home/BuySellDiode.qml</file>
         <file>Settings/Layout.qml</file>
         <file>Settings/DeveloperSettings.qml</file>
@@ -128,5 +126,9 @@
         <file>X-Change/MarketTrades/MarketTradesDiode.qml</file>
         <file>Controls/SideMenuButtonSmall.qml</file>
         <file>Onboarding/Introduction.qml</file>
+        <file>Controls/DiodeHorizontalScrollBar.qml</file>
+        <file>XCITE/Nodes/MyNodes.qml</file>
+        <file>XCITE/Nodes/MyPayments.qml</file>
+        <file>Controls/ChartDiode.qml</file>
     </qresource>
 </RCC>
