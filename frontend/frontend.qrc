@@ -128,5 +128,6 @@
         <file>XCITE/Nodes/MyNodes.qml</file>
         <file>XCITE/Nodes/MyPayments.qml</file>
         <file>Controls/ChartDiode.qml</file>
+        <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
     </qresource>
 </RCC>
