@@ -15,24 +15,20 @@ ColumnLayout {
     anchors.right: parent.right
     visible: false
     height: parent.height - 50
-    ColumnLayout {
-        RowLayout {
+    RowLayout {
+        spacing: layoutGridSpacing
+        ColumnLayout {
+            spacing: layoutGridSpacing
+            anchors.top: parent.top
             id: row1
             MyNodes {
                 id: myNodes
                 visible: tracker == 0
                 anchors.top: parent.top
             }
-
-            TransactionsBoard {
-                visible: tracker == 0
-            }
-        }
-        RowLayout {
-            id: row2
             MyPayments {
                 visible: tracker == 0
-                Layout.topMargin: -440
+
                 Controls.ButtonModal {
                     Layout.fillHeight: true
                     anchors.left: parent.left
@@ -57,7 +53,13 @@ ColumnLayout {
                     }
                 }
             }
-
+        }
+        ColumnLayout {
+            spacing: layoutGridSpacing
+            id: row2
+            TransactionsBoard {
+                visible: tracker == 0
+            }
             Controls.ChartDiode {
                 visible: tracker == 0
             }
