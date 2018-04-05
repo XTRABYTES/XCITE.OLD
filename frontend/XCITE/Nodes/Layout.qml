@@ -37,13 +37,13 @@ ColumnLayout {
                     Layout.fillHeight: true
                     anchors.left: parent.left
                     anchors.top: parent.bottom
-                    anchors.topMargin: 10
+                    anchors.topMargin: 5
                     isPrimary: true
                     width: parent.width
                     buttonHeight: 50
                     label.font.weight: Font.Medium
                     label.font.letterSpacing: 3
-                    label.text: qsTr("   Register Node")
+                    label.text: qsTr("   Node Registration")
 
                     onButtonClicked: {
                         tracker = 1
