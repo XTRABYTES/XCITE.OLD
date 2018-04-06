@@ -147,6 +147,7 @@ Controls.Diode {
             font.weight: Font.Medium
         }
         Controls.Switch {
+            id: confirmationSwitch
             on: false
             Layout.topMargin: 15
             Layout.leftMargin: 50
@@ -190,6 +191,18 @@ Controls.Diode {
             Layout.maximumWidth: 300
             label.font.weight: Font.Medium
             isPrimary: true
+            onButtonClicked: {
+                if (confirmationSwitch.on == true) {
+                    tracker = 3
+                }
+                if (confirmationSwitch.on == false) {
+                    modalAlert({
+                                   bodyText: "Before submitting your deposit, please first confirm you have saved all strings above.",
+                                   title: qsTr("Module Alert"),
+                                   buttonText: qsTr("OK")
+                               })
+                }
+            }
         }
     }
 }
