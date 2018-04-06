@@ -8,8 +8,8 @@ import "../../Theme" 1.0
 ColumnLayout {
     readonly property color cBoardBackground: "#3a3e46"
     property int tracker: 0
-    readonly property int nodeType: 0
-
+    property int nodeType: 0
+    property int saveLevel: 0
     id: xCiteNodes
     anchors.left: parent.left
     anchors.right: parent.right
@@ -117,29 +117,6 @@ ColumnLayout {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
                     tracker = 1
-                }
-            }
-        }
-        Label {
-            id: regconfirmation
-
-            readonly property string defaultText: qsTr("Node Confirmation >")
-
-            property bool isActive: false
-            anchors.top: parent.top
-            anchors.right: parent.right
-            font.pixelSize: 12
-            font.weight: isActive ? Font.Bold : Font.Normal
-            text: isActive ? altText : defaultText
-            color: Theme.primaryHighlight
-            rightPadding: 50
-            topPadding: 60
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    tracker = 3
                 }
             }
         }
