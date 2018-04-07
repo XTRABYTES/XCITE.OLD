@@ -177,7 +177,20 @@ Controls.Diode {
             Layout.leftMargin: 25
             Layout.topMargin: 10
             color: "#d5d5d5"
-            text: "XBY "
+            text: {
+                if (saveLevel == 0 && paymentMethod == 0)
+                    "125,000 XBY"
+                if (saveLevel == 0 && paymentMethod == 1)
+                    "85,000 XBY & 40,000 XFUEL"
+                if (saveLevel == 1 && paymentMethod == 0)
+                    "250,000 XBY"
+                if (saveLevel == 1 && paymentMethod == 1)
+                    "170,000 XBY & 80,000 XFUEL"
+                if (saveLevel == 2 && paymentMethod == 0)
+                    "500,000 XBY"
+                if (saveLevel == 2 && paymentMethod == 1)
+                    "330,000 XBY + 170,000 XFUEL"
+            }
         }
         Controls.ButtonModal {
             font.pixelSize: 18
@@ -206,4 +219,3 @@ Controls.Diode {
         }
     }
 }
-
