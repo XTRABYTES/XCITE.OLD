@@ -101,7 +101,7 @@ Controls.Diode {
         transferLevel: qsTr("High")
         networkLevel: qsTr("High")
         paddingLevel: 245
-        nodeLevel: 1
+        nodeLevel: 0
     }
     RegistrationLevelBox {
         id: rectangle1
@@ -143,4 +143,3 @@ Controls.Diode {
         nodeLevel: 2
     }
 }
-
