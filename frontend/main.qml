@@ -83,6 +83,7 @@ ApplicationWindow {
         property alias height: xcite.height
         property string locale: "en_us"
         property bool onboardingCompleted: false
+        property string defaultCurrency: "USD"
     }
 
     Settings {

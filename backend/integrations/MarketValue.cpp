@@ -1,4 +1,4 @@
-
+#include <QSettings>
 #include "MarketValue.hpp"
 
 MarketValue::MarketValue(QObject *parent) : QObject(parent)
@@ -7,6 +7,9 @@ MarketValue::MarketValue(QObject *parent) : QObject(parent)
 
 void MarketValue::findXBYValue(QString currency)
 {
+    QSettings appSettings;
+    appSettings.setValue("defaultCurrency", currency);
+
     QNetworkRequest request(QUrl("https://api.coinmarketcap.com/v1/ticker/xtrabytes/?convert="+currency));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 

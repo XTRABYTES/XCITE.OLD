@@ -1,3 +1,4 @@
+import Qt.labs.settings 1.0
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import "../../Controls" as Controls
@@ -27,9 +28,10 @@ Controls.Diode {
             }
 
             model: ["USD", "EUR", "AUD", "BRL", "CAD", "CHF", "CLP", "CNY", "CZK", "DKK", "GBP", "HKD", "HUF", "IDR", "ILS", "INR", "JPY", "KRW", "MXN", "MYR", "NOK", "NZD", "PHP", "PKR", "PLN", "RUB", "SEK", "SGD", "THB", "TRY", "TWD", "ZAR"]
-            onCurrentTextChanged: {
-                onMarketValueChanged(currentText)
-            }
+
+            onActivated: onMarketValueChanged(currentText)
+            Component.onCompleted: currentIndex = currencySelection.find(
+                                       settings.defaultCurrency)
         }
     }
 
