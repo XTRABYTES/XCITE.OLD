@@ -14,6 +14,7 @@ Controls.Diode {
     property string transferLevel: ""
     property int paddingLevel: 0
     property int nodeLevel: 0
+
     ColumnLayout {
         anchors.top: parent.top
         anchors.left: parent.left
@@ -21,6 +22,7 @@ Controls.Diode {
         anchors.topMargin: 65
         anchors.leftMargin: 15
         anchors.rightMargin: 15
+
         Label {
 
             id: earningsLabel
@@ -121,8 +123,8 @@ Controls.Diode {
             text: "Payment"
         }
 
-        // choose payment value for portion of node, needs input on if amount is static or not
         Controls.Switch {
+            id: typeSwitch
             on: false
             Layout.topMargin: 12
             Layout.leftMargin: 35
@@ -161,6 +163,10 @@ Controls.Diode {
                     saveLevel = 1
                 if (nodeLevel == 2)
                     saveLevel = 2
+                if (typeSwitch.on == true)
+                    paymentMethod = 1
+                if (typeSwitch.on == false)
+                    paymentMethod = 0
             }
         }
     }
