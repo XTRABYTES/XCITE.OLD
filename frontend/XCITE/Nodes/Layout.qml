@@ -10,6 +10,7 @@ ColumnLayout {
     property int tracker: 0
     property int nodeType: 0
     property int saveLevel: 0
+    property int paymentMethod: 0
     id: xCiteNodes
     anchors.left: parent.left
     anchors.right: parent.right
