@@ -60,7 +60,6 @@
         <file>Controls/DiodeHeaderMenu.qml</file>
         <file>Controls/TextInput.qml</file>
         <file>Controls/FormLabel.qml</file>
-        <file>XCITE/SendCoins/TextXBY.qml</file>
         <file>Controls/AddressBook.qml</file>
         <file>Controls/SliderAmount.qml</file>
         <file>Controls/ModalPopup.qml</file>
