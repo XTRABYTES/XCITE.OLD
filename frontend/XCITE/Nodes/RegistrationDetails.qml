@@ -147,6 +147,7 @@ Controls.Diode {
             font.weight: Font.Medium
         }
         Controls.Switch {
+            id: confirmationSwitch
             on: false
             Layout.topMargin: 15
             Layout.leftMargin: 50
@@ -176,7 +177,20 @@ Controls.Diode {
             Layout.leftMargin: 25
             Layout.topMargin: 10
             color: "#d5d5d5"
-            text: "XBY "
+            text: {
+                if (saveLevel == 0 && paymentMethod == 0)
+                    "125,000 XBY"
+                if (saveLevel == 0 && paymentMethod == 1)
+                    "85,000 XBY & 40,000 XFUEL"
+                if (saveLevel == 1 && paymentMethod == 0)
+                    "250,000 XBY"
+                if (saveLevel == 1 && paymentMethod == 1)
+                    "170,000 XBY & 80,000 XFUEL"
+                if (saveLevel == 2 && paymentMethod == 0)
+                    "500,000 XBY"
+                if (saveLevel == 2 && paymentMethod == 1)
+                    "330,000 XBY + 170,000 XFUEL"
+            }
         }
         Controls.ButtonModal {
             font.pixelSize: 18
@@ -190,7 +204,18 @@ Controls.Diode {
             Layout.maximumWidth: 300
             label.font.weight: Font.Medium
             isPrimary: true
+            onButtonClicked: {
+                if (confirmationSwitch.on == true) {
+                    tracker = 3
+                }
+                if (confirmationSwitch.on == false) {
+                    modalAlert({
+                                   bodyText: "Before submitting your deposit, please first confirm you have saved all strings above.",
+                                   title: qsTr("Module Alert"),
+                                   buttonText: qsTr("OK")
+                               })
+                }
+            }
         }
     }
 }
-

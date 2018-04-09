@@ -16,6 +16,9 @@ Controls.Diode {
     // primary rectangle properties
     property int pageTracker: 0
     property int level1
+    property string level1NodeText: " L1 Node!"
+    property string level2NodeText: " L2 Node!"
+    property string level3NodeText: " L3 Node!"
     id: regLevel
     width: parent.width - 100
     height: parent.height - 500
@@ -286,6 +289,7 @@ Controls.Diode {
             color: "#FFFFFF"
         }
         Controls.Switch {
+            id: confirmSwitch
             on: false
             Layout.topMargin: 15
             Layout.leftMargin: 25
@@ -309,7 +313,44 @@ Controls.Diode {
             Layout.maximumWidth: 150
             label.font.weight: Font.Medium
             isPrimary: true
+            onButtonClicked: {
+                if (confirmSwitch.on == true) {
+                    tracker = 0
+                    if (saveLevel == 0) {
+                        modalAlert({
+                                       bodyText: "Congratulations, you have registered your"
+                                                 + level1NodeText,
+                                       title: qsTr("Module Alert"),
+                                       buttonText: qsTr("OK")
+                                   })
+                    }
+                    if (saveLevel == 1) {
+                        modalAlert({
+                                       bodyText: "Congratulations, you have registered your"
+                                                 + level2NodeText,
+                                       title: qsTr("Module Alert"),
+                                       buttonText: qsTr("OK")
+                                   })
+                    }
+                    if (saveLevel == 2) {
+                        modalAlert({
+                                       bodyText: "Congratulations, you have registered your"
+                                                 + level3NodeText,
+                                       title: qsTr("Module Alert"),
+                                       buttonText: qsTr("OK")
+                                   })
+                    }
+                }
+                if (confirmSwitch.on == false) {
+                    modalAlert({
+                                   bodyText: "Before finalizing your node acquisition, please first confirm you have copied and saved all strings above.",
+                                   title: qsTr("Module Alert"),
+                                   buttonText: qsTr("OK")
+                               })
+                }
+            }
         }
     }
 }
+
 

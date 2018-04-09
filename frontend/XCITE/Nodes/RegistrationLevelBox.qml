@@ -8,6 +8,12 @@ Controls.Diode {
     property string earningsText: ""
     property string networkText: ""
     property string transferText: ""
+    // leftpadding
+    property string earningsLevel: ""
+    property string networkLevel: ""
+    property string transferLevel: ""
+    property int paddingLevel: 0
+    property int nodeLevel: 0
 
     ColumnLayout {
         anchors.top: parent.top
@@ -16,6 +22,7 @@ Controls.Diode {
         anchors.topMargin: 65
         anchors.leftMargin: 15
         anchors.rightMargin: 15
+
         Label {
 
             id: earningsLabel
@@ -25,7 +32,15 @@ Controls.Diode {
             bottomPadding: 5
             color: "#d5d5d5"
             text: earningsText
-
+            Label {
+                id: earningsLabel1
+                leftPadding: paddingLevel
+                font.weight: Font.Light
+                font.pixelSize: 16
+                bottomPadding: 15
+                color: "#d5d5d5"
+                text: earningsLevel
+            }
             Image {
 
                 id: diamond
@@ -36,6 +51,7 @@ Controls.Diode {
                 source: "../../icons/icon-diamond.svg"
             }
         }
+
         Label {
             id: networkLabel
             leftPadding: 30
@@ -44,7 +60,15 @@ Controls.Diode {
             bottomPadding: 5
             color: "#d5d5d5"
             text: networkText
-
+            Label {
+                id: networkLabel1
+                leftPadding: paddingLevel
+                font.weight: Font.Light
+                font.pixelSize: 16
+                bottomPadding: 15
+                color: "#d5d5d5"
+                text: networkLevel
+            }
             Image {
 
                 id: network
@@ -55,6 +79,7 @@ Controls.Diode {
                 source: "../../icons/icon-network.svg"
             }
         }
+
         Label {
             id: transferLabel
             leftPadding: 30
@@ -63,7 +88,15 @@ Controls.Diode {
             bottomPadding: 15
             color: "#d5d5d5"
             text: transferText
-
+            Label {
+                id: transferLabel1
+                leftPadding: paddingLevel
+                font.weight: Font.Light
+                font.pixelSize: 16
+                bottomPadding: 15
+                color: "#d5d5d5"
+                text: transferLevel
+            }
             Image {
 
                 id: transfer
@@ -90,8 +123,8 @@ Controls.Diode {
             text: "Payment"
         }
 
-        // choose payment value for portion of node, needs input on if amount is static or not
         Controls.Switch {
+            id: typeSwitch
             on: false
             Layout.topMargin: 12
             Layout.leftMargin: 35
@@ -121,7 +154,20 @@ Controls.Diode {
             label.font.letterSpacing: 3
             label.text: qsTr("Select")
             topPadding: 50
+
+            onButtonClicked: {
+                tracker = 2
+                if (nodeLevel == 0)
+                    saveLevel = 0
+                if (nodeLevel == 1)
+                    saveLevel = 1
+                if (nodeLevel == 2)
+                    saveLevel = 2
+                if (typeSwitch.on == true)
+                    paymentMethod = 1
+                if (typeSwitch.on == false)
+                    paymentMethod = 0
+            }
         }
     }
 }
-
