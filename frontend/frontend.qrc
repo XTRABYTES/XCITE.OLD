@@ -8,7 +8,6 @@
         <file>XCITE/Nodes/RegistrationDetails.qml</file>
         <file>XCITE/Nodes/RegistrationLevel.qml</file>
         <file>XCITE/Nodes/RegistrationTermsConditions.qml</file>
-        <file>XCITE/Nodes/BalanceBoard.qml</file>
         <file>XCITE/Nodes/TransactionsBoard.qml</file>
         <file>Login/ForgotPasswordForm.qml</file>
         <file>Login/LoginForm.qml</file>
@@ -17,7 +16,6 @@
         <file>Controls/LabelUnderlined.qml</file>
         <file>Controls/SearchBox.qml</file>
         <file>Controls/ButtonBalanceDate.qml</file>
-        <file>XCITE/Nodes/NetworkStatusBoard.qml</file>
         <file>Controls/TextInputBlue.qml</file>
         <file>Controls/ButtonSimple.qml</file>
         <file>Controls/ButtonDock.qml</file>
@@ -62,7 +60,6 @@
         <file>Controls/DiodeHeaderMenu.qml</file>
         <file>Controls/TextInput.qml</file>
         <file>Controls/FormLabel.qml</file>
-        <file>XCITE/SendCoins/TextXBY.qml</file>
         <file>Controls/AddressBook.qml</file>
         <file>Controls/SliderAmount.qml</file>
         <file>Controls/ModalPopup.qml</file>
@@ -99,7 +96,6 @@
         <file>+mobile/ReceiveCoins.qml</file>
         <file>X-Change/Home/MarketsDiode.qml</file>
         <file>X-Change/Home/OrderBookDiode.qml</file>
-        <file>X-Change/Home/ChartDiode.qml</file>
         <file>X-Change/Home/BuySellDiode.qml</file>
         <file>Settings/Layout.qml</file>
         <file>Settings/DeveloperSettings.qml</file>
@@ -129,5 +125,9 @@
         <file>Controls/SideMenuButtonSmall.qml</file>
         <file>Onboarding/Introduction.qml</file>
         <file>Browser/Layout.qml</file>
+        <file>XCITE/Nodes/MyNodes.qml</file>
+        <file>XCITE/Nodes/MyPayments.qml</file>
+        <file>Controls/ChartDiode.qml</file>
+        <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
     </qresource>
 </RCC>

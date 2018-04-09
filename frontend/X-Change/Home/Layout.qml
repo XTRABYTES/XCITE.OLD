@@ -1,5 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
+import "../../Controls" as Controls
 
 Item {
     readonly property color cBoardBackground: "#3a3e46"
@@ -13,7 +14,7 @@ Item {
         anchors.left: markets.right
         anchors.right: parent.right
         anchors.leftMargin: 10
-        ChartDiode {
+        Controls.ChartDiode {
         }
         RowLayout {
             BuySellDiode {

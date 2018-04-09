@@ -67,20 +67,27 @@ If this issue arises you should first try the following steps before performing 
 **Testnet Interaction**
 ![xcite-testnet-2-21-18](https://user-images.githubusercontent.com/17502298/36481552-2c7ba1a0-16de-11e8-8848-102cfa4653e7.gif)
 
-**XCITE-> Home**
-![image](https://user-images.githubusercontent.com/17502298/36481260-4a1cbc7c-16dd-11e8-841c-fbfdb077290c.png)
+**XCITE -> Home**
+![image](https://user-images.githubusercontent.com/17502298/37713999-d1f137f0-2cee-11e8-8f1f-bf0e3cb5aad8.png)
 
-**XCITE-> Send Coins**
-![image](https://user-images.githubusercontent.com/17502298/36481289-640b4fcc-16dd-11e8-8706-d2c3b761072e.png)
+**XCITE -> Testnet Interaction (Debug Console)**
 
-**XCITE-> Send Coins -> Send Confirmation**
-![image](https://user-images.githubusercontent.com/17502298/36481304-77d2afa0-16dd-11e8-983c-f1033efd5dc3.png)
+![xcite-console2](https://user-images.githubusercontent.com/17502298/37714402-d33c441e-2cef-11e8-9bdd-e9d3715598a2.gif)
 
-**XCITE-> Receive Coins**
-![image](https://user-images.githubusercontent.com/17502298/36481323-82b32742-16dd-11e8-8804-8440774b4d57.png)
+**XCITE -> Send Coins**
+![image](https://user-images.githubusercontent.com/17502298/37714509-1361b272-2cf0-11e8-9619-ae1ec3d6d63b.png)
 
-**XCITE-> History**
-![image](https://user-images.githubusercontent.com/17502298/36481337-8e668638-16dd-11e8-93e6-f3ab10588076.png)
+**XCITE -> Receive Coins**
+![image](https://user-images.githubusercontent.com/17502298/37714529-1fa6bb22-2cf0-11e8-83e8-f20cfb97b0dc.png)
+
+**XCITE -> Settings**
+![image](https://user-images.githubusercontent.com/17502298/37714557-31b12db6-2cf0-11e8-8b71-8b799a4e7696.png)
+
+**X-CHANGE -> Home**
+![image](https://user-images.githubusercontent.com/17502298/37714617-5d365e34-2cf0-11e8-8e6a-ee18e4ccba8a.png)
+
+**X-CHAT -> Home**
+![image](https://user-images.githubusercontent.com/17502298/37714647-717e8e5c-2cf0-11e8-972b-51825bdccde1.png)
 
 ## Contributing
 
