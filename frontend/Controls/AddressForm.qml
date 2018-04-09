@@ -79,6 +79,7 @@ ModalPopup {
                 id: btnConfirm
                 labelText: qsTr("UPDATE")
                 isPrimary: true
+                Layout.fillHeight: false
                 onButtonClicked: {
                     if (itemName.acceptableInput
                             && itemAddress.acceptableInput) {
@@ -99,6 +100,7 @@ ModalPopup {
                 id: btnCancel
                 labelText: qsTr("CANCEL")
                 isPrimary: false
+                Layout.fillHeight: false
                 onButtonClicked: {
                     cancelled()
                 }
