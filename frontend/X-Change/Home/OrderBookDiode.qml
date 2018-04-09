@@ -40,6 +40,13 @@ Controls.Diode {
                 anchors.left: parent.left
                 anchors.leftMargin: 95
                 //font.weight: bold
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        selectedView = "orderBooks"
+                    }
+                }
             }
         }
 
