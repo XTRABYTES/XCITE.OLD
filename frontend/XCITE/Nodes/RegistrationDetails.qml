@@ -121,7 +121,6 @@ Controls.Diode {
             id: addString
             color: "#d5d5d5"
             text: "BMy2BpwyJc5i8upNm5Vv8HMkwXqBR3kCxS"
-            canPaste: true
             width: 220
             Layout.leftMargin: 35
             Layout.topMargin: 5
