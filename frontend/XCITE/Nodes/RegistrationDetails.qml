@@ -53,7 +53,7 @@ Controls.Diode {
         }
         Label {
             Layout.leftMargin: 25
-            Layout.topMargin: 30
+            Layout.topMargin: 20
             font.pixelSize: 16
             color: "#d5d5d5"
             text: "Static registration string"
@@ -140,7 +140,7 @@ Controls.Diode {
         Label {
             font.pixelSize: 16
             Layout.leftMargin: 25
-            Layout.topMargin: 20
+            Layout.topMargin: 10
             color: "#d5d5d5"
             text: "Accept transaction fee"
         }
@@ -174,7 +174,7 @@ Controls.Diode {
         Label {
             font.pixelSize: 16
             Layout.leftMargin: 25
-            Layout.topMargin: 20
+            Layout.topMargin: 15
             color: "#d5d5d5"
             text: "Total Deposit"
         }
@@ -225,3 +225,4 @@ Controls.Diode {
         }
     }
 }
+
