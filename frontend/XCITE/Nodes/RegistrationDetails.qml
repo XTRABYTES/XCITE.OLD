@@ -66,14 +66,13 @@ Controls.Diode {
             font.weight: Font.Medium
             color: "#FFFFFF"
         }
-
         TextArea {
             id: regString
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -81,6 +80,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -92,10 +95,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = regString.text
                     }
                 }
             }
@@ -114,19 +116,24 @@ Controls.Diode {
             color: "#d5d5d5"
             text: "XBY Deposit Address"
         }
+
         TextArea {
             id: addString
             color: "#d5d5d5"
-            text: "   BMy2BpwyJc5i8upNm5Vv8HMkwXqBR3kCxS"
-            width: contentWidth + 20
-            Layout.leftMargin: 25
-            Layout.topMargin: 10
+            text: "BMy2BpwyJc5i8upNm5Vv8HMkwXqBR3kCxS"
+            width: 220
+            Layout.leftMargin: 35
+            Layout.topMargin: 5
             background: Rectangle {
-                width: addString.width + 20
+                width: 335
                 color: "#2A2C31"
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
 
@@ -136,7 +143,6 @@ Controls.Diode {
             Layout.topMargin: 20
             color: "#d5d5d5"
             text: "Accept transaction fee"
-            visible: xcite.width > 1100
         }
         Label {
             font.pixelSize: 12
