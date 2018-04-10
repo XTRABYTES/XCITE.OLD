@@ -15,7 +15,7 @@ ColumnLayout {
     anchors.left: parent.left
     anchors.right: parent.right
     visible: false
-    height: parent.height + 400
+    height: parent.height - 5
     RowLayout {
         spacing: layoutGridSpacing
         ColumnLayout {
