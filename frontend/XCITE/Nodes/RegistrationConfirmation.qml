@@ -63,10 +63,10 @@ Controls.Diode {
         TextArea {
             id: regString
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -74,6 +74,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -85,10 +89,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = regString.text
                     }
                 }
             }
@@ -110,10 +113,10 @@ Controls.Diode {
         TextArea {
             id: depID
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -121,6 +124,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -132,10 +139,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = depID.text
                     }
                 }
             }
@@ -157,10 +163,10 @@ Controls.Diode {
         TextArea {
             id: feeTrans
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -168,6 +174,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -179,10 +189,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = feeTrans.text
                     }
                 }
             }
@@ -204,10 +213,10 @@ Controls.Diode {
         TextArea {
             id: pubKey
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -215,6 +224,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -226,10 +239,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = pubKey.text
                     }
                 }
             }
@@ -251,10 +263,10 @@ Controls.Diode {
         TextArea {
             id: holderKey
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -262,6 +274,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -273,10 +289,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = holderKey.text
                     }
                 }
             }
@@ -352,5 +367,3 @@ Controls.Diode {
         }
     }
 }
-
-
