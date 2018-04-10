@@ -3,16 +3,11 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.3
 import "../../Controls" as Controls
 
-
 /**
   * Refactored, needs cleaning up on the Low, Medium High Texts, see line 136
   */
 Controls.Diode {
     id: regLevel
-    width: parent.width - 100
-    height: parent.height
-    Layout.minimumHeight: 100
-    Layout.preferredHeight: 1320
     color: "#3A3E47"
     radius: 5
     anchors.fill: parent
@@ -41,7 +36,6 @@ Controls.Diode {
     // image in case of level 1 node
     Image {
         id: image0
-        visible: parent.width > 1125
         z: 1
         anchors {
             right: image1.left
@@ -91,7 +85,7 @@ Controls.Diode {
         anchors.topMargin: -20
         anchors.left: image0.left
         width: 312
-        height: 397
+        height: 365
         radius: 5
         color: "#2A2C31"
         earningsText: qsTr("Earnings:")
@@ -110,7 +104,7 @@ Controls.Diode {
         anchors.topMargin: -20
         anchors.left: image1.left
         width: 312
-        height: 397
+        height: 365
         radius: 5
         color: "#2A2C31"
         earningsText: qsTr("Earnings:")
@@ -130,7 +124,7 @@ Controls.Diode {
         anchors.topMargin: -20
         anchors.left: image2.left
         width: 312
-        height: 397
+        height: 365
         radius: 5
         color: "#2A2C31"
         earningsText: qsTr("Earnings:")
