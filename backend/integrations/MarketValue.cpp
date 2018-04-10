@@ -1,18 +1,23 @@
-
+#include <QSettings>
 #include "MarketValue.hpp"
 
 MarketValue::MarketValue(QObject *parent) : QObject(parent)
 {
 }
 
-void MarketValue::findXBYValue()
+void MarketValue::findXBYValue(QString currency)
 {
-    QNetworkRequest request(QUrl("https://api.coinmarketcap.com/v1/ticker/xtrabytes/"));
+    QSettings appSettings;
+    appSettings.setValue("defaultCurrency", currency);
+
+    QNetworkRequest request(QUrl("https://api.coinmarketcap.com/v1/ticker/xtrabytes/?convert="+currency));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     QNetworkAccessManager *restclient = new QNetworkAccessManager(this);
     connect(restclient, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
-    restclient->get(request);
+
+    QNetworkReply* reply = restclient->get(request);
+    reply->setProperty("selectedCurrency", currency);
 }
 
 void MarketValue::onFinished(QNetworkReply* reply)
@@ -22,13 +27,15 @@ void MarketValue::onFinished(QNetworkReply* reply)
         return;
     }
 
+    QString selectedCurrency = reply->property("selectedCurrency").toString();
+
     QString marketValue = "";
     QString strReply = (QString)reply->readAll();
     QJsonDocument priceDataDoc = QJsonDocument::fromJson(strReply.toUtf8());
     QJsonArray priceDataArray = priceDataDoc.array();
     foreach (const QJsonValue &value, priceDataArray){
         QJsonObject jsonObj = value.toObject();
-        marketValue = jsonObj["price_usd"].toString();
+        marketValue = jsonObj["price_"+selectedCurrency.toLower()].toString();
     }
     setMarketValue(marketValue);
 }
