@@ -58,7 +58,7 @@ SOURCES += main/main.cpp \
             backend/support/globaleventfilter.cpp \
             backend/support/settings.cpp \
             backend/testnet/xchattestnetclient.cpp \
-    backend/integrations/MarketValue.cpp
+	    backend/integrations/MarketValue.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -76,7 +76,7 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/support/globaleventfilter.hpp \
             backend/support/settings.hpp \
             backend/testnet/xchattestnetclient.hpp \
-    backend/integrations/MarketValue.hpp
+            backend/integrations/MarketValue.hpp
 
 DISTFILES += \
     xcite.ico \
@@ -92,6 +92,15 @@ CONFIG(debug, debug|release) {
     DESTDIR = $$PWD/build/debug
 } else {
     DESTDIR = $$PWD/build/release
+}
+
+win32 {
+    # Copy OpenSSL DDLs into the build dir on Windows
+    DESTDIR_WIN = $${DESTDIR}
+    DESTDIR_WIN ~= s,/,\\,g
+    PWD_WIN = $${PWD}
+    PWD_WIN ~= s,/,\\,g
+    QMAKE_POST_LINK += $$quote(cmd /c copy /y $${PWD_WIN}\\support\\*.dll $${DESTDIR_WIN})
 }
 
 mac {
