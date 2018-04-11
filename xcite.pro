@@ -100,7 +100,7 @@ win32 {
     DESTDIR_WIN ~= s,/,\\,g
     PWD_WIN = $${PWD}
     PWD_WIN ~= s,/,\\,g
-    QMAKE_POST_LINK += $$quote(cmd /c copy /y $${PWD_WIN}\\support\\*.dll $${DESTDIR_WIN})
+    QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*.dll\" \"$${DESTDIR_WIN}\")
 }
 
 mac {
