@@ -42,7 +42,7 @@ Controls.Diode {
             right: image1.left
             rightMargin: 96
             top: parent.top
-            topMargin: 100
+            topMargin: 150
         }
         source: "../../icons/Level1.svg"
 
@@ -58,7 +58,7 @@ Controls.Diode {
 
             horizontalCenter: parent.horizontalCenter
             top: parent.top
-            topMargin: 150
+            topMargin: 200
         }
         source: "../../icons/Level2.svg"
         width: parent.width > 1200 ? parent.width / 5.5 : 220
@@ -73,7 +73,7 @@ Controls.Diode {
             left: image1.right
             leftMargin: 96
             top: parent.top
-            topMargin: 200
+            topMargin: 250
         }
         source: "../../icons/Level3.svg"
         width: parent.width > 1200 ? parent.width / 5.5 : 220
