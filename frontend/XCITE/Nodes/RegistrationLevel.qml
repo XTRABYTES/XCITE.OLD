@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.3
 import "../../Controls" as Controls
 
+
 /**
   * Refactored, needs cleaning up on the Low, Medium High Texts, see line 136
   */
@@ -41,11 +42,12 @@ Controls.Diode {
             right: image1.left
             rightMargin: 96
             top: parent.top
-            topMargin: 100
+            topMargin: 150
         }
         source: "../../icons/Level1.svg"
-        width: 311
-        height: 320
+
+        width: parent.width > 1200 ? parent.width / 5.5 : 220
+        height: parent.height / 3.3
     }
 
     // image in case of level 2 node
@@ -56,11 +58,11 @@ Controls.Diode {
 
             horizontalCenter: parent.horizontalCenter
             top: parent.top
-            topMargin: 150
+            topMargin: 180
         }
         source: "../../icons/Level2.svg"
-        width: 311
-        height: 268
+        width: parent.width > 1200 ? parent.width / 5.5 : 220
+        height: (parent.height / 3 - 50)
     }
 
     // image in case of level 3 node
@@ -74,8 +76,8 @@ Controls.Diode {
             topMargin: 200
         }
         source: "../../icons/Level3.svg"
-        width: 311
-        height: 216
+        width: parent.width > 1200 ? parent.width / 5.5 : 220
+        height: parent.height / 3 - 80
     }
 
     RegistrationLevelBox {
@@ -84,8 +86,9 @@ Controls.Diode {
         anchors.top: image0.bottom
         anchors.topMargin: -20
         anchors.left: image0.left
-        width: 312
-        height: 365
+        anchors.leftMargin: 0
+        width: image1.width
+        height: 285
         radius: 5
         color: "#2A2C31"
         earningsText: qsTr("Earnings:")
@@ -94,17 +97,17 @@ Controls.Diode {
         earningsLevel: qsTr("High")
         transferLevel: qsTr("High")
         networkLevel: qsTr("High")
-        paddingLevel: 245
+        paddingLevel: rectangle0.width - 60
         nodeLevel: 0
     }
     RegistrationLevelBox {
         id: rectangle1
         title: qsTr("L2")
-        anchors.top: image1.bottom
-        anchors.topMargin: -20
+        anchors.top: rectangle0.top
         anchors.left: image1.left
-        width: 312
-        height: 365
+        anchors.leftMargin: 0
+        width: image2.width
+        height: 285
         radius: 5
         color: "#2A2C31"
         earningsText: qsTr("Earnings:")
@@ -113,18 +116,18 @@ Controls.Diode {
         earningsLevel: qsTr("Medium")
         transferLevel: qsTr("Medium")
         networkLevel: qsTr("Medium")
-        paddingLevel: 225
+        paddingLevel: rectangle1.width - 80
         nodeLevel: 1
     }
 
     RegistrationLevelBox {
         id: rectangle2
         title: qsTr("L3")
-        anchors.top: image2.bottom
-        anchors.topMargin: -20
+        anchors.top: rectangle0.top
         anchors.left: image2.left
-        width: 312
-        height: 365
+        anchors.leftMargin: 0
+        width: image2.width
+        height: 285
         radius: 5
         color: "#2A2C31"
         earningsText: qsTr("Earnings:")
@@ -133,7 +136,7 @@ Controls.Diode {
         earningsLevel: qsTr("Low")
         transferLevel: qsTr("Low")
         networkLevel: qsTr("Low")
-        paddingLevel: 250
+        paddingLevel: rectangle2.width - 55
         nodeLevel: 2
     }
 }
