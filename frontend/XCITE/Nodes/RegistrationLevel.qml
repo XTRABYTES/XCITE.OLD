@@ -58,11 +58,11 @@ Controls.Diode {
 
             horizontalCenter: parent.horizontalCenter
             top: parent.top
-            topMargin: 200
+            topMargin: 180
         }
         source: "../../icons/Level2.svg"
         width: parent.width > 1200 ? parent.width / 5.5 : 220
-        height: parent.height / 4
+        height: (parent.height / 3 - 50)
     }
 
     // image in case of level 3 node
@@ -73,11 +73,11 @@ Controls.Diode {
             left: image1.right
             leftMargin: 96
             top: parent.top
-            topMargin: 250
+            topMargin: 200
         }
         source: "../../icons/Level3.svg"
         width: parent.width > 1200 ? parent.width / 5.5 : 220
-        height: parent.height / 5
+        height: parent.height / 3 - 80
     }
 
     RegistrationLevelBox {
@@ -103,8 +103,7 @@ Controls.Diode {
     RegistrationLevelBox {
         id: rectangle1
         title: qsTr("L2")
-        anchors.top: image1.bottom
-        anchors.topMargin: -20
+        anchors.top: rectangle0.top
         anchors.left: image1.left
         anchors.leftMargin: 0
         width: image2.width
@@ -124,8 +123,7 @@ Controls.Diode {
     RegistrationLevelBox {
         id: rectangle2
         title: qsTr("L3")
-        anchors.top: image2.bottom
-        anchors.topMargin: -20
+        anchors.top: rectangle0.top
         anchors.left: image2.left
         anchors.leftMargin: 0
         width: image2.width
