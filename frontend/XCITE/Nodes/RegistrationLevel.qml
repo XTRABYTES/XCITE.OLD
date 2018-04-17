@@ -82,7 +82,7 @@ Controls.Diode {
 
     RegistrationLevelBox {
         id: rectangle0
-        title: qsTr("L1")
+        title: qsTr("Level 1")
         anchors.top: image0.bottom
         anchors.topMargin: -20
         anchors.left: image0.left
@@ -102,7 +102,7 @@ Controls.Diode {
     }
     RegistrationLevelBox {
         id: rectangle1
-        title: qsTr("L2")
+        title: qsTr("Level 2")
         anchors.top: rectangle0.top
         anchors.left: image1.left
         anchors.leftMargin: 0
@@ -122,7 +122,7 @@ Controls.Diode {
 
     RegistrationLevelBox {
         id: rectangle2
-        title: qsTr("L3")
+        title: qsTr("Level 3")
         anchors.top: rectangle0.top
         anchors.left: image2.left
         anchors.leftMargin: 0
