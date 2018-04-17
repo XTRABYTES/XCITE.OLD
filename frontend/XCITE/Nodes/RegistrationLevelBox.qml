@@ -85,7 +85,7 @@ Controls.Diode {
             leftPadding: 30
             font.weight: Font.Light
             font.pixelSize: 16
-            bottomPadding: 15
+            bottomPadding: 0
             color: "#d5d5d5"
             text: transferText
             Label {
@@ -108,17 +108,10 @@ Controls.Diode {
             }
         }
 
-        // drop down menu for node choice
-        Controls.ComboBox {
-            id: levelSelect
-            Layout.fillWidth: true
-            model: ["Select a Node", "Level 1 Node", "Level 2 Node", "Level 3 Node"]
-            defaultBackgroundColor: "#3A3E47"
-        }
         Label {
             font.weight: Font.Light
             font.pixelSize: 16
-            topPadding: 14
+            topPadding: 5
             color: "#d5d5d5"
             text: "Payment"
         }
