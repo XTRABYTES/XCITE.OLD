@@ -67,6 +67,21 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: ReleaseChecker
+        onXciteUpdateAvailable: {
+            confirmationModal({
+                                  title: qsTr("UPDATE AVAILABLE"),
+                                  bodyText: qsTr("An updated version of XCITE is available for download!"),
+                                  confirmText: qsTr("DOWNLOAD"),
+                                  cancelText: qsTr("NOT NOW")
+                              }, function () {
+                                  Qt.openUrlExternally(
+                                              "https://github.com/borzalom/xcite/releases")
+                              })
+        }
+    }
+
     Xchat {
         id: xchat
     }
