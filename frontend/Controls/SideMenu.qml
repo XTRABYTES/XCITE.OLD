@@ -229,6 +229,13 @@ Rectangle {
             return
         }
 
+        modalAlert({
+                       title: qsTr("TESTNET OFFLINE"),
+                       bodyText: qsTr("The testnet is currently unavailable.\nStay tuned for Testnet 4, coming soon!"),
+                       buttonText: qsTr("OK")
+                   })
+
+        /*
         confirmationModal({
                               title: qsTr("CONNECT?"),
                               bodyText: qsTr("Please ensure your Testnet wallet is running with RPC enabled at http://127.0.0.1:2222"),
@@ -239,5 +246,6 @@ Rectangle {
                               pollWallet(true)
                               network.listAccounts()
                           })
+        */
     }
 }
