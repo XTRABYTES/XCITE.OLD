@@ -57,7 +57,7 @@ SOURCES += main/main.cpp \
             backend/support/ClipboardProxy.cpp \
             backend/support/globaleventfilter.cpp \
             backend/testnet/xchattestnetclient.cpp \
-            backend/integrations/Zendesk.cpp
+            backend/integrations/Zendesk.cpp \
             backend/integrations/MarketValue.cpp \
             backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
@@ -79,7 +79,7 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/support/globaleventfilter.hpp \
             backend/testnet/xchattestnetclient.hpp \
             backend/integrations/MarketValue.hpp \
-            backend/integrations/Zendesk.hpp
+            backend/integrations/Zendesk.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
             backend/support/Settings.hpp
