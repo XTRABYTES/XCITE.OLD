@@ -79,6 +79,11 @@ Item {
                     }
 
                     onCurrentIndexChanged: {
+                        if (languageOptions.get(
+                                    currentIndex).locale === settings.locale) {
+                            return
+                        }
+
                         var locale = languageOptions.get(currentIndex).locale
                         localeChange(locale)
                         settings.locale = locale

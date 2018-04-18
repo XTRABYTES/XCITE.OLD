@@ -15,7 +15,7 @@
 #include "../backend/support/qrcode/qt-qrcode/QtQrCodeQuickItem.hpp"
 #include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
-#include "../backend/support/settings.hpp"
+#include "../backend/support/Settings.hpp"
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
 
