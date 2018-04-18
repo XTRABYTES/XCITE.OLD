@@ -4,7 +4,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import SortFilterProxyModel 0.1
 import QtQuick.Dialogs 1.1
-
+import QtQuick.Controls 2.3
 import "../../Controls" as Controls
 import "../../Theme" 1.0
 
@@ -34,6 +34,7 @@ Controls.Diode {
         anchors.leftMargin: 10
         anchors.right: parent.right
         anchors.rightMargin: 10
+
         RowLayout {
             id: lay1
 
@@ -46,8 +47,8 @@ Controls.Diode {
                 labelText: "LIMIT ORDER"
                 colorTracker: 2
                 onButtonClicked: {
-                    buyPrice.text = "0"
-                    sellPrice.text = "0"
+                    buyPrice.text = "0.00"
+                    sellPrice.text = "0.00"
                     vis = 1
                 }
                 Rectangle {
@@ -65,7 +66,8 @@ Controls.Diode {
                     anchors.leftMargin: 5
                     text: "Available: 0 XFUEL"
                     color: "#8592A5"
-                    topPadding: 15
+                    topPadding: 17
+                    bottomPadding: 10
                     font.weight: Font.Medium
                 }
                 Label {
@@ -74,7 +76,7 @@ Controls.Diode {
                     anchors.rightMargin: 5
                     text: "Deposit"
                     color: "#1AF1EB"
-                    topPadding: 15
+                    topPadding: 17
                     font.weight: Font.Medium
                 }
             }
@@ -107,7 +109,8 @@ Controls.Diode {
                               Qt.locale(), 'f', 8).replace(/\.?0+$/,
                                                            '') + " XBY"
                     color: "#8592A5"
-                    topPadding: 15
+                    topPadding: 17
+
                     font.weight: Font.Medium
                 }
                 Label {
@@ -116,7 +119,7 @@ Controls.Diode {
                     anchors.rightMargin: 5
                     text: "Deposit"
                     color: "#1AF1EB"
-                    topPadding: 15
+                    topPadding: 17
                     font.weight: Font.Medium
                 }
             }
@@ -124,7 +127,7 @@ Controls.Diode {
         //price input
         RowLayout {
             id: lay2
-
+            Layout.topMargin: 10
             Controls.TextInput {
                 id: buyPrice
                 validator: DoubleValidator {
@@ -170,7 +173,7 @@ Controls.Diode {
         //amount input
         RowLayout {
             id: lay3
-
+            Layout.topMargin: 10
             Controls.TextInput {
                 id: buyAmount
                 validator: DoubleValidator {
@@ -285,6 +288,4 @@ Controls.Diode {
         }
     }
 }
-
-
 

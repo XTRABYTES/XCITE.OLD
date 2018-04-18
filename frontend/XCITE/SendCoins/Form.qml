@@ -26,11 +26,15 @@ ColumnLayout {
             bottom: 0
         }
 
-        TextXBY {
+          Text {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.rightMargin: 12
             anchors.bottomMargin: 5
+            text: qsTr("XBY")
+            font.weight: Font.Light
+            font.pixelSize: 14
+            color: "#A9AAAD"
         }
     }
 

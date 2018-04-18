@@ -16,7 +16,7 @@ Button {
     signal buttonClicked
 
     MouseArea {
-        anchors.fill: parent
+        anchors.fill: background
         onClicked: buttonClicked()
         cursorShape: Qt.PointingHandCursor
 

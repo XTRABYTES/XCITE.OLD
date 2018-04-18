@@ -16,6 +16,9 @@ Controls.Diode {
     // primary rectangle properties
     property int pageTracker: 0
     property int level1
+    property string level1NodeText: " L1 Node!"
+    property string level2NodeText: " L2 Node!"
+    property string level3NodeText: " L3 Node!"
     id: regLevel
     width: parent.width - 100
     height: parent.height - 500
@@ -60,10 +63,10 @@ Controls.Diode {
         TextArea {
             id: regString
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -71,6 +74,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -82,10 +89,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = regString.text
                     }
                 }
             }
@@ -107,10 +113,10 @@ Controls.Diode {
         TextArea {
             id: depID
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -118,6 +124,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -129,10 +139,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = depID.text
                     }
                 }
             }
@@ -154,10 +163,10 @@ Controls.Diode {
         TextArea {
             id: feeTrans
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -165,6 +174,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -176,10 +189,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = feeTrans.text
                     }
                 }
             }
@@ -201,10 +213,10 @@ Controls.Diode {
         TextArea {
             id: pubKey
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -212,6 +224,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -223,10 +239,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = pubKey.text
                     }
                 }
             }
@@ -248,10 +263,10 @@ Controls.Diode {
         TextArea {
             id: holderKey
             color: "#d5d5d5"
-            text: "   aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
-            width: contentWidth + 20
-
-            Layout.leftMargin: 25
+            text: "aFEFR452ffaf778wyJc5i8upNm5Vv8HMkwXqBR3kaf3452CxS"
+            width: 300
+            readOnly: true
+            Layout.leftMargin: 35
             Layout.topMargin: 5
             background: Rectangle {
                 width: regString.width + 20
@@ -259,6 +274,10 @@ Controls.Diode {
                 radius: 4
                 border.width: parent.activeFocus ? 2 : 0
                 border.color: Theme.primaryHighlight
+                anchors.left: parent.left
+                anchors.leftMargin: -10
+                anchors.top: parent.top
+                anchors.topMargin: -3
             }
         }
         Label {
@@ -270,10 +289,9 @@ Controls.Diode {
                 anchors.rightMargin: 5
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        regString.text.copy()
-
-                        // do what you want here
+                        clipboard.text = holderKey.text
                     }
                 }
             }
@@ -286,6 +304,7 @@ Controls.Diode {
             color: "#FFFFFF"
         }
         Controls.Switch {
+            id: confirmSwitch
             on: false
             Layout.topMargin: 15
             Layout.leftMargin: 25
@@ -309,7 +328,42 @@ Controls.Diode {
             Layout.maximumWidth: 150
             label.font.weight: Font.Medium
             isPrimary: true
+            onButtonClicked: {
+                if (confirmSwitch.on == true) {
+                    tracker = 0
+                    if (saveLevel == 0) {
+                        modalAlert({
+                                       bodyText: "Congratulations, you have registered your"
+                                                 + level1NodeText,
+                                       title: qsTr("Module Alert"),
+                                       buttonText: qsTr("OK")
+                                   })
+                    }
+                    if (saveLevel == 1) {
+                        modalAlert({
+                                       bodyText: "Congratulations, you have registered your"
+                                                 + level2NodeText,
+                                       title: qsTr("Module Alert"),
+                                       buttonText: qsTr("OK")
+                                   })
+                    }
+                    if (saveLevel == 2) {
+                        modalAlert({
+                                       bodyText: "Congratulations, you have registered your"
+                                                 + level3NodeText,
+                                       title: qsTr("Module Alert"),
+                                       buttonText: qsTr("OK")
+                                   })
+                    }
+                }
+                if (confirmSwitch.on == false) {
+                    modalAlert({
+                                   bodyText: "Before finalizing your node acquisition, please first confirm you have copied and saved all strings above.",
+                                   title: qsTr("Module Alert"),
+                                   buttonText: qsTr("OK")
+                               })
+                }
+            }
         }
     }
 }
-

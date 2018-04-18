@@ -98,6 +98,7 @@ ApplicationWindow {
         property alias height: xcite.height
         property string locale: "en_us"
         property bool onboardingCompleted: false
+        property string defaultCurrency: "USD"
     }
 
     Settings {
@@ -120,6 +121,7 @@ ApplicationWindow {
         handler: wallet
     }
 
+    signal marketValueChangedSignal(string currency)
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
     signal localeChange(string locale)
