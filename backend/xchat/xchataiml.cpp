@@ -475,14 +475,16 @@ QString XchatAIML::resolveNode(QDomNode* node, const QStringList &capturedTexts,
                 result = index < inputList.count() ? inputList[index] : QString("");
             }
             //the following just to avoid warnings !
-            else if (nodeName == "li")
-                ;
+            else if (nodeName == "li") {
+
+            }
         }
         //the following just to avoid warnings !
         else if ((nodeName == "template") || (nodeName == "pattern") || (nodeName == "li")
                  || (nodeName == "person") || (nodeName == "person2") || (nodeName == "gender")
-                 || (nodeName == "parsedCondition"))
-            ;
+                 || (nodeName == "parsedCondition")) {
+
+        }
     }
     return result;
 }

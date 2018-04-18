@@ -32,8 +32,8 @@ ApplicationWindow {
         pushExit: null
 
         Component.onCompleted: {
-            var idealHeight = 800
-            var idealWidth = 1000
+            var idealHeight = (screen.height * 0.7) > 800 ? (screen.height * 0.7) : 800
+            var idealWidth = (screen.width * 0.7) > 1000 ? (screen.width * 0.7) : 1000
 
             var h = Math.min(screen.height - 100, idealHeight)
             var w = Math.min(screen.width - 100, idealWidth)
@@ -67,6 +67,21 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: ReleaseChecker
+        onXciteUpdateAvailable: {
+            confirmationModal({
+                                  title: qsTr("UPDATE AVAILABLE"),
+                                  bodyText: qsTr("An updated version of XCITE is available for download!"),
+                                  confirmText: qsTr("DOWNLOAD"),
+                                  cancelText: qsTr("NOT NOW")
+                              }, function () {
+                                  Qt.openUrlExternally(
+                                              "https://github.com/borzalom/xcite/releases")
+                              })
+        }
+    }
+
     Xchat {
         id: xchat
     }
@@ -83,6 +98,7 @@ ApplicationWindow {
         property alias height: xcite.height
         property string locale: "en_us"
         property bool onboardingCompleted: false
+        property string defaultCurrency: "USD"
     }
 
     Settings {
@@ -108,6 +124,7 @@ ApplicationWindow {
         handler: wallet
     }
 
+    signal marketValueChangedSignal(string currency)
     signal xchatSubmitMsgSignal(string msg)
     signal xChatMessageReceived(string message, date datetime)
     signal localeChange(string locale)

@@ -15,7 +15,7 @@ ColumnLayout {
     anchors.left: parent.left
     anchors.right: parent.right
     visible: false
-    height: parent.height - 50
+    height: parent.height - 5
     RowLayout {
         spacing: layoutGridSpacing
         ColumnLayout {
@@ -34,7 +34,7 @@ ColumnLayout {
                     Layout.fillHeight: true
                     anchors.left: parent.left
                     anchors.top: parent.bottom
-                    anchors.topMargin: 5
+                    anchors.topMargin: 10
                     isPrimary: true
                     width: parent.width
                     buttonHeight: 50

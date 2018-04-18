@@ -26,6 +26,7 @@ Item {
     readonly property int moduleMenuHeight: 49
     readonly property int diodeTopMargin: 40
     readonly property int diodePadding: 20
+    readonly property bool showLoadingBar: false
 
     signal selectView(string path)
 
@@ -46,12 +47,14 @@ Item {
         }
 
         ColumnLayout {
+            id: mainLayout
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.rightMargin: layoutGridSpacing
             spacing: layoutGridSpacing
 
             Controls.ModuleMenu {
+                id: moduleMenu
             }
 
             XCITE.Layout {
@@ -74,6 +77,14 @@ Item {
 
             Browser.Layout {
             }
+        }
+
+        Controls.LoadingBar {
+            anchors.top: mainLayout.top
+            anchors.left: mainLayout.left
+            anchors.right: mainLayout.right
+            anchors.topMargin: moduleMenu.height + (layoutGridSpacing / 2) - (this.height / 2)
+            running: showLoadingBar
         }
     }
 

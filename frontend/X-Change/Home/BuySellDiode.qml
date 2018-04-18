@@ -47,8 +47,8 @@ Controls.Diode {
                 labelText: "LIMIT ORDER"
                 colorTracker: 2
                 onButtonClicked: {
-                    buyPrice.text = "0.0"
-                    sellPrice.text = "0.0"
+                    buyPrice.text = "0.00"
+                    sellPrice.text = "0.00"
                     vis = 1
                 }
                 Rectangle {

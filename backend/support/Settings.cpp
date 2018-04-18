@@ -1,4 +1,4 @@
-#include "settings.hpp"
+#include "Settings.hpp"
 
 Settings::Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent) :
     QObject(parent)
@@ -40,6 +40,7 @@ void Settings::onClearAllSettings() {
     m_settings->remove("x");
     m_settings->remove("y");
     m_settings->remove("onboardingCompleted");
+    m_settings->remove("defaultCurrency");
     m_settings->sync();
 
     m_settings->setFallbacksEnabled(fallbacks);
