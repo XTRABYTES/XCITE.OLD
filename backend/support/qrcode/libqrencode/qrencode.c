@@ -879,5 +879,7 @@ void QRcode_APIVersion(int *major_version, int *minor_version, int *micro_versio
 
 char *QRcode_APIVersionString(void)
 {
-	return VERSION;
+    // This fails in MSVC builds, changed to reflect the version in libqrencode.pri
+    //return VERSION;
+    return "3.9.0";
 }

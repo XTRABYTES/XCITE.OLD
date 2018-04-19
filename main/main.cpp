@@ -89,9 +89,6 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
     QObject::connect(rootObject, SIGNAL(clearAllSettings()), &settings, SLOT(onClearAllSettings()));
 
-    Zendesk zd(&appSettings);
-    QObject::connect(rootObject, SIGNAL(zendeskAccessTokenSet(QString)), &zd, SLOT(onAccessTokenSet(QString)));
-
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findXBYValue(QString)));
 
