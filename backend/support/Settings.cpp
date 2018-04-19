@@ -1,4 +1,4 @@
-#include "settings.hpp"
+#include "Settings.hpp"
 
 Settings::Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent) :
     QObject(parent)

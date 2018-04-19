@@ -7,7 +7,7 @@ import "../../Controls" as Controls
 import "../../Theme" 1.0
 
 Controls.Diode {
-    title: qsTr("RECENT TRANSACTIONS")
+    title: qsTr("DEMO RECENT TRANSACTIONS")
     menuLabelText: qsTr("Complete View")
 
     TransactionTable {

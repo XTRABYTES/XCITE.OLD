@@ -42,21 +42,23 @@ If this issue arises you should first try the following steps before performing 
 
 ## Interacting with the XBY Testnet
 
+**Please note that the Testnet is currently offline until we're ready for Testnet 4.**
+
 1. Download the normal testnet wallet [here](https://testnet.xtrabytes.global/)
 2. Run the testnet wallet and allow it to completely synchronize.
 3. Close the wallet and browse to your application data folder.
-    - **Windows:** %APPDATA%\xcite\
-    - **Mac:** Home/Library/Application Support/xcite/
+     - **Windows:** %APPDATA%\xcite\
+     - **Mac:** Home/Library/Application Support/xcite/
 4. Within this folder, create a new file and name it "xcite.conf". **Make sure the file is not called "xcite.config.txt". The file must be saved with a ".conf" extension.**
-    - **Windows:** In Notepad, go to File -> Save As ->  Set the "File name:" to xcite.conf, change the "Save as type:" dropdown to "All Files", then click Save.
-    - **Mac:** In TextEdit, click Format in the file bar -> Make Plain Text -> File -> Save -> Change "Save As:" to xcite.conf, then click Save.
+     - **Windows:** In Notepad, go to File -> Save As ->  Set the "File name:" to xcite.conf, change the "Save as type:" dropdown to "All Files", then click Save.
+     - **Mac:** In TextEdit, click Format in the file bar -> Make Plain Text -> File ->Save -> Change "Save As:" to xcite.conf, then click Save.
 4. Edit the xcite.conf file, paste the following content into the file, then save and close it:
 
-    ```
-    rpcuser=xcite
-    rpcpassword=xtrabytes
-    server=1
-    ```
+     ```
+     rpcuser=xcite
+     rpcpassword=xtrabytes
+     server=1
+     ```
 
 5. Re-open the wallet and allow it to synchronize.
 6. Open XCITE (allow the XCITE wallet to continue running in the background)

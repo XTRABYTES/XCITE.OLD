@@ -124,10 +124,11 @@
         <file>X-Change/MarketTrades/MarketTradesDiode.qml</file>
         <file>Controls/SideMenuButtonSmall.qml</file>
         <file>Onboarding/Introduction.qml</file>
+        <file>Browser/Layout.qml</file>
         <file>XCITE/Nodes/MyNodes.qml</file>
         <file>XCITE/Nodes/MyPayments.qml</file>
         <file>Controls/ChartDiode.qml</file>
         <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
-        <file>Browser/Layout.qml</file>
+        <file>Controls/LoadingBar.qml</file>
     </qresource>
 </RCC>

@@ -42,6 +42,7 @@ Item {
         spacing: layoutGridSpacing
 
         Item {
+            visible: false
             Layout.fillWidth: true
             Layout.minimumHeight: 40
 
@@ -63,8 +64,8 @@ Item {
 
             url: supportURL
             onLoadingChanged: {
-                console.log(loadRequest.url)
 
+                //console.log(loadRequest.url)
                 var re = /\/zendesk-complete\.php\?access_token=(.+)/
                 var matches = loadRequest.url.toString().match(re)
 
