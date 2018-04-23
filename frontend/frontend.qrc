@@ -106,7 +106,6 @@
         <file>XCITE/ReceiveCoins/AddressBook.qml</file>
         <file>XCITE/SendCoins/AddressBook.qml</file>
         <file>XCITE/SendCoins/Form.qml</file>
-        <file>XCITE/Home/TransactionTable.qml</file>
         <file>Controls/Switch.qml</file>
         <file>Network.qml</file>
         <file>Controls/DiodeVerticalScrollBar.qml</file>
@@ -129,5 +128,6 @@
         <file>Controls/ChartDiode.qml</file>
         <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
         <file>Controls/LoadingBar.qml</file>
+        <file>Controls/TransactionTable.qml</file>
     </qresource>
 </RCC>
