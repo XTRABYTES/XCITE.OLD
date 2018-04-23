@@ -26,6 +26,6 @@ Rectangle {
         text: qsTr("NODE TRANSACTIONS")
         menuLabelText: qsTr("Complete View")
     }
-    Home.TransactionTable {
+    Controls.TransactionTable {
     }
 }
