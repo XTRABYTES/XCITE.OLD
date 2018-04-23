@@ -10,7 +10,7 @@ Controls.Diode {
     title: qsTr("DEMO RECENT TRANSACTIONS")
     menuLabelText: qsTr("Complete View")
 
-    TransactionTable {
+    Controls.TransactionTable {
         id: transactionTable
     }
 
