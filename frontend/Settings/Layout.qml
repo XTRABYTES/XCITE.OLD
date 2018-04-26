@@ -10,7 +10,6 @@ Item {
 
     property string selectedView
     property string selectedModule
-    //property int themeType: 0
     //themeControl.currentText == "Dark" ? 0 : 1
     anchors.fill: parent
     Layout.fillHeight: true
