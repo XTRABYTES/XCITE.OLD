@@ -3,6 +3,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
 import "../Controls" as Controls
+import "."
 
 Item {
     readonly property color cDiodeBackground: "#3a3e46"
@@ -10,7 +11,8 @@ Item {
 
     property string selectedView
     property string selectedModule
-
+    //property int themeType: 0
+    //themeControl.currentText == "Dark" ? 0 : 1
     anchors.fill: parent
     Layout.fillHeight: true
     Layout.fillWidth: true
@@ -46,7 +48,7 @@ Item {
                 spacing: 20
 
                 Controls.FormLabel {
-                    text: qsTr("Select your language")
+                    text: qsTr("Select Your Language")
                 }
 
                 ComboBox {
@@ -87,6 +89,25 @@ Item {
                         var locale = languageOptions.get(currentIndex).locale
                         localeChange(locale)
                         settings.locale = locale
+                    }
+                }
+                Controls.FormLabel {
+                    text: qsTr("Theme")
+                }
+                ComboBox {
+                    id: themeControl
+                    textRole: "text"
+
+                    model: ListModel {
+                        id: themeOptions
+                        ListElement {
+                            text: qsTr("Dark")
+                            locale: "dark"
+                        }
+                        ListElement {
+                            text: qsTr("Light")
+                            locale: "light"
+                        }
                     }
                 }
             }
