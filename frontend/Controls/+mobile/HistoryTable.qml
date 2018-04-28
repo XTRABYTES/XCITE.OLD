@@ -88,13 +88,13 @@ TableView {
                     case 1:
                     case 6:
                         if (styleData.value === "IN")
-                            // Theme.primaryHighlight
-                            if (styleData.value === "OUT")
-                                "#F77E7E"
+                            Theme.primaryHighlight
+                        if (styleData.value === "OUT")
+                            "#F77E7E"
                         if (styleData.value >= 0)
-                            // Theme.primaryHighlight
-                            if (styleData.value < 0)
-                                "#F77E7E"
+                            Theme.primaryHighlight
+                        if (styleData.value < 0)
+                            "#F77E7E"
                         break
                     default:
                         "#ffffff"
