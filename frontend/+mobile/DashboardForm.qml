@@ -20,6 +20,21 @@ Item {
         }
 
         Item {
+            height: 10
+            width: 1
+        }
+
+        //find good dynamic sizing values
+        Item {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 350
+            anchors.topMargin: -50
+            Controls.TransactionTables {
+            }
+        }
+
+        Item {
             anchors.left: parent.left
             anchors.right: parent.right
             height: 39
@@ -62,24 +77,6 @@ Item {
                     }
                 }
             }
-        }
-
-        Controls.BalanceValue {
-        }
-
-        Item {
-            height: 10
-            width: 1
-        }
-
-        Image {
-            source: '/backgrounds/mobile-chart-placeholder.png'
-            sourceSize.width: 346
-            sourceSize.height: 185
-            horizontalAlignment: Image.AlignLeft
-        }
-
-        Controls.Transactions {
         }
     }
 }
