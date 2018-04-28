@@ -23,7 +23,6 @@ Rectangle {
     property string hoverBorderColor: "#10B9C5"
     property string borderColor: "#616878"
     property int size: 40
-    property int imageOffsetX: 0
     property string iconFile: "../../icons/right-arrow2.svg"
     property int marginLeftValue
 
