@@ -130,5 +130,6 @@
         <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
         <file>Controls/LoadingBar.qml</file>
         <file>Controls/+mobile/HistoryTable.qml</file>
+        <file>Controls/+mobile/MobileButtonIconText.qml</file>
     </qresource>
 </RCC>
