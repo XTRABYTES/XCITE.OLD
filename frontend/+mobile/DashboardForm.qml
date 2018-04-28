@@ -24,13 +24,13 @@ Item {
             width: 1
         }
 
-        //find good dynamic sizing values
+        //FIX. find good dynamic sizing values
         Item {
             anchors.left: parent.left
             anchors.right: parent.right
             height: 350
             anchors.topMargin: -50
-            Controls.HistoryTable {
+            Controls.TransactionTables {
             }
         }
 
@@ -43,7 +43,7 @@ Item {
                 anchors.fill: parent
                 spacing: 10
 
-                Controls.ButtonIconText {
+                Controls.MobileButtonIconText {
                     backgroundColor: Theme.primaryHighlight
                     textColor: "#2D3043"
                     border.width: 0
@@ -54,15 +54,16 @@ Item {
                     Layout.fillHeight: true
                     text: qsTr("SEND XBY")
                     iconFile: '/icons/mobile-send.svg'
-
+                    marginLeftValue: -40
                     onButtonClicked: {
                         mainRoot.push("SendCoins.qml")
                     }
                 }
 
-                Controls.ButtonIconText {
+                Controls.MobileButtonIconText {
                     backgroundColor: Theme.primaryHighlight
                     textColor: "#2D3043"
+                    marginLeftValue: -35
                     border.width: 0
                     radius: 0
                     label.font.letterSpacing: 0.92
