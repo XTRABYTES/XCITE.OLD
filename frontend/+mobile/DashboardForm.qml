@@ -30,7 +30,7 @@ Item {
             anchors.right: parent.right
             height: 350
             anchors.topMargin: -50
-            Controls.TransactionTables {
+            Controls.HistoryTable {
             }
         }
 
