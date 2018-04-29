@@ -80,13 +80,14 @@ Item {
             width: 300
             labelText: "Send XBY"
             anchors.horizontalCenter: parent.horizontalCenter
+            colorTracker: 1
         }
         Image {
             id: balanceCount
             anchors.top: sendButton.bottom
             anchors.topMargin: 30
             anchors.left: parent.left
-            anchors.leftMargin: 100
+            anchors.leftMargin: 110
             source: "../logos/xby_logo.svg"
             width: 50
             height: 30
