@@ -34,6 +34,23 @@ Item {
             }
         }
     }
+    Image {
+        visible: showBack == false
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        source: "/icons/menu-settings.svg"
+        sourceSize.width: 19
+        sourceSize.height: 19
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                mainRoot.push("../Settings.qml")
+
+                // settings link here
+            }
+        }
+    }
 
     Image {
         anchors.right: parent.right
