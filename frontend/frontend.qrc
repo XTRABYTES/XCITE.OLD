@@ -129,5 +129,6 @@
         <file>Controls/ChartDiode.qml</file>
         <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
         <file>Controls/LoadingBar.qml</file>
+        <file>+mobile/Settings.qml</file>
     </qresource>
 </RCC>
