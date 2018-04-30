@@ -131,5 +131,6 @@
         <file>Controls/LoadingBar.qml</file>
         <file>Controls/+mobile/HistoryTable.qml</file>
         <file>Controls/+mobile/MobileButtonIconText.qml</file>
+        <file>+mobile/Settings.qml</file>
     </qresource>
 </RCC>
