@@ -42,6 +42,7 @@ Item {
             Label {
                 Layout.leftMargin: 5
                 anchors.top: parent.bottom
+                anchors.topMargin: 5
                 text: "Amount"
                 color: "#FFFFFF"
                 bottomPadding: 8
@@ -63,6 +64,7 @@ Item {
             Label {
 
                 anchors.top: parent.bottom
+                anchors.topMargin: 5
                 text: "Address"
                 color: "#FFFFFF"
                 bottomPadding: 8
@@ -75,7 +77,7 @@ Item {
         Label {
             id: orLabel
             anchors.top: addressInput.bottom
-            anchors.topMargin: 20
+            anchors.topMargin: 25
             text: "or"
             color: "#FFFFFF"
             bottomPadding: 8
