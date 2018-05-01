@@ -90,7 +90,9 @@ Item {
             width: 300
             labelText: "Scan a QR Code"
             anchors.horizontalCenter: parent.horizontalCenter
-            colorTracker: 1
+            colorTracker: 0
+            isDanger: false
+            isPrimary: true
         }
         Controls.ButtonModal {
             id: sendButton
@@ -99,7 +101,9 @@ Item {
             width: 300
             labelText: "Send XBY"
             anchors.horizontalCenter: parent.horizontalCenter
-            colorTracker: 1
+            colorTracker: 0
+            isDanger: false
+            isPrimary: true
         }
         Image {
             id: balanceCount
