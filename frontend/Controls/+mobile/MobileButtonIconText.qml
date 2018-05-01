@@ -23,6 +23,7 @@ Rectangle {
     property string hoverBorderColor: "#10B9C5"
     property string borderColor: "#616878"
     property int size: 40
+    property int imageOffsetX: 0
     property string iconFile: "../../icons/right-arrow2.svg"
     property int marginLeftValue
 
@@ -55,8 +56,8 @@ Rectangle {
             sourceSize.height: size
             anchors.verticalCenter: parent.verticalCenter
             // anchors.horizontalCenter: text === "" ? parent.horizontalCenter : undefined
-            anchors.left: parent.left
-            anchors.leftMargin: marginLeftValue
+            anchors.left: label.left
+            anchors.leftMargin: -10
         }
 
         ColorOverlay {
