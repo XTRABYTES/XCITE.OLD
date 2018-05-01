@@ -17,7 +17,6 @@ Item {
         Controls.AddressBook {
         }*/
         Label {
-
             anchors.top: parent.top
             anchors.topMargin: 40
             text: "Scan QR Code or Manually Input Address to Send XBY"
@@ -27,7 +26,7 @@ Item {
             Layout.leftMargin: 5
             font.pointSize: 10
         }
-        Controls.TextInput {
+        Controls.MobileTextInput {
             id: sendAmount
             validator: DoubleValidator {
                 bottom: 0
@@ -39,7 +38,7 @@ Item {
             Layout.leftMargin: 5
             Layout.rightMargin: 5
             //Layout.topMargin: 100
-            Layout.preferredWidth: 50
+            Layout.preferredWidth: 80
             Label {
                 Layout.leftMargin: 5
                 anchors.top: parent.bottom
@@ -51,9 +50,9 @@ Item {
             }
         }
 
-        Controls.TextInput {
+        Controls.MobileTextInput {
             id: addressInput
-            text: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
+            text: ""
             Layout.fillWidth: true
             Layout.leftMargin: 5
             Layout.rightMargin: 5
@@ -73,10 +72,30 @@ Item {
             }
         }
 
+        Label {
+            id: orLabel
+            anchors.top: addressInput.bottom
+            anchors.topMargin: 20
+            text: "or"
+            color: "#FFFFFF"
+            bottomPadding: 8
+            font.weight: Font.Light
+            Layout.leftMargin: 5
+            font.pointSize: 12
+        }
+        Controls.ButtonModal {
+            id: scanCode
+            anchors.top: orLabel.bottom
+            anchors.topMargin: 10
+            width: 300
+            labelText: "Scan a QR Code"
+            anchors.horizontalCenter: parent.horizontalCenter
+            colorTracker: 1
+        }
         Controls.ButtonModal {
             id: sendButton
-            anchors.top: parent.top
-            anchors.topMargin: 250
+            anchors.top: scanCode.bottom
+            anchors.topMargin: 20
             width: 300
             labelText: "Send XBY"
             anchors.horizontalCenter: parent.horizontalCenter
