@@ -41,7 +41,7 @@ These options can be configured by going to options --> Devices --> Android
 
 Once finished, configuration should have the following appearance and you will be able to select the necessary kit
 
-![image](https://i.imgur.com/83bE2OL.png)
+![image](https://i.imgur.com/zs1UU3G.png)
 
 #### Qt Troubleshooting Advice
 
