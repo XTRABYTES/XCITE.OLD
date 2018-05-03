@@ -23,6 +23,26 @@ Our development is currently targeting Qt 5.10.1. When the Qt installer asks whi
 
 After installing Qt, clone this repository and open xcite.pro using Qt Creator.
 
+#### Project Configuration (Android)
+
+After installing Qt, clone this repository and open xcite.pro
+
+Choose the kit that corresponds to your setup 
+
+- Android for arm if using physical device
+- Android for x86 for emulator
+
+If Android configuration has not automatically configured and the above kits are not available take the following steps
+
+- Install and configure a Java Development Kit (JDK 8 recommended) 
+- Install and configure an Android Software Development Kit (SDK)
+- Install and configure an Android Native Development Kit (NDK)
+These options can be configured by going to options --> Devices --> Android 
+
+Once finished, configuration should have the following appearance and you will be able to select the necessary kit
+
+![image](https://i.imgur.com/83bE2OL.png)
+
 #### Qt Troubleshooting Advice
 
 QMake is a fundamental part of Qt that serves the function of creating a make file. QMake not installing properly is usually attributed to user error and can be simply solved. If you run into a QMake issue during your Qt installation process follow these troubleshooting tips.
