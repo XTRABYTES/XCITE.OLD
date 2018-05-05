@@ -4,6 +4,7 @@
 ####  XTRABYTES Consolidated Interactive TErminal
 
 XCITE is the core application utilizing the XTRABYTES Proof-of-Signature blockchain protocol. Built to support modules like a decentralized exchange and a fully-integrated chat protocol, the SHA512 encrypted network is quantum resistant and lightning fast. The code-fluid architecture means any developer looking to make a third-party DApp can use the XTRABYTES API to build out their dream project. XCITE is poised to be a top contender in all-in-one decentralized applications.
+
 ## Getting Started
 
 #### Install Qt
@@ -15,13 +16,29 @@ Our development is currently targeting Qt 5.10.1. When the Qt installer asks whi
 - Qt 5.10.1 -> Qt Charts (Required)
 - Qt 5.10.1 -> MinGW 5.3.0 32 bit  (Windows compiler)
 - Tools -> MinGW 5.3.0 (Windows compiler)
-- Qt 5.10.1 -> macOS (Mac compiler)
-- Qt 5.10.1 -> iOS (iOS compiler)
-- Qt 5.10.1 -> Android ARMv7 (Android compiler)
-
-#### Project Configuration
+- Qt 5.10.1 -> macOS (Mac components)
+- Qt 5.10.1 -> iOS (iOS components)
+- Qt 5.10.1 -> Android ARMv7 (Android physical device components)
+- Qt 5.10.1 -> Android x86 (Android virtual device components)
 
 After installing Qt, clone this repository and open xcite.pro using Qt Creator.
+
+#### Project Configuration (Android)
+
+Prerequisites for Android deployment:
+
+- [Java Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/index.html) (v6 or later) 
+- [Android Software Development Kit (SDK)](http://developer.android.com/sdk/index.html)
+- [Android Native Development Kit (NDK)](https://developer.android.com/ndk/downloads/)
+
+In the Qt project, choose the Android kit that corresponds to your target device: 
+
+- Android for ARM if using physical device
+- Android for x86 if using an emulator
+
+In Qt Options --> Devices --> Android, confirm that the prerequisite paths are correct. Once finished, your project configuration should have the following appearance and you should be able to select the necessary kit:
+
+![image](https://i.imgur.com/zs1UU3G.png)
 
 #### Qt Troubleshooting Advice
 
