@@ -43,7 +43,7 @@ Item {
                 anchors.fill: parent
                 spacing: 10
 
-                Controls.MobileButtonIconText {
+                Controls.ButtonIconText {
                     backgroundColor: Theme.primaryHighlight
                     textColor: "#2D3043"
                     border.width: 0
@@ -54,16 +54,19 @@ Item {
                     Layout.fillHeight: true
                     text: qsTr("SEND XBY")
                     iconFile: '/icons/mobile-send.svg'
-                    marginLeftValue: -40
+                    marginLeftValue: -10
+                    size: 20
+                    // set 1 to alert this normally used desktop control that it is using mobile parameters 
+                    mobile: 1
                     onButtonClicked: {
                         mainRoot.push("SendCoins.qml")
                     }
                 }
 
-                Controls.MobileButtonIconText {
+                Controls.ButtonIconText {
                     backgroundColor: Theme.primaryHighlight
                     textColor: "#2D3043"
-                    marginLeftValue: -35
+                    marginLeftValue: -10
                     border.width: 0
                     radius: 0
                     label.font.letterSpacing: 0.92
@@ -72,7 +75,9 @@ Item {
                     Layout.fillHeight: true
                     text: qsTr("RECEIVE XBY")
                     iconFile: '/icons/mobile-receive.svg'
-
+                    size: 20
+                    // set 1 to alert this normally used desktop control that it is using mobile parameters 
+                    mobile: 1
                     onButtonClicked: {
                         mainRoot.push("ReceiveCoins.qml")
                     }

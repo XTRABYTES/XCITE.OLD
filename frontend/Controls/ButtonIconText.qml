@@ -25,7 +25,8 @@ Rectangle {
     property int size: 40
     property int imageOffsetX: 0
     property string iconFile: "../../icons/right-arrow2.svg"
-
+    property int mobile
+    property int marginLeftValue
     //Signals
     signal buttonClicked
 
@@ -55,6 +56,10 @@ Rectangle {
             sourceSize.height: size
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: text === "" ? parent.horizontalCenter : undefined
+            anchors.left: if (mobile == 1)
+                              label.left
+            anchors.leftMargin: if (mobile == 1)
+                                    marginLeftValue
         }
 
         ColorOverlay {
