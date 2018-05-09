@@ -10,7 +10,7 @@ Item {
 
     property string selectedView
     property string selectedModule
-
+    //themeControl.currentText == "Dark" ? 0 : 1
     anchors.fill: parent
     Layout.fillHeight: true
     Layout.fillWidth: true
@@ -46,7 +46,7 @@ Item {
                 spacing: 20
 
                 Controls.FormLabel {
-                    text: qsTr("Select your language")
+                    text: qsTr("Select Your Language")
                 }
 
                 ComboBox {
@@ -87,6 +87,25 @@ Item {
                         var locale = languageOptions.get(currentIndex).locale
                         localeChange(locale)
                         settings.locale = locale
+                    }
+                }
+                Controls.FormLabel {
+                    text: qsTr("Theme")
+                }
+                ComboBox {
+                    id: themeControl
+                    textRole: "text"
+
+                    model: ListModel {
+                        id: themeOptions
+                        ListElement {
+                            text: qsTr("Dark")
+                            locale: "dark"
+                        }
+                        ListElement {
+                            text: qsTr("Light")
+                            locale: "light"
+                        }
                     }
                 }
             }
