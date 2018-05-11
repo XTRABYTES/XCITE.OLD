@@ -48,11 +48,12 @@ Item {
         id: photoPreview
     }
 
+    /**
     function decode(preview) {
         photoPreview.source = preview
         decoder.decodeImageQML(photoPreview)
     }
-    /**
+  
     QZXing {
         id: decoder
         enabledDecoders: QZXing.DecoderFormat_QR_CODE
