@@ -110,7 +110,7 @@ TableView {
                     case 1:
                     case 6:
                         if (styleData.value === "IN")
-                            Theme.primaryHighlight
+                            "#80c342"
                         if (styleData.value === "OUT")
                             "#F77E7E"
                         if (styleData.value >= 0)
