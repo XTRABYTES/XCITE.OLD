@@ -30,7 +30,7 @@ Item {
             anchors.right: parent.right
             height: 350
             Controls.TransactionTables {
-                anchors.topMargin: -30
+                anchors.topMargin: -40
             }
         }
 
@@ -42,7 +42,6 @@ Item {
             RowLayout {
                 anchors.fill: parent
                 spacing: 10
-
                 Controls.ButtonIconText {
                     backgroundColor: Theme.primaryHighlight
                     textColor: "#2D3043"
