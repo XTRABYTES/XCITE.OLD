@@ -20,7 +20,7 @@ Item {
             anchors.topMargin: 50
             text: "Default Address"
             color: "White"
-            font.family: Theme.fontCondensed
+            font.family: Roboto
             font.pointSize: 14
         }
         // Address placeholder
@@ -30,11 +30,19 @@ Item {
             anchors.topMargin: 10
             text: "BMy2BpwyJc5i7upNm5Vv8HMkwXqBR3kCxS"
             color: "Grey"
-            font.family: Theme.fontCondensed
-            font.pointSize: 15
+            font.family: Roboto
+            font.pointSize: 14
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.left: qrCode.left
         }
+
+        Controls.CopyButton {
+            anchors.left: address1.right
+            anchors.top: address1.top
+            anchors.leftMargin: -30
+            copyTracker: 0
+        }
+
         Rectangle {
             anchors.top: address1.top
             anchors.left: address1.left
@@ -73,7 +81,7 @@ Item {
             anchors.leftMargin: 0
             text: "QR Code"
             color: "White"
-            font.family: Theme.fontCondensed
+            font.family: Roboto
             font.pointSize: 14
         }
         Text {
@@ -83,9 +91,8 @@ Item {
             anchors.leftMargin: 5
             text: "4739.35"
             color: "White"
-            font.family: Theme.fontCondensed
+            font.family: Roboto
             font.pointSize: 14
         }
     }
 }
-
