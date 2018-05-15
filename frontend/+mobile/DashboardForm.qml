@@ -29,8 +29,8 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             height: 350
-            anchors.topMargin: -50
             Controls.TransactionTables {
+                anchors.topMargin: -30
             }
         }
 
@@ -56,7 +56,7 @@ Item {
                     iconFile: '/icons/mobile-send.svg'
                     marginLeftValue: -10
                     size: 20
-                    // set 1 to alert this normally used desktop control that it is using mobile parameters 
+                    // set 1 to alert this normally used desktop control that it is using mobile parameters
                     mobile: 1
                     onButtonClicked: {
                         mainRoot.push("SendCoins.qml")
@@ -76,7 +76,7 @@ Item {
                     text: qsTr("RECEIVE XBY")
                     iconFile: '/icons/mobile-receive.svg'
                     size: 20
-                    // set 1 to alert this normally used desktop control that it is using mobile parameters 
+                    // set 1 to alert this normally used desktop control that it is using mobile parameters
                     mobile: 1
                     onButtonClicked: {
                         mainRoot.push("ReceiveCoins.qml")
