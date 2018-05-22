@@ -9,10 +9,6 @@
         <file>XCITE/Nodes/RegistrationLevel.qml</file>
         <file>XCITE/Nodes/RegistrationTermsConditions.qml</file>
         <file>XCITE/Nodes/TransactionsBoard.qml</file>
-        <file>Login/ForgotPasswordForm.qml</file>
-        <file>Login/LoginForm.qml</file>
-        <file>Login/SignUpForm.qml</file>
-        <file>Login/TwoFactorAuthForm.qml</file>
         <file>Controls/LabelUnderlined.qml</file>
         <file>Controls/SearchBox.qml</file>
         <file>Controls/ButtonBalanceDate.qml</file>
