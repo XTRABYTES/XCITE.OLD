@@ -6,6 +6,7 @@ import "../Theme" 1.0
 Button {
     property bool isPrimary: false
     property bool isDanger: false
+    property bool isTransparent: false
     property alias label: label
     property string labelText: label.text || qsTr("OK")
     property real buttonHeight: 40
@@ -36,6 +37,8 @@ Button {
                 "#F77E7E"
             if (colorTracker == 2)
                 "#2A2C31"
+            if (isTransparent == true)
+                "transparent"
         }
         radius: 4
         height: buttonHeight
