@@ -100,5 +100,7 @@
         <file>icons/Level1.svg</file>
         <file>icons/Level2.svg</file>
         <file>icons/Level3.svg</file>
+        <file>icons/icon-padlock-locked.svg</file>
+        <file>icons/icon-padlock-unlocked.svg</file>
     </qresource>
 </RCC>

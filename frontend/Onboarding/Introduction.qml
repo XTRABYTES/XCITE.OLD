@@ -4,13 +4,11 @@ import QtQuick.Layouts 1.3
 import "../Controls" as Controls
 
 Column {
-    id: onboardingIntroduction
+    id: root
     anchors.horizontalCenter: parent.horizontalCenter
-    anchors.verticalCenter: parent.verticalCenter
     anchors.top: parent.top
-    anchors.topMargin: 15
-    height: 500
-    spacing: 20
+    anchors.topMargin: 40
+    spacing: 40
 
     Image {
         smooth: true
@@ -49,7 +47,12 @@ Column {
         visible: settings.onboardingCompleted === false
         onButtonClicked: {
             settings.onboardingCompleted = true
-            mainRoot.push("../DashboardForm.qml")
+
+            if (developerSettings.skipLogin) {
+                mainRoot.push("../DashboardForm.qml")
+            } else {
+                mainRoot.push("../Authentication/GettingStarted.qml")
+            }
         }
     }
 
@@ -60,7 +63,12 @@ Column {
         onTriggered: {
             mainRoot.pushEnter = fadeInTransition
             mainRoot.pushExit = fadeOutTransition
-            mainRoot.push("../DashboardForm.qml")
+
+            if (developerSettings.skipLogin) {
+                mainRoot.push("../DashboardForm.qml")
+            } else {
+                mainRoot.push("../Authentication/GettingStarted.qml")
+            }
         }
     }
 

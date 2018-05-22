@@ -7,7 +7,7 @@ import Qt.labs.settings 1.0
 import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
 import "Onboarding" as Onboarding
-import "Login" as LoginComponents
+import "Authentication" as Authentication
 import "Theme" 1.0
 
 ApplicationWindow {
@@ -45,7 +45,15 @@ ApplicationWindow {
                 xcite.y = (screen.height / 2) - (h / 2)
             }
 
-            this.push(developerSettings.skipOnboarding ? dashboardForm : onboarding)
+            if (developerSettings.skipOnboarding) {
+                if (developerSettings.skipLogin) {
+                    this.push(dashboardForm)
+                } else {
+                    this.push(gettingStarted)
+                }
+            } else {
+                this.push(onboarding)
+            }
         }
     }
 
@@ -62,8 +70,8 @@ ApplicationWindow {
     }
 
     Component {
-        id: loginForm
-        LoginComponents.LoginForm {
+        id: gettingStarted
+        Authentication.GettingStarted {
         }
     }
 

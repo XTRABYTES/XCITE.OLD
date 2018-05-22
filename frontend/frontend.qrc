@@ -129,5 +129,9 @@
         <file>+mobile/Settings.qml</file>
         <file>Controls/+mobile/MobileTextInput.qml</file>
         <file>Controls/+mobile/TransactionTables.qml</file>
+        <file>Controls/DiodeIcon.qml</file>
+        <file>Authentication/CreateAccount.qml</file>
+        <file>Authentication/Login.qml</file>
+        <file>Authentication/GettingStarted.qml</file>
     </qresource>
 </RCC>
