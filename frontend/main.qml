@@ -77,7 +77,7 @@ ApplicationWindow {
                                   cancelText: qsTr("NOT NOW")
                               }, function () {
                                   Qt.openUrlExternally(
-                                              "https://github.com/borzalom/xcite/releases")
+                                              "https://github.com/XTRABYTES/XCITE/releases")
                               })
         }
     }
