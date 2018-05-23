@@ -71,7 +71,6 @@ TableView {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.bottom
-                anchors.leftMargin: 10
                 color: "#535353"
             }
         }
@@ -111,7 +110,7 @@ TableView {
                     case 1:
                     case 6:
                         if (styleData.value === "IN")
-                            Theme.primaryHighlight
+                            "#80c342"
                         if (styleData.value === "OUT")
                             "#F77E7E"
                         if (styleData.value >= 0)
@@ -164,14 +163,13 @@ TableView {
     }
 
     TableViewColumn {
-        title: qsTr("Type")
+        title: qsTr("Transactions")
         role: "type"
         width: 125
         resizable: false
     }
 
     TableViewColumn {
-        title: qsTr("Value")
         role: "amount"
         width: 125
         resizable: false
