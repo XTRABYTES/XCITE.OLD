@@ -132,6 +132,7 @@
         <file>Controls/+mobile/HistoryTable.qml</file>
         <file>+mobile/Settings.qml</file>
         <file>Controls/+mobile/MobileTextInput.qml</file>
+        <file>+mobile/Camera.qml</file>
         <file>Controls/+mobile/TransactionTables.qml</file>
     </qresource>
 </RCC>

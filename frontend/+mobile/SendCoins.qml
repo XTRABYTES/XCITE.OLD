@@ -53,7 +53,7 @@ Item {
 
         Controls.MobileTextInput {
             id: addressInput
-            text: ""
+            text: Camera.qrCodeString
             Layout.fillWidth: true
             Layout.leftMargin: 5
             Layout.rightMargin: 5
@@ -95,6 +95,9 @@ Item {
             colorTracker: 0
             isDanger: false
             isPrimary: true
+            onButtonClicked: {
+                mainRoot.push("Camera.qml")
+            }
         }
         Controls.ButtonModal {
             id: sendButton
