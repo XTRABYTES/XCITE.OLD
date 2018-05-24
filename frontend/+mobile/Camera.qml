@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.3
 import QtMultimedia 5.8
 import QtQuick.Window 2.2
 //import QZXing 2.3
-import QtMultimedia 5.4
 import "../Controls" as Controls
 import "../Theme" 1.0
 
