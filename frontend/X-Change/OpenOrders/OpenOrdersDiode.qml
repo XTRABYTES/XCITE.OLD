@@ -1,17 +1,15 @@
 import QtQuick 2.7
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
 import "../../Controls" as Controls
+import "../../Theme" 1.0
 
 Controls.Diode {
-    id: openOrders
-    width: parent.width - 100
-    height: parent.height - 500
-    Layout.minimumHeight: 100
-    radius: 5
-    anchors.fill: parent
-    Controls.DiodeHeader {
-        text: "OPEN ORDERS"
-        menuLabelText: "XBY"
+    title: qsTr("Open Orders")
+    menuLabelText: qsTr("XBY")
+
+    Controls.TransactionTable {
+        id: transactionTable
     }
 }

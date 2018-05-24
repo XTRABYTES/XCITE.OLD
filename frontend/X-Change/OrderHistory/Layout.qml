@@ -1,8 +1,12 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
 
-import "../../Controls" as Controls
+ColumnLayout {
+    anchors.fill: parent
+    spacing: layoutGridSpacing
 
-OrderHistoryDiode {
-
+    OrderHistoryDiode {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+    }
 }

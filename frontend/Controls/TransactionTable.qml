@@ -3,7 +3,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import SortFilterProxyModel 0.1
 
-import "../../Theme" 1.0
+import "../Theme" 1.0
 
 TableView {
     id: transactionTable
