@@ -110,14 +110,23 @@ win32 {
 mac {
     ICON = resources/ios/xcite.icns
 
-    macx {
+    mac!ios {
     }
-    else:ios {
+
+    ios {
+        QT += multimedia
         xcode_product_bundle_identifier_setting.value = "global.xtrabytes.xcite"
         QMAKE_INFO_PLIST = resources/ios/Info.plist
         app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchscreen-logo.png
         QMAKE_BUNDLE_DATA += app_launch_images
     }
+}
+
+linux:!android {
+}
+
+android {
+    QT += multimedia
 }
 
 FORMS += \
