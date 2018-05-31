@@ -1,8 +1,13 @@
-#-------------------------------------------------
 #
-# XCITE project created by XBY developers
+# Filename: xcite.pro
 #
-#-------------------------------------------------
+# XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
+# blockchain protocol to host decentralized applications
+#
+# Copyright (c) 2017-2018 Zoltan Szabo & XTRABYTES developers
+#
+# This file is part of an XTRABYTES Ltd. project.
+#
 
 VERSION_MAJOR=0
 VERSION_MINOR=3
