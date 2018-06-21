@@ -39,6 +39,8 @@ Button {
                 "#2A2C31"
             if (isTransparent == true)
                 "transparent"
+            else
+                Theme.primaryHighlight
         }
         radius: 4
         height: buttonHeight
@@ -54,6 +56,8 @@ Button {
                 "#F77E7E"
             if (colorTracker == 2)
                 "#2A2C31"
+            else
+                Theme.primaryHighlight
         }
         anchors.verticalCenter: parent.verticalCenter
     }
