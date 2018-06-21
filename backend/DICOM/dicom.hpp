@@ -117,7 +117,7 @@ class client : public QObject {
     Q_OBJECT
 public:
     client(QQmlEngine *engine, QObject *parent = 0) : QObject(parent) {
-        http = new HttpClient("https://172.16.144.133:8080/v1.0/dicom", engine);
+        http = new HttpClient("https://sss.xtrabytes.services:8443/v1.0/dicom", engine);
         connect(http, SIGNAL (response(QJsonObject, QJSValue)), this, SLOT (onResponse(QJsonObject, QJSValue)));
     }
 
