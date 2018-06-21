@@ -126,7 +126,7 @@ ApplicationWindow {
 
     Network {
         id: network
-        handler: wallet
+        handler: sssClient
     }
 
     signal marketValueChangedSignal(string currency)

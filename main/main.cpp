@@ -19,6 +19,8 @@
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
 
+#include "../backend/DICOM/dicom.hpp"
+
 int main(int argc, char *argv[])
 {
     QtQrCodeQuickItem::registerQmlTypes();
@@ -56,6 +58,10 @@ int main(int argc, char *argv[])
     // wire-up testnet wallet
     Testnet wallet;
     engine.rootContext()->setContextProperty("wallet", &wallet);
+
+    // wire-up sss client
+    dicom::client sssClient(&engine);
+    engine.rootContext()->setContextProperty("sssClient", &sssClient);
 
     // wire-up market value
     MarketValue marketValue;

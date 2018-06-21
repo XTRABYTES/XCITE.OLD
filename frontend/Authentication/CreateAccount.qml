@@ -110,8 +110,45 @@ ColumnLayout {
                     Layout.fillWidth: true
                     isPrimary: true
                     onButtonClicked: {
-                        // TODO Validate and create the new account.
-                        mainRoot.push("../DashboardForm.qml")
+                        if (usernameTextInput.text.trim().length == 0) {
+                            return modalAlert({
+                                                  title: qsTr("ERROR!"),
+                                                  bodyText: qsTr("Username is required"),
+                                                  buttonText: qsTr("OK")
+                                              })
+                        }
+
+                        if (passwordTextInput.text.trim().length < 10) {
+                            return modalAlert({
+                                                  title: qsTr("ERROR!"),
+                                                  bodyText: qsTr("Password must be at least 10 characters"),
+                                                  buttonText: qsTr("OK")
+                                              })
+                        }
+
+                        if (passwordTextInput.text != verifyPasswordTextInput.text) {
+                            return modalAlert({
+                                                  title: qsTr("ERROR!"),
+                                                  bodyText: qsTr("Passwords don't match"),
+                                                  buttonText: qsTr("OK")
+                                              })
+                        }
+
+                        network.userCreate(usernameTextInput.text,
+                                           passwordTextInput.text,
+                                           function (err, user) {
+                                               if (err) {
+                                                   return modalAlert({
+                                                                         title: qsTr("ERROR!"),
+                                                                         bodyText: qsTr(
+                                                                                       err.message),
+                                                                         buttonText: qsTr("OK")
+                                                                     })
+                                               }
+
+                                               mainRoot.push(
+                                                           "../DashboardForm.qml")
+                                           })
                     }
                 }
             }

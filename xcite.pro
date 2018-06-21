@@ -44,6 +44,10 @@ QML_DESIGNER_IMPORT_PATH =
 include(backend/support/qrcode/libqrencode.pri)
 include(backend/support/qrcode/qt-qrcode.pri)
 
+# TODO: Temporary, only works on OSX with Homebrew-based openssl
+INCLUDEPATH += /usr/local/opt/openssl/include
+LIBS += -L/usr/local/opt/openssl/lib -lssl -lcrypto
+
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
@@ -60,7 +64,12 @@ SOURCES += main/main.cpp \
             backend/integrations/MarketValue.cpp \
             backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
-    backend/support/Settings.cpp
+            backend/support/Settings.cpp \
+            backend/DICOM/dicom.cpp \
+            backend/DICOM/base58.cpp \
+            backend/DICOM/hash.cpp \
+            backend/DICOM/util.cpp \
+            backend/DICOM/key.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -80,7 +89,12 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/MarketValue.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
-    backend/support/Settings.hpp
+            backend/support/Settings.hpp \
+            backend/DICOM/util.hpp \
+            backend/DICOM/base58.hpp \
+            backend/DICOM/hash.hpp \
+            backend/DICOM/key.hpp \
+            backend/DICOM/dicom.hpp
 
 DISTFILES += \
     xcite.ico \

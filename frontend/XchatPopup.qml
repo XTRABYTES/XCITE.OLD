@@ -15,7 +15,8 @@ Item {
     property string activeTab: xChatSettings.activeTab
 
     property var consoleCommandBuffer: []
-    property var consoleCommandCompletion: ['addmultisigaddress', 'addnode', 'backupwallet', 'createmultisig', 'createrawtransaction', 'decoderawtransaction', 'dumpprivkey', 'encryptwallet', 'getaccount', 'getaccountaddress', 'getaddednodeinfo', 'getaddressesbyaccount', 'getbalance', 'getbestblockhash', 'getblock', 'getblockcount', 'getblockhash', 'getconnectioncount', 'getinfo', 'getnewaddress', 'getpeerinfo', 'getrawmempool', 'getrawtransaction', 'getreceivedbyaccount', 'getreceivedbyaddress', 'gettransaction', 'gettxout', 'gettxoutsetinfo', 'help', 'importprivkey', 'keypoolrefill', 'listaccounts', 'listaddressgroupings', 'listlockunspent', 'listreceivedbyaccount', 'listreceivedbyaddress', 'listsinceblock', 'listtransactions', 'listunspent', 'lockunspent', 'makekeypair', 'move', 'sendalert', 'sendfrom', 'sendmany', 'sendrawtransaction', 'sendtoaddress', 'setaccount', 'setmininput', 'settxfee', 'signmessage', 'signrawtransaction', 'stop', 'validateaddress', 'verifychain', 'verifymessage']
+    //property var consoleCommandCompletion: ['addmultisigaddress', 'addnode', 'backupwallet', 'createmultisig', 'createrawtransaction', 'decoderawtransaction', 'dumpprivkey', 'encryptwallet', 'getaccount', 'getaccountaddress', 'getaddednodeinfo', 'getaddressesbyaccount', 'getbalance', 'getbestblockhash', 'getblock', 'getblockcount', 'getblockhash', 'getconnectioncount', 'getinfo', 'getnewaddress', 'getpeerinfo', 'getrawmempool', 'getrawtransaction', 'getreceivedbyaccount', 'getreceivedbyaddress', 'gettransaction', 'gettxout', 'gettxoutsetinfo', 'help', 'importprivkey', 'keypoolrefill', 'listaccounts', 'listaddressgroupings', 'listlockunspent', 'listreceivedbyaccount', 'listreceivedbyaddress', 'listsinceblock', 'listtransactions', 'listunspent', 'lockunspent', 'makekeypair', 'move', 'sendalert', 'sendfrom', 'sendmany', 'sendrawtransaction', 'sendtoaddress', 'setaccount', 'setmininput', 'settxfee', 'signmessage', 'signrawtransaction', 'stop', 'validateaddress', 'verifychain', 'verifymessage']
+    property var consoleCommandCompletion: ['privatekey.decrypt']
 
     property int consoleCommandBufferIdx: -1
 
@@ -193,7 +194,14 @@ Item {
                             return x.length > 0
                         })
 
-                        wallet.request("console", args[0], args.slice(1))
+                        network.sendConsoleCommand(args, function (err, res) {
+                            if (typeof res === 'object') {
+                                text = JSON.stringify(res, null, 2)
+                            }
+
+                            robot.add(text)
+                        })
+                        //                        wallet.request("console", args[0], args.slice(1))
                     }
 
                     visible: (activeTab == 'robot')

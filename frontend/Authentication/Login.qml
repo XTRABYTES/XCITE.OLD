@@ -10,6 +10,25 @@ ColumnLayout {
     anchors.top: parent.top
     spacing: 40
 
+    Component.onCompleted: {
+        usernameTextInput.forceActiveFocus()
+    }
+
+    function submitForm() {
+        network.userLogin(usernameTextInput.text, passwordTextInput.text,
+                          function (err, user) {
+                              if (err) {
+                                  return modalAlert({
+                                                        title: qsTr("ERROR!"),
+                                                        bodyText: qsTr(err.message),
+                                                        buttonText: qsTr("OK")
+                                                    })
+                              }
+
+                              mainRoot.push("../DashboardForm.qml")
+                          })
+    }
+
     Label {
         anchors.horizontalCenter: parent.horizontalCenter
         Layout.topMargin: 50
@@ -55,6 +74,7 @@ ColumnLayout {
             Controls.TextInput {
                 id: usernameTextInput
                 Layout.fillWidth: true
+                onAccepted: submitForm()
             }
 
             Label {
@@ -67,6 +87,7 @@ ColumnLayout {
                 id: passwordTextInput
                 echoMode: TextInput.Password
                 Layout.fillWidth: true
+                onAccepted: submitForm()
             }
 
             Controls.ButtonModal {
@@ -77,11 +98,7 @@ ColumnLayout {
                 Layout.fillWidth: true
                 Layout.maximumWidth: 330
                 isPrimary: true
-                onButtonClicked: {
-
-                    // TODO: Authenticate user and proceed to the Dashboard if successful
-                    mainRoot.push("../DashboardForm.qml")
-                }
+                onButtonClicked: submitForm()
             }
         }
     }

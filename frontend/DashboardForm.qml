@@ -32,6 +32,21 @@ Item {
     Connections {
         Component.onCompleted: {
             selectView(developerSettings.initialView)
+
+            if (network.getPrivateKey() === "") {
+                return modalAlert({
+                                      title: qsTr("NEXT!"),
+                                      bodyText: qsTr("You have no private key yet"),
+                                      buttonText: qsTr("OK")
+                                  })
+            }
+
+            return modalAlert({
+                                  title: qsTr("YOUR KEY"),
+                                  bodyText: qsTr("Your encrypted key is") + ": "
+                                            + network.getPrivateKey(),
+                                  buttonText: qsTr("OK")
+                              })
         }
     }
 

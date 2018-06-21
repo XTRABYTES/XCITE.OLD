@@ -5,7 +5,7 @@ import "../../Controls" as Controls
 import "../../Theme" 1.0
 
 Controls.Diode {
-    title: qsTr("DEMO BALANCE")
+    title: qsTr("BALANCE")
     menuLabelText: "XBY"
 
     ColumnLayout {

@@ -6,7 +6,7 @@ ReleaseChecker::ReleaseChecker(QString currentVersion, QObject *parent)
     : QObject(parent)
 {
     m_currentVersion = currentVersion.remove(QRegExp("[^\\d]")).toInt();
-    m_url = QUrl("https://api.github.com/repos/borzalom/xcite/releases");
+    m_url = QUrl("https://api.github.com/repos/XTRABYTES/XCITE/releases");
 }
 
 ReleaseChecker::~ReleaseChecker() {

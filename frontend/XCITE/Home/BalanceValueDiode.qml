@@ -5,7 +5,7 @@ import "../../Controls" as Controls
 import "../../Theme" 1.0
 
 Controls.Diode {
-    title: qsTr("DEMO FIAT VALUE")
+    title: qsTr("FIAT VALUE")
 
     ColumnLayout {
         anchors.top: parent.top
