@@ -142,10 +142,10 @@ Item {
         anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
-        currencyType: '../icons/ARK-color.svg'
-        currencyType2: "ARK"
+        currencyType: '../icons/DASH-color.svg'
+        currencyType2: "DASH"
         percentChange: "+%.8"
-        amountSize: "22.54332 ARK"
+        amountSize: "22.54332 DASH"
         totalValue: "$43,443.94"
         value: "$9,839.99"
     }
