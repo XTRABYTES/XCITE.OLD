@@ -1,0 +1,19 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2500 2500">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f70000;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <title>ARK color</title>
+  <circle class="cls-1" cx="1250" cy="1250" r="1250"/>
+  <g>
+    <path class="cls-2" d="M1245.64,1038,350,1960.39,1249.67,530.9,2150,1969.1Z"/>
+    <path class="cls-2" d="M1375.6,1404.4h-280l144-154.73,136,156M835.67,1658.24h806.55L1478.77,1494.8l-484.37,2v.66L835.64,1656.26"/>
+  </g>
+</svg>
