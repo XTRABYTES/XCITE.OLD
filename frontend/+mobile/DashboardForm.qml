@@ -113,7 +113,7 @@ Item {
     Controls.CurrencySquare {
         id: square2
         anchors.top: square1.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
         currencyType: '../icons/ETH-color.svg'
@@ -126,7 +126,7 @@ Item {
     Controls.CurrencySquare {
         id: square3
         anchors.top: square2.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
         currencyType: '../icons/XBY-color.svg'
@@ -139,7 +139,7 @@ Item {
     Controls.CurrencySquare {
         id: square4
         anchors.top: square3.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
         currencyType: '../icons/ARK-color.svg'
