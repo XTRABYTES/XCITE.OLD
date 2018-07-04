@@ -92,8 +92,6 @@
         <file>Controls/+mobile/BalanceValue.qml</file>
         <file>Controls/+mobile/Transactions.qml</file>
         <file>+mobile/main.qml</file>
-        <file>+mobile/SendCoins.qml</file>
-        <file>+mobile/ReceiveCoins.qml</file>
         <file>X-Change/Home/MarketsDiode.qml</file>
         <file>X-Change/Home/OrderBookDiode.qml</file>
         <file>X-Change/Home/BuySellDiode.qml</file>
@@ -129,10 +127,9 @@
         <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
         <file>Controls/LoadingBar.qml</file>
         <file>Controls/TransactionTable.qml</file>
-        <file>Controls/+mobile/HistoryTable.qml</file>
         <file>+mobile/Settings.qml</file>
         <file>Controls/+mobile/MobileTextInput.qml</file>
         <file>+mobile/Camera.qml</file>
-        <file>Controls/+mobile/TransactionTables.qml</file>
+        <file>Controls/+mobile/CurrencySquare.qml</file>
     </qresource>
 </RCC>
