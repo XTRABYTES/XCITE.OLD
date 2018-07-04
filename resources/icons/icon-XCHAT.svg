@@ -1,0 +1,18 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 40 26.44">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="25" y1="38.22" x2="25" y2="11.78" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#56f4f1"/>
+      <stop offset="0.24" stop-color="#58d4f5"/>
+      <stop offset="0.57" stop-color="#5bacfb"/>
+      <stop offset="0.83" stop-color="#5d94fe"/>
+      <stop offset="0.99" stop-color="#5e8bff"/>
+    </linearGradient>
+  </defs>
+  <title>icon-XCHAT</title>
+  <path class="cls-1" d="M5,38.22l5.33-6.75A9.81,9.81,0,0,1,6.38,24c0-3.33,2.06-6.44,5.79-8.75a25.93,25.93,0,0,1,13.52-3.49,26,26,0,0,1,13.53,3.49C43,17.58,45,20.69,45,24s-2,6.45-5.78,8.76a26,26,0,0,1-13.53,3.49,28.19,28.19,0,0,1-10.2-1.84Zm20.69-25a24.55,24.55,0,0,0-12.78,3.27C9.61,18.51,7.8,21.2,7.8,24c0,2.44,1.4,4.85,4,6.77l.58.43-3.15,4,6.34-2.29.25.1a26.57,26.57,0,0,0,9.92,1.83,24.55,24.55,0,0,0,12.78-3.27c3.3-2,5.12-4.73,5.12-7.56s-1.82-5.51-5.12-7.55A24.55,24.55,0,0,0,25.69,13.2Z" transform="translate(-5 -11.78)"/>
+</svg>

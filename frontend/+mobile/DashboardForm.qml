@@ -17,82 +17,164 @@ import "./Controls" as Controls
 import "./Theme" 1.0
 
 Item {
-    Column {
-        anchors.fill: parent
-        anchors.margins: 15
-        spacing: 15
-
-        Controls.Header {
-            text: qsTr("My Wallet")
-            showBack: false
+    Controls.Header {
+        id: heading
+        text: qsTr("POSEY")
+        showBack: false
+        Layout.topMargin: 14
+    }
+    RowLayout {
+        anchors.top: heading.bottom
+        anchors.topMargin: 10
+        anchors.left: heading.left
+        anchors.leftMargin: 100
+        spacing: 20
+        Label {
+            id: overview
+            text: "OVERVIEW"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#5E8BFE"
         }
-
-        Controls.Balance {
+        Label {
+            id: add
+            text: "ADDRESS BOOK"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#757575"
         }
+    }
+    Controls.ButtonIconText {
+        anchors.left: parent.right
+        anchors.rightMargin: 10
+        textColor: "#2D3043"
+        border.width: 0
+        radius: 0
+        label.font.letterSpacing: 0.92
+        label.font.family: Theme.fontCondensed
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        iconFile: '/icons/icon-notif.svg'
+        size: 20
+        // set 1 to alert this normally used desktop control that it is using mobile parameters
+        mobile: 1
+    }
 
-        Item {
-            height: 10
-            width: 1
-        }
-
-        //FIX. find good dynamic sizing values
-        Item {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 350
-            Controls.TransactionTables {
-                anchors.topMargin: -40
+    Label {
+        id: value
+        anchors.top: parent.top
+        anchors.topMargin: 90
+        anchors.left: parent.left
+        anchors.leftMargin: 20
+        text: "$511,000.00"
+        font.pixelSize: 36
+        font.family: "Brandon Grotesque"
+        color: "#E5E5E5"
+        font.bold: false
+        Label {
+            anchors.top: value.bottom
+            anchors.topMargin: 6
+            text: "+$6,000.00 (24h)"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#0CB8B3"
+            font.bold: false
+            Label {
+                id: walletHistory
+                anchors.top: parent.bottom
+                anchors.topMargin: 18
+                text: "WALLET HISTORY"
+                font.pixelSize: 11
+                font.family: "Brandon Grotesque"
+                color: "#696969"
+                anchors.left: parent.left
             }
         }
+    }
+    Switch {
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        anchors.top: parent.top
+        anchors.topMargin: 80
+        transform: Rotation {
+            origin.x: 25
+            origin.y: 25
+            angle: 90
+        }
+    }
 
-        Item {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 39
-
-            RowLayout {
+    Controls.CurrencySquare {
+        id: square1
+        anchors.top: parent.top
+        anchors.topMargin: 210
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+    }
+    Controls.CurrencySquare {
+        id: square2
+        anchors.top: square1.bottom
+        anchors.topMargin: 7
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        currencyType: '../icons/ETH-color.svg'
+        currencyType2: "ETH"
+        percentChange: "+%.8"
+        amountSize: "22.54332 ETH"
+        totalValue: "$43,443.94"
+        value: "$9,839.99"
+    }
+    Controls.CurrencySquare {
+        id: square3
+        anchors.top: square2.bottom
+        anchors.topMargin: 7
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        currencyType: '../icons/XBY-color.svg'
+        currencyType2: "XBY"
+        percentChange: "+%.8"
+        amountSize: "22.54332 XBY"
+        totalValue: "$43,443.94"
+        value: "$9,839.99"
+    }
+    Controls.CurrencySquare {
+        id: square4
+        anchors.top: square3.bottom
+        anchors.topMargin: 7
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        currencyType: '../icons/DASH-color.svg'
+        currencyType2: "DASH"
+        percentChange: "+%.8"
+        amountSize: "22.54332 DASH"
+        totalValue: "$43,443.94"
+        value: "$9,839.99"
+    }
+    Image {
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        source: '../icons/icon-settings.svg'
+        width: 20
+        height: 20
+    }
+    Image {
+        id: apps
+        source: '../icons/icon-apps.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 2
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        width: 20
+        height: 20
+        /**
+            MouseArea {
                 anchors.fill: parent
-                spacing: 10
-                Controls.ButtonIconText {
-                    backgroundColor: Theme.primaryHighlight
-                    textColor: "#2D3043"
-                    border.width: 0
-                    radius: 0
-                    label.font.letterSpacing: 0.92
-                    label.font.family: Theme.fontCondensed
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    text: qsTr("SEND XBY")
-                    iconFile: '/icons/mobile-send.svg'
-                    marginLeftValue: -10
-                    size: 20
-                    // set 1 to alert this normally used desktop control that it is using mobile parameters
-                    mobile: 1
-                    onButtonClicked: {
-                        mainRoot.push("SendCoins.qml")
-                    }
-                }
-
-                Controls.ButtonIconText {
-                    backgroundColor: Theme.primaryHighlight
-                    textColor: "#2D3043"
-                    marginLeftValue: -10
-                    border.width: 0
-                    radius: 0
-                    label.font.letterSpacing: 0.92
-                    label.font.family: Theme.fontCondensed
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    text: qsTr("RECEIVE XBY")
-                    iconFile: '/icons/mobile-receive.svg'
-                    size: 20
-                    // set 1 to alert this normally used desktop control that it is using mobile parameters
-                    mobile: 1
-                    onButtonClicked: {
-                        mainRoot.push("ReceiveCoins.qml")
-                    }
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
                 }
             }
-        }
+            */
     }
 }

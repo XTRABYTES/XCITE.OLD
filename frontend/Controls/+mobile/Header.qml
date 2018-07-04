@@ -45,6 +45,7 @@ Item {
             }
         }
     }
+    /**
     Image {
         visible: showBack == false
         anchors.left: parent.left
@@ -77,4 +78,5 @@ Item {
             }
         }
     }
+    */
 }

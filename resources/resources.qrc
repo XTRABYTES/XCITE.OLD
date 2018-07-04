@@ -100,5 +100,19 @@
         <file>icons/Level1.svg</file>
         <file>icons/Level2.svg</file>
         <file>icons/Level3.svg</file>
+        <file>icons/ADA-color.svg</file>
+        <file>icons/ARK-color.svg</file>
+        <file>icons/BTC-color.svg</file>
+        <file>icons/DASH-color.svg</file>
+        <file>icons/ETH-color.svg</file>
+        <file>icons/icon-apps.svg</file>
+        <file>icons/icon-notification.svg</file>
+        <file>icons/icon-settings.svg</file>
+        <file>icons/icon-XCHANGE.svg</file>
+        <file>icons/icon-XCHAT.svg</file>
+        <file>icons/icon-XVAULT.svg</file>
+        <file>icons/LTC-color.svg</file>
+        <file>icons/NEO-color.svg</file>
+        <file>icons/XBY-color.svg</file>
     </qresource>
 </RCC>

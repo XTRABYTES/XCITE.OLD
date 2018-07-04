@@ -1,0 +1,21 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2500 2500">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #0ed8d2;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <title>XBY-color</title>
+  <circle class="cls-1" cx="1250" cy="1250" r="1250"/>
+  <g>
+    <polygon class="cls-2" points="888.64 726.6 1188.62 1246.2 919.31 1712.67 350 726.6 888.64 726.6"/>
+    <polygon class="cls-2" points="1488.62 726.6 1250.03 1139.83 1011.45 726.6 1488.62 726.6"/>
+    <polygon class="cls-2" points="2150 726.6 1580.72 1712.61 1311.44 1246.21 1611.44 726.6 2150 726.6"/>
+    <polygon class="cls-2" points="1519.31 1818.97 1250 2285.45 980.72 1819.04 1250.03 1352.56 1519.31 1818.97"/>
+  </g>
+</svg>
