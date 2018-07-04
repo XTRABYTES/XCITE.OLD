@@ -129,7 +129,6 @@
         <file>Controls/TransactionTable.qml</file>
         <file>+mobile/Settings.qml</file>
         <file>Controls/+mobile/MobileTextInput.qml</file>
-        <file>+mobile/Camera.qml</file>
         <file>Controls/+mobile/CurrencySquare.qml</file>
     </qresource>
 </RCC>
