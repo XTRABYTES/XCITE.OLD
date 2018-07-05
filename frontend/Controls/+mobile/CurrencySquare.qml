@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
+import QtGraphicalEffects 1.0
 
 Rectangle {
     property url currencyType: '../icons/BTC-color.svg'
@@ -29,6 +30,23 @@ Rectangle {
         height: 25
     }
 
+    Item {
+        width: 18
+        height: 4
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 8
+        Image {
+            id: expand
+            source: '../icons/expand_buttons.svg'
+        }
+
+        ColorOverlay {
+            anchors.fill: expand
+            source: expand
+            color: "grey"
+        }
+    }
     Label {
         anchors.left: icon.right
         anchors.leftMargin: 5
