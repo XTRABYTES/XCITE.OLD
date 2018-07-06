@@ -35,15 +35,32 @@ Item {
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#5E8BFE"
+            Rectangle {
+                id: titleLine
+                width: overview.width
+                height: 1
+                color: "#5E8BFE"
+                anchors.top: overview.bottom
+                anchors.left: overview.left
+                anchors.topMargin: 2
+            }
         }
+
         Label {
             id: add
             text: "ADDRESS BOOK"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#757575"
+            /**
+            MouseArea {
+                anchors.fill: add
+                onClicked: mainRoot.push("MobileAddressBook.qml")
+            }
+            */
         }
     }
+
     Controls.ButtonIconText {
         anchors.left: parent.right
         anchors.rightMargin: 10
@@ -54,7 +71,7 @@ Item {
         label.font.family: Theme.fontCondensed
         Layout.fillWidth: true
         Layout.fillHeight: true
-        iconFile: '/icons/icon-notif.svg'
+        iconFile: '../icons/icon-notif.svg'
         size: 20
         // set 1 to alert this normally used desktop control that it is using mobile parameters
         mobile: 1
@@ -70,7 +87,7 @@ Item {
         font.pixelSize: 36
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
-        font.bold: false
+        font.weight: Font.DemiBold
         Label {
             anchors.top: value.bottom
             anchors.topMargin: 6
@@ -78,7 +95,7 @@ Item {
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#0CB8B3"
-            font.bold: false
+            font.bold: true
             Label {
                 id: walletHistory
                 anchors.top: parent.bottom
@@ -103,10 +120,46 @@ Item {
         }
     }
 
+    Label {
+        id: transfer
+        text: "TRANSFER"
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        color: "#C7C7C7"
+        anchors.left: square1.left
+        anchors.bottom: square1.top
+        anchors.bottomMargin: 8
+        font.bold: true
+        /**
+        MouseArea {
+            anchors.fill: add
+            onClicked: mainRoot.push("MobileAddressBook.qml")
+        }
+        */
+    }
+
+    Label {
+        id: addCoin
+        text: "ADD COIN"
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        color: "#C7C7C7"
+        anchors.right: square1.right
+        anchors.bottom: square1.top
+        anchors.bottomMargin: 8
+        font.bold: true
+        /**
+        MouseArea {
+            anchors.fill: add
+            onClicked: mainRoot.push("MobileAddressBook.qml")
+        }
+        */
+    }
+
     Controls.CurrencySquare {
         id: square1
         anchors.top: parent.top
-        anchors.topMargin: 210
+        anchors.topMargin: 240
         anchors.left: parent.left
         anchors.leftMargin: 25
     }
@@ -160,7 +213,7 @@ Item {
     }
     Image {
         id: apps
-        source: '../icons/icon-apps.svg'
+        source: '../icons/icon-apps5.svg'
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 2
         anchors.right: parent.right
