@@ -1,7 +1,19 @@
+/**
+ * Filename: CurrencySquare.qml
+ *
+ * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
+ * blockchain protocol to host decentralized applications
+ *
+ * Copyright (c) 2017-2018 Zoltan Szabo & XTRABYTES developers
+ *
+ * This file is part of an XTRABYTES Ltd. project.
+ *
+ */
 import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
+import QtGraphicalEffects 1.0
 
 Rectangle {
     property url currencyType: '../icons/BTC-color.svg'
@@ -29,6 +41,23 @@ Rectangle {
         height: 25
     }
 
+    Item {
+        width: 18
+        height: 4
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 8
+        Image {
+            id: expand
+            source: '../icons/expand_buttons.svg'
+        }
+
+        ColorOverlay {
+            anchors.fill: expand
+            source: expand
+            color: "grey"
+        }
+    }
     Label {
         anchors.left: icon.right
         anchors.leftMargin: 5
@@ -39,6 +68,7 @@ Rectangle {
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
+        font.bold: true
     }
 
     Label {
@@ -52,6 +82,7 @@ Rectangle {
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
+        font.bold: true
     }
     Label {
         id: amount
@@ -64,6 +95,7 @@ Rectangle {
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: "#828282"
+        font.bold: true
     }
     Label {
         anchors.right: parent.right
@@ -75,6 +107,7 @@ Rectangle {
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: "#0CB8B3"
+        font.bold: true
     }
     Label {
         id: price2
@@ -87,5 +120,6 @@ Rectangle {
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: "#828282"
+        font.bold: true
     }
 }
