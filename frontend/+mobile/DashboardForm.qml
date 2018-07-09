@@ -12,11 +12,14 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 
 import "./Controls" as Controls
 import "./Theme" 1.0
 
 Item {
+    property int sw: -1
+
     Controls.Header {
         id: heading
         text: qsTr("POSEY")
@@ -35,15 +38,32 @@ Item {
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#5E8BFE"
+            Rectangle {
+                id: titleLine
+                width: overview.width
+                height: 1
+                color: "#5E8BFE"
+                anchors.top: overview.bottom
+                anchors.left: overview.left
+                anchors.topMargin: 2
+            }
         }
+
         Label {
             id: add
             text: "ADDRESS BOOK"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#757575"
+            /**
+            MouseArea {
+                anchors.fill: add
+                onClicked: mainRoot.push("MobileAddressBook.qml")
+            }
+            */
         }
     }
+
     Controls.ButtonIconText {
         anchors.left: parent.right
         anchors.rightMargin: 10
@@ -54,7 +74,7 @@ Item {
         label.font.family: Theme.fontCondensed
         Layout.fillWidth: true
         Layout.fillHeight: true
-        iconFile: '/icons/icon-notif.svg'
+        iconFile: '../icons/icon-notif.svg'
         size: 20
         // set 1 to alert this normally used desktop control that it is using mobile parameters
         mobile: 1
@@ -70,7 +90,7 @@ Item {
         font.pixelSize: 36
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
-        font.bold: false
+        font.weight: Font.DemiBold
         Label {
             anchors.top: value.bottom
             anchors.topMargin: 6
@@ -78,7 +98,7 @@ Item {
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#0CB8B3"
-            font.bold: false
+            font.bold: true
             Label {
                 id: walletHistory
                 anchors.top: parent.bottom
@@ -88,10 +108,22 @@ Item {
                 font.family: "Brandon Grotesque"
                 color: "#696969"
                 anchors.left: parent.left
+                Label {
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    text: "$464,358.25"
+                    font.pixelSize: 13
+                    font.bold: true
+                    font.family: "Brandon Grotesque"
+                    color: "#5E8BFE"
+                    anchors.left: parent.right
+                    anchors.leftMargin: 8
+                }
             }
         }
     }
     Switch {
+        id: switch1
         anchors.right: parent.right
         anchors.rightMargin: 10
         anchors.top: parent.top
@@ -103,10 +135,104 @@ Item {
         }
     }
 
+    Label {
+        id: week1
+        anchors.top: switch1.top
+        anchors.topMargin: 10
+        text: "WEEK"
+        font.pixelSize: 11
+        font.bold: true
+        font.family: "Brandon Grotesque"
+        color: "#5E8BFE"
+        anchors.right: switch1.left
+        anchors.rightMargin: -2
+        // switch1.checked: true ? week.color = "#5E8BFE" : week.color = "#5F5F5F"
+    }
+    Label {
+        id: month1
+        anchors.bottom: switch1.bottom
+        anchors.topMargin: 0
+        text: "MONTH"
+        font.pixelSize: 11
+        font.bold: true
+        font.family: "Brandon Grotesque"
+        color: "#5F5F5F"
+        anchors.right: switch1.left
+        anchors.rightMargin: -2
+        // switch1.checked: true ? month.color = "#5E8BFE" : month.color = "#5F5F5F"
+    }
+
+    Label {
+        id: transfer
+        text: "TRANSFER"
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        color: "#C7C7C7"
+        anchors.left: square1.left
+        anchors.bottom: square1.top
+        anchors.bottomMargin: 8
+        font.bold: true
+        /**
+        MouseArea {
+            anchors.fill: add
+            onClicked: mainRoot.push("MobileAddressBook.qml")
+        }
+        */
+        Image {
+            id: transfer2
+            anchors.top: parent.top
+            anchors.bottomMargin: 10
+            anchors.left: parent.right
+            anchors.leftMargin: 8
+            source: '../icons/icon-transfer.svg'
+            width: 16
+            height: 16
+            ColorOverlay {
+                anchors.fill: transfer2
+                source: transfer2
+                color: "grey" // make image like it lays under grey glass
+            }
+        }
+    }
+
+    Label {
+        id: addCoin
+        text: "ADD COIN"
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        color: "#C7C7C7"
+        anchors.right: square1.right
+        anchors.bottom: square1.top
+        anchors.bottomMargin: 8
+        anchors.rightMargin: 24
+        font.bold: true
+        /**
+        MouseArea {
+            anchors.fill: add
+            onClicked: mainRoot.push("MobileAddressBook.qml")
+        }
+        */
+        Image {
+            id: plus
+            anchors.top: parent.top
+            anchors.bottomMargin: 10
+            anchors.left: parent.right
+            anchors.leftMargin: 8
+            source: '../icons/plus-button.svg'
+            width: 16
+            height: 16
+            ColorOverlay {
+                anchors.fill: plus
+                source: plus
+                color: "grey" // make image like it lays under grey glass
+            }
+        }
+    }
+
     Controls.CurrencySquare {
         id: square1
         anchors.top: parent.top
-        anchors.topMargin: 210
+        anchors.topMargin: 240
         anchors.left: parent.left
         anchors.leftMargin: 25
     }
@@ -150,6 +276,7 @@ Item {
         value: "$9,839.99"
     }
     Image {
+        id: settings
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
         anchors.left: parent.left
@@ -157,16 +284,26 @@ Item {
         source: '../icons/icon-settings.svg'
         width: 20
         height: 20
+        ColorOverlay {
+            anchors.fill: settings
+            source: settings
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
     }
     Image {
         id: apps
-        source: '../icons/icon-apps.svg'
+        source: '../icons/icon-apps5.svg'
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 2
+        anchors.bottomMargin: 10
         anchors.right: parent.right
         anchors.rightMargin: 10
         width: 20
         height: 20
+        ColorOverlay {
+            anchors.fill: apps
+            source: apps
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
         /**
             MouseArea {
                 anchors.fill: parent
