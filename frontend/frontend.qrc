@@ -130,5 +130,7 @@
         <file>+mobile/Settings.qml</file>
         <file>Controls/+mobile/MobileTextInput.qml</file>
         <file>Controls/+mobile/CurrencySquare.qml</file>
+        <file>Controls/+mobile/AddressBookSquares.qml</file>
+        <file>+mobile/MobileAddressBook.qml</file>
     </qresource>
 </RCC>
