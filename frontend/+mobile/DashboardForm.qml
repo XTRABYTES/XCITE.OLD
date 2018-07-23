@@ -17,8 +17,15 @@ import QtGraphicalEffects 1.0
 import "./Controls" as Controls
 import "./Theme" 1.0
 
+/**
+  * Main page
+  */
 Item {
     property int sw: -1
+
+    Loader {
+        id: pageLoader
+    }
 
     Controls.Header {
         id: heading
@@ -50,17 +57,17 @@ Item {
         }
 
         Label {
-            id: add
+            id: add5
             text: "ADDRESS BOOK"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#757575"
-            /**
+
             MouseArea {
-                anchors.fill: add
+                 anchors.fill: add5
+                 //onClicked: pageLoader.source = "MobileAddressBook.qml"
                 onClicked: mainRoot.push("MobileAddressBook.qml")
             }
-            */
         }
     }
 
@@ -90,7 +97,7 @@ Item {
         font.pixelSize: 36
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
-        font.weight: Font.DemiBold
+        // font.weight: Font.DemiBold
         Label {
             anchors.top: value.bottom
             anchors.topMargin: 6
@@ -122,6 +129,7 @@ Item {
             }
         }
     }
+
     Switch {
         id: switch1
         anchors.right: parent.right
@@ -150,7 +158,7 @@ Item {
     }
     Label {
         id: month1
-        anchors.bottom: switch1.bottom
+        anchors.top: switch1.bottom
         anchors.topMargin: 0
         text: "MONTH"
         font.pixelSize: 11
@@ -181,7 +189,7 @@ Item {
         Image {
             id: transfer2
             anchors.top: parent.top
-            anchors.bottomMargin: 10
+            anchors.topMargin: -2
             anchors.left: parent.right
             anchors.leftMargin: 8
             source: '../icons/icon-transfer.svg'
@@ -215,7 +223,7 @@ Item {
         Image {
             id: plus
             anchors.top: parent.top
-            anchors.bottomMargin: 10
+            anchors.topMargin: -2
             anchors.left: parent.right
             anchors.leftMargin: 8
             source: '../icons/plus-button.svg'
@@ -232,7 +240,7 @@ Item {
     Controls.CurrencySquare {
         id: square1
         anchors.top: parent.top
-        anchors.topMargin: 240
+        anchors.topMargin: 230
         anchors.left: parent.left
         anchors.leftMargin: 25
     }
@@ -275,12 +283,27 @@ Item {
         totalValue: "$43,443.94"
         value: "$9,839.99"
     }
+
+    Controls.CurrencySquare {
+        id: square5
+        anchors.top: square4.bottom
+        anchors.topMargin: 7
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        currencyType: '../icons/LTC-color.svg'
+        currencyType2: "LTC"
+        percentChange: "+%.8"
+        amountSize: "22.54332 DASH"
+        totalValue: "$43,443.94"
+        value: "$9,839.99"
+    }
+
     Image {
         id: settings
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: 15
         anchors.left: parent.left
-        anchors.leftMargin: 10
+        anchors.leftMargin: 15
         source: '../icons/icon-settings.svg'
         width: 20
         height: 20
@@ -292,11 +315,11 @@ Item {
     }
     Image {
         id: apps
-        source: '../icons/icon-apps5.svg'
+        source: '../icons/icon-apps.svg'
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: 15
         anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: 15
         width: 20
         height: 20
         ColorOverlay {
