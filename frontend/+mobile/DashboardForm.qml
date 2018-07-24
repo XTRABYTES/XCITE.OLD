@@ -15,7 +15,6 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
 import "./Controls" as Controls
-import "./Theme" 1.0
 
 /**
   * Main page
@@ -151,11 +150,9 @@ Item {
         font.pixelSize: 11
         font.bold: true
         font.family: "Brandon Grotesque"
-        color: "#5E8BFE"
         anchors.right: switch1.left
         anchors.rightMargin: -2
-        // switch1.checked: true ? week.color = "#5E8BFE" : week.color = "#5F5F5F"
-    }
+        color: switch1.checked ? "#5F5F5F" : "#5E8BFE"    }
     Label {
         id: month1
         anchors.top: switch1.bottom
@@ -164,10 +161,9 @@ Item {
         font.pixelSize: 11
         font.bold: true
         font.family: "Brandon Grotesque"
-        color: "#5F5F5F"
         anchors.right: switch1.left
         anchors.rightMargin: -2
-        // switch1.checked: true ? month.color = "#5E8BFE" : month.color = "#5F5F5F"
+        color: switch1.checked ? "#5E8BFE" : "#5F5F5F"
     }
 
     Label {
