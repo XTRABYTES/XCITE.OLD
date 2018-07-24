@@ -17,6 +17,7 @@ import QtGraphicalEffects 1.0
 
 Rectangle {
     property string name: "Posey"
+    property string numberAddresses: "5"
     id: square
     color: "#42454F"
     width: Screen.width - 55
@@ -25,7 +26,7 @@ Rectangle {
 
     Label {
         anchors.left: parent.left
-        anchors.leftMargin: 10
+        anchors.leftMargin: 12
         anchors.top: parent.top
         anchors.topMargin: 22
         text: name
@@ -33,5 +34,33 @@ Rectangle {
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
         font.bold: true
+    }
+    Label {
+        anchors.right: parent.right
+        anchors.rightMargin: 12
+        anchors.top: parent.top
+        anchors.topMargin: 22
+        text: numberAddresses + " addresses"
+        font.pixelSize: 16
+        font.family: "Brandon Grotesque"
+        color: "#E5E5E5"
+        font.bold: true
+    }
+    Item {
+        width: 18
+        height: 4
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 8
+        Image {
+            id: expand
+            source: '../icons/expand_buttons.svg'
+        }
+
+        ColorOverlay {
+            anchors.fill: expand
+            source: expand
+            color: "grey"
+        }
     }
  }
