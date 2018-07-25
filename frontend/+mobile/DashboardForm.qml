@@ -308,6 +308,11 @@ Item {
             source: settings
             color: "#5E8BFF" // make image like it lays under grey glass
         }
+        MouseArea {
+             anchors.fill: settings
+             //onClicked: pageLoader.source = "MobileAddressBook.qml"
+            onClicked: mainRoot.push("Settings.qml")
+        }
     }
     Image {
         id: apps
