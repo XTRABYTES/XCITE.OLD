@@ -15,12 +15,17 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
 import "./Controls" as Controls
-
 /**
   * Main page
   */
 Item {
     property int sw: -1
+    property int clickedSquare: 0
+    property int clickedSquare2: 0
+    property int clickedSquare3: 0
+    property int clickedSquare4: 0
+    property int clickedSquare5: 0
+    property int clickedSquare6: 0
 
     Loader {
         id: pageLoader
@@ -239,6 +244,26 @@ Item {
         anchors.topMargin: 230
         anchors.left: parent.left
         anchors.leftMargin: 25
+        height: clickedSquare == 1 ? 250 : 75
+        clicked: clickedLinker == 0 ? 0 : 1
+        MouseArea {
+             anchors.fill: square1
+             onClicked: {
+                 if(clickedSquare == 1){
+                     clickedSquare = 0
+                     return
+                 }
+                 if(clickedSquare == 0){
+                     clickedSquare = 1
+                     clickedSquare5 = 0
+                     clickedSquare4 = 0
+                     clickedSquare3 = 0
+                     clickedSquare2 = 0
+                     return
+                 }
+
+             }
+        }
     }
     Controls.CurrencySquare {
         id: square2
@@ -252,7 +277,27 @@ Item {
         amountSize: "22.54332 ETH"
         totalValue: "$43,443.94"
         value: "$9,839.99"
-    }
+        height: clickedSquare2 == 1 ? 250 : 75
+        MouseArea {
+             anchors.fill: square2
+             onClicked: {
+                     if(clickedSquare2 == 1){
+                         clickedSquare2 = 0
+                         return
+                     }
+                     if(clickedSquare2 == 0){
+                         clickedSquare2 = 1
+                         clickedSquare5 = 0
+                         clickedSquare4 = 0
+                         clickedSquare3 = 0
+                         clickedSquare = 0
+                         return
+                     }
+
+                 }
+             }
+        }
+
     Controls.CurrencySquare {
         id: square3
         anchors.top: square2.bottom
@@ -265,6 +310,25 @@ Item {
         amountSize: "22.54332 XBY"
         totalValue: "$43,443.94"
         value: "$9,839.99"
+        height: clickedSquare3 == 1 ? 250 : 75
+        MouseArea {
+             anchors.fill: square3
+             onClicked: {
+                 if(clickedSquare3 == 1){
+                     clickedSquare3 = 0
+                     return
+                 }
+                 if(clickedSquare3 == 0){
+                     clickedSquare3 = 1
+                     clickedSquare5 = 0
+                     clickedSquare4 = 0
+                     clickedSquare2 = 0
+                     clickedSquare = 0
+                     return
+                 }
+
+             }
+        }
     }
     Controls.CurrencySquare {
         id: square4
@@ -278,6 +342,25 @@ Item {
         amountSize: "22.54332 DASH"
         totalValue: "$43,443.94"
         value: "$9,839.99"
+        height: clickedSquare4 == 1 ? 250 : 75
+        MouseArea {
+             anchors.fill: square4
+             onClicked: {
+                 if(clickedSquare4 == 1){
+                     clickedSquare4 = 0
+                     return
+                 }
+                 if(clickedSquare4 == 0){
+                     clickedSquare4 = 1
+                     clickedSquare5 = 0
+                     clickedSquare3 = 0
+                     clickedSquare2 = 0
+                     clickedSquare = 0
+                     return
+                 }
+
+             }
+        }
     }
 
     Controls.CurrencySquare {
@@ -292,6 +375,25 @@ Item {
         amountSize: "22.54332 DASH"
         totalValue: "$43,443.94"
         value: "$9,839.99"
+        height: clickedSquare5 == 1 ? 250 : 75
+        MouseArea {
+             anchors.fill: square5
+             onClicked: {
+                 if(clickedSquare5 == 1){
+                     clickedSquare5 = 0
+                     return
+                 }
+                 if(clickedSquare5 == 0){
+                     clickedSquare5 = 1
+                     clickedSquare4 = 0
+                     clickedSquare3 = 0
+                     clickedSquare2 = 0
+                     clickedSquare = 0
+                     return
+                 }
+
+             }
+        }
     }
 
     Image {
