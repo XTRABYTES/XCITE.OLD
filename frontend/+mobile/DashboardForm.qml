@@ -245,7 +245,6 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         height: clickedSquare == 1 ? 250 : 75
-        clicked: clickedLinker == 0 ? 0 : 1
         MouseArea {
              anchors.fill: square1
              onClicked: {
