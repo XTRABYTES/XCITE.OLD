@@ -154,7 +154,7 @@ Item {
     Label {
         id: week1
         anchors.top: switch1.top
-        anchors.topMargin: 10
+        anchors.topMargin: 17
         text: "WEEK"
         font.pixelSize: 11
         font.bold: true
@@ -164,8 +164,8 @@ Item {
         color: switch1.checked ? "#5F5F5F" : "#5E8BFE"    }
     Label {
         id: month1
-        anchors.top: switch1.bottom
-        anchors.topMargin: 0
+        anchors.top: week1.bottom
+        anchors.topMargin: 20
         text: "MONTH"
         font.pixelSize: 11
         font.bold: true
