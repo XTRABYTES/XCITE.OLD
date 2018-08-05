@@ -74,7 +74,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 5
         anchors.top: parent.top
-        anchors.topMargin: 5
+        anchors.topMargin: 10
         text: totalValue
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
@@ -98,7 +98,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 5
         anchors.top: amount.bottom
-        anchors.topMargin: 8
+        anchors.topMargin: 6
         text: percentChange
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
@@ -116,79 +116,5 @@ Rectangle {
         font.family: "Brandon Grotesque"
         color: "#828282"
         font.bold: true
-    }
-
-    /**
-      *
-      * PLEASE DO NOT REVIEW CODE PAST THIS POINT, WILL BE ENABLED VIA ONE LINE IN SOON TO COME PR
-      *
-      */
-    Rectangle {
-        id: dividerLine
-        visible: clicked == 1 ? true : false
-        width: parent.width - 20
-        height: 1
-        color: "#5E8BFE"
-        anchors.top: percentChangeLabel.bottom
-        anchors.topMargin: 10
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
-    Label {
-        id: addressesList
-        visible: clicked == 1 ? true : false
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: dividerLine.bottom
-        anchors.topMargin: 6
-        text: "Main     BH132040HFALJFSJLFJ32...    18.5381 BTC"
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: "#828282"
-        font.bold: true
-    }
-    Label {
-        id: addressesList2
-        visible: clicked == 1 ? true : false
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: dividerLine.bottom
-        anchors.topMargin: 6
-        text: "Main     BH132040HFALJFSJLFJ32...    18.5381 BTC"
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: "#828282"
-        font.bold: true
-    }
-    Label {
-        id: addressesList3
-        visible: clicked == 1 ? true : false
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: dividerLine.bottom
-        anchors.topMargin: 6
-        text: "Main     BH132040HFALJFSJLFJ32...    18.5381 BTC"
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: "#828282"
-        font.bold: true
-    }
-    Label {
-        id: addressesList4
-        visible: clicked == 1 ? true : false
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: dividerLine.bottom
-        anchors.topMargin: 6
-        text: "Main     BH132040HFALJFSJLFJ32...    18.5381 BTC"
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: "#828282"
-        font.bold: true
-    }
-    Rectangle {
-        id: transferButton
-        visible: clicked == 1 ? true : false
-        width: 120
-        height: 40
-        color: "#5E8BFF"
-        anchors.top: addressesList4.bottom
-        anchors.left: addressesList4.left
-        anchors.topMargin: 15
     }
 }
