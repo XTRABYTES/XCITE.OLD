@@ -22,7 +22,6 @@ Rectangle {
     property string amountSize: "22.54332 BTC"
     property string totalValue: "$43,443.94"
     property string value: "$9,839.99"
-
     id: square
     color: "#42454F"
     width: Screen.width - 55
@@ -31,7 +30,6 @@ Rectangle {
 
     Image {
         id: icon
-        // source: '../icons/BTC-color.svg'
         source: currencyType
         anchors.left: parent.left
         anchors.leftMargin: 10
@@ -42,6 +40,7 @@ Rectangle {
     }
 
     Item {
+        id: expandButton
         width: 18
         height: 4
         anchors.horizontalCenter: parent.horizontalCenter
@@ -63,7 +62,6 @@ Rectangle {
         anchors.leftMargin: 5
         anchors.top: parent.top
         anchors.topMargin: 14
-        //text: "BTC"
         text: currencyType2
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
@@ -76,8 +74,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 5
         anchors.top: parent.top
-        anchors.topMargin: 5
-        //  text: "$43,443.94"
+        anchors.topMargin: 10
         text: totalValue
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
@@ -90,7 +87,6 @@ Rectangle {
         anchors.rightMargin: 5
         anchors.top: price.bottom
         anchors.topMargin: 5
-        // text: "22.54332 BTC"
         text: amountSize
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
@@ -98,11 +94,11 @@ Rectangle {
         font.bold: true
     }
     Label {
+        id: percentChangeLabel
         anchors.right: parent.right
         anchors.rightMargin: 5
         anchors.top: amount.bottom
-        anchors.topMargin: 8
-        // text: "+%.8"
+        anchors.topMargin: 6
         text: percentChange
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
@@ -115,7 +111,6 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.top: icon.bottom
         anchors.topMargin: 6
-        // text: "$9,839.99"
         text: value
         font.pixelSize: 14
         font.family: "Brandon Grotesque"

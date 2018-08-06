@@ -114,5 +114,6 @@
         <file>icons/LTC-color.svg</file>
         <file>icons/NEO-color.svg</file>
         <file>icons/XBY-color.svg</file>
+        <file>icons/expand_buttons.svg</file>
     </qresource>
 </RCC>

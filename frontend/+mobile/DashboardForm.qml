@@ -15,10 +15,21 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
 import "./Controls" as Controls
-import "./Theme" 1.0
-
+/**
+  * Main page
+  */
 Item {
     property int sw: -1
+    property int clickedSquare: 0
+    property int clickedSquare2: 0
+    property int clickedSquare3: 0
+    property int clickedSquare4: 0
+    property int clickedSquare5: 0
+    property int clickedSquare6: 0
+
+    Loader {
+        id: pageLoader
+    }
 
     Controls.Header {
         id: heading
@@ -50,35 +61,39 @@ Item {
         }
 
         Label {
-            id: add
+            id: add5
             text: "ADDRESS BOOK"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#757575"
-            /**
+
             MouseArea {
-                anchors.fill: add
+                anchors.fill: add5
+                //onClicked: pageLoader.source = "MobileAddressBook.qml"
                 onClicked: mainRoot.push("MobileAddressBook.qml")
             }
-            */
         }
     }
 
-    Controls.ButtonIconText {
-        anchors.left: parent.right
-        anchors.rightMargin: 10
-        textColor: "#2D3043"
-        border.width: 0
-        radius: 0
-        label.font.letterSpacing: 0.92
-        label.font.family: Theme.fontCondensed
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        iconFile: '../icons/icon-notif.svg'
-        size: 20
-        // set 1 to alert this normally used desktop control that it is using mobile parameters
-        mobile: 1
+    /**
+      * Waiting on updated SVG, commented out
+    Image {
+        id: notif
+        anchors.right: parent.right
+        anchors.rightMargin: 5
+        anchors.top: parent.top
+        anchors.topMargin: 5
+        source: '../icons/icon-notif.svg'
+        width: 16
+        height: 25
+        ColorOverlay {
+            anchors.fill: transfer2
+            source: transfer2
+            color: "grey" // make image like it lays under grey glass
+        }
+
     }
+    */
 
     Label {
         id: value
@@ -90,7 +105,7 @@ Item {
         font.pixelSize: 36
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
-        font.weight: Font.DemiBold
+        // font.weight: Font.DemiBold
         Label {
             anchors.top: value.bottom
             anchors.topMargin: 6
@@ -122,6 +137,7 @@ Item {
             }
         }
     }
+
     Switch {
         id: switch1
         anchors.right: parent.right
@@ -138,28 +154,25 @@ Item {
     Label {
         id: week1
         anchors.top: switch1.top
-        anchors.topMargin: 10
+        anchors.topMargin: 17
         text: "WEEK"
         font.pixelSize: 11
         font.bold: true
         font.family: "Brandon Grotesque"
-        color: "#5E8BFE"
         anchors.right: switch1.left
         anchors.rightMargin: -2
-        // switch1.checked: true ? week.color = "#5E8BFE" : week.color = "#5F5F5F"
-    }
+        color: switch1.checked ? "#5F5F5F" : "#5E8BFE"    }
     Label {
         id: month1
-        anchors.bottom: switch1.bottom
-        anchors.topMargin: 0
+        anchors.top: week1.bottom
+        anchors.topMargin: 20
         text: "MONTH"
         font.pixelSize: 11
         font.bold: true
         font.family: "Brandon Grotesque"
-        color: "#5F5F5F"
         anchors.right: switch1.left
         anchors.rightMargin: -2
-        // switch1.checked: true ? month.color = "#5E8BFE" : month.color = "#5F5F5F"
+        color: switch1.checked ? "#5E8BFE" : "#5F5F5F"
     }
 
     Label {
@@ -181,7 +194,7 @@ Item {
         Image {
             id: transfer2
             anchors.top: parent.top
-            anchors.bottomMargin: 10
+            anchors.topMargin: -2
             anchors.left: parent.right
             anchors.leftMargin: 8
             source: '../icons/icon-transfer.svg'
@@ -215,7 +228,7 @@ Item {
         Image {
             id: plus
             anchors.top: parent.top
-            anchors.bottomMargin: 10
+            anchors.topMargin: -2
             anchors.left: parent.right
             anchors.leftMargin: 8
             source: '../icons/plus-button.svg'
@@ -232,9 +245,169 @@ Item {
     Controls.CurrencySquare {
         id: square1
         anchors.top: parent.top
-        anchors.topMargin: 240
+        anchors.topMargin: 230
         anchors.left: parent.left
         anchors.leftMargin: 25
+        height: clickedSquare == 1 ? 250 : 75
+        Item {
+            id: expandButton
+            width: 18
+            height: 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            Image {
+                id: expand
+                source: '../icons/expand_buttons.svg'
+            }
+
+            ColorOverlay {
+                anchors.fill: expand
+                source: expand
+                color: "grey"
+            }
+
+            MouseArea {
+                anchors.fill: expandButton
+                onClicked: {
+                    if(clickedSquare == 1){
+                        clickedSquare = 0
+                        return
+                    }
+                    if(clickedSquare == 0){
+                        clickedSquare = 1
+                        clickedSquare5 = 0
+                        clickedSquare4 = 0
+                        clickedSquare3 = 0
+                        clickedSquare2 = 0
+                        return
+                    }
+                }
+            }
+        }
+        /**
+          * Visible when square is clicked
+          */
+        Rectangle {
+            id: dividerLine
+            visible: clickedSquare == 1 ? true : false
+            width: parent.width - 20
+            height: 1
+            color: "#575757"
+            anchors.top: parent.top
+            anchors.topMargin: 75
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Label {
+            id: addressesList
+            visible: clickedSquare == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: dividerLine.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList2
+            visible: clickedSquare == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList3
+            visible: clickedSquare == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList2.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList4
+            visible: clickedSquare == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList3.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Rectangle {
+            id: transferButton
+            visible: clickedSquare == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4.bottom
+            anchors.left: addressesList4.left
+            anchors.topMargin: 15
+            Text{
+                text: "TRANSFER"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: historyButton
+            visible: clickedSquare == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4.bottom
+            anchors.left: transferButton.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "HISTORY"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: tradeButton
+            visible: clickedSquare == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4.bottom
+            anchors.left: historyButton.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "TRADE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
     }
     Controls.CurrencySquare {
         id: square2
@@ -248,23 +421,171 @@ Item {
         amountSize: "22.54332 ETH"
         totalValue: "$43,443.94"
         value: "$9,839.99"
+        height: clickedSquare2 == 1 ? 250 : 75
+        Item {
+            id: expandButton2
+            width: 18
+            height: 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            Image {
+                id: expand2
+                source: '../icons/expand_buttons.svg'
+            }
+
+            ColorOverlay {
+                anchors.fill: expand2
+                source: expand2
+                color: "grey"
+            }
+
+            MouseArea {
+                anchors.fill: expandButton2
+                onClicked: {
+                    if(clickedSquare2 == 1){
+                        clickedSquare2 = 0
+                        return
+                    }
+                    if(clickedSquare2 == 0){
+                        clickedSquare2 = 1
+                        clickedSquare5 = 0
+                        clickedSquare4 = 0
+                        clickedSquare3 = 0
+                        clickedSquare = 0
+                        return
+                    }
+                }
+            }
+        }
+        /**
+          * Visible when square is clicked
+          */
+        Rectangle {
+            id: dividerLine2
+            visible: clickedSquare2 == 1 ? true : false
+            width: parent.width - 20
+            height: 1
+            color: "#575757"
+            anchors.top: parent.top
+            anchors.topMargin: 75
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Label {
+            id: addressesList_2
+            visible: clickedSquare2 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: dividerLine2.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList2_2
+            visible: clickedSquare2 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList_2.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList3_2
+            visible: clickedSquare2 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList2_2.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList4_2
+            visible: clickedSquare2 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList3_2.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Rectangle {
+            id: transferButton2
+            visible: clickedSquare2 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_2.bottom
+            anchors.left: addressesList4_2.left
+            anchors.topMargin: 15
+            Text{
+                text: "TRANSFER"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: historyButton2
+            visible: clickedSquare2 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_2.bottom
+            anchors.left: transferButton2.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "HISTORY"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: tradeButton2
+            visible: clickedSquare2 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_2.bottom
+            anchors.left: historyButton2.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "TRADE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
     }
+
     Controls.CurrencySquare {
         id: square3
         anchors.top: square2.bottom
-        anchors.topMargin: 7
-        anchors.left: parent.left
-        anchors.leftMargin: 25
-        currencyType: '../icons/XBY-color.svg'
-        currencyType2: "XBY"
-        percentChange: "+%.8"
-        amountSize: "22.54332 XBY"
-        totalValue: "$43,443.94"
-        value: "$9,839.99"
-    }
-    Controls.CurrencySquare {
-        id: square4
-        anchors.top: square3.bottom
         anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
@@ -274,13 +595,348 @@ Item {
         amountSize: "22.54332 DASH"
         totalValue: "$43,443.94"
         value: "$9,839.99"
+        height: clickedSquare4 == 1 ? 250 : 75
+        Item {
+            id: expandButton3
+            width: 18
+            height: 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            Image {
+                id: expand3
+                source: '../icons/expand_buttons.svg'
+            }
+
+            ColorOverlay {
+                anchors.fill: expand3
+                source: expand3
+                color: "grey"
+            }
+
+            MouseArea {
+                anchors.fill: expandButton3
+                onClicked: {
+                    if(clickedSquare4 == 1){
+                        clickedSquare4 = 0
+                        return
+                    }
+                    if(clickedSquare4 == 0){
+                        clickedSquare4 = 1
+                        clickedSquare5 = 0
+                        clickedSquare3 = 0
+                        clickedSquare2 = 0
+                        clickedSquare = 0
+                        return
+                    }
+                }
+            }
+        }
+        /**
+          * Visible when square is clicked
+          */
+        Rectangle {
+            id: dividerLine3
+            visible: clickedSquare4 == 1 ? true : false
+            width: parent.width - 20
+            height: 1
+            color: "#575757"
+            anchors.top: parent.top
+            anchors.topMargin: 75
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Label {
+            id: addressesList_3
+            visible: clickedSquare4 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: dividerLine3.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList2_3
+            visible: clickedSquare4 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList_3.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList3_3
+            visible: clickedSquare4 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList2_3.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList4_3
+            visible: clickedSquare4 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList3_3.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Rectangle {
+            id: transferButton3
+            visible: clickedSquare4 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_3.bottom
+            anchors.left: addressesList4_3.left
+            anchors.topMargin: 15
+            Text{
+                text: "TRANSFER"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: historyButton3
+            visible: clickedSquare4 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_3.bottom
+            anchors.left: transferButton3.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "HISTORY"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: tradeButton3
+            visible: clickedSquare4 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_3.bottom
+            anchors.left: historyButton3.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "TRADE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
     }
+
+    Controls.CurrencySquare {
+        id: square4
+        anchors.top: square3.bottom
+        anchors.topMargin: 7
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        currencyType: '../icons/LTC-color.svg'
+        currencyType2: "LTC"
+        percentChange: "+%.8"
+        amountSize: "22.54332 DASH"
+        totalValue: "$43,443.94"
+        value: "$9,839.99"
+        height: clickedSquare5 == 1 ? 250 : 75
+        Item {
+            id: expandButton4
+            width: 18
+            height: 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            Image {
+                id: expand4
+                source: '../icons/expand_buttons.svg'
+            }
+
+            ColorOverlay {
+                anchors.fill: expand4
+                source: expand4
+                color: "grey"
+            }
+
+            MouseArea {
+                anchors.fill: expandButton4
+                onClicked: {
+                    if(clickedSquare5 == 1){
+                        clickedSquare5 = 0
+                        return
+                    }
+                    if(clickedSquare5 == 0){
+                        clickedSquare5 = 1
+                        clickedSquare4 = 0
+                        clickedSquare3 = 0
+                        clickedSquare2 = 0
+                        clickedSquare = 0
+                        return
+                    }
+                }
+            }
+        }
+        /**
+          * Visible when square is clicked
+          */
+        Rectangle {
+            id: dividerLine4
+            visible: clickedSquare5 == 1 ? true : false
+            width: parent.width - 20
+            height: 1
+            color: "#575757"
+            anchors.top: parent.top
+            anchors.topMargin: 75
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Label {
+            id: addressesList_4
+            visible: clickedSquare5 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: dividerLine4.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList2_4
+            visible: clickedSquare5 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList_4.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList3_4
+            visible: clickedSquare5 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList2_4.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList4_4
+            visible: clickedSquare5 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList3_4.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Rectangle {
+            id: transferButton4
+            visible: clickedSquare5 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_4.bottom
+            anchors.left: addressesList4_4.left
+            anchors.topMargin: 15
+            Text{
+                text: "TRANSFER"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: historyButton4
+            visible: clickedSquare5 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_4.bottom
+            anchors.left: transferButton4.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "HISTORY"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: tradeButton4
+            visible: clickedSquare5 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_4.bottom
+            anchors.left: historyButton4.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "TRADE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+    }
+
     Image {
         id: settings
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: 15
         anchors.left: parent.left
-        anchors.leftMargin: 10
+        anchors.leftMargin: 15
         source: '../icons/icon-settings.svg'
         width: 20
         height: 20
@@ -289,14 +945,19 @@ Item {
             source: settings
             color: "#5E8BFF" // make image like it lays under grey glass
         }
+        MouseArea {
+            anchors.fill: settings
+            //onClicked: pageLoader.source = "MobileAddressBook.qml"
+            onClicked: mainRoot.push("Settings.qml")
+        }
     }
     Image {
         id: apps
-        source: '../icons/icon-apps5.svg'
+        source: '../icons/icon-apps.svg'
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: 15
         anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: 15
         width: 20
         height: 20
         ColorOverlay {
