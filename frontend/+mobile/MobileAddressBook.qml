@@ -19,6 +19,7 @@ import "../Controls" as Controls
   * Address Book
   */
 Item {
+    property int appsTracker: 0
     Item {
         id: heading
         anchors.left: parent.left
@@ -35,6 +36,25 @@ Item {
             text: qsTr("POSEY")
         }
     }
+    Rectangle{
+        z: 100
+        color: "#393B43"
+        opacity: 0.5
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        width: parent.width
+        height: 50
+    }
+    Rectangle{
+        color: "black"
+        opacity: .8
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        height: parent.height
+        width: parent.width
+        z: 5
+        visible: appsTracker == 1
+    }
     RowLayout {
         anchors.top: heading.bottom
         anchors.topMargin: 10
@@ -49,8 +69,8 @@ Item {
             color: "#757575"
 
             MouseArea {
-                 anchors.fill: overview
-                 onClicked: mainRoot.pop("MobileAddressBook.qml")
+                anchors.fill: overview
+                onClicked: mainRoot.pop("MobileAddressBook.qml")
             }
         }
 
@@ -186,5 +206,194 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Chef"
+    }
+
+    Image {
+        id: settings
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 15
+        anchors.left: parent.left
+        anchors.leftMargin: 30
+        source: '../icons/icon-settings.svg'
+        width: 20
+        height: 20
+        z: 100
+
+        ColorOverlay {
+            anchors.fill: settings
+            source: settings
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+
+        MouseArea {
+            anchors.fill: settings
+            //onClicked: pageLoader.source = "MobileAddressBook.qml"
+            onClicked: mainRoot.push("Settings.qml")
+        }
+    }
+    Image {
+        id: apps
+        source: '../icons/icon-apps.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 15
+        anchors.right: parent.right
+        anchors.rightMargin: 30
+        width: 20
+        height: 20
+        z: 100
+        visible: appsTracker == 0
+        MouseArea{
+            anchors.fill: apps
+            onClicked: appsTracker = 1
+        }
+        ColorOverlay {
+            anchors.fill: apps
+            source: apps
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+        /**
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
+                }
+            }
+            */
+    }
+    Image {
+        id: closeApps
+        source: '../icons/left-arrow.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 15
+        anchors.right: parent.right
+        anchors.rightMargin: 30
+        width: 20
+        height: 20
+        z: 100
+        visible: appsTracker == 1
+        MouseArea{
+            anchors.fill: closeApps
+            onClicked: appsTracker = 0
+        }
+        ColorOverlay {
+            anchors.fill: closeApps
+            source: closeApps
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+        /**
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
+                }
+            }
+            */
+    }
+    Image {
+        id: xchangeLink
+        source: '../icons/XCHANGE_02.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 90
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        width: 40
+        height: 40
+        z: 100
+        visible: appsTracker == 1
+        Text{
+            text: "X-CHANGE"
+            anchors.top: parent.bottom
+            anchors.topMargin: 5
+            color: "#5E8BFF"
+            font.family: "Brandon Grotesque"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        ColorOverlay {
+            anchors.fill: xchangeLink
+            source: xchangeLink
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+        /**
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
+                }
+            }
+            */
+    }
+
+    Image {
+        id: xvaultLink
+        source: '../icons/XVAULT_02.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 160
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        width: 40
+        height: 40
+        z: 100
+        visible: appsTracker == 1
+        Text{
+            text: "X-VAULT"
+            anchors.top: parent.bottom
+            anchors.topMargin: 5
+            color: "#5E8BFF"
+            font.family: "Brandon Grotesque"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        ColorOverlay {
+            anchors.fill: xvaultLink
+            source: xvaultLink
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+        /**
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
+                }
+            }
+            */
+    }
+
+    Image {
+        id: xchatLink
+        source: '../icons/XCHAT_02.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 230
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        width: 40
+        height: 40
+        z: 100
+        visible: appsTracker == 1
+        Text{
+            text: "X-CHAT"
+            anchors.top: parent.bottom
+            anchors.topMargin: 5
+            color: "#5E8BFF"
+            font.family: "Brandon Grotesque"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        ColorOverlay {
+            anchors.fill: xchatLink
+            source: xchatLink
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+        /**
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
+                }
+            }
+            */
     }
 }
