@@ -26,6 +26,28 @@ Item {
     property int clickedSquare4: 0
     property int clickedSquare5: 0
     property int clickedSquare6: 0
+    property int appsTracker: 0
+    z: 2
+
+    Rectangle{
+        z: 100
+        color: "#393B43"
+        opacity: 0.5
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        width: parent.width
+        height: 50
+    }
+    Rectangle{
+        color: "black"
+        opacity: .8
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        height: parent.height
+        width: parent.width
+        z: 5
+        visible: appsTracker == 1
+    }
 
     Loader {
         id: pageLoader
@@ -931,20 +953,197 @@ Item {
         }
     }
 
+    Controls.CurrencySquare {
+        id: square5
+        anchors.top: square4.bottom
+        anchors.topMargin: 7
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        currencyType: '../icons/LTC-color.svg'
+        currencyType2: "LTC"
+        percentChange: "+%.8"
+        amountSize: "22.54332 DASH"
+        totalValue: "$43,443.94"
+        value: "$9,839.99"
+        height: clickedSquare5 == 1 ? 250 : 75
+        Item {
+            id: expandButton5
+            width: 18
+            height: 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            Image {
+                id: expand5
+                source: '../icons/expand_buttons.svg'
+            }
+
+            ColorOverlay {
+                anchors.fill: expand5
+                source: expand5
+                color: "grey"
+            }
+
+            MouseArea {
+                anchors.fill: expandButton5
+                onClicked: {
+                    if(clickedSquare5 == 1){
+                        clickedSquare5 = 0
+                        return
+                    }
+                    if(clickedSquare5 == 0){
+                        clickedSquare5 = 1
+                        clickedSquare4 = 0
+                        clickedSquare3 = 0
+                        clickedSquare2 = 0
+                        clickedSquare = 0
+                        return
+                    }
+                }
+            }
+        }
+        /**
+          * Visible when square is clicked
+          */
+        Rectangle {
+            id: dividerLine5
+            visible: clickedSquare5 == 1 ? true : false
+            width: parent.width - 20
+            height: 1
+            color: "#575757"
+            anchors.top: parent.top
+            anchors.topMargin: 75
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Label {
+            id: addressesList_5
+            visible: clickedSquare5 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: dividerLine5.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList2_5
+            visible: clickedSquare5 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList_5.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList3_5
+            visible: clickedSquare5 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList2_5.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Label {
+            id: addressesList4_5
+            visible: clickedSquare5 == 1 ? true : false
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressesList3_5.bottom
+            anchors.topMargin: 10
+            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: false
+        }
+        Rectangle {
+            id: transferButton5
+            visible: clickedSquare5 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_5.bottom
+            anchors.left: addressesList4_5.left
+            anchors.topMargin: 15
+            Text{
+                text: "TRANSFER"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: historyButton5
+            visible: clickedSquare5 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_5.bottom
+            anchors.left: transferButton5.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "HISTORY"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: tradeButton5
+            visible: clickedSquare5 == 1 ? true : false
+            width: 90
+            height: 40
+            radius: 8
+            border.color: "#5E8BFF"
+            color: "transparent"
+            anchors.top: addressesList4_5.bottom
+            anchors.left: historyButton5.right
+            anchors.leftMargin: 10
+            anchors.topMargin: 15
+            Text{
+                text: "TRADE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+    }
+
     Image {
         id: settings
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 15
         anchors.left: parent.left
-        anchors.leftMargin: 15
+        anchors.leftMargin: 30
         source: '../icons/icon-settings.svg'
         width: 20
         height: 20
+        z: 100
+
         ColorOverlay {
             anchors.fill: settings
             source: settings
             color: "#5E8BFF" // make image like it lays under grey glass
         }
+
         MouseArea {
             anchors.fill: settings
             //onClicked: pageLoader.source = "MobileAddressBook.qml"
@@ -957,12 +1156,153 @@ Item {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 15
         anchors.right: parent.right
-        anchors.rightMargin: 15
+        anchors.rightMargin: 30
         width: 20
         height: 20
+        z: 100
+        visible: appsTracker == 0
+        MouseArea{
+            anchors.fill: apps
+            onClicked: appsTracker = 1
+        }
         ColorOverlay {
             anchors.fill: apps
             source: apps
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+        /**
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
+                }
+            }
+            */
+    }
+    Image {
+        id: closeApps
+        source: '../icons/left-arrow.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 15
+        anchors.right: parent.right
+        anchors.rightMargin: 30
+        width: 20
+        height: 20
+        z: 100
+        visible: appsTracker == 1
+        MouseArea{
+            anchors.fill: closeApps
+            onClicked: appsTracker = 0
+        }
+        ColorOverlay {
+            anchors.fill: closeApps
+            source: closeApps
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+        /**
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
+                }
+            }
+            */
+    }
+    Image {
+        id: xchangeLink
+        source: '../icons/XCHANGE_02.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 90
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        width: 40
+        height: 40
+        z: 100
+        visible: appsTracker == 1
+        Text{
+            text: "X-CHANGE"
+            anchors.top: parent.bottom
+            anchors.topMargin: 5
+            color: "#5E8BFF"
+            font.family: "Brandon Grotesque"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        ColorOverlay {
+            anchors.fill: xchangeLink
+            source: xchangeLink
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+        /**
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
+                }
+            }
+            */
+    }
+
+    Image {
+        id: xvaultLink
+        source: '../icons/XVAULT_02.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 160
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        width: 40
+        height: 40
+        z: 100
+        visible: appsTracker == 1
+        Text{
+            text: "X-VAULT"
+            anchors.top: parent.bottom
+            anchors.topMargin: 5
+            color: "#5E8BFF"
+            font.family: "Brandon Grotesque"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        ColorOverlay {
+            anchors.fill: xvaultLink
+            source: xvaultLink
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
+        /**
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    clipboard.text = regString.text
+                }
+            }
+            */
+    }
+
+    Image {
+        id: xchatLink
+        source: '../icons/XCHAT_02.svg'
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 230
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        width: 40
+        height: 40
+        z: 100
+        visible: appsTracker == 1
+        Text{
+            text: "X-CHAT"
+            anchors.top: parent.bottom
+            anchors.topMargin: 5
+            color: "#5E8BFF"
+            font.family: "Brandon Grotesque"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        ColorOverlay {
+            anchors.fill: xchatLink
+            source: xchatLink
             color: "#5E8BFF" // make image like it lays under grey glass
         }
         /**
