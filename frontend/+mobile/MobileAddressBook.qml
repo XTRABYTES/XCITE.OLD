@@ -263,7 +263,7 @@ Item {
     }
     Image {
         id: closeApps
-        source: '../icons/left-arrow.svg'
+        source: '../icons/CloseIcon.svg'
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 15
         anchors.right: parent.right
