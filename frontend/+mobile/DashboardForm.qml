@@ -792,6 +792,7 @@ Item {
         totalValue: "$43,443.94"
         value: "$9,839.99"
         height: clickedSquare5 == 1 ? 250 : 75
+        z: 0
         Item {
             id: expandButton4
             width: 18
@@ -966,6 +967,7 @@ Item {
         totalValue: "$43,443.94"
         value: "$9,839.99"
         height: clickedSquare5 == 1 ? 250 : 75
+        z: 0
         Item {
             id: expandButton5
             width: 18
@@ -1182,7 +1184,7 @@ Item {
     }
     Image {
         id: closeApps
-        source: '../icons/left-arrow.svg'
+        source: '../icons/CloseIcon.svg'
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 15
         anchors.right: parent.right
@@ -1315,4 +1317,7 @@ Item {
             }
             */
     }
+
+
+
 }
