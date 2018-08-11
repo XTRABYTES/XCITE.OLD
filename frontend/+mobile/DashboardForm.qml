@@ -27,6 +27,7 @@ Item {
     property int clickedSquare5: 0
     property int clickedSquare6: 0
     property int appsTracker: 0
+    property int transferTracker: 0
     z: 2
 
     Rectangle{
@@ -46,7 +47,7 @@ Item {
         height: parent.height
         width: parent.width
         z: 5
-        visible: appsTracker == 1
+        visible: appsTracker == 1 || transferTracker == 1
     }
 
     Loader {
@@ -166,6 +167,7 @@ Item {
         anchors.rightMargin: 10
         anchors.top: parent.top
         anchors.topMargin: 80
+        visible: transferTracker != 1
         transform: Rotation {
             origin.x: 25
             origin.y: 25
@@ -222,6 +224,12 @@ Item {
             source: '../icons/icon-transfer.svg'
             width: 16
             height: 16
+            MouseArea {
+                anchors.fill: transfer2
+                onClicked: {
+                    transferTracker = 1
+                }
+            }
             ColorOverlay {
                 anchors.fill: transfer2
                 source: transfer2
@@ -379,6 +387,12 @@ Item {
             anchors.top: addressesList4.bottom
             anchors.left: addressesList4.left
             anchors.topMargin: 15
+            MouseArea {
+                anchors.fill: transferButton
+                onClicked: {
+                    transferTracker = 1
+                }
+            }
             Text{
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -1319,5 +1333,186 @@ Item {
                 }
             }
             */
+    }
+    /**
+      * Transfer Modal popup
+      */
+    Rectangle{
+        id: modal
+        height: parent.height - 400
+        width: parent.width - 50
+        color: "#42454F"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 150
+        visible: transferTracker == 1
+        radius: 4
+        z: 100
+
+        Rectangle {
+            id: modalTop
+            height: 50
+            width: modal.width
+            anchors.bottom: modal.top
+            anchors.left: modal.left
+            color: "#34363D"
+            radius: 4
+            Text{
+                text: "TRANSFER"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#F2F2F2"
+                font.family: "Brandon Grotesque"
+                font.bold: false
+                font.pixelSize: 14
+            }
+            Image {
+                id: closeModal
+                source: '../icons/CloseIcon.svg'
+                anchors.bottom: modalTop.bottom
+                anchors.bottomMargin: 15
+                anchors.right: modalTop.right
+                anchors.rightMargin: 30
+                width: 20
+                height: 20
+                MouseArea{
+                    anchors.fill: closeModal
+                    onClicked: transferTracker = 0
+                }
+                ColorOverlay {
+                    anchors.fill: closeModal
+                    source: closeModal
+                    color: "#5E8BFF" // make image like it lays under grey glass
+                }
+            }
+        }
+        Switch {
+            id: transferSwitch
+            anchors.horizontalCenter: modal.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 10
+
+            Text {
+                id: receiveText
+                text: qsTr("RECEIVE")
+                anchors.right: transferSwitch.left
+                anchors.rightMargin: 7
+                anchors.verticalCenter: parent.verticalCenter
+                color: transferSwitch.checked ? "#5F5F5F" : "#5E8BFE"
+            }
+            Text {
+                id: sendText
+                text: qsTr("SEND")
+                anchors.left: transferSwitch.right
+                anchors.leftMargin: 7
+                anchors.verticalCenter: parent.verticalCenter
+                color: transferSwitch.checked ? "#5E8BFE" : "#5F5F5F"
+            }
+        }
+        /**
+          * Transfer modal receive state
+          */
+
+        Image{
+            id: currencyIcon
+            source: '../icons/BTC-color.svg'
+            width: 25
+            height: 25
+            anchors.left: modal.left
+            anchors.leftMargin: 20
+            anchors.top: modal.top
+            anchors.topMargin: 50
+            visible: transferSwitch.checked == false && transferTracker == 1
+            Label{
+                id: currencyIconChild
+                text: "BTC"
+                anchors.left: currencyIcon.right
+                anchors.leftMargin: 10
+                color: "#E5E5E5"
+                font.bold: true
+            }
+            Image{
+                source: '../icons/dropdown_icon.svg'
+                width: 15
+                height: 15
+                anchors.left: currencyIconChild.right
+                anchors.leftMargin: 8
+                anchors.verticalCenter: currencyIconChild.verticalCenter
+                visible: transferSwitch.checked == false && transferTracker == 1
+            }
+        }
+        Label{
+            id: walletChoice
+            text: "MAIN"
+            anchors.right: qrPlaceholder.right
+            anchors.rightMargin: 10
+            anchors.top: modal.top
+            anchors.topMargin: 50
+            color: "#E5E5E5"
+            font.bold: true
+            visible: transferSwitch.checked == false && transferTracker == 1
+            Image{
+                id: walletDropdown
+                source: '../icons/dropdown_icon.svg'
+                width: 15
+                height: 15
+                anchors.left: walletChoice.right
+                anchors.leftMargin: 8
+                anchors.verticalCenter: parent.verticalCenter
+                visible: transferSwitch.checked == false && transferTracker == 1
+            }
+        }
+        Rectangle{
+            id: qrPlaceholder
+            color: "white"
+            radius: 8
+            width: 240
+            height: 200
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: currencyIcon.bottom
+            anchors.topMargin: 20
+            visible: transferSwitch.checked == false && transferTracker == 1
+        }
+
+        Text{
+            id: pubKey
+            text: "PUBLIC KEY"
+            anchors.top: qrPlaceholder.bottom
+            anchors.topMargin: 25
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            font.pixelSize: 11
+            visible: transferSwitch.checked == false && transferTracker == 1
+            Text{
+                id: publicKey
+                text: "BM39fjwf093JF329f39fJFSL393fa03987fja392WPF2948WQO"
+                anchors.top: pubKey.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "white"
+                font.family: "Brandon Grotesque"
+                font.bold: false
+                font.pixelSize: 9
+            }
+            Image{
+                id: pasteIcon
+                source: '../icons/paste_icon.svg'
+                width: 13
+                height: 13
+                anchors.left: publicKey.right
+                anchors.leftMargin: 5
+                anchors.verticalCenter: publicKey.verticalCenter
+                visible: transferSwitch.checked == false && transferTracker == 1
+            }
+        }
+
+        /**
+          * Transfer modal send state
+          */
+        Item{
+
+        }
     }
 }
