@@ -1,0 +1,15 @@
+<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="15" height="15" fill="black" fill-opacity="0"/>
+<rect width="13.0435" height="13.0435" fill="black" fill-opacity="0" transform="translate(0 1.95654)"/>
+<rect width="6.52174" height="6.52174" fill="black" fill-opacity="0" transform="translate(3.26086 5.21741)"/>
+<rect x="3.26086" y="8.15216" width="6.52174" height="0.652174" rx="0.326087" fill="#F2F2F2"/>
+<rect x="6.19568" y="11.7391" width="6.52174" height="0.652174" rx="0.326087" transform="rotate(-90 6.19568 11.7391)" fill="#F2F2F2"/>
+<rect width="13.0435" height="13.0435" fill="black" fill-opacity="0" transform="translate(0 1.95654)"/>
+<rect y="1.95654" width="13.0435" height="0.652174" rx="0.326087" fill="#F2F2F2"/>
+<rect y="14.3478" width="13.0435" height="0.652174" rx="0.326087" fill="#F2F2F2"/>
+<rect y="15" width="13.0435" height="0.652174" rx="0.326087" transform="rotate(-90 0 15)" fill="#F2F2F2"/>
+<rect x="12.3913" y="15" width="13.0435" height="0.652174" rx="0.326087" transform="rotate(-90 12.3913 15)" fill="#F2F2F2"/>
+<rect width="13.0435" height="13.0435" fill="black" fill-opacity="0" transform="translate(1.95654)"/>
+<rect x="1.95654" width="13.0435" height="0.652174" rx="0.326087" fill="#F2F2F2"/>
+<rect x="14.3478" y="13.0435" width="13.0435" height="0.652174" rx="0.326087" transform="rotate(-90 14.3478 13.0435)" fill="#F2F2F2"/>
+</svg>
