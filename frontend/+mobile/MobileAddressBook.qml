@@ -39,7 +39,7 @@ Item {
     Rectangle{
         z: 100
         color: "#393B43"
-        opacity: 0.5
+        opacity: 0.8
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         width: parent.width
