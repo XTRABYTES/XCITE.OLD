@@ -1230,6 +1230,7 @@ Item {
             color: "#5E8BFF"
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
+            font.bold: true
         }
         ColorOverlay {
             anchors.fill: xchangeLink
@@ -1265,6 +1266,7 @@ Item {
             color: "#5E8BFF"
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
+            font.bold: true
         }
 
         ColorOverlay {
@@ -1301,6 +1303,7 @@ Item {
             color: "#5E8BFF"
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
+            font.bold: true
         }
         ColorOverlay {
             anchors.fill: xchatLink
@@ -1317,7 +1320,4 @@ Item {
             }
             */
     }
-
-
-
 }
