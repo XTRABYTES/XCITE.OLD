@@ -119,5 +119,7 @@
         <file>icons/XVAULT_02.svg</file>
         <file>icons/XCHANGE_02.svg</file>
         <file>icons/CloseIcon.svg</file>
+        <file>icons/paste_icon.svg</file>
+        <file>icons/dropdown_icon.svg</file>
     </qresource>
 </RCC>
