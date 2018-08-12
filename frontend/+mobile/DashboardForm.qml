@@ -383,6 +383,7 @@ Item {
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4.bottom
             anchors.left: addressesList4.left
@@ -397,6 +398,7 @@ Item {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -409,6 +411,7 @@ Item {
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4.bottom
             anchors.left: transferButton.right
@@ -418,6 +421,7 @@ Item {
                 text: "HISTORY"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -430,6 +434,7 @@ Item {
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4.bottom
             anchors.left: historyButton.right
@@ -439,6 +444,7 @@ Item {
                 text: "TRADE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -562,6 +568,7 @@ Item {
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_2.bottom
             anchors.left: addressesList4_2.left
@@ -570,6 +577,7 @@ Item {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -582,6 +590,7 @@ Item {
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_2.bottom
             anchors.left: transferButton2.right
@@ -591,6 +600,7 @@ Item {
                 text: "HISTORY"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -603,6 +613,7 @@ Item {
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_2.bottom
             anchors.left: historyButton2.right
@@ -612,6 +623,7 @@ Item {
                 text: "TRADE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -631,7 +643,7 @@ Item {
         amountSize: "22.54332 DASH"
         totalValue: "$43,443.94"
         value: "$9,839.99"
-        height: clickedSquare4 == 1 ? 250 : 75
+        height: clickedSquare3 == 1 ? 250 : 75
         Item {
             id: expandButton3
             width: 18
@@ -653,14 +665,14 @@ Item {
             MouseArea {
                 anchors.fill: expandButton3
                 onClicked: {
-                    if(clickedSquare4 == 1){
-                        clickedSquare4 = 0
+                    if(clickedSquare3 == 1){
+                        clickedSquare3 = 0
                         return
                     }
-                    if(clickedSquare4 == 0){
-                        clickedSquare4 = 1
+                    if(clickedSquare3 == 0){
+                        clickedSquare4 = 0
                         clickedSquare5 = 0
-                        clickedSquare3 = 0
+                        clickedSquare3 = 1
                         clickedSquare2 = 0
                         clickedSquare = 0
                         return
@@ -673,7 +685,7 @@ Item {
           */
         Rectangle {
             id: dividerLine3
-            visible: clickedSquare4 == 1 ? true : false
+            visible: clickedSquare3 == 1 ? true : false
             width: parent.width - 20
             height: 1
             color: "#575757"
@@ -683,7 +695,7 @@ Item {
         }
         Label {
             id: addressesList_3
-            visible: clickedSquare4 == 1 ? true : false
+            visible: clickedSquare3 == 1 ? true : false
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: dividerLine3.bottom
             anchors.topMargin: 10
@@ -695,7 +707,7 @@ Item {
         }
         Label {
             id: addressesList2_3
-            visible: clickedSquare4 == 1 ? true : false
+            visible: clickedSquare3 == 1 ? true : false
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: addressesList_3.bottom
             anchors.topMargin: 10
@@ -707,7 +719,7 @@ Item {
         }
         Label {
             id: addressesList3_3
-            visible: clickedSquare4 == 1 ? true : false
+            visible: clickedSquare3 == 1 ? true : false
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: addressesList2_3.bottom
             anchors.topMargin: 10
@@ -719,7 +731,7 @@ Item {
         }
         Label {
             id: addressesList4_3
-            visible: clickedSquare4 == 1 ? true : false
+            visible: clickedSquare3 == 1 ? true : false
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: addressesList3_3.bottom
             anchors.topMargin: 10
@@ -731,11 +743,12 @@ Item {
         }
         Rectangle {
             id: transferButton3
-            visible: clickedSquare4 == 1 ? true : false
+            visible: clickedSquare3 == 1 ? true : false
             width: 90
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_3.bottom
             anchors.left: addressesList4_3.left
@@ -744,6 +757,7 @@ Item {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -751,11 +765,12 @@ Item {
         }
         Rectangle {
             id: historyButton3
-            visible: clickedSquare4 == 1 ? true : false
+            visible: clickedSquare3 == 1 ? true : false
             width: 90
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_3.bottom
             anchors.left: transferButton3.right
@@ -765,6 +780,7 @@ Item {
                 text: "HISTORY"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -772,11 +788,12 @@ Item {
         }
         Rectangle {
             id: tradeButton3
-            visible: clickedSquare4 == 1 ? true : false
+            visible: clickedSquare3 == 1 ? true : false
             width: 90
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_3.bottom
             anchors.left: historyButton3.right
@@ -786,6 +803,7 @@ Item {
                 text: "TRADE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -805,7 +823,7 @@ Item {
         amountSize: "22.54332 DASH"
         totalValue: "$43,443.94"
         value: "$9,839.99"
-        height: clickedSquare5 == 1 ? 250 : 75
+        height: clickedSquare4 == 1 ? 250 : 75
         z: 0
         Item {
             id: expandButton4
@@ -828,13 +846,13 @@ Item {
             MouseArea {
                 anchors.fill: expandButton4
                 onClicked: {
-                    if(clickedSquare5 == 1){
-                        clickedSquare5 = 0
+                    if(clickedSquare4 == 1){
+                        clickedSquare4 = 0
                         return
                     }
-                    if(clickedSquare5 == 0){
-                        clickedSquare5 = 1
-                        clickedSquare4 = 0
+                    if(clickedSquare4 == 0){
+                        clickedSquare5 = 0
+                        clickedSquare4 = 1
                         clickedSquare3 = 0
                         clickedSquare2 = 0
                         clickedSquare = 0
@@ -848,7 +866,7 @@ Item {
           */
         Rectangle {
             id: dividerLine4
-            visible: clickedSquare5 == 1 ? true : false
+            visible: clickedSquare4 == 1 ? true : false
             width: parent.width - 20
             height: 1
             color: "#575757"
@@ -858,7 +876,7 @@ Item {
         }
         Label {
             id: addressesList_4
-            visible: clickedSquare5 == 1 ? true : false
+            visible: clickedSquare4 == 1 ? true : false
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: dividerLine4.bottom
             anchors.topMargin: 10
@@ -870,7 +888,7 @@ Item {
         }
         Label {
             id: addressesList2_4
-            visible: clickedSquare5 == 1 ? true : false
+            visible: clickedSquare4 == 1 ? true : false
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: addressesList_4.bottom
             anchors.topMargin: 10
@@ -882,7 +900,7 @@ Item {
         }
         Label {
             id: addressesList3_4
-            visible: clickedSquare5 == 1 ? true : false
+            visible: clickedSquare4 == 1 ? true : false
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: addressesList2_4.bottom
             anchors.topMargin: 10
@@ -894,7 +912,7 @@ Item {
         }
         Label {
             id: addressesList4_4
-            visible: clickedSquare5 == 1 ? true : false
+            visible: clickedSquare4 == 1 ? true : false
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: addressesList3_4.bottom
             anchors.topMargin: 10
@@ -906,11 +924,12 @@ Item {
         }
         Rectangle {
             id: transferButton4
-            visible: clickedSquare5 == 1 ? true : false
+            visible: clickedSquare4 == 1 ? true : false
             width: 90
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_4.bottom
             anchors.left: addressesList4_4.left
@@ -919,6 +938,7 @@ Item {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -926,11 +946,12 @@ Item {
         }
         Rectangle {
             id: historyButton4
-            visible: clickedSquare5 == 1 ? true : false
+            visible: clickedSquare4 == 1 ? true : false
             width: 90
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_4.bottom
             anchors.left: transferButton4.right
@@ -940,6 +961,7 @@ Item {
                 text: "HISTORY"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -947,11 +969,12 @@ Item {
         }
         Rectangle {
             id: tradeButton4
-            visible: clickedSquare5 == 1 ? true : false
+            visible: clickedSquare4 == 1 ? true : false
             width: 90
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_4.bottom
             anchors.left: historyButton4.right
@@ -961,6 +984,7 @@ Item {
                 text: "TRADE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -977,7 +1001,7 @@ Item {
         currencyType: '../icons/LTC-color.svg'
         currencyType2: "LTC"
         percentChange: "+%.8"
-        amountSize: "22.54332 DASH"
+        amountSize: "22.54332 LTC"
         totalValue: "$43,443.94"
         value: "$9,839.99"
         height: clickedSquare5 == 1 ? 250 : 75
@@ -1086,6 +1110,7 @@ Item {
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
             anchors.top: addressesList4_5.bottom
             anchors.left: addressesList4_5.left
@@ -1094,6 +1119,7 @@ Item {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -1409,10 +1435,10 @@ Item {
                 color: transferSwitch.checked ? "#5E8BFE" : "#5F5F5F"
             }
         }
-        /**
-          * Transfer modal receive state
-          */
 
+        /**
+          * Transfer Modal both send & receive
+          */
         Image{
             id: currencyIcon
             source: '../icons/BTC-color.svg'
@@ -1422,7 +1448,7 @@ Item {
             anchors.leftMargin: 20
             anchors.top: modal.top
             anchors.topMargin: 50
-            visible: transferSwitch.checked == false && transferTracker == 1
+            visible: transferTracker == 1
             Label{
                 id: currencyIconChild
                 text: "BTC"
@@ -1438,7 +1464,7 @@ Item {
                 anchors.left: currencyIconChild.right
                 anchors.leftMargin: 8
                 anchors.verticalCenter: currencyIconChild.verticalCenter
-                visible: transferSwitch.checked == false && transferTracker == 1
+                visible: transferTracker == 1
             }
         }
         Label{
@@ -1450,18 +1476,22 @@ Item {
             anchors.topMargin: 50
             color: "#E5E5E5"
             font.bold: true
-            visible: transferSwitch.checked == false && transferTracker == 1
-            Image{
-                id: walletDropdown
-                source: '../icons/dropdown_icon.svg'
-                width: 15
-                height: 15
-                anchors.left: walletChoice.right
-                anchors.leftMargin: 8
-                anchors.verticalCenter: parent.verticalCenter
-                visible: transferSwitch.checked == false && transferTracker == 1
-            }
+            visible: transferTracker == 1
+
         }
+        Image{
+            id: walletDropdown
+            source: '../icons/dropdown_icon.svg'
+            width: 15
+            height: 15
+            anchors.left: walletChoice.right
+            anchors.leftMargin: 8
+            anchors.verticalCenter: walletChoice.verticalCenter
+            visible: transferTracker == 1
+        }
+        /**
+          * Transfer modal receive state
+          */
         Rectangle{
             id: qrPlaceholder
             color: "white"
@@ -1511,8 +1541,146 @@ Item {
         /**
           * Transfer modal send state
           */
-        Item{
+        Label{
+            id: walletBalance
+            text: "18.5359 XBY"
+            anchors.right: walletDropdown.right
+            anchors.rightMargin: 0
+            anchors.top: walletChoice.bottom
+            anchors.topMargin: 1
+            color: "#E5E5E5"
+            font.bold: true
+            font.pixelSize: 10
+            visible: transferTracker == 1 && transferSwitch.checked == true
+        }
+        Controls.TextInput{
+            id: sendAmount
+            height: 34
+            //radius: 8
+            text: "AMOUNT (BTC)"
+            anchors.left: currencyIcon.left
+            anchors.top: currencyIcon.bottom
+            anchors.topMargin: 15
+            visible: transferTracker == 1 && transferSwitch.checked == true
+            color: "#727272"
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            font.bold: true
+        }
+        Controls.TextInput{
+            id: keyInput
+            height: 34
+            //radius: 8
+            text: "SEND TO (PUBLIC KEY)"
+            anchors.left: currencyIcon.left
+            anchors.top: sendAmount.bottom
+            anchors.topMargin: 15
+            color: "#727272"
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: transferTracker == 1 && transferSwitch.checked == true
+        }
+        Rectangle {
+            id: scanQrButton
+            visible: transferTracker == 1 && transferSwitch.checked == true
+            width: (keyInput.width / 2) - 3
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.top: keyInput.bottom
+            anchors.topMargin: 15
+            anchors.left: keyInput.left
+            MouseArea {
+                anchors.fill: scanQrButton
 
+                //onClicked: {
+                  //  transferTracker = 1
+               // }
+            }
+            Text{
+                text: "SCAN QR"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFF"
+                font.bold: true
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Rectangle {
+            id: addressBookButton
+            visible: transferTracker == 1 && transferSwitch.checked == true
+            width: (keyInput.width / 2) - 3
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.top: keyInput.bottom
+            anchors.topMargin: 15
+            anchors.right: keyInput.right
+            MouseArea {
+                anchors.fill: addressBookButton
+
+                //onClicked: {
+                  //  transferTracker = 1
+               // }
+            }
+            Text{
+                text: "ADDRESS BOOK"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+        Controls.TextInput{
+            id: referenceInput
+            height: 34
+           // radius: 8
+            text: "REFERENCE"
+            anchors.left: currencyIcon.left
+            anchors.top: scanQrButton.bottom
+            anchors.topMargin: 15
+            color: "#727272"
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: transferTracker == 1 && transferSwitch.checked == true
+        }
+        Rectangle {
+            id: sendButton
+            visible: transferTracker == 1 && transferSwitch.checked == true
+            width: keyInput.width
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.top: referenceInput.bottom
+            anchors.topMargin: 35
+            anchors.left: referenceInput.left
+            MouseArea {
+                anchors.fill: addressBookButton
+
+                //onClicked: {
+                  //  transferTracker = 1
+               // }
+            }
+            Text{
+                text: "SEND"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
     }
 }
