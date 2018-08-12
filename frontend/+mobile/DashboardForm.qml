@@ -1597,8 +1597,8 @@ Item {
                 anchors.fill: scanQrButton
 
                 //onClicked: {
-                  //  transferTracker = 1
-               // }
+                //  transferTracker = 1
+                // }
             }
             Text{
                 text: "SCAN QR"
@@ -1626,8 +1626,8 @@ Item {
                 anchors.fill: addressBookButton
 
                 //onClicked: {
-                  //  transferTracker = 1
-               // }
+                //  transferTracker = 1
+                // }
             }
             Text{
                 text: "ADDRESS BOOK"
@@ -1642,7 +1642,7 @@ Item {
         Controls.TextInput{
             id: referenceInput
             height: 34
-           // radius: 8
+            // radius: 8
             text: "REFERENCE"
             anchors.left: currencyIcon.left
             anchors.top: scanQrButton.bottom
@@ -1669,8 +1669,8 @@ Item {
                 anchors.fill: addressBookButton
 
                 //onClicked: {
-                  //  transferTracker = 1
-               // }
+                //  transferTracker = 1
+                // }
             }
             Text{
                 text: "SEND"
