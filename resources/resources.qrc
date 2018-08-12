@@ -115,5 +115,11 @@
         <file>icons/NEO-color.svg</file>
         <file>icons/XBY-color.svg</file>
         <file>icons/expand_buttons.svg</file>
+        <file>icons/XCHAT_02.svg</file>
+        <file>icons/XVAULT_02.svg</file>
+        <file>icons/XCHANGE_02.svg</file>
+        <file>icons/CloseIcon.svg</file>
+        <file>icons/paste_icon.svg</file>
+        <file>icons/dropdown_icon.svg</file>
     </qresource>
 </RCC>
