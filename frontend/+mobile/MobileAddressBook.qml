@@ -15,6 +15,7 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
 import "../Controls" as Controls
+
 /**
   * Address Book
   */
@@ -36,7 +37,7 @@ Item {
             text: qsTr("POSEY")
         }
     }
-    Rectangle{
+    Rectangle {
         z: 100
         color: "#393B43"
         opacity: 0.8
@@ -45,7 +46,7 @@ Item {
         width: parent.width
         height: 50
     }
-    Rectangle{
+    Rectangle {
         color: "black"
         opacity: .8
         anchors.bottom: parent.bottom
@@ -159,7 +160,7 @@ Item {
         }
     }
 
-    Controls.AddressBookSquares{
+    Controls.AddressBookSquares {
         id: address
         anchors.top: parent.top
         anchors.topMargin: 120
@@ -167,7 +168,7 @@ Item {
         anchors.leftMargin: 25
         name: "Posey"
     }
-    Controls.AddressBookSquares{
+    Controls.AddressBookSquares {
         id: address2
         anchors.top: address.bottom
         anchors.topMargin: 7
@@ -175,7 +176,7 @@ Item {
         anchors.leftMargin: 25
         name: "Nrocy"
     }
-    Controls.AddressBookSquares{
+    Controls.AddressBookSquares {
         id: address3
         anchors.top: address2.bottom
         anchors.topMargin: 7
@@ -183,29 +184,13 @@ Item {
         anchors.leftMargin: 25
         name: "Enervey"
     }
-    Controls.AddressBookSquares{
+    Controls.AddressBookSquares {
         id: address4
         anchors.top: address3.bottom
         anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Danny"
-    }
-    Controls.AddressBookSquares{
-        id: address5
-        anchors.top: address4.bottom
-        anchors.topMargin: 7
-        anchors.left: parent.left
-        anchors.leftMargin: 25
-        name: "Goldeneye"
-    }
-    Controls.AddressBookSquares{
-        id: address6
-        anchors.top: address5.bottom
-        anchors.topMargin: 7
-        anchors.left: parent.left
-        anchors.leftMargin: 25
-        name: "Chef"
     }
 
     Image {
@@ -242,7 +227,7 @@ Item {
         height: 20
         z: 100
         visible: appsTracker == 0
-        MouseArea{
+        MouseArea {
             anchors.fill: apps
             onClicked: appsTracker = 1
         }
@@ -272,7 +257,7 @@ Item {
         height: 20
         z: 100
         visible: appsTracker == 1
-        MouseArea{
+        MouseArea {
             anchors.fill: closeApps
             onClicked: appsTracker = 0
         }
@@ -302,7 +287,7 @@ Item {
         height: 40
         z: 100
         visible: appsTracker == 1
-        Text{
+        Text {
             text: "X-CHANGE"
             anchors.top: parent.bottom
             anchors.topMargin: 5
@@ -338,7 +323,7 @@ Item {
         height: 40
         z: 100
         visible: appsTracker == 1
-        Text{
+        Text {
             text: "X-VAULT"
             anchors.top: parent.bottom
             anchors.topMargin: 5
@@ -375,7 +360,7 @@ Item {
         height: 40
         z: 100
         visible: appsTracker == 1
-        Text{
+        Text {
             text: "X-CHAT"
             anchors.top: parent.bottom
             anchors.topMargin: 5
