@@ -196,7 +196,7 @@ Item {
     }
     Image {
         id: apps
-        source: '../icons/Apps_icon3.svg'
+        source: '../icons/Apps_icon_03.svg'
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 15
         anchors.right: parent.right
