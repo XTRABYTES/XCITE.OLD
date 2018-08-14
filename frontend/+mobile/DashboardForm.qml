@@ -33,7 +33,7 @@ Item {
 
     Rectangle {
         z: 100
-        color: "#393B43"
+        color: "#2A2C31"
         opacity: 0.8
         anchors.bottom: parent.bottom
         anchors.left: parent.left
@@ -50,6 +50,16 @@ Item {
         z: 5
         visible: appsTracker == 1 || transferTracker == 1
     }
+    Rectangle {
+        color: "#34363D"
+        anchors.top: transfer.bottom
+        anchors.topMargin: 14
+        anchors.left: parent.left
+        height: parent.height
+        width: parent.width
+        z: 0
+        visible: true
+    }
 
     Loader {
         id: pageLoader
@@ -62,6 +72,7 @@ Item {
         Layout.topMargin: 14
     }
     RowLayout {
+        id: headingLayout
         anchors.top: heading.bottom
         anchors.topMargin: 10
         anchors.left: heading.left
@@ -99,25 +110,16 @@ Item {
         }
     }
 
-    /**
-      * Waiting on updated SVG, commented out
     Image {
         id: notif
         anchors.right: parent.right
-        anchors.rightMargin: 5
-        anchors.top: parent.top
-        anchors.topMargin: 5
-        source: '../icons/icon-notif.svg'
-        width: 16
-        height: 25
-        ColorOverlay {
-            anchors.fill: transfer2
-            source: transfer2
-            color: "grey" // make image like it lays under grey glass
-        }
-
+        anchors.rightMargin: 30
+        anchors.verticalCenter: headingLayout.verticalCenter
+        source: '../icons/notification_icon_03.svg'
+        width: 30
+        height: 30
     }
-    */
+
     Label {
         id: value
         anchors.top: parent.top
@@ -129,110 +131,73 @@ Item {
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
         // font.weight: Font.DemiBold
-        Label {
-            anchors.top: value.bottom
-            anchors.topMargin: 6
-            text: "+$6,000.00 (24h)"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#0CB8B3"
-            font.bold: true
-            Label {
-                id: walletHistory
-                anchors.top: parent.bottom
-                anchors.topMargin: 18
-                text: "WALLET HISTORY"
-                font.pixelSize: 11
-                font.family: "Brandon Grotesque"
-                color: "#696969"
-                anchors.left: parent.left
-                Label {
-                    anchors.top: parent.top
-                    anchors.topMargin: 0
-                    text: "$464,358.25"
-                    font.pixelSize: 13
-                    font.bold: true
-                    font.family: "Brandon Grotesque"
-                    color: "#5E8BFE"
-                    anchors.left: parent.right
-                    anchors.leftMargin: 8
-                }
-            }
-        }
     }
 
     Switch {
         id: switch1
         anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: 40
         anchors.top: parent.top
-        anchors.topMargin: 80
+        anchors.topMargin: 90
         visible: transferTracker != 1
+        width: 50
+        height: 20
+
         transform: Rotation {
             origin.x: 25
             origin.y: 25
             angle: 90
         }
-    }
 
+    }
+    /**
     Label {
         id: week1
-        anchors.verticalCenter: switch1.verticalCenter
         text: "WEEK"
         font.pixelSize: 11
         font.bold: true
         font.family: "Brandon Grotesque"
-        anchors.right: switch1.left
-        anchors.rightMargin: -2
         color: switch1.checked ? "#5F5F5F" : "#5E8BFE"
+        anchors.right: switch1.left
+        anchors.rightMargin: -5
+        anchors.top: switch1.top
+        anchors.topMargin: 40
     }
     Label {
         id: month1
-        anchors.bottom: switch1.bottom
         text: "MONTH"
         font.pixelSize: 11
         font.bold: true
         font.family: "Brandon Grotesque"
-        anchors.right: switch1.left
-        anchors.rightMargin: -2
         color: switch1.checked ? "#5E8BFE" : "#5F5F5F"
+        anchors.right: switch1.left
+        anchors.leftMargin: 2
+        anchors.bottom:switch1.bottom
     }
-
+*/
     Label {
         id: transfer
         text: "TRANSFER"
-        font.pixelSize: 12
+        font.pixelSize: 13
         font.family: "Brandon Grotesque"
         color: "#C7C7C7"
         anchors.left: square1.left
         anchors.bottom: square1.top
-        anchors.bottomMargin: 8
+        anchors.bottomMargin: 30
         font.bold: true
-        /**
-        MouseArea {
-            anchors.fill: add
-            onClicked: mainRoot.push("MobileAddressBook.qml")
-        }
-        */
         Image {
             id: transfer2
-            anchors.top: parent.top
-            anchors.topMargin: -2
+            anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.right
             anchors.leftMargin: 8
-            source: '../icons/icon-transfer.svg'
-            width: 16
-            height: 16
+            source: '../icons/transfer_icon.svg'
+            width: 18
+            height: 18
             MouseArea {
                 anchors.fill: transfer2
                 onClicked: {
                     transferTracker = 1
                 }
-            }
-            ColorOverlay {
-                anchors.fill: transfer2
-                source: transfer2
-                color: "grey" // make image like it lays under grey glass
             }
         }
     }
@@ -240,48 +205,37 @@ Item {
     Label {
         id: addCoin
         text: "ADD COIN"
-        font.pixelSize: 12
+        font.pixelSize: 13
         font.family: "Brandon Grotesque"
         color: "#C7C7C7"
         anchors.right: square1.right
         anchors.bottom: square1.top
-        anchors.bottomMargin: 8
+        anchors.bottomMargin: 30
         anchors.rightMargin: 24
         font.bold: true
-        /**
-        MouseArea {
-            anchors.fill: add
-            onClicked: mainRoot.push("MobileAddressBook.qml")
-        }
-        */
         Image {
             id: plus
-            anchors.top: parent.top
-            anchors.topMargin: -2
+            anchors.verticalCenter: addCoin.verticalCenter
             anchors.left: parent.right
             anchors.leftMargin: 8
-            source: '../icons/plus-button.svg'
-            width: 16
-            height: 16
-            ColorOverlay {
-                anchors.fill: plus
-                source: plus
-                color: "grey" // make image like it lays under grey glass
-            }
+            source: '../icons/add_icon_03.svg'
+            width: 18
+            height: 18
         }
     }
 
     Controls.CurrencySquare {
         id: square1
         anchors.top: parent.top
-        anchors.topMargin: 230
+        anchors.topMargin: 210
         anchors.left: parent.left
         anchors.leftMargin: 25
-        currencyType: '../icons/XBY-color.svg'
+        currencyType: '../icons/XBY_card_logo_colored_05.svg'
         currencyType2: "XBY"
         percentChange: "+%.8"
-        amountSize: "22.54332 XBY"
-        height: clickedSquare == 1 ? 250 : 75
+        gainLossTracker: 1
+        amountSize: "22.5432"
+        height: clickedSquare == 1 ? 166 : 75
         // since expandbutton is very tiny and hard to click we put an invisible rectangle here to mimic the dots
         Rectangle {
             id: expandButtonArea
@@ -309,25 +263,16 @@ Item {
                 }
             }
         }
-        Item {
+        Image {
             id: expandButton
-            width: 18
-            height: 4
-            anchors.horizontalCenter: parent.horizontalCenter
+            width: 25
+            height: 5
+            anchors.horizontalCenter: expandButtonArea.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 8
-
-            Image {
-                id: expand
-                source: '../icons/expand_buttons.svg'
-            }
-
-            ColorOverlay {
-                anchors.fill: expand
-                source: expand
-                color: "grey"
-            }
+            source: '../icons/expand_buttons.svg'
         }
+
         /**
           * Visible when square is clicked
           */
@@ -341,65 +286,28 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        Label {
-            id: addressesList
-            visible: clickedSquare == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: dividerLine.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 XBY"
-            font.pixelSize: 12
+        Text {
+            text: "Unconfirmed 55.42 XBY"
             font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList2
-            visible: clickedSquare == 1 ? true : false
+            font.pointSize: 12
+            font.italic: true
+            color: "#919191"
+            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 XBY"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList3
+            anchors.bottom: dividerLine.top
             visible: clickedSquare == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList2.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 XBY"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList4
-            visible: clickedSquare == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList3.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 XBY"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
         }
         Rectangle {
             id: transferButton
             visible: clickedSquare == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressesList4.bottom
-            anchors.left: addressesList4.left
+            anchors.top: dividerLine.bottom
+            anchors.left: dividerLine.left
             anchors.topMargin: 15
             MouseArea {
                 anchors.fill: transferButton
@@ -420,41 +328,17 @@ Item {
         Rectangle {
             id: historyButton
             visible: clickedSquare == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressesList4.bottom
-            anchors.left: transferButton.right
-            anchors.leftMargin: 10
+            anchors.top: dividerLine.bottom
+            anchors.right: dividerLine.right
             anchors.topMargin: 15
             Text {
                 text: "HISTORY"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#5E8BFF"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-        Rectangle {
-            id: tradeButton
-            visible: clickedSquare == 1 ? true : false
-            width: 90
-            height: 40
-            radius: 8
-            border.color: "#5E8BFF"
-            border.width: 2
-            color: "transparent"
-            anchors.top: addressesList4.bottom
-            anchors.left: historyButton.right
-            anchors.leftMargin: 10
-            anchors.topMargin: 15
-            Text {
-                text: "TRADE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
@@ -470,13 +354,14 @@ Item {
         anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
-        currencyType: '../icons/XBY-color.svg'
+        currencyType: '../icons/XFUEL_card_logo_colored_07.svg'
         currencyType2: "XFUEL"
-        percentChange: "+%.8"
-        amountSize: "22.54332 XFUEL"
+        percentChange: "-%.8"
+        gainLossTracker: 0
+        amountSize: "22.5432"
         totalValue: "$43,443.94"
         value: "$9,839.99"
-        height: clickedSquare2 == 1 ? 250 : 75
+        height: clickedSquare2 == 1 ? 166 : 75
         // since expandbutton is very tiny and hard to click we put an invisible rectangle here to mimic the dots
         Rectangle {
             id: expandButtonArea2
@@ -503,24 +388,16 @@ Item {
                 }
             }
         }
-        Item {
+        Image {
             id: expandButton2
-            width: 18
-            height: 4
-            anchors.horizontalCenter: parent.horizontalCenter
+            width: 25
+            height: 5
+            anchors.horizontalCenter: expandButtonArea2.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 8
-            Image {
-                id: expand2
-                source: '../icons/expand_buttons.svg'
-            }
-
-            ColorOverlay {
-                anchors.fill: expand2
-                source: expand2
-                color: "grey"
-            }
+            source: '../icons/expand_buttons.svg'
         }
+
         /**
           * Visible when square is clicked
           */
@@ -534,66 +411,35 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        Label {
-            id: addressesList_2
-            visible: clickedSquare2 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: dividerLine2.bottom
-            anchors.topMargin: 10
-            text: "Main     FH12af040h30Fe3029FJP0...    18.5381 XFUEL"
-            font.pixelSize: 12
+        Text {
+            text: "Unconfirmed 55.42 XFUEL"
             font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList2_2
-            visible: clickedSquare2 == 1 ? true : false
+            font.pointSize: 12
+            font.italic: true
+            color: "#919191"
+            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList_2.bottom
-            anchors.topMargin: 10
-            text: "Main     FH12af040h30Fe3029FJP0...    18.5381 XFUEL"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList3_2
+            anchors.bottom: dividerLine2.top
             visible: clickedSquare2 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList2_2.bottom
-            anchors.topMargin: 10
-            text: "Main     FH12af040h30Fe3029FJP0...    18.5381 XFUEL"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList4_2
-            visible: clickedSquare2 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList3_2.bottom
-            anchors.topMargin: 10
-            text: "Main     FH12af040h30Fe3029FJP0...    18.5381 XFUEL"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
         }
         Rectangle {
             id: transferButton2
             visible: clickedSquare2 == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressesList4_2.bottom
-            anchors.left: addressesList4_2.left
+            anchors.top: dividerLine2.bottom
+            anchors.left: dividerLine2.left
             anchors.topMargin: 15
+            MouseArea {
+                anchors.fill: transferButton2
+                onClicked: {
+                    transferTracker = 1
+                }
+            }
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -607,41 +453,17 @@ Item {
         Rectangle {
             id: historyButton2
             visible: clickedSquare2 == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressesList4_2.bottom
-            anchors.left: transferButton2.right
-            anchors.leftMargin: 10
+            anchors.top: dividerLine2.bottom
+            anchors.right: dividerLine2.right
             anchors.topMargin: 15
             Text {
                 text: "HISTORY"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#5E8BFF"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-        Rectangle {
-            id: tradeButton2
-            visible: clickedSquare2 == 1 ? true : false
-            width: 90
-            height: 40
-            radius: 8
-            border.color: "#5E8BFF"
-            border.width: 2
-            color: "transparent"
-            anchors.top: addressesList4_2.bottom
-            anchors.left: historyButton2.right
-            anchors.leftMargin: 10
-            anchors.topMargin: 15
-            Text {
-                text: "TRADE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
@@ -661,10 +483,11 @@ Item {
         currencyType: '../icons/BTC-color.svg'
         currencyType2: "BTC"
         percentChange: "+%.8"
-        amountSize: "22.54332 BTC"
+        gainLossTracker: 1
+        amountSize: "22.5432"
         totalValue: "$43,443.94"
         value: "$9,839.99"
-        height: clickedSquare3 == 1 ? 250 : 75
+        height: clickedSquare3 == 1 ? 166 : 75
         Rectangle {
             id: expandButtonArea3
             width: 40
@@ -691,24 +514,16 @@ Item {
                 }
             }
         }
-        Item {
+        Image {
             id: expandButton3
-            width: 18
-            height: 4
-            anchors.horizontalCenter: parent.horizontalCenter
+            width: 25
+            height: 5
+            anchors.horizontalCenter: expandButtonArea3.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 8
-            Image {
-                id: expand3
-                source: '../icons/expand_buttons.svg'
-            }
-
-            ColorOverlay {
-                anchors.fill: expand3
-                source: expand3
-                color: "grey"
-            }
+            source: '../icons/expand_buttons.svg'
         }
+
         /**
           * Visible when square is clicked
           */
@@ -722,66 +537,35 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        Label {
-            id: addressesList_3
-            visible: clickedSquare3 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: dividerLine3.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
+        Text {
+            text: "Unconfirmed 55.42 BTC"
             font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList2_3
-            visible: clickedSquare3 == 1 ? true : false
+            font.pointSize: 12
+            font.italic: true
+            color: "#919191"
+            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList_3.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList3_3
+            anchors.bottom: dividerLine3.top
             visible: clickedSquare3 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList2_3.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList4_3
-            visible: clickedSquare3 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList3_3.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
         }
         Rectangle {
             id: transferButton3
             visible: clickedSquare3 == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressesList4_3.bottom
-            anchors.left: addressesList4_3.left
+            anchors.top: dividerLine3.bottom
+            anchors.left: dividerLine3.left
             anchors.topMargin: 15
+            MouseArea {
+                anchors.fill: transferButton3
+                onClicked: {
+                    transferTracker = 1
+                }
+            }
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -795,41 +579,17 @@ Item {
         Rectangle {
             id: historyButton3
             visible: clickedSquare3 == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressesList4_3.bottom
-            anchors.left: transferButton3.right
-            anchors.leftMargin: 10
+            anchors.top: dividerLine3.bottom
+            anchors.right: dividerLine3.right
             anchors.topMargin: 15
             Text {
                 text: "HISTORY"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#5E8BFF"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-        Rectangle {
-            id: tradeButton3
-            visible: clickedSquare3 == 1 ? true : false
-            width: 90
-            height: 40
-            radius: 8
-            border.color: "#5E8BFF"
-            border.width: 2
-            color: "transparent"
-            anchors.top: addressesList4_3.bottom
-            anchors.left: historyButton3.right
-            anchors.leftMargin: 10
-            anchors.topMargin: 15
-            Text {
-                text: "TRADE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
@@ -848,11 +608,12 @@ Item {
         anchors.leftMargin: 25
         currencyType: '../icons/ETH-color.svg'
         currencyType2: "ETH"
-        percentChange: "+%.8"
-        amountSize: "22.54332 ETH"
+        percentChange: "-%.8"
+        gainLossTracker: 0
+        amountSize: "22.5432"
         totalValue: "$43,443.94"
         value: "$9,839.99"
-        height: clickedSquare4 == 1 ? 250 : 75
+        height: clickedSquare4 == 1 ? 166 : 75
         z: 0
         Rectangle {
             id: expandButtonArea4
@@ -880,24 +641,16 @@ Item {
                 }
             }
         }
-        Item {
+        Image {
             id: expandButton4
-            width: 18
-            height: 4
-            anchors.horizontalCenter: parent.horizontalCenter
+            width: 25
+            height: 5
+            anchors.horizontalCenter: expandButtonArea4.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 8
-            Image {
-                id: expand4
-                source: '../icons/expand_buttons.svg'
-            }
-
-            ColorOverlay {
-                anchors.fill: expand4
-                source: expand4
-                color: "grey"
-            }
+            source: '../icons/expand_buttons.svg'
         }
+
         /**
           * Visible when square is clicked
           */
@@ -911,66 +664,35 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        Label {
-            id: addressesList_4
-            visible: clickedSquare4 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: dividerLine4.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
+        Text {
+            text: "Unconfirmed 55.42 ETH"
             font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList2_4
-            visible: clickedSquare4 == 1 ? true : false
+            font.pointSize: 12
+            font.italic: true
+            color: "#919191"
+            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList_4.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList3_4
+            anchors.bottom: dividerLine4.top
             visible: clickedSquare4 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList2_4.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList4_4
-            visible: clickedSquare4 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList3_4.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
         }
         Rectangle {
             id: transferButton4
             visible: clickedSquare4 == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressesList4_4.bottom
-            anchors.left: addressesList4_4.left
+            anchors.top: dividerLine4.bottom
+            anchors.left: dividerLine4.left
             anchors.topMargin: 15
+            MouseArea {
+                anchors.fill: transferButton4
+                onClicked: {
+                    transferTracker = 1
+                }
+            }
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -984,15 +706,14 @@ Item {
         Rectangle {
             id: historyButton4
             visible: clickedSquare4 == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressesList4_4.bottom
-            anchors.left: transferButton4.right
-            anchors.leftMargin: 10
+            anchors.top: dividerLine4.bottom
+            anchors.right: dividerLine4.right
             anchors.topMargin: 15
             Text {
                 text: "HISTORY"
@@ -1004,85 +725,62 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
-        Rectangle {
-            id: tradeButton4
-            visible: clickedSquare4 == 1 ? true : false
-            width: 90
-            height: 40
-            radius: 8
-            border.color: "#5E8BFF"
-            border.width: 2
-            color: "transparent"
-            anchors.top: addressesList4_4.bottom
-            anchors.left: historyButton4.right
-            anchors.leftMargin: 10
-            anchors.topMargin: 15
-            Text {
-                text: "TRADE"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#5E8BFF"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
     }
-    /**
+
     Controls.CurrencySquare {
         id: square5
         anchors.top: square4.bottom
         anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
-        currencyType: '../icons/LTC-color.svg'
-        currencyType2: "LTC"
+        currencyType: '../icons/NEO_card_logo_colored_02.svg'
+        currencyType2: "NEO"
         percentChange: "+%.8"
-        amountSize: "22.54332 LTC"
+        gainLossTracker: 1
+        amountSize: "22.5432"
         totalValue: "$43,443.94"
         value: "$9,839.99"
-        height: clickedSquare5 == 1 ? 250 : 75
+        height: clickedSquare5 == 1 ? 166 : 75
         z: 0
-        Item {
-            id: expandButton5
-            width: 18
-            height: 4
+        Rectangle {
+            id: expandButtonArea5
+            width: 40
+            height: 15
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 8
-            Image {
-                id: expand5
-                source: '../icons/expand_buttons.svg'
-            }
-
-            ColorOverlay {
-                anchors.fill: expand5
-                source: expand5
-                color: "grey"
-            }
+            color: "transparent"
 
             MouseArea {
-                anchors.fill: expandButton5
+                anchors.fill: expandButtonArea5
                 onClicked: {
                     if (clickedSquare5 == 1) {
                         clickedSquare5 = 0
                         return
                     }
                     if (clickedSquare5 == 0) {
+                        clickedSquare3 = 0
                         clickedSquare5 = 1
                         clickedSquare4 = 0
-                        clickedSquare3 = 0
-                        clickedSquare2 = 0
                         clickedSquare = 0
+                        clickedSquare2 = 0
                         return
                     }
                 }
             }
         }
+
+        Image {
+            id: expandButton5
+            width: 25
+            height: 5
+            anchors.horizontalCenter: expandButtonArea5.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            source: '../icons/expand_buttons.svg'
+        }
         /**
           * Visible when square is clicked
           */
-    /**
         Rectangle {
             id: dividerLine5
             visible: clickedSquare5 == 1 ? true : false
@@ -1093,66 +791,35 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        Label {
-            id: addressesList_5
-            visible: clickedSquare5 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: dividerLine5.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
+        Text {
+            text: "Unconfirmed 55.42 NEO"
             font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList2_5
-            visible: clickedSquare5 == 1 ? true : false
+            font.pointSize: 12
+            font.italic: true
+            color: "#919191"
+            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList_5.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList3_5
+            anchors.bottom: dividerLine5.top
             visible: clickedSquare5 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList2_5.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
-        }
-        Label {
-            id: addressesList4_5
-            visible: clickedSquare5 == 1 ? true : false
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressesList3_5.bottom
-            anchors.topMargin: 10
-            text: "Main     BH12af040hF30Fe3029FJP0...    18.5381 BTC"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            color: "#E5E5E5"
-            font.bold: false
         }
         Rectangle {
             id: transferButton5
             visible: clickedSquare5 == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressesList4_5.bottom
-            anchors.left: addressesList4_5.left
+            anchors.top: dividerLine5.bottom
+            anchors.left: dividerLine5.left
             anchors.topMargin: 15
+            MouseArea {
+                anchors.fill: transferButton5
+                onClicked: {
+                    transferTracker = 1
+                }
+            }
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -1166,47 +833,27 @@ Item {
         Rectangle {
             id: historyButton5
             visible: clickedSquare5 == 1 ? true : false
-            width: 90
+            width: 145
             height: 40
             radius: 8
             border.color: "#5E8BFF"
+            border.width: 2
             color: "transparent"
-            anchors.top: addressesList4_5.bottom
-            anchors.left: transferButton5.right
-            anchors.leftMargin: 10
+            anchors.top: dividerLine5.bottom
+            anchors.right: dividerLine5.right
             anchors.topMargin: 15
             Text {
                 text: "HISTORY"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                color: "#5E8BFF"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-        Rectangle {
-            id: tradeButton5
-            visible: clickedSquare5 == 1 ? true : false
-            width: 90
-            height: 40
-            radius: 8
-            border.color: "#5E8BFF"
-            color: "transparent"
-            anchors.top: addressesList4_5.bottom
-            anchors.left: historyButton5.right
-            anchors.leftMargin: 10
-            anchors.topMargin: 15
-            Text {
-                text: "TRADE"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
+                font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
     }
-*/
+
     Image {
         id: settings
         anchors.bottom: parent.bottom
@@ -1232,7 +879,7 @@ Item {
     }
     Image {
         id: apps
-        source: '../icons/icon-apps.svg'
+        source: '../icons/Apps_icon_03.svg'
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 15
         anchors.right: parent.right
@@ -1470,7 +1117,7 @@ Item {
           */
         Image {
             id: currencyIcon
-            source: '../icons/XBY-color.svg'
+            source: '../icons/XBY_card_logo_colored_05.svg'
             width: 25
             height: 25
             anchors.left: modal.left
@@ -1585,7 +1232,7 @@ Item {
             id: sendAmount
             height: 34
             //radius: 8
-            text: "AMOUNT (BTC)"
+            text: "AMOUNT (XBY)"
             anchors.left: currencyIcon.left
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 15
@@ -1598,7 +1245,6 @@ Item {
         Controls.TextInput {
             id: keyInput
             height: 34
-            //radius: 8
             text: "SEND TO (PUBLIC KEY)"
             anchors.left: currencyIcon.left
             anchors.top: sendAmount.bottom
@@ -1623,10 +1269,6 @@ Item {
             anchors.left: keyInput.left
             MouseArea {
                 anchors.fill: scanQrButton
-
-                //onClicked: {
-                //  transferTracker = 1
-                // }
             }
             Text {
                 text: "SCAN QR"
