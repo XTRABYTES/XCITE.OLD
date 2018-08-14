@@ -16,7 +16,6 @@ import QtGraphicalEffects 1.0
 
 import "./Controls" as Controls
 
-
 /**
   * Main page
   */
@@ -541,7 +540,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: dividerLine2.bottom
             anchors.topMargin: 10
-            text: "Main     FH12af040hF30Fe3029FJP0...    18.5381 XFUEL"
+            text: "Main     FH12af040h30Fe3029FJP0...    18.5381 XFUEL"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#E5E5E5"
@@ -553,7 +552,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: addressesList_2.bottom
             anchors.topMargin: 10
-            text: "Main     FH12af040hF30Fe3029FJP0...    18.5381 XFUEL"
+            text: "Main     FH12af040h30Fe3029FJP0...    18.5381 XFUEL"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#E5E5E5"
@@ -565,7 +564,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: addressesList2_2.bottom
             anchors.topMargin: 10
-            text: "Main     FH12af040hF30Fe3029FJP0...    18.5381 XFUEL"
+            text: "Main     FH12af040h30Fe3029FJP0...    18.5381 XFUEL"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#E5E5E5"
@@ -577,7 +576,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: addressesList3_2.bottom
             anchors.topMargin: 10
-            text: "Main     FH12af040hF30Fe3029FJP0...    18.5381 XFUEL"
+            text: "Main     FH12af040h30Fe3029FJP0...    18.5381 XFUEL"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#E5E5E5"
@@ -652,20 +651,46 @@ Item {
             }
         }
     }
-    /**
+
     Controls.CurrencySquare {
         id: square3
         anchors.top: square2.bottom
         anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
-        currencyType: '../icons/DASH-color.svg'
-        currencyType2: "DASH"
+        currencyType: '../icons/BTC-color.svg'
+        currencyType2: "BTC"
         percentChange: "+%.8"
-        amountSize: "22.54332 DASH"
+        amountSize: "22.54332 BTC"
         totalValue: "$43,443.94"
         value: "$9,839.99"
         height: clickedSquare3 == 1 ? 250 : 75
+        Rectangle {
+            id: expandButtonArea3
+            width: 40
+            height: 15
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: expandButtonArea3
+                onClicked: {
+                    if (clickedSquare3 == 1) {
+                        clickedSquare3 = 0
+                        return
+                    }
+                    if (clickedSquare3 == 0) {
+                        clickedSquare3 = 1
+                        clickedSquare5 = 0
+                        clickedSquare4 = 0
+                        clickedSquare = 0
+                        clickedSquare2 = 0
+                        return
+                    }
+                }
+            }
+        }
         Item {
             id: expandButton3
             width: 18
@@ -683,29 +708,10 @@ Item {
                 source: expand3
                 color: "grey"
             }
-
-            MouseArea {
-                anchors.fill: expandButton3
-                onClicked: {
-                    if (clickedSquare3 == 1) {
-                        clickedSquare3 = 0
-                        return
-                    }
-                    if (clickedSquare3 == 0) {
-                        clickedSquare4 = 0
-                        clickedSquare5 = 0
-                        clickedSquare3 = 1
-                        clickedSquare2 = 0
-                        clickedSquare = 0
-                        return
-                    }
-                }
-            }
         }
         /**
           * Visible when square is clicked
           */
-    /**
         Rectangle {
             id: dividerLine3
             visible: clickedSquare3 == 1 ? true : false
@@ -840,14 +846,40 @@ Item {
         anchors.topMargin: 7
         anchors.left: parent.left
         anchors.leftMargin: 25
-        currencyType: '../icons/LTC-color.svg'
-        currencyType2: "LTC"
+        currencyType: '../icons/ETH-color.svg'
+        currencyType2: "ETH"
         percentChange: "+%.8"
-        amountSize: "22.54332 DASH"
+        amountSize: "22.54332 ETH"
         totalValue: "$43,443.94"
         value: "$9,839.99"
         height: clickedSquare4 == 1 ? 250 : 75
         z: 0
+        Rectangle {
+            id: expandButtonArea4
+            width: 40
+            height: 15
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: expandButtonArea4
+                onClicked: {
+                    if (clickedSquare4 == 1) {
+                        clickedSquare4 = 0
+                        return
+                    }
+                    if (clickedSquare4 == 0) {
+                        clickedSquare3 = 0
+                        clickedSquare5 = 0
+                        clickedSquare4 = 1
+                        clickedSquare = 0
+                        clickedSquare2 = 0
+                        return
+                    }
+                }
+            }
+        }
         Item {
             id: expandButton4
             width: 18
@@ -865,29 +897,10 @@ Item {
                 source: expand4
                 color: "grey"
             }
-
-            MouseArea {
-                anchors.fill: expandButton4
-                onClicked: {
-                    if (clickedSquare4 == 1) {
-                        clickedSquare4 = 0
-                        return
-                    }
-                    if (clickedSquare4 == 0) {
-                        clickedSquare5 = 0
-                        clickedSquare4 = 1
-                        clickedSquare3 = 0
-                        clickedSquare2 = 0
-                        clickedSquare = 0
-                        return
-                    }
-                }
-            }
         }
         /**
           * Visible when square is clicked
           */
-    /**
         Rectangle {
             id: dividerLine4
             visible: clickedSquare4 == 1 ? true : false
@@ -1015,7 +1028,7 @@ Item {
             }
         }
     }
-
+    /**
     Controls.CurrencySquare {
         id: square5
         anchors.top: square4.bottom
@@ -1476,8 +1489,8 @@ Item {
             }
             Image {
                 source: '../icons/dropdown_icon.svg'
-                width: 10
-                height: 10
+                width: 12
+                height: 12
                 anchors.left: currencyIconChild.right
                 anchors.leftMargin: 8
                 anchors.verticalCenter: currencyIconChild.verticalCenter
@@ -1497,8 +1510,8 @@ Item {
         Image {
             id: walletDropdown
             source: '../icons/dropdown_icon.svg'
-            width: 10
-            height: 10
+            width: 12
+            height: 12
             anchors.left: walletChoice.right
             anchors.leftMargin: 8
             anchors.verticalCenter: walletChoice.verticalCenter
