@@ -120,6 +120,12 @@
         <file>icons/XCHANGE_02.svg</file>
         <file>icons/CloseIcon.svg</file>
         <file>icons/paste_icon.svg</file>
-        <file>icons/dropdown_icon.svg</file>
+        <file>icons/add_icon_03.svg</file>
+        <file>icons/Apps_icon_03.svg</file>
+        <file>icons/NEO_card_logo_colored_02.svg</file>
+        <file>icons/notification_icon_03.svg</file>
+        <file>icons/transfer_icon.svg</file>
+        <file>icons/XBY_card_logo_colored_05.svg</file>
+        <file>icons/XFUEL_card_logo_colored_07.svg</file>
     </qresource>
 </RCC>
