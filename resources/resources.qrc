@@ -123,5 +123,6 @@
         <file>icons/transfer_icon.svg</file>
         <file>icons/XBY_card_logo_colored_05.svg</file>
         <file>icons/XFUEL_card_logo_colored_07.svg</file>
+        <file>icons/dropdown_icon.svg</file>
     </qresource>
 </RCC>
