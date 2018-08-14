@@ -103,31 +103,20 @@ Item {
         anchors.bottom: address.top
         anchors.bottomMargin: 8
         font.bold: true
-        /**
-        MouseArea {
-            anchors.fill: add
-            onClicked: mainRoot.push("MobileAddressBook.qml")
-        }
-        */
         Image {
             id: transfer2
             anchors.top: parent.top
             anchors.topMargin: -2
             anchors.left: parent.right
             anchors.leftMargin: 8
-            source: '../icons/icon-transfer.svg'
+            source: '../icons/transfer_icon.svg'
             width: 16
             height: 16
-            ColorOverlay {
-                anchors.fill: transfer2
-                source: transfer2
-                color: "grey" // make image like it lays under grey glass
-            }
         }
     }
 
     Label {
-        id: addCoin
+        id: addAddress
         text: "ADD ADDRESS"
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
@@ -137,26 +126,15 @@ Item {
         anchors.bottomMargin: 8
         anchors.rightMargin: 24
         font.bold: true
-        /**
-        MouseArea {
-            anchors.fill: add
-            onClicked: mainRoot.push("MobileAddressBook.qml")
-        }
-        */
         Image {
             id: plus
             anchors.top: parent.top
             anchors.topMargin: -2
             anchors.left: parent.right
             anchors.leftMargin: 8
-            source: '../icons/plus-button.svg'
+            source: '../icons/add_icon_03.svg'
             width: 16
             height: 16
-            ColorOverlay {
-                anchors.fill: plus
-                source: plus
-                color: "grey" // make image like it lays under grey glass
-            }
         }
     }
 
@@ -218,7 +196,7 @@ Item {
     }
     Image {
         id: apps
-        source: '../icons/icon-apps.svg'
+        source: '../icons/Apps_icon3.svg'
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 15
         anchors.right: parent.right
