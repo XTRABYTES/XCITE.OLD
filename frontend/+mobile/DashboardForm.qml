@@ -1212,19 +1212,19 @@ Item {
             color: "#F2F2F2"
             font.family: "Brandon Grotesque"
             font.bold: true
-            font.pixelSize: 11
+            font.pixelSize: 12
             visible: transferSwitch.checked == false && transferTracker == 1
         }
         Text {
             id: publicKey
-            text: "BM39fjwf093JF329f39fJFfa03987fja392WPF2948WQO"
+            text: "BM39fjwf093JF329f39fJFfa03987fja3"
             anchors.top: pubKey.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
             color: "white"
             font.family: "Brandon Grotesque"
             font.bold: false
-            font.pixelSize: 9
+            font.pixelSize: 11
             visible: transferSwitch.checked == false && transferTracker == 1
         }
         Image {
