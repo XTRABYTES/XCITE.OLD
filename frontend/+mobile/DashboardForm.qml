@@ -13,7 +13,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-
+import QtQrCode.Component 1.0
 import "./Controls" as Controls
 
 /**
@@ -434,12 +434,14 @@ Item {
             anchors.top: dividerLine2.bottom
             anchors.left: dividerLine2.left
             anchors.topMargin: 15
+            /**
             MouseArea {
                 anchors.fill: transferButton2
                 onClicked: {
                     transferTracker = 1
                 }
             }
+            */
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -560,12 +562,14 @@ Item {
             anchors.top: dividerLine3.bottom
             anchors.left: dividerLine3.left
             anchors.topMargin: 15
+            /**
             MouseArea {
                 anchors.fill: transferButton3
                 onClicked: {
                     transferTracker = 1
                 }
             }
+            */
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -687,12 +691,14 @@ Item {
             anchors.top: dividerLine4.bottom
             anchors.left: dividerLine4.left
             anchors.topMargin: 15
+            /**
             MouseArea {
                 anchors.fill: transferButton4
                 onClicked: {
                     transferTracker = 1
                 }
             }
+            */
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -814,12 +820,14 @@ Item {
             anchors.top: dividerLine5.bottom
             anchors.left: dividerLine5.left
             anchors.topMargin: 15
+            /**
             MouseArea {
                 anchors.fill: transferButton5
                 onClicked: {
                     transferTracker = 1
                 }
             }
+            */
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -1147,7 +1155,7 @@ Item {
         Label {
             id: walletChoice
             text: "MAIN"
-            anchors.right: qrPlaceholder.right
+            anchors.right: qrBorder.right
             anchors.rightMargin: 10
             anchors.verticalCenter: currencyIcon.verticalCenter
             color: "#E5E5E5"
@@ -1167,22 +1175,38 @@ Item {
         /**
           * Transfer modal receive state
           */
-        Rectangle {
+
+        Item {
             id: qrPlaceholder
-            color: "white"
+            width: 180
+            height: 180
+            anchors.horizontalCenter: qrBorder.horizontalCenter
+            anchors.verticalCenter: qrBorder.verticalCenter
+            z: 10
+            visible: transferSwitch.checked == false && transferTracker == 1
+            QtQrCode {
+                anchors.fill: parent
+                data: publicKey.text
+                background: "white"
+                foreground: "black"
+            }
+        }
+        Rectangle{
+            id: qrBorder
             radius: 8
-            width: 240
-            height: 200
+            width: 210
+            height: 210
+            visible: transferSwitch.checked == false && transferTracker == 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 20
-            visible: transferSwitch.checked == false && transferTracker == 1
+            color: "white"
         }
 
         Text {
             id: pubKey
             text: "PUBLIC KEY"
-            anchors.top: qrPlaceholder.bottom
+            anchors.top: qrBorder.bottom
             anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter
             color: "#F2F2F2"
@@ -1190,27 +1214,28 @@ Item {
             font.bold: true
             font.pixelSize: 11
             visible: transferSwitch.checked == false && transferTracker == 1
-            Text {
-                id: publicKey
-                text: "BM39fjwf093JF329f39fJFSL393fa03987fja392WPF2948WQO"
-                anchors.top: pubKey.bottom
-                anchors.topMargin: 10
-                anchors.horizontalCenter: parent.horizontalCenter
-                color: "white"
-                font.family: "Brandon Grotesque"
-                font.bold: false
-                font.pixelSize: 9
-            }
-            Image {
-                id: pasteIcon
-                source: '../icons/paste_icon.svg'
-                width: 13
-                height: 13
-                anchors.left: publicKey.right
-                anchors.leftMargin: 5
-                anchors.verticalCenter: publicKey.verticalCenter
-                visible: transferSwitch.checked == false && transferTracker == 1
-            }
+        }
+        Text {
+            id: publicKey
+            text: "BM39fjwf093JF329f39fJFfa03987fja392WPF2948WQO"
+            anchors.top: pubKey.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: pubKey.horizontalCenter
+            color: "white"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 9
+            visible: transferSwitch.checked == false && transferTracker == 1
+        }
+        Image {
+            id: pasteIcon
+            source: '../icons/paste_icon.svg'
+            width: 13
+            height: 13
+            anchors.left: publicKey.right
+            anchors.leftMargin: 5
+            anchors.verticalCenter: publicKey.verticalCenter
+            visible: transferSwitch.checked == false && transferTracker == 1
         }
 
         /**
