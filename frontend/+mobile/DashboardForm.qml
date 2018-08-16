@@ -29,6 +29,7 @@ Item {
     property int clickedSquare6: 0
     property int appsTracker: 0
     property int transferTracker: 0
+    property int addressBookTracker: 0
     z: 2
 
     Rectangle {
@@ -1047,7 +1048,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 150
-        visible: transferTracker == 1
+        visible: transferTracker == 1 && addressBookTracker != 1
         radius: 4
         z: 100
 
@@ -1065,7 +1066,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
-                font.bold: false
+                font.bold: true
                 font.pixelSize: 14
             }
             Image {
@@ -1155,8 +1156,8 @@ Item {
         Label {
             id: walletChoice
             text: "MAIN"
-            anchors.right: qrBorder.right
-            anchors.rightMargin: 10
+            anchors.right: walletDropdown.left
+            anchors.rightMargin: 8
             anchors.verticalCenter: currencyIcon.verticalCenter
             color: "#E5E5E5"
             font.bold: true
@@ -1167,15 +1168,13 @@ Item {
             source: '../icons/dropdown_icon.svg'
             width: 12
             height: 12
-            anchors.left: walletChoice.right
-            anchors.leftMargin: 8
+            anchors.right: sendAmount.right
             anchors.verticalCenter: walletChoice.verticalCenter
             visible: transferTracker == 1
         }
         /**
           * Transfer modal receive state
           */
-
         Item {
             id: qrPlaceholder
             width: 180
@@ -1320,9 +1319,9 @@ Item {
             MouseArea {
                 anchors.fill: addressBookButton
 
-                //onClicked: {
-                //  transferTracker = 1
-                // }
+                onClicked: {
+                    addressBookTracker = 1
+                }
             }
             Text {
                 text: "ADDRESS BOOK"
@@ -1377,5 +1376,322 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
+    }
+    /**
+      * AddressBookModal
+      */
+    Rectangle {
+        id: addressBookModal
+        height: 237
+        width: parent.width - 50
+        color: "#42454F"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 150
+        visible: addressBookTracker == 1
+        radius: 4
+        z: 155
+
+        Rectangle {
+            id: addressBookModalTop
+            height: 50
+            width: addressBookModal.width
+            anchors.bottom: addressBookModal.top
+            anchors.left: addressBookModal.left
+            color: "#34363D"
+            radius: 4
+            Text {
+                text: "ADDRESS BOOK"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#F2F2F2"
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                font.pixelSize: 14
+            }
+            Image {
+                id: closeAddressBookModal
+                source: '../icons/CloseIcon.svg'
+                anchors.bottom: addressBookModalTop.bottom
+                anchors.bottomMargin: 15
+                anchors.right: addressBookModalTop.right
+                anchors.rightMargin: 30
+                width: 20
+                height: 20
+                Rectangle {
+                    id: closeAddressBookModalButtonArea
+                    width: 20
+                    height: 20
+                    anchors.left: closeAddressBookModal.left
+                    anchors.bottom: closeAddressBookModal.bottom
+                    color: "transparent"
+                    MouseArea {
+                        anchors.fill: closeAddressBookModalButtonArea
+                        onClicked: addressBookTracker = 0
+                    }
+                }
+                ColorOverlay {
+                    anchors.fill: closeAddressBookModal
+                    source: closeAddressBookModal
+                    color: "#5E8BFF" // make image like it lays under grey glass
+                }
+            }
+        }
+        Image {
+            id: addressIcon
+            source: '../icons/XBY_card_logo_colored_05.svg'
+            anchors.left: addressBookModal.left
+            anchors.leftMargin: 30
+            anchors.top: addressBookModal.top
+            anchors.topMargin: 20
+            width: 27
+            height: 27
+        }
+        Text {
+            id: addressIconName
+            text: "XBY"
+            anchors.verticalCenter: addressIcon.verticalCenter
+            anchors.left: addressIcon.right
+            anchors.leftMargin: 8
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            font.pixelSize: 14
+        }
+        Image {
+            source: '../icons/dropdown_icon.svg'
+            width: 12
+            height: 12
+            anchors.left: addressIconName.right
+            anchors.leftMargin: 8
+            anchors.verticalCenter: addressIconName.verticalCenter
+        }
+
+        Rectangle{
+            id: seperator1
+            color: "#575757"
+            height: 1
+            width: parent.width - 50
+            anchors.top: addressIcon.bottom
+            anchors.topMargin: 40
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Text {
+            text: "Posey"
+            anchors.bottom: seperator1.top
+            anchors.bottomMargin: 8
+            anchors.left: seperator1.left
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Text {
+            text: "Main"
+            anchors.bottom: seperator1.top
+            anchors.bottomMargin: 8
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Image {
+            id: transferChoice1
+            anchors.right: seperator1.right
+            anchors.rightMargin: 10
+            anchors.bottom: seperator1.top
+            anchors.bottomMargin: 8
+            source: '../icons/transfer_icon.svg'
+            width: 14
+            height: 14
+            MouseArea {
+                anchors.fill: transferChoice1
+                onClicked: {
+                    //transferTracker = 1
+                }
+            }
+        }
+        Rectangle{
+            id: seperator2
+            color: "#575757"
+            height: 1
+            width: parent.width - 50
+            anchors.top: seperator1.bottom
+            anchors.topMargin: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Text {
+            text: "Nrocy"
+            anchors.bottom: seperator2.top
+            anchors.bottomMargin: 8
+            anchors.left: seperator2.left
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Text {
+            text: "Main"
+            anchors.bottom: seperator2.top
+            anchors.bottomMargin: 8
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Image {
+            id: transferChoice2
+            anchors.right: seperator2.right
+            anchors.rightMargin: 10
+            anchors.bottom: seperator2.top
+            anchors.bottomMargin: 8
+            source: '../icons/transfer_icon.svg'
+            width: 14
+            height: 14
+            MouseArea {
+                anchors.fill: transferChoice2
+                onClicked: {
+                    //transferTracker = 1
+                }
+            }
+        }
+        Rectangle{
+            id: seperator3
+            color: "#575757"
+            height: 1
+            width: parent.width - 50
+            anchors.top: seperator2.bottom
+            anchors.topMargin: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Text {
+            text: "Enervey"
+            anchors.bottom: seperator3.top
+            anchors.bottomMargin: 8
+            anchors.left: seperator3.left
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Text {
+            text: "Main"
+            anchors.bottom: seperator3.top
+            anchors.bottomMargin: 8
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Image {
+            id: transferChoice3
+            anchors.right: seperator3.right
+            anchors.rightMargin: 10
+            anchors.bottom: seperator3.top
+            anchors.bottomMargin: 8
+            source: '../icons/transfer_icon.svg'
+            width: 14
+            height: 14
+            MouseArea {
+                anchors.fill: transferChoice3
+                onClicked: {
+                    //transferTracker = 1
+                }
+            }
+        }
+        Rectangle{
+            id: seperator4
+            color: "#575757"
+            height: 1
+            width: parent.width - 50
+            anchors.top: seperator3.bottom
+            anchors.topMargin: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Text {
+            text: "Danny"
+            anchors.bottom: seperator4.top
+            anchors.bottomMargin: 8
+            anchors.left: seperator4.left
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Text {
+            text: "Main"
+            anchors.bottom: seperator4.top
+            anchors.bottomMargin: 8
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Image {
+            id: transferChoice4
+            anchors.right: seperator4.right
+            anchors.rightMargin: 10
+            anchors.bottom: seperator4.top
+            anchors.bottomMargin: 8
+            source: '../icons/transfer_icon.svg'
+            width: 14
+            height: 14
+            MouseArea {
+                anchors.fill: transferChoice4
+                onClicked: {
+                    //transferTracker = 1
+                }
+            }
+        }
+        Rectangle{
+            id: seperator5
+            color: "#575757"
+            height: 1
+            width: parent.width - 50
+            anchors.top: seperator4.bottom
+            anchors.topMargin: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Text {
+            text: "Golden"
+            anchors.bottom: seperator5.top
+            anchors.bottomMargin: 8
+            anchors.left: seperator5.left
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Text {
+            text: "Main"
+            anchors.bottom: seperator5.top
+            anchors.bottomMargin: 8
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            font.family: "Brandon Grotesque"
+            font.bold: false
+            font.pixelSize: 10
+        }
+        Image {
+            id: transferChoice5
+            anchors.right: seperator5.right
+            anchors.rightMargin: 10
+            anchors.bottom: seperator5.top
+            anchors.bottomMargin: 8
+            source: '../icons/transfer_icon.svg'
+            width: 14
+            height: 14
+            MouseArea {
+                anchors.fill: transferChoice5
+                onClicked: {
+                    //transferTracker = 1
+                }
+            }
+        }
+
     }
 }
