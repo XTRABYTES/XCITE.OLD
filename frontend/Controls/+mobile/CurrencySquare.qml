@@ -19,14 +19,15 @@ Rectangle {
     property url currencyType: '../icons/BTC-color.svg'
     property string currencyType2: "BTC"
     property string percentChange: "+%.8"
-    property string amountSize: "22.54332 BTC"
+    property string amountSize: "22.543"
     property string totalValue: "$43,443.94"
     property string value: "$9,839.99"
+    property int gainLossTracker: 0
     id: square
     color: "#42454F"
     width: Screen.width - 55
     height: 75
-    radius: 8
+    radius: 4
 
     Image {
         id: icon
@@ -37,25 +38,6 @@ Rectangle {
         anchors.topMargin: 10
         width: 25
         height: 25
-    }
-
-    Item {
-        id: expandButton
-        width: 18
-        height: 4
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 8
-        Image {
-            id: expand
-            source: '../icons/expand_buttons.svg'
-        }
-
-        ColorOverlay {
-            anchors.fill: expand
-            source: expand
-            color: "grey"
-        }
     }
     Label {
         anchors.left: icon.right
@@ -69,40 +51,37 @@ Rectangle {
         font.bold: true
     }
 
-    Label {
-        id: price
+    Text {
+        id: amountSizeLabel
         anchors.right: parent.right
         anchors.rightMargin: 5
-        anchors.top: parent.top
-        anchors.topMargin: 10
-        text: totalValue
+        anchors.verticalCenter: icon.verticalCenter
+        text: amountSize
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
-        font.bold: true
+        font.weight: Font.Medium
     }
     Label {
-        id: amount
+        id: totalValueLabel
         anchors.right: square.right
         anchors.rightMargin: 5
-        anchors.top: price.bottom
-        anchors.topMargin: 5
-        text: amountSize
-        font.pixelSize: 12
+        anchors.verticalCenter: price2.verticalCenter
+        text: totalValue
+        font.pixelSize: 13
         font.family: "Brandon Grotesque"
         color: "#828282"
         font.bold: true
     }
     Label {
         id: percentChangeLabel
-        anchors.right: parent.right
-        anchors.rightMargin: 5
-        anchors.top: amount.bottom
-        anchors.topMargin: 6
+        anchors.left: price2.right
+        anchors.leftMargin: 5
+        anchors.top: price2.top
         text: percentChange
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
-        color: "#0CB8B3"
+        color: gainLossTracker === 0 ? "#FD2E2E" : "#5DFC36"
         font.bold: true
     }
     Label {
@@ -110,9 +89,9 @@ Rectangle {
         anchors.left: icon.left
         anchors.leftMargin: 0
         anchors.top: icon.bottom
-        anchors.topMargin: 6
+        anchors.topMargin: 10
         text: value
-        font.pixelSize: 14
+        font.pixelSize: 13
         font.family: "Brandon Grotesque"
         color: "#828282"
         font.bold: true

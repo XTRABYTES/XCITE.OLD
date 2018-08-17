@@ -46,21 +46,12 @@ Rectangle {
         color: "#E5E5E5"
         font.bold: true
     }
-    Item {
-        width: 18
-        height: 4
+    Image {
+        width: 25
+        height: 5
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 8
-        Image {
-            id: expand
-            source: '../icons/expand_buttons.svg'
-        }
-
-        ColorOverlay {
-            anchors.fill: expand
-            source: expand
-            color: "grey"
-        }
+        source: '../icons/expand_buttons.svg'
     }
- }
+}

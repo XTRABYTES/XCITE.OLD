@@ -1,15 +1,5 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.88 4">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #828282;
-      }
-    </style>
-  </defs>
-  <title>expand buttons</title>
-  <g>
-    <circle class="cls-1" cx="2" cy="2" r="2"/>
-    <circle class="cls-1" cx="12.88" cy="2" r="2"/>
-    <circle class="cls-1" cx="23.88" cy="2" r="2"/>
-  </g>
+<svg width="104" height="17" viewBox="0 0 104 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="7.99997" cy="8.49996" rx="7.99997" ry="7.99996" fill="#828282"/>
+<ellipse cx="51.9997" cy="8.49996" rx="7.99997" ry="7.99996" fill="#828282"/>
+<ellipse cx="95.9996" cy="8.49996" rx="7.99997" ry="7.99996" fill="#828282"/>
 </svg>
