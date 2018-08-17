@@ -1234,7 +1234,7 @@ Item {
             id: sendAmount
             height: 34
             //radius: 8
-            text: "AMOUNT (XBY)"
+            placeholderText: "AMOUNT (XBY)"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 15
@@ -1247,7 +1247,7 @@ Item {
         Controls.TextInput {
             id: keyInput
             height: 34
-            text: "SEND TO (PUBLIC KEY)"
+            placeholderText: "SEND TO (PUBLIC KEY)"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: sendAmount.bottom
             anchors.topMargin: 15
@@ -1318,7 +1318,7 @@ Item {
             id: referenceInput
             height: 34
             // radius: 8
-            text: "REFERENCE"
+            placeholderText: "REFERENCE"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 15
