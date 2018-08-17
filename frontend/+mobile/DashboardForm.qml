@@ -1108,8 +1108,7 @@ Item {
             source: '../icons/XBY_card_logo_colored_05.svg'
             width: 25
             height: 25
-            anchors.left: modal.left
-            anchors.leftMargin: 20
+            anchors.left: sendAmount.left
             anchors.top: modal.top
             anchors.topMargin: 50
             visible: transferTracker == 1
@@ -1236,7 +1235,7 @@ Item {
             height: 34
             //radius: 8
             text: "AMOUNT (XBY)"
-            anchors.left: currencyIcon.left
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 15
             visible: transferTracker == 1 && transferSwitch.checked == true
@@ -1249,7 +1248,7 @@ Item {
             id: keyInput
             height: 34
             text: "SEND TO (PUBLIC KEY)"
-            anchors.left: currencyIcon.left
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: sendAmount.bottom
             anchors.topMargin: 15
             color: "#727272"
@@ -1320,7 +1319,7 @@ Item {
             height: 34
             // radius: 8
             text: "REFERENCE"
-            anchors.left: currencyIcon.left
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 15
             color: "#727272"
