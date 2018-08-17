@@ -14,6 +14,8 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtQrCode.Component 1.0
+import QtMultimedia 5.8
+
 import "./Controls" as Controls
 
 /**
@@ -30,6 +32,8 @@ Item {
     property int appsTracker: 0
     property int transferTracker: 0
     property int addressBookTracker: 0
+    property int scanQRCodeTracker: 0
+    property int historyTracker: 0
     z: 2
 
     Rectangle {
@@ -49,7 +53,7 @@ Item {
         height: parent.height
         width: parent.width
         z: 5
-        visible: appsTracker == 1 || transferTracker == 1
+        visible: appsTracker == 1 || transferTracker == 1 || historyTracker == 1
     }
     Rectangle {
         color: "#34363D"
@@ -131,7 +135,6 @@ Item {
         font.pixelSize: 36
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
-        // font.weight: Font.DemiBold
     }
 
     Switch {
@@ -338,6 +341,12 @@ Item {
             anchors.top: dividerLine.bottom
             anchors.right: dividerLine.right
             anchors.topMargin: 15
+            MouseArea {
+                anchors.fill: historyButton
+                onClicked: {
+                    historyTracker = 1
+                }
+            }
             Text {
                 text: "HISTORY"
                 font.family: "Brandon Grotesque"
@@ -873,17 +882,15 @@ Item {
         width: 20
         height: 20
         z: 100
-
-        ColorOverlay {
-            anchors.fill: settings
-            source: settings
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
-
         MouseArea {
             anchors.fill: settings
             //onClicked: pageLoader.source = "MobileAddressBook.qml"
             onClicked: mainRoot.push("Settings.qml")
+        }
+        ColorOverlay {
+            anchors.fill: settings
+            source: settings
+            color: "#5E8BFF" // make image like it lays under grey glass
         }
     }
     Image {
@@ -901,20 +908,6 @@ Item {
             anchors.fill: apps
             onClicked: appsTracker = 1
         }
-        ColorOverlay {
-            anchors.fill: apps
-            source: apps
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
-        /**
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    clipboard.text = regString.text
-                }
-            }
-            */
     }
 
     Image {
@@ -941,11 +934,6 @@ Item {
                 onClicked: appsTracker = 0
             }
         }
-        ColorOverlay {
-            anchors.fill: closeApps
-            source: closeApps
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
     }
     Image {
         id: xchangeLink
@@ -958,6 +946,11 @@ Item {
         height: 40
         z: 100
         visible: appsTracker == 1
+        ColorOverlay {
+            anchors.fill: xchangeLink
+            source: xchangeLink
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
         Text {
             text: "X-CHANGE"
             anchors.top: parent.bottom
@@ -967,20 +960,6 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
         }
-        ColorOverlay {
-            anchors.fill: xchangeLink
-            source: xchangeLink
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
-        /**
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    clipboard.text = regString.text
-                }
-            }
-            */
     }
 
     Image {
@@ -994,6 +973,11 @@ Item {
         height: 40
         z: 100
         visible: appsTracker == 1
+        ColorOverlay {
+            anchors.fill: xvaultLink
+            source: xvaultLink
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
         Text {
             text: "X-VAULT"
             anchors.top: parent.bottom
@@ -1002,12 +986,6 @@ Item {
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
-        }
-
-        ColorOverlay {
-            anchors.fill: xvaultLink
-            source: xvaultLink
-            color: "#5E8BFF" // make image like it lays under grey glass
         }
     }
 
@@ -1022,6 +1000,11 @@ Item {
         height: 40
         z: 100
         visible: appsTracker == 1
+        ColorOverlay {
+            anchors.fill: xchatLink
+            source: xchatLink
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
         Text {
             text: "X-CHAT"
             anchors.top: parent.bottom
@@ -1031,12 +1014,8 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
         }
-        ColorOverlay {
-            anchors.fill: xchatLink
-            source: xchatLink
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
     }
+
     /**
       * Transfer Modal popup
       */
@@ -1048,7 +1027,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 150
-        visible: transferTracker == 1 && addressBookTracker != 1
+        visible: transferTracker == 1 && addressBookTracker != 1 && scanQRCodeTracker != 1
         radius: 4
         z: 100
 
@@ -1078,6 +1057,11 @@ Item {
                 anchors.rightMargin: 30
                 width: 20
                 height: 20
+                ColorOverlay {
+                    anchors.fill: closeModal
+                    source: closeModal
+                    color: "white" // make image like it lays under grey glass
+                }
                 Rectangle {
                     id: closeModalButtonArea
                     width: 20
@@ -1089,11 +1073,6 @@ Item {
                         anchors.fill: closeModalButtonArea
                         onClicked: transferTracker = 0
                     }
-                }
-                ColorOverlay {
-                    anchors.fill: closeModal
-                    source: closeModal
-                    color: "#5E8BFF" // make image like it lays under grey glass
                 }
             }
         }
@@ -1293,6 +1272,9 @@ Item {
             anchors.left: keyInput.left
             MouseArea {
                 anchors.fill: scanQrButton
+                onClicked: {
+                    scanQRCodeTracker = 1
+                }
             }
             Text {
                 text: "SCAN QR"
@@ -1418,6 +1400,11 @@ Item {
                 anchors.rightMargin: 30
                 width: 20
                 height: 20
+                ColorOverlay {
+                    anchors.fill: closeAddressBookModal
+                    source: closeAddressBookModal
+                    color: "white" // make image like it lays under grey glass
+                }
                 Rectangle {
                     id: closeAddressBookModalButtonArea
                     width: 20
@@ -1429,11 +1416,6 @@ Item {
                         anchors.fill: closeAddressBookModalButtonArea
                         onClicked: addressBookTracker = 0
                     }
-                }
-                ColorOverlay {
-                    anchors.fill: closeAddressBookModal
-                    source: closeAddressBookModal
-                    color: "#5E8BFF" // make image like it lays under grey glass
                 }
             }
         }
@@ -1692,6 +1674,128 @@ Item {
                 }
             }
         }
+    }
+    /**
+      * scanQRBookModal
+      */
+    Rectangle {
+        id: scanQRModal
+        height: 400
+        width: parent.width - 50
+        color: "#42454F"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 150
+        visible: scanQRCodeTracker == 1
+        radius: 4
+        z: 155
 
+        Rectangle {
+            id: scanQRModalTop
+            height: 50
+            width: scanQRModal.width
+            anchors.bottom: scanQRModal.top
+            anchors.left: scanQRModal.left
+            color: "#34363D"
+            radius: 4
+            Text {
+                text: "SCAN QR CODE"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#F2F2F2"
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                font.pixelSize: 14
+            }
+            Image {
+                id: scanQRBookModalClose
+                source: '../icons/CloseIcon.svg'
+                anchors.bottom: scanQRModalTop.bottom
+                anchors.bottomMargin: 15
+                anchors.right: scanQRModalTop.right
+                anchors.rightMargin: 30
+                width: 20
+                height: 20
+                ColorOverlay {
+                    anchors.fill: scanQRBookModalClose
+                    source: scanQRBookModalClose
+                    color: "white" // make image like it lays under grey glass
+                }
+                Rectangle {
+                    id: scanQRModalButtonArea
+                    width: 20
+                    height: 20
+                    anchors.left: scanQRBookModalClose.left
+                    anchors.bottom: scanQRBookModalClose.bottom
+                    color: "transparent"
+                    MouseArea {
+                        anchors.fill: scanQRModalButtonArea
+                        onClicked: scanQRCodeTracker = 0
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+      * History Modal
+      */
+    Rectangle {
+        id: historyModal
+        height: 400
+        width: parent.width - 50
+        color: "#42454F"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 150
+        visible: historyTracker == 1
+        radius: 4
+        z: 155
+
+        Rectangle {
+            id: historyModalTop
+            height: 50
+            width: historyModal.width
+            anchors.bottom: historyModal.top
+            anchors.left: historyModal.left
+            color: "#34363D"
+            radius: 4
+            Text {
+                text: "HISTORY"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#F2F2F2"
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                font.pixelSize: 14
+            }
+            Image {
+                id: historyModalClose
+                source: '../icons/CloseIcon.svg'
+                anchors.bottom: historyModalTop.bottom
+                anchors.bottomMargin: 15
+                anchors.right: historyModalTop.right
+                anchors.rightMargin: 30
+                width: 20
+                height: 20
+                ColorOverlay {
+                    anchors.fill: historyModalClose
+                    source: historyModalClose
+                    color: "white" // make image like it lays under grey glass
+                }
+                Rectangle {
+                    id: historyModalButtonArea
+                    width: 20
+                    height: 20
+                    anchors.left: historyModalClose.left
+                    anchors.bottom: historyModalClose.bottom
+                    color: "transparent"
+                    MouseArea {
+                        anchors.fill: historyModalButtonArea
+                        onClicked: historyTracker = 0
+                    }
+                }
+            }
+        }
     }
 }
