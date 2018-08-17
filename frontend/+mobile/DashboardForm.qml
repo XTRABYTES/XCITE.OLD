@@ -80,8 +80,7 @@ Item {
         id: headingLayout
         anchors.top: heading.bottom
         anchors.topMargin: 10
-        anchors.left: heading.left
-        anchors.leftMargin: 100
+        anchors.horizontalCenter: parent.horizontalCenter
         spacing: 20
         Label {
             id: overview
@@ -135,6 +134,7 @@ Item {
         font.pixelSize: 36
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
+
     }
 
     Switch {
