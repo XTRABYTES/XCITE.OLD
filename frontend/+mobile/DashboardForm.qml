@@ -134,7 +134,6 @@ Item {
         font.pixelSize: 36
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
-
     }
 
     Switch {
@@ -152,7 +151,6 @@ Item {
             origin.y: 25
             angle: 90
         }
-
     }
     /**
     Label {
@@ -1027,7 +1025,8 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 150
-        visible: transferTracker == 1 && addressBookTracker != 1 && scanQRCodeTracker != 1
+        visible: transferTracker == 1 && addressBookTracker != 1
+                 && scanQRCodeTracker != 1
         radius: 4
         z: 100
 
@@ -1168,7 +1167,7 @@ Item {
                 foreground: "black"
             }
         }
-        Rectangle{
+        Rectangle {
             id: qrBorder
             radius: 8
             width: 210
@@ -1234,7 +1233,7 @@ Item {
             id: sendAmount
             height: 34
             //radius: 8
-            placeholderText: "AMOUNT (XBY)"
+            placeholder: "AMOUNT (XBY)"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 15
@@ -1247,7 +1246,7 @@ Item {
         Controls.TextInput {
             id: keyInput
             height: 34
-            placeholderText: "SEND TO (PUBLIC KEY)"
+            placeholder: "SEND TO (PUBLIC KEY)"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: sendAmount.bottom
             anchors.topMargin: 15
@@ -1318,7 +1317,7 @@ Item {
             id: referenceInput
             height: 34
             // radius: 8
-            placeholderText: "REFERENCE"
+            placeholder: "REFERENCE"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 15
@@ -1448,7 +1447,7 @@ Item {
             anchors.verticalCenter: addressIconName.verticalCenter
         }
 
-        Rectangle{
+        Rectangle {
             id: seperator1
             color: "#575757"
             height: 1
@@ -1489,11 +1488,13 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice1
                 onClicked: {
+
+
                     //transferTracker = 1
                 }
             }
         }
-        Rectangle{
+        Rectangle {
             id: seperator2
             color: "#575757"
             height: 1
@@ -1534,11 +1535,13 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice2
                 onClicked: {
+
+
                     //transferTracker = 1
                 }
             }
         }
-        Rectangle{
+        Rectangle {
             id: seperator3
             color: "#575757"
             height: 1
@@ -1579,11 +1582,13 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice3
                 onClicked: {
+
+
                     //transferTracker = 1
                 }
             }
         }
-        Rectangle{
+        Rectangle {
             id: seperator4
             color: "#575757"
             height: 1
@@ -1628,7 +1633,7 @@ Item {
                 }
             }
         }
-        Rectangle{
+        Rectangle {
             id: seperator5
             color: "#575757"
             height: 1
@@ -1669,6 +1674,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice5
                 onClicked: {
+
+
                     //transferTracker = 1
                 }
             }
