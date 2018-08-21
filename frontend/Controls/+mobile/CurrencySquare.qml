@@ -93,7 +93,7 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.top: icon.bottom
         anchors.topMargin: 10
-        text: marketValue.marketValue.toLocaleString(
+        text: "$" + marketValue.marketValue.toLocaleString(
                   Qt.locale(), "f", 2)
         font.pixelSize: 13
         font.family: "Brandon Grotesque"
