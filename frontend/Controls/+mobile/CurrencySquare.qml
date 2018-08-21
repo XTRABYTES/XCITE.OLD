@@ -56,23 +56,26 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 5
         anchors.verticalCenter: icon.verticalCenter
-        text: amountSize
+        text: wallet.balance
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
         font.weight: Font.Medium
     }
+
     Label {
         id: totalValueLabel
         anchors.right: square.right
         anchors.rightMargin: 5
         anchors.verticalCenter: price2.verticalCenter
-        text: totalValue
+        text: ("$" + wallet.balance * marketValue.marketValue).toLocaleString(
+                  Qt.locale(), "f", 2)
         font.pixelSize: 13
         font.family: "Brandon Grotesque"
         color: "#828282"
         font.bold: true
     }
+
     Label {
         id: percentChangeLabel
         anchors.left: price2.right
@@ -90,7 +93,8 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.top: icon.bottom
         anchors.topMargin: 10
-        text: value
+        text: marketValue.marketValue.toLocaleString(
+                  Qt.locale(), "f", 2)
         font.pixelSize: 13
         font.family: "Brandon Grotesque"
         color: "#828282"
