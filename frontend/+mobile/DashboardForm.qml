@@ -15,6 +15,7 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtQrCode.Component 1.0
 import QtMultimedia 5.8
+import QZXing 2.3
 
 import "./Controls" as Controls
 
@@ -122,6 +123,11 @@ Item {
         source: '../icons/notification_icon_03.svg'
         width: 30
         height: 30
+        ColorOverlay {
+            anchors.fill: notif
+            source: notif
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
     }
 
     Label {
@@ -902,6 +908,11 @@ Item {
         height: 20
         z: 100
         visible: appsTracker == 0
+        ColorOverlay {
+            anchors.fill: apps
+            source: apps
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
         MouseArea {
             anchors.fill: apps
             onClicked: appsTracker = 1
@@ -919,7 +930,11 @@ Item {
         height: 20
         z: 100
         visible: appsTracker == 1
-
+        ColorOverlay {
+            anchors.fill: closeApps
+            source: closeApps
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
         Rectangle {
             id: closeAppsButtonArea
             width: 20
@@ -1695,7 +1710,54 @@ Item {
         visible: scanQRCodeTracker == 1
         radius: 4
         z: 155
+        Item {
+            width: 300
+            height: 300
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            visible: scanQRCodeTracker == 1
+            z: 200
+            /**
+            Camera {
+                id: camera
 
+                imageProcessing.whiteBalanceMode: CameraImageProcessing.WhiteBalanceFlash
+
+                exposure {
+                    exposureCompensation: -1.0
+                    exposureMode: Camera.ExposurePortrait
+                }
+
+                flash.mode: Camera.FlashRedEyeReduction
+
+                imageCapture {
+                    onImageCaptured: {
+                        photoPreview.source = preview  // Show the preview in an Image
+                    }
+                }
+            }
+
+            VideoOutput {
+                source: camera
+                z: 200
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                focus : visible // to receive focus and capture key events when visible
+            }
+
+            Image {
+                id: photoPreview
+            }
+            */
+        }
+
+        QZXing{
+            id: decoder
+            enabledDecoders: QZXing.DecoderFormat_QR_CODE
+            onDecodingStarted: console.log("Decoding of image started...")
+            onTagFound: console.log("Barcode data: " + tag)
+            onDecodingFinished: console.log("Decoding finished " + (succeeded==true ? "successfully" :    "unsuccessfully") )
+        }
         Rectangle {
             id: scanQRModalTop
             height: 50
@@ -1740,6 +1802,7 @@ Item {
                     }
                 }
             }
+
         }
     }
 
@@ -1775,6 +1838,7 @@ Item {
                 font.bold: true
                 font.pixelSize: 14
             }
+
             Image {
                 id: historyModalClose
                 source: '../icons/CloseIcon.svg'

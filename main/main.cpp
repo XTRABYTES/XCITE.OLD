@@ -18,6 +18,7 @@
 #include <QThread>
 #include <qqmlcontext.h>
 #include <qqml.h>
+#include <QZXing.h>
 #include "../backend/xchat/xchat.hpp"
 #include "../backend/xchat/xchatconversationmodel.hpp"
 #include "../frontend/support/sortfilterproxymodel.hpp"
@@ -34,7 +35,7 @@
 int main(int argc, char *argv[])
 {
     QtQrCodeQuickItem::registerQmlTypes();
-
+    QZXing::registerQMLTypes();
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
