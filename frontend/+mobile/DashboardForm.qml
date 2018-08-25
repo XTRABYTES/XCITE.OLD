@@ -19,6 +19,7 @@ import QZXing 2.3
 
 import "./Controls" as Controls
 
+
 /**
   * Main page
   */
@@ -1644,6 +1645,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice4
                 onClicked: {
+
+
                     //transferTracker = 1
                 }
             }
@@ -1710,14 +1713,12 @@ Item {
         visible: scanQRCodeTracker == 1
         radius: 4
         z: 155
+
         Item {
-            width: 300
-            height: 300
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
+
             visible: scanQRCodeTracker == 1
             z: 200
-            /**
+
             Camera {
                 id: camera
 
@@ -1732,7 +1733,8 @@ Item {
 
                 imageCapture {
                     onImageCaptured: {
-                        photoPreview.source = preview  // Show the preview in an Image
+                        imageToDecode.source = preview
+                        decoder.decodeImageQML(imageToDecode)
                     }
                 }
             }
@@ -1740,24 +1742,33 @@ Item {
             VideoOutput {
                 source: camera
                 z: 200
+                width: 300
+                height: 300
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                focus : visible // to receive focus and capture key events when visible
+                focus: visible // to receive focus and capture key events when visible
             }
 
             Image {
-                id: photoPreview
+                id: imageToDecode
+                visible: false
             }
-            */
         }
 
-        QZXing{
+        QZXing {
             id: decoder
             enabledDecoders: QZXing.DecoderFormat_QR_CODE
             onDecodingStarted: console.log("Decoding of image started...")
-            onTagFound: console.log("Barcode data: " + tag)
-            onDecodingFinished: console.log("Decoding finished " + (succeeded==true ? "successfully" :    "unsuccessfully") )
+            onTagFound: {
+
+                console.log("Barcode data: " + tag)
+                keyInput.text = tag
+            }
+            onDecodingFinished: console.log(
+                                    "Decoding finished "
+                                    + (succeeded == true ? "successfully" : "unsuccessfully"))
         }
+
         Rectangle {
             id: scanQRModalTop
             height: 50
@@ -1802,7 +1813,6 @@ Item {
                     }
                 }
             }
-
         }
     }
 
@@ -1869,3 +1879,4 @@ Item {
         }
     }
 }
+

@@ -13,7 +13,8 @@ import QtQuick 2.0
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.3
-import QtQrCode.Component 1.0
+import QZXing 2.3
+import QtGraphicalEffects 1.0
 
 import "../../Controls" as Controls
 import "../../Theme" 1.0
@@ -122,17 +123,16 @@ ColumnLayout {
     }
 
     Item {
+
         width: 240
         height: 240
         Layout.topMargin: 25
         Layout.bottomMargin: 25
         anchors.horizontalCenter: parent.horizontalCenter
-
-        QtQrCode {
-            anchors.fill: parent
-            data: formAddress.text
-            background: "transparent"
-            foreground: Theme.primaryHighlight
+        Image{
+            id: qrCodeImage
+            source: "image://QZXing/encode/" + formAddress.text
+            cache: false
         }
     }
 }

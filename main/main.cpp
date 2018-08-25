@@ -16,6 +16,7 @@
 #include <QQmlFileSelector>
 #include <QSettings>
 #include <QThread>
+#include <QFont>
 #include <qqmlcontext.h>
 #include <qqml.h>
 #include <QZXing.h>
@@ -25,7 +26,6 @@
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
-#include "../backend/support/qrcode/qt-qrcode/QtQrCodeQuickItem.hpp"
 #include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 #include "../backend/support/Settings.hpp"
@@ -34,7 +34,7 @@
 
 int main(int argc, char *argv[])
 {
-    QtQrCodeQuickItem::registerQmlTypes();
+
     QZXing::registerQMLTypes();
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<ClipboardProxy>("Clipboard", 1, 0, "Clipboard");
 
     QQmlApplicationEngine engine;
+    QZXing::registerQMLImageProvider(engine);
     engine.addImportPath("qrc:/");
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
