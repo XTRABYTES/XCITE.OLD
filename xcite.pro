@@ -47,8 +47,6 @@ QML_IMPORT_PATH =
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
-include(backend/support/qrcode/libqrencode.pri)
-include(backend/support/qrcode/qt-qrcode.pri)
 include(QZXing/QZXing.pri)
 
 SOURCES += main/main.cpp \

@@ -13,7 +13,6 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-import QtQrCode.Component 1.0
 import QtMultimedia 5.8
 import QZXing 2.3
 
@@ -1176,11 +1175,10 @@ Item {
             anchors.verticalCenter: qrBorder.verticalCenter
             z: 10
             visible: transferSwitch.checked == false && transferTracker == 1
-            QtQrCode {
+            Image {
                 anchors.fill: parent
-                data: publicKey.text
-                background: "white"
-                foreground: "black"
+                source: "image://QZXing/encode/" + publicKey.text
+                cache: false
             }
         }
         Rectangle {

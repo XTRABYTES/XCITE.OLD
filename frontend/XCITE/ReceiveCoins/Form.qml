@@ -123,16 +123,27 @@ ColumnLayout {
     }
 
     Item {
-
+        id: qrCode1
         width: 240
         height: 240
         Layout.topMargin: 25
         Layout.bottomMargin: 25
         anchors.horizontalCenter: parent.horizontalCenter
+        z: 5
         Image{
             id: qrCodeImage
             source: "image://QZXing/encode/" + formAddress.text
             cache: false
         }
+    }
+    Rectangle {
+        id: qrBorder
+        z: 4
+        radius: 8
+        width: 265
+        height: 265
+        anchors.horizontalCenter: qrCode1.horizontalCenter
+        anchors.verticalCenter: qrCode1.verticalCenter
+        color: "white"
     }
 }
