@@ -35,6 +35,7 @@ Item {
     property int addressBookTracker: 0
     property int scanQRCodeTracker: 0
     property int historyTracker: 0
+    property string address1: "B2QiknaGNKA30s9gyV4riyKuVWvUMXEVz6"
     z: 2
 
     Rectangle {
@@ -231,7 +232,6 @@ Item {
             height: 18
         }
     }
-
     Controls.CurrencySquare {
         id: square1
         anchors.top: parent.top
@@ -1502,9 +1502,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice1
                 onClicked: {
-
-
-                    //transferTracker = 1
+                    keyInput.text = address1
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1549,9 +1548,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice2
                 onClicked: {
-
-
-                    //transferTracker = 1
+                    keyInput.text = address1
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1596,9 +1594,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice3
                 onClicked: {
-
-
-                    //transferTracker = 1
+                    keyInput.text = address1
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1643,9 +1640,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice4
                 onClicked: {
-
-
-                    //transferTracker = 1
+                    keyInput.text = address1
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1690,9 +1686,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice5
                 onClicked: {
-
-
-                    //transferTracker = 1
+                    keyInput.text = address1
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1719,7 +1714,6 @@ Item {
 
             Camera {
                 id: camera
-
                 imageProcessing.whiteBalanceMode: CameraImageProcessing.WhiteBalanceFlash
 
                 exposure {
@@ -1728,7 +1722,6 @@ Item {
                 }
 
                 flash.mode: Camera.FlashRedEyeReduction
-
                 imageCapture {
                     onImageCaptured: {
                         imageToDecode.source = preview

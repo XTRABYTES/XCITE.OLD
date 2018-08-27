@@ -46,12 +46,4 @@ Rectangle {
         color: "#E5E5E5"
         font.bold: true
     }
-    Image {
-        width: 25
-        height: 5
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 8
-        source: '../icons/expand_buttons.svg'
-    }
 }
