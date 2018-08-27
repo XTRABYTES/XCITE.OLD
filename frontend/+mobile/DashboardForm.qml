@@ -40,6 +40,7 @@ Item {
     property string address2: "B2QiknazjkA30s9gyV4riyKuVWvUMXEVss"
     property string address3: "B09iknaFAFKA30s392J4riyKuVWvUMXEV3"
     property string address4: "BxkiknaGNKA30s9gyV4riyKuVWvFJKEVq9"
+    property string receivingAddress: "BM39fjwf093JF329f39fJFfa03987fja3"
     z: 2
     id: dashForm
     Rectangle {
@@ -1211,7 +1212,7 @@ Item {
         }
         Text {
             id: publicKey
-            text: "BM39fjwf093JF329f39fJFfa03987fja3"
+            text: receivingAddress
             anchors.top: pubKey.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
@@ -1377,19 +1378,40 @@ Item {
         /**
           * Transfer Modal Transaction Sent
           */
-        /**
         Rectangle {
             id: transactionSentModal
-            height: parent.height > 800 ? (parent.height - 400) : 400
+            height: modal.height
             width: parent.width - 50
             color: "#42454F"
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 150
+            anchors.top: modal.top
             visible: transactionSent == 1
             radius: 4
             z: 100
-
+            Image {
+                id: transactionSentImage
+                source: '../icons/Group.png'
+                anchors.top: parent.top
+                anchors.topMargin: (parent.height/2) - 80
+                anchors.horizontalCenter: parent.horizontalCenter
+                height: (parent.height/4)
+                width: (parent.height/4)
+                ColorOverlay {
+                    anchors.fill: transactionSentImage
+                    source: transactionSentImage
+                    color: "#5E8BFF" // make image like it lays under grey glass
+                }
+            }
+            Text {
+                text: "Transaction Sent!"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.top: transactionSentImage.bottom
+                anchors.topMargin: 15
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
             Rectangle {
                 id: transactionSentModalTop
                 height: 50
@@ -1399,7 +1421,8 @@ Item {
                 color: "#34363D"
                 radius: 4
                 Text {
-                    text: "TRANSFER"
+                    id: textHeader
+                    text: "CONFIRMATION"
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                     color: "#F2F2F2"
@@ -1410,9 +1433,10 @@ Item {
                 Image {
                     id: closeTransactionSentModal
                     source: '../icons/CloseIcon.svg'
-                    anchors.verticalCenter: parent.center
-                    anchors.right: transactionSentModalTop.right
-                    anchors.rightMargin: 30
+                    anchors.top: parent.top
+                    anchors.topMargin: 15
+                    anchors.right: parent.right
+                    anchors.rightMargin: 2
                     width: 20
                     height: 20
                     ColorOverlay {
@@ -1429,13 +1453,46 @@ Item {
                         color: "transparent"
                         MouseArea {
                             anchors.fill: closeTransactionSentModalButtonArea
-                            onClicked: transactionSent = 0
+                            onClicked: {
+                                transactionSent = 0
+                                transferTracker = 0
+                            }
                         }
                     }
                 }
             }
+            Rectangle {
+                id: transactionSentClose
+                visible: transactionSent == 1
+                width: (parent.height/4) + 40
+                height: 33
+                radius: 8
+                border.color: "#5E8BFF"
+                border.width: 2
+                color: "transparent"
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                MouseArea {
+                    anchors.fill: transactionSentClose
+
+                    onClicked: {
+                        transactionSent = 0
+                        transferTracker = 1
+                    }
+                }
+                Text {
+                    text: "DONE"
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "#5E8BFF"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
         }
-        */
+
     }
     /**
       * AddressBookModal
@@ -1775,6 +1832,7 @@ Item {
         Item {
             visible: scanQRCodeTracker == 1
             z: 200
+            /**
             Camera {
                 id: camera
                 imageProcessing.whiteBalanceMode: CameraImageProcessing.WhiteBalanceFlash
@@ -1806,6 +1864,7 @@ Item {
                 id: imageToDecode
                 visible: false
             }
+            */
         }
 
         QZXing {
