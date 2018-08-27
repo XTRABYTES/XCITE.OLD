@@ -1195,7 +1195,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 20
-            color: "white"
+            color: "transparent"
         }
 
         Text {
