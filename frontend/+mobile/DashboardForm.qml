@@ -24,20 +24,24 @@ import "./Controls" as Controls
   */
 Item {
     property int sw: -1
+    property int appsTracker: 0
+    property int transferTracker: 0
+    property int addressBookTracker: 0
+    property int scanQRCodeTracker: 0
+    property int historyTracker: 0
+    property int transactionSent: 0
     property int clickedSquare: 0
     property int clickedSquare2: 0
     property int clickedSquare3: 0
     property int clickedSquare4: 0
     property int clickedSquare5: 0
     property int clickedSquare6: 0
-    property int appsTracker: 0
-    property int transferTracker: 0
-    property int addressBookTracker: 0
-    property int scanQRCodeTracker: 0
-    property int historyTracker: 0
-    property string address1: "B2QiknaGNKA30s9gyV4riyKuVWvUMXEVz6"
+    property string address1: "B5xiknaGNK330s9gyU4riyKuVzvIOPEVz6"
+    property string address2: "B2QiknazjkA30s9gyV4riyKuVWvUMXEVss"
+    property string address3: "B09iknaFAFKA30s392J4riyKuVWvUMXEV3"
+    property string address4: "BxkiknaGNKA30s9gyV4riyKuVWvFJKEVq9"
     z: 2
-
+    id: dashForm
     Rectangle {
         z: 100
         color: "#2A2C31"
@@ -1356,9 +1360,9 @@ Item {
             MouseArea {
                 anchors.fill: sendButton
 
-                //onClicked: {
-                //  transferTracker = 1
-                // }
+                onClicked: {
+                    transactionSent = 1
+                }
             }
             Text {
                 text: "SEND"
@@ -1370,6 +1374,68 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
+        /**
+          * Transfer Modal Transaction Sent
+          */
+        /**
+        Rectangle {
+            id: transactionSentModal
+            height: parent.height > 800 ? (parent.height - 400) : 400
+            width: parent.width - 50
+            color: "#42454F"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 150
+            visible: transactionSent == 1
+            radius: 4
+            z: 100
+
+            Rectangle {
+                id: transactionSentModalTop
+                height: 50
+                width: transactionSentModal.width
+                anchors.bottom: transactionSentModal.top
+                anchors.left: transactionSentModal.left
+                color: "#34363D"
+                radius: 4
+                Text {
+                    text: "TRANSFER"
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: "#F2F2F2"
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    font.pixelSize: 14
+                }
+                Image {
+                    id: closeTransactionSentModal
+                    source: '../icons/CloseIcon.svg'
+                    anchors.verticalCenter: parent.center
+                    anchors.right: transactionSentModalTop.right
+                    anchors.rightMargin: 30
+                    width: 20
+                    height: 20
+                    ColorOverlay {
+                        anchors.fill: closeTransactionSentModal
+                        source: closeTransactionSentModal
+                        color: "white" // make image like it lays under grey glass
+                    }
+                    Rectangle {
+                        id: closeTransactionSentModalButtonArea
+                        width: 20
+                        height: 20
+                        anchors.left: closeTransactionSentModal.left
+                        anchors.bottom: closeTransactionSentModal.bottom
+                        color: "transparent"
+                        MouseArea {
+                            anchors.fill: closeTransactionSentModalButtonArea
+                            onClicked: transactionSent = 0
+                        }
+                    }
+                }
+            }
+        }
+        */
     }
     /**
       * AddressBookModal
@@ -1548,7 +1614,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice2
                 onClicked: {
-                    keyInput.text = address1
+                    keyInput.text = address2
                     addressBookTracker = 0
                 }
             }
@@ -1594,7 +1660,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice3
                 onClicked: {
-                    keyInput.text = address1
+                    keyInput.text = address3
                     addressBookTracker = 0
                 }
             }
@@ -1640,7 +1706,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice4
                 onClicked: {
-                    keyInput.text = address1
+                    keyInput.text = address4
                     addressBookTracker = 0
                 }
             }
@@ -1706,12 +1772,9 @@ Item {
         visible: scanQRCodeTracker == 1
         radius: 4
         z: 155
-
         Item {
-
             visible: scanQRCodeTracker == 1
             z: 200
-
             Camera {
                 id: camera
                 imageProcessing.whiteBalanceMode: CameraImageProcessing.WhiteBalanceFlash
@@ -1729,7 +1792,6 @@ Item {
                     }
                 }
             }
-
             VideoOutput {
                 source: camera
                 z: 200
