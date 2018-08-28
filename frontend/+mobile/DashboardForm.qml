@@ -140,9 +140,20 @@ Item {
         id: value
         anchors.top: parent.top
         anchors.topMargin: 90
+        anchors.left: dollarSignValue.right
+        text: (wallet.balance * marketValue.marketValue).toLocaleString(
+                  Qt.locale(), "f", 2)
+        font.pixelSize: 36
+        font.family: "Brandon Grotesque"
+        color: "#E5E5E5"
+    }
+    Label {
+        id: dollarSignValue
+        anchors.top: parent.top
+        anchors.topMargin: 90
         anchors.left: parent.left
         anchors.leftMargin: 20
-        text: "$511,000.00"
+        text: "$"
         font.pixelSize: 36
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
@@ -247,7 +258,6 @@ Item {
         currencyType2: "XBY"
         percentChange: "+%.8"
         gainLossTracker: 1
-        amountSize: "22.5432"
         height: clickedSquare == 1 ? 166 : 75
         // since expandbutton is very tiny and hard to click we put an invisible rectangle here to mimic the dots
         Rectangle {
@@ -375,11 +385,11 @@ Item {
         anchors.leftMargin: 25
         currencyType: '../icons/XFUEL_card_logo_colored_07.svg'
         currencyType2: "XFUEL"
-        percentChange: "-%.8"
+        percentChange: "+0%"
         gainLossTracker: 0
-        amountSize: "22.5432"
-        totalValue: "$43,443.94"
-        value: "$9,839.99"
+        amountSize: "0"
+        totalValue: "0"
+        value: "0"
         height: clickedSquare2 == 1 ? 166 : 75
         // since expandbutton is very tiny and hard to click we put an invisible rectangle here to mimic the dots
         Rectangle {
@@ -503,11 +513,11 @@ Item {
         anchors.leftMargin: 25
         currencyType: '../icons/BTC-color.svg'
         currencyType2: "BTC"
-        percentChange: "+%.8"
-        gainLossTracker: 1
-        amountSize: "22.5432"
-        totalValue: "$43,443.94"
-        value: "$9,839.99"
+        percentChange: "+0%"
+        gainLossTracker: 0
+        amountSize: "0"
+        totalValue: "0"
+        value: "0"
         height: clickedSquare3 == 1 ? 166 : 75
         Rectangle {
             id: expandButtonArea3
@@ -631,11 +641,11 @@ Item {
         anchors.leftMargin: 25
         currencyType: '../icons/ETH-color.svg'
         currencyType2: "ETH"
-        percentChange: "-%.8"
+        percentChange: "+0%"
         gainLossTracker: 0
-        amountSize: "22.5432"
-        totalValue: "$43,443.94"
-        value: "$9,839.99"
+        amountSize: "0"
+        totalValue: "0"
+        value: "0"
         height: clickedSquare4 == 1 ? 166 : 75
         z: 0
         Rectangle {
@@ -760,11 +770,11 @@ Item {
         anchors.leftMargin: 25
         currencyType: '../icons/NEO_card_logo_colored_02.svg'
         currencyType2: "NEO"
-        percentChange: "+%.8"
-        gainLossTracker: 1
-        amountSize: "22.5432"
-        totalValue: "$43,443.94"
-        value: "$9,839.99"
+        percentChange: "+0%"
+        gainLossTracker: 0
+        amountSize: "0"
+        totalValue: "0"
+        value: "0"
         height: clickedSquare5 == 1 ? 166 : 75
         z: 0
         Rectangle {

@@ -19,9 +19,11 @@ Rectangle {
     property url currencyType: '../icons/BTC-color.svg'
     property string currencyType2: "BTC"
     property string percentChange: "+%.8"
-    property string amountSize: "22.543"
-    property string totalValue: "$43,443.94"
-    property string value: "$9,839.99"
+    property string amountSize: wallet.balance
+    property string totalValue: (wallet.balance * marketValue.marketValue).toLocaleString(
+                                    Qt.locale(), "f", 2)
+    property string value: marketValue.marketValue.toLocaleString(
+                               Qt.locale(), "f", 2)
     property int gainLossTracker: 0
     id: square
     color: "#42454F"
@@ -56,7 +58,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 5
         anchors.verticalCenter: icon.verticalCenter
-        text: wallet.balance
+        text: amountSize
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
@@ -68,8 +70,7 @@ Rectangle {
         anchors.right: square.right
         anchors.rightMargin: 5
         anchors.verticalCenter: price2.verticalCenter
-        text: ("$" + wallet.balance * marketValue.marketValue).toLocaleString(
-                  Qt.locale(), "f", 2)
+        text: totalValue
         font.pixelSize: 13
         font.family: "Brandon Grotesque"
         color: "#828282"
@@ -89,12 +90,32 @@ Rectangle {
     }
     Label {
         id: price2
-        anchors.left: icon.left
-        anchors.leftMargin: 0
+        anchors.left: dollarSign1.right
         anchors.top: icon.bottom
         anchors.topMargin: 10
-        text: "$" + marketValue.marketValue.toLocaleString(
-                  Qt.locale(), "f", 2)
+        text: value
+        font.pixelSize: 13
+        font.family: "Brandon Grotesque"
+        color: "#828282"
+        font.bold: true
+    }
+    Label {
+        id: dollarSign1
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.verticalCenter: price2.verticalCenter
+        text: "$"
+        font.pixelSize: 13
+        font.family: "Brandon Grotesque"
+        color: "#828282"
+        font.bold: true
+    }
+    Label {
+        id: dollarSign2
+        anchors.right: totalValueLabel.left
+        anchors.leftMargin: 0
+        anchors.verticalCenter: totalValueLabel.verticalCenter
+        text: "$"
         font.pixelSize: 13
         font.family: "Brandon Grotesque"
         color: "#828282"
