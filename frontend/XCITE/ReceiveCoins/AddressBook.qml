@@ -13,7 +13,6 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.3
 import QtQuick.Controls.Styles 1.4
-import QtQrCode.Component 1.0
 
 import "../../Controls" as Controls
 import "../../AddressBook" as AddressBook

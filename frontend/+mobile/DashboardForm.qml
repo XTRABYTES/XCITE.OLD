@@ -13,29 +13,36 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-import QtQrCode.Component 1.0
 import QtMultimedia 5.8
+import QZXing 2.3
 
 import "./Controls" as Controls
+
 
 /**
   * Main page
   */
 Item {
     property int sw: -1
+    property int appsTracker: 0
+    property int transferTracker: 0
+    property int addressBookTracker: 0
+    property int scanQRCodeTracker: 0
+    property int historyTracker: 0
+    property int transactionSent: 0
     property int clickedSquare: 0
     property int clickedSquare2: 0
     property int clickedSquare3: 0
     property int clickedSquare4: 0
     property int clickedSquare5: 0
     property int clickedSquare6: 0
-    property int appsTracker: 0
-    property int transferTracker: 0
-    property int addressBookTracker: 0
-    property int scanQRCodeTracker: 0
-    property int historyTracker: 0
+    property string address1: "B5xiknaGNK330s9gyU4riyKuVzvIOPEVz6"
+    property string address2: "B2QiknazjkA30s9gyV4riyKuVWvUMXEVss"
+    property string address3: "B09iknaFAFKA30s392J4riyKuVWvUMXEV3"
+    property string address4: "BxkiknaGNKA30s9gyV4riyKuVWvFJKEVq9"
+    property string receivingAddress: "BM39fjwf093JF329f39fJFfa03987fja3"
     z: 2
-
+    id: dashForm
     Rectangle {
         z: 100
         color: "#2A2C31"
@@ -72,7 +79,7 @@ Item {
 
     Controls.Header {
         id: heading
-        text: qsTr("POSEY")
+        text: qsTr("Jordan")
         showBack: false
         Layout.topMargin: 14
     }
@@ -122,15 +129,31 @@ Item {
         source: '../icons/notification_icon_03.svg'
         width: 30
         height: 30
+        ColorOverlay {
+            anchors.fill: notif
+            source: notif
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
     }
 
     Label {
         id: value
         anchors.top: parent.top
         anchors.topMargin: 90
+        anchors.left: dollarSignValue.right
+        text: (wallet.balance * marketValue.marketValue).toLocaleString(
+                  Qt.locale(), "f", 2)
+        font.pixelSize: 36
+        font.family: "Brandon Grotesque"
+        color: "#E5E5E5"
+    }
+    Label {
+        id: dollarSignValue
+        anchors.top: parent.top
+        anchors.topMargin: 90
         anchors.left: parent.left
         anchors.leftMargin: 20
-        text: "$511,000.00"
+        text: "$"
         font.pixelSize: 36
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
@@ -225,7 +248,6 @@ Item {
             height: 18
         }
     }
-
     Controls.CurrencySquare {
         id: square1
         anchors.top: parent.top
@@ -236,7 +258,6 @@ Item {
         currencyType2: "XBY"
         percentChange: "+%.8"
         gainLossTracker: 1
-        amountSize: "22.5432"
         height: clickedSquare == 1 ? 166 : 75
         // since expandbutton is very tiny and hard to click we put an invisible rectangle here to mimic the dots
         Rectangle {
@@ -294,7 +315,6 @@ Item {
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine.top
             visible: clickedSquare == 1 ? true : false
@@ -364,11 +384,11 @@ Item {
         anchors.leftMargin: 25
         currencyType: '../icons/XFUEL_card_logo_colored_07.svg'
         currencyType2: "XFUEL"
-        percentChange: "-%.8"
+        percentChange: "+0%"
         gainLossTracker: 0
-        amountSize: "22.5432"
-        totalValue: "$43,443.94"
-        value: "$9,839.99"
+        amountSize: "0"
+        totalValue: "0"
+        value: "0"
         height: clickedSquare2 == 1 ? 166 : 75
         // since expandbutton is very tiny and hard to click we put an invisible rectangle here to mimic the dots
         Rectangle {
@@ -492,11 +512,11 @@ Item {
         anchors.leftMargin: 25
         currencyType: '../icons/BTC-color.svg'
         currencyType2: "BTC"
-        percentChange: "+%.8"
-        gainLossTracker: 1
-        amountSize: "22.5432"
-        totalValue: "$43,443.94"
-        value: "$9,839.99"
+        percentChange: "+0%"
+        gainLossTracker: 0
+        amountSize: "0"
+        totalValue: "0"
+        value: "0"
         height: clickedSquare3 == 1 ? 166 : 75
         Rectangle {
             id: expandButtonArea3
@@ -620,11 +640,11 @@ Item {
         anchors.leftMargin: 25
         currencyType: '../icons/ETH-color.svg'
         currencyType2: "ETH"
-        percentChange: "-%.8"
+        percentChange: "+0%"
         gainLossTracker: 0
-        amountSize: "22.5432"
-        totalValue: "$43,443.94"
-        value: "$9,839.99"
+        amountSize: "0"
+        totalValue: "0"
+        value: "0"
         height: clickedSquare4 == 1 ? 166 : 75
         z: 0
         Rectangle {
@@ -749,11 +769,11 @@ Item {
         anchors.leftMargin: 25
         currencyType: '../icons/NEO_card_logo_colored_02.svg'
         currencyType2: "NEO"
-        percentChange: "+%.8"
-        gainLossTracker: 1
-        amountSize: "22.5432"
-        totalValue: "$43,443.94"
-        value: "$9,839.99"
+        percentChange: "+0%"
+        gainLossTracker: 0
+        amountSize: "0"
+        totalValue: "0"
+        value: "0"
         height: clickedSquare5 == 1 ? 166 : 75
         z: 0
         Rectangle {
@@ -902,6 +922,11 @@ Item {
         height: 20
         z: 100
         visible: appsTracker == 0
+        ColorOverlay {
+            anchors.fill: apps
+            source: apps
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
         MouseArea {
             anchors.fill: apps
             onClicked: appsTracker = 1
@@ -919,7 +944,11 @@ Item {
         height: 20
         z: 100
         visible: appsTracker == 1
-
+        ColorOverlay {
+            anchors.fill: closeApps
+            source: closeApps
+            color: "#5E8BFF" // make image like it lays under grey glass
+        }
         Rectangle {
             id: closeAppsButtonArea
             width: 20
@@ -974,7 +1003,7 @@ Item {
         ColorOverlay {
             anchors.fill: xvaultLink
             source: xvaultLink
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
         Text {
             text: "X-VAULT"
@@ -1001,7 +1030,7 @@ Item {
         ColorOverlay {
             anchors.fill: xchatLink
             source: xchatLink
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
         Text {
             text: "X-CHAT"
@@ -1059,7 +1088,7 @@ Item {
                 ColorOverlay {
                     anchors.fill: closeModal
                     source: closeModal
-                    color: "white" // make image like it lays under grey glass
+                    color: "white"
                 }
                 Rectangle {
                     id: closeModalButtonArea
@@ -1160,11 +1189,10 @@ Item {
             anchors.verticalCenter: qrBorder.verticalCenter
             z: 10
             visible: transferSwitch.checked == false && transferTracker == 1
-            QtQrCode {
+            Image {
                 anchors.fill: parent
-                data: publicKey.text
-                background: "white"
-                foreground: "black"
+                source: "image://QZXing/encode/" + publicKey.text
+                cache: false
             }
         }
         Rectangle {
@@ -1176,7 +1204,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 20
-            color: "white"
+            color: "transparent"
         }
 
         Text {
@@ -1193,7 +1221,7 @@ Item {
         }
         Text {
             id: publicKey
-            text: "BM39fjwf093JF329f39fJFfa03987fja3"
+            text: receivingAddress
             anchors.top: pubKey.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
@@ -1342,9 +1370,10 @@ Item {
             MouseArea {
                 anchors.fill: sendButton
 
-                //onClicked: {
-                //  transferTracker = 1
-                // }
+                onClicked: {
+                    transactionSent = 1
+                    sendAmount.text = ""
+                }
             }
             Text {
                 text: "SEND"
@@ -1356,6 +1385,124 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
+        /**
+          * Transfer Modal Transaction Sent
+          */
+        Rectangle {
+            id: transactionSentModal
+            height: modal.height
+            width: parent.width - 50
+            color: "#42454F"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: modal.top
+            visible: transactionSent == 1
+            radius: 4
+            z: 100
+            Image {
+                id: transactionSentImage
+                source: '../icons/Group.png'
+                anchors.top: parent.top
+                anchors.topMargin: (parent.height/2) - 80
+                anchors.horizontalCenter: parent.horizontalCenter
+                height: (parent.height/4)
+                width: (parent.height/4)
+                ColorOverlay {
+                    anchors.fill: transactionSentImage
+                    source: transactionSentImage
+                    color: "#5E8BFF" // make image like it lays under grey glass
+                }
+            }
+            Text {
+                text: "Transaction Sent!"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.top: transactionSentImage.bottom
+                anchors.topMargin: 15
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            Rectangle {
+                id: transactionSentModalTop
+                height: 50
+                width: transactionSentModal.width
+                anchors.bottom: transactionSentModal.top
+                anchors.left: transactionSentModal.left
+                color: "#34363D"
+                radius: 4
+                Text {
+                    id: textHeader
+                    text: "CONFIRMATION"
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: "#F2F2F2"
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    font.pixelSize: 14
+                }
+                Image {
+                    id: closeTransactionSentModal
+                    source: '../icons/CloseIcon.svg'
+                    anchors.top: parent.top
+                    anchors.topMargin: 15
+                    anchors.right: parent.right
+                    anchors.rightMargin: 2
+                    width: 20
+                    height: 20
+                    ColorOverlay {
+                        anchors.fill: closeTransactionSentModal
+                        source: closeTransactionSentModal
+                        color: "white" // make image like it lays under grey glass
+                    }
+                    Rectangle {
+                        id: closeTransactionSentModalButtonArea
+                        width: 20
+                        height: 20
+                        anchors.left: closeTransactionSentModal.left
+                        anchors.bottom: closeTransactionSentModal.bottom
+                        color: "transparent"
+                        MouseArea {
+                            anchors.fill: closeTransactionSentModalButtonArea
+                            onClicked: {
+                                transactionSent = 0
+                                transferTracker = 0
+                            }
+                        }
+                    }
+                }
+            }
+            Rectangle {
+                id: transactionSentClose
+                visible: transactionSent == 1
+                width: (parent.height/4) + 40
+                height: 33
+                radius: 8
+                border.color: "#5E8BFF"
+                border.width: 2
+                color: "transparent"
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                MouseArea {
+                    anchors.fill: transactionSentClose
+
+                    onClicked: {
+                        transactionSent = 0
+                        transferTracker = 1
+                    }
+                }
+                Text {
+                    text: "DONE"
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "#5E8BFF"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
     }
     /**
       * AddressBookModal
@@ -1488,9 +1635,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice1
                 onClicked: {
-
-
-                    //transferTracker = 1
+                    keyInput.text = address1
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1535,9 +1681,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice2
                 onClicked: {
-
-
-                    //transferTracker = 1
+                    keyInput.text = address2
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1582,9 +1727,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice3
                 onClicked: {
-
-
-                    //transferTracker = 1
+                    keyInput.text = address3
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1629,7 +1773,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice4
                 onClicked: {
-                    //transferTracker = 1
+                    keyInput.text = address4
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1674,9 +1819,8 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice5
                 onClicked: {
-
-
-                    //transferTracker = 1
+                    keyInput.text = address1
+                    addressBookTracker = 0
                 }
             }
         }
@@ -1695,6 +1839,58 @@ Item {
         visible: scanQRCodeTracker == 1
         radius: 4
         z: 155
+        Item {
+            visible: scanQRCodeTracker == 1
+            z: 200
+            /**
+              * Commenting camera out for now, we'll cover full implementation of this in a seperate PR
+            Camera {
+                id: camera
+                imageProcessing.whiteBalanceMode: CameraImageProcessing.WhiteBalanceFlash
+
+                exposure {
+                    exposureCompensation: -1.0
+                    exposureMode: Camera.ExposurePortrait
+                }
+
+                flash.mode: Camera.FlashRedEyeReduction
+                imageCapture {
+                    onImageCaptured: {
+                        imageToDecode.source = preview
+                        decoder.decodeImageQML(imageToDecode)
+                    }
+                }
+            }
+            VideoOutput {
+                source: camera
+                z: 200
+                width: 300
+                height: 300
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                focus: visible // to receive focus and capture key events when visible
+            }
+
+            Image {
+                id: imageToDecode
+                visible: false
+            }
+            */
+        }
+
+        QZXing {
+            id: decoder
+            enabledDecoders: QZXing.DecoderFormat_QR_CODE
+            onDecodingStarted: console.log("Decoding of image started...")
+            onTagFound: {
+
+                console.log("Barcode data: " + tag)
+                keyInput.text = tag
+            }
+            onDecodingFinished: console.log(
+                                    "Decoding finished "
+                                    + (succeeded == true ? "successfully" : "unsuccessfully"))
+        }
 
         Rectangle {
             id: scanQRModalTop
@@ -1775,6 +1971,7 @@ Item {
                 font.bold: true
                 font.pixelSize: 14
             }
+
             Image {
                 id: historyModalClose
                 source: '../icons/CloseIcon.svg'
@@ -1805,3 +2002,4 @@ Item {
         }
     }
 }
+

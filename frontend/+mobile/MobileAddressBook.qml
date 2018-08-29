@@ -21,6 +21,7 @@ import "../Controls" as Controls
   */
 Item {
     property int appsTracker: 0
+    property int clickedAddSquare: 0
     Item {
         id: heading
         anchors.left: parent.left
@@ -34,12 +35,12 @@ Item {
             color: "white"
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
-            text: qsTr("POSEY")
+            text: qsTr("Jordan")
         }
     }
     Rectangle {
         z: 100
-        color: "#393B43"
+        color: "#2A2C31"
         opacity: 0.8
         anchors.bottom: parent.bottom
         anchors.left: parent.left
@@ -56,7 +57,18 @@ Item {
         z: 5
         visible: appsTracker == 1
     }
+    Rectangle {
+        color: "#34363D"
+        anchors.top: transfer.bottom
+        anchors.topMargin: 8
+        anchors.left: parent.left
+        height: parent.height
+        width: parent.width
+        z: 0
+        visible: true
+    }
     RowLayout {
+        id: headingRow
         anchors.top: heading.bottom
         anchors.topMargin: 10
         anchors.left: heading.left
@@ -101,12 +113,11 @@ Item {
         color: "#C7C7C7"
         anchors.left: address.left
         anchors.bottom: address.top
-        anchors.bottomMargin: 8
+        anchors.bottomMargin: 19
         font.bold: true
         Image {
             id: transfer2
-            anchors.top: parent.top
-            anchors.topMargin: -2
+            anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.right
             anchors.leftMargin: 8
             source: '../icons/transfer_icon.svg'
@@ -123,13 +134,12 @@ Item {
         color: "#C7C7C7"
         anchors.right: address.right
         anchors.bottom: address.top
-        anchors.bottomMargin: 8
+        anchors.bottomMargin: 19
         anchors.rightMargin: 24
         font.bold: true
         Image {
             id: plus
-            anchors.top: parent.top
-            anchors.topMargin: -2
+            anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.right
             anchors.leftMargin: 8
             source: '../icons/add_icon_03.svg'
@@ -141,10 +151,40 @@ Item {
     Controls.AddressBookSquares {
         id: address
         anchors.top: parent.top
-        anchors.topMargin: 120
+        anchors.topMargin: 125
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Posey"
+        height: clickedAddSquare == 0 ? 75 : 225
+        Image {
+            width: 25
+            height: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            source: '../icons/expand_buttons.svg'
+        }
+        Rectangle {
+            id: expandAddressArea
+            width: 40
+            height: 15
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            color: "transparent"
+            MouseArea {
+                anchors.fill: expandAddressArea
+                onClicked: {
+                    if(clickedAddSquare == 0){
+                        clickedAddSquare = 1
+                        return
+                    }
+                    if(clickedAddSquare == 1 ){
+                        clickedAddSquare = 0
+                        return
+                    }
+                }
+            }
+        }
     }
     Controls.AddressBookSquares {
         id: address2
@@ -153,6 +193,14 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Nrocy"
+        Image {
+            width: 25
+            height: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            source: '../icons/expand_buttons.svg'
+        }
     }
     Controls.AddressBookSquares {
         id: address3
@@ -161,6 +209,14 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Enervey"
+        Image {
+            width: 25
+            height: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            source: '../icons/expand_buttons.svg'
+        }
     }
     Controls.AddressBookSquares {
         id: address4
@@ -169,6 +225,14 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Danny"
+        Image {
+            width: 25
+            height: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            source: '../icons/expand_buttons.svg'
+        }
     }
 
     Image {

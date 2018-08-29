@@ -17,6 +17,7 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
 QT	+= core gui xml quick svg charts
 CONFIG	+= c++11
+CONFIG += qzxing_qml
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
@@ -46,8 +47,7 @@ QML_IMPORT_PATH =
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
-include(backend/support/qrcode/libqrencode.pri)
-include(backend/support/qrcode/qt-qrcode.pri)
+include(backend/support/QZXing/QZXing.pri)
 
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
