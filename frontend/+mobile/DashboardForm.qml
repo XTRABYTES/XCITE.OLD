@@ -79,7 +79,7 @@ Item {
 
     Controls.Header {
         id: heading
-        text: qsTr("POSEY")
+        text: qsTr("Jordan")
         showBack: false
         Layout.topMargin: 14
     }
@@ -315,7 +315,6 @@ Item {
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine.top
             visible: clickedSquare == 1 ? true : false
@@ -1004,7 +1003,7 @@ Item {
         ColorOverlay {
             anchors.fill: xvaultLink
             source: xvaultLink
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
         Text {
             text: "X-VAULT"
@@ -1031,7 +1030,7 @@ Item {
         ColorOverlay {
             anchors.fill: xchatLink
             source: xchatLink
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
         Text {
             text: "X-CHAT"
@@ -1089,7 +1088,7 @@ Item {
                 ColorOverlay {
                     anchors.fill: closeModal
                     source: closeModal
-                    color: "white" // make image like it lays under grey glass
+                    color: "white"
                 }
                 Rectangle {
                     id: closeModalButtonArea
@@ -1373,6 +1372,7 @@ Item {
 
                 onClicked: {
                     transactionSent = 1
+                    sendAmount.text = ""
                 }
             }
             Text {
@@ -1843,6 +1843,7 @@ Item {
             visible: scanQRCodeTracker == 1
             z: 200
             /**
+              * Commenting camera out for now, we'll cover full implementation of this in a seperate PR
             Camera {
                 id: camera
                 imageProcessing.whiteBalanceMode: CameraImageProcessing.WhiteBalanceFlash

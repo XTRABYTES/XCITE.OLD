@@ -35,7 +35,7 @@ Item {
             color: "white"
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
-            text: qsTr("POSEY")
+            text: qsTr("Jordan")
         }
     }
     Rectangle {

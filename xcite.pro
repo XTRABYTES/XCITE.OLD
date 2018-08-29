@@ -47,7 +47,7 @@ QML_IMPORT_PATH =
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
-include(QZXing/QZXing.pri)
+include(backend/support/QZXing/QZXing.pri)
 
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
