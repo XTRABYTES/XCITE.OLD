@@ -71,8 +71,7 @@ Item {
         id: headingRow
         anchors.top: heading.bottom
         anchors.topMargin: 10
-        anchors.left: heading.left
-        anchors.leftMargin: 100
+        anchors.horizontalCenter: heading.horizontalCenter
         spacing: 20
         Label {
             id: overview

@@ -263,9 +263,10 @@ Item {
         Rectangle {
             id: expandButtonArea
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
 
             MouseArea {
@@ -394,9 +395,10 @@ Item {
         Rectangle {
             id: expandButtonArea2
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
             MouseArea {
                 anchors.fill: expandButtonArea2
@@ -521,9 +523,10 @@ Item {
         Rectangle {
             id: expandButtonArea3
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
 
             MouseArea {
@@ -650,9 +653,10 @@ Item {
         Rectangle {
             id: expandButtonArea4
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
 
             MouseArea {
@@ -779,9 +783,10 @@ Item {
         Rectangle {
             id: expandButtonArea5
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
 
             MouseArea {
@@ -1227,7 +1232,6 @@ Item {
             anchors.horizontalCenter: pubKey.horizontalCenter
             color: "white"
             font.family: "Brandon Grotesque"
-            font.bold: false
             font.pixelSize: 11
             visible: transferSwitch.checked == false && transferTracker == 1
         }
@@ -1247,7 +1251,7 @@ Item {
           */
         Label {
             id: walletBalance
-            text: "18.5359 XBY"
+            text: wallet.balance + " XBY"
             anchors.right: walletDropdown.right
             anchors.rightMargin: 0
             anchors.top: walletChoice.bottom
