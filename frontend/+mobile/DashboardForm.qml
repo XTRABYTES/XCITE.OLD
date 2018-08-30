@@ -1404,7 +1404,7 @@ Item {
             z: 100
             Image {
                 id: transactionSentImage
-                source: '../icons/Group.png'
+                source: '../icons/rocket.svg'
                 anchors.top: parent.top
                 anchors.topMargin: (parent.height/2) - 80
                 anchors.horizontalCenter: parent.horizontalCenter
