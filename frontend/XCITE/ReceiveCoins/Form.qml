@@ -143,7 +143,7 @@ ColumnLayout {
         anchors.horizontalCenter: qrCode1.horizontalCenter
         width: 270
         height: 270
-        color: white
+        color: "white"
         radius: 8
     }
 }
