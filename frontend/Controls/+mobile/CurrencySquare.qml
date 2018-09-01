@@ -19,10 +19,11 @@ Rectangle {
     property url currencyType: '../icons/BTC-color.svg'
     property string currencyType2: "BTC"
     property string percentChange: "+%.8"
-    property string amountSize: wallet.balance
+    property string amountSize: wallet.balance.toLocaleString(
+                                    Qt.locale(), "f", 4)
     property string totalValue: (wallet.balance * marketValue.marketValue).toLocaleString(
                                     Qt.locale(), "f", 2)
-    property string value: marketValue.marketValue.toLocaleString(
+    property string value: (marketValue.marketValue).toLocaleString(
                                Qt.locale(), "f", 2)
     property int gainLossTracker: 0
     id: square
@@ -44,8 +45,7 @@ Rectangle {
     Label {
         anchors.left: icon.right
         anchors.leftMargin: 5
-        anchors.top: parent.top
-        anchors.topMargin: 14
+        anchors.verticalCenter: icon.verticalCenter
         text: currencyType2
         font.pixelSize: 16
         font.family: "Brandon Grotesque"

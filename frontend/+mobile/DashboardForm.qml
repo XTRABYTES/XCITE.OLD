@@ -44,6 +44,7 @@ Item {
     z: 2
     id: dashForm
     Rectangle {
+        id: bottomRect
         z: 100
         color: "#2A2C31"
         opacity: 0.8
@@ -158,7 +159,7 @@ Item {
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
     }
-
+    /**
     Switch {
         id: switch1
         anchors.right: parent.right
@@ -175,7 +176,6 @@ Item {
             angle: 90
         }
     }
-    /**
     Label {
         id: week1
         text: "WEEK"
@@ -199,7 +199,7 @@ Item {
         anchors.leftMargin: 2
         anchors.bottom:switch1.bottom
     }
-*/
+    */
     Label {
         id: transfer
         text: "TRANSFER"
@@ -310,6 +310,7 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 XBY"
             font.family: "Brandon Grotesque"
@@ -318,8 +319,10 @@ Item {
             color: "#919191"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine.top
+            anchors.bottomMargin: 2
             visible: clickedSquare == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton
             visible: clickedSquare == 1 ? true : false
@@ -441,17 +444,18 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 XFUEL"
             font.family: "Brandon Grotesque"
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine2.top
             visible: clickedSquare2 == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton2
             visible: clickedSquare2 == 1 ? true : false
@@ -570,17 +574,18 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 BTC"
             font.family: "Brandon Grotesque"
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine3.top
             visible: clickedSquare3 == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton3
             visible: clickedSquare3 == 1 ? true : false
@@ -700,17 +705,18 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 ETH"
             font.family: "Brandon Grotesque"
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine4.top
             visible: clickedSquare4 == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton4
             visible: clickedSquare4 == 1 ? true : false
@@ -830,17 +836,18 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 NEO"
             font.family: "Brandon Grotesque"
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine5.top
             visible: clickedSquare5 == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton5
             visible: clickedSquare5 == 1 ? true : false
@@ -897,40 +904,37 @@ Item {
 
     Image {
         id: settings
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
+        anchors.verticalCenter: bottomRect.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 30
         source: '../icons/icon-settings.svg'
-        width: 20
-        height: 20
+        width: 23
+        height: 23
         z: 100
         MouseArea {
             anchors.fill: settings
-            //onClicked: pageLoader.source = "MobileAddressBook.qml"
             onClicked: mainRoot.push("Settings.qml")
         }
         ColorOverlay {
             anchors.fill: settings
             source: settings
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
     }
     Image {
         id: apps
         source: '../icons/Apps_icon_03.svg'
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
+        anchors.verticalCenter: bottomRect.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 30
-        width: 20
-        height: 20
+        width: 23
+        height: 23
         z: 100
         visible: appsTracker == 0
         ColorOverlay {
             anchors.fill: apps
             source: apps
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
         MouseArea {
             anchors.fill: apps
@@ -1053,7 +1057,7 @@ Item {
       */
     Rectangle {
         id: modal
-        height: parent.height > 800 ? (parent.height - 400) : 400
+        height: parent.height > 800 ? (parent.height - 400) : 375
         width: parent.width - 50
         color: "#42454F"
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1079,7 +1083,7 @@ Item {
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 14
+                font.pixelSize: 15
             }
             Image {
                 id: closeModal
@@ -1121,6 +1125,7 @@ Item {
                 anchors.right: transferSwitch.left
                 anchors.rightMargin: 7
                 anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: 13
                 color: transferSwitch.checked ? "#5F5F5F" : "#5E8BFE"
             }
             Text {
@@ -1129,6 +1134,7 @@ Item {
                 anchors.left: transferSwitch.right
                 anchors.leftMargin: 7
                 anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: 13
                 color: transferSwitch.checked ? "#5E8BFE" : "#5F5F5F"
             }
         }
@@ -1189,7 +1195,7 @@ Item {
         Item {
             id: qrPlaceholder
             width: 180
-            height: 180
+            height: 170
             anchors.horizontalCenter: qrBorder.horizontalCenter
             anchors.verticalCenter: qrBorder.verticalCenter
             z: 10
@@ -1204,24 +1210,24 @@ Item {
             id: qrBorder
             radius: 8
             width: 210
-            height: 210
+            height: 200
             visible: transferSwitch.checked == false && transferTracker == 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 20
-            color: "transparent"
+            color: "white"
         }
 
         Text {
             id: pubKey
             text: "PUBLIC KEY"
             anchors.top: qrBorder.bottom
-            anchors.topMargin: 25
+            anchors.topMargin: 15
             anchors.horizontalCenter: parent.horizontalCenter
             color: "#F2F2F2"
             font.family: "Brandon Grotesque"
             font.bold: true
-            font.pixelSize: 12
+            font.pixelSize: 13
             visible: transferSwitch.checked == false && transferTracker == 1
         }
         Text {
@@ -1232,18 +1238,23 @@ Item {
             anchors.horizontalCenter: pubKey.horizontalCenter
             color: "white"
             font.family: "Brandon Grotesque"
-            font.pixelSize: 11
+            font.pixelSize: 12
             visible: transferSwitch.checked == false && transferTracker == 1
         }
         Image {
             id: pasteIcon
             source: '../icons/paste_icon.svg'
-            width: 13
-            height: 13
+            width: 15
+            height: 15
             anchors.left: publicKey.right
             anchors.leftMargin: 5
             anchors.verticalCenter: publicKey.verticalCenter
             visible: transferSwitch.checked == false && transferTracker == 1
+            ColorOverlay {
+                anchors.fill: pasteIcon
+                source: pasteIcon
+                color: "white" // make image like it lays under grey glass
+            }
         }
 
         /**
@@ -1271,9 +1282,38 @@ Item {
             anchors.topMargin: 15
             visible: transferTracker == 1 && transferSwitch.checked == true
             color: "#727272"
-            font.pixelSize: 10
+            font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
+        }
+        Image {
+            id: textFieldEmpty3
+            source: '../icons/CloseIcon.svg'
+            anchors.verticalCenter: sendAmount.verticalCenter
+            anchors.right: sendAmount.right
+            anchors.rightMargin: 10
+            width: textFieldEmpty3.height
+            height: 12
+            visible: transferTracker == 1 && transferSwitch.checked == true
+            ColorOverlay {
+                anchors.fill: textFieldEmpty3
+                source: textFieldEmpty3
+                color: "#727272"
+            }
+            Rectangle {
+                id: textFieldEmpty3ButtonArea
+                width: 20
+                height: 20
+                anchors.left: textFieldEmpty3.left
+                anchors.bottom: textFieldEmpty3.bottom
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: textFieldEmpty3ButtonArea
+                    onClicked: {
+                        sendAmount.text = ""
+                    }
+                }
+            }
         }
         Controls.TextInput {
             id: keyInput
@@ -1283,10 +1323,39 @@ Item {
             anchors.top: sendAmount.bottom
             anchors.topMargin: 15
             color: "#727272"
-            font.pixelSize: 10
+            font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: transferTracker == 1 && transferSwitch.checked == true
+        }
+        Image {
+            id: textFieldEmpty1
+            source: '../icons/CloseIcon.svg'
+            anchors.verticalCenter: keyInput.verticalCenter
+            anchors.right: keyInput.right
+            anchors.rightMargin: 10
+            width: textFieldEmpty1.height
+            height: 12
+            visible: transferTracker == 1 && transferSwitch.checked == true
+            ColorOverlay {
+                anchors.fill: textFieldEmpty1
+                source: textFieldEmpty1
+                color: "#727272" // make image like it lays under grey glass
+            }
+            Rectangle {
+                id: textFieldEmpty1ButtonArea
+                width: 20
+                height: 20
+                anchors.left: textFieldEmpty1.left
+                anchors.bottom: textFieldEmpty1.bottom
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: textFieldEmpty1ButtonArea
+                    onClicked: {
+                        keyInput.text = ""
+                    }
+                }
+            }
         }
         Rectangle {
             id: scanQrButton
@@ -1354,10 +1423,39 @@ Item {
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 15
             color: "#727272"
-            font.pixelSize: 10
+            font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: transferTracker == 1 && transferSwitch.checked == true
+        }
+        Image {
+            id: textFieldEmpty2
+            source: '../icons/CloseIcon.svg'
+            anchors.verticalCenter: referenceInput.verticalCenter
+            anchors.right: referenceInput.right
+            anchors.rightMargin: 10
+            width: textFieldEmpty2.height
+            height: 12
+            visible: transferTracker == 1 && transferSwitch.checked == true
+            ColorOverlay {
+                anchors.fill: textFieldEmpty2
+                source: textFieldEmpty2
+                color: "#727272"
+            }
+            Rectangle {
+                id: textFieldEmpty2ButtonArea
+                width: 20
+                height: 20
+                anchors.left: textFieldEmpty2.left
+                anchors.bottom: textFieldEmpty2.bottom
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: textFieldEmpty2ButtonArea
+                    onClicked: {
+                        referenceInput.text = ""
+                    }
+                }
+            }
         }
         Rectangle {
             id: sendButton
@@ -1442,7 +1540,7 @@ Item {
                     color: "#F2F2F2"
                     font.family: "Brandon Grotesque"
                     font.bold: true
-                    font.pixelSize: 14
+                    font.pixelSize: 15
                 }
                 Image {
                     id: closeTransactionSentModal
@@ -1538,7 +1636,7 @@ Item {
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 14
+                font.pixelSize: 15
             }
             Image {
                 id: closeAddressBookModal
@@ -1911,7 +2009,7 @@ Item {
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 14
+                font.pixelSize: 15
             }
             Image {
                 id: scanQRBookModalClose
@@ -1973,7 +2071,7 @@ Item {
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 14
+                font.pixelSize: 15
             }
 
             Image {

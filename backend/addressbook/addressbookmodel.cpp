@@ -170,7 +170,6 @@ bool AddressBookModel::load()
 
     if (!f.open(QIODevice::ReadOnly)) {
         // TODO: Temporary pre-populate addressbook to make life easier for testing
-        append("dedpull", "XV3Goey53xDt51oAZ6LfGm8G51k5QmMXmR");
         append("enervey", "XZhRoyup9cbVguuqDUWWBuqhLmE483FtXW");
         append("james87uk", "XLGSfK2RhjvEbkGMe4WVk2R8k9auLESAsv");
         append("nrocy", "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ");
