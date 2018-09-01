@@ -13,7 +13,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-
+import QtMultimedia 5.8
 import "../Controls" as Controls
 
 /**
@@ -22,6 +22,8 @@ import "../Controls" as Controls
 Item {
     property int appsTracker: 0
     property int clickedAddSquare: 0
+    property int editAddressTracker: 0
+    property int clickedEditTracker: 0
     Item {
         id: heading
         anchors.left: parent.left
@@ -35,7 +37,7 @@ Item {
             color: "white"
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
-            text: qsTr("Jordan")
+            text: qsTr("Posey")
         }
     }
     Rectangle {
@@ -55,7 +57,7 @@ Item {
         height: parent.height
         width: parent.width
         z: 5
-        visible: appsTracker == 1
+        visible: appsTracker == 1 || editAddressTracker == 1
     }
     Rectangle {
         color: "#34363D"
@@ -154,7 +156,8 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Posey"
-        height: clickedAddSquare == 0 ? 75 : 225
+        numberAddresses: 1
+        height: clickedAddSquare == 0 ? 75 : 150
         Image {
             width: 25
             height: 5
@@ -166,9 +169,10 @@ Item {
         Rectangle {
             id: expandAddressArea
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
             MouseArea {
                 anchors.fill: expandAddressArea
@@ -184,7 +188,123 @@ Item {
                 }
             }
         }
+        Image {
+            id: icon
+            width: 20
+            height: 20
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.top: parent.top
+            anchors.topMargin: 50
+            source: '../icons/XBY_card_logo_colored_05.svg'
+            visible: clickedAddSquare == 1
+        }
+        Label {
+            anchors.left: icon.right
+            anchors.leftMargin: 5
+            anchors.verticalCenter: icon.verticalCenter
+            text: "XBY"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: true
+            visible: clickedAddSquare == 1
+        }
+        Label {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: icon.verticalCenter
+            text: "Main"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: true
+            visible: clickedAddSquare == 1
+        }
+        Image {
+            id: editAddress
+            width: 20
+            height: 20
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.top: parent.top
+            anchors.topMargin: 50
+            source: '../icons/edit.svg'
+            visible: clickedAddSquare == 1
+            ColorOverlay {
+                anchors.fill: editAddress
+                source: editAddress
+                color: "#DADADA"
+            }
+            MouseArea {
+                anchors.fill: editAddress
+                onClicked: {
+                    editAddressTracker = 1
+                }
+            }
+        }
+        Rectangle {
+            id: dividerLine
+            visible: clickedAddSquare == 1
+            width: address.width - 20
+            height: 1
+            color: "#575757"
+            anchors.top: icon.bottom
+            anchors.topMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
     }
+
+    Controls.EditAddressModal{
+        id: modal1
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: (parent.height/2)-100
+        visible: editAddressTracker == 1
+        Controls.TextInput {
+            id: keyInput1
+            height: 34
+            placeholder: "Edit Address"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: editConfirm.top
+            anchors.bottomMargin: 10
+            color: "#727272"
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: editAddressTracker == 1
+        }
+        Rectangle {
+            id: editConfirm
+            width: keyInput1.width
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: editAddressTracker == 1
+            MouseArea {
+                anchors.fill: editConfirm
+
+                onClicked: {
+                    editAddressTracker = 0
+                    receivingAddress = keyInput1.text
+                }
+            }
+            Text {
+                text: "DONE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+    }
+
     Controls.AddressBookSquares {
         id: address2
         anchors.top: address.bottom
@@ -192,6 +312,7 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Nrocy"
+        numberAddresses: 1
         Image {
             width: 25
             height: 5
@@ -208,6 +329,7 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Enervey"
+        numberAddresses: 1
         Image {
             width: 25
             height: 5
@@ -224,6 +346,7 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: "Danny"
+        numberAddresses: 1
         Image {
             width: 25
             height: 5

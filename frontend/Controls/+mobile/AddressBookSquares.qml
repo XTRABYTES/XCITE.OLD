@@ -17,7 +17,7 @@ import QtGraphicalEffects 1.0
 
 Rectangle {
     property string name: "Posey"
-    property string numberAddresses: "5"
+    property int numberAddresses: 1
     id: square
     color: "#42454F"
     width: Screen.width - 55
@@ -40,7 +40,7 @@ Rectangle {
         anchors.rightMargin: 12
         anchors.top: parent.top
         anchors.topMargin: 22
-        text: numberAddresses + " addresses"
+        text: numberAddresses.toString() + " address(es)"
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"

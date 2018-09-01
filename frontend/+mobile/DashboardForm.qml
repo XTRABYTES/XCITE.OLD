@@ -40,7 +40,7 @@ Item {
     property string address2: "B2QiknazjkA30s9gyV4riyKuVWvUMXEVss"
     property string address3: "B09iknaFAFKA30s392J4riyKuVWvUMXEV3"
     property string address4: "BxkiknaGNKA30s9gyV4riyKuVWvFJKEVq9"
-    property string receivingAddress: "BM39fjwf093JF329f39fJFfa03987fja3"
+
     z: 2
     id: dashForm
     Rectangle {
@@ -80,7 +80,7 @@ Item {
 
     Controls.Header {
         id: heading
-        text: qsTr("Jordan")
+        text: qsTr("Posey")
         showBack: false
         Layout.topMargin: 14
     }
@@ -325,7 +325,7 @@ Item {
         */
         Rectangle {
             id: transferButton
-            visible: clickedSquare == 1 ? true : false
+            visible: clickedSquare == 1 && transferTracker != 1
             width: 145
             height: 40
             radius: 8
@@ -353,7 +353,7 @@ Item {
         }
         Rectangle {
             id: historyButton
-            visible: clickedSquare == 1 ? true : false
+            visible: clickedSquare == 1 && transferTracker != 1
             width: 145
             height: 40
             radius: 8
@@ -405,6 +405,8 @@ Item {
             color: "transparent"
             MouseArea {
                 anchors.fill: expandButtonArea2
+                /**
+                  * disable for now while only XBY can be traded
                 onClicked: {
                     if (clickedSquare2 == 1) {
                         clickedSquare2 = 0
@@ -419,6 +421,7 @@ Item {
                         return
                     }
                 }
+                */
             }
         }
         Image {
@@ -468,14 +471,6 @@ Item {
             anchors.top: dividerLine2.bottom
             anchors.left: dividerLine2.left
             anchors.topMargin: 15
-            /**
-            MouseArea {
-                anchors.fill: transferButton2
-                onClicked: {
-                    transferTracker = 1
-                }
-            }
-            */
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -535,6 +530,8 @@ Item {
 
             MouseArea {
                 anchors.fill: expandButtonArea3
+                /**
+                  * disable for now while only XBY can be traded
                 onClicked: {
                     if (clickedSquare3 == 1) {
                         clickedSquare3 = 0
@@ -549,6 +546,7 @@ Item {
                         return
                     }
                 }
+                */
             }
         }
         Image {
@@ -598,14 +596,6 @@ Item {
             anchors.top: dividerLine3.bottom
             anchors.left: dividerLine3.left
             anchors.topMargin: 15
-            /**
-            MouseArea {
-                anchors.fill: transferButton3
-                onClicked: {
-                    transferTracker = 1
-                }
-            }
-            */
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -666,6 +656,8 @@ Item {
 
             MouseArea {
                 anchors.fill: expandButtonArea4
+                /**
+                  * disable for now while only XBY can be traded
                 onClicked: {
                     if (clickedSquare4 == 1) {
                         clickedSquare4 = 0
@@ -680,6 +672,7 @@ Item {
                         return
                     }
                 }
+                */
             }
         }
         Image {
@@ -797,6 +790,8 @@ Item {
 
             MouseArea {
                 anchors.fill: expandButtonArea5
+                /**
+                  * disable for now while only XBY can be traded
                 onClicked: {
                     if (clickedSquare5 == 1) {
                         clickedSquare5 = 0
@@ -811,6 +806,7 @@ Item {
                         return
                     }
                 }
+                */
             }
         }
 
@@ -1108,7 +1104,12 @@ Item {
                     color: "transparent"
                     MouseArea {
                         anchors.fill: closeModalButtonArea
-                        onClicked: transferTracker = 0
+                        onClicked:{
+                            transferTracker = 0
+                            sendAmount.text = ""
+                            keyInput.text = ""
+                            referenceInput.text = ""
+                        }
                     }
                 }
             }
@@ -1275,14 +1276,13 @@ Item {
         Controls.TextInput {
             id: sendAmount
             height: 34
-            //radius: 8
             placeholder: "AMOUNT (XBY)"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 15
             visible: transferTracker == 1 && transferSwitch.checked == true
             color: "#727272"
-            font.pixelSize: 12
+            font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.bold: true
         }
@@ -1323,7 +1323,7 @@ Item {
             anchors.top: sendAmount.bottom
             anchors.topMargin: 15
             color: "#727272"
-            font.pixelSize: 12
+            font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: transferTracker == 1 && transferSwitch.checked == true
@@ -1417,13 +1417,12 @@ Item {
         Controls.TextInput {
             id: referenceInput
             height: 34
-            // radius: 8
             placeholder: "REFERENCE"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 15
             color: "#727272"
-            font.pixelSize: 12
+            font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: transferTracker == 1 && transferSwitch.checked == true
@@ -1737,7 +1736,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice1
                 onClicked: {
-                    keyInput.text = address1
+                    keyInput.text = receivingAddress
                     addressBookTracker = 0
                 }
             }
