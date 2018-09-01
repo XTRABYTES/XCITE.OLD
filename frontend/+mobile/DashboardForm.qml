@@ -29,7 +29,8 @@ Item {
     property int addressBookTracker: 0
     property int scanQRCodeTracker: 0
     property int historyTracker: 0
-    property int transactionSent: 0
+    property int transactionSentTracker: 0
+    property int transactionConfirmTracker: 0
     property int clickedSquare: 0
     property int clickedSquare2: 0
     property int clickedSquare3: 0
@@ -133,7 +134,7 @@ Item {
         ColorOverlay {
             anchors.fill: notif
             source: notif
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
     }
 
@@ -1472,7 +1473,7 @@ Item {
                 anchors.fill: sendButton
 
                 onClicked: {
-                    transactionSent = 1
+                    transactionSentTracker = 1
                     sendAmount.text = ""
                 }
             }
@@ -1487,53 +1488,30 @@ Item {
             }
         }
         /**
-          * Transfer Modal Transaction Sent
-          */
+          * Modal for confirming your transaction
+
         Rectangle {
-            id: transactionSentModal
-            height: modal.height
+            id: transactionConfirmationModal
+            height: parent.height > 800 ? (parent.height - 400) : 375
             width: parent.width - 50
             color: "#42454F"
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: modal.top
-            visible: transactionSent == 1
+            anchors.top: parent.top
+            anchors.topMargin: 150
+            visible: transactionConfirmTracker == 1
             radius: 4
-            z: 100
-            Image {
-                id: transactionSentImage
-                source: '../icons/rocket.svg'
-                anchors.top: parent.top
-                anchors.topMargin: (parent.height/2) - 80
-                anchors.horizontalCenter: parent.horizontalCenter
-                height: (parent.height/4)
-                width: (parent.height/4)
-                ColorOverlay {
-                    anchors.fill: transactionSentImage
-                    source: transactionSentImage
-                    color: "#5E8BFF" // make image like it lays under grey glass
-                }
-            }
-            Text {
-                text: "Transaction Sent!"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#5E8BFF"
-                anchors.top: transactionSentImage.bottom
-                anchors.topMargin: 15
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
+            z: 105
+
             Rectangle {
-                id: transactionSentModalTop
+                id: transactionConfirmationModalTop
                 height: 50
-                width: transactionSentModal.width
-                anchors.bottom: transactionSentModal.top
-                anchors.left: transactionSentModal.left
+                width: transactionConfirmationModal.width
+                anchors.bottom: transactionConfirmationModal.top
+                anchors.left: transactionConfirmationModal.left
                 color: "#34363D"
                 radius: 4
                 Text {
-                    id: textHeader
-                    text: "CONFIRMATION"
+                    text: "TRANSFER"
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                     color: "#F2F2F2"
@@ -1542,39 +1520,99 @@ Item {
                     font.pixelSize: 15
                 }
                 Image {
-                    id: closeTransactionSentModal
+                    id: transactionConfirmationCloseModal
                     source: '../icons/CloseIcon.svg'
-                    anchors.top: parent.top
-                    anchors.topMargin: 15
-                    anchors.right: parent.right
-                    anchors.rightMargin: 2
+                    anchors.bottom: transactionConfirmationModalTop.bottom
+                    anchors.bottomMargin: 15
+                    anchors.right: transactionConfirmationModalTop.right
+                    anchors.rightMargin: 30
                     width: 20
                     height: 20
                     ColorOverlay {
-                        anchors.fill: closeTransactionSentModal
-                        source: closeTransactionSentModal
-                        color: "white" // make image like it lays under grey glass
+                        anchors.fill: transactionConfirmationCloseModal
+                        source: transactionConfirmationCloseModal
+                        color: "white"
                     }
                     Rectangle {
-                        id: closeTransactionSentModalButtonArea
+                        id: transactionConfirmationCloseModalButtonArea
                         width: 20
                         height: 20
-                        anchors.left: closeTransactionSentModal.left
-                        anchors.bottom: closeTransactionSentModal.bottom
+                        anchors.left: transactionConfirmationCloseModal.left
+                        anchors.bottom: transactionConfirmationCloseModal.bottom
                         color: "transparent"
                         MouseArea {
-                            anchors.fill: closeTransactionSentModalButtonArea
-                            onClicked: {
-                                transactionSent = 0
-                                transferTracker = 0
+                            anchors.fill: transactionConfirmationCloseModalButtonArea
+                            onClicked:{
+                                transactionConfirmTracker = 0
                             }
                         }
                     }
                 }
             }
+            Text {
+                id: confirm
+                text: "Confirm Payment"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 50
+            }
+            Text {
+                id: confirm2
+                text: "You are about to send"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 13
+                font.bold: false
+                color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: confirm.bottom
+                anchors.topMargin: 20
+            }
+            Text {
+                id: confirm3
+                text: sendAmount.text + "XBY"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 13
+                font.bold: true
+                color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: confirm2.bottom
+                anchors.topMargin: 20
+            }
+            Text {
+                id: confirm4
+                text: "to"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 13
+                font.bold: false
+                color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: confirm3.bottom
+                anchors.topMargin: 20
+            }
+            Text {
+                id: confirm5
+                text: keyInput.text
+                font.family: "Brandon Grotesque"
+                font.pointSize: 13
+                font.bold: true
+                color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: confirm3.bottom
+                anchors.topMargin: 20
+            }
+        }
+        */
+        /**
+          * Modal for confirming transfer went through
+          */
+        Controls.TransactionSentModal{
+            visible: transactionSentTracker == 1
             Rectangle {
                 id: transactionSentClose
-                visible: transactionSent == 1
                 width: (parent.height/4) + 40
                 height: 33
                 radius: 8
@@ -1588,7 +1626,7 @@ Item {
                     anchors.fill: transactionSentClose
 
                     onClicked: {
-                        transactionSent = 0
+                        transactionSentTracker = 0
                         transferTracker = 1
                     }
                 }
@@ -1602,8 +1640,37 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
+            Image {
+                id: closeTransactionSentModal
+                source: '../icons/CloseIcon.svg'
+                anchors.top: parent.top
+                anchors.topMargin: -35
+                anchors.right: parent.right
+                anchors.rightMargin: 2
+                width: 20
+                height: 20
+                ColorOverlay {
+                    anchors.fill: closeTransactionSentModal
+                    source: closeTransactionSentModal
+                    color: "white" // make image like it lays under grey glass
+                }
+                Rectangle {
+                    id: closeTransactionSentModalButtonArea
+                    width: 20
+                    height: 20
+                    anchors.left: closeTransactionSentModal.left
+                    anchors.bottom: closeTransactionSentModal.bottom
+                    color: "transparent"
+                    MouseArea {
+                        anchors.fill: closeTransactionSentModalButtonArea
+                        onClicked: {
+                            transactionSentTracker = 0
+                            transferTracker = 0
+                        }
+                    }
+                }
+            }
         }
-
     }
     /**
       * AddressBookModal

@@ -211,6 +211,7 @@ Item {
             visible: clickedAddSquare == 1
         }
         Label {
+            id: addressLabel
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: icon.verticalCenter
             text: "Main"
@@ -254,24 +255,191 @@ Item {
         }
     }
 
-    Controls.EditAddressModal{
-        id: modal1
+    Rectangle {
+        id: modal
+        height: 300
+        width: parent.width - 50
+        color: "#42454F"
+        radius: 4
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: (parent.height/2)-100
+        anchors.topMargin: 150
         visible: editAddressTracker == 1
+        z: 100
+        Rectangle {
+            id: modalTop
+            height: 50
+            width: modal.width
+            anchors.bottom: modal.top
+            anchors.left: modal.left
+            color: "#34363D"
+            radius: 4
+        }
+        Label{
+            anchors.horizontalCenter: modalTop.horizontalCenter
+            anchors.verticalCenter: modalTop.verticalCenter
+            color: "White"
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            text: "EDIT ADDRESS"
+        }
+        Image {
+            id: icon2
+            width: 25
+            height: 25
+            anchors.left: keyInput1.left
+            anchors.leftMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 25
+            source: '../icons/XBY_card_logo_colored_05.svg'
+            visible: clickedAddSquare == 1
+        }
+        Label {
+            id: label1
+            anchors.left: icon2.right
+            anchors.leftMargin: 5
+            anchors.verticalCenter: icon2.verticalCenter
+            text: "XBY"
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            color: "#E5E5E5"
+            font.bold: true
+            visible: clickedAddSquare == 1
+        }
+        Image {
+            source: '../icons/dropdown_icon.svg'
+            width: 15
+            height: 15
+            anchors.left: label1.right
+            anchors.leftMargin: 8
+            anchors.verticalCenter: label1.verticalCenter
+        }
         Controls.TextInput {
             id: keyInput1
             height: 34
-            placeholder: "Edit Address"
+            placeholder: "Edit Name"
+            text: address.name
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: editConfirm.top
-            anchors.bottomMargin: 10
+            anchors.top: icon2.bottom
+            anchors.topMargin: 20
             color: "#727272"
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: editAddressTracker == 1
+        }
+        Image {
+            id: textFieldEmpty1
+            source: '../icons/CloseIcon.svg'
+            anchors.verticalCenter: keyInput1.verticalCenter
+            anchors.right: keyInput1.right
+            anchors.rightMargin: 10
+            width: textFieldEmpty1.height
+            height: 12
+            ColorOverlay {
+                anchors.fill: textFieldEmpty1
+                source: textFieldEmpty1
+                color: "#727272"
+            }
+            Rectangle {
+                id: keyInput1ButtonArea
+                width: 20
+                height: 20
+                anchors.left: textFieldEmpty1.left
+                anchors.bottom: textFieldEmpty1.bottom
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: keyInput1ButtonArea
+                    onClicked: {
+                        keyInput1.text = ""
+                    }
+                }
+            }
+        }
+        Controls.TextInput {
+            id: keyInput2
+            height: 34
+            placeholder: "Edit Label"
+            text: addressLabel.text
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: keyInput1.bottom
+            anchors.topMargin: 20
+            color: "#727272"
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: editAddressTracker == 1
+        }
+        Image {
+            id: textFieldEmpty2
+            source: '../icons/CloseIcon.svg'
+            anchors.verticalCenter: keyInput2.verticalCenter
+            anchors.right: keyInput2.right
+            anchors.rightMargin: 10
+            width: textFieldEmpty2.height
+            height: 12
+            ColorOverlay {
+                anchors.fill: textFieldEmpty2
+                source: textFieldEmpty2
+                color: "#727272"
+            }
+            Rectangle {
+                id: keyInput2ButtonArea
+                width: 20
+                height: 20
+                anchors.left: textFieldEmpty2.left
+                anchors.bottom: textFieldEmpty2.bottom
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: keyInput2ButtonArea
+                    onClicked: {
+                        keyInput2.text = ""
+                    }
+                }
+            }
+        }
+        Controls.TextInput {
+            id: keyInput3
+            height: 34
+            placeholder: "Edit Address"
+            text: receivingAddress
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: keyInput2.bottom
+            anchors.topMargin: 20
+            color: "#727272"
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: editAddressTracker == 1
+        }
+        Image {
+            id: textFieldEmpty3
+            source: '../icons/CloseIcon.svg'
+            anchors.verticalCenter: keyInput3.verticalCenter
+            anchors.right: keyInput3.right
+            anchors.rightMargin: 10
+            width: textFieldEmpty3.height
+            height: 12
+            ColorOverlay {
+                anchors.fill: textFieldEmpty3
+                source: textFieldEmpty3
+                color: "#727272"
+            }
+            Rectangle {
+                id: keyInput3ButtonArea
+                width: 20
+                height: 20
+                anchors.left: textFieldEmpty3.left
+                anchors.bottom: textFieldEmpty3.bottom
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: keyInput3ButtonArea
+                    onClicked: {
+                        keyInput3.text = ""
+                    }
+                }
+            }
         }
         Rectangle {
             id: editConfirm
@@ -281,8 +449,8 @@ Item {
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
+            anchors.top: keyInput3.bottom
+            anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editAddressTracker == 1
             MouseArea {
@@ -290,7 +458,9 @@ Item {
 
                 onClicked: {
                     editAddressTracker = 0
-                    receivingAddress = keyInput1.text
+                    address.name = keyInput1.text
+                    addressLabel.text = keyInput2.text
+                    receivingAddress = keyInput3.text
                 }
             }
             Text {

@@ -132,6 +132,6 @@
         <file>Controls/+mobile/CurrencySquare.qml</file>
         <file>Controls/+mobile/AddressBookSquares.qml</file>
         <file>+mobile/MobileAddressBook.qml</file>
-        <file>Controls/+mobile/EditAddressModal.qml</file>
+        <file>Controls/+mobile/TransactionSentModal.qml</file>
     </qresource>
 </RCC>
