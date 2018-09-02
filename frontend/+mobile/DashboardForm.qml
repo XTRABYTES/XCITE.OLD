@@ -1061,7 +1061,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 150
         visible: transferTracker == 1 && addressBookTracker != 1
-                 && scanQRCodeTracker != 1
+                 && scanQRCodeTracker != 1 && transactionConfirmTracker != 1 && transactionSentTracker != 1
         radius: 4
         z: 100
 
@@ -1264,7 +1264,8 @@ Item {
           */
         Label {
             id: walletBalance
-            text: wallet.balance + " XBY"
+            text: wallet.balance.toLocaleString(
+                      Qt.locale(), "f", 4) + " XBY"
             anchors.right: walletDropdown.right
             anchors.rightMargin: 0
             anchors.top: walletChoice.bottom
@@ -1278,6 +1279,9 @@ Item {
             id: sendAmount
             height: 34
             placeholder: "AMOUNT (XBY)"
+            validator: DoubleValidator {
+                bottom: 0
+            }
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 15
@@ -1473,8 +1477,7 @@ Item {
                 anchors.fill: sendButton
 
                 onClicked: {
-                    transactionSentTracker = 1
-                    sendAmount.text = ""
+                    transactionConfirmTracker = 1
                 }
             }
             Text {
@@ -1487,191 +1490,226 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
-        /**
-          * Modal for confirming your transaction
+    }
+
+    /**
+      * Modal for confirming your transaction
+    */
+    Rectangle {
+        id: transactionConfirmationModal
+        height: 250
+        width: parent.width - 50
+        color: "#42454F"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 150
+        visible: transactionConfirmTracker == 1
+        radius: 4
+        z: 300
 
         Rectangle {
-            id: transactionConfirmationModal
-            height: parent.height > 800 ? (parent.height - 400) : 375
-            width: parent.width - 50
-            color: "#42454F"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 150
-            visible: transactionConfirmTracker == 1
+            id: transactionConfirmationModalTop
+            height: 50
+            width: transactionConfirmationModal.width
+            anchors.bottom: transactionConfirmationModal.top
+            anchors.left: transactionConfirmationModal.left
+            color: "#34363D"
             radius: 4
-            z: 105
 
-            Rectangle {
-                id: transactionConfirmationModalTop
-                height: 50
-                width: transactionConfirmationModal.width
-                anchors.bottom: transactionConfirmationModal.top
-                anchors.left: transactionConfirmationModal.left
-                color: "#34363D"
-                radius: 4
-                Text {
-                    text: "TRANSFER"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    color: "#F2F2F2"
-                    font.family: "Brandon Grotesque"
-                    font.bold: true
-                    font.pixelSize: 15
+            Text {
+                text: "TRANSFER"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#F2F2F2"
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                font.pixelSize: 15
+            }
+            Image {
+                id: transactionConfirmationCloseModal
+                source: '../icons/CloseIcon.svg'
+                anchors.bottom: transactionConfirmationModalTop.bottom
+                anchors.bottomMargin: 15
+                anchors.right: transactionConfirmationModalTop.right
+                anchors.rightMargin: 30
+                width: 20
+                height: 20
+                ColorOverlay {
+                    anchors.fill: transactionConfirmationCloseModal
+                    source: transactionConfirmationCloseModal
+                    color: "white"
                 }
-                Image {
-                    id: transactionConfirmationCloseModal
-                    source: '../icons/CloseIcon.svg'
-                    anchors.bottom: transactionConfirmationModalTop.bottom
-                    anchors.bottomMargin: 15
-                    anchors.right: transactionConfirmationModalTop.right
-                    anchors.rightMargin: 30
+                Rectangle {
+                    id: transactionConfirmationCloseModalButtonArea
                     width: 20
                     height: 20
-                    ColorOverlay {
-                        anchors.fill: transactionConfirmationCloseModal
-                        source: transactionConfirmationCloseModal
-                        color: "white"
-                    }
-                    Rectangle {
-                        id: transactionConfirmationCloseModalButtonArea
-                        width: 20
-                        height: 20
-                        anchors.left: transactionConfirmationCloseModal.left
-                        anchors.bottom: transactionConfirmationCloseModal.bottom
-                        color: "transparent"
-                        MouseArea {
-                            anchors.fill: transactionConfirmationCloseModalButtonArea
-                            onClicked:{
-                                transactionConfirmTracker = 0
-                            }
+                    anchors.left: transactionConfirmationCloseModal.left
+                    anchors.bottom: transactionConfirmationCloseModal.bottom
+                    color: "transparent"
+                    MouseArea {
+                        anchors.fill: transactionConfirmationCloseModalButtonArea
+                        onClicked:{
+                            transactionConfirmTracker = 0
                         }
                     }
                 }
             }
+        }
+        Text {
+            id: confirm
+            text: "Confirm Payment"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 15
+            font.bold: false
+            color: "#5E8BFF"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 15
+        }
+        Text {
+            id: confirm2
+            text: "You are about to send"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 13
+            font.bold: false
+            color: "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: confirm.bottom
+            anchors.topMargin: 30
+        }
+        Text {
+            id: confirm3
+            text: sendAmount.text + " XBY"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 13
+            font.bold: true
+            color: "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: confirm2.bottom
+            anchors.topMargin: 10
+        }
+        Text {
+            id: confirm4
+            text: "to"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 13
+            font.bold: false
+            color: "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: confirm3.bottom
+            anchors.topMargin: 20
+        }
+        Text {
+            id: confirm5
+            text: keyInput.text
+            font.family: "Brandon Grotesque"
+            font.pointSize: 13
+            font.bold: true
+            color: "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: confirm4.bottom
+            anchors.topMargin: 20
+        }
+        Rectangle {
+            id: confirmButton
+            width: confirm5.width
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.top: confirm5.bottom
+            anchors.topMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: keyInput.text !== "" && keyInput.length === 34  && sendAmount.text !== "" && sendAmount.text !== "0" && sendAmount.text < wallet.balance
+            MouseArea {
+                anchors.fill: confirmButton
+
+                onClicked: {
+                    transactionSentTracker = 1
+                    transactionConfirmTracker = 0
+                }
+            }
             Text {
-                id: confirm
-                text: "Confirm Payment"
+                text: "CONFIRM"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: "#5E8BFF"
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                anchors.topMargin: 50
-            }
-            Text {
-                id: confirm2
-                text: "You are about to send"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 13
-                font.bold: false
-                color: "white"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: confirm.bottom
-                anchors.topMargin: 20
-            }
-            Text {
-                id: confirm3
-                text: sendAmount.text + "XBY"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 13
-                font.bold: true
-                color: "white"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: confirm2.bottom
-                anchors.topMargin: 20
-            }
-            Text {
-                id: confirm4
-                text: "to"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 13
-                font.bold: false
-                color: "white"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: confirm3.bottom
-                anchors.topMargin: 20
-            }
-            Text {
-                id: confirm5
-                text: keyInput.text
-                font.family: "Brandon Grotesque"
-                font.pointSize: 13
-                font.bold: true
-                color: "white"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: confirm3.bottom
-                anchors.topMargin: 20
+                anchors.verticalCenter: parent.verticalCenter
             }
         }
-        */
-        /**
-          * Modal for confirming transfer went through
-          */
-        Controls.TransactionSentModal{
-            visible: transactionSentTracker == 1
-            Rectangle {
-                id: transactionSentClose
-                width: (parent.height/4) + 40
-                height: 33
-                radius: 8
-                border.color: "#5E8BFF"
-                border.width: 2
-                color: "transparent"
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
-                anchors.horizontalCenter: parent.horizontalCenter
-                MouseArea {
-                    anchors.fill: transactionSentClose
+        Rectangle {
+            id: validationAlert
+            width: 200
+            height: 33
+            radius: 8
+            //red
+            border.color: "#f45342"
+            border.width: 2
+            color: "transparent"
+            anchors.top: confirm5.bottom
+            anchors.topMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: keyInput.text === "" || keyInput.length !== 34  || sendAmount.text === "" || sendAmount.text === "0" || sendAmount.text > wallet.balance
+            MouseArea {
+                anchors.fill: validationAlert
 
-                    onClicked: {
-                        transactionSentTracker = 0
-                        transferTracker = 1
-                    }
-                }
-                Text {
-                    text: "DONE"
-                    font.family: "Brandon Grotesque"
-                    font.pointSize: 14
-                    font.bold: true
-                    color: "#5E8BFF"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
+                onClicked: {
+                    transactionSentTracker = 0
+                    transactionConfirmTracker = 0
                 }
             }
-            Image {
-                id: closeTransactionSentModal
-                source: '../icons/CloseIcon.svg'
-                anchors.top: parent.top
-                anchors.topMargin: -35
-                anchors.right: parent.right
-                anchors.rightMargin: 2
-                width: 20
-                height: 20
-                ColorOverlay {
-                    anchors.fill: closeTransactionSentModal
-                    source: closeTransactionSentModal
-                    color: "white" // make image like it lays under grey glass
-                }
-                Rectangle {
-                    id: closeTransactionSentModalButtonArea
-                    width: 20
-                    height: 20
-                    anchors.left: closeTransactionSentModal.left
-                    anchors.bottom: closeTransactionSentModal.bottom
-                    color: "transparent"
-                    MouseArea {
-                        anchors.fill: closeTransactionSentModalButtonArea
-                        onClicked: {
-                            transactionSentTracker = 0
-                            transferTracker = 0
-                        }
-                    }
-                }
+            Text {
+                id: validationText
+                text: "Invalid Amount or Key"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#f45342"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
             }
         }
     }
+
+    /**
+      * Modal for confirming transfer went through
+      */
+    Controls.TransactionSentModal{
+        visible: transactionSentTracker == 1
+        Rectangle {
+            id: transactionSentClose
+            width: (parent.height/4) + 40
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            MouseArea {
+                anchors.fill: transactionSentClose
+
+                onClicked: {
+                    transactionSentTracker = 0
+                    transferTracker = 1
+                }
+            }
+            Text {
+                text: "DONE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+    }
+
     /**
       * AddressBookModal
       */

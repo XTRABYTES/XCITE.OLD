@@ -17,7 +17,7 @@ import Clipboard 1.0
 
 ApplicationWindow {
     property bool isNetworkActive: false
-    property string receivingAddress: "BM39fjwf093JF329f39fJFfa03987fja3"
+    property string receivingAddress: "BM39fjwf093JF329f39fJFfa03987fja32"
     id: xcite
 
     visible: true
