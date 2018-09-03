@@ -1810,7 +1810,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Posey"
+            text: addressName1
             anchors.bottom: seperator1.top
             anchors.bottomMargin: 8
             anchors.left: seperator1.left

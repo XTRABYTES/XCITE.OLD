@@ -458,7 +458,7 @@ Item {
 
                 onClicked: {
                     editAddressTracker = 0
-                    address.name = keyInput1.text
+                    addressName1 = keyInput1.text
                     addressLabel.text = keyInput2.text
                     receivingAddress = keyInput3.text
                 }
