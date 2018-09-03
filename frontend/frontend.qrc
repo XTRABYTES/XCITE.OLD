@@ -133,5 +133,6 @@
         <file>Controls/+mobile/AddressBookSquares.qml</file>
         <file>+mobile/MobileAddressBook.qml</file>
         <file>Controls/+mobile/TransactionSentModal.qml</file>
+        <file>+mobile/xchange.qml</file>
     </qresource>
 </RCC>

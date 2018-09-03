@@ -117,7 +117,6 @@ Item {
 
             MouseArea {
                 anchors.fill: add5
-                //onClicked: pageLoader.source = "MobileAddressBook.qml"
                 onClicked: mainRoot.push("MobileAddressBook.qml")
             }
         }
@@ -993,6 +992,18 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
         }
+        Rectangle {
+            id: xchangeButtonArea
+            width: xchangeLink.width
+            height: xchangeLink.height
+            anchors.left: xchangeLink.left
+            anchors.bottom: xchangeLink.bottom
+            color: "transparent"
+            MouseArea {
+                anchors.fill: xchangeButtonArea
+                onClicked: mainRoot.push("xchange.qml")
+            }
+        }
     }
 
     Image {
@@ -1820,7 +1831,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType1
             anchors.bottom: seperator1.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1856,7 +1867,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Nrocy"
+            text: addressName2
             anchors.bottom: seperator2.top
             anchors.bottomMargin: 8
             anchors.left: seperator2.left
@@ -1866,7 +1877,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType2
             anchors.bottom: seperator2.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1887,7 +1898,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice2
                 onClicked: {
-                    keyInput.text = address2
+                    keyInput.text = receivingAddress2
                     addressBookTracker = 0
                 }
             }
@@ -1902,7 +1913,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Enervey"
+            text: addressName3
             anchors.bottom: seperator3.top
             anchors.bottomMargin: 8
             anchors.left: seperator3.left
@@ -1912,7 +1923,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType3
             anchors.bottom: seperator3.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1933,7 +1944,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice3
                 onClicked: {
-                    keyInput.text = address3
+                    keyInput.text = receivingAddress3
                     addressBookTracker = 0
                 }
             }
@@ -1948,7 +1959,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Danny"
+            text: addressName4
             anchors.bottom: seperator4.top
             anchors.bottomMargin: 8
             anchors.left: seperator4.left
@@ -1958,7 +1969,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType4
             anchors.bottom: seperator4.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1979,7 +1990,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice4
                 onClicked: {
-                    keyInput.text = address4
+                    keyInput.text = receivingAddress4
                     addressBookTracker = 0
                 }
             }
@@ -1994,7 +2005,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Golden"
+            text: addressName5
             anchors.bottom: seperator5.top
             anchors.bottomMargin: 8
             anchors.left: seperator5.left
@@ -2004,7 +2015,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType5
             anchors.bottom: seperator5.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -2025,7 +2036,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice5
                 onClicked: {
-                    keyInput.text = address1
+                    keyInput.text = receivingAddress5
                     addressBookTracker = 0
                 }
             }

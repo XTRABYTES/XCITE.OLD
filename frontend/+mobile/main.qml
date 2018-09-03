@@ -19,6 +19,19 @@ ApplicationWindow {
     property bool isNetworkActive: false
     property string receivingAddress: "BM39fjwf093JF329f39fJFfa03987fja32"
     property string addressName1: "Posey"
+    property string addressType1: "Main"
+    property string receivingAddress2: "Bx33fjwf023JxoP9f39fJFfa0398wqWeJ9"
+    property string addressName2: "Nrocy"
+    property string addressType2: "Main"
+    property string receivingAddress3: "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc"
+    property string addressName3: "Enervey"
+    property string addressType3: "Main"
+    property string receivingAddress4: "Bkf3019jzmkFAJowaj392JAFAlafj032jJ"
+    property string addressName4: "Danny"
+    property string addressType4: "Main"
+    property string receivingAddress5: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
+    property string addressName5: "Golden"
+    property string addressType5: "Main"
     id: xcite
 
     visible: true
