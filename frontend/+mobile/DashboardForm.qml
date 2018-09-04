@@ -326,14 +326,15 @@ Item {
         Rectangle {
             id: transferButton
             visible: clickedSquare == 1 && transferTracker != 1
-            width: 145
+            width: (parent.width/2) - 15
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
             anchors.top: dividerLine.bottom
-            anchors.left: dividerLine.left
+            anchors.right: expandButton.horizontalCenter
+            anchors.rightMargin: 5
             anchors.topMargin: 15
             MouseArea {
                 anchors.fill: transferButton
@@ -354,14 +355,15 @@ Item {
         Rectangle {
             id: historyButton
             visible: clickedSquare == 1 && transferTracker != 1
-            width: 145
+            width: transferButton.width
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
             anchors.top: dividerLine.bottom
-            anchors.right: dividerLine.right
+            anchors.left: expandButton.horizontalCenter
+            anchors.leftMargin: 5
             anchors.topMargin: 15
             MouseArea {
                 anchors.fill: historyButton
