@@ -259,6 +259,8 @@ Item {
         percentChange: "+%.8"
         gainLossTracker: 1
         height: clickedSquare == 1 ? 166 : 75
+        value: ((marketValue.marketValue*100)/100).toLocaleString(
+                   Qt.locale(), "f", 4)
         // since expandbutton is very tiny and hard to click we put an invisible rectangle here to mimic the dots
         Rectangle {
             id: expandButtonArea
