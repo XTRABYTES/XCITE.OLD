@@ -130,7 +130,6 @@ Controls.Diode {
         Controls.Switch {
             id: typeSwitch
             on: false
-            Layout.topMargin: 12
             Layout.leftMargin: 35
             Label {
                 anchors.right: parent.left
@@ -138,7 +137,7 @@ Controls.Diode {
                 color: "#24B9C3"
                 font.pixelSize: 12
                 text: "XBY"
-                topPadding: 3
+                anchors.verticalCenter: parent.verticalCenter
             }
             Label {
                 anchors.left: parent.right
@@ -146,7 +145,7 @@ Controls.Diode {
                 color: "#24B9C3"
                 font.pixelSize: 12
                 text: "XBY+XFUEL"
-                topPadding: 3
+                anchors.verticalCenter: parent.verticalCenter
             }
         }
         Controls.ButtonModal {

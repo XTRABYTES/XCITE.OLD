@@ -1130,7 +1130,7 @@ Item {
                 }
             }
         }
-        Switch {
+        Controls.Switch {
             id: transferSwitch
             anchors.horizontalCenter: modal.horizontalCenter
             anchors.top: parent.top
@@ -1143,7 +1143,7 @@ Item {
                 anchors.rightMargin: 7
                 anchors.verticalCenter: parent.verticalCenter
                 font.pixelSize: 13
-                color: transferSwitch.checked ? "#5F5F5F" : "#5E8BFE"
+                color: transferSwitch.on ? "#5F5F5F" : "#5E8BFE"
             }
             Text {
                 id: sendText
@@ -1152,7 +1152,7 @@ Item {
                 anchors.leftMargin: 7
                 anchors.verticalCenter: parent.verticalCenter
                 font.pixelSize: 13
-                color: transferSwitch.checked ? "#5E8BFE" : "#5F5F5F"
+                color: transferSwitch.on ? "#5E8BFE" : "#5F5F5F"
             }
         }
 
@@ -1216,7 +1216,7 @@ Item {
             anchors.horizontalCenter: qrBorder.horizontalCenter
             anchors.verticalCenter: qrBorder.verticalCenter
             z: 10
-            visible: transferSwitch.checked == false && transferTracker == 1
+            visible: transferSwitch.on === false && transferTracker == 1
             Image {
                 anchors.fill: parent
                 source: "image://QZXing/encode/" + publicKey.text
@@ -1228,7 +1228,7 @@ Item {
             radius: 8
             width: 210
             height: 200
-            visible: transferSwitch.checked == false && transferTracker == 1
+            visible: transferSwitch.on === false && transferTracker == 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 20
@@ -1245,7 +1245,7 @@ Item {
             font.family: "Brandon Grotesque"
             font.bold: true
             font.pixelSize: 13
-            visible: transferSwitch.checked == false && transferTracker == 1
+            visible: transferSwitch.on ===  false && transferTracker == 1
         }
         Text {
             id: publicKey
@@ -1256,7 +1256,7 @@ Item {
             color: "white"
             font.family: "Brandon Grotesque"
             font.pixelSize: 12
-            visible: transferSwitch.checked == false && transferTracker == 1
+            visible: transferSwitch.on ===  false && transferTracker == 1
         }
         Image {
             id: pasteIcon
@@ -1266,7 +1266,7 @@ Item {
             anchors.left: publicKey.right
             anchors.leftMargin: 5
             anchors.verticalCenter: publicKey.verticalCenter
-            visible: transferSwitch.checked == false && transferTracker == 1
+            visible: transferSwitch.on ===  false && transferTracker == 1
             ColorOverlay {
                 anchors.fill: pasteIcon
                 source: pasteIcon
@@ -1288,7 +1288,7 @@ Item {
             color: "#E5E5E5"
             font.bold: true
             font.pixelSize: 10
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
         }
         Controls.TextInput {
             id: sendAmount
@@ -1300,7 +1300,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 15
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             color: "#727272"
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
@@ -1314,7 +1314,7 @@ Item {
             anchors.rightMargin: 10
             width: textFieldEmpty3.height
             height: 12
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             ColorOverlay {
                 anchors.fill: textFieldEmpty3
                 source: textFieldEmpty3
@@ -1346,7 +1346,7 @@ Item {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.bold: true
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
         }
         Image {
             id: textFieldEmpty1
@@ -1356,7 +1356,7 @@ Item {
             anchors.rightMargin: 10
             width: textFieldEmpty1.height
             height: 12
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             ColorOverlay {
                 anchors.fill: textFieldEmpty1
                 source: textFieldEmpty1
@@ -1379,7 +1379,7 @@ Item {
         }
         Rectangle {
             id: scanQrButton
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             width: (keyInput.width / 2) - 3
             height: 33
             radius: 8
@@ -1407,7 +1407,7 @@ Item {
         }
         Rectangle {
             id: addressBookButton
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             width: (keyInput.width / 2) - 3
             height: 33
             radius: 8
@@ -1445,7 +1445,7 @@ Item {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.bold: true
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
         }
         Image {
             id: textFieldEmpty2
@@ -1455,7 +1455,7 @@ Item {
             anchors.rightMargin: 10
             width: textFieldEmpty2.height
             height: 12
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             ColorOverlay {
                 anchors.fill: textFieldEmpty2
                 source: textFieldEmpty2
@@ -1478,7 +1478,7 @@ Item {
         }
         Rectangle {
             id: sendButton
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             width: keyInput.width
             height: 33
             radius: 8

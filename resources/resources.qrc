@@ -125,5 +125,7 @@
         <file>icons/XFUEL_card_logo_colored_07.svg</file>
         <file>icons/dropdown_icon.svg</file>
         <file>icons/rocket.svg</file>
+        <file>icons/switch_back.svg</file>
+        <file>icons/switch_butt.svg</file>
     </qresource>
 </RCC>

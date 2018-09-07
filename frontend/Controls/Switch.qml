@@ -39,7 +39,7 @@ Item {
 
     Image {
         id: background
-        source: "../../icons/Rectangle7.png"
+        source: "../../icons/switch_back.svg"
         MouseArea {
             anchors.fill: parent
             onClicked: toggle()
@@ -48,16 +48,15 @@ Item {
 
     Image {
         id: knob
-        x: 5
-        y: 2
-        source: "../../icons/Rectangle8.png"
-
+        x: 2
+        y: 3
+        source: "../../icons/switch_butt.svg"
         MouseArea {
             anchors.fill: parent
             drag.target: knob
             drag.axis: Drag.XAxis
-            drag.minimumX: 5
-            drag.maximumX: 30
+            drag.minimumX: 2
+            drag.maximumX: 34
             onClicked: toggle()
             onReleased: releaseSwitch()
         }
@@ -68,7 +67,7 @@ Item {
             name: "on"
             PropertyChanges {
                 target: knob
-                x: 30
+                x: 34
             }
             PropertyChanges {
                 target: toggleswitch
@@ -79,7 +78,7 @@ Item {
             name: "off"
             PropertyChanges {
                 target: knob
-                x: 5
+                x: 2
             }
             PropertyChanges {
                 target: toggleswitch
