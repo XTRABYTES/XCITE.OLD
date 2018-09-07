@@ -29,7 +29,8 @@ Item {
     property int addressBookTracker: 0
     property int scanQRCodeTracker: 0
     property int historyTracker: 0
-    property int transactionSent: 0
+    property int transactionSentTracker: 0
+    property int transactionConfirmTracker: 0
     property int clickedSquare: 0
     property int clickedSquare2: 0
     property int clickedSquare3: 0
@@ -40,10 +41,11 @@ Item {
     property string address2: "B2QiknazjkA30s9gyV4riyKuVWvUMXEVss"
     property string address3: "B09iknaFAFKA30s392J4riyKuVWvUMXEV3"
     property string address4: "BxkiknaGNKA30s9gyV4riyKuVWvFJKEVq9"
-    property string receivingAddress: "BM39fjwf093JF329f39fJFfa03987fja3"
+
     z: 2
     id: dashForm
     Rectangle {
+        id: bottomRect
         z: 100
         color: "#2A2C31"
         opacity: 0.8
@@ -79,7 +81,7 @@ Item {
 
     Controls.Header {
         id: heading
-        text: qsTr("Jordan")
+        text: qsTr("Posey")
         showBack: false
         Layout.topMargin: 14
     }
@@ -115,7 +117,6 @@ Item {
 
             MouseArea {
                 anchors.fill: add5
-                //onClicked: pageLoader.source = "MobileAddressBook.qml"
                 onClicked: mainRoot.push("MobileAddressBook.qml")
             }
         }
@@ -132,7 +133,7 @@ Item {
         ColorOverlay {
             anchors.fill: notif
             source: notif
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
     }
 
@@ -158,7 +159,7 @@ Item {
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
     }
-
+    /**
     Switch {
         id: switch1
         anchors.right: parent.right
@@ -175,7 +176,6 @@ Item {
             angle: 90
         }
     }
-    /**
     Label {
         id: week1
         text: "WEEK"
@@ -199,7 +199,7 @@ Item {
         anchors.leftMargin: 2
         anchors.bottom:switch1.bottom
     }
-*/
+    */
     Label {
         id: transfer
         text: "TRANSFER"
@@ -259,13 +259,16 @@ Item {
         percentChange: "+%.8"
         gainLossTracker: 1
         height: clickedSquare == 1 ? 166 : 75
+        value: ((marketValue.marketValue*100)/100).toLocaleString(
+                   Qt.locale(), "f", 4)
         // since expandbutton is very tiny and hard to click we put an invisible rectangle here to mimic the dots
         Rectangle {
             id: expandButtonArea
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
 
             MouseArea {
@@ -309,6 +312,7 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 XBY"
             font.family: "Brandon Grotesque"
@@ -317,19 +321,22 @@ Item {
             color: "#919191"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine.top
+            anchors.bottomMargin: 2
             visible: clickedSquare == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton
-            visible: clickedSquare == 1 ? true : false
-            width: 145
+            visible: clickedSquare == 1 && transferTracker != 1
+            width: (parent.width/2) - 15
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
             anchors.top: dividerLine.bottom
-            anchors.left: dividerLine.left
+            anchors.right: expandButton.horizontalCenter
+            anchors.rightMargin: 5
             anchors.topMargin: 15
             MouseArea {
                 anchors.fill: transferButton
@@ -349,15 +356,16 @@ Item {
         }
         Rectangle {
             id: historyButton
-            visible: clickedSquare == 1 ? true : false
-            width: 145
+            visible: clickedSquare == 1 && transferTracker != 1
+            width: transferButton.width
             height: 40
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
             anchors.top: dividerLine.bottom
-            anchors.right: dividerLine.right
+            anchors.left: expandButton.horizontalCenter
+            anchors.leftMargin: 5
             anchors.topMargin: 15
             MouseArea {
                 anchors.fill: historyButton
@@ -394,12 +402,15 @@ Item {
         Rectangle {
             id: expandButtonArea2
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
             MouseArea {
                 anchors.fill: expandButtonArea2
+                /**
+                  * disable for now while only XBY can be traded
                 onClicked: {
                     if (clickedSquare2 == 1) {
                         clickedSquare2 = 0
@@ -414,6 +425,7 @@ Item {
                         return
                     }
                 }
+                */
             }
         }
         Image {
@@ -439,17 +451,18 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 XFUEL"
             font.family: "Brandon Grotesque"
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine2.top
             visible: clickedSquare2 == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton2
             visible: clickedSquare2 == 1 ? true : false
@@ -462,14 +475,6 @@ Item {
             anchors.top: dividerLine2.bottom
             anchors.left: dividerLine2.left
             anchors.topMargin: 15
-            /**
-            MouseArea {
-                anchors.fill: transferButton2
-                onClicked: {
-                    transferTracker = 1
-                }
-            }
-            */
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -521,13 +526,16 @@ Item {
         Rectangle {
             id: expandButtonArea3
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
 
             MouseArea {
                 anchors.fill: expandButtonArea3
+                /**
+                  * disable for now while only XBY can be traded
                 onClicked: {
                     if (clickedSquare3 == 1) {
                         clickedSquare3 = 0
@@ -542,6 +550,7 @@ Item {
                         return
                     }
                 }
+                */
             }
         }
         Image {
@@ -567,17 +576,18 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 BTC"
             font.family: "Brandon Grotesque"
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine3.top
             visible: clickedSquare3 == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton3
             visible: clickedSquare3 == 1 ? true : false
@@ -590,14 +600,6 @@ Item {
             anchors.top: dividerLine3.bottom
             anchors.left: dividerLine3.left
             anchors.topMargin: 15
-            /**
-            MouseArea {
-                anchors.fill: transferButton3
-                onClicked: {
-                    transferTracker = 1
-                }
-            }
-            */
             Text {
                 text: "TRANSFER"
                 font.family: "Brandon Grotesque"
@@ -650,13 +652,16 @@ Item {
         Rectangle {
             id: expandButtonArea4
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
 
             MouseArea {
                 anchors.fill: expandButtonArea4
+                /**
+                  * disable for now while only XBY can be traded
                 onClicked: {
                     if (clickedSquare4 == 1) {
                         clickedSquare4 = 0
@@ -671,6 +676,7 @@ Item {
                         return
                     }
                 }
+                */
             }
         }
         Image {
@@ -696,17 +702,18 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 ETH"
             font.family: "Brandon Grotesque"
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine4.top
             visible: clickedSquare4 == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton4
             visible: clickedSquare4 == 1 ? true : false
@@ -779,13 +786,16 @@ Item {
         Rectangle {
             id: expandButtonArea5
             width: 40
-            height: 15
+            height: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: -5
             color: "transparent"
 
             MouseArea {
                 anchors.fill: expandButtonArea5
+                /**
+                  * disable for now while only XBY can be traded
                 onClicked: {
                     if (clickedSquare5 == 1) {
                         clickedSquare5 = 0
@@ -800,6 +810,7 @@ Item {
                         return
                     }
                 }
+                */
             }
         }
 
@@ -825,17 +836,18 @@ Item {
             anchors.topMargin: 75
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        /**
         Text {
             text: "Unconfirmed 55.42 NEO"
             font.family: "Brandon Grotesque"
             font.pointSize: 12
             font.italic: true
             color: "#919191"
-            //font.weight: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dividerLine5.top
             visible: clickedSquare5 == 1 ? true : false
         }
+        */
         Rectangle {
             id: transferButton5
             visible: clickedSquare5 == 1 ? true : false
@@ -892,40 +904,37 @@ Item {
 
     Image {
         id: settings
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
+        anchors.verticalCenter: bottomRect.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 30
         source: '../icons/icon-settings.svg'
-        width: 20
-        height: 20
+        width: 23
+        height: 23
         z: 100
         MouseArea {
             anchors.fill: settings
-            //onClicked: pageLoader.source = "MobileAddressBook.qml"
             onClicked: mainRoot.push("Settings.qml")
         }
         ColorOverlay {
             anchors.fill: settings
             source: settings
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
     }
     Image {
         id: apps
         source: '../icons/Apps_icon_03.svg'
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
+        anchors.verticalCenter: bottomRect.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 30
-        width: 20
-        height: 20
+        width: 23
+        height: 23
         z: 100
         visible: appsTracker == 0
         ColorOverlay {
             anchors.fill: apps
             source: apps
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFF"
         }
         MouseArea {
             anchors.fill: apps
@@ -986,6 +995,18 @@ Item {
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
+        }
+        Rectangle {
+            id: xchangeButtonArea
+            width: xchangeLink.width
+            height: xchangeLink.height
+            anchors.left: xchangeLink.left
+            anchors.bottom: xchangeLink.bottom
+            color: "transparent"
+            MouseArea {
+                anchors.fill: xchangeButtonArea
+                onClicked: mainRoot.push("xchange.qml")
+            }
         }
     }
 
@@ -1048,14 +1069,14 @@ Item {
       */
     Rectangle {
         id: modal
-        height: parent.height > 800 ? (parent.height - 400) : 400
+        height: parent.height > 800 ? (parent.height - 400) : 375
         width: parent.width - 50
         color: "#42454F"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 150
         visible: transferTracker == 1 && addressBookTracker != 1
-                 && scanQRCodeTracker != 1
+                 && scanQRCodeTracker != 1 && transactionConfirmTracker != 1 && transactionSentTracker != 1
         radius: 4
         z: 100
 
@@ -1074,7 +1095,7 @@ Item {
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 14
+                font.pixelSize: 15
             }
             Image {
                 id: closeModal
@@ -1099,12 +1120,17 @@ Item {
                     color: "transparent"
                     MouseArea {
                         anchors.fill: closeModalButtonArea
-                        onClicked: transferTracker = 0
+                        onClicked:{
+                            transferTracker = 0
+                            sendAmount.text = ""
+                            keyInput.text = ""
+                            referenceInput.text = ""
+                        }
                     }
                 }
             }
         }
-        Switch {
+        Controls.Switch {
             id: transferSwitch
             anchors.horizontalCenter: modal.horizontalCenter
             anchors.top: parent.top
@@ -1116,7 +1142,8 @@ Item {
                 anchors.right: transferSwitch.left
                 anchors.rightMargin: 7
                 anchors.verticalCenter: parent.verticalCenter
-                color: transferSwitch.checked ? "#5F5F5F" : "#5E8BFE"
+                font.pixelSize: 13
+                color: transferSwitch.on ? "#5F5F5F" : "#5E8BFE"
             }
             Text {
                 id: sendText
@@ -1124,7 +1151,8 @@ Item {
                 anchors.left: transferSwitch.right
                 anchors.leftMargin: 7
                 anchors.verticalCenter: parent.verticalCenter
-                color: transferSwitch.checked ? "#5E8BFE" : "#5F5F5F"
+                font.pixelSize: 13
+                color: transferSwitch.on ? "#5E8BFE" : "#5F5F5F"
             }
         }
 
@@ -1184,11 +1212,11 @@ Item {
         Item {
             id: qrPlaceholder
             width: 180
-            height: 180
+            height: 170
             anchors.horizontalCenter: qrBorder.horizontalCenter
             anchors.verticalCenter: qrBorder.verticalCenter
             z: 10
-            visible: transferSwitch.checked == false && transferTracker == 1
+            visible: transferSwitch.on === false && transferTracker == 1
             Image {
                 anchors.fill: parent
                 source: "image://QZXing/encode/" + publicKey.text
@@ -1199,25 +1227,25 @@ Item {
             id: qrBorder
             radius: 8
             width: 210
-            height: 210
-            visible: transferSwitch.checked == false && transferTracker == 1
+            height: 200
+            visible: transferSwitch.on === false && transferTracker == 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 20
-            color: "transparent"
+            color: "white"
         }
 
         Text {
             id: pubKey
             text: "PUBLIC KEY"
             anchors.top: qrBorder.bottom
-            anchors.topMargin: 25
+            anchors.topMargin: 15
             anchors.horizontalCenter: parent.horizontalCenter
             color: "#F2F2F2"
             font.family: "Brandon Grotesque"
             font.bold: true
-            font.pixelSize: 12
-            visible: transferSwitch.checked == false && transferTracker == 1
+            font.pixelSize: 13
+            visible: transferSwitch.on ===  false && transferTracker == 1
         }
         Text {
             id: publicKey
@@ -1227,19 +1255,23 @@ Item {
             anchors.horizontalCenter: pubKey.horizontalCenter
             color: "white"
             font.family: "Brandon Grotesque"
-            font.bold: false
-            font.pixelSize: 11
-            visible: transferSwitch.checked == false && transferTracker == 1
+            font.pixelSize: 12
+            visible: transferSwitch.on ===  false && transferTracker == 1
         }
         Image {
             id: pasteIcon
             source: '../icons/paste_icon.svg'
-            width: 13
-            height: 13
+            width: 15
+            height: 15
             anchors.left: publicKey.right
             anchors.leftMargin: 5
             anchors.verticalCenter: publicKey.verticalCenter
-            visible: transferSwitch.checked == false && transferTracker == 1
+            visible: transferSwitch.on ===  false && transferTracker == 1
+            ColorOverlay {
+                anchors.fill: pasteIcon
+                source: pasteIcon
+                color: "white" // make image like it lays under grey glass
+            }
         }
 
         /**
@@ -1247,7 +1279,8 @@ Item {
           */
         Label {
             id: walletBalance
-            text: "18.5359 XBY"
+            text: wallet.balance.toLocaleString(
+                      Qt.locale(), "f", 4) + " XBY"
             anchors.right: walletDropdown.right
             anchors.rightMargin: 0
             anchors.top: walletChoice.bottom
@@ -1255,21 +1288,52 @@ Item {
             color: "#E5E5E5"
             font.bold: true
             font.pixelSize: 10
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
         }
         Controls.TextInput {
             id: sendAmount
             height: 34
-            //radius: 8
             placeholder: "AMOUNT (XBY)"
+            validator: DoubleValidator {
+                bottom: 0
+            }
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: currencyIcon.bottom
             anchors.topMargin: 15
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             color: "#727272"
-            font.pixelSize: 10
+            font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.bold: true
+        }
+        Image {
+            id: textFieldEmpty3
+            source: '../icons/CloseIcon.svg'
+            anchors.verticalCenter: sendAmount.verticalCenter
+            anchors.right: sendAmount.right
+            anchors.rightMargin: 10
+            width: textFieldEmpty3.height
+            height: 12
+            visible: transferTracker == 1 && transferSwitch.on ===  true
+            ColorOverlay {
+                anchors.fill: textFieldEmpty3
+                source: textFieldEmpty3
+                color: "#727272"
+            }
+            Rectangle {
+                id: textFieldEmpty3ButtonArea
+                width: 20
+                height: 20
+                anchors.left: textFieldEmpty3.left
+                anchors.bottom: textFieldEmpty3.bottom
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: textFieldEmpty3ButtonArea
+                    onClicked: {
+                        sendAmount.text = ""
+                    }
+                }
+            }
         }
         Controls.TextInput {
             id: keyInput
@@ -1279,14 +1343,43 @@ Item {
             anchors.top: sendAmount.bottom
             anchors.topMargin: 15
             color: "#727272"
-            font.pixelSize: 10
+            font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.bold: true
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
+        }
+        Image {
+            id: textFieldEmpty1
+            source: '../icons/CloseIcon.svg'
+            anchors.verticalCenter: keyInput.verticalCenter
+            anchors.right: keyInput.right
+            anchors.rightMargin: 10
+            width: textFieldEmpty1.height
+            height: 12
+            visible: transferTracker == 1 && transferSwitch.on ===  true
+            ColorOverlay {
+                anchors.fill: textFieldEmpty1
+                source: textFieldEmpty1
+                color: "#727272" // make image like it lays under grey glass
+            }
+            Rectangle {
+                id: textFieldEmpty1ButtonArea
+                width: 20
+                height: 20
+                anchors.left: textFieldEmpty1.left
+                anchors.bottom: textFieldEmpty1.bottom
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: textFieldEmpty1ButtonArea
+                    onClicked: {
+                        keyInput.text = ""
+                    }
+                }
+            }
         }
         Rectangle {
             id: scanQrButton
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             width: (keyInput.width / 2) - 3
             height: 33
             radius: 8
@@ -1314,7 +1407,7 @@ Item {
         }
         Rectangle {
             id: addressBookButton
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             width: (keyInput.width / 2) - 3
             height: 33
             radius: 8
@@ -1344,20 +1437,48 @@ Item {
         Controls.TextInput {
             id: referenceInput
             height: 34
-            // radius: 8
             placeholder: "REFERENCE"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 15
             color: "#727272"
-            font.pixelSize: 10
+            font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.bold: true
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
+        }
+        Image {
+            id: textFieldEmpty2
+            source: '../icons/CloseIcon.svg'
+            anchors.verticalCenter: referenceInput.verticalCenter
+            anchors.right: referenceInput.right
+            anchors.rightMargin: 10
+            width: textFieldEmpty2.height
+            height: 12
+            visible: transferTracker == 1 && transferSwitch.on ===  true
+            ColorOverlay {
+                anchors.fill: textFieldEmpty2
+                source: textFieldEmpty2
+                color: "#727272"
+            }
+            Rectangle {
+                id: textFieldEmpty2ButtonArea
+                width: 20
+                height: 20
+                anchors.left: textFieldEmpty2.left
+                anchors.bottom: textFieldEmpty2.bottom
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: textFieldEmpty2ButtonArea
+                    onClicked: {
+                        referenceInput.text = ""
+                    }
+                }
+            }
         }
         Rectangle {
             id: sendButton
-            visible: transferTracker == 1 && transferSwitch.checked == true
+            visible: transferTracker == 1 && transferSwitch.on ===  true
             width: keyInput.width
             height: 33
             radius: 8
@@ -1371,8 +1492,7 @@ Item {
                 anchors.fill: sendButton
 
                 onClicked: {
-                    transactionSent = 1
-                    sendAmount.text = ""
+                    transactionConfirmTracker = 1
                 }
             }
             Text {
@@ -1385,125 +1505,226 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
-        /**
-          * Transfer Modal Transaction Sent
-          */
+    }
+
+    /**
+      * Modal for confirming your transaction
+    */
+    Rectangle {
+        id: transactionConfirmationModal
+        height: 250
+        width: parent.width - 50
+        color: "#42454F"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 150
+        visible: transactionConfirmTracker == 1
+        radius: 4
+        z: 300
+
         Rectangle {
-            id: transactionSentModal
-            height: modal.height
-            width: parent.width - 50
-            color: "#42454F"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: modal.top
-            visible: transactionSent == 1
+            id: transactionConfirmationModalTop
+            height: 50
+            width: transactionConfirmationModal.width
+            anchors.bottom: transactionConfirmationModal.top
+            anchors.left: transactionConfirmationModal.left
+            color: "#34363D"
             radius: 4
-            z: 100
-            Image {
-                id: transactionSentImage
-                source: '../icons/Group.png'
-                anchors.top: parent.top
-                anchors.topMargin: (parent.height/2) - 80
-                anchors.horizontalCenter: parent.horizontalCenter
-                height: (parent.height/4)
-                width: (parent.height/4)
-                ColorOverlay {
-                    anchors.fill: transactionSentImage
-                    source: transactionSentImage
-                    color: "#5E8BFF" // make image like it lays under grey glass
-                }
-            }
+
             Text {
-                text: "Transaction Sent!"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#5E8BFF"
-                anchors.top: transactionSentImage.bottom
-                anchors.topMargin: 15
+                text: "TRANSFER"
+                anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
+                color: "#F2F2F2"
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                font.pixelSize: 15
             }
-            Rectangle {
-                id: transactionSentModalTop
-                height: 50
-                width: transactionSentModal.width
-                anchors.bottom: transactionSentModal.top
-                anchors.left: transactionSentModal.left
-                color: "#34363D"
-                radius: 4
-                Text {
-                    id: textHeader
-                    text: "CONFIRMATION"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    color: "#F2F2F2"
-                    font.family: "Brandon Grotesque"
-                    font.bold: true
-                    font.pixelSize: 14
+            Image {
+                id: transactionConfirmationCloseModal
+                source: '../icons/CloseIcon.svg'
+                anchors.bottom: transactionConfirmationModalTop.bottom
+                anchors.bottomMargin: 15
+                anchors.right: transactionConfirmationModalTop.right
+                anchors.rightMargin: 30
+                width: 20
+                height: 20
+                ColorOverlay {
+                    anchors.fill: transactionConfirmationCloseModal
+                    source: transactionConfirmationCloseModal
+                    color: "white"
                 }
-                Image {
-                    id: closeTransactionSentModal
-                    source: '../icons/CloseIcon.svg'
-                    anchors.top: parent.top
-                    anchors.topMargin: 15
-                    anchors.right: parent.right
-                    anchors.rightMargin: 2
+                Rectangle {
+                    id: transactionConfirmationCloseModalButtonArea
                     width: 20
                     height: 20
-                    ColorOverlay {
-                        anchors.fill: closeTransactionSentModal
-                        source: closeTransactionSentModal
-                        color: "white" // make image like it lays under grey glass
-                    }
-                    Rectangle {
-                        id: closeTransactionSentModalButtonArea
-                        width: 20
-                        height: 20
-                        anchors.left: closeTransactionSentModal.left
-                        anchors.bottom: closeTransactionSentModal.bottom
-                        color: "transparent"
-                        MouseArea {
-                            anchors.fill: closeTransactionSentModalButtonArea
-                            onClicked: {
-                                transactionSent = 0
-                                transferTracker = 0
-                            }
+                    anchors.left: transactionConfirmationCloseModal.left
+                    anchors.bottom: transactionConfirmationCloseModal.bottom
+                    color: "transparent"
+                    MouseArea {
+                        anchors.fill: transactionConfirmationCloseModalButtonArea
+                        onClicked:{
+                            transactionConfirmTracker = 0
                         }
                     }
                 }
             }
-            Rectangle {
-                id: transactionSentClose
-                visible: transactionSent == 1
-                width: (parent.height/4) + 40
-                height: 33
-                radius: 8
-                border.color: "#5E8BFF"
-                border.width: 2
-                color: "transparent"
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
-                anchors.horizontalCenter: parent.horizontalCenter
-                MouseArea {
-                    anchors.fill: transactionSentClose
+        }
+        Text {
+            id: confirm
+            text: "Confirm Payment"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 15
+            font.bold: false
+            color: "#5E8BFF"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 15
+        }
+        Text {
+            id: confirm2
+            text: "You are about to send"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 13
+            font.bold: false
+            color: "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: confirm.bottom
+            anchors.topMargin: 30
+        }
+        Text {
+            id: confirm3
+            text: sendAmount.text + " XBY"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 13
+            font.bold: true
+            color: "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: confirm2.bottom
+            anchors.topMargin: 10
+        }
+        Text {
+            id: confirm4
+            text: "to"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 13
+            font.bold: false
+            color: "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: confirm3.bottom
+            anchors.topMargin: 20
+        }
+        Text {
+            id: confirm5
+            text: keyInput.text
+            font.family: "Brandon Grotesque"
+            font.pointSize: 13
+            font.bold: true
+            color: "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: confirm4.bottom
+            anchors.topMargin: 20
+        }
+        Rectangle {
+            id: confirmButton
+            width: confirm5.width
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.top: confirm5.bottom
+            anchors.topMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: keyInput.text !== "" && keyInput.length === 34  && sendAmount.text !== "" && sendAmount.text !== "0" && sendAmount.text < wallet.balance
+            MouseArea {
+                anchors.fill: confirmButton
 
-                    onClicked: {
-                        transactionSent = 0
-                        transferTracker = 1
-                    }
-                }
-                Text {
-                    text: "DONE"
-                    font.family: "Brandon Grotesque"
-                    font.pointSize: 14
-                    font.bold: true
-                    color: "#5E8BFF"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
+                onClicked: {
+                    transactionSentTracker = 1
+                    transactionConfirmTracker = 0
                 }
             }
+            Text {
+                text: "CONFIRM"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
+        Rectangle {
+            id: validationAlert
+            width: 200
+            height: 33
+            radius: 8
+            //red
+            border.color: "#f45342"
+            border.width: 2
+            color: "transparent"
+            anchors.top: confirm5.bottom
+            anchors.topMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: keyInput.text === "" || keyInput.length !== 34  || sendAmount.text === "" || sendAmount.text === "0" || sendAmount.text > wallet.balance
+            MouseArea {
+                anchors.fill: validationAlert
 
+                onClicked: {
+                    transactionSentTracker = 0
+                    transactionConfirmTracker = 0
+                }
+            }
+            Text {
+                id: validationText
+                text: "Invalid Amount or Key"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#f45342"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
     }
+
+    /**
+      * Modal for confirming transfer went through
+      */
+    Controls.TransactionSentModal{
+        visible: transactionSentTracker == 1
+        Rectangle {
+            id: transactionSentClose
+            width: (parent.height/4) + 40
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            MouseArea {
+                anchors.fill: transactionSentClose
+
+                onClicked: {
+                    transactionSentTracker = 0
+                    transferTracker = 1
+                }
+            }
+            Text {
+                text: "DONE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+    }
+
     /**
       * AddressBookModal
       */
@@ -1534,7 +1755,7 @@ Item {
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 14
+                font.pixelSize: 15
             }
             Image {
                 id: closeAddressBookModal
@@ -1604,7 +1825,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Posey"
+            text: addressName1
             anchors.bottom: seperator1.top
             anchors.bottomMargin: 8
             anchors.left: seperator1.left
@@ -1614,7 +1835,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType1
             anchors.bottom: seperator1.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1635,7 +1856,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice1
                 onClicked: {
-                    keyInput.text = address1
+                    keyInput.text = receivingAddress
                     addressBookTracker = 0
                 }
             }
@@ -1650,7 +1871,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Nrocy"
+            text: addressName2
             anchors.bottom: seperator2.top
             anchors.bottomMargin: 8
             anchors.left: seperator2.left
@@ -1660,7 +1881,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType2
             anchors.bottom: seperator2.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1681,7 +1902,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice2
                 onClicked: {
-                    keyInput.text = address2
+                    keyInput.text = receivingAddress2
                     addressBookTracker = 0
                 }
             }
@@ -1696,7 +1917,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Enervey"
+            text: addressName3
             anchors.bottom: seperator3.top
             anchors.bottomMargin: 8
             anchors.left: seperator3.left
@@ -1706,7 +1927,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType3
             anchors.bottom: seperator3.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1727,7 +1948,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice3
                 onClicked: {
-                    keyInput.text = address3
+                    keyInput.text = receivingAddress3
                     addressBookTracker = 0
                 }
             }
@@ -1742,7 +1963,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Danny"
+            text: addressName4
             anchors.bottom: seperator4.top
             anchors.bottomMargin: 8
             anchors.left: seperator4.left
@@ -1752,7 +1973,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType4
             anchors.bottom: seperator4.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1773,7 +1994,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice4
                 onClicked: {
-                    keyInput.text = address4
+                    keyInput.text = receivingAddress4
                     addressBookTracker = 0
                 }
             }
@@ -1788,7 +2009,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
-            text: "Golden"
+            text: addressName5
             anchors.bottom: seperator5.top
             anchors.bottomMargin: 8
             anchors.left: seperator5.left
@@ -1798,7 +2019,7 @@ Item {
             font.pixelSize: 10
         }
         Text {
-            text: "Main"
+            text: addressType5
             anchors.bottom: seperator5.top
             anchors.bottomMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1819,7 +2040,7 @@ Item {
             MouseArea {
                 anchors.fill: transferChoice5
                 onClicked: {
-                    keyInput.text = address1
+                    keyInput.text = receivingAddress5
                     addressBookTracker = 0
                 }
             }
@@ -1907,7 +2128,7 @@ Item {
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 14
+                font.pixelSize: 15
             }
             Image {
                 id: scanQRBookModalClose
@@ -1969,7 +2190,7 @@ Item {
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 14
+                font.pixelSize: 15
             }
 
             Image {

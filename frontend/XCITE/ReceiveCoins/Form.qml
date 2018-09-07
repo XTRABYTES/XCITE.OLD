@@ -136,4 +136,14 @@ ColumnLayout {
             cache: false
         }
     }
+    Rectangle
+    {
+        id: qrCode1Border
+        anchors.verticalCenter: qrCode1.verticalCenter
+        anchors.horizontalCenter: qrCode1.horizontalCenter
+        width: 270
+        height: 270
+        color: "white"
+        radius: 8
+    }
 }

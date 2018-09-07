@@ -518,8 +518,8 @@ QImage QZXing::encodeData(const QString& data,
             for(int i=0; i<bytesRef->getWidth(); i++)
                 for(int j=0; j<bytesRef->getHeight(); j++)
                     image.setPixel(i, j, bytes[j][i] ?
-                                       qRgb(14,216,210) :
-                                       qRgb(58,62,70));
+                                       qRgb(0,0,0) :
+                                       qRgb(255,255,255));
 
             image = image.scaled(encoderImageSize);
             break;
