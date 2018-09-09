@@ -1514,8 +1514,10 @@ Item {
     */
     Rectangle {
         id: transactionConfirmationModal
+        // parent.height > 800 ? (parent.height - 400) :
         height: 250
-        width: parent.width - 50
+        // parent.width - 50
+        width: 325
         color: "#42454F"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
