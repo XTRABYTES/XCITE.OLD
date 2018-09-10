@@ -1069,8 +1069,10 @@ Item {
       */
     Rectangle {
         id: modal
-        height: parent.height > 800 ? (parent.height - 400) : 375
-        width: parent.width - 50
+        // parent.height > 800 ? (parent.height - 400) :
+        height: 375
+        // parent.width - 50
+        width: 325
         color: "#42454F"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -1179,8 +1181,8 @@ Item {
             }
             Image {
                 source: '../icons/dropdown_icon.svg'
-                width: 12
-                height: 12
+                width: 15
+                height: 15
                 anchors.left: currencyIconChild.right
                 anchors.leftMargin: 8
                 anchors.verticalCenter: currencyIconChild.verticalCenter
@@ -1200,8 +1202,8 @@ Item {
         Image {
             id: walletDropdown
             source: '../icons/dropdown_icon.svg'
-            width: 12
-            height: 12
+            width: 15
+            height: 15
             anchors.right: sendAmount.right
             anchors.verticalCenter: walletChoice.verticalCenter
             visible: transferTracker == 1
@@ -1239,7 +1241,7 @@ Item {
             id: pubKey
             text: "PUBLIC KEY"
             anchors.top: qrBorder.bottom
-            anchors.topMargin: 15
+            anchors.topMargin: 21
             anchors.horizontalCenter: parent.horizontalCenter
             color: "#F2F2F2"
             font.family: "Brandon Grotesque"
@@ -1512,8 +1514,10 @@ Item {
     */
     Rectangle {
         id: transactionConfirmationModal
+        // parent.height > 800 ? (parent.height - 400) :
         height: 250
-        width: parent.width - 50
+        // parent.width - 50
+        width: 325
         color: "#42454F"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -1731,7 +1735,8 @@ Item {
     Rectangle {
         id: addressBookModal
         height: 237
-        width: parent.width - 50
+        // parent.width - 50
+        width: 325
         color: "#42454F"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -1808,8 +1813,8 @@ Item {
         }
         Image {
             source: '../icons/dropdown_icon.svg'
-            width: 12
-            height: 12
+            width: 15
+            height: 15
             anchors.left: addressIconName.right
             anchors.leftMargin: 8
             anchors.verticalCenter: addressIconName.verticalCenter
@@ -2051,8 +2056,10 @@ Item {
       */
     Rectangle {
         id: scanQRModal
-        height: 400
-        width: parent.width - 50
+        // parent.height > 800 ? (parent.height - 400) :
+        height: 375
+        // parent.width - 50
+        width: 325
         color: "#42454F"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -2165,8 +2172,10 @@ Item {
       */
     Rectangle {
         id: historyModal
-        height: 400
-        width: parent.width - 50
+        // parent.height > 800 ? (parent.height - 400) :
+        height: 375
+        // parent.width - 50
+        width: 325
         color: "#42454F"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top

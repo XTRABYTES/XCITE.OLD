@@ -64,7 +64,7 @@ Item {
         height: parent.height
         width: parent.width
         z: 5
-        visible: appsTracker == 1 || editAddressTracker == 1 || editAddressTracker2 == 1 || editAddressTracker3 == 1 || editAddressTracker4 == 1
+        visible: appsTracker == 1 || editAddressTracker == 1 || editAddressTracker2 == 1 || editAddressTracker3 == 1 || editAddressTracker4 == 1 || editAddressTracker5 == 1
     }
     Rectangle {
         color: "#34363D"
@@ -265,7 +265,7 @@ Item {
     Rectangle {
         id: modal
         height: 300
-        width: parent.width - 50
+        width: 325
         color: "#42454F"
         radius: 4
         anchors.horizontalCenter: parent.horizontalCenter
@@ -593,7 +593,7 @@ Item {
     Rectangle {
         id: modal_2
         height: 300
-        width: parent.width - 50
+        width: 325
         color: "#42454F"
         radius: 4
         anchors.horizontalCenter: parent.horizontalCenter
@@ -924,7 +924,7 @@ Item {
     Rectangle {
         id: modal_3
         height: 300
-        width: parent.width - 50
+        width: 325
         color: "#42454F"
         radius: 4
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1255,7 +1255,7 @@ Item {
     Rectangle {
         id: modal_4
         height: 300
-        width: parent.width - 50
+        width: 325
         color: "#42454F"
         radius: 4
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1586,7 +1586,7 @@ Item {
     Rectangle {
         id: modal_5
         height: 300
-        width: parent.width - 50
+        width: 325
         color: "#42454F"
         radius: 4
         anchors.horizontalCenter: parent.horizontalCenter
