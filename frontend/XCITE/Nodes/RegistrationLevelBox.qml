@@ -134,7 +134,7 @@ Controls.Diode {
             Label {
                 anchors.right: parent.left
                 anchors.rightMargin: 10
-                color: "#24B9C3"
+                color: typeSwitch.on === false ? "#24B9C3" : "grey"
                 font.pixelSize: 12
                 text: "XBY"
                 anchors.verticalCenter: parent.verticalCenter
@@ -142,7 +142,7 @@ Controls.Diode {
             Label {
                 anchors.left: parent.right
                 anchors.leftMargin: 10
-                color: "#24B9C3"
+                color: typeSwitch.on === true ? "#24B9C3" : "grey"
                 font.pixelSize: 12
                 text: "XBY+XFUEL"
                 anchors.verticalCenter: parent.verticalCenter

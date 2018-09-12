@@ -1070,7 +1070,7 @@ Item {
     Rectangle {
         id: modal
         // parent.height > 800 ? (parent.height - 400) :
-        height: 375
+        height: 425
         // parent.width - 50
         width: 325
         color: "#42454F"
@@ -1086,7 +1086,7 @@ Item {
             id: modalTop
             height: 50
             width: modal.width
-            anchors.bottom: modal.top
+            anchors.top: modal.top
             anchors.left: modal.left
             color: "#34363D"
             radius: 4
@@ -1136,7 +1136,7 @@ Item {
             id: transferSwitch
             anchors.horizontalCenter: modal.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: 10
+            anchors.topMargin: 60
 
             Text {
                 id: receiveText
@@ -1168,7 +1168,7 @@ Item {
             height: 25
             anchors.left: sendAmount.left
             anchors.top: modal.top
-            anchors.topMargin: 50
+            anchors.topMargin: 100
             visible: transferTracker == 1
             Label {
                 id: currencyIconChild
@@ -1515,7 +1515,7 @@ Item {
     Rectangle {
         id: transactionConfirmationModal
         // parent.height > 800 ? (parent.height - 400) :
-        height: 250
+        height: 300
         // parent.width - 50
         width: 325
         color: "#42454F"
@@ -1530,7 +1530,7 @@ Item {
             id: transactionConfirmationModalTop
             height: 50
             width: transactionConfirmationModal.width
-            anchors.bottom: transactionConfirmationModal.top
+            anchors.top: transactionConfirmationModal.top
             anchors.left: transactionConfirmationModal.left
             color: "#34363D"
             radius: 4
@@ -1583,7 +1583,7 @@ Item {
             color: "#5E8BFF"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: 15
+            anchors.topMargin: 65
         }
         Text {
             id: confirm2
@@ -1734,7 +1734,7 @@ Item {
       */
     Rectangle {
         id: addressBookModal
-        height: 237
+        height: 287
         // parent.width - 50
         width: 325
         color: "#42454F"
@@ -1749,7 +1749,7 @@ Item {
             id: addressBookModalTop
             height: 50
             width: addressBookModal.width
-            anchors.bottom: addressBookModal.top
+            anchors.top: addressBookModal.top
             anchors.left: addressBookModal.left
             color: "#34363D"
             radius: 4
@@ -1796,7 +1796,7 @@ Item {
             anchors.left: addressBookModal.left
             anchors.leftMargin: 30
             anchors.top: addressBookModal.top
-            anchors.topMargin: 20
+            anchors.topMargin: 70
             width: 27
             height: 27
         }
@@ -2057,7 +2057,7 @@ Item {
     Rectangle {
         id: scanQRModal
         // parent.height > 800 ? (parent.height - 400) :
-        height: 375
+        height: 425
         // parent.width - 50
         width: 325
         color: "#42454F"
@@ -2124,7 +2124,7 @@ Item {
             id: scanQRModalTop
             height: 50
             width: scanQRModal.width
-            anchors.bottom: scanQRModal.top
+            anchors.top: scanQRModal.top
             anchors.left: scanQRModal.left
             color: "#34363D"
             radius: 4
@@ -2173,7 +2173,7 @@ Item {
     Rectangle {
         id: historyModal
         // parent.height > 800 ? (parent.height - 400) :
-        height: 375
+        height: 425
         // parent.width - 50
         width: 325
         color: "#42454F"
@@ -2188,7 +2188,7 @@ Item {
             id: historyModalTop
             height: 50
             width: historyModal.width
-            anchors.bottom: historyModal.top
+            anchors.top: historyModal.top
             anchors.left: historyModal.left
             color: "#34363D"
             radius: 4

@@ -1,5 +1,5 @@
 /**
- * Filename: DashboardForm.qml
+ * Filename: TransactionSentModal.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -51,7 +51,7 @@ Rectangle {
         id: transactionSentModalTop
         height: 50
         width: transactionSentModal.width
-        anchors.bottom: transactionSentModal.top
+        anchors.top: transactionSentModal.top
         anchors.left: transactionSentModal.left
         color: "#34363D"
         radius: 4
