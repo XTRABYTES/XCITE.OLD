@@ -36,11 +36,25 @@ Rectangle {
         font.bold: true
     }
     Label {
+        anchors.right: addressesNumberLabel.left
+        anchors.top: parent.top
+        anchors.topMargin: 22
+        text: numberAddresses.toString()
+        font.pixelSize: 16
+        font.family: "Brandon Grotesque"
+        color: "#E5E5E5"
+        font.bold: true
+    }
+    Label {
+        id: addressesNumberLabel
         anchors.right: parent.right
         anchors.rightMargin: 12
         anchors.top: parent.top
         anchors.topMargin: 22
-        text: numberAddresses.toString() + " address(es)"
+        text: if(numberAddresses == 1)
+                  " Address"
+              else
+                  " Addresses"
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"

@@ -56,7 +56,7 @@ Rectangle {
     Text {
         id: amountSizeLabel
         anchors.right: parent.right
-        anchors.rightMargin: 5
+        anchors.rightMargin: 10
         anchors.verticalCenter: icon.verticalCenter
         text: amountSize
         font.pixelSize: 16
@@ -68,7 +68,7 @@ Rectangle {
     Label {
         id: totalValueLabel
         anchors.right: square.right
-        anchors.rightMargin: 5
+        anchors.rightMargin: 10
         anchors.verticalCenter: price2.verticalCenter
         text: totalValue
         font.pixelSize: 13

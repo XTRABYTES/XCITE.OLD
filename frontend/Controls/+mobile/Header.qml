@@ -28,6 +28,7 @@ Item {
         color: "white"
         horizontalAlignment: Qt.AlignHCenter
         verticalAlignment: Qt.AlignVCenter
+        font.bold: true
     }
 
     Image {

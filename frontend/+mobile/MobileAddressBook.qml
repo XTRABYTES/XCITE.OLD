@@ -31,22 +31,7 @@ Item {
     property int editAddressTracker3: 0
     property int editAddressTracker4: 0
     property int editAddressTracker5: 0
-    Item {
-        id: heading
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 35
 
-        Label {
-            id: label
-            font.pixelSize: 16
-            anchors.fill: parent
-            color: "white"
-            horizontalAlignment: Qt.AlignHCenter
-            verticalAlignment: Qt.AlignVCenter
-            text: qsTr("Posey")
-        }
-    }
     Rectangle {
         z: 100
         color: "#2A2C31"
@@ -78,17 +63,17 @@ Item {
     }
     RowLayout {
         id: headingRow
-        anchors.top: heading.bottom
-        anchors.topMargin: 10
-        anchors.horizontalCenter: heading.horizontalCenter
-        spacing: 20
+        anchors.top: parent.top
+        anchors.topMargin: 25
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 10
         Label {
             id: overview
             text: "OVERVIEW"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#757575"
-
+            font.bold: true
             MouseArea {
                 anchors.fill: overview
                 onClicked: mainRoot.pop("MobileAddressBook.qml")
@@ -101,15 +86,31 @@ Item {
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#5E8BFE"
+            font.bold: true
             Rectangle {
                 id: titleLine
                 width: add5.width
-                height: 1
+                height: 2
                 color: "#5E8BFE"
                 anchors.top: add5.bottom
                 anchors.left: add5.left
                 anchors.topMargin: 2
             }
+        }
+    }
+
+    Image {
+        id: notif
+        anchors.right: parent.right
+        anchors.rightMargin: 30
+        anchors.verticalCenter: headingRow.verticalCenter
+        source: '../icons/notification_icon_03.svg'
+        width: 30
+        height: 30
+        ColorOverlay {
+            anchors.fill: notif
+            source: notif
+            color: "#5E8BFF"
         }
     }
 
@@ -131,6 +132,11 @@ Item {
             source: '../icons/transfer_icon.svg'
             width: 16
             height: 16
+            ColorOverlay {
+                anchors.fill: transfer2
+                source: transfer2
+                color: "#5E8BFF"
+            }
         }
     }
 
@@ -153,13 +159,33 @@ Item {
             source: '../icons/add_icon_03.svg'
             width: 16
             height: 16
+            ColorOverlay {
+                anchors.fill: plus
+                source: plus
+                color: "#5E8BFF"
+            }
         }
     }
 
+    Controls.TextInput {
+        id: searchForAddress
+        height: 34
+        placeholder: "SEARCH ADDRESS BOOK"
+        anchors.left: address.left
+        anchors.top: headingRow.bottom
+        anchors.topMargin: 40
+        width: address.width
+        color: "#727272"
+        font.pixelSize: 11
+        font.family: "Brandon Grotesque"
+        font.bold: true
+        mobile: 1
+        addressBook: 1
+    }
     Controls.AddressBookSquares {
         id: address
-        anchors.top: parent.top
-        anchors.topMargin: 125
+        anchors.top: searchForAddress.bottom
+        anchors.topMargin: 50
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: addressName1

@@ -79,42 +79,36 @@ Item {
         id: pageLoader
     }
 
-    Controls.Header {
-        id: heading
-        text: qsTr("Posey")
-        showBack: false
-        Layout.topMargin: 14
-    }
     RowLayout {
         id: headingLayout
-        anchors.top: heading.bottom
-        anchors.topMargin: 10
+        anchors.top: dashForm.top
+        anchors.topMargin: 25
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: 20
+        spacing: 10
         Label {
             id: overview
             text: "OVERVIEW"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
+            font.bold: true
             color: "#5E8BFE"
             Rectangle {
                 id: titleLine
                 width: overview.width
-                height: 1
+                height: 2
                 color: "#5E8BFE"
                 anchors.top: overview.bottom
                 anchors.left: overview.left
                 anchors.topMargin: 2
             }
         }
-
         Label {
             id: add5
             text: "ADDRESS BOOK"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#757575"
-
+            font.bold: true
             MouseArea {
                 anchors.fill: add5
                 onClicked: mainRoot.push("MobileAddressBook.qml")
@@ -140,22 +134,12 @@ Item {
     Label {
         id: value
         anchors.top: parent.top
-        anchors.topMargin: 90
-        anchors.left: dollarSignValue.right
-        text: (wallet.balance * marketValue.marketValue).toLocaleString(
+        anchors.topMargin: 62
+        //anchors.left: transfer.left
+        anchors.horizontalCenter: dashForm.horizontalCenter
+        text: "$" + (wallet.balance * marketValue.marketValue).toLocaleString(
                   Qt.locale(), "f", 2)
-        font.pixelSize: 36
-        font.family: "Brandon Grotesque"
-        color: "#E5E5E5"
-    }
-    Label {
-        id: dollarSignValue
-        anchors.top: parent.top
-        anchors.topMargin: 90
-        anchors.left: parent.left
-        anchors.leftMargin: 20
-        text: "$"
-        font.pixelSize: 36
+        font.pixelSize: 40
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
     }
@@ -218,6 +202,11 @@ Item {
             source: '../icons/transfer_icon.svg'
             width: 18
             height: 18
+            ColorOverlay {
+                anchors.fill: transfer2
+                source: transfer2
+                color: "#5E8BFF"
+            }
             MouseArea {
                 anchors.fill: transfer2
                 onClicked: {
@@ -246,12 +235,18 @@ Item {
             source: '../icons/add_icon_03.svg'
             width: 18
             height: 18
+            ColorOverlay {
+                anchors.fill: plus
+                source: plus
+                color: "#5E8BFF"
+            }
         }
     }
     Controls.CurrencySquare {
         id: square1
         anchors.top: parent.top
-        anchors.topMargin: 210
+        // 210
+        anchors.topMargin: 165
         anchors.left: parent.left
         anchors.leftMargin: 25
         currencyType: '../icons/XBY_card_logo_colored_05.svg'
@@ -1306,7 +1301,7 @@ Item {
             color: "#727272"
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
-            font.bold: true
+            mobile: 1
         }
         Image {
             id: textFieldEmpty3
@@ -1349,6 +1344,7 @@ Item {
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: transferTracker == 1 && transferSwitch.on ===  true
+            mobile: 1
         }
         Image {
             id: textFieldEmpty1
@@ -1448,6 +1444,7 @@ Item {
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: transferTracker == 1 && transferSwitch.on ===  true
+            mobile: 1
         }
         Image {
             id: textFieldEmpty2
