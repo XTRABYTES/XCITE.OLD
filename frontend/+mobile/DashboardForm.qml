@@ -31,6 +31,8 @@ Item {
     property int historyTracker: 0
     property int transactionSentTracker: 0
     property int transactionConfirmTracker: 0
+    property int coinHistoryA1: 1
+    property int coinHistoryA2:1
     property int clickedSquare: 0
     property int clickedSquare2: 0
     property int clickedSquare3: 0
@@ -2164,69 +2166,8 @@ Item {
         }
     }
 
-    /**
-      * History Modal
-      */
-    Rectangle {
-        id: historyModal
-        // parent.height > 800 ? (parent.height - 400) :
-        height: 425
-        // parent.width - 50
-        width: 325
-        color: "#42454F"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 150
-        visible: historyTracker == 1
-        radius: 4
-        z: 155
+   Controls.HistoryModal{
 
-        Rectangle {
-            id: historyModalTop
-            height: 50
-            width: historyModal.width
-            anchors.top: historyModal.top
-            anchors.left: historyModal.left
-            color: "#34363D"
-            radius: 4
-            Text {
-                text: "HISTORY"
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-                color: "#F2F2F2"
-                font.family: "Brandon Grotesque"
-                font.bold: true
-                font.pixelSize: 15
-            }
-
-            Image {
-                id: historyModalClose
-                source: '../icons/CloseIcon.svg'
-                anchors.bottom: historyModalTop.bottom
-                anchors.bottomMargin: 15
-                anchors.right: historyModalTop.right
-                anchors.rightMargin: 30
-                width: 20
-                height: 20
-                ColorOverlay {
-                    anchors.fill: historyModalClose
-                    source: historyModalClose
-                    color: "white" // make image like it lays under grey glass
-                }
-                Rectangle {
-                    id: historyModalButtonArea
-                    width: 20
-                    height: 20
-                    anchors.left: historyModalClose.left
-                    anchors.bottom: historyModalClose.bottom
-                    color: "transparent"
-                    MouseArea {
-                        anchors.fill: historyModalButtonArea
-                        onClicked: historyTracker = 0
-                    }
-                }
-            }
-        }
-    }
+   }
 }
 

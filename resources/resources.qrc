@@ -127,5 +127,8 @@
         <file>icons/rocket.svg</file>
         <file>icons/switch_back.svg</file>
         <file>icons/switch_butt.svg</file>
+        <file>icons/left-arrow2.svg</file>
+        <file>icons/side-arrow-left.svg</file>
+        <file>icons/side-arrow-right.svg</file>
     </qresource>
 </RCC>
