@@ -126,6 +126,16 @@ Item {
             source: notif
             color: "#5E8BFF"
         }
+        Image{
+            id: notifAlert
+            anchors.left: parent.right
+            anchors.leftMargin: -16
+            anchors.top: parent.top
+            anchors.topMargin: 3
+            source: '../icons/notification_red_circle_icon.svg'
+            width: 8
+            height: 8
+        }
     }
 
     Label {
@@ -143,7 +153,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.right
             anchors.leftMargin: 8
-            source: '../icons/transfer_icon.svg'
+            source: '../icons/transfer_icon_02.svg'
             width: 16
             height: 16
             ColorOverlay {
@@ -176,7 +186,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.right
             anchors.leftMargin: 8
-            source: '../icons/add_icon_03.svg'
+            source: '../icons/add_icon_04.svg'
             width: 16
             height: 16
             ColorOverlay {
