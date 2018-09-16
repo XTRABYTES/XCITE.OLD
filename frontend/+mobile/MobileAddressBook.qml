@@ -1964,15 +1964,18 @@ Item {
             source: xchangeLink
             color: "#5E8BFF" // make image like it lays under grey glass
         }
-        /**
+        Rectangle {
+            id: xchangeButtonArea
+            width: xchangeLink.width
+            height: xchangeLink.height
+            anchors.left: xchangeLink.left
+            anchors.bottom: xchangeLink.bottom
+            color: "transparent"
             MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    clipboard.text = regString.text
-                }
+                anchors.fill: xchangeButtonArea
+                onClicked: mainRoot.push("xchange.qml")
             }
-            */
+        }
     }
 
     Image {
