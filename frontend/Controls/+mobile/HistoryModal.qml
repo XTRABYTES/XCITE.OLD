@@ -7,8 +7,6 @@ import "../Controls" as Controls
   * History Modal
   */
 Rectangle {
-    property int coinHistoryA1: 1
-    property int coinHistoryA2:1
     id: historyModal
     height: 450
     width: 325
@@ -16,7 +14,7 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 120
-    visible: historyTracker == 1
+    visible: historyTracker == 1 && transferTracker != 1
     radius: 4
     z: 155
 
