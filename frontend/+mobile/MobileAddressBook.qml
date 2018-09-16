@@ -21,12 +21,6 @@ import "../Controls" as Controls
   * Address Book
   */
 Item {
-    property int appsTracker: 0
-    property int transferTracker: 0
-    property int addressBookTracker: 0
-    property int scanQRCodeTracker: 0
-    property int transactionSentTracker: 0
-    property int transactionConfirmTracker: 0
     property int clickedAddSquare: 0
     property int clickedAddSquare2: 0
     property int clickedAddSquare3: 0
@@ -37,6 +31,12 @@ Item {
     property int editAddressTracker3: 0
     property int editAddressTracker4: 0
     property int editAddressTracker5: 0
+    property int appsTracker: 0
+    property int transferTracker: 0
+    property int addressBookTracker: 0
+    property int scanQRCodeTracker: 0
+    property int transactionSentTracker: 0
+    property int transactionConfirmTracker: 0
     id: addressBookForm
     Rectangle {
         z: 100
@@ -68,13 +68,12 @@ Item {
         visible: true
     }
 
-    TransactionModal {
+    Controls.TransferModal {
         z: 1000
         anchors.horizontalCenter: addressBookForm.horizontalCenter
         anchors.top: addressBookForm.top
         anchors.topMargin: 125
     }
-
     RowLayout {
         id: headingRow
         anchors.top: parent.top

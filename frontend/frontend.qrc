@@ -128,13 +128,11 @@
         <file>Controls/LoadingBar.qml</file>
         <file>Controls/TransactionTable.qml</file>
         <file>+mobile/Settings.qml</file>
-        <file>Controls/+mobile/MobileTextInput.qml</file>
         <file>Controls/+mobile/CurrencySquare.qml</file>
         <file>Controls/+mobile/AddressBookSquares.qml</file>
         <file>+mobile/MobileAddressBook.qml</file>
-        <file>Controls/+mobile/TransactionSentModal.qml</file>
         <file>+mobile/xchange.qml</file>
         <file>Controls/+mobile/HistoryModal.qml</file>
-        <file>+mobile/TransactionModal.qml</file>
+        <file>Controls/+mobile/TransferModal.qml</file>
     </qresource>
 </RCC>
