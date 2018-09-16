@@ -24,6 +24,15 @@ import "./Controls" as Controls
   */
 Item {
     property int sw: -1
+    property int appsTracker: 0
+    property int transferTracker: 0
+    property int addressBookTracker: 0
+    property int scanQRCodeTracker: 0
+    property int historyTracker: 0
+    property int transactionSentTracker: 0
+    property int transactionConfirmTracker: 0
+    property int coinHistoryA1: 1
+    property int coinHistoryA2:1
     property int clickedSquare: 0
     property int clickedSquare2: 0
     property int clickedSquare3: 0
@@ -34,13 +43,6 @@ Item {
     property string address2: "B2QiknazjkA30s9gyV4riyKuVWvUMXEVss"
     property string address3: "B09iknaFAFKA30s392J4riyKuVWvUMXEV3"
     property string address4: "BxkiknaGNKA30s9gyV4riyKuVWvFJKEVq9"
-    property int historyTracker: 0
-    property int appsTracker: 0
-    property int transferTracker: 0
-    property int addressBookTracker: 0
-    property int scanQRCodeTracker: 0
-    property int transactionConfirmTracker: 0
-    property int transactionSentTracker: 0
 
     z: 2
     id: dashForm
@@ -1059,13 +1061,13 @@ Item {
         }
     }
 
-    Controls.TransferModal {
-        id: transModal
+    Controls.TransferModal{
         z: 1000
         anchors.horizontalCenter: dashForm.horizontalCenter
         anchors.top: dashForm.top
-        anchors.topMargin: 125
+        anchors.topMargin: 40
     }
+
     Controls.HistoryModal{
 
     }
