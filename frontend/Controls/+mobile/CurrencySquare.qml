@@ -62,7 +62,7 @@ Rectangle {
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
-        font.weight: Font.Medium
+        font.bold: true
     }
 
     Label {

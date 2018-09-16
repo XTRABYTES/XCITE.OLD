@@ -135,5 +135,6 @@
         <file>Controls/+mobile/TransactionSentModal.qml</file>
         <file>+mobile/xchange.qml</file>
         <file>Controls/+mobile/HistoryModal.qml</file>
+        <file>+mobile/TransactionModal.qml</file>
     </qresource>
 </RCC>

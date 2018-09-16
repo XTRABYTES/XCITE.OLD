@@ -1073,7 +1073,7 @@ Item {
         color: "#42454F"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 150
+        anchors.topMargin: 125
         visible: transferTracker == 1 && addressBookTracker != 1
                  && scanQRCodeTracker != 1 && transactionConfirmTracker != 1 && transactionSentTracker != 1
         radius: 4
