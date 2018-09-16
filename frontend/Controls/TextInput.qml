@@ -16,9 +16,14 @@ import QtQuick.Layouts 1.3
 import "../Theme" 1.0
 
 TextField {
+    property int mobile: 0
+    property int addressBook: 0
     id: textInputComponent
     color: "white"
-    font.weight: Font.Light
+    font.weight: if(mobile == 0)
+                     Font.Light
+                 else
+                     Font.Bold
     font.pixelSize: 24
     leftPadding: 18
     rightPadding: 18
@@ -27,10 +32,17 @@ TextField {
     verticalAlignment: Text.AlignVCenter
     selectByMouse: true
     background: Rectangle {
-        color: "#2A2C31"
+        color: if(mobile == 0 && addressBook == 0)
+                   "#2A2C31"
+               else
+                   "#34363D"
         radius: 4
         border.width: parent.activeFocus ? 2 : 0
-        border.color: Theme.secondaryHighlight
+        border.color: if(mobile == 0)
+                          Theme.secondaryHighlight
+                      else
+                          "#34363D"
+
         implicitWidth: 273
     }
     onActiveFocusChanged: {

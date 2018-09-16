@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.8
+import QZXing 2.3
 import "../Controls" as Controls
 
 /**
@@ -21,6 +22,11 @@ import "../Controls" as Controls
   */
 Item {
     property int appsTracker: 0
+    property int transferTracker: 0
+    property int addressBookTracker: 0
+    property int scanQRCodeTracker: 0
+    property int transactionSentTracker: 0
+    property int transactionConfirmTracker: 0
     property int clickedAddSquare: 0
     property int clickedAddSquare2: 0
     property int clickedAddSquare3: 0
@@ -31,22 +37,7 @@ Item {
     property int editAddressTracker3: 0
     property int editAddressTracker4: 0
     property int editAddressTracker5: 0
-    Item {
-        id: heading
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 35
-
-        Label {
-            id: label
-            font.pixelSize: 16
-            anchors.fill: parent
-            color: "white"
-            horizontalAlignment: Qt.AlignHCenter
-            verticalAlignment: Qt.AlignVCenter
-            text: qsTr("Posey")
-        }
-    }
+    id: addressBookForm
     Rectangle {
         z: 100
         color: "#2A2C31"
@@ -64,7 +55,7 @@ Item {
         height: parent.height
         width: parent.width
         z: 5
-        visible: appsTracker == 1 || editAddressTracker == 1 || editAddressTracker2 == 1 || editAddressTracker3 == 1 || editAddressTracker4 == 1 || editAddressTracker5 == 1
+        visible: transferTracker == 1 || appsTracker == 1 || editAddressTracker == 1 || editAddressTracker2 == 1 || editAddressTracker3 == 1 || editAddressTracker4 == 1 || editAddressTracker5 == 1
     }
     Rectangle {
         color: "#34363D"
@@ -76,19 +67,27 @@ Item {
         z: 0
         visible: true
     }
+
+    Controls.TransferModal {
+        z: 1000
+        anchors.horizontalCenter: addressBookForm.horizontalCenter
+        anchors.top: addressBookForm.top
+        anchors.topMargin: 40
+    }
+
     RowLayout {
         id: headingRow
-        anchors.top: heading.bottom
-        anchors.topMargin: 10
-        anchors.horizontalCenter: heading.horizontalCenter
-        spacing: 20
+        anchors.top: parent.top
+        anchors.topMargin: 25
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 10
         Label {
             id: overview
             text: "OVERVIEW"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#757575"
-
+            font.bold: true
             MouseArea {
                 anchors.fill: overview
                 onClicked: mainRoot.pop("MobileAddressBook.qml")
@@ -101,15 +100,31 @@ Item {
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             color: "#5E8BFE"
+            font.bold: true
             Rectangle {
                 id: titleLine
                 width: add5.width
-                height: 1
+                height: 2
                 color: "#5E8BFE"
                 anchors.top: add5.bottom
                 anchors.left: add5.left
                 anchors.topMargin: 2
             }
+        }
+    }
+
+    Image {
+        id: notif
+        anchors.right: parent.right
+        anchors.rightMargin: 30
+        anchors.verticalCenter: headingRow.verticalCenter
+        source: '../icons/notification_icon_03.svg'
+        width: 30
+        height: 30
+        ColorOverlay {
+            anchors.fill: notif
+            source: notif
+            color: "#5E8BFF"
         }
     }
 
@@ -131,6 +146,17 @@ Item {
             source: '../icons/transfer_icon.svg'
             width: 16
             height: 16
+            ColorOverlay {
+                anchors.fill: transfer2
+                source: transfer2
+                color: "#5E8BFF"
+            }
+            MouseArea {
+                anchors.fill: transfer2
+                onClicked: {
+                    transferTracker = 1
+                }
+            }
         }
     }
 
@@ -153,13 +179,33 @@ Item {
             source: '../icons/add_icon_03.svg'
             width: 16
             height: 16
+            ColorOverlay {
+                anchors.fill: plus
+                source: plus
+                color: "#5E8BFF"
+            }
         }
     }
 
+    Controls.TextInput {
+        id: searchForAddress
+        height: 34
+        placeholder: "SEARCH ADDRESS BOOK"
+        anchors.left: address.left
+        anchors.top: headingRow.bottom
+        anchors.topMargin: 40
+        width: address.width
+        color: "#727272"
+        font.pixelSize: 11
+        font.family: "Brandon Grotesque"
+        font.bold: true
+        mobile: 1
+        addressBook: 1
+    }
     Controls.AddressBookSquares {
         id: address
-        anchors.top: parent.top
-        anchors.topMargin: 125
+        anchors.top: searchForAddress.bottom
+        anchors.topMargin: 50
         anchors.left: parent.left
         anchors.leftMargin: 25
         name: addressName1
@@ -335,6 +381,7 @@ Item {
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: editAddressTracker == 1
+            mobile: 1
         }
         Image {
             id: textFieldEmpty1
@@ -377,6 +424,7 @@ Item {
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: editAddressTracker == 1
+            mobile: 1
         }
         Image {
             id: textFieldEmpty2
@@ -419,6 +467,7 @@ Item {
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: editAddressTracker == 1
+            mobile: 1
         }
         Image {
             id: textFieldEmpty3
@@ -1804,6 +1853,9 @@ Item {
         }
     }
 
+    /**
+      * Bottom pieces
+      */
     Image {
         id: settings
         anchors.bottom: parent.bottom
@@ -1912,15 +1964,18 @@ Item {
             source: xchangeLink
             color: "#5E8BFF" // make image like it lays under grey glass
         }
-        /**
+        Rectangle {
+            id: xchangeButtonArea
+            width: xchangeLink.width
+            height: xchangeLink.height
+            anchors.left: xchangeLink.left
+            anchors.bottom: xchangeLink.bottom
+            color: "transparent"
             MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    clipboard.text = regString.text
-                }
+                anchors.fill: xchangeButtonArea
+                onClicked: mainRoot.push("xchange.qml")
             }
-            */
+        }
     }
 
     Image {

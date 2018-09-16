@@ -56,19 +56,19 @@ Rectangle {
     Text {
         id: amountSizeLabel
         anchors.right: parent.right
-        anchors.rightMargin: 5
+        anchors.rightMargin: 10
         anchors.verticalCenter: icon.verticalCenter
         text: amountSize
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: "#E5E5E5"
-        font.weight: Font.Medium
+        font.bold: true
     }
 
     Label {
         id: totalValueLabel
         anchors.right: square.right
-        anchors.rightMargin: 5
+        anchors.rightMargin: 10
         anchors.verticalCenter: price2.verticalCenter
         text: totalValue
         font.pixelSize: 13
