@@ -49,23 +49,23 @@ Item{
             color: "#34363D"
             radius: 4
             Text {
+                id: transferModalText1
                 text: "TRANSFER"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 15
+                font.pixelSize: 16
             }
             Image {
                 id: closeModal
                 source: '../icons/CloseIcon.svg'
-                anchors.bottom: modalTop.bottom
-                anchors.bottomMargin: 15
+                anchors.verticalCenter: transferModalText1.verticalCenter
                 anchors.right: modalTop.right
                 anchors.rightMargin: 30
-                width: 20
-                height: 20
+                width: closeModal.height
+                height: transferModalText1.height
                 ColorOverlay {
                     anchors.fill: closeModal
                     source: closeModal
@@ -496,23 +496,23 @@ Item{
             radius: 4
 
             Text {
+                id: transactionConfirmationModalText1
                 text: "TRANSFER"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 15
+                font.pixelSize: 16
             }
             Image {
                 id: transactionConfirmationCloseModal
                 source: '../icons/CloseIcon.svg'
-                anchors.bottom: transactionConfirmationModalTop.bottom
-                anchors.bottomMargin: 15
+                anchors.verticalCenter: transactionConfirmationModalText1.verticalCenter
                 anchors.right: transactionConfirmationModalTop.right
                 anchors.rightMargin: 30
-                width: 20
-                height: 20
+                width: transactionConfirmationCloseModal.height
+                height: transactionConfirmationModalText1.height
                 ColorOverlay {
                     anchors.fill: transactionConfirmationCloseModal
                     source: transactionConfirmationCloseModal
@@ -770,23 +770,23 @@ Item{
             color: "#34363D"
             radius: 4
             Text {
+                id: addressModalText1
                 text: "ADDRESS BOOK"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 15
+                font.pixelSize: 16
             }
             Image {
                 id: closeAddressBookModal
                 source: '../icons/CloseIcon.svg'
-                anchors.bottom: addressBookModalTop.bottom
-                anchors.bottomMargin: 15
+                anchors.verticalCenter: addressModalText1.verticalCenter
                 anchors.right: addressBookModalTop.right
                 anchors.rightMargin: 30
-                width: 20
-                height: 20
+                width: closeAddressBookModal.height
+                height: addressModalText1.height
                 ColorOverlay {
                     anchors.fill: closeAddressBookModal
                     source: closeAddressBookModal
@@ -1145,23 +1145,23 @@ Item{
             color: "#34363D"
             radius: 4
             Text {
+                id: scanQrCodeText1
                 text: "SCAN QR CODE"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 15
+                font.pixelSize: 16
             }
             Image {
                 id: scanQRBookModalClose
                 source: '../icons/CloseIcon.svg'
-                anchors.bottom: scanQRModalTop.bottom
-                anchors.bottomMargin: 15
+                anchors.verticalCenter: scanQrCodeText1.verticalCenter
                 anchors.right: scanQRModalTop.right
                 anchors.rightMargin: 30
-                width: 20
-                height: 20
+                width: scanQRBookModalClose.height
+                height: scanQrCodeText1.height
                 ColorOverlay {
                     anchors.fill: scanQRBookModalClose
                     source: scanQRBookModalClose

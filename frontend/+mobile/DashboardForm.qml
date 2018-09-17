@@ -143,11 +143,11 @@ Item {
         }
     }
 
+    // round to two places for total value (dollars), 4 for value (crypto), 6 for amount (crypto)
     Label {
         id: value
         anchors.top: parent.top
         anchors.topMargin: 62
-        //anchors.left: transfer.left
         anchors.horizontalCenter: dashForm.horizontalCenter
         text: "$" + (wallet.balance * marketValue.marketValue).toLocaleString(
                   Qt.locale(), "f", 2)
