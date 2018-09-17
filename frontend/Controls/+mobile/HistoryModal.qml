@@ -27,24 +27,24 @@ Rectangle {
         color: "#34363D"
         radius: 4
         Text {
+            id: historyText1
             text: "HISTORY"
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             color: "#F2F2F2"
             font.family: "Brandon Grotesque"
             font.bold: true
-            font.pixelSize: 18
+            font.pixelSize: 17
         }
 
         Image {
             id: historyModalClose
             source: '../icons/CloseIcon.svg'
-            anchors.bottom: historyModalTop.bottom
-            anchors.bottomMargin: 15
+            anchors.verticalCenter: historyText1.verticalCenter
             anchors.right: historyModalTop.right
             anchors.rightMargin: 30
-            width: 20
-            height: 20
+            width: historyModalClose.height
+            height: historyText1.height
             ColorOverlay {
                 anchors.fill: historyModalClose
                 source: historyModalClose

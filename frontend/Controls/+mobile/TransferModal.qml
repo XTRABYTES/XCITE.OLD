@@ -56,7 +56,7 @@ Item{
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 16
+                font.pixelSize: 17
             }
             Image {
                 id: closeModal
@@ -503,7 +503,7 @@ Item{
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 16
+                font.pixelSize: 17
             }
             Image {
                 id: transactionConfirmationCloseModal
@@ -777,7 +777,7 @@ Item{
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 16
+                font.pixelSize: 17
             }
             Image {
                 id: closeAddressBookModal
@@ -1152,7 +1152,7 @@ Item{
                 color: "#F2F2F2"
                 font.family: "Brandon Grotesque"
                 font.bold: true
-                font.pixelSize: 16
+                font.pixelSize: 17
             }
             Image {
                 id: scanQRBookModalClose
