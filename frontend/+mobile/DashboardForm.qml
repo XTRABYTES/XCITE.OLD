@@ -131,13 +131,23 @@ Item {
             source: notif
             color: "#5E8BFF"
         }
+        Image{
+            id: notifAlert
+            anchors.left: parent.right
+            anchors.leftMargin: -16
+            anchors.top: parent.top
+            anchors.topMargin: 3
+            source: '../icons/notification_red_circle_icon.svg'
+            width: 8
+            height: 8
+        }
     }
 
+    // round to two places for total value (dollars), 4 for value (crypto), 6 for amount (crypto)
     Label {
         id: value
         anchors.top: parent.top
         anchors.topMargin: 62
-        //anchors.left: transfer.left
         anchors.horizontalCenter: dashForm.horizontalCenter
         text: "$" + (wallet.balance * marketValue.marketValue).toLocaleString(
                   Qt.locale(), "f", 2)
@@ -201,7 +211,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.right
             anchors.leftMargin: 8
-            source: '../icons/transfer_icon.svg'
+            source: '../icons/transfer_icon_02.svg'
             width: 18
             height: 18
             ColorOverlay {
@@ -234,7 +244,7 @@ Item {
             anchors.verticalCenter: addCoin.verticalCenter
             anchors.left: parent.right
             anchors.leftMargin: 8
-            source: '../icons/add_icon_03.svg'
+            source: '../icons/add_icon_04.svg'
             width: 18
             height: 18
             ColorOverlay {

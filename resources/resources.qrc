@@ -130,5 +130,8 @@
         <file>icons/left-arrow2.svg</file>
         <file>icons/side-arrow-left.svg</file>
         <file>icons/side-arrow-right.svg</file>
+        <file>icons/transfer_icon_02.svg</file>
+        <file>icons/add_icon_04.svg</file>
+        <file>icons/notification_red_circle_icon.svg</file>
     </qresource>
 </RCC>
