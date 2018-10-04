@@ -52,10 +52,10 @@ Rectangle {
             }
             Rectangle {
                 id: historyModalButtonArea
-                width: 20
-                height: 20
+                width: historyModalClose.width
+                height: historyModalClose.height
                 anchors.left: historyModalClose.left
-                anchors.bottom: historyModalClose.bottom
+                anchors.top: historyModalClose.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: historyModalButtonArea
