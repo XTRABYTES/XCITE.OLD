@@ -26,7 +26,7 @@ SwipeView {
     id: view
     // dash form vars
     property int sw: -1
-    property int appsTracker: 0
+    property int appsTracker1: 0
     property int transferTracker: 0
     property int addressBookTracker: 0
     property int scanQRCodeTracker: 0
@@ -58,6 +58,7 @@ SwipeView {
     property int editAddressTracker3: 0
     property int editAddressTracker4: 0
     property int editAddressTracker5: 0
+    property int appsTracker2: 0
 
     currentIndex: 0
     anchors.fill: parent
@@ -72,7 +73,7 @@ SwipeView {
             height: parent.height
             width: parent.width
             z: 5
-            visible: transferTracker == 1 || historyTracker == 1 || appsTracker == 1
+            visible: transferTracker == 1 || historyTracker == 1 || appsTracker1 == 1
         }
         Rectangle {
             id: mainrect
@@ -87,7 +88,7 @@ SwipeView {
             MouseArea {
                 anchors.fill: mainrect
                 onClicked: {
-                    appsTracker = 0
+                    appsTracker1 = 0
                 }
             }
         }
@@ -1253,8 +1254,8 @@ SwipeView {
             anchors.verticalCenter: headingLayout.verticalCenter
             width: 22
             height: 17
-            z: 100
-            visible: appsTracker == 0
+            z: 5
+
             ColorOverlay {
                 anchors.fill: apps
                 source: apps
@@ -1262,13 +1263,14 @@ SwipeView {
             }
             MouseArea {
                 anchors.fill: apps
-                onClicked: appsTracker = 1
+                onClicked: appsTracker1 = 1
             }
         }
 
         Controls.Sidebar{
             anchors.left: parent.left
             anchors.top: parent.top
+            appsTracker: appsTracker1 == 0 ? 0 : 1
         }
 
         Controls.TransferModal{
@@ -1302,7 +1304,7 @@ SwipeView {
             MouseArea {
                 anchors.fill: mainrect2
                 onClicked: {
-                    appsTracker = 0
+                    appsTracker2 = 0
                 }
             }
         }
@@ -1315,7 +1317,7 @@ SwipeView {
             height: parent.height
             width: parent.width
             z: 5
-            visible: transferTracker == 1 || appsTracker == 1 || editAddressTracker == 1 || editAddressTracker2 == 1 || editAddressTracker3 == 1 || editAddressTracker4 == 1 || editAddressTracker5 == 1
+            visible: transferTracker == 1 || appsTracker2 == 1 || editAddressTracker == 1 || editAddressTracker2 == 1 || editAddressTracker3 == 1 || editAddressTracker4 == 1 || editAddressTracker5 == 1
         }
 
         Controls.TransferModal {
@@ -1392,8 +1394,7 @@ SwipeView {
             anchors.verticalCenter: headingRow.verticalCenter
             width: 22
             height: 17
-            z: 100
-            visible: appsTracker == 0
+            z: 5
             ColorOverlay {
                 anchors.fill: apps2
                 source: apps2
@@ -1401,13 +1402,14 @@ SwipeView {
             }
             MouseArea {
                 anchors.fill: apps2
-                onClicked: appsTracker = 1
+                onClicked: appsTracker2 = 1
             }
         }
 
         Controls.Sidebar{
             anchors.left: parent.left
             anchors.top: parent.top
+            appsTracker: appsTracker2 == 0 ? 0 : 1
         }
 
         Label {

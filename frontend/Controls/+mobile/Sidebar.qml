@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
 Rectangle {
+    property int appsTracker: 0
     id: sidebar
     height: parent.height
     width: 100
