@@ -37,7 +37,11 @@ Item {
     property int editAddressTracker3: 0
     property int editAddressTracker4: 0
     property int editAddressTracker5: 0
+
     id: addressBookForm
+
+    /**
+      * pending design decision
     Rectangle {
         z: 100
         color: "#2A2C31"
@@ -47,6 +51,7 @@ Item {
         width: parent.width
         height: 50
     }
+    */
     Rectangle {
         color: "black"
         opacity: .8
@@ -58,6 +63,7 @@ Item {
         visible: transferTracker == 1 || appsTracker == 1 || editAddressTracker == 1 || editAddressTracker2 == 1 || editAddressTracker3 == 1 || editAddressTracker4 == 1 || editAddressTracker5 == 1
     }
     Rectangle {
+        id: mainrect
         color: "#34363D"
         anchors.top: transfer.bottom
         anchors.topMargin: 8
@@ -66,6 +72,12 @@ Item {
         width: parent.width
         z: 0
         visible: true
+        MouseArea {
+            anchors.fill: mainrect
+            onClicked: {
+                appsTracker = 0
+            }
+        }
     }
 
     Controls.TransferModal {
@@ -136,6 +148,32 @@ Item {
             width: 8
             height: 8
         }
+    }
+
+    Image {
+        id: apps
+        source: '../icons/mobile-menu.svg'
+        anchors.left: parent.left
+        anchors.leftMargin: 30
+        anchors.verticalCenter: headingRow.verticalCenter
+        width: 22
+        height: 17
+        z: 100
+        visible: appsTracker == 0
+        ColorOverlay {
+            anchors.fill: apps
+            source: apps
+            color: "#5E8BFF"
+        }
+        MouseArea {
+            anchors.fill: apps
+            onClicked: appsTracker = 1
+        }
+    }
+
+    Controls.Sidebar{
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 
     Label {
@@ -1861,203 +1899,5 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
-    }
-
-    /**
-      * Bottom pieces
-      */
-    Image {
-        id: settings
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
-        anchors.left: parent.left
-        anchors.leftMargin: 30
-        source: '../icons/icon-settings.svg'
-        width: 20
-        height: 20
-        z: 100
-
-        ColorOverlay {
-            anchors.fill: settings
-            source: settings
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
-
-        MouseArea {
-            anchors.fill: settings
-            //onClicked: pageLoader.source = "MobileAddressBook.qml"
-            onClicked: mainRoot.push("Settings.qml")
-        }
-    }
-    Image {
-        id: apps
-        source: '../icons/Apps_icon_03.svg'
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
-        anchors.right: parent.right
-        anchors.rightMargin: 30
-        width: 20
-        height: 20
-        z: 100
-        visible: appsTracker == 0
-        MouseArea {
-            anchors.fill: apps
-            onClicked: appsTracker = 1
-        }
-        ColorOverlay {
-            anchors.fill: apps
-            source: apps
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
-        /**
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    clipboard.text = regString.text
-                }
-            }
-            */
-    }
-    Image {
-        id: closeApps
-        source: '../icons/CloseIcon.svg'
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
-        anchors.right: parent.right
-        anchors.rightMargin: 30
-        width: 20
-        height: 20
-        z: 100
-        visible: appsTracker == 1
-        MouseArea {
-            anchors.fill: closeApps
-            onClicked: appsTracker = 0
-        }
-        ColorOverlay {
-            anchors.fill: closeApps
-            source: closeApps
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
-        /**
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    clipboard.text = regString.text
-                }
-            }
-            */
-    }
-    Image {
-        id: xchangeLink
-        source: '../icons/XCHANGE_02.svg'
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 90
-        anchors.right: parent.right
-        anchors.rightMargin: 20
-        width: 40
-        height: 40
-        z: 100
-        visible: appsTracker == 1
-        Text {
-            text: "X-CHANGE"
-            anchors.top: parent.bottom
-            anchors.topMargin: 5
-            color: "#5E8BFF"
-            font.family: "Brandon Grotesque"
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.bold: true
-        }
-        ColorOverlay {
-            anchors.fill: xchangeLink
-            source: xchangeLink
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
-        Rectangle {
-            id: xchangeButtonArea
-            width: xchangeLink.width
-            height: xchangeLink.height
-            anchors.left: xchangeLink.left
-            anchors.bottom: xchangeLink.bottom
-            color: "transparent"
-            MouseArea {
-                anchors.fill: xchangeButtonArea
-                onClicked: mainRoot.push("xchange.qml")
-            }
-        }
-    }
-
-    Image {
-        id: xvaultLink
-        source: '../icons/XVAULT_02.svg'
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 160
-        anchors.right: parent.right
-        anchors.rightMargin: 20
-        width: 40
-        height: 40
-        z: 100
-        visible: appsTracker == 1
-        Text {
-            text: "X-VAULT"
-            anchors.top: parent.bottom
-            anchors.topMargin: 5
-            color: "#5E8BFF"
-            font.family: "Brandon Grotesque"
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.bold: true
-        }
-
-        ColorOverlay {
-            anchors.fill: xvaultLink
-            source: xvaultLink
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
-        /**
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    clipboard.text = regString.text
-                }
-            }
-            */
-    }
-
-    Image {
-        id: xchatLink
-        source: '../icons/XCHAT_02.svg'
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 230
-        anchors.right: parent.right
-        anchors.rightMargin: 20
-        width: 40
-        height: 40
-        z: 100
-        visible: appsTracker == 1
-        Text {
-            text: "X-CHAT"
-            anchors.top: parent.bottom
-            anchors.topMargin: 5
-            color: "#5E8BFF"
-            font.family: "Brandon Grotesque"
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.bold: true
-        }
-        ColorOverlay {
-            anchors.fill: xchatLink
-            source: xchatLink
-            color: "#5E8BFF" // make image like it lays under grey glass
-        }
-        /**
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    clipboard.text = regString.text
-                }
-            }
-            */
     }
 }

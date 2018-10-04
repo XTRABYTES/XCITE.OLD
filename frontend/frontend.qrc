@@ -134,5 +134,6 @@
         <file>+mobile/xchange.qml</file>
         <file>Controls/+mobile/HistoryModal.qml</file>
         <file>Controls/+mobile/TransferModal.qml</file>
+        <file>Controls/+mobile/Sidebar.qml</file>
     </qresource>
 </RCC>
