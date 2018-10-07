@@ -25,6 +25,7 @@ Item{
     property int appsTracker1: 0
     property int transferTracker: 0
     property int addressBookTracker: 0
+    property int newAddressTracker: 0
     property int scanQRCodeTracker: 0
     property int historyTracker: 0
     property int transactionSentTracker: 0
@@ -44,16 +45,20 @@ Item{
     property string address4: "BxkiknaGNKA30s9gyV4riyKuVWvFJKEVq9"
 
     // address book vars
+    property int numberAddressSquares: 5
     property int clickedAddSquare: 0
     property int clickedAddSquare2: 0
     property int clickedAddSquare3: 0
     property int clickedAddSquare4: 0
     property int clickedAddSquare5: 0
+    property int clickedAddSquare6: 0
     property int editAddressTracker: 0
     property int editAddressTracker2: 0
     property int editAddressTracker3: 0
     property int editAddressTracker4: 0
     property int editAddressTracker5: 0
+    property int editAddressTracker6: 0
+    property int editAddressTracker7: 0
 
     // shared vars
     property int pageTracker: view.currentIndex == 0 ? 0 : 1
@@ -66,7 +71,7 @@ Item{
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: 10
         z: 2
-        visible: transferTracker != 1
+        visible: transferTracker != 1 && newAddressTracker != 1 &&editAddressTracker != 1 && editAddressTracker2 != 1 && editAddressTracker3 != 1 && editAddressTracker4 != 1 && editAddressTracker5 != 1 && editAddressTracker6 != 1 && editAddressTracker7 != 1
         Label {
             id: overview
             text: "OVERVIEW"
@@ -114,7 +119,7 @@ Item{
         width: 22
         height: 17
         z: 2
-        visible: transferTracker != 1
+        visible: transferTracker != 1 && newAddressTracker != 1 &&editAddressTracker != 1 && editAddressTracker2 != 1 && editAddressTracker3 != 1 && editAddressTracker4 != 1 && editAddressTracker5 != 1 && editAddressTracker6 != 1 && editAddressTracker7 != 1
         ColorOverlay {
             anchors.fill: apps
             source: apps
@@ -142,7 +147,7 @@ Item{
         width: 30
         height: 30
         z: 2
-        visible: transferTracker != 1
+        visible: transferTracker != 1 && newAddressTracker != 1 &&editAddressTracker != 1 && editAddressTracker2 != 1 && editAddressTracker3 != 1 && editAddressTracker4 != 1 && editAddressTracker5 != 1 && editAddressTracker6 != 1 && editAddressTracker7 != 1
         ColorOverlay {
             anchors.fill: notif
             source: notif
@@ -179,7 +184,7 @@ Item{
         interactive: (appsTracker1 == 1 || transferTracker == 1) ? 0 : 1
 
         /**
-         * Main page
+         * Main page"
          */
         Item {
             z: 2
@@ -440,19 +445,7 @@ Item{
                             anchors.topMargin: 75
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
-                        /**
-               Text {
-                   text: "Unconfirmed 55.42 XBY"
-                   font.family: "Brandon Grotesque"
-                   font.pointSize: 12
-                   font.italic: true
-                   color: "#919191"
-                   anchors.horizontalCenter: parent.horizontalCenter
-                   anchors.bottom: dividerLine.top
-                   anchors.bottomMargin: 2
-                   visible: clickedSquare == 1 ? true : false
-               }
-               */
+
                         Rectangle {
                             id: transferButton
                             visible: clickedSquare == 1 && transferTracker != 1
@@ -652,18 +645,7 @@ Item{
                             anchors.topMargin: 75
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
-                        /**
-               Text {
-                   text: "Unconfirmed 55.42 XFUEL"
-                   font.family: "Brandon Grotesque"
-                   font.pointSize: 12
-                   font.italic: true
-                   color: "#919191"
-                   anchors.horizontalCenter: parent.horizontalCenter
-                   anchors.bottom: dividerLine2.top
-                   visible: clickedSquare2 == 1 ? true : false
-               }
-               */
+
                         Rectangle {
                             id: transferButton2
                             visible: clickedSquare2 == 1 ? true : false
@@ -778,18 +760,7 @@ Item{
                             anchors.topMargin: 75
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
-                        /**
-               Text {
-                   text: "Unconfirmed 55.42 BTC"
-                   font.family: "Brandon Grotesque"
-                   font.pointSize: 12
-                   font.italic: true
-                   color: "#919191"
-                   anchors.horizontalCenter: parent.horizontalCenter
-                   anchors.bottom: dividerLine3.top
-                   visible: clickedSquare3 == 1 ? true : false
-               }
-               */
+
                         Rectangle {
                             id: transferButton3
                             visible: clickedSquare3 == 1 ? true : false
@@ -903,18 +874,7 @@ Item{
                             anchors.topMargin: 75
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
-                        /**
-               Text {
-                   text: "Unconfirmed 55.42 ETH"
-                   font.family: "Brandon Grotesque"
-                   font.pointSize: 12
-                   font.italic: true
-                   color: "#919191"
-                   anchors.horizontalCenter: parent.horizontalCenter
-                   anchors.bottom: dividerLine4.top
-                   visible: clickedSquare4 == 1 ? true : false
-               }
-               */
+
                         Rectangle {
                             id: transferButton4
                             visible: clickedSquare4 == 1 ? true : false
@@ -1110,18 +1070,7 @@ Item{
                             anchors.topMargin: 75
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
-                        /**
-               Text {
-                   text: "Unconfirmed 55.42 NEO"
-                   font.family: "Brandon Grotesque"
-                   font.pointSize: 12
-                   font.italic: true
-                   color: "#919191"
-                   anchors.horizontalCenter: parent.horizontalCenter
-                   anchors.bottom: dividerLine5.top
-                   visible: clickedSquare5 == 1 ? true : false
-               }
-               */
+
                         Rectangle {
                             id: transferButton5
                             visible: clickedSquare5 == 1 ? true : false
@@ -1311,7 +1260,7 @@ Item{
                 height: parent.height
                 width: parent.width
                 z: 5
-                visible: transferTracker == 1 || appsTracker1 == 1 || editAddressTracker == 1 || editAddressTracker2 == 1 || editAddressTracker3 == 1 || editAddressTracker4 == 1 || editAddressTracker5 == 1
+                visible: transferTracker == 1 || appsTracker1 == 1 || newAddressTracker == 1 || editAddressTracker == 1 || editAddressTracker2 == 1 || editAddressTracker3 == 1 || editAddressTracker4 == 1 || editAddressTracker5 == 1 || editAddressTracker6 == 1 || editAddressTracker7 == 1
             }
 
             Controls.TransferModal {
@@ -1375,6 +1324,240 @@ Item{
                         anchors.fill: plus2
                         source: plus2
                         color: "#5E8BFF"
+                    }
+                    MouseArea {
+                        anchors.fill: plus2
+                        onClicked: {
+                            newAddressTracker = 1
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                id: newAddressModal
+                height: 300
+                width: 325
+                color: "#42454F"
+                radius: 4
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 150
+                visible: newAddressTracker == 1
+                z: 100
+                Rectangle {
+                    id: newAddressModalTop
+                    height: 50
+                    width: newAddressModal.width
+                    anchors.bottom: newAddressModal.top
+                    anchors.left: newAddressModal.left
+                    color: "#34363D"
+                    radius: 4
+                }
+                Label{
+                    anchors.horizontalCenter: newAddressModalTop.horizontalCenter
+                    anchors.verticalCenter: newAddressModalTop.verticalCenter
+                    color: "White"
+                    font.pixelSize: 14
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    text: "NEW ADDRESS"
+                }
+                Image {
+                    id: icon222
+                    width: 25
+                    height: 25
+                    anchors.left: keyInput122.left
+                    anchors.leftMargin: 0
+                    anchors.top: parent.top
+                    anchors.topMargin: 25
+                    source: '../icons/XBY_card_logo_colored_05.svg'
+                    visible: newAddressTracker == 1
+                }
+                Label {
+                    id: label122
+                    anchors.left: icon222.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: icon222.verticalCenter
+                    text: "XBY"
+                    font.pixelSize: 14
+                    font.family: "Brandon Grotesque"
+                    color: "#E5E5E5"
+                    font.bold: true
+                    visible: newAddressTracker == 1
+                }
+                Image {
+                    source: '../icons/dropdown_icon.svg'
+                    width: 15
+                    height: 15
+                    anchors.left: label122.right
+                    anchors.leftMargin: 8
+                    anchors.verticalCenter: label122.verticalCenter
+                }
+                Controls.TextInput {
+                    id: keyInput122
+                    height: 34
+                    placeholder: "Name"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: icon222.bottom
+                    anchors.topMargin: 20
+                    color: "#727272"
+                    font.pixelSize: 11
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    visible: newAddressTracker == 1
+                    mobile: 1
+                }
+                Image {
+                    id: textFieldEmpty122
+                    source: '../icons/CloseIcon.svg'
+                    anchors.verticalCenter: keyInput122.verticalCenter
+                    anchors.right: keyInput122.right
+                    anchors.rightMargin: 10
+                    width: textFieldEmpty122.height
+                    height: 12
+                    ColorOverlay {
+                        anchors.fill: textFieldEmpty122
+                        source: textFieldEmpty122
+                        color: "#727272"
+                    }
+                    Rectangle {
+                        id: keyInput122ButtonArea
+                        width: 20
+                        height: 20
+                        anchors.left: textFieldEmpty122.left
+                        anchors.bottom: textFieldEmpty122.bottom
+                        color: "transparent"
+                        MouseArea {
+                            anchors.fill: keyInput122ButtonArea
+                            onClicked: {
+                                keyInput122.text = ""
+                            }
+                        }
+                    }
+                }
+                Controls.TextInput {
+                    id: keyInput222
+                    height: 34
+                    placeholder: "Label"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: keyInput122.bottom
+                    anchors.topMargin: 20
+                    color: "#727272"
+                    font.pixelSize: 11
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    visible: newAddressTracker == 1
+                    mobile: 1
+                }
+                Image {
+                    id: textFieldEmpty222
+                    source: '../icons/CloseIcon.svg'
+                    anchors.verticalCenter: keyInput222.verticalCenter
+                    anchors.right: keyInput222.right
+                    anchors.rightMargin: 10
+                    width: textFieldEmpty222.height
+                    height: 12
+                    ColorOverlay {
+                        anchors.fill: textFieldEmpty222
+                        source: textFieldEmpty222
+                        color: "#727272"
+                    }
+                    Rectangle {
+                        id: keyInput222ButtonArea
+                        width: 20
+                        height: 20
+                        anchors.left: textFieldEmpty222.left
+                        anchors.bottom: textFieldEmpty222.bottom
+                        color: "transparent"
+                        MouseArea {
+                            anchors.fill: keyInput222ButtonArea
+                            onClicked: {
+                                keyInput222.text = ""
+                            }
+                        }
+                    }
+                }
+                Controls.TextInput {
+                    id: keyInput322
+                    height: 34
+                    placeholder: "Address"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: keyInput222.bottom
+                    anchors.topMargin: 20
+                    color: "#727272"
+                    font.pixelSize: 11
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    visible: newAddressTracker == 1
+                    mobile: 1
+                }
+                Image {
+                    id: textFieldEmpty322
+                    source: '../icons/CloseIcon.svg'
+                    anchors.verticalCenter: keyInput322.verticalCenter
+                    anchors.right: keyInput322.right
+                    anchors.rightMargin: 10
+                    width: textFieldEmpty322.height
+                    height: 12
+                    ColorOverlay {
+                        anchors.fill: textFieldEmpty322
+                        source: textFieldEmpty322
+                        color: "#727272"
+                    }
+                    Rectangle {
+                        id: keyInput322ButtonArea
+                        width: 20
+                        height: 20
+                        anchors.left: textFieldEmpty322.left
+                        anchors.bottom: textFieldEmpty322.bottom
+                        color: "transparent"
+                        MouseArea {
+                            anchors.fill: keyInput322ButtonArea
+                            onClicked: {
+                                keyInput322.text = ""
+                            }
+                        }
+                    }
+                }
+                Rectangle {
+                    id: editConfirm22
+                    width: keyInput122.width
+                    height: 33
+                    radius: 8
+                    border.color: "#5E8BFF"
+                    border.width: 2
+                    color: "transparent"
+                    anchors.top: keyInput322.bottom
+                    anchors.topMargin: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: newAddressTracker == 1
+                    MouseArea {
+                        anchors.fill: editConfirm22
+
+                        onClicked: {
+                            if(numberAddressSquares == 5){
+                                addressName6 = keyInput122.text
+                                receivingAddress6.text = keyInput222.text
+                                addressType6 = keyInput222.text
+                            }
+                            if(numberAddressSquares == 6){
+                                addressName7 = keyInput122.text
+                                receivingAddress7.text = keyInput222.text
+                                addressType7 = keyInput222.text
+                            }
+                            numberAddressSquares = numberAddressSquares + 1
+                            newAddressTracker = 0
+                        }
+                    }
+                    Text {
+                        text: "DONE"
+                        font.family: "Brandon Grotesque"
+                        font.pointSize: 14
+                        font.bold: true
+                        color: "#5E8BFF"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
                     }
                 }
             }
@@ -1904,6 +2087,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker2 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty1_2
@@ -1946,6 +2130,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker2 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty2_2
@@ -1988,6 +2173,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker2 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty3_2
@@ -2235,6 +2421,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker3 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty1_3
@@ -2277,6 +2464,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker3 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty2_3
@@ -2319,6 +2507,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker3 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty3_3
@@ -2566,6 +2755,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker4 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty1_4
@@ -2608,6 +2798,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker4 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty2_4
@@ -2650,6 +2841,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker4 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty3_4
@@ -2897,6 +3089,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker5 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty1_5
@@ -2939,6 +3132,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker5 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty2_5
@@ -2981,6 +3175,7 @@ Item{
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     visible: editAddressTracker5 == 1
+                    mobile: 1
                 }
                 Image {
                     id: textFieldEmpty3_5
@@ -3031,6 +3226,340 @@ Item{
                             addressType5 = keyInput2_5.text
                             addressLabel_5.text = keyInput2_5.text
                             receivingAddress5 = keyInput3_5.text
+                        }
+                    }
+                    // done
+                    Text {
+                        text: "DONE"
+                        font.family: "Brandon Grotesque"
+                        font.pointSize: 14
+                        font.bold: true
+                        color: "#5E8BFF"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+            }
+            /**
+             * address 6
+             */
+            Controls.AddressBookSquares {
+                id: address_6
+                anchors.top: address_5.bottom
+                anchors.topMargin: 7
+                anchors.left: parent.left
+                anchors.leftMargin: 25
+                name: addressName6
+                numberAddresses: 1
+                height: clickedAddSquare6 == 0 ? 75 : 150
+                visible: numberAddressSquares == 6
+                Image {
+                    width: 25
+                    height: 5
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 8
+                    source: '../icons/expand_buttons.svg'
+                }
+                Rectangle {
+                    id: expandAddressArea_6
+                    width: 40
+                    height: 25
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: -5
+                    color: "transparent"
+                    MouseArea {
+                        anchors.fill: expandAddressArea_6
+                        onClicked: {
+                            if(clickedAddSquare6 == 0){
+                                clickedAddSquare6 = 1
+                                return
+                            }
+                            if(clickedAddSquare6 == 1 ){
+                                clickedAddSquare6 = 0
+                                return
+                            }
+                        }
+                    }
+                }
+                Image {
+                    id: icon_6
+                    width: 20
+                    height: 20
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                    anchors.top: parent.top
+                    anchors.topMargin: 50
+                    source: '../icons/XBY_card_logo_colored_05.svg'
+                    visible: clickedAddSquare6 == 1
+                }
+                Label {
+                    anchors.left: icon_6.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: icon_6.verticalCenter
+                    text: "XBY"
+                    font.pixelSize: 12
+                    font.family: "Brandon Grotesque"
+                    color: "#E5E5E5"
+                    font.bold: true
+                    visible: clickedAddSquare6 == 1
+                }
+                Label {
+                    id: addressLabel_6
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: icon_6.verticalCenter
+                    text: addressType6
+                    font.pixelSize: 12
+                    font.family: "Brandon Grotesque"
+                    color: "#E5E5E5"
+                    font.bold: true
+                    visible: clickedAddSquare6 == 1
+                }
+                Image {
+                    id: editAddress_6
+                    width: 20
+                    height: 20
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
+                    anchors.top: parent.top
+                    anchors.topMargin: 50
+                    source: '../icons/edit.svg'
+                    visible: clickedAddSquare6 == 1
+                    ColorOverlay {
+                        anchors.fill: editAddress_6
+                        source: editAddress_6
+                        color: "#DADADA"
+                    }
+                    MouseArea {
+                        anchors.fill: editAddress_6
+                        onClicked: {
+                            editAddressTracker6 = 1
+                        }
+                    }
+                }
+                Rectangle {
+                    id: dividerLine_6
+                    visible: clickedAddSquare6 == 1
+                    width: address_6.width - 20
+                    height: 1
+                    color: "#575757"
+                    anchors.top: icon_6.bottom
+                    anchors.topMargin: 5
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+            }
+
+            Rectangle {
+                id: modal_6
+                height: 300
+                width: 325
+                color: "#42454F"
+                radius: 4
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 150
+                visible: editAddressTracker6 == 1
+                z: 100
+                Rectangle {
+                    id: modalTop_6
+                    height: 50
+                    width: modal_6.width
+                    anchors.bottom: modal_6.top
+                    anchors.left: modal_6.left
+                    color: "#34363D"
+                    radius: 4
+                }
+                Label{
+                    anchors.horizontalCenter: modalTop_6.horizontalCenter
+                    anchors.verticalCenter: modalTop_6.verticalCenter
+                    color: "White"
+                    font.pixelSize: 14
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    text: "EDIT ADDRESS"
+                }
+                Image {
+                    id: icon2_6
+                    width: 25
+                    height: 25
+                    anchors.left: keyInput1_6.left
+                    anchors.leftMargin: 0
+                    anchors.top: parent.top
+                    anchors.topMargin: 25
+                    source: '../icons/XBY_card_logo_colored_05.svg'
+                    visible: clickedAddSquare6 == 1
+                }
+                Label {
+                    id: label1_6
+                    anchors.left: icon2_6.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: icon2_6.verticalCenter
+                    text: "XBY"
+                    font.pixelSize: 14
+                    font.family: "Brandon Grotesque"
+                    color: "#E5E5E5"
+                    font.bold: true
+                    visible: clickedAddSquare6 == 1
+                }
+                Image {
+                    source: '../icons/dropdown_icon.svg'
+                    width: 15
+                    height: 15
+                    anchors.left: label1_6.right
+                    anchors.leftMargin: 8
+                    anchors.verticalCenter: label1_6.verticalCenter
+                }
+                Controls.TextInput {
+                    id: keyInput1_6
+                    height: 34
+                    placeholder: "Edit Name"
+                    text: address_6.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: icon2_6.bottom
+                    anchors.topMargin: 20
+                    color: "#727272"
+                    font.pixelSize: 11
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    visible: editAddressTracker6 == 1
+                    mobile: 1
+                }
+                Image {
+                    id: textFieldEmpty1_6
+                    source: '../icons/CloseIcon.svg'
+                    anchors.verticalCenter: keyInput1_6.verticalCenter
+                    anchors.right: keyInput1_6.right
+                    anchors.rightMargin: 10
+                    width: textFieldEmpty1_6.height
+                    height: 12
+                    ColorOverlay {
+                        anchors.fill: textFieldEmpty1_6
+                        source: textFieldEmpty1_6
+                        color: "#727272"
+                    }
+                    Rectangle {
+                        id: keyInput1ButtonArea_6
+                        width: 20
+                        height: 20
+                        anchors.left: textFieldEmpty1_6.left
+                        anchors.bottom: textFieldEmpty1_6.bottom
+                        color: "transparent"
+                        MouseArea {
+                            anchors.fill: keyInput1ButtonArea_6
+                            onClicked: {
+                                keyInput1_6.text = ""
+                            }
+                        }
+                    }
+                }
+                Controls.TextInput {
+                    id: keyInput2_6
+                    height: 34
+                    placeholder: "Edit Label"
+                    text: addressLabel_6.text
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: keyInput1_6.bottom
+                    anchors.topMargin: 20
+                    color: "#727272"
+                    font.pixelSize: 11
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    visible: editAddressTracker6 == 1
+                    mobile: 1
+                }
+                Image {
+                    id: textFieldEmpty2_6
+                    source: '../icons/CloseIcon.svg'
+                    anchors.verticalCenter: keyInput2_6.verticalCenter
+                    anchors.right: keyInput2_6.right
+                    anchors.rightMargin: 10
+                    width: textFieldEmpty2_6.height
+                    height: 12
+                    ColorOverlay {
+                        anchors.fill: textFieldEmpty2_6
+                        source: textFieldEmpty2_6
+                        color: "#727272"
+                    }
+                    Rectangle {
+                        id: keyInput2ButtonArea_6
+                        width: 20
+                        height: 20
+                        anchors.left: textFieldEmpty2_6.left
+                        anchors.bottom: textFieldEmpty2_6.bottom
+                        color: "transparent"
+                        MouseArea {
+                            anchors.fill: keyInput2ButtonArea_6
+                            onClicked: {
+                                keyInput2_6.text = ""
+                            }
+                        }
+                    }
+                }
+                Controls.TextInput {
+                    id: keyInput3_6
+                    height: 34
+                    placeholder: "Edit Address"
+                    text: receivingAddress6
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: keyInput2_6.bottom
+                    anchors.topMargin: 20
+                    color: "#727272"
+                    font.pixelSize: 11
+                    font.family: "Brandon Grotesque"
+                    font.bold: true
+                    visible: editAddressTracker6 == 1
+                    mobile: 1
+                }
+                Image {
+                    id: textFieldEmpty3_6
+                    source: '../icons/CloseIcon.svg'
+                    anchors.verticalCenter: keyInput3_6.verticalCenter
+                    anchors.right: keyInput3_6.right
+                    anchors.rightMargin: 10
+                    width: textFieldEmpty3_6.height
+                    height: 12
+                    ColorOverlay {
+                        anchors.fill: textFieldEmpty3_6
+                        source: textFieldEmpty3_6
+                        color: "#727272"
+                    }
+                    Rectangle {
+                        id: keyInput3ButtonArea_6
+                        width: 20
+                        height: 20
+                        anchors.left: textFieldEmpty3_6.left
+                        anchors.bottom: textFieldEmpty3_6.bottom
+                        color: "transparent"
+                        MouseArea {
+                            anchors.fill: keyInput3ButtonArea_6
+                            onClicked: {
+                                keyInput3_6.text = ""
+                            }
+                        }
+                    }
+                }
+                Rectangle {
+                    id: editConfirm_6
+                    width: keyInput1_6.width
+                    height: 33
+                    radius: 8
+                    border.color: "#5E8BFF"
+                    border.width: 2
+                    color: "transparent"
+                    anchors.top: keyInput3_6.bottom
+                    anchors.topMargin: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: editAddressTracker6 == 1
+                    MouseArea {
+                        anchors.fill: editConfirm_6
+
+                        onClicked: {
+                            editAddressTracker6 = 0
+                            addressName6 = keyInput1_6.text
+                            addressType6 = keyInput2_6.text
+                            addressLabel_6.text = keyInput2_6.text
+                            receivingAddress6 = keyInput3_6.text
                         }
                     }
                     // done
