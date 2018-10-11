@@ -134,5 +134,12 @@
         <file>Controls/+mobile/HistoryModal.qml</file>
         <file>Controls/+mobile/TransferModal.qml</file>
         <file>Controls/+mobile/Sidebar.qml</file>
+        <file>Controls/Switch_mobile.qml</file>
+        <file>Controls/+mobile/AddressBook.qml</file>
+        <file>Controls/+mobile/AddressModal.qml</file>
+        <file>Controls/+mobile/WalletList.qml</file>
+        <file>Controls/CurrencyPicklist.qml</file>
+        <file>Controls/+mobile/AddAddressModal.qml</file>
+        <file>Controls/+mobile/AddCoinModal.qml</file>
     </qresource>
 </RCC>

@@ -133,5 +133,6 @@
         <file>icons/transfer_icon_02.svg</file>
         <file>icons/add_icon_04.svg</file>
         <file>icons/notification_red_circle_icon.svg</file>
+        <file>icons/icon-favorite.svg</file>
     </qresource>
 </RCC>

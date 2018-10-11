@@ -20,95 +20,66 @@ import QZXing 2.3
 import "qrc:/Controls" as Controls
 
 Rectangle {
-    id: transactionModal
+    id: addressModal
     width: 325
-    height: transactionSent == 0? 480 : 230
+    height: (transactionSent == 1 || editSaved == 1)? 230 : 410
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 50
 
-    property string coinName: currencyList.get(currencyIndex).name
-    property url coinLogo: currencyList.get(currencyIndex).logo
+    property string coinName: addressList.get(addressIndex).coin
+    property url coinLogo: addressList.get(addressIndex).logo
     property real coinBalance: currencyList.get(currencyIndex).balance
-    property string coinAddress: currencyList.get(currencyIndex).address
     property string coinLabel: currencyList.get(currencyIndex).label
-    property int modalState: 0
-    property int scanQRCodeTracker: 0
+    property string sendAddress: addressList.get(addressIndex).address
+    property string addressName: addressList.get(addressIndex).name
+    property string addressLabel: addressList.get(addressIndex).label
+    property int switchState: 0
     property int addressBookTracker: 0
     property int transactionSent: 0
     property int confirmationSent: 0
-    property int switchState: 0
-    property int errorAmount: 0
+    property int editSaved: 0
     property string amountTransfer: "AMOUNT (" + coinName + ")"
     property string keyTransfer: "SEND TO (PUBLIC KEY)"
     property string referenceTransfer: "REFERENCE"
-    property real amountSend: 0
 
     Rectangle {
-        id: transferTitleBar
-        width: parent.width/2
+        id: addressTitleBar
+        width: parent.width
         height: 50
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: modalState == 0 ? "#42454F" : "#34363D"
-        visible: transactionSent == 0
+        color: "#34363D"
+
+        Image {
+            id: titleIcon
+            width: 25
+            height: 25
+            source: addressList.get(addressIndex).logo
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -2
+            anchors.left: parent.left
+            anchors.leftMargin: 15
+        }
 
         Text {
             id: transferModalLabel
-            text: "TRANSFER"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -3
+            text: addressName + "  " + addressLabel
+            anchors.left: titleIcon.right
+            anchors.leftMargin: 7
+            anchors.verticalCenter: titleIcon.verticalCenter
+            anchors.verticalCenterOffset: -1
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
-            color: modalState == 0 ? "#F2F2F2" : "#5F5F5F"
-            font.letterSpacing: 2
-            MouseArea {
-                height: parent.height
-                width: parent.width
-                onClicked: {
-                    modalState = 0
-                    transferSwitch.state = "off"
-                }
-            }
+            //capitalization: Font.SmallCaps
+            color: "#F2F2F2"
         }
     }
 
     Rectangle {
-        id: historyTitleBar
-        width: parent.width/2
-        height: 50
-        radius: 4
-        anchors.top: parent.top
-        anchors.right: parent.right
-        color: modalState == 1 ? "#42454F" : "#34363D"
-        visible: transactionSent == 0
-
-        Text {
-            id: historyModalLabel
-            text: "HISTORY"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -3
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            color: modalState == 1 ? "#F2F2F2" : "#5F5F5F"
-            font.letterSpacing: 2
-            MouseArea {
-                height: parent.height
-                width: parent.width
-                onClicked: {
-                    modalState = 1
-                    transferSwitch.state = "off"
-                }
-            }
-        }
-    }
-
-    Rectangle {
-        id:bodyModal
+        id: addressBodyModal
         width: parent.width
         height: parent.height - 50
         radius: 4
@@ -117,55 +88,57 @@ Rectangle {
         anchors.topMargin: 46
         anchors.horizontalCenter: parent.horizontalCenter
 
-       Controls.Switch_mobile {
-            id: transferSwitch
-            anchors.horizontalCenter: bodyModal.horizontalCenter
+        Controls.Switch_mobile {
+            id: addressSwitch
+            anchors.horizontalCenter: addressBodyModal.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 20
             state: switchState == 0 ? "off" : "on"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && editSaved == 0
         }
 
         Text {
-            id: receiveText
-            text: modalState == 0 ? "RECEIVE" : "WALLET"
-            anchors.right: transferSwitch.left
+            id: transferText
+            text: "TRANSFER"
+            anchors.right: addressSwitch.left
             anchors.rightMargin: 7
-            anchors.verticalCenter: transferSwitch.verticalCenter
+            anchors.verticalCenter: addressSwitch.verticalCenter
             font.pixelSize: 14
             font.family: "Brandon Grotesque"
             font.weight: Font.Medium
-            color: transferSwitch.on ? "#5F5F5F" : "#5E8BFE"
-            visible: transactionSent == 0
+            color: addressSwitch.on ? "#5F5F5F" : "#5E8BFE"
+            visible: transactionSent == 0 && editSaved == 0
         }
         Text {
             id: sendText
-            text: modalState == 0 ?  "SEND" : "COIN"
-            anchors.left: transferSwitch.right
+            text: "EDIT"
+            anchors.left: addressSwitch.right
             anchors.leftMargin: 7
-            anchors.verticalCenter: transferSwitch.verticalCenter
+            anchors.verticalCenter: addressSwitch.verticalCenter
             font.pixelSize: 14
             font.family: "Brandon Grotesque"
             font.weight: Font.Medium
-            color: transferSwitch.on ? "#5E8BFE" : "#5F5F5F"
-            visible: transactionSent == 0
+            color: addressSwitch.on ? "#5E8BFE" : "#5F5F5F"
+            visible: transactionSent == 0 && editSaved == 0
         }
+
+        // Transfer state
 
         Image {
             id: coinIcon
-            source: currencyList.get(currencyIndex).logo
+            source: addressList.get(addressIndex).logo
             width: 25
             height: 25
             anchors.left: parent.left
-            anchors.leftMargin: 15
-            anchors.top: transferSwitch.bottom
-            anchors.topMargin: 10
-            visible: transactionSent == 0
+            anchors.leftMargin: 18
+            anchors.top: addressSwitch.bottom
+            anchors.topMargin: 20
+            visible: transactionSent == 0 && addressSwitch.state == "off"
         }
 
         Label {
             id: coinID
-            text: currencyList.get(currencyIndex).name
+            text: addressList.get(addressIndex).coin
             anchors.left: coinIcon.right
             anchors.leftMargin: 10
             anchors.verticalCenter: coinIcon.verticalCenter
@@ -173,7 +146,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressSwitch.state == "off"
         }
 
         Label {
@@ -186,7 +159,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressSwitch.state == "off"
         }
 
         Text {
@@ -198,76 +171,8 @@ Rectangle {
             anchors.topMargin: 7
             font.pixelSize: 13
             color: "#828282"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressSwitch.state == "off"
         }
-
-        // Receive state
-
-        Rectangle {
-            id: qrBorder
-            radius: 8
-            width: 210
-            height: 210
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: walletBalance.bottom
-            anchors.topMargin: 20
-            color: "#F2F2F2"
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
-        }
-
-        Item {
-            id: qrPlaceholder
-            width: 180
-            height: 180
-            anchors.horizontalCenter: qrBorder.horizontalCenter
-            anchors.verticalCenter: qrBorder.verticalCenter
-            Image {
-                anchors.fill: parent
-                source: "image://QZXing/encode/" + publicKey.text
-                cache: false
-            }
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
-        }
-
-        Text {
-            id: pubKey
-            text: "PUBLIC KEY"
-            anchors.top: qrBorder.bottom
-            anchors.topMargin: 25
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "#F2F2F2"
-            font.family: "Brandon Grotesque"
-            font.bold: true
-            font.pixelSize: 13
-            font.letterSpacing: 1
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
-        }
-
-        Text {
-            id: publicKey
-            text: currencyList.get(currencyIndex).address
-            anchors.top: pubKey.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: pubKey.horizontalCenter
-            color: "white"
-            font.family: "Brandon Grotesque"
-            font.bold: false
-            font.pixelSize: 11
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
-        }
-
-        Image {
-            id: pasteIcon
-            source: 'qrc:/icons/paste_icon.svg'
-            width: 13
-            height: 13
-            anchors.left: publicKey.right
-            anchors.leftMargin: 5
-            anchors.verticalCenter: publicKey.verticalCenter
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
-        }
-
-        // Send state
 
         Controls.TextInput {
             id: sendAmount
@@ -280,96 +185,38 @@ Rectangle {
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            visible: transactionSent == 0 && addressSwitch.state == "off"
         }
-
-        Controls.TextInput {
+        Label {
             id: keyInput
-            height: 34
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: sendAmount.left
             anchors.top: sendAmount.bottom
-            anchors.topMargin: 15
-            placeholder: keyTransfer
-            color: "#727272"
+            anchors.topMargin: 25
+            text: "to " + sendAddress
+            color: "#F2F2F2"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
-            font.bold: true
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            font.weight: Font.Medium
+            visible: transactionSent == 0 && addressSwitch.state == "off"
         }
-        Rectangle {
-            id: scanQrButton
-            width: (keyInput.width - 5) / 2
-            height: 33
-            anchors.top: keyInput.bottom
-            anchors.topMargin: 15
-            anchors.left: keyInput.left
-            radius: 8
-            border.color: "#5E8BFF"
-            border.width: 2
-            color: "transparent"
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
-            MouseArea {
-                anchors.fill: scanQrButton
-                onClicked: {
-                    scanQRCodeTracker = 1
-                }
-            }
-            Text {
-                text: "SCAN QR"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                color: "#5E8BFF"
-                font.bold: true
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-        Rectangle {
-            id: addressBookButton
-            width: (keyInput.width - 5) / 2
-            height: 33
-            radius: 8
-            border.color: "#5E8BFF"
-            border.width: 2
-            color: "transparent"
-            anchors.top: keyInput.bottom
-            anchors.topMargin: 15
-            anchors.right: keyInput.right
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
-            MouseArea {
-                anchors.fill: addressBookButton
 
-                onClicked: {
-                    addressBookTracker = 1
-                }
-            }
-            Text {
-                text: "ADDRESS BOOK"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#5E8BFF"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
         Controls.TextInput {
             id: referenceInput
             height: 34
             // radius: 8
             placeholder: referenceTransfer
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: scanQrButton.bottom
-            anchors.topMargin: 15
+            anchors.top: keyInput.bottom
+            anchors.topMargin: 25
             color: "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            visible: transactionSent == 0 && addressSwitch.state == "off"
         }
         Rectangle {
             id: sendButton
-            width: keyInput.width
+            width: sendAmount.width
             height: 33
             radius: 8
             border.color: "#5E8BFF"
@@ -378,7 +225,7 @@ Rectangle {
             anchors.top: referenceInput.bottom
             anchors.topMargin: 35
             anchors.left: referenceInput.left
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            visible: transactionSent == 0 && addressSwitch.state == "off"
             MouseArea {
                 anchors.fill: sendButton
 
@@ -398,7 +245,7 @@ Rectangle {
             }
         }
 
-        // Confirm state
+        // Transfer confirm state
 
         Rectangle {
             id: sendConfirmation
@@ -545,14 +392,13 @@ Rectangle {
                 border.width: 2
                 color: "transparent"
                 anchors.top: confirmedIcon.bottom
-                anchors.topMargin: 25
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 MouseArea {
                     anchors.fill: closeConfirm
 
                     onClicked: {
                         sendAmount.text = ""
-                        keyInput.text = ""
                         referenceInput.text = ""
                         confirmationSent = 0
                         transactionSent = 0
@@ -569,33 +415,263 @@ Rectangle {
                 }
             }
         }
+
+        // Edit address state
+
+        Image {
+            id: newIcon
+            source: newCoinSelect == 1? currencyList.get(newCoinPicklist).logo : addressList.get(addressIndex).logo
+            height: 25
+            width: 25
+            anchors.left: parent.left
+            anchors.leftMargin: 18
+            anchors.top: addressSwitch.bottom
+            anchors.topMargin: 20
+            visible: addressSwitch.state == "on" && picklistTracker == 0 && editSaved == 0
+        }
+
+        Label {
+            id: newCoinName
+            text: newCoinSelect == 1? currencyList.get(newCoinPicklist).name : addressList.get(addressIndex).coin
+            anchors.left: newIcon.right
+            anchors.leftMargin: 10
+            anchors.verticalCenter: newIcon.verticalCenter
+            font.pixelSize: 20
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Bold
+            color: "#F2F2F2"
+            visible: addressSwitch.state == "on" && picklistTracker == 0 && editSaved == 0
+        }
+
+        Image {
+            id: picklistArrow
+            source: 'qrc:/icons/dropdown_icon.svg'
+            height: 20
+            width: 20
+            anchors.left: newPicklist.right
+            anchors.leftMargin: 10
+            anchors.verticalCenter: newCoinName.verticalCenter
+            visible: addressSwitch.state == "on" && editSaved == 0
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: "#F2F2F2"
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (picklistTracker == 0) {
+                        picklistTracker = 1
+                    }
+                    else {
+                        picklistTracker = 0
+                    }
+                }
+            }
+        }
+
+        Controls.TextInput {
+            id: newName
+            height: 34
+            // radius: 8
+            placeholder: addressName
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: newIcon.bottom
+            anchors.topMargin: 25
+            color: "#F2F2F2"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: addressSwitch.state == "on" && editSaved == 0
+        }
+
+        Controls.TextInput {
+            id: newLabel
+            height: 34
+            // radius: 8
+            placeholder: addressLabel
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: newName.bottom
+            anchors.topMargin: 25
+            color: "#F2F2F2"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: addressSwitch.state == "on" && editSaved == 0
+        }
+
+        Controls.TextInput {
+            id: newAddress
+            height: 34
+            // radius: 8
+            placeholder: sendAddress
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: newLabel.bottom
+            anchors.topMargin: 25
+            color: "#F2F2F2"
+            font.pixelSize: 12
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: addressSwitch.state == "on" && editSaved == 0
+        }
+
+        Rectangle {
+            id: newPicklist
+            width: 100
+            height: totalLines * 35
+            color: "#2A2C31"
+            anchors.top: newIcon.top
+            anchors.topMargin: -5
+            anchors.left: newIcon.left
+            visible: addressSwitch.state == "on" && picklistTracker == 1 && editSaved == 0
+
+            Controls.CurrencyPicklist {
+                id: myCoinPicklist
+            }
+        }
+
+        Rectangle {
+            id: saveEditButton
+            width: newAddress.width
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.top: newAddress.bottom
+            anchors.topMargin: 35
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: addressSwitch.state == "on" && editSaved == 0
+
+            MouseArea {
+                anchors.fill: saveEditButton
+
+                onClicked: {
+                    // error handeling (not a number, insufficient funds, negative amount, incorrect address)
+                    editSaved = 1
+                    if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(0).name) {
+                        currencyIndex = 0
+                    }
+                    if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(1).name) {
+                        currencyIndex = 1
+                    }
+                    if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(2).name) {
+                        currencyIndex = 2
+                    }
+                    if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(3).name) {
+                        currencyIndex = 3
+                    }
+                    if (newCoinSelect == 1) {
+                        addressList.setProperty(addressIndex, "logo", currencyList.get(newCoinPicklist).logo);
+                    }
+                    if (newCoinSelect == 1) {
+                        addressList.setProperty(addressIndex, "coin", currencyList.get(newCoinPicklist).name);
+                    }
+                    if (newName.text !== "") {
+                        addressList.setProperty(addressIndex, "name", newName.text);
+                    }
+                    if (newLabel.text !== "") {
+                        addressList.setProperty(addressIndex, "label", newLabel.text);
+                    }
+                    if (newAddress.text !== "") {
+                        addressList.setProperty(addressIndex, "address", newAddress.text);
+                    }
+                }
+            }
+
+            Text {
+                text: "SAVE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+
+        Text {
+            id: saveSuccess
+            text: "You have succesfully edited this address!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.weight: Font.Medium
+            color: "#F2F2F2"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -15
+            visible: addressSwitch.state == "on" && editSaved == 1
+        }
+
+        Rectangle {
+            id: closeSaveEdit
+            width: (parent.width - 45) / 2
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: addressSwitch.state == "on" && editSaved == 1
+
+            MouseArea {
+                anchors.fill: closeSaveEdit
+
+                onClicked: {
+                    newName.text = ""
+                    newLabel.text = ""
+                    newAddress.text = ""
+                    editSaved = 0
+                    newCoinPicklist = 0
+                    newCoinSelect = 0
+                }
+            }
+            Text {
+                text: "OK"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
     }
     Label {
-        id: closeTransferModal
+        id: closeAddressModal
         z: 10
         text: "CLOSE"
-        anchors.top: bodyModal.bottom
+        anchors.top: addressBodyModal.bottom
         anchors.topMargin: 10
-        anchors.horizontalCenter: bodyModal.horizontalCenter
+        anchors.horizontalCenter: addressBodyModal.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: "#F2F2F2"
-        visible: transferTracker == 1 && confirmationSent == 0
+        visible: addressTracker == 1 && confirmationSent == 0 && editSaved == 0
 
         MouseArea {
-            anchors.fill: closeTransferModal
+            anchors.fill: closeAddressModal
 
             onClicked: {
-                if (transferTracker == 1) {
-                    transferTracker = 0
-                    modalState = 0
+                if (addressTracker == 1) {
+                    addressTracker = 0
+                    picklistTracker = 0
+                    newCoinPicklist = 0
+                    newCoinSelect = 0
+                    addressIndex = 0
                     currencyIndex = 0
-                    transferSwitch.state = "off"
+                    addressSwitch.state = "off"
                     transactionSent =0
                     confirmationSent = 0
                     sendAmount.text = ""
-                    keyInput.text = ""
                     referenceInput.text = ""
+                    newName.text = ""
+                    newLabel.text = ""
+                    newAddress.text = ""
                 }
 
             }

@@ -1,12 +1,12 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
+import QtQuick.Window 2.2
 
 Rectangle {
-    property int appsTracker: 0
     id: sidebar
     height: parent.height
     width: 100
-    color: "#27292F"
+    color: "#2A2C31"
     visible: appsTracker == 1
     z: 100
 
@@ -133,6 +133,20 @@ Rectangle {
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
+        }
+    }
+    Rectangle {
+        anchors.left: parent.right
+        width: appsTracker == 1 ? (Screen.width - parent.width) : 0
+        height: parent.height
+        color: "transparent"
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                appsTracker = 0
+            }
         }
     }
 }
