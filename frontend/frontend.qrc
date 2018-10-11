@@ -130,9 +130,9 @@
         <file>+mobile/Settings.qml</file>
         <file>Controls/+mobile/CurrencySquare.qml</file>
         <file>Controls/+mobile/AddressBookSquares.qml</file>
-        <file>+mobile/MobileAddressBook.qml</file>
         <file>+mobile/xchange.qml</file>
         <file>Controls/+mobile/HistoryModal.qml</file>
         <file>Controls/+mobile/TransferModal.qml</file>
+        <file>Controls/+mobile/Sidebar.qml</file>
     </qresource>
 </RCC>

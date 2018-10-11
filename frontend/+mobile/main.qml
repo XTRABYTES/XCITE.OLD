@@ -17,6 +17,9 @@ import Clipboard 1.0
 
 ApplicationWindow {
     property bool isNetworkActive: false
+    property string newReceivingAddress: ""
+    property string newAddressName: ""
+    property string newAddressType: ""
     property string receivingAddress: "BM39fjwf093JF329f39fJFfa03987fja32"
     property string addressName1: "Posey"
     property string addressType1: "Main"
@@ -32,6 +35,28 @@ ApplicationWindow {
     property string receivingAddress5: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
     property string addressName5: "Golden"
     property string addressType5: "Main"
+    property string receivingAddress6: ""
+    property string addressName6: ""
+    property string addressType6: ""
+    property string receivingAddress7: ""
+    property string addressName7: ""
+    property string addressType7: ""
+    property string receivingAddress8: ""
+    property string addressName8: ""
+    property string addressType8: ""
+    property string receivingAddress9: ""
+    property string addressName9: ""
+    property string addressType9: ""
+    property string receivingAddress10: ""
+    property string addressName10: ""
+    property string addressType10: ""
+    property string receivingAddress11: ""
+    property string addressName11: ""
+    property string addressType11: ""
+    property string receivingAddress12: ""
+    property string addressName12: ""
+    property string addressType12: ""
+
     id: xcite
 
     visible: true
