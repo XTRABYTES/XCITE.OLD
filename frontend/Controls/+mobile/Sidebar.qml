@@ -4,7 +4,7 @@ import QtQuick.Window 2.2
 
 Rectangle {
     id: sidebar
-    height: parent.height
+    height: Screen.height
     width: 100
     color: "#2A2C31"
     visible: appsTracker == 1
@@ -13,7 +13,7 @@ Rectangle {
     Image {
         id: settings
         anchors.bottom: sidebar.bottom
-        anchors.bottomMargin: 25
+        anchors.bottomMargin: 50
         anchors.horizontalCenter: sidebar.horizontalCenter
         source: '../icons/icon-settings.svg'
         width: 35
@@ -23,7 +23,7 @@ Rectangle {
         MouseArea {
             anchors.fill: settings
             onClicked: {
-                mainRoot.push("Settings.qml")
+                mainRoot.push("../Settings.qml")
                 appsTracker = 0
             }
         }
@@ -79,7 +79,10 @@ Rectangle {
             color: "transparent"
             MouseArea {
                 anchors.fill: xchangeButtonArea
-                onClicked: mainRoot.push("../xchange.qml")
+                onClicked: {
+                    mainRoot.push("../xchange.qml")
+                    appsTracker = 0
+                }
             }
         }
     }
@@ -135,6 +138,25 @@ Rectangle {
             font.bold: true
         }
     }
+
+    Text {
+        id: calculatorLink
+        text: "CALCULATOR"
+        anchors.bottom: xchatLink.top
+        anchors.bottomMargin: 50
+        color: "#5E8BFF"
+        font.family: "Brandon Grotesque"
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.bold: true
+        MouseArea {
+            anchors.fill: calculatorLink
+            onClicked: {
+                mainRoot.push("../xcalculator.qml")
+                appsTracker = 0
+            }
+        }
+    }
+
     Rectangle {
         anchors.left: parent.right
         width: appsTracker == 1 ? (Screen.width - parent.width) : 0

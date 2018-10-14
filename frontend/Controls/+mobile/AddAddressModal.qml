@@ -1,5 +1,5 @@
 /**
- * Filename: TransactionModal.qml
+ * Filename: AddAddressModal.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -14,8 +14,6 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
-import QtQml.Models 2.11
-import QZXing 2.3
 
 import "qrc:/Controls" as Controls
 
@@ -70,8 +68,7 @@ Rectangle {
             source: newCoinSelect == 1? currencyList.get(newCoinPicklist).logo : currencyList.get(0).logo
             height: 25
             width: 25
-            anchors.left: parent.left
-            anchors.leftMargin: 18
+            anchors.left: newName.left
             anchors.top: parent.top
             anchors.topMargin: 20
             visible: editSaved == 0 && picklistTracker == 0
@@ -291,7 +288,7 @@ Rectangle {
 
             onClicked: {
                 if (addAddressTracker == 1) {
-                    addAddressTracker = 0
+                    addAddressTracker = 0;
                     picklistTracker = 0
                     newCoinPicklist = 0
                     newCoinSelect = 0

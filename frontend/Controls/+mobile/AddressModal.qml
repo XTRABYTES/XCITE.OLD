@@ -1,5 +1,5 @@
 /**
- * Filename: TransactionModal.qml
+ * Filename: AddressModal.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -14,8 +14,6 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
-import QtQml.Models 2.11
-import QZXing 2.3
 
 import "qrc:/Controls" as Controls
 
@@ -125,36 +123,34 @@ Rectangle {
         // Transfer state
 
         Image {
-            id: coinIcon
-            source: addressList.get(addressIndex).logo
-            width: 25
+            id: newIcon
+            source: newCoinSelect == 1? currencyList.get(newCoinPicklist).logo : addressList.get(addressIndex).logo
             height: 25
-            anchors.left: parent.left
-            anchors.leftMargin: 18
+            width: 25
+            anchors.left: sendAmount.left
             anchors.top: addressSwitch.bottom
             anchors.topMargin: 20
-            visible: transactionSent == 0 && addressSwitch.state == "off"
+            visible: picklistTracker == 0 && editSaved == 0 && transactionSent == 0
         }
 
         Label {
-            id: coinID
-            text: addressList.get(addressIndex).coin
-            anchors.left: coinIcon.right
+            id: newCoinName
+            text: newCoinSelect == 1? currencyList.get(newCoinPicklist).name : addressList.get(addressIndex).coin
+            anchors.left: newIcon.right
             anchors.leftMargin: 10
-            anchors.verticalCenter: coinIcon.verticalCenter
+            anchors.verticalCenter: newIcon.verticalCenter
             font.pixelSize: 20
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
-            visible: transactionSent == 0 && addressSwitch.state == "off"
+            visible: picklistTracker == 0 && editSaved == 0 && transactionSent == 0
         }
 
         Label {
             id: walletLabel
             text: currencyList.get(currencyIndex).label
-            anchors.right: parent.right
-            anchors.rightMargin: 20
-            anchors.verticalCenter: coinIcon.verticalCenter
+            anchors.right: sendAmount.right
+            anchors.verticalCenter: newIcon.verticalCenter
             font.pixelSize: 20
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
@@ -165,8 +161,7 @@ Rectangle {
         Text {
             id: walletBalance
             text: (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", 4)
-            anchors.right: parent.right
-            anchors.rightMargin: 20
+            anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
             anchors.topMargin: 7
             font.pixelSize: 13
@@ -215,27 +210,59 @@ Rectangle {
             visible: transactionSent == 0 && addressSwitch.state == "off"
         }
         Rectangle {
-            id: sendButton
+            id: transferModalButton
             width: sendAmount.width
             height: 33
             radius: 8
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: referenceInput.bottom
-            anchors.topMargin: 35
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
             anchors.left: referenceInput.left
-            visible: transactionSent == 0 && addressSwitch.state == "off"
+            visible: transactionSent == 0 && editSaved == 0
             MouseArea {
-                anchors.fill: sendButton
+                anchors.fill: transferModalButton
 
                 onClicked: {
                     // error handeling (not a number, insufficient funds, negative amount, incorrect address)
-                    transactionSent = 1
+                    if (addressSwitch.state == "off") {
+                        transactionSent = 1
+                    }
+                    else {
+                        if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(0).name) {
+                            currencyIndex = 0
+                        }
+                        if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(1).name) {
+                            currencyIndex = 1
+                        }
+                        if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(2).name) {
+                            currencyIndex = 2
+                        }
+                        if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(3).name) {
+                            currencyIndex = 3
+                        }
+                        if (newCoinSelect == 1) {
+                            addressList.setProperty(addressIndex, "logo", currencyList.get(newCoinPicklist).logo);
+                        }
+                        if (newCoinSelect == 1) {
+                            addressList.setProperty(addressIndex, "coin", currencyList.get(newCoinPicklist).name);
+                        }
+                        if (newName.text !== "") {
+                            addressList.setProperty(addressIndex, "name", newName.text);
+                        }
+                        if (newLabel.text !== "") {
+                            addressList.setProperty(addressIndex, "label", newLabel.text);
+                        }
+                        if (newAddress.text !== "") {
+                            addressList.setProperty(addressIndex, "address", newAddress.text);
+                        }
+                        editSaved = 1
+                    }
                 }
             }
             Text {
-                text: "SEND"
+                text: addressSwitch.state == "off" ? "SEND" : "SAVE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
@@ -419,31 +446,6 @@ Rectangle {
         // Edit address state
 
         Image {
-            id: newIcon
-            source: newCoinSelect == 1? currencyList.get(newCoinPicklist).logo : addressList.get(addressIndex).logo
-            height: 25
-            width: 25
-            anchors.left: parent.left
-            anchors.leftMargin: 18
-            anchors.top: addressSwitch.bottom
-            anchors.topMargin: 20
-            visible: addressSwitch.state == "on" && picklistTracker == 0 && editSaved == 0
-        }
-
-        Label {
-            id: newCoinName
-            text: newCoinSelect == 1? currencyList.get(newCoinPicklist).name : addressList.get(addressIndex).coin
-            anchors.left: newIcon.right
-            anchors.leftMargin: 10
-            anchors.verticalCenter: newIcon.verticalCenter
-            font.pixelSize: 20
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
-            color: "#F2F2F2"
-            visible: addressSwitch.state == "on" && picklistTracker == 0 && editSaved == 0
-        }
-
-        Image {
             id: picklistArrow
             source: 'qrc:/icons/dropdown_icon.svg'
             height: 20
@@ -532,66 +534,6 @@ Rectangle {
             }
         }
 
-        Rectangle {
-            id: saveEditButton
-            width: newAddress.width
-            height: 33
-            radius: 8
-            border.color: "#5E8BFF"
-            border.width: 2
-            color: "transparent"
-            anchors.top: newAddress.bottom
-            anchors.topMargin: 35
-            anchors.horizontalCenter: parent.horizontalCenter
-            visible: addressSwitch.state == "on" && editSaved == 0
-
-            MouseArea {
-                anchors.fill: saveEditButton
-
-                onClicked: {
-                    // error handeling (not a number, insufficient funds, negative amount, incorrect address)
-                    editSaved = 1
-                    if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(0).name) {
-                        currencyIndex = 0
-                    }
-                    if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(1).name) {
-                        currencyIndex = 1
-                    }
-                    if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(2).name) {
-                        currencyIndex = 2
-                    }
-                    if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(3).name) {
-                        currencyIndex = 3
-                    }
-                    if (newCoinSelect == 1) {
-                        addressList.setProperty(addressIndex, "logo", currencyList.get(newCoinPicklist).logo);
-                    }
-                    if (newCoinSelect == 1) {
-                        addressList.setProperty(addressIndex, "coin", currencyList.get(newCoinPicklist).name);
-                    }
-                    if (newName.text !== "") {
-                        addressList.setProperty(addressIndex, "name", newName.text);
-                    }
-                    if (newLabel.text !== "") {
-                        addressList.setProperty(addressIndex, "label", newLabel.text);
-                    }
-                    if (newAddress.text !== "") {
-                        addressList.setProperty(addressIndex, "address", newAddress.text);
-                    }
-                }
-            }
-
-            Text {
-                text: "SAVE"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#5E8BFF"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-
         Text {
             id: saveSuccess
             text: "You have succesfully edited this address!"
@@ -658,7 +600,7 @@ Rectangle {
 
             onClicked: {
                 if (addressTracker == 1) {
-                    addressTracker = 0
+                    addressTracker = 0;
                     picklistTracker = 0
                     newCoinPicklist = 0
                     newCoinSelect = 0

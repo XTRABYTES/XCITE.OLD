@@ -21,10 +21,13 @@ import "qrc:/Controls" as Controls
 
 Item {
 
+    Loader {
+        id: pageLoader
+    }
+
     // shared vars
 
     property int pageTracker: view.currentIndex == 0 ? 0 : 1
-    property real totalBalance: 0
 
     Component.onCompleted: {
 
@@ -359,11 +362,6 @@ Item {
             anchors.horizontalCenter: backgroundHome.horizontalCenter
             anchors.top: backgroundHome.top
             anchors.topMargin: 40
-            coinName: currencyList.get(addressIndex).name
-            coinLabel: currencyList.get(addressIndex).label
-            coinLogo: currencyList.get(addressIndex).logo
-            coinBalance: currencyList.get(addressIndex).balance
-            coinAddress: currencyList.get(addressIndex).address
             visible: transferTracker == 1
         }
 
@@ -373,11 +371,6 @@ Item {
             anchors.horizontalCenter: backgroundHome.horizontalCenter
             anchors.top: backgroundHome.top
             anchors.topMargin: 40
-            coinName: currencyList.get(currencyIndex).name
-            coinLabel: currencyList.get(currencyIndex).label
-            coinLogo: currencyList.get(currencyIndex).logo
-            coinBalance: currencyList.get(currencyIndex).balance
-            sendAddress: addressList.get(addressIndex).address
             visible: addressTracker == 1
         }
 

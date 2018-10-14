@@ -14,7 +14,6 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 import Clipboard 1.0
-import QtQml 2.11
 
 ApplicationWindow {
 
@@ -87,6 +86,7 @@ ApplicationWindow {
     property int totalLines: 4
     property int totalAddresses: countAddresses()
     property int totalWallets: countWallets()
+    property real totalBalance: 0
 
     function countWallets(){
         totalWallets = 0
@@ -114,6 +114,54 @@ ApplicationWindow {
             }
         }
         return totalBalance
+    }
+
+    ListModel {
+        id: xbyTXHistory
+        ListElement {
+            date: ""
+            amount: 0
+            txid: ""
+            txpartnerhash: ""
+            txpartner: ""
+            reference: ""
+        }
+    }
+
+    ListModel {
+        id: xfuelTXHistory
+        ListElement {
+            date: ""
+            amount: 0
+            txid: ""
+            txpartnerhash: ""
+            txpartner: ""
+            reference: ""
+        }
+    }
+
+    ListModel {
+        id: btcTXHistory
+        ListElement {
+            date: ""
+            amount: 0
+            txid: ""
+            txpartnerhash: ""
+            txpartner: ""
+            reference: ""
+        }
+    }
+
+    ListModel {
+        id: ethTXHistory
+        ListElement {
+            date: ""
+            amount: 0
+            txid: ""
+            txpartnerhash: ""
+            txpartner: ""
+            reference: ""
+        }
     }
 
     ListModel {
@@ -169,13 +217,9 @@ ApplicationWindow {
         currencyList.setProperty(0, "percentage", percentageXBY);
         currencyList.setProperty(0, "active", 1);
         currencyList.setProperty(0, "favorite", 0);
-        console.log(currencyList.get(0).name);
         currencyList.append({"name": "XFUEL", "label": "MAIN", "logo": '../icons/XFUEL_card_logo_colored_07.svg', "address": receivingAddressXFUEL, "balance" : balanceXFUEL, "unconfirmedCoins": unconfirmedXFUEL, "coinValue": valueXFUEL, "coinValueBTC": btcValueXFUEL, "percentage": percentageXFUEL, "active": 1, "favorite": 0});
-        console.log(currencyList.get(1).name);
         currencyList.append({"name": "BTC", "label": "MAIN", "logo": '../icons/BTC-color.svg', "address": receivingAddressBTC, "balance" : balanceBTC, "unconfirmedCoins": unconfirmedBTC, "coinValue": valueBTC, "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "active": 1, "favorite": 0});
-        console.log(currencyList.get(2).name);
         currencyList.append({"name": "ETH", "label": "MAIN", "logo": '../icons/ETH-color.svg', "address": receivingAddressETH, "balance" : balanceETH, "unconfirmedCoins": unconfirmedETH, "coinValue": valueETH, "coinValueBTC": btcValueETH, "percentage": percentageETH, "active": 1, "favorite": 0});
-        console.log(currencyList.get(3).name);
     }
 
     visible: true

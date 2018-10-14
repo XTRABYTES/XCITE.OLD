@@ -1,5 +1,5 @@
 /**
- * Filename: TransactionModal.qml
+ * Filename: AddCoinModal.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -14,7 +14,6 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
-import QtQml.Models 2.11
 
 import "qrc:/Controls" as Controls
 
@@ -96,7 +95,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
-                enabled: active1 == 1
+                enabled: switch1.state == "on"
 
                 onClicked: {
                     if (favorite1 == 0) {
@@ -152,7 +151,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
-                enabled: active2 == 1
+                enabled: switch2.state == "on"
 
                 onClicked: {
                     if (favorite2 == 0) {
@@ -208,7 +207,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
-                enabled: active3 == 1
+                enabled: switch3.state == "on"
 
                 onClicked: {
                     if (favorite3 == 0) {
@@ -264,7 +263,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
-                enabled: active4 === 1
+                enabled: switch4.state == "on"
 
                 onClicked: {
                     if (favorite4 == 0) {
@@ -343,7 +342,9 @@ Rectangle {
                         currencyList.setProperty(3, "active", 0)
                     }
 
-                    sumBalance()
+                    totalBalance = sumBalance()
+
+                    editSaved = 1
                     // error handeling (not a number, insufficient funds, negative amount, incorrect address)
                 }
             }
@@ -420,7 +421,7 @@ Rectangle {
 
             onClicked: {
                 if (addCoinTracker == 1) {
-                    addCoinTracker = 0
+                    addCoinTracker = 0;
                 }
             }
         }

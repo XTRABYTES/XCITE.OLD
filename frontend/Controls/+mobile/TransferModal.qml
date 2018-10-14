@@ -1,5 +1,5 @@
 /**
- * Filename: TransactionModal.qml
+ * Filename: TransferModal.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -14,7 +14,6 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
-import QtQml.Models 2.11
 import QZXing 2.3
 
 import "qrc:/Controls" as Controls
@@ -117,7 +116,7 @@ Rectangle {
         anchors.topMargin: 46
         anchors.horizontalCenter: parent.horizontalCenter
 
-       Controls.Switch_mobile {
+        Controls.Switch_mobile {
             id: transferSwitch
             anchors.horizontalCenter: bodyModal.horizontalCenter
             anchors.top: parent.top
@@ -153,11 +152,10 @@ Rectangle {
 
         Image {
             id: coinIcon
-            source: currencyList.get(currencyIndex).logo
+            source: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).logo : currencyList.get(currencyIndex).logo
             width: 25
             height: 25
-            anchors.left: parent.left
-            anchors.leftMargin: 15
+            anchors.left: sendAmount.left
             anchors.top: transferSwitch.bottom
             anchors.topMargin: 10
             visible: transactionSent == 0
@@ -165,7 +163,7 @@ Rectangle {
 
         Label {
             id: coinID
-            text: currencyList.get(currencyIndex).name
+            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).name :currencyList.get(currencyIndex).name
             anchors.left: coinIcon.right
             anchors.leftMargin: 10
             anchors.verticalCenter: coinIcon.verticalCenter
@@ -178,9 +176,8 @@ Rectangle {
 
         Label {
             id: walletLabel
-            text: currencyList.get(currencyIndex).label
-            anchors.right: parent.right
-            anchors.rightMargin: 20
+            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).label : currencyList.get(currencyIndex).label
+            anchors.right: sendAmount.right
             anchors.verticalCenter: coinIcon.verticalCenter
             font.pixelSize: 20
             font.family: "Brandon Grotesque"
@@ -191,14 +188,58 @@ Rectangle {
 
         Text {
             id: walletBalance
-            text: (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", 4)
-            anchors.right: parent.right
-            anchors.rightMargin: 20
+            text: newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance).toLocaleString(Qt.locale(), "f", 4) : (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", 4)
+            anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
             anchors.topMargin: 7
             font.pixelSize: 13
             color: "#828282"
             visible: transactionSent == 0
+        }
+
+        Image {
+            id: picklistArrow
+            source: 'qrc:/icons/dropdown_icon.svg'
+            height: 20
+            width: 20
+            anchors.left: transferPicklist.right
+            anchors.leftMargin: 10
+            anchors.verticalCenter: coinID.verticalCenter
+            visible: transactionSent == 0
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: "#F2F2F2"
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (picklistTracker == 0) {
+                        picklistTracker = 1
+                    }
+                    else {
+                        picklistTracker = 0
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: transferPicklist
+            z: 11
+            width: 100
+            height: totalLines * 35
+            color: "#2A2C31"
+            anchors.top: coinIcon.top
+            anchors.topMargin: -5
+            anchors.left: coinIcon.left
+            visible: picklistTracker == 1 && transactionSent == 0
+
+            Controls.CurrencyPicklist {
+                id: myCoinPicklist
+            }
         }
 
         // Receive state
@@ -245,7 +286,7 @@ Rectangle {
 
         Text {
             id: publicKey
-            text: currencyList.get(currencyIndex).address
+            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).address :currencyList.get(currencyIndex).address
             anchors.top: pubKey.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
@@ -421,7 +462,7 @@ Rectangle {
             }
             Text {
                 id: confirmationAmount
-                text: sendAmount.text + " " + coinName
+                text: newCoinSelect == 1 ? sendAmount.text + " " + currencyList.get(newCoinPicklist).name : sendAmount.text + " " + currencyList.get(currencyIndex).name
                 anchors.top: confirmationText.bottom
                 anchors.topMargin: 7
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -587,12 +628,14 @@ Rectangle {
 
             onClicked: {
                 if (transferTracker == 1) {
-                    transferTracker = 0
+                    transferTracker = 0;
                     modalState = 0
                     currencyIndex = 0
                     transferSwitch.state = "off"
                     transactionSent =0
                     confirmationSent = 0
+                    newCoinSelect = 0
+                    newCoinPicklist = 0
                     sendAmount.text = ""
                     keyInput.text = ""
                     referenceInput.text = ""

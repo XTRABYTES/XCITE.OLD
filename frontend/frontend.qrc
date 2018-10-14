@@ -141,5 +141,7 @@
         <file>Controls/CurrencyPicklist.qml</file>
         <file>Controls/+mobile/AddAddressModal.qml</file>
         <file>Controls/+mobile/AddCoinModal.qml</file>
+        <file>Controls/+mobile/CryptoCalculator.qml</file>
+        <file>+mobile/xcalculator.qml</file>
     </qresource>
 </RCC>

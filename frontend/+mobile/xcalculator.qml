@@ -1,5 +1,5 @@
 /**
- * Filename: xchange.qml
+ * Filename: xcalculator.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -21,14 +21,13 @@ import "../Controls" as Controls
   * Main page
   */
 Item {
-    property int tempHide: 1
 
     Loader {
         id: pageLoader
     }
-    Controls.Header {
+    /**Controls.Header {
         id: heading
-        text: qsTr("X-CHANGE")
+        text: qsTr("CRYPTO-CALCULATOR")
         showBack: false
         Layout.topMargin: 30
     }
@@ -46,5 +45,10 @@ Item {
              anchors.fill: back
              onClicked: mainRoot.pop("../DashboardForm.qml")
         }
+    }*/
+
+    Controls.CryptoCalculator {
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 }
