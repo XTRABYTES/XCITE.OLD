@@ -50,14 +50,13 @@ Rectangle {
 
         Text {
             id: calculatorModalLabel
-            text: "CRYPTO CALCULATOR"
+            text: "CRYPTO CONVERTER"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -3
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             color: "#F2F2F2"
-            font.letterSpacing: 2
         }
 
         Image {

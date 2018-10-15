@@ -28,19 +28,45 @@ Rectangle {
             id: currencyRow
             color: "transparent"
             width: Screen.width
-            height: active == 0 ? 0 : 98
+            height: {
+                if (active == 0) {
+                    0
+                }
+                else {
+                    if (name !== "XBY" && name !== "XFUEL") {
+                        98
+                    }
+                    else {
+                        88
+                    }
+                }
+            }
             visible: active == 0 ? false : true
+
+            DropShadow {
+                anchors.fill: square
+                source: square
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 17
+                spread: 0
+                color:"#2A2C31"
+                transparentBorder: true
+            }
 
             Rectangle {
                 id: square
                 color: "#42454F"
                 width: Screen.width - 55
-                height: 88
+                height: (name !== "XBY" && name !== "XFUEL") ? 88 : 78
                 radius: 4
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 10
                 visible: active == 0 ? false : true
+                border.width: favorite == 0 ? 0 : 0.5
+                border.color: "#F2F2F2"
 
                 Image {
                     id: icon
@@ -60,10 +86,10 @@ Rectangle {
                     anchors.leftMargin: 7
                     anchors.verticalCenter: icon.verticalCenter
                     text: name
-                    font.pixelSize: 20
+                    font.pixelSize: 18
                     font.family: "Brandon Grotesque"
                     color: "#E5E5E5"
-                    font.bold: true
+                    font.weight: Font.Medium
                     visible: active == 0 ? false : true
                 }
 
@@ -73,7 +99,7 @@ Rectangle {
                     anchors.rightMargin: 14
                     anchors.verticalCenter: coinName.verticalCenter
                     text: balance.toLocaleString(Qt.locale(), "f", 4)
-                    font.pixelSize: 20
+                    font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     color: "#E5E5E5"
                     font.weight: Font.Medium
@@ -83,7 +109,7 @@ Rectangle {
                 Text {
                     id: totalValueLabel
                     anchors.right: square.right
-                    anchors.rightMargin:10
+                    anchors.rightMargin:14
                     anchors.verticalCenter: price2.verticalCenter
                     text: (balance * coinValue).toLocaleString(Qt.locale(), "f", 2)
                     font.pixelSize: 14
@@ -122,7 +148,7 @@ Rectangle {
                 Label {
                     id: dollarSign1
                     anchors.left: parent.left
-                    anchors.leftMargin: 10
+                    anchors.leftMargin: 14
                     anchors.verticalCenter: price2.verticalCenter
                     text: "$"
                     font.pixelSize: 12
@@ -156,7 +182,7 @@ Rectangle {
                     color: "#F2F2F2"
                     font.weight: Font.Light
                     font.italic: true
-                    visible: active == 0 ? false : true
+                    visible: (name !== "XBY" && name !== "XFUEL" && active == 1)
                 }
 
                 MouseArea {
@@ -170,7 +196,6 @@ Rectangle {
                     }
                 }
             }
-
         }
     }
     ListView {

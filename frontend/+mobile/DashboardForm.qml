@@ -79,6 +79,19 @@ Item {
 
                 }
 
+                DropShadow {
+                    z: 3
+                    anchors.fill: homeHeader
+                    source: homeHeader
+                    horizontalOffset: 0
+                    verticalOffset: 4
+                    radius: 12
+                    samples: 25
+                    spread: 0
+                    color:"#2A2C31"
+                    transparentBorder: true
+                }
+
                 Rectangle {
                     id: homeHeader
                     z: 4
@@ -122,6 +135,20 @@ Item {
 
                     }
                 }
+
+                DropShadow {
+                    z: 3
+                    anchors.fill: homeHeader2
+                    source: homeHeader2
+                    horizontalOffset: 0
+                    verticalOffset: 4
+                    radius: 12
+                    samples: 25
+                    spread: 0
+                    color:"#2A2C31"
+                    transparentBorder: true
+                }
+
                 Rectangle {
                     id: homeHeader2
                     z: 4

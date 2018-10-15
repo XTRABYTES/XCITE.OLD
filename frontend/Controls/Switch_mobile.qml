@@ -52,6 +52,16 @@ Item {
             anchors.fill: parent
             onClicked: toggle()
         }
+
+        InnerShadow {
+            anchors.fill: background
+            radius: 12
+            samples: 17
+            horizontalOffset: 0
+            verticalOffset: 2
+            color: "#2A2C31"
+            source: background
+        }
     }
 
     Rectangle {

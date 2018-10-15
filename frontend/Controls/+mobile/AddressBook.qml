@@ -14,7 +14,7 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.8
 import QtQuick.Window 2.2
-
+import SortFilterProxyModel 0.1
 
 Rectangle {
     id: allAddressCards
@@ -32,11 +32,23 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: Screen.horizontalCenter
 
+            DropShadow {
+                anchors.fill: cardBackground
+                source: cardBackground
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 17
+                spread: 0
+                color:"#2A2C31"
+                transparentBorder: true
+            }
+
             Rectangle {
                 id: cardBackground
                 width: parent.width - 55
                 height: 75
-                radius: 5
+                radius: 4
                 color: "#42454F"
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -79,7 +91,7 @@ Rectangle {
                     id: addressName
                     text: name
                     color: "#F2F2F2"
-                    font.pixelSize: 18
+                    font.pixelSize: 14
                     font.family: "Brandon Grotesque"
                     font.weight: Font.Medium
                     anchors.verticalCenter: addressCoinLogo.verticalCenter
@@ -97,6 +109,24 @@ Rectangle {
                     anchors.bottom: cardBackground.bottom
                     anchors.bottomMargin: 10
                     anchors.horizontalCenter: cardBackground.horizontalCenter
+                }
+
+                Image {
+                    id: addressFavorite
+                    source: 'qrc:/icons/icon-favorite.svg'
+                    width: 14
+                    height: 14
+                    anchors.verticalCenter: addressHash.verticalCenter
+                    anchors.verticalCenterOffset: -2
+                    anchors.right: addressHash.left
+                    anchors.rightMargin: 7
+                    visible: favorite == 1
+
+                    ColorOverlay {
+                        anchors.fill: parent
+                        source: parent
+                        color: "#FDBC40"
+                    }
                 }
 
                 MouseArea {
@@ -126,6 +156,7 @@ Rectangle {
             }
         }
     }
+
     ListView {
         anchors.fill: parent
         id: allAddresses

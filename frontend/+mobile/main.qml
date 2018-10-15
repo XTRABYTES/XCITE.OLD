@@ -200,7 +200,7 @@ ApplicationWindow {
         addressList.setProperty(0, "label", "MAIN");
         addressList.setProperty(0, "logo", '../icons/XBY_card_logo_colored_05.svg');
         addressList.setProperty(0, "coin", "XBY");
-        addressList.setProperty(0, "favorite", 0);
+        addressList.setProperty(0, "favorite", 1);
         addressList.append({"address": address2, "name": name2, "label": label2, "logo": '../icons/XBY_card_logo_colored_05.svg', "coin": "XBY", "favorite": 0});
         addressList.append({"address": address3, "name": name3, "label": label3, "logo": '../icons/XBY_card_logo_colored_05.svg', "coin": "XBY", "favorite": 0});
         addressList.append({"address": address4, "name": name4, "label": label4, "logo": '../icons/XFUEL_card_logo_colored_07.svg', "coin": "XFUEL", "favorite": 0});
