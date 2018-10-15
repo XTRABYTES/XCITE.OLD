@@ -22,7 +22,6 @@
 #include <QZXing.h>
 #include "../backend/xchat/xchat.hpp"
 #include "../backend/xchat/xchatconversationmodel.hpp"
-#include "../frontend/support/sortfilterproxymodel.hpp"
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
@@ -49,7 +48,6 @@ int main(int argc, char *argv[])
     app.installEventFilter(&eventFilter);
 
     qmlRegisterType<Xchat>("xtrabytes.xcite.xchat", 1, 0, "Xchat");
-    qmlRegisterType<SortFilterProxyModel>("SortFilterProxyModel", 0, 1, "SortFilterProxyModel");
     qmlRegisterType<XChatConversationModel>("XChatConversationModel", 0, 1, "XChatConversationModel");
     qmlRegisterType<AddressBookModel>("AddressBookModel", 0, 1, "AddressBookModel");
     qmlRegisterType<ClipboardProxy>("Clipboard", 1, 0, "Clipboard");

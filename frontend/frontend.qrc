@@ -24,8 +24,6 @@
         <file>Controls/ImageLogo.qml</file>
         <file>Controls/BalanceItem.qml</file>
         <file>XCITE/Home/Layout.qml</file>
-        <file>support/sortfilterproxymodel.cpp</file>
-        <file>support/sortfilterproxymodel.hpp</file>
         <file>X-Chat/Conversation.qml</file>
         <file>X-Chat/Header.qml</file>
         <file>XCITE/Home/ChartDiode.qml</file>
