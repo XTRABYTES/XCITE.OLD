@@ -71,11 +71,38 @@ Rectangle {
             anchors.verticalCenterOffset: -1
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
-            //capitalization: Font.SmallCaps
             color: "#F2F2F2"
         }
-    }
 
+        Image {
+            id: favoriteAddressIcon
+            source: 'qrc:/icons/icon-favorite.svg'
+            width: 25
+            height: 25
+            anchors.verticalCenter: titleIcon.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 15
+            visible: editSaved == 0
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: addressList.get(addressIndex).favorite === 1 ? "#FDBC40" : "#2A2C31"
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (addressList.get(addressIndex).favorite === 1) {
+                        addressList.setProperty(addressIndex, "favorite", 0)
+                    }
+                    else {
+                        addressList.setProperty(addressIndex, "favorite", 1)
+                    }
+                }
+            }
+        }
+    }
     Rectangle {
         id: addressBodyModal
         width: parent.width

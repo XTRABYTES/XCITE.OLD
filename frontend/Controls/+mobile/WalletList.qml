@@ -8,7 +8,9 @@
  *
  * This file is part of an XTRABYTES Ltd. project.
  *
- */import QtQuick 2.7
+ */
+
+import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
@@ -65,8 +67,6 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 10
                 visible: active == 0 ? false : true
-                border.width: favorite == 0 ? 0 : 0.5
-                border.color: "#F2F2F2"
 
                 Image {
                     id: icon

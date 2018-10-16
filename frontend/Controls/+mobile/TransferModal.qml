@@ -9,6 +9,7 @@
  * This file is part of an XTRABYTES Ltd. project.
  *
  */
+
 import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
@@ -163,7 +164,7 @@ Rectangle {
 
         Label {
             id: coinID
-            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).name :currencyList.get(currencyIndex).name
+            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).name : currencyList.get(currencyIndex).name
             anchors.left: coinIcon.right
             anchors.leftMargin: 10
             anchors.verticalCenter: coinIcon.verticalCenter
@@ -607,6 +608,37 @@ Rectangle {
                     color: "#5E8BFF"
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
+        // History coin state
+
+        Rectangle {
+            id: historyScrollArea
+            width: parent.width
+            height: 250
+            anchors.top : parent.top
+            anchors.topMargin: 150
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+            visible: modalState == 1 && transferSwitch.state == "off"
+
+            Controls.HistoryList {
+                id: myHistoryList
+                selectedWallet: {
+                    if (coinID.text == "XBY") {
+                        1
+                    }
+                    if (coinID.text == "XFUEL") {
+                        2
+                    }
+                    if (coinID.text == "BTC") {
+                        3
+                    }
+                    if (coinID.text == "ETH") {
+                        4
+                    }
                 }
             }
         }

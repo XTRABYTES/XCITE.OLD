@@ -38,7 +38,7 @@ Rectangle {
                 horizontalOffset: 0
                 verticalOffset: 4
                 radius: 12
-                samples: 17
+                samples: 2
                 spread: 0
                 color:"#2A2C31"
                 transparentBorder: true
@@ -59,7 +59,7 @@ Rectangle {
                     height: 25
                     width: 25
                     anchors.right: cardBackground.right
-                    anchors.rightMargin: 10
+                    anchors.rightMargin: 14
                     anchors.top: cardBackground.top
                     anchors.topMargin: 10
                 }
@@ -96,7 +96,7 @@ Rectangle {
                     font.weight: Font.Medium
                     anchors.verticalCenter: addressCoinLogo.verticalCenter
                     anchors.left: cardBackground.left
-                    anchors.leftMargin: 10
+                    anchors.leftMargin: 14
                 }
 
                 Label {
@@ -108,7 +108,8 @@ Rectangle {
                     font.weight: Font.Light
                     anchors.bottom: cardBackground.bottom
                     anchors.bottomMargin: 10
-                    anchors.horizontalCenter: cardBackground.horizontalCenter
+                    anchors.left: addressName.left
+                    anchors.leftMargin: 21
                 }
 
                 Image {
@@ -120,17 +121,16 @@ Rectangle {
                     anchors.verticalCenterOffset: -2
                     anchors.right: addressHash.left
                     anchors.rightMargin: 7
-                    visible: favorite == 1
 
                     ColorOverlay {
                         anchors.fill: parent
                         source: parent
-                        color: "#FDBC40"
+                        color: favorite == 1 ? "#FDBC40" : "#2A2C31"
                     }
                 }
 
                 MouseArea {
-                    anchors.fill: addressName
+                    anchors.fill: parent
 
                     onClicked: {
                         if (appsTracker == 0 && addAddressTracker == 0) {
@@ -149,6 +149,27 @@ Rectangle {
                                 if (addressCoinName.text === currencyList.get(3).name) {
                                     currencyIndex = 3
                                 }
+                            }
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: favoriteButton
+                    width: 28
+                    height: 28
+                    anchors.verticalCenter: addressFavorite.verticalCenter
+                    anchors.horizontalCenter: addressFavorite.horizontalCenter
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if (favorite == 1) {
+                                addressList.setProperty(index, "favorite", 0)
+                            }
+                            else {
+                                addressList.setProperty(index, "favorite", 1)
                             }
                         }
                     }

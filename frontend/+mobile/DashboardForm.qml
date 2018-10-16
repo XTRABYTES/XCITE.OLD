@@ -69,7 +69,7 @@ Item {
                     width: Screen.width
                     height: Screen.height - 200
                     anchors.top: parent.top
-                    anchors.topMargin: 150
+                    anchors.topMargin: 154
                     color: "transparent"
 
                     Controls.WalletList {
@@ -127,7 +127,7 @@ Item {
                     width: Screen.width
                     height: Screen.height - 200
                     anchors.top: parent.top
-                    anchors.topMargin: 150
+                    anchors.topMargin: 154
                     color: "transparent"
 
                     Controls.AddressBook {
@@ -309,14 +309,24 @@ Item {
                         source: transfer2
                         color: "#5E8BFF"
                     }
+                }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            transferTracker = 1
-                        }
+                Rectangle {
+                    id: transferButton
+                    anchors.left: transfer.left
+                    anchors.right: transfer2.right
+                    height: transfer2.height
+                    anchors.verticalCenter: transfer2.verticalCenter
+                    color: "transparent"
+                }
+
+                MouseArea {
+                    anchors.fill: transferButton
+                    onClicked: {
+                        transferTracker = 1
                     }
                 }
+
             }
 
             Image {
@@ -346,8 +356,17 @@ Item {
                     font.bold: true
                 }
 
+                Rectangle {
+                    id: addCoinButton
+                    anchors.left: addCoin.left
+                    anchors.right: plus.right
+                    height: plus.height
+                    anchors.verticalCenter: plus.verticalCenter
+                    color: "transparent"
+                }
+
                 MouseArea {
-                    anchors.fill: parent
+                    anchors.fill: addCoinButton
                     onClicked: {
                         if (pageTracker == 0) {
                             addCoinTracker = 1
