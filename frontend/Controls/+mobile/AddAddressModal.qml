@@ -199,10 +199,12 @@ Rectangle {
                         warningEmpty = 0
                         editSaved = 1
                         if (newCoinSelect == 1) {
-                            addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": 1});
+                            addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
+                            addressID = addressID +1;
                         }
                         else {
-                            addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(0).logo, "coin": newCoinName.text, "favorite": 0, "active": 1});
+                            addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(0).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
+                            addressID = addressID +1;
                         }
                     }
                     else {

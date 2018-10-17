@@ -26,6 +26,16 @@ Rectangle {
     anchors.top: parent.top
     anchors.topMargin: 50
 
+    /**function compareAddresID(){
+        for(var i = 0; i < addressList.count; i++) {
+            if (addressList.get(i).uniqueNR === addressID) {
+            addressIndex = addressList.get(i).index
+            }
+        }
+        return addressIndex
+    }
+
+    property int referenceIndex: compareAddresID()*/
     property string coinName: addressList.get(addressIndex).coin
     property url coinLogo: addressList.get(addressIndex).logo
     property real coinBalance: currencyList.get(currencyIndex).balance
@@ -38,6 +48,7 @@ Rectangle {
     property int transactionSent: 0
     property int confirmationSent: 0
     property int editSaved: 0
+    property int addressNR: 0
     property string amountTransfer: "AMOUNT (" + coinName + ")"
     property string keyTransfer: "SEND TO (PUBLIC KEY)"
     property string referenceTransfer: "REFERENCE"

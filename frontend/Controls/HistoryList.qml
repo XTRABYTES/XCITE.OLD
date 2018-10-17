@@ -16,6 +16,8 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.8
 import QtQuick.Window 2.2
+import SortFilterProxyModel 0.2
+
 
 Rectangle {
     id: allHistoryLines
@@ -41,6 +43,7 @@ Rectangle {
 
                 Item {
                     id: part1
+                    visible: lineView.currentIndex == 0
 
                     Label {
                         id: txDate
@@ -109,6 +112,7 @@ Rectangle {
 
                 Item {
                     id: part2
+                    visible: lineView.currentIndex == 1
 
                     Image {
                         id: left2
@@ -183,6 +187,7 @@ Rectangle {
 
                 Item {
                     id: part3
+                    visible: lineView.currentIndex == 2
 
                     Image {
                         id: left3
@@ -223,10 +228,25 @@ Rectangle {
             }
         }
     }
+
     ListView {
         anchors.fill: parent
         id: completeHistory
-        model: xbyTXHistory
+        model: {
+            if (selectedWallet == 1) {
+                xbyTXHistory
+            }
+            if (selectedWallet == 2) {
+                xfuelTXHistory
+            }
+            if (selectedWallet == 3) {
+                btcTXHistory
+            }
+            if (selectedWallet == 4) {
+                ethTXHistory
+            }
+        }
+
         delegate: historyLine
     }
 }

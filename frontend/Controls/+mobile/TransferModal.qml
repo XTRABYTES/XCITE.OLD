@@ -626,20 +626,6 @@ Rectangle {
 
             Controls.HistoryList {
                 id: myHistoryList
-                selectedWallet: {
-                    if (coinID.text == "XBY") {
-                        1
-                    }
-                    if (coinID.text == "XFUEL") {
-                        2
-                    }
-                    if (coinID.text == "BTC") {
-                        3
-                    }
-                    if (coinID.text == "ETH") {
-                        4
-                    }
-                }
             }
         }
     }

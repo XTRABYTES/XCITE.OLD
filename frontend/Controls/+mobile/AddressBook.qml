@@ -8,19 +8,24 @@
  *
  * This file is part of an XTRABYTES Ltd. project.
  *
- */import QtQuick 2.7
+ */
+
+import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.8
 import QtQuick.Window 2.2
-import SortFilterProxyModel 0.1
+import SortFilterProxyModel 0.2
 
 Rectangle {
     id: allAddressCards
     width: Screen.width
     height: parent.height
     color: "transparent"
+
+    property string searchFilter: ""
+    property int favoriteNR: 0
 
     Component {
         id: addressCard
@@ -31,18 +36,6 @@ Rectangle {
             height: 85
             color: "transparent"
             anchors.horizontalCenter: Screen.horizontalCenter
-
-            DropShadow {
-                anchors.fill: cardBackground
-                source: cardBackground
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 2
-                spread: 0
-                color:"#2A2C31"
-                transparentBorder: true
-            }
 
             Rectangle {
                 id: cardBackground
@@ -136,7 +129,7 @@ Rectangle {
                         if (appsTracker == 0 && addAddressTracker == 0) {
                             if (addressTracker == 0) {
                                 addressTracker = 1
-                                addressIndex = index
+                                addressIndex = uniqueNR
                                 if (addressCoinName.text === currencyList.get(0).name) {
                                     currencyIndex = 0
                                 }
@@ -166,10 +159,10 @@ Rectangle {
                         anchors.fill: parent
                         onClicked: {
                             if (favorite == 1) {
-                                addressList.setProperty(index, "favorite", 0)
+                                addressList.setProperty(uniqueNR, "favorite", 0)
                             }
                             else {
-                                addressList.setProperty(index, "favorite", 1)
+                                addressList.setProperty(uniqueNR, "favorite", 1)
                             }
                         }
                     }
@@ -178,10 +171,35 @@ Rectangle {
         }
     }
 
+    SortFilterProxyModel {
+        id: filteredAddress
+        sourceModel: addressList
+        filters: [
+            AnyOf {
+                RegExpFilter {
+                    roleName: "name"
+                    pattern: "^" + searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "label"
+                    pattern: "^" + searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+            }
+        ]
+        sorters: [
+            RoleSorter { roleName: "favorite"; sortOrder: Qt.DescendingOrder },
+            StringSorter { roleName: "name" },
+            StringSorter { roleName: "coin" },
+            StringSorter { roleName: "label" }
+        ]
+    }
+
     ListView {
         anchors.fill: parent
         id: allAddresses
-        model: addressList
+        model: filteredAddress
         delegate: addressCard
         contentHeight: (totalAddresses * 80)
     }

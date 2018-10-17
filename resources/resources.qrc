@@ -134,5 +134,7 @@
         <file>icons/add_icon_04.svg</file>
         <file>icons/notification_red_circle_icon.svg</file>
         <file>icons/icon-favorite.svg</file>
+        <file>icons/currencycard 01.svg</file>
+        <file>icons/currencycard 02.svg</file>
     </qresource>
 </RCC>

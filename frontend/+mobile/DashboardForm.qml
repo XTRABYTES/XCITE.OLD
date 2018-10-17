@@ -132,6 +132,7 @@ Item {
 
                     Controls.AddressBook {
                         id: myAddressCards
+                        searchFilter: searchForAddress.text
 
                     }
                 }
