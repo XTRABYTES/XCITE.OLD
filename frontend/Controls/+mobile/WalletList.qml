@@ -61,7 +61,7 @@ Rectangle {
                     id: icon
                     source: logo
                     anchors.left: parent.left
-                    anchors.leftMargin: 19
+                    anchors.leftMargin: 14
                     anchors.top: parent.top
                     anchors.topMargin: 14
                     width: 25
