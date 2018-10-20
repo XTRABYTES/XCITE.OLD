@@ -79,7 +79,7 @@ Item {
 
                 }
 
-                DropShadow {
+                /**DropShadow {
                     z: 3
                     anchors.fill: homeHeader
                     source: homeHeader
@@ -91,7 +91,7 @@ Item {
                     color:"#2A2C31"
                     transparentBorder: true
                 }
-
+                */
                 Rectangle {
                     id: homeHeader
                     z: 4
@@ -113,7 +113,7 @@ Item {
                     anchors.verticalCenter: parent.top
                     anchors.verticalCenterOffset: 85
                     width: Screen.width - 55
-                    color: "#727272"
+                    color: searchForAddress.text != "" ? "#F2F2F2" : "#727272"
                     font.pixelSize: 11
                     font.family: "Brandon Grotesque"
                     font.bold: true
@@ -133,11 +133,10 @@ Item {
                     Controls.AddressBook {
                         id: myAddressCards
                         searchFilter: searchForAddress.text
-
                     }
                 }
 
-                DropShadow {
+                /**DropShadow {
                     z: 3
                     anchors.fill: homeHeader2
                     source: homeHeader2
@@ -149,7 +148,7 @@ Item {
                     color:"#2A2C31"
                     transparentBorder: true
                 }
-
+                */
                 Rectangle {
                     id: homeHeader2
                     z: 4
@@ -294,7 +293,7 @@ Item {
                 anchors.left: parent.left
                 anchors.leftMargin: 28
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 15
+                anchors.bottomMargin: 7
                 font.bold: true
 
                 Image {

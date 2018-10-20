@@ -11,7 +11,7 @@
  */
 
 import QtQuick 2.7
-import QtQuick.Controls 2.3
+import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.8
@@ -19,13 +19,15 @@ import QtQuick.Window 2.2
 import SortFilterProxyModel 0.2
 
 
+
 Rectangle {
-    id: allHistoryLines
     width: parent.width
     height: parent.height
     color: "transparent"
 
-    property int selectedWallet: 1
+    property string searchFilter: ""
+    property int selectedWallet: 0
+    property string txcoinName: currencyList.get(selectedWallet).name
 
     Component {
         id: historyLine
@@ -35,218 +37,264 @@ Rectangle {
             width: parent.width
             height: 30
             color: "transparent"
+            visible: amount != 0
 
-            SwipeView {
-                id: lineView
-                currentIndex: 0
-                anchors.fill: parent
+            property int lineView: 0
 
-                Item {
-                    id: part1
-                    visible: lineView.currentIndex == 0
+            Label {
+                id: txDate
+                text: date
+                anchors.left: parent.left
+                anchors.leftMargin: 15
+                anchors.verticalCenter: parent.verticalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 14
+                color: "#F2F2F2"
+                visible: lineView == 0
+            }
 
-                    Label {
-                        id: txDate
-                        text: date
-                        anchors.left: parent.left
-                        anchors.leftMargin: 15
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.family: "Brandon Grotesque"
-                        font.pixelSize: 14
-                        color: "#F2F2F2"
-                    }
+            Image {
+                id: inOut
+                source: 'qrc:/icons/left-arrow2.svg'
+                width: 20
+                height: 14
+                anchors.left: parent.left
+                anchors.leftMargin: 75
+                anchors.verticalCenter: parent.verticalCenter
+                rotation: amount > 0 ? 180 : 0
+                visible: lineView == 0
 
-                    Image {
-                        id: inOut
-                        source: amount > 0 ? 'qrc:/icons/right-arrow2.svg' : 'qrc:/icons/left-arrow2.svg'
-                        width: 20
-                        height: 14
-                        anchors.left: parent.left
-                        anchors.leftMargin: 75
-                        anchors.verticalCenter: parent.verticalCenter
+                ColorOverlay {
+                    anchors.fill: parent
+                    source: parent
+                    color: amount > 0 ? "#5DFC36" : "#FD2E2E"
+                }
+            }
 
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: amount > 0 ? "green" : "red"
-                        }
-                    }
+            Label {
+                id: txAmount
+                property string amountTX: amount.toLocaleString(Qt.locale(), "f", 4)
+                text: amount > 0 ? "+" + amountTX : amountTX
+                anchors.right: parent.right
+                anchors.rightMargin: 45
+                anchors.verticalCenter: parent.verticalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 14
+                color: "#F2F2F2"
+                visible: lineView == 0
+            }
 
-                    Label {
-                        id: txAmount
-                        property string amountTX: amount.toLocaleString(Qt.locale(), "f", 4)
-                        text: amount > 0 ? "+" + amountTX : amountTX
-                        anchors.right: parent.right
-                        anchors.rightMargin: 45
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.family: "Brandon Grotesque"
-                        font.pixelSize: 14
-                        color: "#F2F2F2"
-                    }
+            Image {
+                id: right1
+                source: 'qrc:/icons/right-arrow.svg'
+                width: 14
+                height: 16
+                anchors.right: parent.right
+                anchors.rightMargin: 15
+                anchors.verticalCenter: parent.verticalCenter
+                visible: lineView == 0
 
-                    Image {
-                        id: right1
-                        source: 'qrc:/icons/side-arrow-right.svg'
-                        width: 20
-                        height: 20
-                        anchors.right: parent.right
-                        anchors.rightMargin: 15
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: "#F2F2F2"
-                        }
-
-                        MouseArea {
-                            id: right1Button
-                            anchors.fill: parent
-
-                            onClicked: {
-                                lineView.currentIndex = 1
-                            }
-                        }
-                    }
+                ColorOverlay {
+                    anchors.fill: parent
+                    source: parent
+                    color: "#F2F2F2"
                 }
 
-                Item {
-                    id: part2
-                    visible: lineView.currentIndex == 1
+                MouseArea {
+                    id: right1Button
+                    anchors.fill: parent
 
-                    Image {
-                        id: left2
-                        source: 'qrc:/icons/side-arrow-left.svg'
-                        width: 20
-                        height: 20
-                        anchors.left: parent.left
-                        anchors.leftMargin: 15
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: "#F2F2F2"
-                        }
-
-                        MouseArea {
-                            id: left2Button
-                            anchors.fill: parent
-
-                            onClicked: {
-                                lineView.currentIndex = 0
-                            }
-                        }
-                    }
-
-                    Label {
-                        id: txPartner
-                        function compareAddress(){
-                            var fromto = ""
-                            for(var i = 0; i < addressList.count; i++) {
-                                if (addressList.get(i).address === txpartnerHash) {
-                                    fromto = addressList.get(i).name
-                                }
-                            }
-                            return fromto
-                        }
-                        property string partner: compareAddress()
-                        text: (amount > 0 ? "from " : "to ") + (partner !== "" ? partner : txpartnerHash)
-                        anchors.left: left2.right
-                        anchors.leftMargin: 10
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.family: "Brandon Grotesque"
-                        font.pixelSize: partner != "" ? 14 : 11
-                        color: "#F2F2F2"
-                    }
-                    Image {
-                        id: right2
-                        source: 'qrc:/icons/side-arrow-right.svg'
-                        width: 20
-                        height: 20
-                        anchors.right: parent.right
-                        anchors.rightMargin: 15
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: "#F2F2F2"
-                        }
-
-                        MouseArea {
-                            id: right2Button
-                            anchors.fill: parent
-
-                            onClicked: {
-                                lineView.currentIndex = 2
-                            }
-                        }
-                    }
-                }
-
-                Item {
-                    id: part3
-                    visible: lineView.currentIndex == 2
-
-                    Image {
-                        id: left3
-                        source: 'qrc:/icons/side-arrow-left.svg'
-                        width: 20
-                        height: 20
-                        anchors.left: parent.left
-                        anchors.leftMargin: 15
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: "#F2F2F2"
-                        }
-
-                        MouseArea {
-                            id: left3Button
-                            anchors.fill: parent
-
-                            onClicked: {
-                                lineView.currentIndex = 1
-                            }
-                        }
-                    }
-
-                    Label {
-                        id: txReference
-                        text: "ref: " + reference
-                        anchors.left: left3.right
-                        anchors.leftMargin: 10
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.family: "Brandon Grotesque"
-                        font.pixelSize: 14
-                        color: "#F2F2F2"
+                    onClicked: {
+                        lineView = 1
                     }
                 }
             }
+            Image {
+                id: left2
+                source: 'qrc:/icons/right-arrow.svg'
+                width: 14
+                height: 16
+                anchors.left: parent.left
+                anchors.leftMargin: 15
+                anchors.verticalCenter: parent.verticalCenter
+                rotation: 180
+                visible: lineView == 1
+
+                ColorOverlay {
+                    anchors.fill: parent
+                    source: parent
+                    color: "#F2F2F2"
+                }
+
+                MouseArea {
+                    id: left2Button
+                    anchors.fill: parent
+
+                    onClicked: {
+                        lineView = 0
+                    }
+                }
+            }
+
+            Label {
+                id: txPartner
+
+                function compareAddress(){
+                    var fromto = ""
+                    for(var i = 0; i < addressList.count; i++) {
+                        if (addressList.get(i).address === txpartnerHash) {
+                            if (addressList.get(i).coin === txcoinName) {
+                                fromto = (addressList.get(i).name + " " + addressList.get(i).label)
+                            }
+                        }
+                    }
+                    return fromto
+                }
+
+                property string txpartnerName: compareAddress()
+
+                text: (amount > 0 ? "from " : "to ") + (txpartnerName !== "" ? txpartnerName : txpartnerHash)
+                anchors.left: left2.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: txpartnerName !== "" ? 14 : 11
+                color: "#F2F2F2"
+                visible: lineView == 1
+            }
+            Image {
+                id: right2
+                source: 'qrc:/icons/right-arrow.svg'
+                width: 14
+                height: 16
+                anchors.right: parent.right
+                anchors.rightMargin: 15
+                anchors.verticalCenter: parent.verticalCenter
+                visible: lineView == 1
+
+                ColorOverlay {
+                    anchors.fill: parent
+                    source: parent
+                    color: "#F2F2F2"
+                }
+
+                MouseArea {
+                    id: right2Button
+                    anchors.fill: parent
+
+                    onClicked: {
+                        lineView = 2
+                    }
+                }
+            }
+            Image {
+                id: left3
+                source: 'qrc:/icons/right-arrow.svg'
+                width: 14
+                height: 16
+                anchors.left: parent.left
+                anchors.leftMargin: 15
+                anchors.verticalCenter: parent.verticalCenter
+                rotation: 180
+                visible: lineView == 2
+
+                ColorOverlay {
+                    anchors.fill: parent
+                    source: parent
+                    color: "#F2F2F2"
+                }
+
+                MouseArea {
+                    id: left3Button
+                    anchors.fill: parent
+
+                    onClicked: {
+                        lineView = 1
+                    }
+                }
+            }
+
+            Label {
+                id: txReference
+                text: "ref: " + reference
+                anchors.left: left3.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 14
+                color: "#F2F2F2"
+                visible: lineView == 2
+            }
+
+            /**Image {
+                        id: blockExplorer
+                        width: 18
+                        height: 18
+                        source: 'qrc:/icons/magnifying_glass.svg'
+                        anchors.right: parent.right
+                        anchors.rightMargin: 50
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        ColorOverlay {
+                            anchors.fill: parent
+                            source: parent
+                            color: "#F2F2F2"
+                        }
+
+                        MouseArea {
+                            id: explorerButton
+                            anchors.fill: parent
+
+                            onClicked: {
+                                Qt.openUrlExternally("http://xtrabytes.global/explorer");
+                            }
+                        }
+                    }*/
         }
+    }
+
+
+
+    SortFilterProxyModel {
+        id: filteredTX
+        sourceModel:(selectedWallet == 0 ? xbyTXHistory :
+                        (selectedWallet == 1 ? xfuelTXHistory :
+                            (selectedWallet == 2 ? btcTXHistory : ethTXHistory)))
+        filters: [
+            AnyOf {
+                RegExpFilter {
+                    roleName: "reference"
+                    pattern: "^" + searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "txpartnerHash"
+                    pattern: "^" + searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "txid"
+                    pattern: "^" + searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "amount"
+                    pattern: "^" + searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "date"
+                    pattern: "^" + searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+            }
+        ]
     }
 
     ListView {
         anchors.fill: parent
         id: completeHistory
-        model: {
-            if (selectedWallet == 1) {
-                xbyTXHistory
-            }
-            if (selectedWallet == 2) {
-                xfuelTXHistory
-            }
-            if (selectedWallet == 3) {
-                btcTXHistory
-            }
-            if (selectedWallet == 4) {
-                ethTXHistory
-            }
-        }
-
+        model: filteredTX
         delegate: historyLine
     }
 }

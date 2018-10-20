@@ -26,20 +26,10 @@ Rectangle {
     anchors.top: parent.top
     anchors.topMargin: 50
 
-    /**function compareAddresID(){
-        for(var i = 0; i < addressList.count; i++) {
-            if (addressList.get(i).uniqueNR === addressID) {
-            addressIndex = addressList.get(i).index
-            }
-        }
-        return addressIndex
-    }
-
-    property int referenceIndex: compareAddresID()*/
     property string coinName: addressList.get(addressIndex).coin
-    property url coinLogo: addressList.get(addressIndex).logo
-    property real coinBalance: currencyList.get(currencyIndex).balance
-    property string coinLabel: currencyList.get(currencyIndex).label
+    //property url coinLogo: addressList.get(addressIndex).logo
+    // property real coinBalance: currencyList.get(currencyIndex).balance
+    //property string coinLabel: currencyList.get(currencyIndex).label
     property string sendAddress: addressList.get(addressIndex).address
     property string addressName: addressList.get(addressIndex).name
     property string addressLabel: addressList.get(addressIndex).label
@@ -49,8 +39,8 @@ Rectangle {
     property int confirmationSent: 0
     property int editSaved: 0
     property int addressNR: 0
-    property string amountTransfer: "AMOUNT (" + coinName + ")"
-    property string keyTransfer: "SEND TO (PUBLIC KEY)"
+    property string amountTransfer: "AMOUNT (" + newCoinName.text + ")"
+    //property string keyTransfer: "SEND TO (PUBLIC KEY)"
     property string referenceTransfer: "REFERENCE"
 
     Rectangle {
@@ -214,7 +204,7 @@ Rectangle {
             anchors.top: walletBalance.bottom
             anchors.topMargin: 20
             placeholder: amountTransfer
-            color: "#727272"
+            color: sendAmount.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
@@ -241,7 +231,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: keyInput.bottom
             anchors.topMargin: 25
-            color: "#727272"
+            color: referenceInput.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
@@ -366,12 +356,12 @@ Rectangle {
             }
             Rectangle {
                 id: confirmationSendButton
-                width: (sendConfirmation.width - 45) / 2
+                width: (sendConfirmation.width - 40) / 2
                 height: 33
                 anchors.top: confirmationAddress.bottom
                 anchors.topMargin: 15
                 anchors.left: sendConfirmation.left
-                anchors.leftMargin: 20
+                anchors.leftMargin: 15
                 radius: 8
                 border.color: "#5E8BFF"
                 border.width: 2
@@ -395,7 +385,7 @@ Rectangle {
             }
             Rectangle {
                 id: cancelSendButton
-                width: (sendConfirmation.width - 45) / 2
+                width: (sendConfirmation.width - 40) / 2
                 height: 33
                 radius: 8
                 border.color: "#5E8BFF"
@@ -404,7 +394,7 @@ Rectangle {
                 anchors.top: confirmationAddress.bottom
                 anchors.topMargin: 15
                 anchors.right: sendConfirmation.right
-                anchors.rightMargin: 20
+                anchors.rightMargin: 15
                 MouseArea {
                     anchors.fill: cancelSendButton
 
@@ -520,7 +510,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
-            color: "#F2F2F2"
+            color: newName.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
@@ -535,7 +525,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 25
-            color: "#F2F2F2"
+            color: newLabel.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
@@ -550,7 +540,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newLabel.bottom
             anchors.topMargin: 25
-            color: "#F2F2F2"
+            color: newAddress.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true

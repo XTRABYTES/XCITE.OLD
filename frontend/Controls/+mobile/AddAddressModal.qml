@@ -29,6 +29,37 @@ Rectangle {
 
     property int editSaved: 0
     property int warningEmpty: 0
+    property int doubbleAddress: 0
+    property int doubbleLabel: 0
+    property int addressExists: compareTx()
+    property int labelExists: compareLabel()
+
+    function compareTx(){
+        var duplicateAddress = 0
+        for(var i = 0; i < addressList.count; i++) {
+            if (addressList.get(i).coin === newCoinName.text) {
+                if (addressList.get(i).address === newAddress.text) {
+                    duplicateAddress = 1
+                }
+            }
+        }
+        return duplicateAddress
+    }
+
+    function compareLabel(){
+        var duplicateLabel = 0
+        for(var i = 0; i < addressList.count; i++) {
+            if (addressList.get(i).coin === newCoinName.text) {
+                if (addressList.get(i).name === newName.text) {
+                    if (addressList.get(i).label === newLabel.text) {
+                        duplicateLabel = 1
+                    }
+                }
+            }
+        }
+        return duplicateLabel
+    }
+
 
 
     Rectangle {
@@ -124,11 +155,25 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
-            color: "#F2F2F2"
+            color: newName.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: editSaved == 0
+        }
+
+        Label {
+            id: nameWarning
+            text: "Please fill out this field"
+            color: "#FD2E2E"
+            anchors.left: newName.left
+            anchors.leftMargin: 5
+            anchors.top: newName.bottom
+            anchors.topMargin: 10
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Normal
+            visible: editSaved == 0 && doubbleAddress == 1 && nameWarning.text === ""
         }
 
         Controls.TextInput {
@@ -139,11 +184,39 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 25
-            color: "#F2F2F2"
+            color: newLabel.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: editSaved == 0
+        }
+
+        Label {
+            id: labelWarning1
+            text: "Label already exists!"
+            color: "#FD2E2E"
+            anchors.left: newLabel.left
+            anchors.leftMargin: 10
+            anchors.top: newLabel.bottom
+            anchors.topMargin: 5
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Normal
+            visible: editSaved == 0 && doubbleLabel == 1
+        }
+
+        Label {
+            id: labelWarning2
+            text: "Please fill out this field"
+            color: "#FD2E2E"
+            anchors.left: newLabel.left
+            anchors.leftMargin: 10
+            anchors.top: newLabel.bottom
+            anchors.topMargin: 5
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Normal
+            visible: editSaved == 0 && warningEmpty == 1 && labelWarning2 === ""
         }
 
         Controls.TextInput {
@@ -154,11 +227,39 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newLabel.bottom
             anchors.topMargin: 25
-            color: "#F2F2F2"
+            color: newAddress.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
             visible: editSaved == 0
+        }
+
+        Label {
+            id: addressWarning1
+            text: "Already a contact for this address!"
+            color: "#FD2E2E"
+            anchors.left: newAddress.left
+            anchors.leftMargin: 5
+            anchors.top: newAddress.bottom
+            anchors.topMargin: 10
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Normal
+            visible: editSaved == 0 && doubbleAddress == 1
+        }
+
+        Label {
+            id: addressWarning2
+            text: "Please fill out this field"
+            color: "#FD2E2E"
+            anchors.left: newAddress.left
+            anchors.leftMargin: 5
+            anchors.top: newAddress.bottom
+            anchors.topMargin: 10
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Normal
+            visible: editSaved == 0 && doubbleAddress == 1 && addressWarning2.text === ""
         }
 
         Rectangle {
@@ -193,18 +294,28 @@ Rectangle {
                 anchors.fill: saveEditButton
 
                 onClicked: {
-                    // error handeling (not a number, insufficient funds, negative amount, incorrect address)
-
                     if (newName.text != "" && newLabel.text != "" && newAddress.text != "") {
                         warningEmpty = 0
-                        editSaved = 1
-                        if (newCoinSelect == 1) {
-                            addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
-                            addressID = addressID +1;
+                        if (addressExists == 0) {
+                            doubbleAddress = 0
+                            if (labelExists == 0) {
+                                doubbleLabel = 0
+                                editSaved = 1
+                                if (newCoinSelect == 1) {
+                                    addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
+                                    addressID = addressID +1;
+                                }
+                                else {
+                                    addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(0).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
+                                    addressID = addressID +1;
+                                }
+                            }
+                            else {
+                                doubbleLabel = 1
+                            }
                         }
                         else {
-                            addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(0).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
-                            addressID = addressID +1;
+                            doubbleAddress = 1
                         }
                     }
                     else {
@@ -254,12 +365,14 @@ Rectangle {
                 anchors.fill: closeSaveEdit
 
                 onClicked: {
+                    addAddressTracker = 0;
+                    editSaved = 0;
+                    picklistTracker = 0
+                    newCoinPicklist = 0
+                    newCoinSelect = 0
                     newName.text = ""
                     newLabel.text = ""
                     newAddress.text = ""
-                    editSaved = 0
-                    newCoinPicklist = 0
-                    newCoinSelect = 0
                 }
             }
             Text {
@@ -295,6 +408,8 @@ Rectangle {
                     newCoinPicklist = 0
                     newCoinSelect = 0
                     warningEmpty = 0
+                    doubbleAddress = 0
+                    doubbleLabel = 0
                     newName.text = ""
                     newLabel.text = ""
                     newAddress.text = ""

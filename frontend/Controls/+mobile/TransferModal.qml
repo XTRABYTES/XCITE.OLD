@@ -22,7 +22,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: transactionModal
     width: 325
-    height: transactionSent == 0? 480 : 230
+    height: transactionSent == 0 ? 480 : 230
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -35,7 +35,6 @@ Rectangle {
     property string coinLabel: currencyList.get(currencyIndex).label
     property int modalState: 0
     property int scanQRCodeTracker: 0
-    property int addressBookTracker: 0
     property int transactionSent: 0
     property int confirmationSent: 0
     property int switchState: 0
@@ -44,6 +43,7 @@ Rectangle {
     property string keyTransfer: "SEND TO (PUBLIC KEY)"
     property string referenceTransfer: "REFERENCE"
     property real amountSend: 0
+    property string searchTxText: ""
 
     Rectangle {
         id: transferTitleBar
@@ -53,7 +53,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         color: modalState == 0 ? "#42454F" : "#34363D"
-        visible: transactionSent == 0
+        visible: transactionSent == 0 && addressbookTracker == 0
 
         Text {
             id: transferModalLabel
@@ -84,7 +84,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.right: parent.right
         color: modalState == 1 ? "#42454F" : "#34363D"
-        visible: transactionSent == 0
+        visible: transactionSent == 0 && addressbookTracker == 0
 
         Text {
             id: historyModalLabel
@@ -108,7 +108,7 @@ Rectangle {
     }
 
     Rectangle {
-        id:bodyModal
+        id: bodyModal
         width: parent.width
         height: parent.height - 50
         radius: 4
@@ -123,7 +123,7 @@ Rectangle {
             anchors.top: parent.top
             anchors.topMargin: 20
             state: switchState == 0 ? "off" : "on"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressbookTracker == 0
         }
 
         Text {
@@ -136,7 +136,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Medium
             color: transferSwitch.on ? "#5F5F5F" : "#5E8BFE"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressbookTracker == 0
         }
         Text {
             id: sendText
@@ -148,7 +148,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Medium
             color: transferSwitch.on ? "#5E8BFE" : "#5F5F5F"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressbookTracker == 0
         }
 
         Image {
@@ -159,7 +159,7 @@ Rectangle {
             anchors.left: sendAmount.left
             anchors.top: transferSwitch.bottom
             anchors.topMargin: 10
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressbookTracker == 0
         }
 
         Label {
@@ -172,7 +172,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressbookTracker == 0
         }
 
         Label {
@@ -184,7 +184,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressbookTracker == 0
         }
 
         Text {
@@ -195,7 +195,7 @@ Rectangle {
             anchors.topMargin: 7
             font.pixelSize: 13
             color: "#828282"
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressbookTracker == 0
         }
 
         Image {
@@ -206,7 +206,7 @@ Rectangle {
             anchors.left: transferPicklist.right
             anchors.leftMargin: 10
             anchors.verticalCenter: coinID.verticalCenter
-            visible: transactionSent == 0
+            visible: transactionSent == 0 && addressbookTracker == 0
 
             ColorOverlay {
                 anchors.fill: parent
@@ -236,7 +236,7 @@ Rectangle {
             anchors.top: coinIcon.top
             anchors.topMargin: -5
             anchors.left: coinIcon.left
-            visible: picklistTracker == 1 && transactionSent == 0
+            visible: picklistTracker == 1 && transactionSent == 0 && addressbookTracker == 0
 
             Controls.CurrencyPicklist {
                 id: myCoinPicklist
@@ -254,7 +254,7 @@ Rectangle {
             anchors.top: walletBalance.bottom
             anchors.topMargin: 20
             color: "#F2F2F2"
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0 && addressbookTracker == 0
         }
 
         Item {
@@ -268,7 +268,7 @@ Rectangle {
                 source: "image://QZXing/encode/" + publicKey.text
                 cache: false
             }
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0 && addressbookTracker == 0
         }
 
         Text {
@@ -280,22 +280,22 @@ Rectangle {
             color: "#F2F2F2"
             font.family: "Brandon Grotesque"
             font.bold: true
-            font.pixelSize: 13
+            font.pixelSize: 14
             font.letterSpacing: 1
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0 && addressbookTracker == 0
         }
 
         Text {
             id: publicKey
-            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).address :currencyList.get(currencyIndex).address
+            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).address : currencyList.get(currencyIndex).address
             anchors.top: pubKey.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
             color: "white"
             font.family: "Brandon Grotesque"
-            font.bold: false
-            font.pixelSize: 11
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
+            font.weight: Font.Light
+            font.pixelSize: 12
+            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0 && addressbookTracker == 0
         }
 
         Image {
@@ -306,7 +306,7 @@ Rectangle {
             anchors.left: publicKey.right
             anchors.leftMargin: 5
             anchors.verticalCenter: publicKey.verticalCenter
-            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == false && transactionSent == 0 && addressbookTracker == 0
         }
 
         // Send state
@@ -318,29 +318,31 @@ Rectangle {
             anchors.top: walletBalance.bottom
             anchors.topMargin: 20
             placeholder: amountTransfer
-            color: "#727272"
+            color: sendAmount.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
         }
 
         Controls.TextInput {
             id: keyInput
+            text: newAddressSelect == 1 ? addressList.get(selectAddressIndex).address : ""
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: sendAmount.bottom
-            anchors.topMargin: 15
+            anchors.topMargin: 25
             placeholder: keyTransfer
-            color: "#727272"
+            color: keyInput.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
+            onTextChanged: console.log(addressList.get(selectAddressIndex).address)
         }
         Rectangle {
             id: scanQrButton
-            width: (keyInput.width - 5) / 2
+            width: (keyInput.width - 10) / 2
             height: 33
             anchors.top: keyInput.bottom
             anchors.topMargin: 15
@@ -349,7 +351,7 @@ Rectangle {
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
             MouseArea {
                 anchors.fill: scanQrButton
                 onClicked: {
@@ -368,7 +370,7 @@ Rectangle {
         }
         Rectangle {
             id: addressBookButton
-            width: (keyInput.width - 5) / 2
+            width: (keyInput.width - 10) / 2
             height: 33
             radius: 8
             border.color: "#5E8BFF"
@@ -377,12 +379,12 @@ Rectangle {
             anchors.top: keyInput.bottom
             anchors.topMargin: 15
             anchors.right: keyInput.right
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
             MouseArea {
                 anchors.fill: addressBookButton
 
                 onClicked: {
-                    addressBookTracker = 1
+                    addressbookTracker = 1
                 }
             }
             Text {
@@ -402,12 +404,12 @@ Rectangle {
             placeholder: referenceTransfer
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
-            anchors.topMargin: 15
-            color: "#727272"
+            anchors.topMargin: 25
+            color: referenceInput.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 12
             font.family: "Brandon Grotesque"
             font.bold: true
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
         }
         Rectangle {
             id: sendButton
@@ -418,9 +420,9 @@ Rectangle {
             border.width: 2
             color: "transparent"
             anchors.top: referenceInput.bottom
-            anchors.topMargin: 35
+            anchors.topMargin: 45
             anchors.left: referenceInput.left
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
             MouseArea {
                 anchors.fill: sendButton
 
@@ -596,6 +598,8 @@ Rectangle {
                         sendAmount.text = ""
                         keyInput.text = ""
                         referenceInput.text = ""
+                        newAddresPicklist = 0
+                        newAddressSelect = 0
                         confirmationSent = 0
                         transactionSent = 0
                     }
@@ -612,20 +616,189 @@ Rectangle {
             }
         }
 
+        // Addressbook state
+
+        Rectangle {
+            id: addressPicklistArea
+            width: parent.width
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressbookTitleBar.bottom
+            anchors.topMargin: 10
+            anchors.bottom: bodyModal.bottom
+            anchors.bottomMargin: 63
+            color: "transparent"
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
+
+            Controls.AddressPicklist {
+                id: myAddressPicklist
+                selectedWallet: newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).name === "XBY" ? 0:
+                                                        (currencyList.get(newCoinPicklist).name === "XFUEL" ? 1:
+                                                            (currencyList.get(newCoinPicklist).name === "BTC" ? 2 : 3))) : currencyIndex
+            }
+        }
+
+        Rectangle {
+            id: addressbookTitleBar
+            width: parent.width
+            height: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: bodyModal.top
+            radius: 4
+            color: "#34363D"
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
+        }
+
+        Rectangle {
+            id: addressbookSpacerBar
+            width: parent.width
+            height: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressbookTitleBar.bottom
+            anchors.topMargin: -4
+            color: "#42454F"
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
+        }
+
+        Label {
+            id: addressbookTitle
+            text: "ADDRESSBOOK"
+            anchors.horizontalCenter: bodyModal.horizontalCenter
+            anchors.verticalCenter: addressbookTitleBar.verticalCenter
+            anchors.verticalCenterOffset: -2
+            font.pixelSize: 20
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Bold
+            color: "#F2F2F2"
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
+        }
+
+        Rectangle {
+            width: parent.width
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: addressPicklistArea.bottom
+            anchors.bottom: bodyModal.bottom
+            radius: 4
+            color: "#42454F"
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
+        }
+
+
+        Rectangle {
+            id: cancelAddressButton
+            width: (bodyModal.width - 40) / 2
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.top: addressPicklistArea.bottom
+            anchors.topMargin: 15
+            anchors.horizontalCenter: bodyModal.horizontalCenter
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
+            MouseArea {
+                anchors.fill: cancelAddressButton
+
+                onClicked: {
+                    newAddressPicklist = 0
+                    newAddressSelect = 0
+                    addressbookTracker = 0
+                }
+            }
+            Text {
+                text: "CANCEL"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+
         // History coin state
 
         Rectangle {
             id: historyScrollArea
             width: parent.width
-            height: 250
-            anchors.top : parent.top
-            anchors.topMargin: 150
+            height: 230
+            anchors.top: searchTx.bottom
+            anchors.topMargin: 15
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: modalState == 1 && transferSwitch.state == "off"
 
             Controls.HistoryList {
                 id: myHistoryList
+                searchFilter: searchTxText
+                selectedWallet: newCoinSelect == 1 ?    (currencyList.get(newCoinPicklist).name === "XBY" ? 0:
+                                                            (currencyList.get(newCoinPicklist).name === "XFUEL" ? 1:
+                                                                (currencyList.get(newCoinPicklist).name === "BTC" ? 2 : 3))) : currencyIndex
+            }
+        }
+
+        Rectangle {
+            width: parent.width
+            height: 49
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: walletBalance.bottom
+            anchors.topMargin: 15
+            color: "#42454F"
+            visible: (modalState == 1 && transferSwitch.state == "off")
+        }
+
+        Rectangle {
+            width: parent.width
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: historyScrollArea.bottom
+            anchors.bottom: bodyModal.bottom
+            radius: 4
+            color: "#42454F"
+            visible: (modalState == 1 && transferSwitch.state == "off")
+        }
+
+        Controls.TextInput {
+            id: searchTx
+            height: 34
+            placeholder: "SEARCH TRANSACTIONS"
+            //anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: walletBalance.bottom
+            anchors.topMargin: 15
+            anchors.left: parent.left
+            anchors.leftMargin: 15
+            anchors.right: parent.right
+            anchors.rightMargin: 15
+            width: Screen.width - 55
+            color: searchTx.text != "" ? "#F2F2F2" : "#727272"
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            mobile: 1
+            addressBook: 1
+            visible: modalState == 1 && transferSwitch.state == "off"
+            onTextChanged: searchTxText = searchTx.text
+        }
+
+        Image {
+            id: resetInput
+            source: 'qrc:/icons/CloseIcon.svg'
+            height: 12
+            width: 12
+            anchors.right: searchTx.right
+            anchors.rightMargin: 11
+            anchors.verticalCenter: searchTx.verticalCenter
+            visible: modalState == 1 && transferSwitch.state == "off"
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: "#F2F2F2"
+            }
+
+            MouseArea {
+                anchors.fill : parent
+                onClicked: {
+                    searchTx.text = ""
+                }
             }
         }
     }
@@ -645,20 +818,20 @@ Rectangle {
             anchors.fill: closeTransferModal
 
             onClicked: {
-                if (transferTracker == 1) {
-                    transferTracker = 0;
-                    modalState = 0
-                    currencyIndex = 0
-                    transferSwitch.state = "off"
-                    transactionSent =0
-                    confirmationSent = 0
-                    newCoinSelect = 0
-                    newCoinPicklist = 0
-                    sendAmount.text = ""
-                    keyInput.text = ""
-                    referenceInput.text = ""
-                }
-
+                transferTracker = 0;
+                addressbookTracker = 0;
+                modalState = 0
+                currencyIndex = 0
+                transferSwitch.state = "off"
+                transactionSent =0
+                confirmationSent = 0
+                newCoinSelect = 0
+                newCoinPicklist = 0
+                newAddressSelect = 0
+                newAddressPicklist = 0
+                sendAmount.text = ""
+                keyInput.text = ""
+                referenceInput.text = ""
             }
         }
     }

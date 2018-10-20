@@ -9,6 +9,7 @@
  * This file is part of an XTRABYTES Ltd. project.
  *
  */
+
 import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtQuick.Layouts 1.3

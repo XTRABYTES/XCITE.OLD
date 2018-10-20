@@ -58,7 +58,7 @@ Rectangle {
             text: "MANAGE COINS"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -3
+            anchors.verticalCenterOffset: -2
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             color: "#F2F2F2"
@@ -302,7 +302,7 @@ Rectangle {
 
         Rectangle {
             id: saveSettingsButton
-            width: parent.width - 30
+            width: (parent.width - 10) / 2
             height: 33
             radius: 8
             border.color: "#5E8BFF"
@@ -391,6 +391,7 @@ Rectangle {
 
                 onClicked: {
                     editSaved = 0
+                    addCoinTracker = 0
                 }
             }
             Text {

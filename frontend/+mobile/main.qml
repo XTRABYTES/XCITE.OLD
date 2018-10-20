@@ -24,7 +24,7 @@ ApplicationWindow {
     property string receivingAddressETH: "0x9de2bb59edc421c141a6ba1253703d2beddc3612"
 
     property string nameXBY: "XBY"
-    property string labelXBY: "MAIN"
+    property string labelXBY: "Main"
     property real balanceXBY: 1268426.36 // wallet.balance
     property real unconfirmedXBY: 0
     property real valueXBY: 0.03587
@@ -32,7 +32,7 @@ ApplicationWindow {
     property real percentageXBY: 23.47
 
     property string nameXFUEL: "XFUEL"
-    property string labelXFUEL: "MAIN"
+    property string labelXFUEL: "Main"
     property real balanceXFUEL: 35948.3594 // wallet.balance
     property real unconfirmedXFUEL: 0
     property real valueXFUEL: 0.03587
@@ -40,7 +40,7 @@ ApplicationWindow {
     property real percentageXFUEL: 23.47
 
     property string nameBTC: "BTC"
-    property string labelBTC: "MAIN"
+    property string labelBTC: "Main"
     property real balanceBTC: 2.6492 // wallet.balance
     property real unconfirmedBTC: 0.3658
     property real valueBTC: 6660
@@ -48,7 +48,7 @@ ApplicationWindow {
     property real percentageBTC: 0.59
 
     property string nameETH: "ETH"
-    property string labelETH: "MAIN"
+    property string labelETH: "Main"
     property real balanceETH: 0 // wallet.balance
     property real unconfirmedETH: 0
     property real valueETH: 226.03
@@ -81,6 +81,9 @@ ApplicationWindow {
     property int picklistTracker: 0
     property int newCoinPicklist: 0
     property int newCoinSelect: 0
+    property int addressbookTracker: 0
+    property int newAddressPicklist: 0
+    property int newAddressSelect: 0
     property int addressIndex: 0
     property int currencyIndex: 0
     property int totalLines: 4
@@ -89,12 +92,13 @@ ApplicationWindow {
     property real totalBalance: 0
     property int addressID: 0
     property int walletID: 0
+    property int selectAddressIndex:0
 
     function countWallets(){
         totalWallets = 0
         for(var i = 0; i < currencyList.count; i++) {
             if (currencyList.get(i).active === 1) {
-            totalWallets += 1
+                totalWallets += 1
             }
         }
         return totalWallets
@@ -123,7 +127,6 @@ ApplicationWindow {
         ListElement {
             date: ""
             amount: 0
-            inout: ""
             txid: ""
             txpartnerHash: ""
             reference: ""
@@ -132,14 +135,35 @@ ApplicationWindow {
 
     ListModel {
         id: xfuelTXHistory
+        ListElement {
+            date: ""
+            amount: 0
+            txid: ""
+            txpartnerHash: ""
+            reference: ""
+        }
     }
 
     ListModel {
         id: btcTXHistory
+        ListElement {
+            date: ""
+            amount: 0
+            txid: ""
+            txpartnerHash: ""
+            reference: ""
+        }
     }
 
     ListModel {
         id: ethTXHistory
+        ListElement {
+            date: ""
+            amount: 0
+            txid: ""
+            txpartnerHash: ""
+            reference: ""
+        }
     }
 
     ListModel {
@@ -217,21 +241,36 @@ ApplicationWindow {
 
         xbyTXHistory.setProperty(0, "date", "09/21");
         xbyTXHistory.setProperty(0, "amount", -36482.65);
-        xbyTXHistory.setProperty(0, "inout", "out");
         xbyTXHistory.setProperty(0, "txid", "48g48yj48q41tyv1y4");
         xbyTXHistory.setProperty(0, "txpartnerHash", "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexd");
         xbyTXHistory.setProperty(0, "reference", "merchandise");
-        xbyTXHistory.append ({"date": "09/15", "amount": 23684, "inout": "in", "txid": "4sd89f65d8F48H68eG4", "txpartnerHash": "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc", "reference": "cookies"});
-        xbyTXHistory.append ({"date": "09/13", "amount": -3594.23, "inout": "out", "txid": "89b488y4rrt1r99FHT1H48q4", "txpartnerHash": "BM39fjwf093JF329f39fJFfa03987fja32f", "reference": "sox"});
-        xbyTXHistory.append ({"date": "09/08", "amount": 6185.59, "inout": "in", "txid": "JYT489444B8489tr98y498", "txpartnerHash": "BM39fjwf093JF329f39fJFfa03987fja32e", "reference": "t-shirts"});
+        xbyTXHistory.append ({"date": "09/15", "amount": 23684, "txid": "4sd89f65d8F48H68eG4", "txpartnerHash": "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc", "reference": "cookies"});
+        xbyTXHistory.append ({"date": "09/13", "amount": -3594.23, "txid": "89b488y4rrt1r99FHT1H48q4", "txpartnerHash": "BM39fjwf093JF329f39fJFfa03987fja32f", "reference": "sox"});
+        xbyTXHistory.append ({"date": "09/08", "amount": 6185.59, "txid": "JYT489444B8489tr98y498", "txpartnerHash": "Bx33fjwf023JxoP9f39fJFfa0398wqWeJ9", "reference": "t-shirts"});
 
-        xfuelTXHistory.append ({"date": "09/14", "amount": 84494, "inout": "in", "txid": "4sd89f65d8F48H68eG4", "txpartnerHash": "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc", "reference": "cookies"});
-        xfuelTXHistory.append ({"date": "09/10", "amount": 4842.489, "inout": "in", "txid": "89b488y4rrt1r99FHT1H48q4", "txpartnerHash": "BM39fjwf093JF329f39fJFfa03987fja32f", "reference": "sox"});
-        xfuelTXHistory.append ({"date": "08/21", "amount": -31856.94, "inout": "out", "txid": "JYT489444B8489tr98y498", "txpartnerHash": "BM39fjwf093JF329f39fJFfa03987fja32e", "reference": "t-shirts"});
+        xfuelTXHistory.setProperty(0, "date", "09/21");
+        xfuelTXHistory.setProperty(0, "amount", -45965.59);
+        xfuelTXHistory.setProperty(0, "txid", "48g48yj48q41tyv1y4");
+        xfuelTXHistory.setProperty(0, "txpartnerHash", "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexd");
+        xfuelTXHistory.setProperty(0, "reference", "merchandise");
+        xfuelTXHistory.append ({"date": "09/14", "amount": 84494, "txid": "4sd89f65d8F48H68eG4", "txpartnerHash": "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc", "reference": "cookies"});
+        xfuelTXHistory.append ({"date": "09/10", "amount": 4842.489, "txid": "89b488y4rrt1r99FHT1H48q4", "txpartnerHash": "Bkf3019jzmkFAJowaj392JAFAlafj032jJ", "reference": "sox"});
+        xfuelTXHistory.append ({"date": "08/21", "amount": -31856.94, "txid": "JYT489444B8489tr98y498", "txpartnerHash": "Bx33fjwf023JxoP9f39fJFfa0398wqWeJ9", "reference": "t-shirts"});
+        xfuelTXHistory.append ({"date": "08/14", "amount": 84494, "txid": "4sd89f65d8F48H68eG4", "txpartnerHash": "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc", "reference": "cookies"});
+        xfuelTXHistory.append ({"date": "08/10", "amount": 4842.489, "txid": "89b488y4rrt1r99FHT1H48q4", "txpartnerHash": "Bkf3019jzmkFAJowaj392JAFAlafj032jJ", "reference": "sox"});
+        xfuelTXHistory.append ({"date": "08/21", "amount": -31856.94, "txid": "JYT489444B8489tr98y498", "txpartnerHash": "Bx33fjwf023JxoP9f39fJFfa0398wqWeJ9", "reference": "t-shirts"});
+        xfuelTXHistory.append ({"date": "07/14", "amount": 84494, "txid": "4sd89f65d8F48H68eG4", "txpartnerHash": "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc", "reference": "cookies"});
+        xfuelTXHistory.append ({"date": "07/10", "amount": 4842.489, "txid": "89b488y4rrt1r99FHT1H48q4", "txpartnerHash": "Bkf3019jzmkFAJowaj392JAFAlafj032jJ", "reference": "sox"});
+        xfuelTXHistory.append ({"date": "06/21", "amount": -31856.94, "txid": "JYT489444B8489tr98y498", "txpartnerHash": "Bx33fjwf023JxoP9f39fJFfa0398wqWeJ9", "reference": "t-shirts"});
 
-        btcTXHistory.append ({"date": "09/14", "amount": 8.4494, "inout": "in", "txid": "4sd89f65d8F48H68eG4", "txpartnerHash": "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc", "reference": "cookies"});
-        btcTXHistory.append ({"date": "09/10", "amount": 0.4842489, "inout": "in", "txid": "89b488y4rrt1r99FHT1H48q4", "txpartnerHash": "BM39fjwf093JF329f39fJFfa03987fja32f", "reference": "sox"});
-        btcTXHistory.append ({"date": "08/21", "amount": -3.185694, "inout": "out", "txid": "JYT489444B8489tr98y498", "txpartnerHash": "BM39fjwf093JF329f39fJFfa03987fja32e", "reference": "t-shirts"});
+        btcTXHistory.setProperty(0, "date", "09/21");
+        btcTXHistory.setProperty(0, "amount", -2.6563);
+        btcTXHistory.setProperty(0, "txid", "48g48yj48q41tyv1y4");
+        btcTXHistory.setProperty(0, "txpartnerHash", "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexd");
+        btcTXHistory.setProperty(0, "reference", "merchandise");
+        btcTXHistory.append ({"date": "09/14", "amount": 8.4494, "txid": "4sd89f65d8F48H68eG4", "txpartnerHash": "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc", "reference": "cookies"});
+        btcTXHistory.append ({"date": "09/10", "amount": 0.4842489, "txid": "89b488y4rrt1r99FHT1H48q4", "txpartnerHash": "BM39fjwf093JF329f39fJFfa03987fja32f", "reference": "sox"});
+        btcTXHistory.append ({"date": "08/21", "amount": -3.185694, "txid": "JYT489444B8489tr98y498", "txpartnerHash": "Bx33fjwf023JxoP9f39fJFfa0398wqWeJ9", "reference": "t-shirts"});
 
     }
 
