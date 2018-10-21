@@ -417,8 +417,14 @@ Rectangle {
         color: "#F2F2F2"
         visible: addCoinTracker == 1 && editSaved == 0
 
+        Rectangle{
+            id: closeButton
+            anchors.fill: parent
+            color: "transparent"
+        }
+
         MouseArea {
-            anchors.fill: closeAddCoinModal
+            anchors.fill: closeButton
 
             onClicked: {
                 if (addCoinTracker == 1) {

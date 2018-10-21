@@ -77,7 +77,8 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     font.weight: Font.Medium
                     anchors.verticalCenter: addressCoinLogo.verticalCenter
-                    anchors.horizontalCenter: cardBackground.horizontalCenter
+                    anchors.left: addressName.right
+                    anchors.leftMargin: 10
                 }
 
                 Label {
@@ -127,7 +128,7 @@ Rectangle {
 
                     onClicked: {
                         if (appsTracker == 0 && addAddressTracker == 0) {
-                            if (addressTracker == 0) {
+                            if (addressTracker == 0 && transferTracker == 0) {
                                 addressTracker = 1
                                 addressIndex = uniqueNR
                                 if (addressCoinName.text === currencyList.get(0).name) {

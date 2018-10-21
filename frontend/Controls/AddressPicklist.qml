@@ -44,23 +44,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
 
-                function lookUpIndex(){
-                    var result = 0
-                    for(var i = 0; i < addressList.count; i++) {
-                        if (addressList.get(i).uniqueNR === newAddressPicklist) {
-                            result = i
-                            console.log("selected address index is: " + i)
-                        }
-                    }
-                    return result
-                }
-
                 onClicked: {
-                    newAddressPicklist = uniqueNR;
-                    newAddressSelect = 1;
                     addressbookTracker = 0;
-                    selectAddressIndex = lookUpIndex();
-                    console.log(addressList.get(selectAddressIndex).address);
+                    selectedAddress = address
+                    console.log("value for selected address is: " + selectedAddress )
                 }
             }
 

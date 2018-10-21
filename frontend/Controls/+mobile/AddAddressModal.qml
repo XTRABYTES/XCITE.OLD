@@ -123,9 +123,10 @@ Rectangle {
             source: 'qrc:/icons/dropdown_icon.svg'
             height: 20
             width: 20
-            anchors.left: newPicklist.right
+            anchors.left: picklistTracker == 0 ? newCoinName.right : newPicklist.right
             anchors.leftMargin: 10
             anchors.verticalCenter: newCoinName.verticalCenter
+            rotation: picklistTracker == 0 ? 0 : 180
             visible: editSaved == 0
 
             ColorOverlay {
@@ -134,8 +135,18 @@ Rectangle {
                 color: "#F2F2F2"
             }
 
+            Rectangle {
+                id: picklistButton
+                height: 20
+                width: 20
+                radius: 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "transparent"
+            }
+
             MouseArea {
-                anchors.fill: parent
+                anchors.fill: picklistButton
                 onClicked: {
                     if (picklistTracker == 0) {
                         picklistTracker = 1
@@ -150,16 +161,14 @@ Rectangle {
         Controls.TextInput {
             id: newName
             height: 34
-            // radius: 8
             placeholder: "CONTACT NAME"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
             color: newName.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: editSaved == 0
+            mobile: 1
         }
 
         Label {
@@ -185,10 +194,9 @@ Rectangle {
             anchors.top: newName.bottom
             anchors.topMargin: 25
             color: newLabel.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: editSaved == 0
+            mobile: 1
         }
 
         Label {
@@ -228,10 +236,9 @@ Rectangle {
             anchors.top: newLabel.bottom
             anchors.topMargin: 25
             color: newAddress.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: editSaved == 0
+            mobile: 1
         }
 
         Label {
@@ -398,8 +405,14 @@ Rectangle {
         color: "#F2F2F2"
         visible: addAddressTracker == 1 && editSaved == 0
 
+        Rectangle{
+            id: closeButton
+            anchors.fill: parent
+            color: "transparent"
+        }
+
         MouseArea {
-            anchors.fill: closeAddressModal
+            anchors.fill: closeButton
 
             onClicked: {
                 if (addAddressTracker == 1) {

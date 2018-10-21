@@ -114,9 +114,7 @@ Item {
                     anchors.verticalCenterOffset: 85
                     width: Screen.width - 55
                     color: searchForAddress.text != "" ? "#F2F2F2" : "#727272"
-                    font.pixelSize: 11
-                    font.family: "Brandon Grotesque"
-                    font.bold: true
+                    font.pixelSize: 14
                     mobile: 1
                     addressBook: 1
                 }

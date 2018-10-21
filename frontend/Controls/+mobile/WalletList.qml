@@ -87,7 +87,7 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.rightMargin: 14
                     anchors.verticalCenter: coinName.verticalCenter
-                    text: balance.toLocaleString(Qt.locale(), "f", 4)
+                    text: balance.toLocaleString(Qt.locale(), "f", 4) + " " + name
                     font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     color: "#E5E5E5"

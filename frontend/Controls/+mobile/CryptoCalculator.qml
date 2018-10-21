@@ -258,11 +258,10 @@ Rectangle {
             anchors.top: xbyButton1.bottom
             anchors.topMargin: 20
             color: "#F2F2F2"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Medium
+            font.pixelSize: 14
             horizontalAlignment: TextInput.AlignRight
             validator: DoubleValidator {bottom: 0}
+            mobile: 1
 
         }
 
@@ -530,10 +529,9 @@ Rectangle {
             anchors.top: xbyButton2.bottom
             anchors.topMargin: 20
             color: "#F2F2F2"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Medium
+            font.pixelSize: 14
             readOnly: true
+            mobile: 1
         }
 
         Label {

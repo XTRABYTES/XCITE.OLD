@@ -139,6 +139,7 @@ Rectangle {
         }
     }
 
+    /**
     Text {
         id: calculatorLink
         text: "CALCULATOR"
@@ -156,6 +157,7 @@ Rectangle {
             }
         }
     }
+    */
 
     Rectangle {
         anchors.left: parent.right

@@ -9,6 +9,7 @@
  * This file is part of an XTRABYTES Ltd. project.
  *
  */
+
 import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
@@ -82,8 +83,7 @@ ApplicationWindow {
     property int newCoinPicklist: 0
     property int newCoinSelect: 0
     property int addressbookTracker: 0
-    property int newAddressPicklist: 0
-    property int newAddressSelect: 0
+    property string selectedAddress: ""
     property int addressIndex: 0
     property int currencyIndex: 0
     property int totalLines: 4
@@ -92,7 +92,7 @@ ApplicationWindow {
     property real totalBalance: 0
     property int addressID: 0
     property int walletID: 0
-    property int selectAddressIndex:0
+    property int selectAddressIndex: 0
 
     function countWallets(){
         totalWallets = 0
@@ -202,7 +202,7 @@ ApplicationWindow {
 
         addressList.setProperty(0, "address", receivingAddress);
         addressList.setProperty(0, "name", "My address");
-        addressList.setProperty(0, "label", "MAIN");
+        addressList.setProperty(0, "label", "Main");
         addressList.setProperty(0, "logo", '../icons/XBY_card_logo_colored_05.svg');
         addressList.setProperty(0, "coin", "XBY");
         addressList.setProperty(0, "favorite", 1);
@@ -219,7 +219,7 @@ ApplicationWindow {
         addressID = addressID + 1;
 
         currencyList.setProperty(0, "name", "XBY");
-        currencyList.setProperty(0, "label", "MAIN");
+        currencyList.setProperty(0, "label", "Main");
         currencyList.setProperty(0, "logo", '../icons/XBY_card_logo_colored_05.svg');
         currencyList.setProperty(0, "address", receivingAddress);
         currencyList.setProperty(0, "balance", balanceXBY);
@@ -232,11 +232,11 @@ ApplicationWindow {
         currencyList.setProperty(0, "favorite", 0);
         currencyList.setProperty(0, "walletNR", walletID);
         walletID = walletID +1;
-        currencyList.append({"name": "XFUEL", "label": "MAIN", "logo": '../icons/XFUEL_card_logo_colored_07.svg', "address": receivingAddressXFUEL, "balance" : balanceXFUEL, "unconfirmedCoins": unconfirmedXFUEL, "coinValue": valueXFUEL, "coinValueBTC": btcValueXFUEL, "percentage": percentageXFUEL, "fiatValue": (balanceXFUEL * valueXFUEL), "active": 1, "favorite": 0, "walletNR": walletID});
+        currencyList.append({"name": "XFUEL", "label": "Main", "logo": '../icons/XFUEL_card_logo_colored_07.svg', "address": receivingAddressXFUEL, "balance" : balanceXFUEL, "unconfirmedCoins": unconfirmedXFUEL, "coinValue": valueXFUEL, "coinValueBTC": btcValueXFUEL, "percentage": percentageXFUEL, "fiatValue": (balanceXFUEL * valueXFUEL), "active": 1, "favorite": 0, "walletNR": walletID});
         walletID = walletID +1;
-        currencyList.append({"name": "BTC", "label": "MAIN", "logo": '../icons/BTC-color.svg', "address": receivingAddressBTC, "balance" : balanceBTC, "unconfirmedCoins": unconfirmedBTC, "coinValue": valueBTC, "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "fiatValue": (balanceBTC * valueBTC), "active": 1, "favorite": 0, "walletNR": walletID});
+        currencyList.append({"name": "BTC", "label": "Main", "logo": '../icons/BTC-color.svg', "address": receivingAddressBTC, "balance" : balanceBTC, "unconfirmedCoins": unconfirmedBTC, "coinValue": valueBTC, "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "fiatValue": (balanceBTC * valueBTC), "active": 1, "favorite": 0, "walletNR": walletID});
         walletID = walletID +1;
-        currencyList.append({"name": "ETH", "label": "MAIN", "logo": '../icons/ETH-color.svg', "address": receivingAddressETH, "balance" : balanceETH, "unconfirmedCoins": unconfirmedETH, "coinValue": valueETH, "coinValueBTC": btcValueETH, "percentage": percentageETH, "fiatValue": (balanceETH * valueETH), "active": 1, "favorite": 0, "walletNR": walletID});
+        currencyList.append({"name": "ETH", "label": "Main", "logo": '../icons/ETH-color.svg', "address": receivingAddressETH, "balance" : balanceETH, "unconfirmedCoins": unconfirmedETH, "coinValue": valueETH, "coinValueBTC": btcValueETH, "percentage": percentageETH, "fiatValue": (balanceETH * valueETH), "active": 1, "favorite": 0, "walletNR": walletID});
         walletID = walletID +1;
 
         xbyTXHistory.setProperty(0, "date", "09/21");

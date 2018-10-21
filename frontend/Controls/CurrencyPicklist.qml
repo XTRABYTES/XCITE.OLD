@@ -67,7 +67,7 @@ Rectangle {
             }
 
             MouseArea {
-                anchors.fill: pickListCoinName
+                anchors.fill: parent
 
                 onClicked: {
                     newCoinPicklist = index;

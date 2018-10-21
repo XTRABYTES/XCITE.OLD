@@ -100,9 +100,18 @@ Rectangle {
                     color: "#F2F2F2"
                 }
 
+                Rectangle {
+                    id: button1
+                    height: 16
+                    width: 16
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: "transparent"
+                }
+
                 MouseArea {
                     id: right1Button
-                    anchors.fill: parent
+                    anchors.fill: button1
 
                     onClicked: {
                         lineView = 1
@@ -126,9 +135,18 @@ Rectangle {
                     color: "#F2F2F2"
                 }
 
+                Rectangle{
+                    id: button2
+                    height: 16
+                    width: 16
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: "transparent"
+                }
+
                 MouseArea {
                     id: left2Button
-                    anchors.fill: parent
+                    anchors.fill: button2
 
                     onClicked: {
                         lineView = 0
@@ -178,9 +196,18 @@ Rectangle {
                     color: "#F2F2F2"
                 }
 
+                Rectangle{
+                    id: button3
+                    height: 16
+                    width: 16
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: "transparent"
+                }
+
                 MouseArea {
                     id: right2Button
-                    anchors.fill: parent
+                    anchors.fill: button3
 
                     onClicked: {
                         lineView = 2
@@ -204,9 +231,18 @@ Rectangle {
                     color: "#F2F2F2"
                 }
 
+                Rectangle{
+                    id: button4
+                    height: 16
+                    width: 16
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: "transparent"
+                }
+
                 MouseArea {
                     id: left3Button
-                    anchors.fill: parent
+                    anchors.fill: button4
 
                     onClicked: {
                         lineView = 1

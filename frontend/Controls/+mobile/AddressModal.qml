@@ -9,6 +9,7 @@
  * This file is part of an XTRABYTES Ltd. project.
  *
  */
+
 import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
@@ -20,16 +21,13 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: addressModal
     width: 325
-    height: (transactionSent == 1 || editSaved == 1)? 230 : 410
+    height: (transactionSent == 1 || editSaved == 1)? 230 : 425
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 50
 
     property string coinName: addressList.get(addressIndex).coin
-    //property url coinLogo: addressList.get(addressIndex).logo
-    // property real coinBalance: currencyList.get(currencyIndex).balance
-    //property string coinLabel: currencyList.get(currencyIndex).label
     property string sendAddress: addressList.get(addressIndex).address
     property string addressName: addressList.get(addressIndex).name
     property string addressLabel: addressList.get(addressIndex).label
@@ -40,7 +38,6 @@ Rectangle {
     property int editSaved: 0
     property int addressNR: 0
     property string amountTransfer: "AMOUNT (" + newCoinName.text + ")"
-    //property string keyTransfer: "SEND TO (PUBLIC KEY)"
     property string referenceTransfer: "REFERENCE"
 
     Rectangle {
@@ -183,18 +180,18 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
-            visible: transactionSent == 0 && addressSwitch.state == "off"
+            visible: transactionSent == 0
         }
 
         Text {
             id: walletBalance
-            text: (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", 4)
+            text: (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", 4) + " " + newCoinName.text
             anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
             anchors.topMargin: 7
             font.pixelSize: 13
             color: "#828282"
-            visible: transactionSent == 0 && addressSwitch.state == "off"
+            visible: transactionSent == 0
         }
 
         Controls.TextInput {
@@ -202,40 +199,39 @@ Rectangle {
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: walletBalance.bottom
-            anchors.topMargin: 20
+            anchors.topMargin: 25
             placeholder: amountTransfer
             color: sendAmount.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: transactionSent == 0 && addressSwitch.state == "off"
+            mobile: 1
         }
-        Label {
+
+        Controls.TextInput {
             id: keyInput
-            anchors.left: sendAmount.left
+            height: 34
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: sendAmount.bottom
             anchors.topMargin: 25
-            text: "to " + sendAddress
-            color: "#F2F2F2"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Medium
+            placeholder: sendAddress
+            color: keyInput.text != "" ? "#F2F2F2" : "#727272"
+            font.pixelSize: 14
             visible: transactionSent == 0 && addressSwitch.state == "off"
+            readOnly: true
+            mobile: 1
         }
 
         Controls.TextInput {
             id: referenceInput
             height: 34
-            // radius: 8
             placeholder: referenceTransfer
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: keyInput.bottom
             anchors.topMargin: 25
             color: referenceInput.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: transactionSent == 0 && addressSwitch.state == "off"
+            mobile: 1
         }
         Rectangle {
             id: transferModalButton
@@ -478,10 +474,11 @@ Rectangle {
             source: 'qrc:/icons/dropdown_icon.svg'
             height: 20
             width: 20
-            anchors.left: newPicklist.right
+            anchors.left: picklistTracker == 0 ? newCoinName.right : newPicklist.right
             anchors.leftMargin: 10
             anchors.verticalCenter: newCoinName.verticalCenter
             visible: addressSwitch.state == "on" && editSaved == 0
+            rotation: picklistTracker == 0 ? 0 : 180
 
             ColorOverlay {
                 anchors.fill: parent
@@ -489,8 +486,18 @@ Rectangle {
                 color: "#F2F2F2"
             }
 
+            Rectangle {
+                id: picklistButton
+                height: 20
+                width: 20
+                radius: 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "transparent"
+            }
+
             MouseArea {
-                anchors.fill: parent
+                anchors.fill: picklistButton
                 onClicked: {
                     if (picklistTracker == 0) {
                         picklistTracker = 1
@@ -508,13 +515,12 @@ Rectangle {
             // radius: 8
             placeholder: addressName
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: newIcon.bottom
+            anchors.top: walletBalance.bottom
             anchors.topMargin: 25
             color: newName.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: addressSwitch.state == "on" && editSaved == 0
+            mobile: 1
         }
 
         Controls.TextInput {
@@ -526,10 +532,9 @@ Rectangle {
             anchors.top: newName.bottom
             anchors.topMargin: 25
             color: newLabel.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: addressSwitch.state == "on" && editSaved == 0
+            mobile: 1
         }
 
         Controls.TextInput {
@@ -541,10 +546,9 @@ Rectangle {
             anchors.top: newLabel.bottom
             anchors.topMargin: 25
             color: newAddress.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: addressSwitch.state == "on" && editSaved == 0
+            mobile: 1
         }
 
         Rectangle {
@@ -623,8 +627,14 @@ Rectangle {
         color: "#F2F2F2"
         visible: addressTracker == 1 && confirmationSent == 0 && editSaved == 0
 
+        Rectangle{
+            id: closeButton
+            anchors.fill: parent
+            color: "transparent"
+        }
+
         MouseArea {
-            anchors.fill: closeAddressModal
+            anchors.fill: closeButton
 
             onClicked: {
                 if (addressTracker == 1) {

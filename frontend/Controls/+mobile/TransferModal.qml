@@ -65,13 +65,14 @@ Rectangle {
             font.family: "Brandon Grotesque"
             color: modalState == 0 ? "#F2F2F2" : "#5F5F5F"
             font.letterSpacing: 2
-            MouseArea {
-                height: parent.height
-                width: parent.width
-                onClicked: {
-                    modalState = 0
-                    transferSwitch.state = "off"
-                }
+        }
+
+        MouseArea {
+            height: transferTitleBar.height
+            width: parent.width
+            onClicked: {
+                modalState = 0
+                transferSwitch.state = "off"
             }
         }
     }
@@ -96,13 +97,14 @@ Rectangle {
             font.family: "Brandon Grotesque"
             color: modalState == 1 ? "#F2F2F2" : "#5F5F5F"
             font.letterSpacing: 2
-            MouseArea {
-                height: parent.height
-                width: parent.width
-                onClicked: {
-                    modalState = 1
-                    transferSwitch.state = "off"
-                }
+        }
+
+        MouseArea {
+            height: historyTitleBar.height
+            width: parent.width
+            onClicked: {
+                modalState = 1
+                transferSwitch.state = "off"
             }
         }
     }
@@ -189,7 +191,7 @@ Rectangle {
 
         Text {
             id: walletBalance
-            text: newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance).toLocaleString(Qt.locale(), "f", 4) : (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", 4)
+            text: (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance).toLocaleString(Qt.locale(), "f", 4) : (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", 4)) + " " + coinID.text
             anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
             anchors.topMargin: 7
@@ -203,9 +205,10 @@ Rectangle {
             source: 'qrc:/icons/dropdown_icon.svg'
             height: 20
             width: 20
-            anchors.left: transferPicklist.right
+            anchors.left: picklistTracker == 0 ? coinID.right : transferPicklist.right
             anchors.leftMargin: 10
             anchors.verticalCenter: coinID.verticalCenter
+            rotation: picklistTracker == 0 ? 0 : 180
             visible: transactionSent == 0 && addressbookTracker == 0
 
             ColorOverlay {
@@ -214,8 +217,18 @@ Rectangle {
                 color: "#F2F2F2"
             }
 
+            Rectangle{
+                id: picklistButton
+                height: 20
+                width: 20
+                radius: 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "transparent"
+            }
+
             MouseArea {
-                anchors.fill: parent
+                anchors.fill: picklistButton
                 onClicked: {
                     if (picklistTracker == 0) {
                         picklistTracker = 1
@@ -263,6 +276,7 @@ Rectangle {
             height: 180
             anchors.horizontalCenter: qrBorder.horizontalCenter
             anchors.verticalCenter: qrBorder.verticalCenter
+
             Image {
                 anchors.fill: parent
                 source: "image://QZXing/encode/" + publicKey.text
@@ -319,27 +333,25 @@ Rectangle {
             anchors.topMargin: 20
             placeholder: amountTransfer
             color: sendAmount.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
+            mobile: 1
         }
 
         Controls.TextInput {
             id: keyInput
-            text: newAddressSelect == 1 ? addressList.get(selectAddressIndex).address : ""
+            text: selectedAddress
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: sendAmount.bottom
             anchors.topMargin: 25
             placeholder: keyTransfer
             color: keyInput.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
-            onTextChanged: console.log(addressList.get(selectAddressIndex).address)
+            mobile: 1
         }
+
         Rectangle {
             id: scanQrButton
             width: (keyInput.width - 10) / 2
@@ -352,12 +364,14 @@ Rectangle {
             border.width: 2
             color: "transparent"
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
+
             MouseArea {
                 anchors.fill: scanQrButton
                 onClicked: {
                     scanQRCodeTracker = 1
                 }
             }
+
             Text {
                 text: "SCAN QR"
                 font.family: "Brandon Grotesque"
@@ -368,6 +382,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
+
         Rectangle {
             id: addressBookButton
             width: (keyInput.width - 10) / 2
@@ -380,6 +395,7 @@ Rectangle {
             anchors.topMargin: 15
             anchors.right: keyInput.right
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
+
             MouseArea {
                 anchors.fill: addressBookButton
 
@@ -387,6 +403,7 @@ Rectangle {
                     addressbookTracker = 1
                 }
             }
+
             Text {
                 text: "ADDRESS BOOK"
                 font.family: "Brandon Grotesque"
@@ -397,20 +414,20 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
+
         Controls.TextInput {
             id: referenceInput
             height: 34
-            // radius: 8
             placeholder: referenceTransfer
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 25
             color: referenceInput.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 12
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
+            mobile: 1
         }
+
         Rectangle {
             id: sendButton
             width: keyInput.width
@@ -423,6 +440,7 @@ Rectangle {
             anchors.topMargin: 45
             anchors.left: referenceInput.left
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
+
             MouseArea {
                 anchors.fill: sendButton
 
@@ -431,6 +449,7 @@ Rectangle {
                     transactionSent = 1
                 }
             }
+
             Text {
                 text: "SEND"
                 font.family: "Brandon Grotesque"
@@ -452,6 +471,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: transactionSent == 1 && confirmationSent == 0
+
             Text {
                 id: confirmationText
                 text: "You are about to send:"
@@ -463,6 +483,7 @@ Rectangle {
                 font.weight: Font.Normal
                 color: "#F2F2F2"
             }
+
             Text {
                 id: confirmationAmount
                 text: newCoinSelect == 1 ? sendAmount.text + " " + currencyList.get(newCoinPicklist).name : sendAmount.text + " " + currencyList.get(currencyIndex).name
@@ -474,6 +495,7 @@ Rectangle {
                 font.weight: Font.Medium
                 color: "#F2F2F2"
             }
+
             Text {
                 id: to
                 text: "to"
@@ -485,6 +507,7 @@ Rectangle {
                 font.weight: Font.Normal
                 color: "#F2F2F2"
             }
+
             Text {
                 id: confirmationAddress
                 text: keyInput.text
@@ -496,6 +519,7 @@ Rectangle {
                 font.weight: Font.Normal
                 color: "#F2F2F2"
             }
+
             Rectangle {
                 id: confirmationSendButton
                 width: (sendConfirmation.width - 45) / 2
@@ -508,6 +532,7 @@ Rectangle {
                 border.color: "#5E8BFF"
                 border.width: 2
                 color: "transparent"
+
                 MouseArea {
                     anchors.fill: confirmationSendButton
                     onClicked: {
@@ -515,6 +540,7 @@ Rectangle {
                         // whatever function needed to execute payment
                     }
                 }
+
                 Text {
                     text: "CONFIRM"
                     font.family: "Brandon Grotesque"
@@ -525,6 +551,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
+
             Rectangle {
                 id: cancelSendButton
                 width: (sendConfirmation.width - 45) / 2
@@ -537,6 +564,7 @@ Rectangle {
                 anchors.topMargin: 15
                 anchors.right: sendConfirmation.right
                 anchors.rightMargin: 20
+
                 MouseArea {
                     anchors.fill: cancelSendButton
 
@@ -544,6 +572,7 @@ Rectangle {
                         transactionSent = 0
                     }
                 }
+
                 Text {
                     text: "CANCEL"
                     font.family: "Brandon Grotesque"
@@ -566,6 +595,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             visible: transactionSent == 1 && confirmationSent == 1
+
             Image {
                 id: confirmedIcon
                 source: 'qrc:/icons/rocket.svg'
@@ -574,12 +604,14 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.verticalCenterOffset: -15
+
                 ColorOverlay {
                     anchors.fill: parent
                     source: confirmedIcon
                     color: "#5E8BFF"
                 }
             }
+
             Rectangle {
                 id: closeConfirm
                 width: (parent.width - 45) / 2
@@ -591,6 +623,7 @@ Rectangle {
                 anchors.top: confirmedIcon.bottom
                 anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
+
                 MouseArea {
                     anchors.fill: closeConfirm
 
@@ -598,12 +631,12 @@ Rectangle {
                         sendAmount.text = ""
                         keyInput.text = ""
                         referenceInput.text = ""
-                        newAddresPicklist = 0
-                        newAddressSelect = 0
+                        selectedAddress = ""
                         confirmationSent = 0
                         transactionSent = 0
                     }
                 }
+
                 Text {
                     text: "OK"
                     font.family: "Brandon Grotesque"
@@ -695,6 +728,7 @@ Rectangle {
             anchors.topMargin: 15
             anchors.horizontalCenter: bodyModal.horizontalCenter
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
+
             MouseArea {
                 anchors.fill: cancelAddressButton
 
@@ -704,6 +738,7 @@ Rectangle {
                     addressbookTracker = 0
                 }
             }
+
             Text {
                 text: "CANCEL"
                 font.family: "Brandon Grotesque"
@@ -769,13 +804,10 @@ Rectangle {
             anchors.rightMargin: 15
             width: Screen.width - 55
             color: searchTx.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.bold: true
+            font.pixelSize: 14
             mobile: 1
             addressBook: 1
             visible: modalState == 1 && transferSwitch.state == "off"
-            onTextChanged: searchTxText = searchTx.text
         }
 
         Image {
@@ -802,6 +834,7 @@ Rectangle {
             }
         }
     }
+
     Label {
         id: closeTransferModal
         z: 10
@@ -814,8 +847,14 @@ Rectangle {
         color: "#F2F2F2"
         visible: transferTracker == 1 && confirmationSent == 0
 
+        Rectangle{
+            id: closeButton
+            anchors.fill: parent
+            color: "transparent"
+        }
+
         MouseArea {
-            anchors.fill: closeTransferModal
+            anchors.fill: closeButton
 
             onClicked: {
                 transferTracker = 0;
@@ -827,8 +866,7 @@ Rectangle {
                 confirmationSent = 0
                 newCoinSelect = 0
                 newCoinPicklist = 0
-                newAddressSelect = 0
-                newAddressPicklist = 0
+                selectedAddress = ""
                 sendAmount.text = ""
                 keyInput.text = ""
                 referenceInput.text = ""
