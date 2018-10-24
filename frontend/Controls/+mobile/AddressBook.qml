@@ -12,11 +12,9 @@
 
 import QtQuick 2.7
 import QtQuick.Controls 2.3
-import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-import QtMultimedia 5.8
-import QtQuick.Window 2.2
 import SortFilterProxyModel 0.2
+import QtQuick.Window 2.2
 
 Rectangle {
     id: allAddressCards
@@ -63,31 +61,31 @@ Rectangle {
                     color: "#F2F2F2"
                     font.pixelSize: 18
                     font.family: "Brandon Grotesque"
-                    font.weight: Font.Medium
+                    font.bold: true
                     anchors.verticalCenter: addressCoinLogo.verticalCenter
                     anchors.right: addressCoinLogo.left
                     anchors.rightMargin: 7
                 }
-
+                /**
                 Label {
                     id: addressLabel
                     text: label
                     color: "#F2F2F2"
-                    font.pixelSize: 14
+                    font.pixelSize: 18
                     font.family: "Brandon Grotesque"
-                    font.weight: Font.Medium
+                    font.bold: true
                     anchors.verticalCenter: addressCoinLogo.verticalCenter
                     anchors.left: addressName.right
                     anchors.leftMargin: 10
                 }
-
+                */
                 Label {
                     id: addressName
                     text: name
                     color: "#F2F2F2"
-                    font.pixelSize: 14
+                    font.pixelSize: 18
                     font.family: "Brandon Grotesque"
-                    font.weight: Font.Medium
+                    font.bold: true
                     anchors.verticalCenter: addressCoinLogo.verticalCenter
                     anchors.left: cardBackground.left
                     anchors.leftMargin: 14
@@ -131,16 +129,16 @@ Rectangle {
                             if (addressTracker == 0 && transferTracker == 0) {
                                 addressTracker = 1
                                 addressIndex = uniqueNR
-                                if (addressCoinName.text === currencyList.get(0).name) {
+                                if (coin === currencyList.get(0).name) {
                                     currencyIndex = 0
                                 }
-                                if (addressCoinName.text === currencyList.get(1).name) {
+                                if (coin === currencyList.get(1).name) {
                                     currencyIndex = 1
                                 }
-                                if (addressCoinName.text === currencyList.get(2).name) {
+                                if (coin === currencyList.get(2).name) {
                                     currencyIndex = 2
                                 }
-                                if (addressCoinName.text === currencyList.get(3).name) {
+                                if (coin === currencyList.get(3).name) {
                                     currencyIndex = 3
                                 }
                             }

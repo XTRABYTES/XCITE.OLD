@@ -12,9 +12,6 @@
 
 import QtQuick 2.7
 import QtQuick.Controls 2.3
-import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.0
-import QtMultimedia 5.8
 import QtQuick.Window 2.2
 import SortFilterProxyModel 0.2
 
@@ -78,7 +75,7 @@ Rectangle {
                     font.pixelSize: 18
                     font.family: "Brandon Grotesque"
                     color: "#E5E5E5"
-                    font.weight: Font.Medium
+                    font.bold: true
                     visible: active == 0 ? false : true
                 }
 
@@ -91,7 +88,7 @@ Rectangle {
                     font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     color: "#E5E5E5"
-                    font.weight: Font.Medium
+                    font.bold: true
                     visible: active == 0 ? false : true
                 }
 

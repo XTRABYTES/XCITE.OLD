@@ -11,11 +11,7 @@
 */
 
 import QtQuick 2.7
-import QtQuick.Controls 2.4
-import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.0
-import QtMultimedia 5.8
-import QtQuick.Window 2.2
+import QtQuick.Controls 2.3
 import SortFilterProxyModel 0.2
 
 
@@ -47,7 +43,6 @@ Rectangle {
                 onClicked: {
                     addressbookTracker = 0;
                     selectedAddress = address
-                    console.log("value for selected address is: " + selectedAddress )
                 }
             }
 
@@ -71,7 +66,7 @@ Rectangle {
                 font.weight: Font.Medium
                 color: "#F2F2F2"
             }
-
+            /**
             Label {
                 id: addressLabelName
                 text: label
@@ -81,6 +76,7 @@ Rectangle {
                 font.pixelSize: 18
                 color: "#F2F2F2"
             }
+            */
         }
     }
 

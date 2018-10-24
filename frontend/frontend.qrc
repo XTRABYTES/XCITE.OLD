@@ -85,10 +85,7 @@
         <file>+mobile/DashboardForm.qml</file>
         <file>Theme/Theme.qml</file>
         <file>Theme/qmldir</file>
-        <file>Controls/+mobile/Balance.qml</file>
         <file>Controls/+mobile/Header.qml</file>
-        <file>Controls/+mobile/BalanceValue.qml</file>
-        <file>Controls/+mobile/Transactions.qml</file>
         <file>+mobile/main.qml</file>
         <file>X-Change/Home/MarketsDiode.qml</file>
         <file>X-Change/Home/OrderBookDiode.qml</file>
@@ -126,8 +123,6 @@
         <file>Controls/LoadingBar.qml</file>
         <file>Controls/TransactionTable.qml</file>
         <file>+mobile/Settings.qml</file>
-        <file>Controls/+mobile/CurrencySquare.qml</file>
-        <file>Controls/+mobile/AddressBookSquares.qml</file>
         <file>+mobile/xchange.qml</file>
         <file>Controls/+mobile/HistoryModal.qml</file>
         <file>Controls/+mobile/TransferModal.qml</file>

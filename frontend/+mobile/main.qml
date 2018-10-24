@@ -26,9 +26,9 @@ ApplicationWindow {
 
     property string nameXBY: "XBY"
     property string labelXBY: "Main"
-    property real balanceXBY: 1268426.36 // wallet.balance
+    property real balanceXBY: wallet.balance
     property real unconfirmedXBY: 0
-    property real valueXBY: 0.03587
+    property real valueXBY: marketValue.marketValue
     property real btcValueXBY: 0.00000475
     property real percentageXBY: 23.47
 
@@ -60,19 +60,19 @@ ApplicationWindow {
 
     property string address2: "BM39fjwf093JF329f39fJFfa03987fja32"
     property string name2: "Posey"
-    property string label2: "Main"
+    //property string label2: "Main"
 
     property string address3: "Bx33fjwf023JxoP9f39fJFfa0398wqWeJ9"
     property string name3: "Nrocy"
-    property string label3: "Main"
+    //property string label3: "Main"
 
     property string address4: "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc"
     property string name4: "Enervey"
-    property string label4: "Main"
+    //property string label4: "Main"
 
     property string address5: "Bkf3019jzmkFAJowaj392JAFAlafj032jJ"
     property string name5: "Danny"
-    property string label5: "Main"
+    //property string label5: "Main"
 
     property int appsTracker: 0
     property int transferTracker: 0
@@ -171,7 +171,7 @@ ApplicationWindow {
         ListElement {
             address: ""
             name: ""
-            label: ""
+            //label: ""
             logo: ''
             coin: ""
             favorite: 0
@@ -202,20 +202,20 @@ ApplicationWindow {
 
         addressList.setProperty(0, "address", receivingAddress);
         addressList.setProperty(0, "name", "My address");
-        addressList.setProperty(0, "label", "Main");
+        //addressList.setProperty(0, "label", "Main");
         addressList.setProperty(0, "logo", '../icons/XBY_card_logo_colored_05.svg');
         addressList.setProperty(0, "coin", "XBY");
         addressList.setProperty(0, "favorite", 1);
         addressList.setProperty(0, "active", 1)
         addressList.setProperty(0, "uniqueNR", addressID);
         addressID = addressID + 1;
-        addressList.append({"address": address2, "name": name2, "label": label2, "logo": '../icons/XBY_card_logo_colored_05.svg', "coin": "XBY", "favorite": 0, "active": 1, "uniqueNR": addressID});
+        addressList.append({"address": address2, "name": name2, /**"label": label2,*/ "logo": '../icons/XBY_card_logo_colored_05.svg', "coin": "XBY", "favorite": 0, "active": 1, "uniqueNR": addressID});
         addressID = addressID + 1;
-        addressList.append({"address": address3, "name": name3, "label": label3, "logo": '../icons/XBY_card_logo_colored_05.svg', "coin": "XBY", "favorite": 0, "active": 1, "uniqueNR": addressID});
+        addressList.append({"address": address3, "name": name3, /**"label": label3,*/ "logo": '../icons/XBY_card_logo_colored_05.svg', "coin": "XBY", "favorite": 0, "active": 1, "uniqueNR": addressID});
         addressID = addressID + 1;
-        addressList.append({"address": address4, "name": name4, "label": label4, "logo": '../icons/XFUEL_card_logo_colored_07.svg', "coin": "XFUEL", "favorite": 0, "active": 1, "uniqueNR": addressID});
+        addressList.append({"address": address4, "name": name4, /**"label": label4,*/ "logo": '../icons/XFUEL_card_logo_colored_07.svg', "coin": "XFUEL", "favorite": 0, "active": 1, "uniqueNR": addressID});
         addressID = addressID + 1;
-        addressList.append({"address": address5, "name": name5, "label": label5, "logo": '../icons/XFUEL_card_logo_colored_07.svg', "coin": "XFUEL", "favorite": 0, "active": 1, "uniqueNR": addressID});
+        addressList.append({"address": address5, "name": name5, /**"label": label5,*/ "logo": '../icons/XFUEL_card_logo_colored_07.svg', "coin": "XFUEL", "favorite": 0, "active": 1, "uniqueNR": addressID});
         addressID = addressID + 1;
 
         currencyList.setProperty(0, "name", "XBY");

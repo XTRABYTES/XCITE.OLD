@@ -9,10 +9,9 @@
  * This file is part of an XTRABYTES Ltd. project.
  *
  */
+
 import QtQuick.Controls 2.3
 import QtQuick 2.7
-import QtQuick.Layouts 1.3
-import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
@@ -20,7 +19,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: addAddressModal
     width: 325
-    height: (editSaved == 1)? 230 : 360
+    height: (editSaved == 1)? 230 : 285
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -28,11 +27,9 @@ Rectangle {
 
 
     property int editSaved: 0
-    property int warningEmpty: 0
-    property int doubbleAddress: 0
-    property int doubbleLabel: 0
+    property int invalidAddress: 0
     property int addressExists: compareTx()
-    property int labelExists: compareLabel()
+    property int labelExists: compareName()
 
     function compareTx(){
         var duplicateAddress = 0
@@ -46,18 +43,16 @@ Rectangle {
         return duplicateAddress
     }
 
-    function compareLabel(){
-        var duplicateLabel = 0
+    function compareName(){
+        var duplicateName = 0
         for(var i = 0; i < addressList.count; i++) {
             if (addressList.get(i).coin === newCoinName.text) {
                 if (addressList.get(i).name === newName.text) {
-                    if (addressList.get(i).label === newLabel.text) {
-                        duplicateLabel = 1
-                    }
+                    duplicateName = 1
                 }
             }
         }
-        return duplicateLabel
+        return duplicateName
     }
 
 
@@ -143,6 +138,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "transparent"
+                visible: picklistTracker == 0
             }
 
             MouseArea {
@@ -173,18 +169,18 @@ Rectangle {
 
         Label {
             id: nameWarning
-            text: "Please fill out this field"
+            text: "Already a contact with this name!"
             color: "#FD2E2E"
             anchors.left: newName.left
             anchors.leftMargin: 5
             anchors.top: newName.bottom
-            anchors.topMargin: 10
+            anchors.topMargin: 1
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: editSaved == 0 && doubbleAddress == 1 && nameWarning.text === ""
+            visible: editSaved == 0 && labelExists == 1
         }
-
+        /**
         Controls.TextInput {
             id: newLabel
             height: 34
@@ -192,7 +188,7 @@ Rectangle {
             placeholder: "WALLET LABEL"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
-            anchors.topMargin: 25
+            anchors.topMargin: 15
             color: newLabel.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
             visible: editSaved == 0
@@ -200,45 +196,39 @@ Rectangle {
         }
 
         Label {
-            id: labelWarning1
-            text: "Label already exists!"
-            color: "#FD2E2E"
-            anchors.left: newLabel.left
-            anchors.leftMargin: 10
-            anchors.top: newLabel.bottom
-            anchors.topMargin: 5
-            font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
-            visible: editSaved == 0 && doubbleLabel == 1
-        }
-
-        Label {
             id: labelWarning2
             text: "Please fill out this field"
             color: "#FD2E2E"
             anchors.left: newLabel.left
-            anchors.leftMargin: 10
+            anchors.leftMargin: 5
             anchors.top: newLabel.bottom
-            anchors.topMargin: 5
+            anchors.topMargin: 1
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: editSaved == 0 && warningEmpty == 1 && labelWarning2 === ""
+            visible: editSaved == 0 && warningEmpty == 1 && newLabel.text == ""
         }
-
+        */
         Controls.TextInput {
             id: newAddress
             height: 34
-            // radius: 8
             placeholder: "PUBLIC KEY"
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: newLabel.bottom
-            anchors.topMargin: 25
+            anchors.top: newName.bottom
+            anchors.topMargin: 15
             color: newAddress.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
+            onTextChanged: {
+                if (newAddress.length === 34
+                        && newAddress.text !== "") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
         }
 
         Label {
@@ -248,25 +238,25 @@ Rectangle {
             anchors.left: newAddress.left
             anchors.leftMargin: 5
             anchors.top: newAddress.bottom
-            anchors.topMargin: 10
+            anchors.topMargin: 1
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: editSaved == 0 && doubbleAddress == 1
+            visible: editSaved == 0 && addressExists == 1
         }
 
         Label {
             id: addressWarning2
-            text: "Please fill out this field"
+            text: "Invalid address!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
             anchors.leftMargin: 5
             anchors.top: newAddress.bottom
-            anchors.topMargin: 10
+            anchors.topMargin: 1
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: editSaved == 0 && doubbleAddress == 1 && addressWarning2.text === ""
+            visible: editSaved == 0 && invalidAddress == 1
         }
 
         Rectangle {
@@ -285,48 +275,33 @@ Rectangle {
         }
 
         Rectangle {
-            id: saveEditButton
+            id: saveButton
             width: newAddress.width
             height: 33
             radius: 8
-            border.color: "#5E8BFF"
+            border.color: (newName.text != "" && newAddress.text !== "" && newAddress.length === 34 && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
             border.width: 2
             color: "transparent"
-            anchors.top: newAddress.bottom
-            anchors.topMargin: 35
+            anchors.bottom: addressBodyModal.bottom
+            anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
 
             MouseArea {
-                anchors.fill: saveEditButton
+                anchors.fill: saveButton
 
                 onClicked: {
-                    if (newName.text != "" && newLabel.text != "" && newAddress.text != "") {
-                        warningEmpty = 0
-                        if (addressExists == 0) {
-                            doubbleAddress = 0
-                            if (labelExists == 0) {
-                                doubbleLabel = 0
-                                editSaved = 1
-                                if (newCoinSelect == 1) {
-                                    addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
-                                    addressID = addressID +1;
-                                }
-                                else {
-                                    addressList.append({"address": newAddress.text, "name": newName.text, "label": newLabel.text, "logo": currencyList.get(0).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
-                                    addressID = addressID +1;
-                                }
-                            }
-                            else {
-                                doubbleLabel = 1
-                            }
+                    if (newName.text != "" && newAddress.text != "" && newAddress.length === 34 && addressExists == 0 && labelExists == 0) {
+                        if (newCoinSelect == 1) {
+                            addressList.append({"address": newAddress.text, "name": newName.text, /**"label": newLabel.text,*/ "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
+                            addressID = addressID +1;
+                            editSaved = 1
                         }
                         else {
-                            doubbleAddress = 1
+                            addressList.append({"address": newAddress.text, "name": newName.text, /**"label": newLabel.text,*/ "logo": currencyList.get(0).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
+                            addressID = addressID +1;
+                            editSaved = 1
                         }
-                    }
-                    else {
-                        warningEmpty = 1
                     }
                 }
             }
@@ -336,7 +311,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: "#5E8BFF"
+                color: newName.text != "" && (newAddress.text !== "" && newAddress.length === 34 && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -356,7 +331,7 @@ Rectangle {
         }
 
         Rectangle {
-            id: closeSaveEdit
+            id: closeSave
             width: (parent.width - 45) / 2
             height: 33
             radius: 8
@@ -369,7 +344,7 @@ Rectangle {
             visible: editSaved == 1
 
             MouseArea {
-                anchors.fill: closeSaveEdit
+                anchors.fill: closeSave
 
                 onClicked: {
                     addAddressTracker = 0;
@@ -378,8 +353,9 @@ Rectangle {
                     newCoinPicklist = 0
                     newCoinSelect = 0
                     newName.text = ""
-                    newLabel.text = ""
+                    //newLabel.text = ""
                     newAddress.text = ""
+                    invalidAddress = 0
                 }
             }
             Text {
@@ -393,6 +369,7 @@ Rectangle {
             }
         }
     }
+
     Label {
         id: closeAddressModal
         z: 10
@@ -420,12 +397,10 @@ Rectangle {
                     picklistTracker = 0
                     newCoinPicklist = 0
                     newCoinSelect = 0
-                    warningEmpty = 0
-                    doubbleAddress = 0
-                    doubbleLabel = 0
-                    newName.text = ""
-                    newLabel.text = ""
+                   newName.text = ""
+                    //newLabel.text = ""
                     newAddress.text = ""
+                    invalidAddress = 0
                 }
 
             }

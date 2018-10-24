@@ -12,9 +12,8 @@
 
 import QtQuick.Controls 2.3
 import QtQuick 2.7
-import QtQuick.Layouts 1.3
-import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
+import QtQuick.Window 2.2
 import QZXing 2.3
 
 import "qrc:/Controls" as Controls
@@ -22,7 +21,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: transactionModal
     width: 325
-    height: transactionSent == 0 ? 480 : 230
+    height: transactionSent == 1 ? 350 : ((transferSwitch.state == "off") ? 480 : 450 )
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -38,7 +37,8 @@ Rectangle {
     property int transactionSent: 0
     property int confirmationSent: 0
     property int switchState: 0
-    property int errorAmount: 0
+    property int invalidAddress: 0
+    property var inputAmount: Number.fromLocaleString(Qt.locale(),sendAmount.text)
     property string amountTransfer: "AMOUNT (" + coinName + ")"
     property string keyTransfer: "SEND TO (PUBLIC KEY)"
     property string referenceTransfer: "REFERENCE"
@@ -194,7 +194,7 @@ Rectangle {
             text: (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance).toLocaleString(Qt.locale(), "f", 4) : (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", 4)) + " " + coinID.text
             anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
-            anchors.topMargin: 7
+            anchors.topMargin: 1
             font.pixelSize: 13
             color: "#828282"
             visible: transactionSent == 0 && addressbookTracker == 0
@@ -208,8 +208,7 @@ Rectangle {
             anchors.left: picklistTracker == 0 ? coinID.right : transferPicklist.right
             anchors.leftMargin: 10
             anchors.verticalCenter: coinID.verticalCenter
-            rotation: picklistTracker == 0 ? 0 : 180
-            visible: transactionSent == 0 && addressbookTracker == 0
+            visible: transactionSent == 0 && addressbookTracker == 0 && picklistTracker == 0
 
             ColorOverlay {
                 anchors.fill: parent
@@ -334,22 +333,75 @@ Rectangle {
             placeholder: amountTransfer
             color: sendAmount.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
+            validator: DoubleValidator {bottom: 0; top: (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))}
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
             mobile: 1
         }
 
+        Label {
+            text: "*insufficient funds"
+            color: "#FD2E2E"
+            anchors.left: sendAmount.left
+            anchors.leftMargin: 5
+            anchors.top: sendAmount.bottom
+            anchors.topMargin: 1
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Normal
+            visible: modalState == 0
+                     && transferSwitch.on == true
+                     && transactionSent == 0
+                     && addressbookTracker == 0
+                     && inputAmount > (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))
+        }
+
         Controls.TextInput {
             id: keyInput
-            text: selectedAddress
+            text: sendAddress.text
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: sendAmount.bottom
-            anchors.topMargin: 25
+            anchors.topMargin: 15
             placeholder: keyTransfer
             color: keyInput.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
             mobile: 1
+            onTextChanged: {
+                if (keyInput.length === 34
+                        && sendAmount.text !== "") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+        }
+
+        Text {
+            id: sendAddress
+            text: selectedAddress
+            anchors.left: keyInput.left
+            anchors.top: keyInput.bottom
+            anchors.topMargin: 3
+            visible: false
+            onTextChanged: {
+                keyInput.text = sendAddress.text
+            }
+        }
+
+        Label {
+            id: addressWarning
+            text: "Invalid address!"
+            color: "#FD2E2E"
+            anchors.left: keyInput.left
+            anchors.leftMargin: 5
+            anchors.top: keyInput.bottom
+            anchors.topMargin: 1
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Normal
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0 && invalidAddress == 1
         }
 
         Rectangle {
@@ -357,7 +409,7 @@ Rectangle {
             width: (keyInput.width - 10) / 2
             height: 33
             anchors.top: keyInput.bottom
-            anchors.topMargin: 15
+            anchors.topMargin: 20
             anchors.left: keyInput.left
             radius: 8
             border.color: "#5E8BFF"
@@ -392,7 +444,7 @@ Rectangle {
             border.width: 2
             color: "transparent"
             anchors.top: keyInput.bottom
-            anchors.topMargin: 15
+            anchors.topMargin: 20
             anchors.right: keyInput.right
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
 
@@ -421,7 +473,7 @@ Rectangle {
             placeholder: referenceTransfer
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
-            anchors.topMargin: 25
+            anchors.topMargin: 20
             color: referenceInput.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
@@ -433,20 +485,33 @@ Rectangle {
             width: keyInput.width
             height: 33
             radius: 8
-            border.color: "#5E8BFF"
+            border.color: (keyInput.text !== ""
+                           && keyInput.length === 34
+                           && sendAmount.text !== ""
+                           && inputAmount !== 0
+                           && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFF" : "#727272"
             border.width: 2
             color: "transparent"
-            anchors.top: referenceInput.bottom
-            anchors.topMargin: 45
+            anchors.bottom: bodyModal.bottom
+            anchors.bottomMargin: 20
             anchors.left: referenceInput.left
-            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
+            visible: modalState == 0
+                     && transferSwitch.on == true
+                     && transactionSent == 0
+                     && addressbookTracker == 0
 
             MouseArea {
                 anchors.fill: sendButton
 
                 onClicked: {
-                    // error handeling (not a number, insufficient funds, negative amount, incorrect address)
-                    transactionSent = 1
+                    if (keyInput.text !== ""
+                            && keyInput.length === 34
+                            && sendAmount.text !== ""
+                            && inputAmount !== 0
+                            && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) {
+                        transactionSent = 1
+                        picklistTracker = 0
+                    }
                 }
             }
 
@@ -455,7 +520,11 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: "#5E8BFF"
+                color: (keyInput.text !== ""
+                        && keyInput.length === 34
+                        && sendAmount.text !== ""
+                        && inputAmount !== 0
+                        && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFF" : "#727272"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -476,7 +545,7 @@ Rectangle {
                 id: confirmationText
                 text: "You are about to send:"
                 anchors.top: parent.top
-                anchors.topMargin: 20
+                anchors.topMargin: 60
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.family: "Brandon Grotesque"
                 font.pixelSize: 16
@@ -520,12 +589,36 @@ Rectangle {
                 color: "#F2F2F2"
             }
 
+            Text {
+                id: reference
+                text: "for"
+                anchors.top: confirmationAddress.bottom
+                anchors.topMargin: 7
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 16
+                font.weight: Font.Normal
+                color: "#F2F2F2"
+            }
+            Text {
+                id: referenceText
+                text: referenceInput.text != "" ? referenceInput.text : "no reference"
+                anchors.top: reference.bottom
+                anchors.topMargin: 7
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 13
+                font.weight: referenceInput.text != "" ? Font.Normal : Font.Light
+                font.italic: referenceInput.text == ""
+                color: "#F2F2F2"
+            }
+
             Rectangle {
                 id: confirmationSendButton
                 width: (sendConfirmation.width - 45) / 2
                 height: 33
-                anchors.top: confirmationAddress.bottom
-                anchors.topMargin: 15
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
                 anchors.left: sendConfirmation.left
                 anchors.leftMargin: 20
                 radius: 8
@@ -560,8 +653,8 @@ Rectangle {
                 border.color: "#5E8BFF"
                 border.width: 2
                 color: "transparent"
-                anchors.top: confirmationAddress.bottom
-                anchors.topMargin: 15
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
                 anchors.right: sendConfirmation.right
                 anchors.rightMargin: 20
 
@@ -599,8 +692,8 @@ Rectangle {
             Image {
                 id: confirmedIcon
                 source: 'qrc:/icons/rocket.svg'
-                width: 50
-                height: 50
+                width: 120
+                height: 120
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.verticalCenterOffset: -15
@@ -620,8 +713,8 @@ Rectangle {
                 border.color: "#5E8BFF"
                 border.width: 2
                 color: "transparent"
-                anchors.top: confirmedIcon.bottom
-                anchors.topMargin: 25
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -634,6 +727,7 @@ Rectangle {
                         selectedAddress = ""
                         confirmationSent = 0
                         transactionSent = 0
+                        invalidAddress = 0
                     }
                 }
 
@@ -664,9 +758,9 @@ Rectangle {
 
             Controls.AddressPicklist {
                 id: myAddressPicklist
-                selectedWallet: newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).name === "XBY" ? 0:
-                                                        (currencyList.get(newCoinPicklist).name === "XFUEL" ? 1:
-                                                            (currencyList.get(newCoinPicklist).name === "BTC" ? 2 : 3))) : currencyIndex
+                selectedWallet: (coinID.text === "XBY" ? 0:
+                                                         (coinID.text === "XFUEL" ? 1:
+                                                                                    (coinID.text === "BTC" ? 2 : 3)))
             }
         }
 
@@ -733,8 +827,6 @@ Rectangle {
                 anchors.fill: cancelAddressButton
 
                 onClicked: {
-                    newAddressPicklist = 0
-                    newAddressSelect = 0
                     addressbookTracker = 0
                 }
             }
@@ -766,8 +858,8 @@ Rectangle {
                 id: myHistoryList
                 searchFilter: searchTxText
                 selectedWallet: newCoinSelect == 1 ?    (currencyList.get(newCoinPicklist).name === "XBY" ? 0:
-                                                            (currencyList.get(newCoinPicklist).name === "XFUEL" ? 1:
-                                                                (currencyList.get(newCoinPicklist).name === "BTC" ? 2 : 3))) : currencyIndex
+                                                                                                            (currencyList.get(newCoinPicklist).name === "XFUEL" ? 1:
+                                                                                                                                                                  (currencyList.get(newCoinPicklist).name === "BTC" ? 2 : 3))) : currencyIndex
             }
         }
 
@@ -859,6 +951,7 @@ Rectangle {
             onClicked: {
                 transferTracker = 0;
                 addressbookTracker = 0;
+                picklistTracker = 0;
                 modalState = 0
                 currencyIndex = 0
                 transferSwitch.state = "off"
@@ -870,6 +963,7 @@ Rectangle {
                 sendAmount.text = ""
                 keyInput.text = ""
                 referenceInput.text = ""
+                invalidAddress = 0
             }
         }
     }

@@ -9,6 +9,7 @@
  * This file is part of an XTRABYTES Ltd. project.
  *
  */
+
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 
@@ -22,10 +23,13 @@ Item {
     property bool on: false
 
     function toggle() {
-        if (toggleswitch.state == "on")
+        if (toggleswitch.state == "on"){
             toggleswitch.state = "off"
+            picklistTracker = 0
+        }
         else
             toggleswitch.state = "on"
+            picklistTracker = 0
     }
 
     function releaseSwitch() {

@@ -12,10 +12,9 @@
 
 import QtQuick 2.7
 import QtQuick.Controls 2.3
-import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-import QtMultimedia 5.8
 import QtQuick.Window 2.2
+import QtQuick.Layouts 1.11
 
 import "qrc:/Controls" as Controls
 
@@ -69,12 +68,11 @@ Item {
                     width: Screen.width
                     height: Screen.height - 200
                     anchors.top: parent.top
-                    anchors.topMargin: 154
+                    anchors.topMargin: 150
                     color: "transparent"
 
                     Controls.WalletList {
                         id: myCurrencyCards
-
                     }
 
                 }
@@ -125,7 +123,7 @@ Item {
                     width: Screen.width
                     height: Screen.height - 200
                     anchors.top: parent.top
-                    anchors.topMargin: 154
+                    anchors.topMargin: 150
                     color: "transparent"
 
                     Controls.AddressBook {
@@ -290,8 +288,7 @@ Item {
                 color: "#C7C7C7"
                 anchors.left: parent.left
                 anchors.leftMargin: 28
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 7
+                anchors.verticalCenter: plus.verticalCenter
                 font.bold: true
 
                 Image {
@@ -330,7 +327,8 @@ Item {
             Image {
                 id: plus
                 z: 6
-                anchors.verticalCenter: transfer.verticalCenter
+                anchors.bottom: homeHeader3.bottom
+                anchors.bottomMargin: 10
                 anchors.right: parent.right
                 anchors.rightMargin: 28
                 source: 'qrc:/icons/add_icon_04.svg'
@@ -440,8 +438,6 @@ Item {
             z: 100
             anchors.left: parent.left
             anchors.top: parent.top
-
-
         }
     }
 }
