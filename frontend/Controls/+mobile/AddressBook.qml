@@ -47,8 +47,8 @@ Rectangle {
                 Image {
                     id: addressCoinLogo
                     source: logo
-                    height: 25
-                    width: 25
+                    height: 22
+                    width: 22
                     anchors.right: cardBackground.right
                     anchors.rightMargin: 14
                     anchors.top: cardBackground.top
@@ -59,7 +59,7 @@ Rectangle {
                     id: addressCoinName
                     text: coin
                     color: "#F2F2F2"
-                    font.pixelSize: 18
+                    font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     anchors.verticalCenter: addressCoinLogo.verticalCenter
@@ -83,7 +83,7 @@ Rectangle {
                     id: addressName
                     text: name
                     color: "#F2F2F2"
-                    font.pixelSize: 18
+                    font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     anchors.verticalCenter: addressCoinLogo.verticalCenter

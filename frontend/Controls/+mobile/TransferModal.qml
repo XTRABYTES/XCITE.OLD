@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import QZXing 2.3
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: transactionModal
@@ -168,9 +169,9 @@ Rectangle {
             id: coinID
             text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).name : currencyList.get(currencyIndex).name
             anchors.left: coinIcon.right
-            anchors.leftMargin: 10
+            anchors.leftMargin: 7
             anchors.verticalCenter: coinIcon.verticalCenter
-            font.pixelSize: 20
+            font.pixelSize: 18
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
@@ -182,7 +183,7 @@ Rectangle {
             text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).label : currencyList.get(currencyIndex).label
             anchors.right: sendAmount.right
             anchors.verticalCenter: coinIcon.verticalCenter
-            font.pixelSize: 20
+            font.pixelSize: 18
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
@@ -203,8 +204,8 @@ Rectangle {
         Image {
             id: picklistArrow
             source: 'qrc:/icons/dropdown_icon.svg'
-            height: 20
-            width: 20
+            height: 18
+            width: 18
             anchors.left: picklistTracker == 0 ? coinID.right : transferPicklist.right
             anchors.leftMargin: 10
             anchors.verticalCenter: coinID.verticalCenter
@@ -369,7 +370,8 @@ Rectangle {
             mobile: 1
             onTextChanged: {
                 if (keyInput.length === 34
-                        && sendAmount.text !== "") {
+                        && keyInput.text !== ""
+                        && keyInput.text.substring(0,1) == "B") {
                     invalidAddress = 0
                 }
                 else {
@@ -406,7 +408,7 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
-            width: (keyInput.width - 10) / 2
+            width: (doubbleButtonWidth - 10) / 2
             height: 33
             anchors.top: keyInput.bottom
             anchors.topMargin: 20
@@ -437,7 +439,7 @@ Rectangle {
 
         Rectangle {
             id: addressBookButton
-            width: (keyInput.width - 10) / 2
+            width: (doubbleButtonWidth - 10) / 2
             height: 33
             radius: 8
             border.color: "#5E8BFF"
@@ -487,6 +489,7 @@ Rectangle {
             radius: 8
             border.color: (keyInput.text !== ""
                            && keyInput.length === 34
+                           && keyInput.text.substring(0,1) == "B"
                            && sendAmount.text !== ""
                            && inputAmount !== 0
                            && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFF" : "#727272"
@@ -506,6 +509,7 @@ Rectangle {
                 onClicked: {
                     if (keyInput.text !== ""
                             && keyInput.length === 34
+                            && keyInput.text.substring(0,1) == "B"
                             && sendAmount.text !== ""
                             && inputAmount !== 0
                             && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) {
@@ -522,6 +526,7 @@ Rectangle {
                 font.bold: true
                 color: (keyInput.text !== ""
                         && keyInput.length === 34
+                        && keyInput.text.substring(0,1) == "B"
                         && sendAmount.text !== ""
                         && inputAmount !== 0
                         && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFF" : "#727272"
@@ -615,12 +620,12 @@ Rectangle {
 
             Rectangle {
                 id: confirmationSendButton
-                width: (sendConfirmation.width - 45) / 2
+                width: (doubbleButtonWidth - 10) / 2
                 height: 33
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 20
-                anchors.left: sendConfirmation.left
-                anchors.leftMargin: 20
+                anchors.right: parent.horizontalCenter
+                anchors.rightMargin: 5
                 radius: 8
                 border.color: "#5E8BFF"
                 border.width: 2
@@ -647,7 +652,7 @@ Rectangle {
 
             Rectangle {
                 id: cancelSendButton
-                width: (sendConfirmation.width - 45) / 2
+                width: (doubbleButtonWidth - 10) / 2
                 height: 33
                 radius: 8
                 border.color: "#5E8BFF"
@@ -655,8 +660,8 @@ Rectangle {
                 color: "transparent"
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 20
-                anchors.right: sendConfirmation.right
-                anchors.rightMargin: 20
+                anchors.left: parent.horizontalCenter
+                anchors.leftMargin: 5
 
                 MouseArea {
                     anchors.fill: cancelSendButton
@@ -756,7 +761,7 @@ Rectangle {
             color: "transparent"
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
 
-            Controls.AddressPicklist {
+            Mobile.AddressPicklist {
                 id: myAddressPicklist
                 selectedWallet: (coinID.text === "XBY" ? 0:
                                                          (coinID.text === "XFUEL" ? 1:

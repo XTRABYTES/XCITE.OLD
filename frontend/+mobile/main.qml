@@ -93,6 +93,7 @@ ApplicationWindow {
     property int addressID: 0
     property int walletID: 0
     property int selectAddressIndex: 0
+    property real doubbleButtonWidth: 273
 
     function countWallets(){
         totalWallets = 0

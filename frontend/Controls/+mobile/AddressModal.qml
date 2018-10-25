@@ -19,7 +19,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: addressModal
     width: 325
-    height: (transactionSent == 1 || editSaved == 1)? 280 : (addressSwitch.state == "off" ? 385 : 350)
+    height: (transactionSent == 1 || editSaved == 1)? 350 : (addressSwitch.state == "off" ? 385 : 350)
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -92,6 +92,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         color: "#34363D"
+        visible: editSaved == 0 && transactionSent == 0
 
         Image {
             id: titleIcon
@@ -111,7 +112,7 @@ Rectangle {
             anchors.leftMargin: 7
             anchors.verticalCenter: titleIcon.verticalCenter
             anchors.verticalCenterOffset: -1
-            font.pixelSize: 18
+            font.pixelSize: 20
             font.family: "Brandon Grotesque"
             color: "#F2F2F2"
         }
@@ -208,9 +209,9 @@ Rectangle {
             id: newCoinName
             text: newCoinSelect == 1? currencyList.get(newCoinPicklist).name : addressList.get(addressIndex).coin
             anchors.left: newIcon.right
-            anchors.leftMargin: 10
+            anchors.leftMargin: 7
             anchors.verticalCenter: newIcon.verticalCenter
-            font.pixelSize: 20
+            font.pixelSize: 18
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
@@ -222,7 +223,7 @@ Rectangle {
             text: currencyList.get(currencyIndex).label
             anchors.right: sendAmount.right
             anchors.verticalCenter: newIcon.verticalCenter
-            font.pixelSize: 20
+            font.pixelSize: 18
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
@@ -306,6 +307,7 @@ Rectangle {
                                                                                           ((addressSwitch.state == "on"
                                                                                             && keyInput.text != ""
                                                                                             && keyInput.length == 34
+                                                                                            && keyInput.text.substring(0,1) == "B"
                                                                                             && doubbleAddress == 0
                                                                                             && labelExists == 0
                                                                                             && invalidAddress == 0 ) ? "#5E8BFF" :
@@ -380,6 +382,7 @@ Rectangle {
                                                                                        ((addressSwitch.state == "on"
                                                                                          && keyInput.text != ""
                                                                                          && keyInput.length == 34
+                                                                                         && keyInput.text.substring(0,1) == "B"
                                                                                          && doubbleAddress == 0
                                                                                          && labelExists == 0
                                                                                          && invalidAddress == 0 ) ? "#5E8BFF" :
@@ -404,7 +407,7 @@ Rectangle {
                 id: confirmationText
                 text: "You are about to send:"
                 anchors.top: parent.top
-                anchors.topMargin: 20
+                anchors.topMargin: 60
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.family: "Brandon Grotesque"
                 font.pixelSize: 16
@@ -475,12 +478,12 @@ Rectangle {
 
             Rectangle {
                 id: confirmationSendButton
-                width: (sendConfirmation.width - 40) / 2
+                width: (doubbleButtonWidth - 10) / 2
                 height: 33
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 20
-                anchors.left: sendConfirmation.left
-                anchors.leftMargin: 15
+                anchors.right: parent.horizontalCenter
+                anchors.rightMargin: 5
                 radius: 8
                 border.color: "#5E8BFF"
                 border.width: 2
@@ -507,7 +510,7 @@ Rectangle {
 
             Rectangle {
                 id: cancelSendButton
-                width: (sendConfirmation.width - 40) / 2
+                width: (doubbleButtonWidth - 10) / 2
                 height: 33
                 radius: 8
                 border.color: "#5E8BFF"
@@ -515,8 +518,8 @@ Rectangle {
                 color: "transparent"
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 20
-                anchors.right: sendConfirmation.right
-                anchors.rightMargin: 15
+                anchors.left: parent.horizontalCenter
+                anchors.leftMargin: 5
 
                 MouseArea {
                     anchors.fill: cancelSendButton
@@ -697,7 +700,8 @@ Rectangle {
             mobile: 1
             onTextChanged: {
                 if (newAddress.length === 34
-                        && newAddress.text !== "") {
+                        && newAddress.text !== ""
+                        && keyInput.text.substring(0,1) == "B") {
                     invalidAddress = 0
                 }
                 else
@@ -748,17 +752,21 @@ Rectangle {
             }
         }
 
-        Text {
+        Image {
             id: saveSuccess
-            text: "You have succesfully edited this address!"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.weight: Font.Medium
-            color: "#F2F2F2"
+            source: 'qrc:/icons/icon-success.svg'
+            height: 100
+            width: 100
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -15
             visible: addressSwitch.state == "on" && editSaved == 1
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: "#5E8BFF"
+            }
         }
 
         Rectangle {

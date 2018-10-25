@@ -19,7 +19,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: addAddressModal
     width: 325
-    height: (editSaved == 1)? 230 : 285
+    height: (editSaved == 1)? 350 : 285
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -65,6 +65,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         color: "#34363D"
+        visible: editSaved == 0
 
         Text {
             id: transferModalLabel
@@ -104,9 +105,9 @@ Rectangle {
             id: newCoinName
             text: newCoinSelect == 1? currencyList.get(newCoinPicklist).name : currencyList.get(0).name
             anchors.left: newIcon.right
-            anchors.leftMargin: 10
+            anchors.leftMargin: 7
             anchors.verticalCenter: newIcon.verticalCenter
-            font.pixelSize: 20
+            font.pixelSize: 18
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
@@ -222,7 +223,8 @@ Rectangle {
             mobile: 1
             onTextChanged: {
                 if (newAddress.length === 34
-                        && newAddress.text !== "") {
+                        && newAddress.text !== ""
+                        && newAddress.text.substring(0,1) == "B") {
                     invalidAddress = 0
                 }
                 else {
@@ -279,7 +281,7 @@ Rectangle {
             width: newAddress.width
             height: 33
             radius: 8
-            border.color: (newName.text != "" && newAddress.text !== "" && newAddress.length === 34 && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
+            border.color: (newName.text != "" && newAddress.text !== "" && newAddress.length === 34 && newAddress.text.substring(0,1) == "B" && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
             border.width: 2
             color: "transparent"
             anchors.bottom: addressBodyModal.bottom
@@ -291,7 +293,7 @@ Rectangle {
                 anchors.fill: saveButton
 
                 onClicked: {
-                    if (newName.text != "" && newAddress.text != "" && newAddress.length === 34 && addressExists == 0 && labelExists == 0) {
+                    if (newName.text != "" && newAddress.text != "" && newAddress.length === 34 && newAddress.text.substring(0,1) == "B" && addressExists == 0 && labelExists == 0) {
                         if (newCoinSelect == 1) {
                             addressList.append({"address": newAddress.text, "name": newName.text, /**"label": newLabel.text,*/ "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
                             addressID = addressID +1;
@@ -311,23 +313,27 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: newName.text != "" && (newAddress.text !== "" && newAddress.length === 34 && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
+                color: newName.text != "" && (newAddress.text !== "" && newAddress.length === 34 && newAddress.text.substring(0,1) == "B" && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
 
-        Text {
+        Image {
             id: saveSuccess
-            text: "You have succesfully added a new address!"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.weight: Font.Medium
-            color: "#F2F2F2"
+            source: 'qrc:/icons/icon-success.svg'
+            height: 100
+            width: 100
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -15
             visible: editSaved == 1
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: "#5E8BFF"
+            }
         }
 
         Rectangle {

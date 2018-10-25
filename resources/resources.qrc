@@ -135,5 +135,6 @@
         <file>icons/notification_red_circle_icon.svg</file>
         <file>icons/icon-favorite.svg</file>
         <file>icons/magnifying_glass.svg</file>
+        <file>icons/icon-success.svg</file>
     </qresource>
 </RCC>
