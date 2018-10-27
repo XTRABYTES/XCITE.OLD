@@ -46,6 +46,32 @@ Rectangle {
     property real amountSend: 0
     property string searchTxText: ""
 
+    function checkAddress() {
+        if (coinID.text == "XBY" || coinID.text == "BTC") {
+            if (keyInput.length === 34
+                    && keyInput.text !== ""
+                    && keyInput.text.substring(0,1) == "B") {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
+        else if (coinID.text == "XFUEL") {
+            if (keyInput.length === 34
+                    && keyInput.text !== ""
+                    && keyInput.text.substring(0,1) == "F") {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
+        else {
+            invalidAddress = 0
+        }
+    }
+
     Rectangle {
         id: transferTitleBar
         width: parent.width/2
@@ -176,6 +202,9 @@ Rectangle {
             font.weight: Font.Bold
             color: "#F2F2F2"
             visible: transactionSent == 0 && addressbookTracker == 0
+            onTextChanged: if (keyInput.text != "") {
+                               checkAddress()
+                           }
         }
 
         Label {
@@ -368,16 +397,7 @@ Rectangle {
             font.pixelSize: 14
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 0
             mobile: 1
-            onTextChanged: {
-                if (keyInput.length === 34
-                        && keyInput.text !== ""
-                        && keyInput.text.substring(0,1) == "B") {
-                    invalidAddress = 0
-                }
-                else {
-                    invalidAddress = 1
-                }
-            }
+            onTextChanged: checkAddress()
         }
 
         Text {
@@ -487,9 +507,8 @@ Rectangle {
             width: keyInput.width
             height: 33
             radius: 8
-            border.color: (keyInput.text !== ""
-                           && keyInput.length === 34
-                           && keyInput.text.substring(0,1) == "B"
+            border.color: (invalidAddress == 0
+                           && keyInput.text !== ""
                            && sendAmount.text !== ""
                            && inputAmount !== 0
                            && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFF" : "#727272"
@@ -507,9 +526,8 @@ Rectangle {
                 anchors.fill: sendButton
 
                 onClicked: {
-                    if (keyInput.text !== ""
-                            && keyInput.length === 34
-                            && keyInput.text.substring(0,1) == "B"
+                    if (invalidAddress == 0
+                            && keyInput.text !== ""
                             && sendAmount.text !== ""
                             && inputAmount !== 0
                             && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) {
@@ -524,9 +542,8 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: (keyInput.text !== ""
-                        && keyInput.length === 34
-                        && keyInput.text.substring(0,1) == "B"
+                color: (invalidAddress == 0
+                        && keyInput.text !== ""
                         && sendAmount.text !== ""
                         && inputAmount !== 0
                         && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFF" : "#727272"
@@ -751,11 +768,23 @@ Rectangle {
         // Addressbook state
 
         Rectangle {
+            id: addressbookTitleBar
+            width: parent.width
+            height: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: bodyModal.top
+            anchors.bottomMargin: -4
+            radius: 4
+            color: "#34363D"
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
+        }
+
+        Rectangle {
             id: addressPicklistArea
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressbookTitleBar.bottom
-            anchors.topMargin: 10
+            anchors.top: bodyModal.top
+            anchors.topMargin: 50
             anchors.bottom: bodyModal.bottom
             anchors.bottomMargin: 63
             color: "transparent"
@@ -770,24 +799,37 @@ Rectangle {
         }
 
         Rectangle {
-            id: addressbookTitleBar
+            id: addressbookSpacerBar
             width: parent.width
             height: 50
+            radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: bodyModal.top
-            radius: 4
-            color: "#34363D"
+            color: "#42454F"
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
         }
 
-        Rectangle {
-            id: addressbookSpacerBar
-            width: parent.width
-            height: 5
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressbookTitleBar.bottom
-            anchors.topMargin: -4
-            color: "#42454F"
+        Image {
+            id: addressbookCoinLogo
+            source: coinIcon.source
+            height: 25
+            width: 25
+            anchors.verticalCenter: addressbookSpacerBar.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 30
+            visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
+        }
+
+        Label {
+            id: addressbookCoinID
+            text: coinID.text
+            anchors.left: addressbookCoinLogo.right
+            anchors.leftMargin: 7
+            anchors.verticalCenter: addressbookCoinLogo.verticalCenter
+            font.pixelSize: 18
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Bold
+            color: "#F2F2F2"
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
         }
 
@@ -806,8 +848,8 @@ Rectangle {
 
         Rectangle {
             width: parent.width
+            height: 63
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressPicklistArea.bottom
             anchors.bottom: bodyModal.bottom
             radius: 4
             color: "#42454F"
@@ -823,8 +865,8 @@ Rectangle {
             border.color: "#5E8BFF"
             border.width: 2
             color: "transparent"
-            anchors.top: addressPicklistArea.bottom
-            anchors.topMargin: 15
+            anchors.bottom: bodyModal.bottom
+            anchors.bottomMargin: 20
             anchors.horizontalCenter: bodyModal.horizontalCenter
             visible: modalState == 0 && transferSwitch.on == true && transactionSent == 0 && addressbookTracker == 1
 

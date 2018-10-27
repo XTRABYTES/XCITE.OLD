@@ -95,7 +95,7 @@ Rectangle {
                     id: addressHash
                     text: address
                     color: "#F2F2F2"
-                    font.pixelSize: 12
+                    font.pixelSize: 13
                     font.family: "Brandon Grotesque"
                     font.weight: Font.Light
                     anchors.bottom: cardBackground.bottom
@@ -107,8 +107,8 @@ Rectangle {
                 Image {
                     id: addressFavorite
                     source: 'qrc:/icons/icon-favorite.svg'
-                    width: 14
-                    height: 14
+                    width: 18
+                    height: 18
                     anchors.verticalCenter: addressHash.verticalCenter
                     anchors.verticalCenterOffset: -2
                     anchors.right: addressHash.left

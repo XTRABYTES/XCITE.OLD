@@ -25,7 +25,7 @@ Rectangle {
     Image {
         id: settings
         anchors.bottom: sidebar.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: 65
         anchors.horizontalCenter: sidebar.horizontalCenter
         source: '../icons/icon-settings.svg'
         width: 35

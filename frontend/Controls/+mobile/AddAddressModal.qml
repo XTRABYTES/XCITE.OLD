@@ -55,7 +55,31 @@ Rectangle {
         return duplicateName
     }
 
-
+    function checkAddress() {
+        if (newName.text == "XBY" || newName.text == "BTC") {
+            if (newAddress.length === 34
+                    && newAddress.text !== ""
+                    && newAddress.text.substring(0,1) == "B") {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
+        else if (newName.text == "XFUEL") {
+            if (newAddress.length === 34
+                    && newAddress.text !== ""
+                    && newAddress.text.substring(0,1) == "F") {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
+        else {
+            invalidAddress = 0
+        }
+    }
 
     Rectangle {
         id: addressTitleBar
@@ -112,6 +136,9 @@ Rectangle {
             font.weight: Font.Bold
             color: "#F2F2F2"
             visible: editSaved == 0 && picklistTracker == 0
+            onTextChanged: if (newAddress.text != "") {
+                               checkAddress()
+                           }
         }
 
         Image {
@@ -221,16 +248,7 @@ Rectangle {
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
-            onTextChanged: {
-                if (newAddress.length === 34
-                        && newAddress.text !== ""
-                        && newAddress.text.substring(0,1) == "B") {
-                    invalidAddress = 0
-                }
-                else {
-                    invalidAddress = 1
-                }
-            }
+            onTextChanged: checkAddress()
         }
 
         Label {
@@ -281,7 +299,7 @@ Rectangle {
             width: newAddress.width
             height: 33
             radius: 8
-            border.color: (newName.text != "" && newAddress.text !== "" && newAddress.length === 34 && newAddress.text.substring(0,1) == "B" && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
+            border.color: (newName.text != "" && newAddress.text !== "" && invalidAddress == 0 && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
             border.width: 2
             color: "transparent"
             anchors.bottom: addressBodyModal.bottom
@@ -293,7 +311,7 @@ Rectangle {
                 anchors.fill: saveButton
 
                 onClicked: {
-                    if (newName.text != "" && newAddress.text != "" && newAddress.length === 34 && newAddress.text.substring(0,1) == "B" && addressExists == 0 && labelExists == 0) {
+                    if (newName.text != "" && newAddress.text != "" && invalidAddress == 0 && addressExists == 0 && labelExists == 0) {
                         if (newCoinSelect == 1) {
                             addressList.append({"address": newAddress.text, "name": newName.text, /**"label": newLabel.text,*/ "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
                             addressID = addressID +1;
@@ -313,7 +331,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: newName.text != "" && (newAddress.text !== "" && newAddress.length === 34 && newAddress.text.substring(0,1) == "B" && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
+                color: newName.text != "" && (newAddress.text !== "" && invalidAddress == 0 && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }

@@ -66,11 +66,11 @@ ApplicationWindow {
     property string name3: "Nrocy"
     //property string label3: "Main"
 
-    property string address4: "B2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc"
+    property string address4: "F2o3fjwf02WIKoP9f3wxvmJFfa03wqWexc"
     property string name4: "Enervey"
     //property string label4: "Main"
 
-    property string address5: "Bkf3019jzmkFAJowaj392JAFAlafj032jJ"
+    property string address5: "Fkf3019jzmkFAJowaj392JAFAlafj032jJ"
     property string name5: "Danny"
     //property string label5: "Main"
 

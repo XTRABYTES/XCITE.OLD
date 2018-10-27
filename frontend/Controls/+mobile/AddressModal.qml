@@ -84,6 +84,59 @@ Rectangle {
         return duplicateName
     }
 
+    function checkAddress() {
+        if (newName.text != "") {
+            if (newName.text == "XBY" || newName.text == "BTC") {
+                if (newAddress.length == 34
+                        && newAddress.text != ""
+                        && newAddress.text.substring(0,1) == "B") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newName.text == "XFUEL") {
+                if (newAddress.length == 34
+                        && newAddress.text != ""
+                        && newAddress.text.substring(0,1) == "F") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else {
+                invalidAddress = 0
+            }
+        }
+        else {
+            if (addressName == "XBY" || addressName == "BTC") {
+                if (newAddress.length === 34
+                        && newAddress.text !== ""
+                        && newAddress.text.substring(0,1) == "B") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (addressName == "XFUEL") {
+                if (newAddress.length === 34
+                        && newAddress.text !== ""
+                        && newAddress.text.substring(0,1) == "F") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else {
+                invalidAddress = 0
+            }
+        }
+    }
+
     Rectangle {
         id: addressTitleBar
         width: parent.width
@@ -216,6 +269,9 @@ Rectangle {
             font.weight: Font.Bold
             color: "#F2F2F2"
             visible: picklistTracker == 0 && editSaved == 0 && transactionSent == 0
+            onTextChanged: if (addressSwitch.state == "on") {
+                               checkAddress()
+                           }
         }
 
         Label {
@@ -325,46 +381,46 @@ Rectangle {
                 onClicked: {
                     if (addressSwitch.state == "off"){
                         if (sendAmount.text !== ""
-                            && inputAmount !== 0
-                            && inputAmount <= (currencyList.get(currencyIndex).balance)) {
-                                transactionSent = 1
+                                && inputAmount !== 0
+                                && inputAmount <= (currencyList.get(currencyIndex).balance)) {
+                            transactionSent = 1
                         }
                     }
                     else {
                         if (doubbleAddress == 0
-                            && labelExists == 0
-                            && invalidAddress == 0) {
-                                if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(0).name) {
-                                    currencyIndex = 0
-                                }
-                                if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(1).name) {
-                                    currencyIndex = 1
-                                }
-                                if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(2).name) {
-                                    currencyIndex = 2
-                                }
-                                if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(3).name) {
-                                    currencyIndex = 3
-                                }
-                                if (newCoinSelect == 1) {
-                                    addressList.setProperty(addressIndex, "logo", currencyList.get(newCoinPicklist).logo);
-                                }
-                                if (newCoinSelect == 1) {
-                                    addressList.setProperty(addressIndex, "coin", currencyList.get(newCoinPicklist).name);
-                                }
-                                if (newName.text !== "") {
-                                    addressList.setProperty(addressIndex, "name", newName.text);
-                                }
-                                /**
+                                && labelExists == 0
+                                && invalidAddress == 0) {
+                            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(0).name) {
+                                currencyIndex = 0
+                            }
+                            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(1).name) {
+                                currencyIndex = 1
+                            }
+                            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(2).name) {
+                                currencyIndex = 2
+                            }
+                            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(3).name) {
+                                currencyIndex = 3
+                            }
+                            if (newCoinSelect == 1) {
+                                addressList.setProperty(addressIndex, "logo", currencyList.get(newCoinPicklist).logo);
+                            }
+                            if (newCoinSelect == 1) {
+                                addressList.setProperty(addressIndex, "coin", currencyList.get(newCoinPicklist).name);
+                            }
+                            if (newName.text !== "") {
+                                addressList.setProperty(addressIndex, "name", newName.text);
+                            }
+                            /**
                                 if (newLabel.text !== "") {
                                     addressList.setProperty(addressIndex, "label", newLabel.text);
                                 }
                                 */
-                                if (newAddress.text !== "") {
-                                    addressList.setProperty(addressIndex, "address", newAddress.text);
-                                }
-                                editSaved = 1
-                                picklistTracker = 0
+                            if (newAddress.text !== "") {
+                                addressList.setProperty(addressIndex, "address", newAddress.text);
+                            }
+                            editSaved = 1
+                            picklistTracker = 0
                         }
                     }
                 }
@@ -381,8 +437,7 @@ Rectangle {
                         && inputAmount <= (currencyList.get(currencyIndex).balance)) ? "#5E8BFF" :
                                                                                        ((addressSwitch.state == "on"
                                                                                          && keyInput.text != ""
-                                                                                         && keyInput.length == 34
-                                                                                         && keyInput.text.substring(0,1) == "B"
+                                                                                         && invalidAddress == 0
                                                                                          && doubbleAddress == 0
                                                                                          && labelExists == 0
                                                                                          && invalidAddress == 0 ) ? "#5E8BFF" :
@@ -698,15 +753,7 @@ Rectangle {
             font.pixelSize: 14
             visible: addressSwitch.state == "on" && editSaved == 0
             mobile: 1
-            onTextChanged: {
-                if (newAddress.length === 34
-                        && newAddress.text !== ""
-                        && keyInput.text.substring(0,1) == "B") {
-                    invalidAddress = 0
-                }
-                else
-                    invalidAddress = 1
-            }
+            onTextChanged: checkAddress()
         }
 
         Label {
