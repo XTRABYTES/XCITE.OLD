@@ -28,56 +28,62 @@ Rectangle {
 
     property int editSaved: 0
     property int invalidAddress: 0
-    property int addressExists: compareTx()
-    property int labelExists: compareName()
+    property int addressExists: 0
+    property int labelExists: 0
 
-    function compareTx(){
-        var duplicateAddress = 0
+    function compareTx() {
         for(var i = 0; i < addressList.count; i++) {
-            if (addressList.get(i).coin === newCoinName.text) {
-                if (addressList.get(i).address === newAddress.text) {
-                    duplicateAddress = 1
+            if (newAddress.text != "") {
+                if (addressList.get(i).coin === newCoinName.text) {
+                    if (addressList.get(i).address === newAddress.text) {
+                        addressExists = 1
+                    }
+                }
+                else {
+                    addressExists = 0
                 }
             }
         }
-        return duplicateAddress
     }
 
-    function compareName(){
-        var duplicateName = 0
+    function compareName() {
         for(var i = 0; i < addressList.count; i++) {
-            if (addressList.get(i).coin === newCoinName.text) {
-                if (addressList.get(i).name === newName.text) {
-                    duplicateName = 1
+            if (newName.text != ""){
+                if (addressList.get(i).coin === newCoinName.text) {
+                    if (addressList.get(i).name === newName.text) {
+                        labelExists = 1
+                    }
+                }
+                else {
+                    labelExists = 0
                 }
             }
         }
-        return duplicateName
     }
 
     function checkAddress() {
-        if (newName.text == "XBY" || newName.text == "BTC") {
-            if (newAddress.length === 34
-                    && newAddress.text !== ""
-                    && newAddress.text.substring(0,1) == "B") {
-                invalidAddress = 0
+        if (newAddress.text != "") {
+            if (newCoinName.text == "XBY" || newCoinName.text == "BTC") {
+                if (newAddress.length == 34
+                        && newAddress.text.substring(0,1) == "B") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "XFUEL") {
+                if (newAddress.length == 34
+                        && newAddress.text.substring(0,1) == "F") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
             }
             else {
-                invalidAddress = 1
-            }
-        }
-        else if (newName.text == "XFUEL") {
-            if (newAddress.length === 34
-                    && newAddress.text !== ""
-                    && newAddress.text.substring(0,1) == "F") {
                 invalidAddress = 0
             }
-            else {
-                invalidAddress = 1
-            }
-        }
-        else {
-            invalidAddress = 0
         }
     }
 
@@ -136,9 +142,7 @@ Rectangle {
             font.weight: Font.Bold
             color: "#F2F2F2"
             visible: editSaved == 0 && picklistTracker == 0
-            onTextChanged: if (newAddress.text != "") {
-                               checkAddress()
-                           }
+            onTextChanged: checkAddress() && compareTx() && compareName()
         }
 
         Image {
@@ -193,6 +197,7 @@ Rectangle {
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
+            onTextChanged: compareName()
         }
 
         Label {
@@ -248,7 +253,7 @@ Rectangle {
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
-            onTextChanged: checkAddress()
+            onTextChanged: checkAddress() && compareTx()
         }
 
         Label {
@@ -421,7 +426,7 @@ Rectangle {
                     picklistTracker = 0
                     newCoinPicklist = 0
                     newCoinSelect = 0
-                   newName.text = ""
+                    newName.text = ""
                     //newLabel.text = ""
                     newAddress.text = ""
                     invalidAddress = 0

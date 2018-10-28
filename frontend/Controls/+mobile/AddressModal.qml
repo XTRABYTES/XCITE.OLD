@@ -43,13 +43,15 @@ Rectangle {
     property string referenceTransfer: "REFERENCE"
 
     function compareTx(){
-        doubbleAddress = 0
         for(var i = 0; i < addressList.count; i++) {
             if (newAddress.text != "") {
                 if (addressList.get(i).coin === newCoinName.text) {
                     if (addressList.get(i).address === newAddress.text) {
                         doubbleAddress = 1
                     }
+                }
+                else {
+                    doubbleAddress = 0
                 }
             }
             else {
@@ -58,18 +60,23 @@ Rectangle {
                         doubbleAddress = 1
                     }
                 }
+                else {
+                    doubbleAddress = 0
+                }
             }
         }
     }
 
     function compareName(){
-        labelExists = 0
         for(var i = 0; i < addressList.count; i++) {
             if (newName.text != ""){
                 if (addressList.get(i).coin === newCoinName.text) {
                     if (addressList.get(i).name === newName.text) {
                         labelExists = 1
                     }
+                }
+                else {
+                    labelExists = 0
                 }
             }
             else {
@@ -78,17 +85,17 @@ Rectangle {
                         labelExists = 1
                     }
                 }
+                else {
+                    labelExists = 0
+                }
             }
         }
-        return duplicateName
     }
 
     function checkAddress() {
-        invalidAddress = 0
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY" || newCoinName.text == "BTC") {
                 if (newAddress.length == 34
-                        && newAddress.text != ""
                         && newAddress.text.substring(0,1) == "B") {
                     invalidAddress = 0
                 }
@@ -98,7 +105,6 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL") {
                 if (newAddress.length == 34
-                        && newAddress.text != ""
                         && newAddress.text.substring(0,1) == "F") {
                     invalidAddress = 0
                 }

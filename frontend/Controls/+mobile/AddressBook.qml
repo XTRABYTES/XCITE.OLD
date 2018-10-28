@@ -125,22 +125,20 @@ Rectangle {
                     anchors.fill: parent
 
                     onClicked: {
-                        if (appsTracker == 0 && addAddressTracker == 0) {
-                            if (addressTracker == 0 && transferTracker == 0) {
-                                addressTracker = 1
-                                addressIndex = uniqueNR
-                                if (coin === currencyList.get(0).name) {
-                                    currencyIndex = 0
-                                }
-                                if (coin === currencyList.get(1).name) {
-                                    currencyIndex = 1
-                                }
-                                if (coin === currencyList.get(2).name) {
-                                    currencyIndex = 2
-                                }
-                                if (coin === currencyList.get(3).name) {
-                                    currencyIndex = 3
-                                }
+                        if (appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0) {
+                            addressTracker = 1
+                            addressIndex = uniqueNR
+                            if (coin === currencyList.get(0).name) {
+                                currencyIndex = 0
+                            }
+                            if (coin === currencyList.get(1).name) {
+                                currencyIndex = 1
+                            }
+                            if (coin === currencyList.get(2).name) {
+                                currencyIndex = 2
+                            }
+                            if (coin === currencyList.get(3).name) {
+                                currencyIndex = 3
                             }
                         }
                     }
@@ -157,11 +155,13 @@ Rectangle {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            if (favorite == 1) {
-                                addressList.setProperty(uniqueNR, "favorite", 0)
-                            }
-                            else {
-                                addressList.setProperty(uniqueNR, "favorite", 1)
+                            if (appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0) {
+                                if (favorite == 1) {
+                                    addressList.setProperty(uniqueNR, "favorite", 0)
+                                }
+                                else {
+                                    addressList.setProperty(uniqueNR, "favorite", 1)
+                                }
                             }
                         }
                     }
