@@ -82,27 +82,22 @@ Rectangle {
                 font.weight: Font.Light
                 color: "#F2F2F2"
             }
-            /**
-            Label {
-                id: addressLabelName
-                text: label
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                font.family: "Brandon Grotesque"
-                font.pixelSize: 18
-                color: "#F2F2F2"
-            }
-            */
         }
     }
 
     SortFilterProxyModel {
         id: filteredAddresses
         sourceModel: addressList
-        filters: RegExpFilter {
-            roleName: "coin"
-            pattern: searchFilter
-        }
+        filters: [
+            RegExpFilter {
+                 roleName: "coin"
+                 pattern: searchFilter
+            },
+            ValueFilter {
+                 roleName: "active"
+                 value: true
+            }
+        ]
     }
 
     ListView {

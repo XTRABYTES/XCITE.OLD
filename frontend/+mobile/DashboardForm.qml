@@ -27,10 +27,14 @@ Item {
     // shared vars
 
     property int pageTracker: view.currentIndex == 0 ? 0 : 1
+    property variant balanceArray: ((totalBalance).toLocaleString(Qt.locale(), "f", 2)).split('.')
+
 
     Component.onCompleted: {
 
         sumBalance()
+        console.log(balanceArray)
+        console.log("first element: " + balanceArray[0] + " & " + "second element: " + balanceArray[1])
     }
 
     Rectangle {
@@ -51,13 +55,38 @@ Item {
                 id: dashForm
 
                 Label {
-                    id: value
+                    id: valueTicker
+                    z: 5
+                    anchors.right: value1.left
+                    anchors.bottom: value1.bottom
+                    anchors.bottomMargin: 5
+                    text: "$"
+                    font.pixelSize: 24
+                    font.family: "Brandon Grotesque"
+                    color: "#E5E5E5"
+                }
+
+                Label {
+                    id: value1
                     z: 5
                     anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.horizontalCenterOffset: -((value2.implicitWidth - valueTicker.implicitWidth) / 2)
                     anchors.verticalCenter: parent.top
                     anchors.verticalCenterOffset: 85
-                    text: "$" +(totalBalance).toLocaleString(Qt.locale(), "f", 2)
+                    text: balanceArray[0]
                     font.pixelSize: 40
+                    font.family: "Brandon Grotesque"
+                    color: "#E5E5E5"
+                }
+
+                Label {
+                    id: value2
+                    z: 5
+                    anchors.left: value1.right
+                    anchors.bottom: value1.bottom
+                    anchors.bottomMargin: 4
+                    text: "." + balanceArray[1]
+                    font.pixelSize: 24
                     font.family: "Brandon Grotesque"
                     color: "#E5E5E5"
                 }

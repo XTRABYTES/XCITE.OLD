@@ -66,19 +66,7 @@ Rectangle {
                     anchors.right: addressCoinLogo.left
                     anchors.rightMargin: 7
                 }
-                /**
-                Label {
-                    id: addressLabel
-                    text: label
-                    color: "#F2F2F2"
-                    font.pixelSize: 18
-                    font.family: "Brandon Grotesque"
-                    font.bold: true
-                    anchors.verticalCenter: addressCoinLogo.verticalCenter
-                    anchors.left: addressName.right
-                    anchors.leftMargin: 10
-                }
-                */
+
                 Label {
                     id: addressName
                     text: name
@@ -174,24 +162,20 @@ Rectangle {
         id: filteredAddress
         sourceModel: addressList
         filters: [
-            AnyOf {
-                RegExpFilter {
+            ValueFilter {
+                    roleName: "active"
+                    value: true
+            },
+            RegExpFilter {
                     roleName: "name"
                     pattern: "^" + searchFilter
                     caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "label"
-                    pattern: "^" + searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
             }
         ]
         sorters: [
             RoleSorter { roleName: "favorite"; sortOrder: Qt.DescendingOrder },
             StringSorter { roleName: "name" },
-            StringSorter { roleName: "coin" },
-            StringSorter { roleName: "label" }
+            StringSorter { roleName: "coin" }
         ]
     }
 

@@ -41,7 +41,7 @@ Rectangle {
                     }
                 }
             }
-            visible: active == 0 ? false : true
+            visible: active == 1
 
             Rectangle {
                 id: square
@@ -52,7 +52,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 10
-                visible: active == 0 ? false : true
+                visible: active == 1
 
                 Image {
                     id: icon
@@ -63,7 +63,7 @@ Rectangle {
                     anchors.topMargin: 14
                     width: 25
                     height: 25
-                    visible: active == 0 ? false : true
+                    visible: active == 1
                 }
 
                 Text {
@@ -76,20 +76,21 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     color: "#E5E5E5"
                     font.bold: true
-                    visible: active == 0 ? false : true
+                    visible: active == 1
                 }
 
                 Text {
+                    property int decimals: name == "BTC" ? 8 : 4
                     id: amountSizeLabel
                     anchors.right: parent.right
                     anchors.rightMargin: 14
                     anchors.verticalCenter: coinName.verticalCenter
-                    text: balance.toLocaleString(Qt.locale(), "f", 4) + " " + name
+                    text: balance.toLocaleString(Qt.locale(), "f", decimals) + " " + name
                     font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     color: "#E5E5E5"
                     font.bold: true
-                    visible: active == 0 ? false : true
+                    visible: active == 1
                 }
 
                 Text {
@@ -102,7 +103,7 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
-                    visible: active == 0 ? false : true
+                    visible: active == 1
                 }
 
                 Text {
@@ -115,7 +116,7 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     color: percentage <= 0 ? "#FD2E2E" : "#5DFC36"
                     font.bold: true
-                    visible: active == 0 ? false : true
+                    visible: active == 1
                 }
 
                 Text {
@@ -128,7 +129,7 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
-                    visible: active == 0 ? false : true
+                    visible: active == 1
                 }
 
                 Label {
@@ -140,7 +141,7 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
-                    visible: active == 0 ? false : true
+                    visible: active == 1
                 }
 
                 Label {
@@ -153,7 +154,7 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
-                    visible: active == 0 ? false : true
+                    visible: active == 1
                 }
 
                 Text {
@@ -167,7 +168,7 @@ Rectangle {
                     color: "#F2F2F2"
                     font.weight: Font.Light
                     font.italic: true
-                    visible: unconfirmedCoins != 0
+                    visible: unconfirmedCoins != 0 && active == 1
                 }
 
                 MouseArea {

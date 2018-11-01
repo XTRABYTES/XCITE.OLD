@@ -19,7 +19,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: addressModal
     width: 325
-    height: (transactionSent == 1 || editSaved == 1)? 350 : (addressSwitch.state == "off" ? 385 : 350)
+    height: (transactionSent == 1 || editSaved == 1 || deleteAddressTracker == 1 || deleteConfirmed == 1)? 350 : (addressSwitch.state == "off" ? 385 : 350)
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -28,16 +28,18 @@ Rectangle {
     property string coinName: addressList.get(addressIndex).coin
     property string sendAddress: addressList.get(addressIndex).address
     property string addressName: addressList.get(addressIndex).name
-    //property string addressLabel: addressList.get(addressIndex).label
     property int switchState: 0
     property int addressBookTracker: 0
+    property int deleteAddressTracker: 0
     property int transactionSent: 0
     property int confirmationSent: 0
     property int editSaved: 0
+    property int deleteConfirmed: 0
     property int addressNR: 0
     property int invalidAddress: 0
     property int doubbleAddress: 0
     property int labelExists: 0
+    property int decimals: (newCoinName.text) == "BTC" ? 8 : 4
     property var inputAmount: Number.fromLocaleString(Qt.locale(),sendAmount.text)
     property string amountTransfer: "AMOUNT (" + newCoinName.text + ")"
     property string referenceTransfer: "REFERENCE"
@@ -47,7 +49,12 @@ Rectangle {
             if (newAddress.text != "") {
                 if (addressList.get(i).coin === newCoinName.text) {
                     if (addressList.get(i).address === newAddress.text) {
-                        doubbleAddress = 1
+                        if (addressList.get(i).active === 1) {
+                            doubbleAddress = 1
+                        }
+                        else {
+                            doubbleAddress = 0
+                        }
                     }
                 }
                 else {
@@ -57,7 +64,12 @@ Rectangle {
             else {
                 if (addressList.get(i).coin === newCoinName.text) {
                     if (addressList.get(i).address === newAddress.placeholder) {
-                        doubbleAddress = 1
+                        if (addressList.get(i).active === 1) {
+                            doubbleAddress = 1
+                        }
+                        else {
+                            doubbleAddress = 0
+                        }
                     }
                 }
                 else {
@@ -72,7 +84,12 @@ Rectangle {
             if (newName.text != ""){
                 if (addressList.get(i).coin === newCoinName.text) {
                     if (addressList.get(i).name === newName.text) {
-                        labelExists = 1
+                        if (addressList.get(i).active === 1) {
+                            labelExists = 1
+                        }
+                        else {
+                            labelExists = 0
+                        }
                     }
                 }
                 else {
@@ -82,7 +99,12 @@ Rectangle {
             else {
                 if (addressList.get(i).coin === newCoinName.text) {
                     if (addressList.get(i).name === newName.placeholder) {
-                        labelExists = 1
+                        if (addressList.get(i).active === 1) {
+                            labelExists = 1
+                        }
+                        else {
+                            labelExists = 0
+                        }
                     }
                 }
                 else {
@@ -96,7 +118,8 @@ Rectangle {
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY" || newCoinName.text == "BTC") {
                 if (newAddress.length == 34
-                        && newAddress.text.substring(0,1) == "B") {
+                        && newAddress.text.substring(0,1) == "B"
+                        && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -105,7 +128,8 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL") {
                 if (newAddress.length == 34
-                        && newAddress.text.substring(0,1) == "F") {
+                        && newAddress.text.substring(0,1) == "F"
+                        && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -149,7 +173,9 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         color: "#34363D"
-        visible: editSaved == 0 && transactionSent == 0
+        visible: editSaved == 0
+                 && transactionSent == 0
+                 && deleteAddressTracker == 0
 
         Image {
             id: titleIcon
@@ -220,7 +246,9 @@ Rectangle {
             anchors.top: parent.top
             anchors.topMargin: 20
             state: switchState == 0 ? "off" : "on"
-            visible: transactionSent == 0 && editSaved == 0
+            visible: transactionSent == 0
+                     && editSaved == 0
+                     && deleteAddressTracker == 0
         }
 
         Text {
@@ -233,7 +261,9 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Medium
             color: addressSwitch.on ? "#5F5F5F" : "#5E8BFE"
-            visible: transactionSent == 0 && editSaved == 0
+            visible: transactionSent == 0
+                     && editSaved == 0
+                     && deleteAddressTracker == 0
         }
 
         Text {
@@ -246,7 +276,9 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Medium
             color: addressSwitch.on ? "#5E8BFE" : "#5F5F5F"
-            visible: transactionSent == 0 && editSaved == 0
+            visible: transactionSent == 0
+                     && editSaved == 0
+                     && deleteAddressTracker == 0
         }
 
         // Send state
@@ -259,7 +291,10 @@ Rectangle {
             anchors.left: sendAmount.left
             anchors.top: addressSwitch.bottom
             anchors.topMargin: 10
-            visible: picklistTracker == 0 && editSaved == 0 && transactionSent == 0
+            visible: picklistTracker == 0
+                     && editSaved == 0
+                     && transactionSent == 0
+                     && deleteAddressTracker == 0
         }
 
         Label {
@@ -272,7 +307,10 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
-            visible: picklistTracker == 0 && editSaved == 0 && transactionSent == 0
+            visible: picklistTracker == 0
+                     && editSaved == 0
+                     && transactionSent == 0
+                     && deleteAddressTracker == 0
             onTextChanged: if (addressSwitch.state == "on") {
                                checkAddress() && compareName() && compareTx()
                            }
@@ -287,18 +325,22 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
-            visible: editSaved == 0 && transactionSent == 0 && addressSwitch.state == "off"
+            visible: editSaved == 0
+                     && transactionSent == 0
+                     && addressSwitch.state == "off"
         }
 
         Text {
             id: walletBalance
-            text: (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", 4) + " " + newCoinName.text
+            text: (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", decimals) + " " + newCoinName.text
             anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
             anchors.topMargin: 1
             font.pixelSize: 13
             color: "#828282"
-            visible: editSaved == 0 && transactionSent == 0 && addressSwitch.state == "off"
+            visible: editSaved == 0
+                     && transactionSent == 0
+                     && addressSwitch.state == "off"
         }
 
         Controls.TextInput {
@@ -310,8 +352,10 @@ Rectangle {
             placeholder: amountTransfer
             color: sendAmount.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
             validator: DoubleValidator {bottom: 0; top: (currencyList.get(currencyIndex).balance)}
-            visible: transactionSent == 0 && addressSwitch.state == "off"
+            visible: transactionSent == 0
+                     && addressSwitch.state == "off"
             mobile: 1
         }
 
@@ -325,7 +369,9 @@ Rectangle {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: transactionSent == 0 && addressSwitch.state == "off" && inputAmount > (currencyList.get(currencyIndex).balance)
+            visible: transactionSent == 0
+                     && addressSwitch.state == "off"
+                     && inputAmount > (currencyList.get(currencyIndex).balance)
         }
 
         Controls.TextInput {
@@ -334,12 +380,14 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: sendAmount.bottom
             anchors.topMargin: 15
-            text: sendAddress
+            placeholder: sendAddress
             color: "#F2F2F2"
             font.pixelSize: 14
-            visible: transactionSent == 0 && addressSwitch.state == "off"
+            visible: transactionSent == 0
+                     && addressSwitch.state == "off"
             readOnly: true
             mobile: 1
+            deleteBtn: 0
         }
 
         Controls.TextInput {
@@ -351,7 +399,8 @@ Rectangle {
             anchors.topMargin: 15
             color: referenceInput.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
-            visible: transactionSent == 0 && addressSwitch.state == "off"
+            visible: transactionSent == 0
+                     && addressSwitch.state == "off"
             mobile: 1
         }
 
@@ -365,17 +414,18 @@ Rectangle {
                            && inputAmount !== 0
                            && inputAmount <= (currencyList.get(currencyIndex).balance)) ? "#5E8BFF" :
                                                                                           ((addressSwitch.state == "on"
-                                                                                            && invalidAddress == 0
                                                                                             && doubbleAddress == 0
                                                                                             && labelExists == 0
-                                                                                            && invalidAddress == 0 ) ? "#5E8BFF" :
+                                                                                            && invalidAddress == 0) ? "#5E8BFF" :
                                                                                                                        "#727272")
             border.width: 2
             color: "transparent"
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.left: referenceInput.left
-            visible: transactionSent == 0 && editSaved == 0
+            visible: transactionSent == 0
+                     && editSaved == 0
+                     && deleteAddressTracker == 0
 
             MouseArea {
                 anchors.fill: transferModalButton
@@ -438,8 +488,6 @@ Rectangle {
                         && inputAmount !== 0
                         && inputAmount <= (currencyList.get(currencyIndex).balance)) ? "#5E8BFF" :
                                                                                        ((addressSwitch.state == "on"
-                                                                                         && keyInput.text != ""
-                                                                                         && invalidAddress == 0
                                                                                          && doubbleAddress == 0
                                                                                          && labelExists == 0
                                                                                          && invalidAddress == 0 ) ? "#5E8BFF" :
@@ -458,7 +506,8 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
-            visible: transactionSent == 1 && confirmationSent == 0
+            visible: transactionSent == 1
+                     && confirmationSent == 0
 
             Text {
                 id: confirmationText
@@ -474,7 +523,7 @@ Rectangle {
 
             Text {
                 id: confirmationAmount
-                text: sendAmount.text + " " + coinName
+                text: inputAmount.toLocaleString(Qt.locale(), "f", decimals) + " " + newCoinName.text
                 anchors.top: confirmationText.bottom
                 anchors.topMargin: 7
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -498,7 +547,7 @@ Rectangle {
 
             Text {
                 id: confirmationAddress
-                text: keyInput.text
+                text: keyInput.placeholder
                 anchors.top: to.bottom
                 anchors.topMargin: 7
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -607,7 +656,8 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            visible: transactionSent == 1 && confirmationSent == 1
+            visible: transactionSent == 1
+                     && confirmationSent == 1
 
             Image {
                 id: confirmedIcon
@@ -623,6 +673,20 @@ Rectangle {
                     source: confirmedIcon
                     color: "#5E8BFF"
                 }
+            }
+
+            Label {
+                id: confirmedIconLabel
+                text: "Transaction sent !"
+                anchors.top: confirmedIcon.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: confirmedIcon.horizontalCenter
+                color: "#5E8BFF"
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                visible: transactionSent == 1
+                         && confirmationSent == 1
             }
 
             Rectangle {
@@ -670,7 +734,10 @@ Rectangle {
             anchors.left: picklistTracker == 0 ? newCoinName.right : newPicklist.right
             anchors.leftMargin: 10
             anchors.verticalCenter: newCoinName.verticalCenter
-            visible: addressSwitch.state == "on" && editSaved == 0 && picklistTracker == 0
+            visible: addressSwitch.state == "on"
+                     && editSaved == 0
+                     && picklistTracker == 0
+                     && deleteAddressTracker == 0
 
             ColorOverlay {
                 anchors.fill: parent
@@ -700,6 +767,36 @@ Rectangle {
                 }
             }
         }
+
+        Image {
+            id: deleteAddress
+            source: 'qrc:/icons/trashcan_big.svg'
+            height: 39
+            width: 26
+            anchors.right: parent.right
+            anchors.rightMargin: 40
+            anchors.verticalCenter: picklistArrow.verticalCenter
+            visible: addressSwitch.state == "on"
+                     && editSaved == 0
+                     && deleteAddressTracker == 0
+            Rectangle {
+                id: deleteButton
+                height: 20
+                width: 20
+                radius: 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "transparent"
+            }
+
+            MouseArea {
+                anchors.fill: deleteButton
+                onClicked: {
+                    deleteAddressTracker = 1
+                }
+            }
+        }
+
         Controls.TextInput {
             id: newName
             height: 34
@@ -710,7 +807,9 @@ Rectangle {
             anchors.topMargin: 15
             color:"#F2F2F2"
             font.pixelSize: 14
-            visible: addressSwitch.state == "on" && editSaved == 0
+            visible: addressSwitch.state == "on"
+                     && editSaved == 0
+                     && deleteAddressTracker == 0
             mobile: 1
             onTextChanged: compareName()
         }
@@ -726,24 +825,12 @@ Rectangle {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: addressSwitch.state == "on" && editSaved == 0 && labelExists == 1
+            visible: addressSwitch.state == "on"
+                     && editSaved == 0
+                     && labelExists == 1
+                     && deleteAddressTracker == 0
         }
 
-        /**
-        Controls.TextInput {
-            id: newLabel
-            height: 34
-            // radius: 8
-            placeholder: addressLabel
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: newName.bottom
-            anchors.topMargin: 15
-            color:"#F2F2F2"
-            font.pixelSize: 14
-            visible: addressSwitch.state == "on" && editSaved == 0
-            mobile: 1
-        }
-        */
         Controls.TextInput {
             id: newAddress
             height: 34
@@ -754,8 +841,11 @@ Rectangle {
             anchors.topMargin: 15
             color:"#F2F2F2"
             font.pixelSize: 14
-            visible: addressSwitch.state == "on" && editSaved == 0
+            visible: addressSwitch.state == "on"
+                     && editSaved == 0
+                     && deleteAddressTracker == 0
             mobile: 1
+            validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: checkAddress() && compareTx()
         }
 
@@ -770,7 +860,10 @@ Rectangle {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: addressSwitch.state == "on" && editSaved == 0 && doubbleAddress == 1
+            visible: addressSwitch.state == "on"
+                     && editSaved == 0
+                     && doubbleAddress == 1
+                     && deleteAddressTracker == 0
         }
 
         Label {
@@ -784,7 +877,10 @@ Rectangle {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: addressSwitch.state == "on" && editSaved == 0 && invalidAddress == 1
+            visible: addressSwitch.state == "on"
+                     && editSaved == 0
+                     && invalidAddress == 1
+                     && deleteAddressTracker == 0
         }
 
         Rectangle {
@@ -795,12 +891,17 @@ Rectangle {
             anchors.top: newIcon.top
             anchors.topMargin: -5
             anchors.left: newIcon.left
-            visible: addressSwitch.state == "on" && picklistTracker == 1 && editSaved == 0
+            visible: addressSwitch.state == "on"
+                     && picklistTracker == 1
+                     && editSaved == 0
+                     && deleteAddressTracker == 0
 
             Controls.CurrencyPicklist {
                 id: myCoinPicklist
             }
         }
+
+        // Edit saved state
 
         Image {
             id: saveSuccess
@@ -810,13 +911,28 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -15
-            visible: addressSwitch.state == "on" && editSaved == 1
+            visible: addressSwitch.state == "on"
+                     && editSaved == 1
 
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
                 color: "#5E8BFF"
             }
+        }
+
+        Label {
+            id: saveSuccessLabel
+            text: "Changes saved !"
+            anchors.top: saveSuccess.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: saveSuccess.horizontalCenter
+            color: "#5E8BFF"
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: addressSwitch.state == "on"
+                     && editSaved == 1
         }
 
         Rectangle {
@@ -830,19 +946,216 @@ Rectangle {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: addressSwitch.state == "on" && editSaved == 1
+            visible: addressSwitch.state == "on"
+                     && editSaved == 1
 
             MouseArea {
                 anchors.fill: closeSaveEdit
 
                 onClicked: {
                     newName.text = ""
-                    //newLabel.text = ""
                     newAddress.text = ""
                     editSaved = 0
                     newCoinPicklist = 0
                     newCoinSelect = 0
                     invalidAddress = 0
+                }
+            }
+
+            Text {
+                text: "OK"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#5E8BFF"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+
+        // Delete confirm state
+
+        Rectangle {
+            id: deleteConfirmation
+            width: parent.width
+            height: parent.height
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+            visible: deleteAddressTracker == 1
+                     && deleteConfirmed == 0
+
+            Text {
+                id: deleteText
+                text: "You are about to delete:"
+                anchors.top: parent.top
+                anchors.topMargin: 60
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 16
+                font.weight: Font.Normal
+                color: "#F2F2F2"
+            }
+
+            Text {
+                id: deleteAddressName
+                text: addressName
+                anchors.top: deleteText.bottom
+                anchors.topMargin: 7
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 16
+                font.bold: true
+                color: "#F2F2F2"
+            }
+
+            Text {
+                id: deleteAddressHash
+                text: sendAddress
+                anchors.top: deleteAddressName.bottom
+                anchors.topMargin: 7
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 16
+                font.weight: Font.Normal
+                color: "#F2F2F2"
+            }
+
+           Rectangle {
+                id: confirmationDeleteButton
+                width: (doubbleButtonWidth - 10) / 2
+                height: 33
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                anchors.right: parent.horizontalCenter
+                anchors.rightMargin: 5
+                radius: 8
+                border.color: "#5E8BFF"
+                border.width: 2
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        deleteConfirmed = 1
+                        addressList.setProperty(addressIndex, "active", false)
+                    }
+                }
+
+                Text {
+                    text: "CONFIRM"
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    color: "#5E8BFF"
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Rectangle {
+                id: cancelDeleteButton
+                width: (doubbleButtonWidth - 10) / 2
+                height: 33
+                radius: 8
+                border.color: "#5E8BFF"
+                border.width: 2
+                color: "transparent"
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                anchors.left: parent.horizontalCenter
+                anchors.leftMargin: 5
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        deleteAddressTracker = 0
+                    }
+                }
+
+                Text {
+                    text: "CANCEL"
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "#5E8BFF"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
+        // Delete success state
+
+        Image {
+            id: deleteSuccess
+            source: 'qrc:/icons/icon-delete-mobile.svg'
+            height: 100
+            width: 100
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -15
+            visible: addressSwitch.state == "on"
+                     && deleteConfirmed == 1
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: "#5E8BFF"
+            }
+        }
+
+        Label {
+            id: deleteSuccessLabel
+            text: "Address removed !"
+            anchors.top: deleteSuccess.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: deleteSuccess.horizontalCenter
+            color: "#5E8BFF"
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: addressSwitch.state == "on"
+                     && deleteConfirmed == 1
+        }
+
+        Rectangle {
+            id: closeDelete
+            width: (parent.width - 45) / 2
+            height: 33
+            radius: 8
+            border.color: "#5E8BFF"
+            border.width: 2
+            color: "transparent"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: addressSwitch.state == "on"
+                     && deleteConfirmed == 1
+
+            MouseArea {
+                anchors.fill: closeDelete
+
+                onClicked: {
+                    if (addressTracker == 1) {
+                        addressTracker = 0;
+                        picklistTracker = 0
+                        newCoinPicklist = 0
+                        newCoinSelect = 0
+                        addressIndex = 0
+                        currencyIndex = 0
+                        addressSwitch.state = "off"
+                        transactionSent =0
+                        confirmationSent = 0
+                        sendAmount.text = ""
+                        referenceInput.text = ""
+                        newName.text = ""
+                        newAddress.text = ""
+                        invalidAddress = 0
+                        deleteAddressTracker = 0
+                        deleteConfirmed = 0
+                    }
                 }
             }
 
@@ -868,7 +1181,10 @@ Rectangle {
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: "#F2F2F2"
-        visible: addressTracker == 1 && confirmationSent == 0 && editSaved == 0
+        visible: addressTracker == 1
+                 && confirmationSent == 0
+                 && editSaved == 0
+                 && deleteConfirmed == 0
 
         Rectangle{
             id: closeButton
@@ -893,9 +1209,10 @@ Rectangle {
                     sendAmount.text = ""
                     referenceInput.text = ""
                     newName.text = ""
-                    //newLabel.text = ""
                     newAddress.text = ""
                     invalidAddress = 0
+                    deleteAddressTracker = 0
+                    deleteConfirmed = 0
                 }
 
             }

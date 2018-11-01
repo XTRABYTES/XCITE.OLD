@@ -136,5 +136,8 @@
         <file>icons/icon-favorite.svg</file>
         <file>icons/magnifying_glass.svg</file>
         <file>icons/icon-success.svg</file>
+        <file>icons/trashcan.svg</file>
+        <file>icons/icon-delete-mobile.svg</file>
+        <file>icons/trashcan_big.svg</file>
     </qresource>
 </RCC>

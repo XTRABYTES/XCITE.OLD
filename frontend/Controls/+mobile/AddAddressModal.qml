@@ -36,7 +36,12 @@ Rectangle {
             if (newAddress.text != "") {
                 if (addressList.get(i).coin === newCoinName.text) {
                     if (addressList.get(i).address === newAddress.text) {
-                        addressExists = 1
+                        if (addressList.get(i).active === 1) {
+                            addressExists = 1
+                        }
+                        else {
+                            addressExists = 0
+                        }
                     }
                 }
                 else {
@@ -51,7 +56,12 @@ Rectangle {
             if (newName.text != ""){
                 if (addressList.get(i).coin === newCoinName.text) {
                     if (addressList.get(i).name === newName.text) {
-                        labelExists = 1
+                        if (addressList.get(i).active === 1) {
+                            labelExists = 1
+                        }
+                        else {
+                            labelExists = 0
+                        }
                     }
                 }
                 else {
@@ -65,7 +75,8 @@ Rectangle {
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY" || newCoinName.text == "BTC") {
                 if (newAddress.length == 34
-                        && newAddress.text.substring(0,1) == "B") {
+                        && newAddress.text.substring(0,1) == "B"
+                        && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -74,7 +85,8 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL") {
                 if (newAddress.length == 34
-                        && newAddress.text.substring(0,1) == "F") {
+                        && newAddress.text.substring(0,1) == "F"
+                        && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -128,7 +140,8 @@ Rectangle {
             anchors.left: newName.left
             anchors.top: parent.top
             anchors.topMargin: 20
-            visible: editSaved == 0 && picklistTracker == 0
+            visible: editSaved == 0
+                     && picklistTracker == 0
         }
 
         Label {
@@ -142,7 +155,9 @@ Rectangle {
             font.weight: Font.Bold
             color: "#F2F2F2"
             visible: editSaved == 0 && picklistTracker == 0
-            onTextChanged: checkAddress() && compareTx() && compareName()
+            onTextChanged: checkAddress()
+                           && compareTx()
+                           && compareName()
         }
 
         Image {
@@ -211,37 +226,10 @@ Rectangle {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: editSaved == 0 && labelExists == 1
-        }
-        /**
-        Controls.TextInput {
-            id: newLabel
-            height: 34
-            // radius: 8
-            placeholder: "WALLET LABEL"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: newName.bottom
-            anchors.topMargin: 15
-            color: newLabel.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 14
             visible: editSaved == 0
-            mobile: 1
+                     && labelExists == 1
         }
 
-        Label {
-            id: labelWarning2
-            text: "Please fill out this field"
-            color: "#FD2E2E"
-            anchors.left: newLabel.left
-            anchors.leftMargin: 5
-            anchors.top: newLabel.bottom
-            anchors.topMargin: 1
-            font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
-            visible: editSaved == 0 && warningEmpty == 1 && newLabel.text == ""
-        }
-        */
         Controls.TextInput {
             id: newAddress
             height: 34
@@ -253,7 +241,9 @@ Rectangle {
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
-            onTextChanged: checkAddress() && compareTx()
+            validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
+            onTextChanged: checkAddress()
+                           && compareTx()
         }
 
         Label {
@@ -267,7 +257,8 @@ Rectangle {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: editSaved == 0 && addressExists == 1
+            visible: editSaved == 0
+                     && addressExists == 1
         }
 
         Label {
@@ -281,7 +272,8 @@ Rectangle {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: editSaved == 0 && invalidAddress == 1
+            visible: editSaved == 0
+                     && invalidAddress == 1
         }
 
         Rectangle {
@@ -292,7 +284,8 @@ Rectangle {
             anchors.top: newIcon.top
             anchors.topMargin: -5
             anchors.left: newIcon.left
-            visible: picklistTracker == 1 && editSaved == 0
+            visible: picklistTracker == 1
+                     && editSaved == 0
 
             Controls.CurrencyPicklist {
                 id: myCoinPicklist
@@ -304,7 +297,10 @@ Rectangle {
             width: newAddress.width
             height: 33
             radius: 8
-            border.color: (newName.text != "" && newAddress.text !== "" && invalidAddress == 0 && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
+            border.color: (newName.text != ""
+                           && newAddress.text !== ""
+                           && invalidAddress == 0
+                           && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
             border.width: 2
             color: "transparent"
             anchors.bottom: addressBodyModal.bottom
@@ -316,14 +312,18 @@ Rectangle {
                 anchors.fill: saveButton
 
                 onClicked: {
-                    if (newName.text != "" && newAddress.text != "" && invalidAddress == 0 && addressExists == 0 && labelExists == 0) {
+                    if (newName.text != ""
+                            && newAddress.text != ""
+                            && invalidAddress == 0
+                            && addressExists == 0
+                            && labelExists == 0) {
                         if (newCoinSelect == 1) {
-                            addressList.append({"address": newAddress.text, "name": newName.text, /**"label": newLabel.text,*/ "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
+                            addressList.append({"address": newAddress.text, "name": newName.text, "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID});
                             addressID = addressID +1;
                             editSaved = 1
                         }
                         else {
-                            addressList.append({"address": newAddress.text, "name": newName.text, /**"label": newLabel.text,*/ "logo": currencyList.get(0).logo, "coin": newCoinName.text, "favorite": 0, "active": 1, "uniqueNR": addressID});
+                            addressList.append({"address": newAddress.text, "name": newName.text, "logo": currencyList.get(0).logo, "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID});
                             addressID = addressID +1;
                             editSaved = 1
                         }
@@ -336,7 +336,11 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: newName.text != "" && (newAddress.text !== "" && invalidAddress == 0 && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
+                color: newName.text != ""
+                       && (newAddress.text !== ""
+                           && invalidAddress == 0
+                           && addressExists == 0
+                           && labelExists == 0) ? "#5E8BFF" : "#727272"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -357,6 +361,19 @@ Rectangle {
                 source: parent
                 color: "#5E8BFF"
             }
+        }
+
+        Label {
+            id: saveSuccessLabel
+            text: "Changes saved !"
+            anchors.top: saveSuccess.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: saveSuccess.horizontalCenter
+            color: "#5E8BFF"
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: editSaved == 1
         }
 
         Rectangle {
@@ -409,7 +426,8 @@ Rectangle {
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: "#F2F2F2"
-        visible: addAddressTracker == 1 && editSaved == 0
+        visible: addAddressTracker == 1
+                 && editSaved == 0
 
         Rectangle{
             id: closeButton
