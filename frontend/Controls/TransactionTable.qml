@@ -12,22 +12,33 @@
 import QtQuick 2.7
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
-import SortFilterProxyModel 0.1
+import SortFilterProxyModel 0.2
 
 import "../Theme" 1.0
 
 TableView {
     id: transactionTable
 
+
     model: SortFilterProxyModel {
         id: proxyModel
-        source: wallet.transactions.rowCount() > 0 ? wallet.transactions : null
-        sortOrder: transactionTable.sortIndicatorOrder
+        sourceModel: wallet.transactions.rowCount() > 0 ? wallet.transactions : null
         sortCaseSensitivity: Qt.CaseInsensitive
-        sortRole: wallet.transactions.rowCount(
-                      ) > 0 ? transactionTable.getColumn(
-                                  transactionTable.sortIndicatorColumn).role : ""
+        sorters: RoleSorter { roleName: (wallet.transactions.rowCount() > 0 ? transactionTable.getColumn(transactionTable.sortIndicatorColumn).role : "") ;
+            sortOrder: transactionTable.sortIndicatorOrder }
     }
+
+    /**SortFilterProxyModel {
+            id: proxyModel
+            source: wallet.transactions.rowCount() > 0 ? wallet.transactions : null
+            sortOrder: transactionTable.sortIndicatorOrder
+            sortCaseSensitivity: Qt.CaseInsensitive
+            sortRole: wallet.transactions.rowCount(
+                          ) > 0 ? transactionTable.getColumn(
+                                      transactionTable.sortIndicatorColumn).role : ""
+        }
+        */
+
 
     // TODO: This is just a placeholder to test out click-to-view a transaction
     onDoubleClicked: {

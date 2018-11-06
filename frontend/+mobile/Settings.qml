@@ -9,32 +9,29 @@
  * This file is part of an XTRABYTES Ltd. project.
  *
  */
+
 import QtQuick 2.7
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
+import QtMultimedia 5.8
+
+import "../Controls" as Controls
+
+/**
+  * Main page
+  */
 
 Item {
-    Column {
-        anchors.fill: parent
-        anchors.margins: 10
-        spacing: 100
 
-        Item {
-            id: heading
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 35
-
-            Label {
-                id: label
-                font.pixelSize: 16
-                anchors.fill: parent
-                color: "white"
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-                text: qsTr("SETTINGS")
-            }
-        }
+    Loader {
+        id: pageLoader
+    }
+    Controls.Header {
+        id: heading
+        text: qsTr("SETTINGS")
+        showBack: false
+        Layout.topMargin: 30
     }
     Image {
         id: back
@@ -48,7 +45,7 @@ Item {
 
         MouseArea {
              anchors.fill: back
-             onClicked: mainRoot.pop("Settings.qml")
+             onClicked: mainRoot.pop("../DashboardForm.qml")
         }
     }
 }

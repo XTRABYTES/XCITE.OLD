@@ -133,5 +133,11 @@
         <file>icons/transfer_icon_02.svg</file>
         <file>icons/add_icon_04.svg</file>
         <file>icons/notification_red_circle_icon.svg</file>
+        <file>icons/icon-favorite.svg</file>
+        <file>icons/magnifying_glass.svg</file>
+        <file>icons/icon-success.svg</file>
+        <file>icons/trashcan.svg</file>
+        <file>icons/icon-delete-mobile.svg</file>
+        <file>icons/trashcan_big.svg</file>
     </qresource>
 </RCC>

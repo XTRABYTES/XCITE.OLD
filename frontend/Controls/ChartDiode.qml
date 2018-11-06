@@ -13,7 +13,7 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
-import SortFilterProxyModel 0.1
+import SortFilterProxyModel 0.2
 import QtQuick.Dialogs 1.1
 
 import "../Theme" 1.0

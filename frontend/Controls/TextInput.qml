@@ -9,15 +9,18 @@
  * This file is part of an XTRABYTES Ltd. project.
  *
  */
+
 import QtQuick 2.7
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 
 import "../Theme" 1.0
 
 TextField {
     property int mobile: 0
     property int addressBook: 0
+    property int deleteBtn: 1
     id: textInputComponent
     color: "white"
     font.weight: if(mobile == 0)
@@ -26,12 +29,13 @@ TextField {
                      Font.Bold
     font.pixelSize: 24
     leftPadding: 18
-    rightPadding: 18
+    rightPadding: deleteBtn == 0 ? 18 : 40
     topPadding: 10
     bottomPadding: 10
     verticalAlignment: Text.AlignVCenter
     selectByMouse: true
     background: Rectangle {
+        id: inputBackground
         color: if(mobile == 0 && addressBook == 0)
                    "#2A2C31"
                else
@@ -69,5 +73,29 @@ TextField {
         color: textInputComponent.color
         clip: contentWidth > width
         elide: Text.ElideRight
+    }
+
+    Image {
+        id: deleteInput
+        source: 'qrc:/icons/CloseIcon.svg'
+        height: 12
+        width: 12
+        anchors.right: textInputComponent.right
+        anchors.rightMargin: 11
+        anchors.verticalCenter: textInputComponent.verticalCenter
+        visible: mobile == 1 && deleteBtn == 1
+
+        ColorOverlay {
+            anchors.fill: parent
+            source: parent
+            color: "#F2F2F2"
+        }
+
+        MouseArea {
+            anchors.fill : parent
+            onClicked: {
+                textInputComponent.text = ""
+            }
+        }
     }
 }

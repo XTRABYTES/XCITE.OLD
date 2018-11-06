@@ -1,5 +1,5 @@
 /**
- * Filename: DashboardForm.qml
+ * Filename: xchange.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -23,28 +23,6 @@ import "../Controls" as Controls
 Item {
     property int tempHide: 1
 
-    z: 2
-    id: dashForm
-    Rectangle {
-        id: bottomRect
-        z: 100
-        color: "#2A2C31"
-        opacity: 0.8
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        width: parent.width
-        height: 50
-    }
-    Rectangle {
-        color: "black"
-        opacity: .8
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        height: parent.height
-        width: parent.width
-        z: 5
-        visible: tempHide = 0
-    }
     Loader {
         id: pageLoader
     }
@@ -66,7 +44,7 @@ Item {
 
         MouseArea {
              anchors.fill: back
-             onClicked: mainRoot.pop("xchange.qml")
+             onClicked: mainRoot.pop("../DashboardForm.qml")
         }
     }
 }

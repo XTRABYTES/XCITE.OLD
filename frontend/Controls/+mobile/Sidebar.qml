@@ -1,19 +1,31 @@
+/**
+ * Filename: Sidebar.qml
+ *
+ * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
+ * blockchain protocol to host decentralized applications
+ *
+ * Copyright (c) 2017-2018 Zoltan Szabo & XTRABYTES developers
+ *
+ * This file is part of an XTRABYTES Ltd. project.
+ *
+ */
+
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
+import QtQuick.Window 2.2
 
 Rectangle {
-    property int appsTracker: 0
     id: sidebar
-    height: parent.height
+    height: Screen.height
     width: 100
-    color: "#27292F"
+    color: "#2A2C31"
     visible: appsTracker == 1
     z: 100
 
     Image {
         id: settings
         anchors.bottom: sidebar.bottom
-        anchors.bottomMargin: 25
+        anchors.bottomMargin: 65
         anchors.horizontalCenter: sidebar.horizontalCenter
         source: '../icons/icon-settings.svg'
         width: 35
@@ -23,7 +35,7 @@ Rectangle {
         MouseArea {
             anchors.fill: settings
             onClicked: {
-                mainRoot.push("Settings.qml")
+                mainRoot.push("../Settings.qml")
                 appsTracker = 0
             }
         }
@@ -79,7 +91,10 @@ Rectangle {
             color: "transparent"
             MouseArea {
                 anchors.fill: xchangeButtonArea
-                onClicked: mainRoot.push("../xchange.qml")
+                onClicked: {
+                    mainRoot.push("../xchange.qml")
+                    appsTracker = 0
+                }
             }
         }
     }
@@ -133,6 +148,41 @@ Rectangle {
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
+        }
+    }
+
+    /**
+    Text {
+        id: calculatorLink
+        text: "CALCULATOR"
+        anchors.bottom: xchatLink.top
+        anchors.bottomMargin: 50
+        color: "#5E8BFF"
+        font.family: "Brandon Grotesque"
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.bold: true
+        MouseArea {
+            anchors.fill: calculatorLink
+            onClicked: {
+                mainRoot.push("../xcalculator.qml")
+                appsTracker = 0
+            }
+        }
+    }
+    */
+
+    Rectangle {
+        anchors.left: parent.right
+        width: appsTracker == 1 ? (Screen.width - parent.width) : 0
+        height: parent.height
+        color: "transparent"
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                appsTracker = 0
+            }
         }
     }
 }

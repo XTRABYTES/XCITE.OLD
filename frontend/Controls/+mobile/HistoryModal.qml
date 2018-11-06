@@ -1,8 +1,8 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.3
-import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
-import "../Controls" as Controls
+
+import "qrc:/Controls" as Controls
 /**
   * History Modal
   */
@@ -45,6 +45,7 @@ Rectangle {
             anchors.rightMargin: 30
             width: historyModalClose.height
             height: historyText1.height
+
             ColorOverlay {
                 anchors.fill: historyModalClose
                 source: historyModalClose
