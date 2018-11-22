@@ -84,7 +84,6 @@ Rectangle {
             }
         }
     }
-
     SortFilterProxyModel {
         id: filteredAddresses
         sourceModel: addressList
@@ -99,6 +98,7 @@ Rectangle {
             }
         ]
     }
+
 
     ListView {
         anchors.fill: parent

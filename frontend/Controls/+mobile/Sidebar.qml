@@ -18,9 +18,29 @@ Rectangle {
     id: sidebar
     height: Screen.height
     width: 100
+    state: appsTracker == 1? "up" : "down"
     color: "#2A2C31"
-    visible: appsTracker == 1
+    anchors.left: parent.left
     z: 100
+
+    states: [
+        State {
+            name: "up"
+            PropertyChanges { target: sidebar; anchors.leftMargin: 0}
+        },
+        State {
+            name: "down"
+            PropertyChanges { target: sidebar; anchors.leftMargin: -100}
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "*"
+            to: "*"
+            NumberAnimation { target: sidebar; property: "anchors.leftMargin"; duration: 300; easing.type: Easing.OutCubic}
+        }
+    ]
 
     Image {
         id: settings
@@ -32,17 +52,17 @@ Rectangle {
         height: 35
         z: 100
         visible: appsTracker == 1
-        MouseArea {
+        /**MouseArea {
             anchors.fill: settings
             onClicked: {
                 mainRoot.push("../Settings.qml")
                 appsTracker = 0
             }
-        }
+        }*/
         ColorOverlay {
             anchors.fill: settings
             source: settings
-            color: "#5E8BFF"
+            color: "#5E8BFE"
         }
     }
 
@@ -70,14 +90,14 @@ Rectangle {
         ColorOverlay {
             anchors.fill: xchangeLink
             source: xchangeLink
-            color: "#5E8BFF" // make image like it lays under grey glass
+            color: "#5E8BFE" // make image like it lays under grey glass
         }
         Text {
             id: xchangeText
             text: "X-CHANGE"
             anchors.top: parent.bottom
             anchors.topMargin: 5
-            color: "#5E8BFF"
+            color: "#5E8BFE"
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
@@ -112,13 +132,13 @@ Rectangle {
         ColorOverlay {
             anchors.fill: xvaultLink
             source: xvaultLink
-            color: "#5E8BFF"
+            color: "#5E8BFE"
         }
         Text {
             text: "X-VAULT"
             anchors.top: parent.bottom
             anchors.topMargin: 5
-            color: "#5E8BFF"
+            color: "#5E8BFE"
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
@@ -138,13 +158,13 @@ Rectangle {
         ColorOverlay {
             anchors.fill: xchatLink
             source: xchatLink
-            color: "#5E8BFF"
+            color: "#5E8BFE"
         }
         Text {
             text: "X-CHAT"
             anchors.top: parent.bottom
             anchors.topMargin: 5
-            color: "#5E8BFF"
+            color: "#5E8BFE"
             font.family: "Brandon Grotesque"
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
@@ -170,6 +190,48 @@ Rectangle {
         }
     }
     */
+
+    Image {
+        id: home
+        source: 'qrc:/icons/icon-home.svg'
+        anchors.top: parent.top
+        anchors.topMargin: 50
+        anchors.horizontalCenter: sidebar.horizontalCenter
+        width: 40
+        height: 40
+        z: 100
+        visible: appsTracker == 1
+        ColorOverlay {
+            anchors.fill: home
+            source: home
+            color: "#5E8BFE" // make image like it lays under grey glass
+        }
+        Text {
+            id: homeText
+            text: "HOME"
+            anchors.top: parent.bottom
+            anchors.topMargin: 5
+            color: "#5E8BFE"
+            font.family: "Brandon Grotesque"
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.bold: true
+        }
+        Rectangle {
+            id: homeButtonArea
+            width: home.width
+            height: home.height
+            anchors.left: home.left
+            anchors.bottom: home.bottom
+            color: "transparent"
+            MouseArea {
+                anchors.fill: homeButtonArea
+                onClicked: {
+                    mainRoot.pop("../DashboardForm.qml")
+                    appsTracker = 0
+                }
+            }
+        }
+    }
 
     Rectangle {
         anchors.left: parent.right

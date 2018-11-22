@@ -139,5 +139,6 @@
         <file>icons/trashcan.svg</file>
         <file>icons/icon-delete-mobile.svg</file>
         <file>icons/trashcan_big.svg</file>
+        <file>icons/icon-home.svg</file>
     </qresource>
 </RCC>

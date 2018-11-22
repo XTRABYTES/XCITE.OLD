@@ -22,11 +22,33 @@ import "qrc:/Controls/+mobile" as Mobile
 Rectangle {
     id: transactionModal
     width: 325
+    state: transferTracker == 1? "up" : "down"
     height: transactionSent == 1 ? 350 : ((transferSwitch.state == "off") ? 480 : 450 )
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    anchors.topMargin: 50
+
+    states: [
+        State {
+            name: "up"
+            PropertyChanges { target: transactionModal; anchors.topMargin: 50}
+            //PropertyChanges { target: transactionModal; visible: true}
+        },
+        State {
+            name: "down"
+            PropertyChanges { target: transactionModal; anchors.topMargin: Screen.height}
+            //PropertyChanges { target: transactionModal; visible: false}
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "*"
+            to: "*"
+            NumberAnimation { target: transactionModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            //PropertyAnimation { target: transactionModal; property: "visible"; duration: 300}
+        }
+    ]
 
     property string coinName: currencyList.get(currencyIndex).name
     property url coinLogo: currencyList.get(currencyIndex).logo
@@ -40,14 +62,30 @@ Rectangle {
     property int switchState: 0
     property int invalidAddress: 0
     property int decimals: (coinID.text) == "BTC" ? 8 : 4
-    property var inputAmount: Number.fromLocaleString(Qt.locale(),sendAmount.text)
+    property var inputAmount: Number.fromLocaleString(Qt.locale("en_US"),sendAmount.text)
     property string amountTransfer: "AMOUNT (" + coinName + ")"
     property string keyTransfer: "SEND TO (PUBLIC KEY)"
     property string referenceTransfer: "REFERENCE"
     property real amountSend: 0
     property string searchTxText: ""
+    property string transactionDate: ""
+    property string addressName: compareAddress()
 
-    function checkAddress() {
+
+    function compareAddress(){
+        var fromto = ""
+        for(var i = 0; i < addressList.count; i++) {
+            if (addressList.get(i).address === keyInput.text) {
+                if (addressList.get(i).coin === coinID.text) {
+                    fromto = (addressList.get(i).name)
+                }
+            }
+        }
+        return fromto
+    }
+
+   function checkAddress() {
+        invalidAddress = 0
         if (coinID.text == "XBY" || coinID.text == "BTC") {
             if (keyInput.length === 34
                     && keyInput.text !== ""
@@ -75,11 +113,21 @@ Rectangle {
         }
     }
 
+    function getCurrentBalance(){
+        var currentBalance = 0
+        for(var i = 0; i < currencyList.count; i++) {
+            if (currencyList.get(i).name === coinID.text) {
+                currentBalance = currencyList.get(i).balance
+            }
+        }
+        return currentBalance
+    }
+
     Rectangle {
         id: transferTitleBar
         width: parent.width/2
         height: 50
-        radius: 4
+        //radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
         color: modalState == 0 ? "#42454F" : "#34363D"
@@ -112,7 +160,7 @@ Rectangle {
         id: historyTitleBar
         width: parent.width/2
         height: 50
-        radius: 4
+        //radius: 4
         anchors.top: parent.top
         anchors.right: parent.right
         color: modalState == 1 ? "#42454F" : "#34363D"
@@ -145,7 +193,7 @@ Rectangle {
         id: bodyModal
         width: parent.width
         height: parent.height - 50
-        radius: 4
+        //radius: 4
         color: "#42454F"
         anchors.top: parent.top
         anchors.topMargin: 46
@@ -231,11 +279,39 @@ Rectangle {
 
         Text {
             id: walletBalance
-            text: (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance).toLocaleString(Qt.locale(), "f", decimals) : (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale(), "f", decimals)) + " " + coinID.text
+            text: coinID.text
             anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
             anchors.topMargin: 1
-            font.pixelSize: 13
+            font.pixelSize: 14
+            color: "#828282"
+            visible: transactionSent == 0
+                     && addressbookTracker == 0
+        }
+
+        Text {
+            property string balance: (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance).toLocaleString(Qt.locale("en_US"), "f", decimals) : (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale("en_US"), "f", decimals))
+            property var balanceArray: balance.split('.')
+            id: walletBalance1
+            text: "." + balanceArray[1]
+            anchors.right: walletBalance.left
+            anchors.rightMargin: 5
+            anchors.bottom: walletBalance.bottom
+            font.pixelSize: 11
+            color: "#828282"
+            visible: transactionSent == 0
+                     && addressbookTracker == 0
+        }
+
+        Text {
+            property string balance: (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance).toLocaleString(Qt.locale("en_US"), "f", decimals) : (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale("en_US"), "f", decimals))
+            property var balanceArray: balance.split('.')
+            id: walletBalance2
+            text: balanceArray[0]
+            anchors.right: walletBalance1.left
+            anchors.top: walletLabel.bottom
+            anchors.topMargin: 1
+            font.pixelSize: 14
             color: "#828282"
             visible: transactionSent == 0
                      && addressbookTracker == 0
@@ -272,12 +348,8 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton
                 onClicked: {
-                    if (picklistTracker == 0) {
-                        picklistTracker = 1
-                    }
-                    else {
-                        picklistTracker = 0
-                    }
+                    picklistLinesActive()
+                    picklistTracker = 1
                 }
             }
         }
@@ -297,6 +369,35 @@ Rectangle {
 
             Controls.CurrencyPicklist {
                 id: myCoinPicklist
+                onlyActive: true
+            }
+        }
+
+        Rectangle {
+            id: picklistClose
+            z: 11
+            width: 100
+            height: 25
+            color: "#2A2C31"
+            anchors.top: transferPicklist.bottom
+            anchors.horizontalCenter: transferPicklist.horizontalCenter
+            visible: picklistTracker == 1
+                     && transactionSent == 0
+                     && addressbookTracker == 0
+
+            Image {
+                id: picklistCloseArrow
+                source: 'qrc:/icons/dropdown-arrow.svg'
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                rotation: 180
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    picklistTracker = 0
+                }
             }
         }
 
@@ -373,9 +474,9 @@ Rectangle {
             source: 'qrc:/icons/paste_icon.svg'
             width: 13
             height: 13
-            anchors.left: publicKey.right
-            anchors.leftMargin: 5
-            anchors.verticalCenter: publicKey.verticalCenter
+            anchors.left: pubKey.right
+            anchors.leftMargin: 15
+            anchors.verticalCenter: pubKey.verticalCenter
             visible: modalState == 0
                      && transferSwitch.on == false
                      && transactionSent == 0
@@ -465,6 +566,7 @@ Rectangle {
                      && transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
+                     && keyInput.text != ""
                      && invalidAddress == 1
         }
 
@@ -475,8 +577,8 @@ Rectangle {
             anchors.top: keyInput.bottom
             anchors.topMargin: 20
             anchors.left: keyInput.left
-            radius: 8
-            border.color: "#5E8BFF"
+            radius: 5
+            border.color: "#5E8BFE"
             border.width: 2
             color: "transparent"
             visible: modalState == 0
@@ -495,7 +597,7 @@ Rectangle {
                 text: "SCAN QR"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                color: "#5E8BFF"
+                color: "#5E8BFE"
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -506,8 +608,8 @@ Rectangle {
             id: addressBookButton
             width: (doubbleButtonWidth - 10) / 2
             height: 33
-            radius: 8
-            border.color: "#5E8BFF"
+            radius: 5
+            border.color: "#5E8BFE"
             border.width: 2
             color: "transparent"
             anchors.top: keyInput.bottom
@@ -531,7 +633,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: "#5E8BFF"
+                color: "#5E8BFE"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -553,18 +655,32 @@ Rectangle {
             mobile: 1
         }
 
+        DropShadow {
+            anchors.fill: sendButton
+            source: sendButton
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color:"#2A2C31"
+            transparentBorder: true
+            visible: modalState == 0
+                     && transferSwitch.on == true
+                     && transactionSent == 0
+                     && addressbookTracker == 0
+        }
+
         Rectangle {
             id: sendButton
             width: keyInput.width
             height: 33
-            radius: 8
-            border.color: (invalidAddress == 0
-                           && keyInput.text !== ""
-                           && sendAmount.text !== ""
-                           && inputAmount !== 0
-                           && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFF" : "#727272"
-            border.width: 2
-            color: "transparent"
+            radius: 5
+            color: (invalidAddress == 0
+                    && keyInput.text !== ""
+                    && sendAmount.text !== ""
+                    && inputAmount !== 0
+                    && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFE" : "#727272"
             anchors.bottom: bodyModal.bottom
             anchors.bottomMargin: 20
             anchors.left: referenceInput.left
@@ -593,17 +709,13 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: (invalidAddress == 0
-                        && keyInput.text !== ""
-                        && sendAmount.text !== ""
-                        && inputAmount !== 0
-                        && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFF" : "#727272"
+                color: "#F2F2F2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
 
-        // Confirm state
+        // Transfer confirm state
 
         Rectangle {
             id: sendConfirmation
@@ -617,22 +729,71 @@ Rectangle {
 
             Text {
                 id: confirmationText
-                text: "You are about to send:"
+                text: "CONFIRM TRANSACTION"
                 anchors.top: parent.top
-                anchors.topMargin: 60
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 16
+                font.weight: Font.Normal
+                color: "#5E8BFE"
+            }
+
+            Text {
+                id: sendingLabel
+                text: "SENDING:"
+                anchors.left: parent.left
+                anchors.leftMargin: 25
+                anchors.top: confirmationText.bottom
+                anchors.topMargin: 40
                 font.family: "Brandon Grotesque"
                 font.pixelSize: 16
                 font.weight: Font.Normal
                 color: "#F2F2F2"
             }
 
+            Item {
+                id:amount
+                implicitWidth: confirmationAmount.implicitWidth + confirmationAmount1.implicitWidth + confirmationAmount2.implicitWidth + 7
+                implicitHeight: confirmationAmount.implicitHeight
+                anchors.bottom: sendingLabel.bottom
+                anchors.right: parent.right
+                anchors.rightMargin: 25
+            }
+
             Text {
                 id: confirmationAmount
-                text: inputAmount.toLocaleString(Qt.locale(), "f", decimals) + " " + coinID.text
-                anchors.top: confirmationText.bottom
-                anchors.topMargin: 7
-                anchors.horizontalCenter: parent.horizontalCenter
+                text: coinID.text
+                anchors.top: amount.top
+                anchors.right: amount.right
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 16
+                font.weight: Font.Medium
+                color: "#F2F2F2"
+            }
+
+            Text {
+                property string transferAmount: inputAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                property var amountArray: transferAmount.split('.')
+                id: confirmationAmount1
+                text: "." + amountArray[1]
+                anchors.bottom: confirmationAmount.bottom
+                anchors.bottomMargin: 1
+                anchors.right: confirmationAmount.left
+                anchors.rightMargin: 7
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 12
+                font.weight: Font.Medium
+                color: "#F2F2F2"
+            }
+
+            Text {
+                property string transferAmount: inputAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                property var amountArray: transferAmount.split('.')
+                id: confirmationAmount2
+                text: amountArray[0]
+                anchors.top: confirmationAmount.top
+                anchors.left: amount.left
                 font.family: "Brandon Grotesque"
                 font.pixelSize: 16
                 font.weight: Font.Medium
@@ -641,10 +802,11 @@ Rectangle {
 
             Text {
                 id: to
-                text: "to"
-                anchors.top: confirmationAmount.bottom
-                anchors.topMargin: 7
-                anchors.horizontalCenter: parent.horizontalCenter
+                text: "TO:"
+                anchors.left: parent.left
+                anchors.leftMargin: 25
+                anchors.top: sendingLabel.bottom
+                anchors.topMargin: 15
                 font.family: "Brandon Grotesque"
                 font.pixelSize: 16
                 font.weight: Font.Normal
@@ -654,37 +816,67 @@ Rectangle {
             Text {
                 id: confirmationAddress
                 text: keyInput.text
-                anchors.top: to.bottom
-                anchors.topMargin: 7
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: to.bottom
+                anchors.bottomMargin: 2
+                anchors.right: parent.right
+                anchors.rightMargin: 25
                 font.family: "Brandon Grotesque"
-                font.pixelSize: 13
+                font.pixelSize: 12
                 font.weight: Font.Normal
                 color: "#F2F2F2"
             }
 
             Text {
-                id: reference
-                text: "for"
+                id: confirmationAddressName
+                text: "(" + addressName + ")"
                 anchors.top: confirmationAddress.bottom
-                anchors.topMargin: 7
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.topMargin: 5
+                anchors.right: parent.right
+                anchors.rightMargin: 25
                 font.family: "Brandon Grotesque"
                 font.pixelSize: 16
                 font.weight: Font.Normal
                 color: "#F2F2F2"
+                visible: addressName != ""
             }
+
+            Text {
+                id: reference
+                text: "REF.:"
+                anchors.left: parent.left
+                anchors.leftMargin: 25
+                anchors.top: confirmationAddressName.bottom
+                anchors.topMargin: 15
+                font.family: "Brandon Grotesque"
+                font.pixelSize: 16
+                font.weight: Font.Normal
+                color: "#F2F2F2"
+                visible: referenceInput.text !== ""
+            }
+
             Text {
                 id: referenceText
-                text: referenceInput.text != "" ? referenceInput.text : "no reference"
-                anchors.top: reference.bottom
-                anchors.topMargin: 7
-                anchors.horizontalCenter: parent.horizontalCenter
+                text: referenceInput.text
+                anchors.bottom: reference.bottom
+                anchors.right: parent.right
+                anchors.rightMargin: 25
                 font.family: "Brandon Grotesque"
-                font.pixelSize: 13
-                font.weight: referenceInput.text != "" ? Font.Normal : Font.Light
-                font.italic: referenceInput.text == ""
+                font.pixelSize: 16
+                font.weight: Font.Normal
                 color: "#F2F2F2"
+                visible: referenceInput.text !== ""
+            }
+
+            DropShadow {
+                anchors.fill: confirmationSendButton
+                source: confirmationSendButton
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color:"#2A2C31"
+                transparentBorder: true
             }
 
             Rectangle {
@@ -695,10 +887,8 @@ Rectangle {
                 anchors.bottomMargin: 20
                 anchors.right: parent.horizontalCenter
                 anchors.rightMargin: 5
-                radius: 8
-                border.color: "#5E8BFF"
-                border.width: 2
-                color: "transparent"
+                radius: 5
+                color: "#4BBE2E"
 
                 MouseArea {
                     anchors.fill: confirmationSendButton
@@ -712,21 +902,31 @@ Rectangle {
                     text: "CONFIRM"
                     font.family: "Brandon Grotesque"
                     font.pointSize: 14
-                    color: "#5E8BFF"
+                    color: "#F2F2F2"
                     font.bold: true
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
 
+            DropShadow {
+                anchors.fill: cancelSendButton
+                source: cancelSendButton
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color:"#2A2C31"
+                transparentBorder: true
+            }
+
             Rectangle {
                 id: cancelSendButton
                 width: (doubbleButtonWidth - 10) / 2
                 height: 33
-                radius: 8
-                border.color: "#5E8BFF"
-                border.width: 2
-                color: "transparent"
+                radius: 5
+                color: "#E55541"
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 20
                 anchors.left: parent.horizontalCenter
@@ -745,7 +945,7 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     font.pointSize: 14
                     font.bold: true
-                    color: "#5E8BFF"
+                    color: "#F2F2F2"
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -776,17 +976,17 @@ Rectangle {
                 ColorOverlay {
                     anchors.fill: parent
                     source: confirmedIcon
-                    color: "#5E8BFF"
+                    color: "#5E8BFE"
                 }
             }
 
             Label {
                 id: confirmedIconLabel
-                text: "Transaction sent !"
+                text: "Transaction sent!"
                 anchors.top: confirmedIcon.bottom
                 anchors.topMargin: 10
                 anchors.horizontalCenter: confirmedIcon.horizontalCenter
-                color: "#5E8BFF"
+                color: "#5E8BFE"
                 font.pixelSize: 14
                 font.family: "Brandon Grotesque"
                 font.bold: true
@@ -794,14 +994,24 @@ Rectangle {
                          && confirmationSent == 1
             }
 
+            DropShadow {
+                anchors.fill: closeConfirm
+                source: closeConfirm
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color:"#2A2C31"
+                transparentBorder: true
+            }
+
             Rectangle {
                 id: closeConfirm
                 width: (parent.width - 45) / 2
                 height: 33
-                radius: 8
-                border.color: "#5E8BFF"
-                border.width: 2
-                color: "transparent"
+                radius: 5
+                color: "#5E8BFE"
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -810,6 +1020,35 @@ Rectangle {
                     anchors.fill: closeConfirm
 
                     onClicked: {
+                        transactionDate = new Date().toLocaleDateString(Qt.locale(),"MM/dd")
+                        if (coinID.text == "XBY"){
+                            xbyTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": xbyTXID});
+                            xbyTXID = xbyTXID + 1;
+                            currencyList.setProperty(0, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
+                            currencyList.setProperty(0, "fiatValue", ((currencyList.get(0).balance) * (currencyList.get(0).coinValue)));
+                            totalBalance = sumBalance()
+                        }
+                        if (coinID.text == "XFUEL"){
+                            xfuelTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": xfuelTXID});
+                            xfuelTXID = xfuelTXID + 1;
+                            currencyList.setProperty(1, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
+                            currencyList.setProperty(1, "fiatValue", ((currencyList.get(1).balance) * (currencyList.get(1).coinValue)));
+                            totalBalance = sumBalance()
+                        }
+                        if (coinID.text == "BTC"){
+                            btcTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": btcTXID});
+                            btcTXID = btcTXID + 1;
+                            currencyList.setProperty(2, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
+                            currencyList.setProperty(2, "fiatValue", ((currencyList.get(2).balance) * (currencyList.get(2).coinValue)));
+                            totalBalance = sumBalance()
+                        }
+                        if (coinID.text == "ETH"){
+                            ethTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": ethTXID});
+                            ethTXID = ethTXID + 1;
+                            currencyList.setProperty(3, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
+                            currencyList.setProperty(3, "fiatValue", ((currencyList.get(3).balance) * (currencyList.get(3).coinValue)));
+                            totalBalance = sumBalance()
+                        }
                         sendAmount.text = ""
                         keyInput.text = ""
                         referenceInput.text = ""
@@ -817,6 +1056,7 @@ Rectangle {
                         confirmationSent = 0
                         transactionSent = 0
                         invalidAddress = 0
+                        transactionDate = ""
                     }
                 }
 
@@ -825,7 +1065,7 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     font.pointSize: 14
                     font.bold: true
-                    color: "#5E8BFF"
+                    color: "#F2F2F2"
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -875,7 +1115,7 @@ Rectangle {
             id: addressbookSpacerBar
             width: parent.width
             height: 50
-            radius: 4
+            //radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: bodyModal.top
             color: "#42454F"
@@ -936,7 +1176,7 @@ Rectangle {
             height: 63
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: bodyModal.bottom
-            radius: 4
+            //radius: 4
             color: "#42454F"
             visible: modalState == 0
                      && transferSwitch.on == true
@@ -944,15 +1184,28 @@ Rectangle {
                      && addressbookTracker == 1
         }
 
+        DropShadow {
+            anchors.fill: cancelAddressButton
+            source: cancelAddressButton
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color:"#2A2C31"
+            transparentBorder: true
+            visible: modalState == 0
+                     && transferSwitch.on == true
+                     && transactionSent == 0
+                     && addressbookTracker == 1
+        }
 
         Rectangle {
             id: cancelAddressButton
             width: (bodyModal.width - 40) / 2
             height: 33
-            radius: 8
-            border.color: "#5E8BFF"
-            border.width: 2
-            color: "transparent"
+            radius: 5
+            color: "#5E8BFE"
             anchors.bottom: bodyModal.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: bodyModal.horizontalCenter
@@ -970,17 +1223,17 @@ Rectangle {
             }
 
             Text {
-                text: "CANCEL"
+                text: "BACK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: "#5E8BFF"
+                color: "#F2F2F2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
 
-        // History coin state
+        // History wallet state
 
         Rectangle {
             id: historyScrollArea
@@ -994,7 +1247,7 @@ Rectangle {
 
             Controls.HistoryList {
                 id: myHistoryList
-                searchFilter: searchTxText
+                searchFilter: searchTx.text
                 selectedWallet: newCoinSelect == 1 ?    (currencyList.get(newCoinPicklist).name === "XBY" ? 0:
                                                                                                             (currencyList.get(newCoinPicklist).name === "XFUEL" ? 1:
                                                                                                                                                                   (currencyList.get(newCoinPicklist).name === "BTC" ? 2 : 3))) : currencyIndex
@@ -1017,7 +1270,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: historyScrollArea.bottom
             anchors.bottom: bodyModal.bottom
-            radius: 4
+            //radius: 4
             color: "#42454F"
             visible: modalState == 1
                      && transferSwitch.state == "off"
@@ -1042,30 +1295,21 @@ Rectangle {
             visible: modalState == 1
                      && transferSwitch.state == "off"
         }
-        /**
-        Image {
-            id: resetInput
-            source: 'qrc:/icons/CloseIcon.svg'
-            height: 12
-            width: 12
-            anchors.right: searchTx.right
-            anchors.rightMargin: 11
-            anchors.verticalCenter: searchTx.verticalCenter
-            visible: modalState == 1 && transferSwitch.state == "off"
 
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: "#F2F2F2"
-            }
+        // History coin state
 
-            MouseArea {
-                anchors.fill : parent
-                onClicked: {
-                    searchTx.text = ""
-                }
-            }
-        }*/
+        Label {
+            id: coinhistorySoon
+            text: "Coming SOON"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 18
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            visible: modalState == 1
+                     && transferSwitch.state == "on"
+        }
     }
 
     Label {
@@ -1083,7 +1327,10 @@ Rectangle {
 
         Rectangle{
             id: closeButton
-            anchors.fill: parent
+            height: 30
+            width: parent.width
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
         }
 

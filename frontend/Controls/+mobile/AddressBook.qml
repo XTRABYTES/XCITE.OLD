@@ -35,11 +35,23 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: Screen.horizontalCenter
 
+            DropShadow {
+                anchors.fill: cardBackground
+                source: cardBackground
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color:"#2A2C31"
+                transparentBorder: true
+            }
+
             Rectangle {
                 id: cardBackground
                 width: parent.width - 55
                 height: 75
-                radius: 4
+                //radius: 4
                 color: "#42454F"
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -79,7 +91,7 @@ Rectangle {
                     anchors.leftMargin: 14
                 }
 
-                Label {
+                Text {
                     id: addressHash
                     text: address
                     color: "#F2F2F2"
@@ -90,6 +102,8 @@ Rectangle {
                     anchors.bottomMargin: 10
                     anchors.left: addressName.left
                     anchors.leftMargin: 21
+                    anchors.right: addressCoinLogo.right
+                    elide: Text.ElideRight
                 }
 
                 Image {
@@ -166,16 +180,29 @@ Rectangle {
                     roleName: "active"
                     value: true
             },
-            RegExpFilter {
+            AnyOf {
+                RegExpFilter {
                     roleName: "name"
-                    pattern: "^" + searchFilter
+                    pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "address"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "coin"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
             }
         ]
         sorters: [
             RoleSorter { roleName: "favorite"; sortOrder: Qt.DescendingOrder },
             StringSorter { roleName: "name" },
-            StringSorter { roleName: "coin" }
+            StringSorter { roleName: "coin" },
+            StringSorter { roleName: "address" }
         ]
     }
 
@@ -185,5 +212,6 @@ Rectangle {
         model: filteredAddress
         delegate: addressCard
         contentHeight: (totalAddresses * 80)
+        interactive: appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0
     }
 }

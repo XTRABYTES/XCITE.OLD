@@ -21,6 +21,8 @@ TextField {
     property int mobile: 0
     property int addressBook: 0
     property int deleteBtn: 1
+    property alias textBackground: inputBackground.color
+
     id: textInputComponent
     color: "white"
     font.weight: if(mobile == 0)
@@ -83,7 +85,7 @@ TextField {
         anchors.right: textInputComponent.right
         anchors.rightMargin: 11
         anchors.verticalCenter: textInputComponent.verticalCenter
-        visible: mobile == 1 && deleteBtn == 1
+        visible: mobile == 1 && deleteBtn == 1 && textInputComponent.text != ""
 
         ColorOverlay {
             anchors.fill: parent

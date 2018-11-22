@@ -83,7 +83,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/MarketValue.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
-    backend/support/Settings.hpp
+    backend/support/Settings.hpp \
+    backend/integrations/MarketValue.hpp
 
 DISTFILES += \
     xcite.ico \

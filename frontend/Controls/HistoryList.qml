@@ -37,7 +37,7 @@ Rectangle {
             width: parent.width
             height: 30
             color: "transparent"
-            visible: amount != 0
+            visible: amount !== 0
 
             property int lineView: 0
 
@@ -73,7 +73,7 @@ Rectangle {
 
             Label {
                 id: txAmount
-                property string amountTX: amount.toLocaleString(Qt.locale(), "f", 4)
+                property string amountTX: amount.toLocaleString(Qt.locale("en_US"), "f", 4)
                 text: amount > 0 ? "+" + amountTX : amountTX
                 anchors.right: parent.right
                 anchors.rightMargin: 45
@@ -162,7 +162,7 @@ Rectangle {
                     for(var i = 0; i < addressList.count; i++) {
                         if (addressList.get(i).address === txpartnerHash) {
                             if (addressList.get(i).coin === txcoinName) {
-                                fromto = (addressList.get(i).name/** + " " + addressList.get(i).label*/)
+                                fromto = (addressList.get(i).name)
                             }
                         }
                     }
@@ -252,7 +252,7 @@ Rectangle {
 
             Label {
                 id: txReference
-                text: "ref: " + reference
+                text: "ref: " + (reference === "" ? "N/A" : reference)
                 anchors.left: left3.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
@@ -300,30 +300,33 @@ Rectangle {
             AnyOf {
                 RegExpFilter {
                     roleName: "reference"
-                    pattern: "^" + searchFilter
+                    pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
                 RegExpFilter {
                     roleName: "txpartnerHash"
-                    pattern: "^" + searchFilter
+                    pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
                 RegExpFilter {
                     roleName: "txid"
-                    pattern: "^" + searchFilter
+                    pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
                 RegExpFilter {
                     roleName: "amount"
-                    pattern: "^" + searchFilter
+                    pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
                 RegExpFilter {
                     roleName: "date"
-                    pattern: "^" + searchFilter
+                    pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
             }
+        ]
+        sorters: [
+            RoleSorter { roleName: "txNR" ; sortOrder: Qt.DescendingOrder }
         ]
     }
 
