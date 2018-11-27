@@ -16,8 +16,7 @@ VERSION_BUILD=0
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
 QT	+= core gui xml quick svg charts
-CONFIG	+= c++11
-CONFIG += qzxing_qml
+CONFIG  += c++11 qzxing_multimedia qzxing_qml
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
@@ -83,7 +82,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/MarketValue.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
-    backend/support/Settings.hpp
+    backend/support/Settings.hpp \
+    backend/integrations/MarketValue.hpp
 
 DISTFILES += \
     xcite.ico \

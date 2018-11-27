@@ -40,8 +40,10 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
-                    addressbookTracker = 0;
-                    selectedAddress = address
+                    if (transferTracker == 1) {
+                        addressbookTracker = 0;
+                        selectedAddress = address
+                    }
                 }
             }
 
@@ -84,7 +86,6 @@ Rectangle {
             }
         }
     }
-
     SortFilterProxyModel {
         id: filteredAddresses
         sourceModel: addressList
@@ -99,6 +100,7 @@ Rectangle {
             }
         ]
     }
+
 
     ListView {
         anchors.fill: parent

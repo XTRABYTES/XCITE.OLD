@@ -13,18 +13,40 @@
 import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
+import QtQuick.Window 2.2
 
 import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addAddressModal
     width: 325
-    height: (editSaved == 1)? 350 : 285
+    state: addAddressTracker == 1? "up" : "down"
+    height: (editSaved == 1)? 350 : 335
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    anchors.topMargin: 50
 
+    states: [
+        State {
+            name: "up"
+            PropertyChanges { target: addAddressModal; anchors.topMargin: 50}
+            //PropertyChanges { target: addAddressModal; visible: true}
+        },
+        State {
+            name: "down"
+            PropertyChanges { target: addAddressModal; anchors.topMargin: Screen.height}
+            //PropertyChanges { target: addAddressModal; visible: false}
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "*"
+            to: "*"
+            NumberAnimation { target: addAddressModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            //PropertyAnimation { target: addAddressModal; property: "visible"; duration: 300}
+        }
+    ]
 
     property int editSaved: 0
     property int invalidAddress: 0
@@ -32,50 +54,68 @@ Rectangle {
     property int labelExists: 0
 
     function compareTx() {
+        addressExists = 0
         for(var i = 0; i < addressList.count; i++) {
-            if (newAddress.text != "") {
-                if (addressList.get(i).coin === newCoinName.text) {
+            if (newCoinName.text == "XBY") {
+                if (addressList.get(i).coin === "XBY") {
                     if (addressList.get(i).address === newAddress.text) {
-                        if (addressList.get(i).active === 1) {
+                        if (addressList.get(i).active === true) {
                             addressExists = 1
-                        }
-                        else {
-                            addressExists = 0
                         }
                     }
                 }
-                else {
-                    addressExists = 0
+            }
+            else {
+                if (addressList.get(i).coin === newCoinName.text) {
+                    if (addressList.get(i).address === newAddress.text) {
+                        if (addressList.get(i).active === true) {
+                            addressExists = 1
+                        }
+                    }
                 }
             }
         }
     }
 
     function compareName() {
+        labelExists = 0
         for(var i = 0; i < addressList.count; i++) {
-            if (newName.text != ""){
-                if (addressList.get(i).coin === newCoinName.text) {
+            if (newCoinName.text == "XBY") {
+                if (addressList.get(i).coin === "XBY") {
                     if (addressList.get(i).name === newName.text) {
-                        if (addressList.get(i).active === 1) {
+                        if (addressList.get(i).active === true) {
                             labelExists = 1
-                        }
-                        else {
-                            labelExists = 0
                         }
                     }
                 }
-                else {
-                    labelExists = 0
+            }
+            else {
+                if (addressList.get(i).coin === newCoinName.text) {
+                    if (addressList.get(i).name === newName.text) {
+                        if (addressList.get(i).active === true) {
+                            labelExists = 1
+                        }
+                    }
                 }
             }
         }
     }
 
     function checkAddress() {
+        invalidAddress = 0
         if (newAddress.text != "") {
-            if (newCoinName.text == "XBY" || newCoinName.text == "BTC") {
+            if (newCoinName.text == "XBY") {
                 if (newAddress.length == 34
                         && newAddress.text.substring(0,1) == "B"
+                        && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "BTC") {
+                if (keyInput.length === 34
                         && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
@@ -92,9 +132,6 @@ Rectangle {
                 else {
                     invalidAddress = 1
                 }
-            }
-            else {
-                invalidAddress = 0
             }
         }
     }
@@ -114,7 +151,7 @@ Rectangle {
             text: "ADD NEW ADDRESS"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -3
+            anchors.verticalCenterOffset: -5
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             color: "#F2F2F2"
@@ -129,7 +166,7 @@ Rectangle {
         radius: 4
         color: "#42454F"
         anchors.top: parent.top
-        anchors.topMargin: 46
+        anchors.topMargin: 42
         anchors.horizontalCenter: parent.horizontalCenter
 
         Image {
@@ -168,8 +205,8 @@ Rectangle {
             anchors.left: picklistTracker == 0 ? newCoinName.right : newPicklist.right
             anchors.leftMargin: 10
             anchors.verticalCenter: newCoinName.verticalCenter
-            rotation: picklistTracker == 0 ? 0 : 180
             visible: editSaved == 0
+                     && picklistTracker == 0
 
             ColorOverlay {
                 anchors.fill: parent
@@ -191,12 +228,8 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton
                 onClicked: {
-                    if (picklistTracker == 0) {
-                        picklistTracker = 1
-                    }
-                    else {
-                        picklistTracker = 0
-                    }
+                    picklistLines()
+                    picklistTracker = 1
                 }
             }
         }
@@ -227,6 +260,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
             visible: editSaved == 0
+                     && newName.text != ""
                      && labelExists == 1
         }
 
@@ -258,6 +292,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
             visible: editSaved == 0
+                     && newAddress.text != ""
                      && addressExists == 1
         }
 
@@ -273,13 +308,61 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
             visible: editSaved == 0
+                     && newAddress.text != ""
                      && invalidAddress == 1
+        }
+
+        Text {
+            id: destination
+            text: selectedAddress
+            anchors.left: newAddress.left
+            anchors.top: newAddress.bottom
+            anchors.topMargin: 3
+            visible: false
+            onTextChanged: {
+                if (addAddressTracker == 1) {
+                    newAddress.text = destination.text
+                }
+            }
+        }
+
+        Rectangle {
+            id: scanQrButton
+            width: newAddress.width
+            height: 33
+            anchors.top: newAddress.bottom
+            anchors.topMargin: 15
+            anchors.left: newAddress.left
+            radius: 5
+            border.color: "#5E8BFE"
+            border.width: 2
+            color: "transparent"
+            visible: editSaved == 0
+
+            MouseArea {
+                anchors.fill: scanQrButton
+                onClicked: {
+                    scanQRTracker = 1
+                    scanning = "scanning..."
+                }
+            }
+
+            Text {
+                text: "SCAN QR"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#5E8BFE"
+                font.bold: true
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
 
         Rectangle {
             id: newPicklist
             width: 100
             height: totalLines * 35
+            radius: 4
             color: "#2A2C31"
             anchors.top: newIcon.top
             anchors.topMargin: -5
@@ -293,16 +376,41 @@ Rectangle {
         }
 
         Rectangle {
+            id: picklistClose
+            width: 100
+            height: 25
+            radius: 4
+            color: "#2A2C31"
+            anchors.top: newPicklist.bottom
+            anchors.horizontalCenter: newPicklist.horizontalCenter
+            visible: picklistTracker == 1
+                     && editSaved == 0
+
+            Image {
+                id: picklistCloseArrow
+                source: 'qrc:/icons/dropdown-arrow.svg'
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                rotation: 180
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    picklistTracker = 0
+                }
+            }
+        }
+
+        Rectangle {
             id: saveButton
             width: newAddress.width
             height: 33
-            radius: 8
-            border.color: (newName.text != ""
-                           && newAddress.text !== ""
-                           && invalidAddress == 0
-                           && addressExists == 0 && labelExists == 0) ? "#5E8BFF" : "#727272"
-            border.width: 2
-            color: "transparent"
+            radius: 5
+            color: (newName.text != ""
+                    && newAddress.text !== ""
+                    && invalidAddress == 0
+                    && addressExists == 0 && labelExists == 0) ? "#5E8BFE" : "#727272"
             anchors.bottom: addressBodyModal.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
@@ -317,13 +425,13 @@ Rectangle {
                             && invalidAddress == 0
                             && addressExists == 0
                             && labelExists == 0) {
-                        if (newCoinSelect == 1) {
-                            addressList.append({"address": newAddress.text, "name": newName.text, "logo": currencyList.get(newCoinPicklist).logo, "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID});
+                        if (newCoinSelect == 0) {
+                            addressList.append({"address": newAddress.text, "name": newName.text, "logo": (currencyList.get(0).logo), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID});
                             addressID = addressID +1;
                             editSaved = 1
                         }
                         else {
-                            addressList.append({"address": newAddress.text, "name": newName.text, "logo": currencyList.get(0).logo, "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID});
+                            addressList.append({"address": newAddress.text, "name": newName.text, "logo": (currencyList.get(newCoinPicklist).logo), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID});
                             addressID = addressID +1;
                             editSaved = 1
                         }
@@ -336,11 +444,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: newName.text != ""
-                       && (newAddress.text !== ""
-                           && invalidAddress == 0
-                           && addressExists == 0
-                           && labelExists == 0) ? "#5E8BFF" : "#727272"
+                color: "#F2F2F2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -359,17 +463,17 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: "#5E8BFF"
+                color: "#5E8BFE"
             }
         }
 
         Label {
             id: saveSuccessLabel
-            text: "Changes saved !"
+            text: "Address saved!"
             anchors.top: saveSuccess.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: "#5E8BFF"
+            color: "#5E8BFE"
             font.pixelSize: 14
             font.family: "Brandon Grotesque"
             font.bold: true
@@ -380,10 +484,8 @@ Rectangle {
             id: closeSave
             width: (parent.width - 45) / 2
             height: 33
-            radius: 8
-            border.color: "#5E8BFF"
-            border.width: 2
-            color: "transparent"
+            radius: 5
+            color: "#5E8BFE"
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
@@ -399,9 +501,13 @@ Rectangle {
                     newCoinPicklist = 0
                     newCoinSelect = 0
                     newName.text = ""
-                    //newLabel.text = ""
                     newAddress.text = ""
+                    addressExists = 0
+                    labelExists = 0
                     invalidAddress = 0
+                    scanQRTracker = 0
+                    selectedAddress = 0
+                    scanning = "scanning..."
                 }
             }
             Text {
@@ -409,7 +515,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: "#5E8BFF"
+                color: "#F2F2F2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -431,28 +537,43 @@ Rectangle {
 
         Rectangle{
             id: closeButton
-            anchors.fill: parent
+            height: 30
+            width: parent.width
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
         }
 
         MouseArea {
             anchors.fill: closeButton
 
-            onClicked: {
-                if (addAddressTracker == 1) {
-                    addAddressTracker = 0;
+            Timer {
+                id: timer
+                interval: 300
+                repeat: false
+                running: false
+
+                onTriggered: {
                     picklistTracker = 0
                     newCoinPicklist = 0
                     newCoinSelect = 0
                     newName.text = ""
-                    //newLabel.text = ""
                     newAddress.text = ""
+                    addressExists = 0
+                    labelExists = 0
                     invalidAddress = 0
+                    scanQRTracker = 0
+                    selectedAddress = 0
+                    scanning = "scanning..."
                 }
+            }
 
+            onClicked: {
+                if (addAddressTracker == 1) {
+                    addAddressTracker = 0;
+                    timer.start()
+                }
             }
         }
     }
 }
-
-

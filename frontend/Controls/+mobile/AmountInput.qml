@@ -15,7 +15,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
-import "../Theme" 1.0
+import "qrc:/Theme" 1.0
 
 TextField {
     property int mobile: 0
@@ -26,30 +26,21 @@ TextField {
 
     id: textInputComponent
     color: "white"
-    font.weight: if(mobile == 0)
-                     Font.Light
-                 else
-                     Font.Bold
+    font.weight: Font.Bold
     font.pixelSize: 24
-    leftPadding: 18
-    rightPadding: deleteBtn == 0 ? 18 : textboxHeight
+    leftPadding: 42
+    rightPadding: textboxHeight
     topPadding: 10
     bottomPadding: 10
     verticalAlignment: Text.AlignVCenter
     selectByMouse: true
+    inputMethodHints: Qt.ImhFormattedNumbersOnly
     background: Rectangle {
         id: inputBackground
-        color: if(mobile == 0 && addressBook == 0)
-                   "#2A2C31"
-               else
-                   "#34363D"
+        color: "#34363D"
         radius: 4
         border.width: parent.activeFocus ? 2 : 0
-        border.color: if(mobile == 0)
-                          Theme.secondaryHighlight
-                      else
-                          "#34363D"
-
+        border.color: "#34363D"
         implicitWidth: 273
     }
     onActiveFocusChanged: {
@@ -86,7 +77,7 @@ TextField {
         anchors.right: textInputComponent.right
         anchors.rightMargin: 11
         anchors.verticalCenter: textInputComponent.verticalCenter
-        visible: mobile == 1 && deleteBtn == 1 && textInputComponent.text != ""
+        visible: textInputComponent.text != ""
 
         ColorOverlay {
             anchors.fill: parent
@@ -101,6 +92,32 @@ TextField {
             anchors.horizontalCenter: parent.horizontalCenter
             onClicked: {
                 textInputComponent.text = ""
+            }
+        }
+    }
+
+    Image {
+        id: amountCalculator
+        source: 'qrc:/icons/icon-converter.svg'
+        height: 16
+        width: 20
+        anchors.left: textInputComponent.left
+        anchors.leftMargin: 11
+        anchors.verticalCenter: textInputComponent.verticalCenter
+
+        ColorOverlay {
+            anchors.fill: parent
+            source: parent
+            color: "#F2F2F2"
+        }
+
+        MouseArea {
+            width: textboxHeight
+            height: textboxHeight
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: {
+                calculatorTracker = 1
             }
         }
     }

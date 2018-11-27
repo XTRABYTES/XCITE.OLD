@@ -124,7 +124,6 @@
         <file>Controls/TransactionTable.qml</file>
         <file>+mobile/Settings.qml</file>
         <file>+mobile/xchange.qml</file>
-        <file>Controls/+mobile/HistoryModal.qml</file>
         <file>Controls/+mobile/TransferModal.qml</file>
         <file>Controls/+mobile/Sidebar.qml</file>
         <file>Controls/Switch_mobile.qml</file>
@@ -138,5 +137,7 @@
         <file>+mobile/xcalculator.qml</file>
         <file>Controls/HistoryList.qml</file>
         <file>Controls/+mobile/AddressPicklist.qml</file>
+        <file>Controls/+mobile/QrScanner.qml</file>
+        <file>Controls/+mobile/AmountInput.qml</file>
     </qresource>
 </RCC>

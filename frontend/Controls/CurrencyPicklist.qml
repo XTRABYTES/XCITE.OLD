@@ -12,6 +12,8 @@
 
 import QtQuick 2.7
 import QtQuick.Controls 2.3
+import SortFilterProxyModel 0.2
+
 
 Rectangle {
     id: completePicklist
@@ -20,13 +22,7 @@ Rectangle {
     radius: 5
     color: "#2A2C31"
 
-    function picklistLines(){
-        totalLines = 0
-        for(var i = 0; i < currencyList.count; i++) {
-            totalLines += 1
-        }
-        return totalLines
-    }
+    property bool onlyActive: false
 
     Component.onCompleted: picklistLines()
 
@@ -82,12 +78,26 @@ Rectangle {
         }
     }
 
-
+    SortFilterProxyModel {
+        id: filteredCurrencies
+        sourceModel: currencyList
+        filters: [
+            ValueFilter {
+                 enabled: onlyActive == true
+                 roleName: "active"
+                 value: true
+            }
+        ]
+        /**sorters: [
+            RoleSorter { roleName: "favorite"; sortOrder: Qt.DescendingOrder },
+            StringSorter { roleName: "name" }
+        ]*/
+    }
 
     ListView {
         anchors.fill: parent
         id: pickList
-        model: currencyList
+        model: filteredCurrencies
         delegate: picklistEntry
         interactive: false
     }
