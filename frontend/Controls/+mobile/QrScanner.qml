@@ -27,6 +27,7 @@ Item {
     Camera {
         id: camera
         position: Camera.BackFace
+        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
         focus {
             focusMode: Camera.FocusContinuous
             focusPointMode: CameraFocus.FocusPointAuto
@@ -36,20 +37,27 @@ Item {
     Rectangle {
         id: addressTitleBar
         width: parent.width
-        height: 54
+        height: 42
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
         color: "#34363D"
+
+        Rectangle {
+            width: parent.width
+            height: 10
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#34363D"
+        }
 
         Text {
             id: scanQRLabel
             text: "SCAN QR CODE"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -5
             font.pixelSize: 20
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             color: "#F2F2F2"
         }
     }
@@ -61,6 +69,18 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 42
         color: "transparent"
+
+        Label {
+            text: "activating camera..."
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: scanFrame.verticalCenter
+            color: "#F2F2F2"
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.bold: true
+            font.pixelSize: 14
+            font.italic: true
+
+        }
 
         VideoOutput {
             id: videoOutput
@@ -78,7 +98,7 @@ Item {
 
         Image {
             id: scanWindow
-            source: 'qrc:/scan-window.svg'
+            source: 'qrc:/scan-window_01.svg'
             width: 325
             height: 400
             anchors.horizontalCenter: parent.horizontalCenter
@@ -87,6 +107,7 @@ Item {
         }
 
         Rectangle {
+            id: scanFrame
             width: 225
             height: 225
             radius: 10
@@ -105,7 +126,7 @@ Item {
             anchors.topMargin: 285
             anchors.horizontalCenter: parent.horizontalCenter
             color: "#F2F2F2"
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.bold: true
             font.pixelSize: 14
             font.letterSpacing: 1
@@ -118,12 +139,25 @@ Item {
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
             color: "white"
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Light
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pixelSize: 12
             font.italic: publicKey.text == "scanning..."
 
         }
+    }
+
+    DropShadow {
+        id: shadowBackButton
+        anchors.fill: cancelAddressButton
+        source: cancelAddressButton
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.3
+        transparentBorder: true
     }
 
     Rectangle {
@@ -131,7 +165,7 @@ Item {
         width: (parent.width - 40) / 2
         height: 33
         radius: 5
-        color: "#5E8BFE"
+        color: maincolor
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
@@ -140,7 +174,12 @@ Item {
         MouseArea {
             anchors.fill: cancelAddressButton
 
-            onClicked: {
+            onPressed: {
+                shadowBackButton.verticalOffset = 0
+            }
+
+            onReleased: {
+                shadowBackButton.verticalOffset = 4
                 scanQRTracker = 0
                 selectedAddress = ""
                 publicKey.text = "scanning..."
@@ -149,7 +188,7 @@ Item {
 
         Text {
             text: "BACK"
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
             color: "#F2F2F2"

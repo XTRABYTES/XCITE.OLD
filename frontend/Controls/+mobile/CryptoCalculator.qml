@@ -34,6 +34,48 @@ Rectangle {
     property string toCurrency: "XBY"
     property string output: ""
 
+    function convert() {
+        var newAmount = ""
+        if (inputAmount.acceptableInput === true && inputAmount.text !== ""){
+            if (fromCurrency == "XBY") {
+               if (toCurrency == "XFUEL") {
+                    newAmount = ((fromAmount * btcValueXBY)/btcValueXFUEL).toLocaleString(Qt.locale("en_US"), "f", 8)
+                }
+                else if (toCurrency == "XBY") {
+                    newAmount = (inputAmount.text)
+                }
+            }
+            else if (fromCurrency == "XFUEL") {
+                if (toCurrency == "XBY") {
+                    newAmount = ((fromAmount * btcValueXFUEL)/btcValueXBY).toLocaleString(Qt.locale("en_US"), "f", 8)
+                }
+                else if (toCurrency == "XFUEL") {
+                    newAmount = (inputAmount.text)
+                }
+            }
+            else if (fromCurrency == "BTC") {
+                if (toCurrency == "XBY") {
+                    newAmount = (fromAmount / btcValueXBY).toLocaleString(Qt.locale("en_US"), "f", 8)
+                }
+                else if (toCurrency == "XFUEL") {
+                    newAmount = (fromAmount / btcValueXFUEL).toLocaleString(Qt.locale("en_US"), "f", 8)
+                }
+            }
+            else if (fromCurrency == "USD") {
+                if (toCurrency == "XBY") {
+                    newAmount = (fromAmount / valueXBY).toLocaleString(Qt.locale("en_US"), "f", 8)
+                }
+                else if (toCurrency == "XFUEL") {
+                    newAmount = (fromAmount / valueXFUEL).toLocaleString(Qt.locale("en_US"), "f", 8)
+                }
+            }
+        }
+        else {
+            newAmount = ""
+        }
+        return newAmount
+    }
+
 
     Rectangle {
         id: calculatorTitleBar
@@ -50,7 +92,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -3
             font.pixelSize: 18
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             color: "#F2F2F2"
         }
     }
@@ -66,7 +108,7 @@ Rectangle {
         Label {
             id: fromLabel
             text: "from:"
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
             color: "#F2F2F2"
@@ -86,12 +128,12 @@ Rectangle {
             anchors.topMargin: 20
             anchors.left: parent.left
             anchors.leftMargin: 20
-            color: xbyButton1State == 1 ? "#5E8BFF" : "#2A2C31"
+            color: xbyButton1State == 1 ? maincolor : "#2A2C31"
 
             Text {
                 id: xbyButton1Label
                 text : "XBY"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: xbyButton1State == 1 ? "#F2F2F2" : "#5F5F5F"
@@ -121,12 +163,12 @@ Rectangle {
             anchors.top: xbyButton1.top
             anchors.left: xbyButton1.right
             anchors.leftMargin: 5
-            color: xfuelButton1State == 1 ? "#5E8BFF" : "#2A2C31"
+            color: xfuelButton1State == 1 ? maincolor : "#2A2C31"
 
             Text {
                 id: xfuelButton1Label
                 text : "XFUEL"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: xfuelButton1State == 1 ? "#F2F2F2" : "#5F5F5F"
@@ -156,12 +198,12 @@ Rectangle {
             anchors.top: xbyButton1.top
             anchors.left: xfuelButton1.right
             anchors.leftMargin: 5
-            color: btcButton1State == 1 ? "#5E8BFF" : "#2A2C31"
+            color: btcButton1State == 1 ? maincolor : "#2A2C31"
 
             Text {
                 id: btcButton1Label
                 text : "BTC"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: btcButton1State == 1 ? "#F2F2F2" : "#5F5F5F"
@@ -191,12 +233,12 @@ Rectangle {
             anchors.top: xbyButton1.top
             anchors.left: btcButton1.right
             anchors.leftMargin: 5
-            color: usdButton1State == 1 ? "#5E8BFF" : "#2A2C31"
+            color: usdButton1State == 1 ? maincolor : "#2A2C31"
 
             Text {
                 id: usdButton1Label
                 text : "USD"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: usdButton1State == 1 ? "#F2F2F2" : "#5F5F5F"
@@ -235,7 +277,6 @@ Rectangle {
             validator: DoubleValidator {bottom: 0}
             mobile: 1
             deleteBtn: 0
-
         }
 
         Image {
@@ -266,7 +307,7 @@ Rectangle {
             id: inputAmountTicker
             text: fromCurrency
             rightPadding: 0
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
             color: "#F2F2F2"
@@ -277,7 +318,7 @@ Rectangle {
         Label {
             id: toLabel
             text: "to:"
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
             color: "#F2F2F2"
@@ -294,69 +335,6 @@ Rectangle {
             width: 210
             placeholder: "0"
             horizontalAlignment: TextInput.AlignRight
-            text:{
-                if (inputAmount.acceptableInput === true && inputAmount.text !== ""){
-                    if (fromCurrency == "XBY") {
-                        if (toCurrency == "BTC") {
-                            (fromAmount * btcValueXBY).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                        else if (toCurrency == "XFUEL") {
-                            ((fromAmount * btcValueXBY)/btcValueXFUEL).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                        else if (toCurrency == "XBY") {
-                            (inputAmount.text)
-                        }
-                        else if (toCurrency == "ETH") {
-                            ((fromAmount * btcValueXBY)/btcValueETH).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                    }
-                    else if (fromCurrency == "XFUEL") {
-                        if (toCurrency == "BTC") {
-                            (fromAmount * btcValueXFUEL).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                        else if (toCurrency == "XBY") {
-                            ((fromAmount * btcValueXFUEL)/btcValueXBY).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                        else if (toCurrency == "XFUEL") {
-                            (inputAmount.text)
-                        }
-                        else if (toCurrency == "ETH") {
-                            ((fromAmount * btcValueXBY)/btcValueETH).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                    }
-                    else if (fromCurrency == "BTC") {
-                        if (toCurrency == "XBY") {
-                            (fromAmount / btcValueXBY).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                        else if (toCurrency == "XFUEL") {
-                            (fromAmount / btcValueXFUEL).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                        else if (toCurrency == "BTC") {
-                            (inputAmount.text)
-                        }
-                        else if (toCurrency == "ETH") {
-                            (fromAmount / btcValueETH).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                    }
-                    else if (fromCurrency == "USD") {
-                        if (toCurrency == "XBY") {
-                            (fromAmount / valueXBY).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                        else if (toCurrency == "XFUEL") {
-                            (fromAmount / valueXFUEL).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                        else if (toCurrency == "BTC") {
-                            (fromAmount / valueBTC).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                        else if (toCurrency == "ETH") {
-                            (fromAmount / valueETH).toLocaleString(Qt.locale("en_US"), "f", 8)
-                        }
-                    }
-                }
-                else {
-                    ""
-                }
-            }
             anchors.left: parent.left
             anchors.leftMargin: 20
             anchors.top: toLabel.bottom
@@ -366,13 +344,14 @@ Rectangle {
             readOnly: true
             mobile: 1
             deleteBtn: 0
+            text: convert()
         }
 
         Label {
             id: outputAmountTicker
             text: toCurrency
             rightPadding: 0
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
             color: "#F2F2F2"
@@ -402,7 +381,7 @@ Rectangle {
 
             Text {
                 text: "CONFIRM"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 color: "#F2F2F2"
                 font.bold: true
@@ -427,12 +406,13 @@ Rectangle {
 
                 onClicked: {
                     calculatorTracker = 0
+                    inputAmount.text = ""
                 }
             }
 
             Text {
                 text: "CANCEL"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: "#F2F2F2"

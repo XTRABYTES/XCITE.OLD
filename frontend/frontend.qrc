@@ -139,5 +139,10 @@
         <file>Controls/+mobile/AddressPicklist.qml</file>
         <file>Controls/+mobile/QrScanner.qml</file>
         <file>Controls/+mobile/AmountInput.qml</file>
+        <file>+mobile/Login.qml</file>
+        <file>+mobile/Onboarding.qml</file>
+        <file>+mobile/SignUp.qml</file>
+        <file>+mobile/Home.qml</file>
+        <file>+mobile/MobileAddressBook.qml</file>
     </qresource>
 </RCC>

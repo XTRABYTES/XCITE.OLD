@@ -26,17 +26,16 @@ Rectangle {
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+    visible: scanQRTracker == 0
 
     states: [
         State {
             name: "up"
             PropertyChanges { target: addressModal; anchors.topMargin: 50}
-            //PropertyChanges { target: addressModal; visible: true}
         },
         State {
             name: "down"
             PropertyChanges { target: addressModal; anchors.topMargin: Screen.height}
-            //PropertyChanges { target: addressModal; visible: false}
         }
     ]
 
@@ -190,7 +189,7 @@ Rectangle {
     function checkAddress() {
         invalidAddress = 0
         if (newAddress.text != "") {
-            if (newCoinName.text == "XBY" || newCoinName.text == "BTC") {
+            if (newCoinName.text == "XBY") {
                 if (newAddress.length == 34
                         && newAddress.text.substring(0,1) == "B"
                         && newAddress.acceptableInput == true) {
@@ -212,7 +211,7 @@ Rectangle {
             }
         }
         else {
-            if (newCoinName.text == "XBY" || newCoinName.text == "BTC") {
+            if (newCoinName.text == "XBY") {
                 if (newAddress.placeholder.length == 34
                         && newAddress.placeholder.substring(0,1) == "B") {
                     invalidAddress = 0
@@ -229,6 +228,14 @@ Rectangle {
                 else {
                     invalidAddress = 1
                 }
+            }
+        }
+    }
+
+    function checkCurrencyIndex() {
+        for(var i = 0; i < currencyList.count; i++) {
+            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(i).name) {
+                currencyIndex = i
             }
         }
     }
@@ -275,7 +282,7 @@ Rectangle {
             anchors.verticalCenter: titleIcon.verticalCenter
             anchors.verticalCenterOffset: -1
             font.pixelSize: 20
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             color: "#F2F2F2"
             visible: scanQRTracker == 0
         }
@@ -340,9 +347,8 @@ Rectangle {
             anchors.rightMargin: 7
             anchors.verticalCenter: addressSwitch.verticalCenter
             font.pixelSize: 14
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Medium
-            color: addressSwitch.on ? "#5F5F5F" : "#5E8BFE"
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            color: addressSwitch.on ? "#5F5F5F" : maincolor
             visible: transactionSent == 0
                      && editSaved == 0
                      && deleteAddressTracker == 0
@@ -356,9 +362,8 @@ Rectangle {
             anchors.leftMargin: 7
             anchors.verticalCenter: addressSwitch.verticalCenter
             font.pixelSize: 14
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Medium
-            color: addressSwitch.on ? "#5E8BFE" : "#5F5F5F"
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            color: addressSwitch.on ? maincolor : "#5F5F5F"
             visible: transactionSent == 0
                      && editSaved == 0
                      && deleteAddressTracker == 0
@@ -389,8 +394,8 @@ Rectangle {
             anchors.leftMargin: 7
             anchors.verticalCenter: newIcon.verticalCenter
             font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.bold: true
             color: "#F2F2F2"
             visible: picklistTracker == 0
                      && editSaved == 0
@@ -408,8 +413,8 @@ Rectangle {
             anchors.right: sendAmount.right
             anchors.verticalCenter: newIcon.verticalCenter
             font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.bold: true
             color: "#F2F2F2"
             visible: editSaved == 0
                      && transactionSent == 0
@@ -423,6 +428,7 @@ Rectangle {
             anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
             anchors.topMargin: 5
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pixelSize: 14
             color: "#828282"
             visible: editSaved == 0
@@ -440,6 +446,7 @@ Rectangle {
             anchors.rightMargin: 5
             anchors.bottom: walletBalance.bottom
             anchors.topMargin: 5
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pixelSize: 14
             color: "#828282"
             visible: editSaved == 0
@@ -456,6 +463,7 @@ Rectangle {
             anchors.right: walletBalance1.left
             anchors.top: walletLabel.bottom
             anchors.topMargin: 5
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pixelSize: 14
             color: "#828282"
             visible: editSaved == 0
@@ -472,6 +480,7 @@ Rectangle {
             anchors.topMargin: 15
             placeholder: amountTransfer
             color: sendAmount.text !== "" ? "#F2F2F2" : "#727272"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pixelSize: 14
             inputMethodHints: Qt.ImhFormattedNumbersOnly
             validator: DoubleValidator {bottom: 0; top: (currencyList.get(currencyIndex).balance)}
@@ -501,8 +510,7 @@ Rectangle {
             anchors.top: sendAmount.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
+            font.family: xciteMobile.name //"Brandon Grotesque"
             visible: transactionSent == 0
                      && addressSwitch.state == "off"
                      && inputAmount > (currencyList.get(currencyIndex).balance)
@@ -541,6 +549,33 @@ Rectangle {
             mobile: 1
         }
 
+        DropShadow {
+            id: shadowTransferButton
+            anchors.fill: transferModalButton
+            source: transferModalButton
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
+            visible: ((addressSwitch.state == "off"
+                      && sendAmount.text != ""
+                      && inputAmount !== 0
+                      && inputAmount <= (currencyList.get(currencyIndex).balance))
+                      || (addressSwitch.state == "on"
+                          && doubbleAddress == 0
+                          && labelExists == 0
+                          && invalidAddress == 0
+                          && myAddress == 0))
+                      && transactionSent == 0
+                      && editSaved == 0
+                      && deleteAddressTracker == 0
+                      && scanQRTracker == 0
+        }
+
         Rectangle {
             id: transferModalButton
             width: sendAmount.width
@@ -549,12 +584,12 @@ Rectangle {
             color: (addressSwitch.state == "off"
                     && sendAmount.text != ""
                     && inputAmount !== 0
-                    && inputAmount <= (currencyList.get(currencyIndex).balance)) ? "#5E8BFE" :
+                    && inputAmount <= (currencyList.get(currencyIndex).balance)) ? maincolor :
                                                                                    ((addressSwitch.state == "on"
                                                                                      && doubbleAddress == 0
                                                                                      && labelExists == 0
                                                                                      && invalidAddress == 0
-                                                                                     && myAddress == 0) ? "#5E8BFE" :
+                                                                                     && myAddress == 0) ? maincolor :
                                                                                                                "#727272")
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
@@ -567,7 +602,12 @@ Rectangle {
             MouseArea {
                 anchors.fill: transferModalButton
 
+                onPressed: {
+                    shadowTransferButton.verticalOffset = 0
+                }
+
                 onClicked: {
+                    shadowTransferButton.verticalOffset = 4
                     if (addressSwitch.state == "off"){
                         if (sendAmount.text !== ""
                                 && inputAmount !== 0
@@ -583,18 +623,7 @@ Rectangle {
                         if (doubbleAddress == 0
                                 && labelExists == 0
                                 && invalidAddress == 0) {
-                            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(0).name) {
-                                currencyIndex = 0
-                            }
-                            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(1).name) {
-                                currencyIndex = 1
-                            }
-                            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(2).name) {
-                                currencyIndex = 2
-                            }
-                            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(3).name) {
-                                currencyIndex = 3
-                            }
+                            checkCurrencyIndex()
                             if (newCoinSelect == 1) {
                                 addressList.setProperty(addressIndex, "logo", currencyList.get(newCoinPicklist).logo);
                             }
@@ -616,10 +645,19 @@ Rectangle {
 
             Text {
                 text: addressSwitch.state == "off" ? "SEND" : "SAVE"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: "#F2F2F2"
+                color: (addressSwitch.state == "off"
+                        && sendAmount.text != ""
+                        && inputAmount !== 0
+                        && inputAmount <= (currencyList.get(currencyIndex).balance)) ? "#F2F2F2" :
+                                                                                       ((addressSwitch.state == "on"
+                                                                                         && doubbleAddress == 0
+                                                                                         && labelExists == 0
+                                                                                         && invalidAddress == 0
+                                                                                         && myAddress == 0) ? "#F2F2F2" :
+                                                                                                                   "#979797")
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -643,10 +681,9 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
-                color: "#5E8BFE"
+                color: maincolor
             }
 
             Text {
@@ -656,9 +693,8 @@ Rectangle {
                 anchors.leftMargin: 25
                 anchors.top: confirmationText.bottom
                 anchors.topMargin: 40
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
             }
 
@@ -676,9 +712,8 @@ Rectangle {
                 text: newCoinName.text
                 anchors.top: amount.top
                 anchors.right: amount.right
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Medium
                 color: "#F2F2F2"
             }
 
@@ -691,9 +726,8 @@ Rectangle {
                 anchors.bottomMargin: 1
                 anchors.right: confirmationAmount.left
                 anchors.rightMargin: 7
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 12
-                font.weight: Font.Medium
                 color: "#F2F2F2"
             }
 
@@ -704,9 +738,8 @@ Rectangle {
                 text: amountArray[0]
                 anchors.top: confirmationAmount.top
                 anchors.left: amount.left
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Medium
                 color: "#F2F2F2"
             }
 
@@ -717,9 +750,8 @@ Rectangle {
                 anchors.leftMargin: 25
                 anchors.top: sendingLabel.bottom
                 anchors.topMargin: 15
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
             }
 
@@ -730,9 +762,8 @@ Rectangle {
                 anchors.bottomMargin: 2
                 anchors.right: parent.right
                 anchors.rightMargin: 25
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 12
-                font.weight: Font.Normal
                 color: "#F2F2F2"
             }
 
@@ -743,9 +774,8 @@ Rectangle {
                 anchors.topMargin: 5
                 anchors.right: parent.right
                 anchors.rightMargin: 25
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
                 visible: transactionName != ""
             }
@@ -757,9 +787,8 @@ Rectangle {
                 anchors.leftMargin: 25
                 anchors.top: confirmationAddressName.bottom
                 anchors.topMargin: 15
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
                 visible: referenceInput.text !== ""
             }
@@ -770,11 +799,24 @@ Rectangle {
                 anchors.bottom: reference.bottom
                 anchors.right: parent.right
                 anchors.rightMargin: 25
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
                 visible: referenceInput.text !== ""
+            }
+
+            DropShadow {
+                id: shadowConfirmSendButton
+                anchors.fill: confirmationSendButton
+                source: confirmationSendButton
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
             }
 
             Rectangle {
@@ -790,7 +832,13 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: confirmationSendButton
-                    onClicked: {
+
+                    onPressed: {
+                        shadowConfirmSendButton.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        shadowConfirmSendButton.verticalOffset = 4
                         confirmationSent = 1
                         // whatever function needed to execute payment
                     }
@@ -798,13 +846,27 @@ Rectangle {
 
                 Text {
                     text: "CONFIRM"
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     font.pointSize: 14
                     color: "#F2F2F2"
                     font.bold: true
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }
+            }
+
+            DropShadow {
+                id: shadowCancelSendButton
+                anchors.fill: cancelSendButton
+                source: cancelSendButton
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
             }
 
             Rectangle {
@@ -821,14 +883,19 @@ Rectangle {
                 MouseArea {
                     anchors.fill: cancelSendButton
 
-                    onClicked: {
+                    onPressed: {
+                        shadowCancelSendButton.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        shadowCancelSendButton.verticalOffset = 4
                         transactionSent = 0
                     }
                 }
 
                 Text {
                     text: "CANCEL"
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     font.pointSize: 14
                     font.bold: true
                     color: "#F2F2F2"
@@ -852,7 +919,7 @@ Rectangle {
 
             Image {
                 id: confirmedIcon
-                source: 'qrc:/icons/rocket.svg'
+                source: 'qrc:/icons/icon-success.svg'
                 width: 120
                 height: 120
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -862,7 +929,7 @@ Rectangle {
                 ColorOverlay {
                     anchors.fill: parent
                     source: confirmedIcon
-                    color: "#5E8BFE"
+                    color: maincolor
                 }
             }
 
@@ -872,12 +939,24 @@ Rectangle {
                 anchors.top: confirmedIcon.bottom
                 anchors.topMargin: 10
                 anchors.horizontalCenter: confirmedIcon.horizontalCenter
-                color: "#5E8BFE"
+                color: maincolor
                 font.pixelSize: 14
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.bold: true
-                visible: transactionSent == 1
-                         && confirmationSent == 1
+            }
+
+            DropShadow {
+                id: shadowCloseConfirmButton
+                anchors.fill: closeConfirm
+                source: closeConfirm
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
             }
 
             Rectangle {
@@ -885,7 +964,7 @@ Rectangle {
                 width: (parent.width - 45) / 2
                 height: 33
                 radius: 5
-                color: "#5E8BFE"
+                color: maincolor
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -893,7 +972,12 @@ Rectangle {
                 MouseArea {
                     anchors.fill: closeConfirm
 
-                    onClicked: {
+                    onPressed: {
+                        shadowCloseConfirmButton.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        shadowCloseConfirmButton.verticalOffset = 0
                         transactionDate = new Date().toLocaleDateString(Qt.locale(), "MM/dd")
                         if (newCoinName.text == "XBY"){
                             xbyTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.placeholder, "reference": referenceText.text, "txNR": xbyTXID});
@@ -909,20 +993,7 @@ Rectangle {
                             currencyList.setProperty(1, "fiatValue", ((currencyList.get(1).balance) * (currencyList.get(1).coinValue)));
                             totalBalance = sumBalance()
                         }
-                        if (newCoinName.text == "BTC"){
-                            btcTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.placeholder, "reference": referenceText.text, "txNR": btcTXID});
-                            btcTXID = btcTXID + 1;
-                            currencyList.setProperty(2, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(2, "fiatValue", ((currencyList.get(2).balance) * (currencyList.get(2).coinValue)));
-                            totalBalance = sumBalance()
-                        }
-                        if (newCoinName.text == "ETH"){
-                            ethTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.placeholder, "reference": referenceText.text, "txNR": ethTXID});
-                            ethTXID = ethTXID + 1;
-                            currencyList.setProperty(3, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(3, "fiatValue", ((currencyList.get(3).balance) * (currencyList.get(3).coinValue)));
-                            totalBalance = sumBalance()
-                        }
+
                         sendAmount.text = ""
                         referenceInput.text = ""
                         confirmationSent = 0
@@ -933,7 +1004,7 @@ Rectangle {
 
                 Text {
                     text: "OK"
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     font.pointSize: 14
                     font.bold: true
                     color: "#F2F2F2"
@@ -1008,6 +1079,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: deleteButton
+
                 onClicked: {
                     deleteAddressTracker = 1
                 }
@@ -1041,8 +1113,7 @@ Rectangle {
             anchors.top: newName.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
+            font.family: xciteMobile.name //"Brandon Grotesque"
             visible: addressSwitch.state == "on"
                      && editSaved == 0
                      && newName.text != ""
@@ -1080,8 +1151,7 @@ Rectangle {
             anchors.top: newAddress.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
+            font.family: xciteMobile.name //"Brandon Grotesque"
             visible: addressSwitch.state == "on"
                      && editSaved == 0
                      && doubbleAddress == 1
@@ -1099,8 +1169,7 @@ Rectangle {
             anchors.top: newAddress.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
+            font.family: xciteMobile.name //"Brandon Grotesque"
             visible: addressSwitch.state == "on"
                      && editSaved == 0
                      && invalidAddress == 1
@@ -1131,37 +1200,68 @@ Rectangle {
             anchors.topMargin: 15
             anchors.left: newAddress.left
             radius: 5
-            border.color: "#5E8BFE"
+            border.color: maincolor
             border.width: 2
             color: "transparent"
-            visible: transactionSent == 0
+            visible: editSaved == 0
+                     && deleteAddressTracker == 0
                      && addressSwitch.state == "on"
                      && scanQRTracker == 0
                      && myAddress == 0
 
             MouseArea {
                 anchors.fill: scanQrButton
-                onClicked: {
+
+                onPressed: {
+                    scanQrButton.color = maincolor
+                    scanQrButton.border.color = "transparent"
+                    scanQrButtonText.color = "#F2F2F2"
+                }
+
+                onReleased: {
+                    scanQrButton.color = "transparent"
+                    scanQrButton.border.color = maincolor
+                    scanQrButtonText.color = maincolor
                     scanQRTracker = 1
                     scanning = "scanning..."
                 }
             }
 
             Text {
+                id: scanQrButtonText
                 text: "SCAN QR"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
-                color: "#5E8BFE"
+                color: maincolor
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
 
+        DropShadow {
+            id: shadowTransferPicklist
+            anchors.fill: newPicklist
+            source: newPicklist
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
+            visible: addressSwitch.state == "on"
+                     && picklistTracker == 1
+                     && editSaved == 0
+                     && deleteAddressTracker == 0
+                     && scanQRTracker == 0
+        }
+
         Rectangle {
             id: newPicklist
             width: 100
-            height: totalLines * 35
+            height: ((totalLines + 1) * 35)-10
             radius: 4
             color: "#2A2C31"
             anchors.top: newIcon.top
@@ -1184,7 +1284,7 @@ Rectangle {
             height: 25
             radius: 4
             color: "#2A2C31"
-            anchors.top: newPicklist.bottom
+            anchors.bottom: newPicklist.bottom
             anchors.horizontalCenter: newPicklist.horizontalCenter
             visible: addressSwitch.state == "on"
                      && picklistTracker == 1
@@ -1224,7 +1324,7 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: "#5E8BFE"
+                color: maincolor
             }
         }
 
@@ -1236,8 +1336,24 @@ Rectangle {
             anchors.horizontalCenter: saveSuccess.horizontalCenter
             color: "#5E8BFE"
             font.pixelSize: 14
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.bold: true
+            visible: addressSwitch.state == "on"
+                     && editSaved == 1
+        }
+
+        DropShadow {
+            id: shadowCloseEditButton
+            anchors.fill: closeSaveEdit
+            source: closeSaveEdit
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
             visible: addressSwitch.state == "on"
                      && editSaved == 1
         }
@@ -1247,7 +1363,7 @@ Rectangle {
             width: (parent.width - 45) / 2
             height: 33
             radius: 5
-            color: "#5E8BFE"
+            color: maincolor
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1257,7 +1373,12 @@ Rectangle {
             MouseArea {
                 anchors.fill: closeSaveEdit
 
-                onClicked: {
+                onPressed: {
+                    shadowCloseEditButton.verticalOffset = 0
+                }
+
+                onReleased: {
+                    shadowCloseEditButton.verticalOffset = 0
                     newName.text = ""
                     newAddress.text = ""
                     editSaved = 0
@@ -1271,7 +1392,7 @@ Rectangle {
 
             Text {
                 text: "OK"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: "#F2F2F2"
@@ -1298,9 +1419,8 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 60
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
             }
 
@@ -1310,7 +1430,7 @@ Rectangle {
                 anchors.top: deleteText.bottom
                 anchors.topMargin: 7
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
                 font.bold: true
                 color: "#F2F2F2"
@@ -1322,10 +1442,23 @@ Rectangle {
                 anchors.top: deleteAddressName.bottom
                 anchors.topMargin: 7
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
+            }
+
+            DropShadow {
+                id: shadowConfirmDeleteButton
+                anchors.fill: confirmationDeleteButton
+                source: confirmationDeleteButton
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
             }
 
             Rectangle {
@@ -1341,7 +1474,13 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: {
+
+                    onPressed: {
+                        shadowConfirmDeleteButton.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        shadowConfirmDeleteButton.verticalOffset = 4
                         deleteConfirmed = 1
                         addressList.setProperty(addressIndex, "active", false)
                         doubbleAddress = 0
@@ -1352,13 +1491,27 @@ Rectangle {
 
                 Text {
                     text: "CONFIRM"
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     font.pointSize: 14
                     color: "#F2F2F2"
                     font.bold: true
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }
+            }
+
+            DropShadow {
+                id: shadowCancelDeleteButton
+                anchors.fill: cancelDeleteButton
+                source: cancelDeleteButton
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
             }
 
             Rectangle {
@@ -1375,14 +1528,19 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                    onClicked: {
+                    onPressed: {
+                        shadowCancelDeleteButton.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        shadowCancelDeleteButton.verticalOffset = 4
                         deleteAddressTracker = 0
                     }
                 }
 
                 Text {
                     text: "CANCEL"
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     font.pointSize: 14
                     font.bold: true
                     color: "#F2F2F2"
@@ -1408,7 +1566,7 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: "#5E8BFE"
+                color: maincolor
             }
         }
 
@@ -1418,10 +1576,26 @@ Rectangle {
             anchors.top: deleteSuccess.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: deleteSuccess.horizontalCenter
-            color: "#5E8BFE"
+            color: maincolor
             font.pixelSize: 14
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.bold: true
+            visible: addressSwitch.state == "on"
+                     && deleteConfirmed == 1
+        }
+
+        DropShadow {
+            id: shadowCloseDeleteButton
+            anchors.fill: closeDelete
+            source: closeDelete
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
             visible: addressSwitch.state == "on"
                      && deleteConfirmed == 1
         }
@@ -1431,7 +1605,7 @@ Rectangle {
             width: (parent.width - 45) / 2
             height: 33
             radius: 5
-            color: "#5E8BFE"
+            color: maincolor
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1441,7 +1615,12 @@ Rectangle {
             MouseArea {
                 anchors.fill: closeDelete
 
-                onClicked: {
+                onPressed: {
+                    shadowCloseDeleteButton.verticalOffset = 0
+                }
+
+                onReleased: {
+                    shadowCloseDeleteButton.verticalOffset = 4
                     if (addressTracker == 1) {
                         addressTracker = 0;
                         picklistTracker = 0
@@ -1468,7 +1647,7 @@ Rectangle {
 
             Text {
                 text: "OK"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: "#F2F2F2"
@@ -1502,7 +1681,7 @@ Rectangle {
         anchors.topMargin: 10
         anchors.horizontalCenter: addressBodyModal.horizontalCenter
         font.pixelSize: 14
-        font.family: "Brandon Grotesque"
+        font.family: xciteMobile.name //"Brandon Grotesque"
         color: "#F2F2F2"
         visible: addressTracker == 1
                  && confirmationSent == 0
@@ -1553,7 +1732,12 @@ Rectangle {
                 }
             }
 
-            onClicked: {
+            onPressed: {
+                closeAddressModal.anchors.topMargin = 12
+            }
+
+            onReleased: {
+                closeAddressModal.anchors.topMargin = 10
                 if (addressTracker == 1) {
                     addressTracker = 0;
                     timer.start()

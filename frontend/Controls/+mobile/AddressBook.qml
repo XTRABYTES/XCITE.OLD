@@ -25,6 +25,7 @@ Rectangle {
     property string searchFilter: ""
     property int favoriteNR: 0
 
+
     Component {
         id: addressCard
 
@@ -36,6 +37,7 @@ Rectangle {
             anchors.horizontalCenter: Screen.horizontalCenter
 
             DropShadow {
+                id: cardShadow
                 anchors.fill: cardBackground
                 source: cardBackground
                 horizontalOffset: 0
@@ -43,8 +45,14 @@ Rectangle {
                 radius: 12
                 samples: 25
                 spread: 0
-                color:"#2A2C31"
+                color:"black"
+                opacity: 0.3
                 transparentBorder: true
+
+                Connections {
+                    target: allAddresses
+                    onMovementEnded: cardShadow.verticalOffset = 4
+                }
             }
 
             Rectangle {
@@ -126,23 +134,29 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
+                    function checkCurrencyIndex() {
+                        for(var i = 0; i < currencyList.count; i++) {
+                            if (coin === currencyList.get(i).name) {
+                                currencyIndex = i
+                            }
+                        }
+                    }
+
+                    onPressed: {
+                        cardShadow.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        cardShadow.verticalOffset = 4
+                    }
+
                     onClicked: {
+                        cardShadow.verticalOffset = 4
                         if (appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0) {
                             addressTracker = 1
                             addressIndex = uniqueNR
-                            //selectedAddress = ""
-                            if (coin === currencyList.get(0).name) {
-                                currencyIndex = 0
-                            }
-                            if (coin === currencyList.get(1).name) {
-                                currencyIndex = 1
-                            }
-                            if (coin === currencyList.get(2).name) {
-                                currencyIndex = 2
-                            }
-                            if (coin === currencyList.get(3).name) {
-                                currencyIndex = 3
-                            }
+
+                            checkCurrencyIndex()
                         }
                     }
                 }

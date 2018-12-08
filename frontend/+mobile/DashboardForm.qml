@@ -20,20 +20,11 @@ import "qrc:/Controls" as Controls
 
 Item {
 
-    Loader {
-        id: pageLoader
-    }
-
     // shared vars
 
     property int pageTracker: view.currentIndex == 0 ? 0 : 1
     property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
     property string searchCriteria:""
-
-    Component.onCompleted: {
-
-        sumBalance()
-    }
 
     Rectangle {
         id: backgroundHome
@@ -48,6 +39,7 @@ Item {
             currentIndex: 0
             anchors.fill: parent
             interactive: (appsTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addCoinTracker == 1) ? false : true
+            visible: loginTracker == 1
 
             Item {
                 id: dashForm
@@ -59,7 +51,7 @@ Item {
                     anchors.bottom: value1.bottom
                     text: "$"
                     font.pixelSize: 40
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     color: "#E5E5E5"
                 }
 
@@ -72,7 +64,7 @@ Item {
                     anchors.verticalCenterOffset: 85
                     text: balanceArray[0]
                     font.pixelSize: 40
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     color: "#E5E5E5"
                 }
 
@@ -81,10 +73,10 @@ Item {
                     z: 5
                     anchors.left: value1.right
                     anchors.bottom: value1.bottom
-                    anchors.bottomMargin: 4
+                    anchors.bottomMargin: 6
                     text: "." + balanceArray[1]
                     font.pixelSize: 24
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     color: "#E5E5E5"
                 }
 
@@ -119,7 +111,7 @@ Item {
                     samples: 25
                     spread: 0
                     color: "black"
-                    opacity: 0.5
+                    opacity: 0.4
                     transparentBorder: true
                 }
 
@@ -128,17 +120,7 @@ Item {
                     z: 4.1
                     width: parent.width
                     height: 150
-                    color: "#14161b"
-
-                    /**LinearGradient {
-                        anchors.fill: parent
-                        start: Qt.point(0, 0)
-                        end: Qt.point(0, height)
-                        gradient: Gradient {
-                            GradientStop {position: 0.0; color: "#2C3E50"}
-                            GradientStop {position: 1.0; color: "#000000"}
-                        }
-                    }*/
+                    color: "#14161B"
                 }
             }
 
@@ -154,12 +136,13 @@ Item {
                     anchors.verticalCenter: parent.top
                     anchors.verticalCenterOffset: 85
                     width: Screen.width - 55
-                    color: searchForAddress.text != "" ? "#F2F2F2" : "#727272"
+                    color: searchForAddress.text != "" ? "#2A2C31" : "#727272"
                     font.pixelSize: 14
+                    font.capitalization: Font.AllUppercase
                     mobile: 1
                     addressBook: 1
                     onTextChanged: searchCriteria = searchForAddress.text
-                    textBackground: "#2A2C31"
+                    textBackground: "#F2F2F2"
                 }
 
                 Rectangle {
@@ -187,7 +170,7 @@ Item {
                     samples: 25
                     spread: 0
                     color: "black"
-                    opacity: 0.5
+                    opacity: 0.4
                     transparentBorder: true
                 }
 
@@ -196,17 +179,7 @@ Item {
                     z: 4.1
                     width: parent.width
                     height: 150
-                    color: "#14161b"
-
-                    /**LinearGradient {
-                        anchors.fill: parent
-                        start: Qt.point(0, 0)
-                        end: Qt.point(0, height)
-                        gradient: Gradient {
-                            GradientStop {position: 0.0; color: "#2C3E50"}
-                            GradientStop {position: 1.0; color: "#000000"}
-                        }
-                    }*/
+                    color: "#14161B"
                 }
             }
         }
@@ -217,6 +190,7 @@ Item {
             width: parent.width
             height: 150
             color: "transparent"
+            visible: loginTracker == 1
 
             Image {
                 id: apps
@@ -230,7 +204,7 @@ Item {
                 ColorOverlay {
                     anchors.fill: apps
                     source: apps
-                    color: "#5E8BFE"
+                    color: maincolor
                 }
 
                 MouseArea {
@@ -255,7 +229,7 @@ Item {
                 ColorOverlay {
                     anchors.fill: notif
                     source: notif
-                    color: "#5E8BFE"
+                    color: maincolor
                 }
 
                 Image{
@@ -282,15 +256,15 @@ Item {
                     id: overview
                     text: "OVERVIEW"
                     font.pixelSize: 12
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     font.bold: true
-                    color: pageTracker == 0 ? "#5E8BFE": "#757575"
+                    color: pageTracker == 0 ? maincolor : "#757575"
 
                     Rectangle {
                         id: titleLine
                         width: overview.width
                         height: 2
-                        color: "#5E8BFE"
+                        color: maincolor
                         anchors.top: overview.bottom
                         anchors.left: overview.left
                         anchors.topMargin: 2
@@ -310,15 +284,15 @@ Item {
                     id: add5
                     text: "ADDRESS BOOK"
                     font.pixelSize: 12
-                    font.family: "Brandon Grotesque"
-                    color: pageTracker == 0 ? "#757575" : "#5E8BFE"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
+                    color: pageTracker == 0 ? "#757575" : maincolor
                     font.bold: true
 
                     Rectangle {
                         id: titleLine2
                         width: add5.width
                         height: 2
-                        color: "#5E8BFE"
+                        color: maincolor
                         anchors.top: add5.bottom
                         anchors.left: add5.left
                         anchors.topMargin: 2
@@ -341,7 +315,7 @@ Item {
                 z: 6
                 text: "TRANSFER"
                 font.pixelSize: 13
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 color: "#C7C7C7"
                 anchors.left: parent.left
                 anchors.leftMargin: 28
@@ -353,13 +327,13 @@ Item {
                     anchors.verticalCenter: transfer.verticalCenter
                     anchors.left: parent.right
                     anchors.leftMargin: 8
-                    source: 'qrc:/icons/transfer_icon_02.svg'
-                    width: 18
+                    source: 'qrc:/icons/icon-transfer_01.svg'
+                    width: 15
                     height: 18
                     ColorOverlay {
                         anchors.fill: transfer2
                         source: transfer2
-                        color: "#5E8BFE"
+                        color: maincolor
                     }
                 }
 
@@ -390,25 +364,25 @@ Item {
                 anchors.bottomMargin: 10
                 anchors.right: parent.right
                 anchors.rightMargin: 28
-                source: 'qrc:/icons/add_icon_04.svg'
-                width: 18
-                height: 18
+                source: 'qrc:/icons/add_address.svg'
+                width: 16
+                height: 16
                 visible: pageTracker == 1
 
                 ColorOverlay {
                     anchors.fill: plus
                     source: plus
-                    color: "#5E8BFE"
+                    color: maincolor
                 }
 
                 Label {
                     id: addAddress
                     text: "ADD ADDRESS"
                     font.pixelSize: 13
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     color: "#C7C7C7"
                     anchors.right: parent.left
-                    anchors.rightMargin:8
+                    anchors.rightMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
                     font.bold: true
                 }
@@ -435,23 +409,23 @@ Item {
                 z: 6
                 anchors.verticalCenter: plus.verticalCenter
                 anchors.right: parent.right
-                anchors.rightMargin:28
-                source: 'qrc:/icons/icon-coins.svg'
-                width: 18
-                height: 18
+                anchors.rightMargin: 28
+                source: 'qrc:/icons/icon-coins_01.svg'
+                width: 16
+                height: 16
                 visible: pageTracker == 0
 
                 ColorOverlay {
                     anchors.fill: coins
                     source: coins
-                    color: "#5E8BFE"
+                    color: maincolor
                 }
 
                 Label {
                     id: addCoin
                     text: "COINS"
                     font.pixelSize: 13
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     color: "#C7C7C7"
                     anchors.right: parent.left
                     anchors.rightMargin: 8
@@ -468,7 +442,7 @@ Item {
                     color: "transparent"
 
                     Timer {
-                        id: timer
+                        id: timer2
                         interval: 300
                         repeat: false
                         running: false
@@ -481,7 +455,7 @@ Item {
                         onClicked: {
                             if (addCoinTracker == 1) {
                                 addCoinModal.sidebarState = "closed"
-                                timer.start()
+                                timer2.start()
                             }
                             else {
                                 addCoinTracker = 1
@@ -532,7 +506,6 @@ Item {
             z: 10
             anchors.horizontalCenter: backgroundHome.horizontalCenter
             anchors.top: backgroundHome.top
-            //anchors.topMargin: 50
         }
 
         Controls.AddressModal{
@@ -540,7 +513,6 @@ Item {
             z: 10
             anchors.horizontalCenter: backgroundHome.horizontalCenter
             anchors.top: backgroundHome.top
-            //anchors.topMargin: 50
         }
 
         Controls.AddAddressModal{
@@ -548,7 +520,6 @@ Item {
             z: 10
             anchors.horizontalCenter: backgroundHome.horizontalCenter
             anchors.top: backgroundHome.top
-            //anchors.topMargin: 50
         }
 
         Controls.QrScanner{

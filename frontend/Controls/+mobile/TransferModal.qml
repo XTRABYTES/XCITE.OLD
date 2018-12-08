@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import Clipboard 1.0
 import QZXing 2.3
 
 import "qrc:/Controls" as Controls
@@ -27,17 +28,18 @@ Rectangle {
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+    visible: scanQRTracker == 0
 
     states: [
         State {
             name: "up"
             PropertyChanges { target: transactionModal; anchors.topMargin: 50}
-            //PropertyChanges { target: transactionModal; visible: true}
+            PropertyChanges { target: transactionModal; opacity: 1}
         },
         State {
             name: "down"
             PropertyChanges { target: transactionModal; anchors.topMargin: Screen.height}
-            //PropertyChanges { target: transactionModal; visible: false}
+            PropertyChanges { target: transactionModal; opacity: 0}
         }
     ]
 
@@ -45,8 +47,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: transactionModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
-            //PropertyAnimation { target: transactionModal; property: "visible"; duration: 300}
+            NumberAnimation { target: transactionModal; properties: "anchors.topMargin, opacity"; duration: 300; easing.type: Easing.OutCubic}
         }
     ]
 
@@ -69,6 +70,7 @@ Rectangle {
     property string searchTxText: ""
     property string transactionDate: ""
     property string addressName: compareAddress()
+    property real currentBalance: getCurrentBalance()
 
 
     function compareAddress(){
@@ -96,16 +98,6 @@ Rectangle {
                 invalidAddress = 1
             }
         }
-        else if (coinID.text == "BTC") {
-            if (keyInput.length === 34
-                    && keyInput.text !== ""
-                    && keyInput.acceptableInput == true) {
-                invalidAddress = 0
-            }
-            else {
-                invalidAddress = 1
-            }
-        }
         else if (coinID.text == "XFUEL") {
             if (keyInput.length === 34
                     && keyInput.text !== ""
@@ -116,9 +108,6 @@ Rectangle {
             else {
                 invalidAddress = 1
             }
-        }
-        else {
-            invalidAddress = 0
         }
     }
 
@@ -151,7 +140,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -5
             font.pixelSize: 18
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             color: modalState == 0 ? "#F2F2F2" : "#5F5F5F"
             font.letterSpacing: 2
         }
@@ -187,7 +176,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -5
             font.pixelSize: 18
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             color: modalState == 1 ? "#F2F2F2" : "#5F5F5F"
             font.letterSpacing: 2
         }
@@ -233,9 +222,8 @@ Rectangle {
             anchors.rightMargin: 7
             anchors.verticalCenter: transferSwitch.verticalCenter
             font.pixelSize: 14
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Medium
-            color: transferSwitch.on ? "#5F5F5F" : "#5E8BFE"
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            color: transferSwitch.on ? "#5F5F5F" : maincolor
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -247,9 +235,8 @@ Rectangle {
             anchors.leftMargin: 7
             anchors.verticalCenter: transferSwitch.verticalCenter
             font.pixelSize: 14
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Medium
-            color: transferSwitch.on ? "#5E8BFE" : "#5F5F5F"
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            color: transferSwitch.on ? maincolor : "#5F5F5F"
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -275,8 +262,8 @@ Rectangle {
             anchors.leftMargin: 7
             anchors.verticalCenter: coinIcon.verticalCenter
             font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.bold: true
             color: "#F2F2F2"
             visible: transactionSent == 0
                      && addressbookTracker == 0
@@ -292,8 +279,8 @@ Rectangle {
             anchors.right: sendAmount.right
             anchors.verticalCenter: coinIcon.verticalCenter
             font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.bold: true
             color: "#F2F2F2"
             visible: transactionSent == 0
                      && addressbookTracker == 0
@@ -306,6 +293,7 @@ Rectangle {
             anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
             anchors.topMargin: 5
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pixelSize: 14
             color: "#828282"
             visible: transactionSent == 0
@@ -321,6 +309,7 @@ Rectangle {
             anchors.right: walletBalance.left
             anchors.rightMargin: 5
             anchors.bottom: walletBalance.bottom
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pixelSize: 14
             color: "#828282"
             visible: transactionSent == 0
@@ -336,6 +325,7 @@ Rectangle {
             anchors.right: walletBalance1.left
             anchors.top: walletLabel.bottom
             anchors.topMargin: 5
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pixelSize: 14
             color: "#828282"
             visible: transactionSent == 0
@@ -382,11 +372,30 @@ Rectangle {
             }
         }
 
+        DropShadow {
+            id: shadowTransferPicklist
+            z:11
+            anchors.fill: transferPicklist
+            source: transferPicklist
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
+            visible: picklistTracker == 1
+                     && transactionSent == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+        }
+
         Rectangle {
             id: transferPicklist
             z: 11
             width: 100
-            height: totalLines * 35
+            height: ((totalLines + 1) * 35)-10
             radius: 4
             color: "#2A2C31"
             anchors.top: coinIcon.top
@@ -410,7 +419,7 @@ Rectangle {
             height: 25
             radius: 4
             color: "#2A2C31"
-            anchors.top: transferPicklist.bottom
+            anchors.bottom: transferPicklist.bottom
             anchors.horizontalCenter: transferPicklist.horizontalCenter
             visible: picklistTracker == 1
                      && transactionSent == 0
@@ -477,7 +486,7 @@ Rectangle {
             anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter
             color: "#F2F2F2"
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.bold: true
             font.pixelSize: 14
             font.letterSpacing: 1
@@ -495,8 +504,7 @@ Rectangle {
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
             color: "white"
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Light
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.pixelSize: 12
             visible: modalState == 0
                      && transferSwitch.on == false
@@ -506,7 +514,7 @@ Rectangle {
         }
 
         Image {
-            id: pasteIcon
+            id: copyIcon
             source: 'qrc:/icons/paste_icon.svg'
             width: 13
             height: 13
@@ -518,6 +526,23 @@ Rectangle {
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+
+            Rectangle {
+                id: copyButton
+                anchors.fill: parent
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        clipboard.setDataText(publicKey.text)
+                        console.log("public key: " + clipboard.dataText + " copied to clipboard")
+                    }
+                }
+            }
         }
 
         // Send state
@@ -561,8 +586,7 @@ Rectangle {
             anchors.top: sendAmount.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
+            font.family: xciteMobile.name //"Brandon Grotesque"
             visible: modalState == 0
                      && transferSwitch.on == true
                      && transactionSent == 0
@@ -615,8 +639,7 @@ Rectangle {
             anchors.top: keyInput.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
+            font.family: xciteMobile.name //"Brandon Grotesque"
             visible: modalState == 0
                      && transferSwitch.on == true
                      && transactionSent == 0
@@ -634,7 +657,7 @@ Rectangle {
             anchors.topMargin: 20
             anchors.left: keyInput.left
             radius: 5
-            border.color: "#5E8BFE"
+            border.color: maincolor
             border.width: 2
             color: "transparent"
             visible: modalState == 0
@@ -646,17 +669,28 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: scanQrButton
-                onClicked: {
+
+                onPressed: {
+                    scanQrButton.color = maincolor
+                    scanQrButton.border.color = "transparent"
+                    qrButtonText.color = "#F2F2F2"
+                }
+
+                onReleased: {
+                    scanQrButton.color = "transparent"
+                    scanQrButton.border.color = maincolor
+                    qrButtonText.color = maincolor
                     scanQRTracker = 1
                     scanning = "scanning..."
                 }
             }
 
             Text {
+                id: qrButtonText
                 text: "SCAN QR"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
-                color: "#5E8BFE"
+                color: maincolor
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -668,7 +702,7 @@ Rectangle {
             width: (doubbleButtonWidth - 10) / 2
             height: 33
             radius: 5
-            border.color: "#5E8BFE"
+            border.color: maincolor
             border.width: 2
             color: "transparent"
             anchors.top: keyInput.bottom
@@ -684,17 +718,27 @@ Rectangle {
             MouseArea {
                 anchors.fill: addressBookButton
 
-                onClicked: {
+                onPressed: {
+                    addressBookButton.color = maincolor
+                    addressBookButton.border.color = "transparent"
+                    addressButtonText.color = "#F2F2F2"
+                }
+
+                onReleased: {
+                    addressBookButton.color = "transparent"
+                    addressBookButton.border.color = maincolor
+                    addressButtonText.color = maincolor
                     addressbookTracker = 1
                 }
             }
 
             Text {
+                id: addressButtonText
                 text: "ADDRESS BOOK"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: "#5E8BFE"
+                color: maincolor
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -718,6 +762,30 @@ Rectangle {
             mobile: 1
         }
 
+        DropShadow {
+            id: shadowSendButton
+            anchors.fill: sendButton
+            source: sendButton
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
+            visible: (invalidAddress == 0
+                      && keyInput.text !== ""
+                      && sendAmount.text !== ""
+                      && inputAmount !== 0
+                      && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance)))
+                      && modalState == 0
+                      && transferSwitch.on == true
+                      && transactionSent == 0
+                      && addressbookTracker == 0
+                      && scanQRTracker == 0
+        }
+
         Rectangle {
             id: sendButton
             width: keyInput.width
@@ -727,7 +795,7 @@ Rectangle {
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
                     && inputAmount !== 0
-                    && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#5E8BFE" : "#727272"
+                    && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? maincolor : "#727272"
             anchors.bottom: bodyModal.bottom
             anchors.bottomMargin: 20
             anchors.left: referenceInput.left
@@ -740,7 +808,12 @@ Rectangle {
             MouseArea {
                 anchors.fill: sendButton
 
-                onClicked: {
+                onPressed: {
+                    shadowSendButton.verticalOffset = 0
+                }
+
+                onReleased: {
+                    shadowSendButton.verticalOffset = 4
                     if (invalidAddress == 0
                             && keyInput.text !== ""
                             && sendAmount.text !== ""
@@ -755,10 +828,14 @@ Rectangle {
 
             Text {
                 text: "SEND"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: "#F2F2F2"
+                color: (invalidAddress == 0
+                        && keyInput.text !== ""
+                        && sendAmount.text !== ""
+                        && inputAmount !== 0
+                        && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#F2F2F2" : "#979797"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -782,10 +859,10 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
                 font.weight: Font.Normal
-                color: "#5E8BFE"
+                color: maincolor
             }
 
             Text {
@@ -795,9 +872,8 @@ Rectangle {
                 anchors.leftMargin: 25
                 anchors.top: confirmationText.bottom
                 anchors.topMargin: 40
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
             }
 
@@ -815,9 +891,8 @@ Rectangle {
                 text: coinID.text
                 anchors.top: amount.top
                 anchors.right: amount.right
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Medium
                 color: "#F2F2F2"
             }
 
@@ -830,9 +905,8 @@ Rectangle {
                 anchors.bottomMargin: 1
                 anchors.right: confirmationAmount.left
                 anchors.rightMargin: 7
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 12
-                font.weight: Font.Medium
                 color: "#F2F2F2"
             }
 
@@ -843,9 +917,8 @@ Rectangle {
                 text: amountArray[0]
                 anchors.top: confirmationAmount.top
                 anchors.left: amount.left
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Medium
                 color: "#F2F2F2"
             }
 
@@ -856,35 +929,32 @@ Rectangle {
                 anchors.leftMargin: 25
                 anchors.top: sendingLabel.bottom
                 anchors.topMargin: 15
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
             }
 
             Text {
                 id: confirmationAddress
-                text: keyInput.text
+                text: addressName != ""? addressName : keyInput.text
                 anchors.bottom: to.bottom
                 anchors.bottomMargin: 2
                 anchors.right: parent.right
                 anchors.rightMargin: 25
-                font.family: "Brandon Grotesque"
-                font.pixelSize: 12
-                font.weight: Font.Normal
+                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.pixelSize: addressName != ""? 16 : 10
                 color: "#F2F2F2"
             }
 
             Text {
                 id: confirmationAddressName
-                text: "(" + addressName + ")"
+                text: "(" + keyInput.text + ")"
                 anchors.top: confirmationAddress.bottom
                 anchors.topMargin: 5
                 anchors.right: parent.right
                 anchors.rightMargin: 25
-                font.family: "Brandon Grotesque"
-                font.pixelSize: 16
-                font.weight: Font.Normal
+                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.pixelSize: 10
                 color: "#F2F2F2"
                 visible: addressName != ""
             }
@@ -896,9 +966,8 @@ Rectangle {
                 anchors.leftMargin: 25
                 anchors.top: confirmationAddressName.bottom
                 anchors.topMargin: 15
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
                 visible: referenceInput.text !== ""
             }
@@ -909,11 +978,24 @@ Rectangle {
                 anchors.bottom: reference.bottom
                 anchors.right: parent.right
                 anchors.rightMargin: 25
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
-                font.weight: Font.Normal
                 color: "#F2F2F2"
                 visible: referenceInput.text !== ""
+            }
+
+            DropShadow {
+                id: shadowConfirmButton
+                anchors.fill: confirmationSendButton
+                source: confirmationSendButton
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
             }
 
             Rectangle {
@@ -929,7 +1011,13 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: confirmationSendButton
-                    onClicked: {
+
+                    onPressed: {
+                        shadowConfirmButton.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        shadowConfirmButton.verticalOffset = 4
                         confirmationSent = 1
                         // whatever function needed to execute payment
                     }
@@ -937,13 +1025,27 @@ Rectangle {
 
                 Text {
                     text: "CONFIRM"
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     font.pointSize: 14
                     color: "#F2F2F2"
                     font.bold: true
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }
+            }
+
+            DropShadow {
+                id: shadowCancelButton
+                anchors.fill: cancelSendButton
+                source: cancelSendButton
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
             }
 
             Rectangle {
@@ -960,14 +1062,19 @@ Rectangle {
                 MouseArea {
                     anchors.fill: cancelSendButton
 
-                    onClicked: {
+                    onPressed: {
+                        shadowCancelButton.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        shadowCancelButton.verticalOffset = 4
                         transactionSent = 0
                     }
                 }
 
                 Text {
                     text: "CANCEL"
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     font.pointSize: 14
                     font.bold: true
                     color: "#F2F2F2"
@@ -1001,7 +1108,7 @@ Rectangle {
                 ColorOverlay {
                     anchors.fill: parent
                     source: confirmedIcon
-                    color: "#5E8BFE"
+                    color: maincolor
                 }
             }
 
@@ -1011,12 +1118,26 @@ Rectangle {
                 anchors.top: confirmedIcon.bottom
                 anchors.topMargin: 10
                 anchors.horizontalCenter: confirmedIcon.horizontalCenter
-                color: "#5E8BFE"
+                color: maincolor
                 font.pixelSize: 14
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.bold: true
                 visible: transactionSent == 1
                          && confirmationSent == 1
+            }
+
+            DropShadow {
+                id: shadowCloseButton
+                anchors.fill: closeConfirm
+                source: closeConfirm
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
             }
 
             Rectangle {
@@ -1024,7 +1145,7 @@ Rectangle {
                 width: (parent.width - 45) / 2
                 height: 33
                 radius: 5
-                color: "#5E8BFE"
+                color: maincolor
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -1032,34 +1153,25 @@ Rectangle {
                 MouseArea {
                     anchors.fill: closeConfirm
 
-                    onClicked: {
+                    onPressed: {
+                        shadowCloseButton.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        shadowCloseButton.verticalOffset = 4
                         transactionDate = new Date().toLocaleDateString(Qt.locale(),"MM/dd")
                         if (coinID.text == "XBY"){
                             xbyTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": xbyTXID});
                             xbyTXID = xbyTXID + 1;
-                            currencyList.setProperty(0, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(0, "fiatValue", ((currencyList.get(0).balance) * (currencyList.get(0).coinValue)));
+                            currencyList.setProperty(1, "balance", (currentBalance - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
+                            currencyList.setProperty(1, "fiatValue", ((currencyList.get(1).balance) * (currencyList.get(1).coinValue)));
                             totalBalance = sumBalance()
                         }
                         if (coinID.text == "XFUEL"){
                             xfuelTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": xfuelTXID});
                             xfuelTXID = xfuelTXID + 1;
-                            currencyList.setProperty(1, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(1, "fiatValue", ((currencyList.get(1).balance) * (currencyList.get(1).coinValue)));
-                            totalBalance = sumBalance()
-                        }
-                        if (coinID.text == "BTC"){
-                            btcTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": btcTXID});
-                            btcTXID = btcTXID + 1;
-                            currencyList.setProperty(2, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(2, "fiatValue", ((currencyList.get(2).balance) * (currencyList.get(2).coinValue)));
-                            totalBalance = sumBalance()
-                        }
-                        if (coinID.text == "ETH"){
-                            ethTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": ethTXID});
-                            ethTXID = ethTXID + 1;
-                            currencyList.setProperty(3, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(3, "fiatValue", ((currencyList.get(3).balance) * (currencyList.get(3).coinValue)));
+                            currencyList.setProperty(0, "balance", (currentBalance - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
+                            currencyList.setProperty(0, "fiatValue", ((currencyList.get(0).balance) * (currencyList.get(0).coinValue)));
                             totalBalance = sumBalance()
                         }
                         sendAmount.text = ""
@@ -1075,7 +1187,7 @@ Rectangle {
 
                 Text {
                     text: "OK"
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     font.pointSize: 14
                     font.bold: true
                     color: "#F2F2F2"
@@ -1119,9 +1231,7 @@ Rectangle {
 
             Mobile.AddressPicklist {
                 id: myAddressPicklist
-                selectedWallet: (coinID.text === "XBY" ? 0:
-                                                         (coinID.text === "XFUEL" ? 1:
-                                                                                    (coinID.text === "BTC" ? 2 : 3)))
+                selectedWallet: (coinID.text === "XBY" ? 0 : 1)
             }
         }
 
@@ -1160,8 +1270,8 @@ Rectangle {
             anchors.leftMargin: 7
             anchors.verticalCenter: addressbookCoinLogo.verticalCenter
             font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.bold: true
             color: "#F2F2F2"
             visible: modalState == 0
                      && transferSwitch.on == true
@@ -1176,8 +1286,8 @@ Rectangle {
             anchors.verticalCenter: addressbookTitleBar.verticalCenter
             anchors.verticalCenterOffset: -2
             font.pixelSize: 20
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.bold: true
             color: "#F2F2F2"
             visible: modalState == 0
                      && transferSwitch.on == true
@@ -1198,12 +1308,30 @@ Rectangle {
                      && addressbookTracker == 1
         }
 
+        DropShadow {
+            id: shadowCancelAddressButton
+            anchors.fill: cancelAddressButton
+            source: cancelAddressButton
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
+            visible: modalState == 0
+                     && transferSwitch.on == true
+                     && transactionSent == 0
+                     && (addressbookTracker == 1)
+        }
+
         Rectangle {
             id: cancelAddressButton
             width: (bodyModal.width - 40) / 2
             height: 33
             radius: 5
-            color: "#5E8BFE"
+            color: maincolor
             anchors.bottom: bodyModal.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: bodyModal.horizontalCenter
@@ -1215,14 +1343,19 @@ Rectangle {
             MouseArea {
                 anchors.fill: cancelAddressButton
 
-                onClicked: {
+                onPressed: {
+                    shadowCancelAddressButton.verticalOffset = 0
+                }
+
+                onReleased: {
+                    shadowCancelAddressButton.verticalOffset = 4
                     addressbookTracker = 0
                 }
             }
 
             Text {
                 text: "BACK"
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: "#F2F2F2"
@@ -1246,9 +1379,7 @@ Rectangle {
             Controls.HistoryList {
                 id: myHistoryList
                 searchFilter: searchTx.text
-                selectedWallet: newCoinSelect == 1 ?    (currencyList.get(newCoinPicklist).name === "XBY" ? 0:
-                                                                                                            (currencyList.get(newCoinPicklist).name === "XFUEL" ? 1:
-                                                                                                                                                                  (currencyList.get(newCoinPicklist).name === "BTC" ? 2 : 3))) : currencyIndex
+                selectedWallet: newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).name === "XFUEL" ? 0: 1) : currencyIndex
             }
         }
 
@@ -1303,7 +1434,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             color: "#F2F2F2"
             font.pixelSize: 18
-            font.family: "Brandon Grotesque"
+            font.family: xciteMobile.name //"Brandon Grotesque"
             font.bold: true
             visible: modalState == 1
                      && transferSwitch.state == "on"
@@ -1334,7 +1465,7 @@ Rectangle {
         anchors.topMargin: 10
         anchors.horizontalCenter: bodyModal.horizontalCenter
         font.pixelSize: 14
-        font.family: "Brandon Grotesque"
+        font.family: xciteMobile.name //"Brandon Grotesque"
         color: "#F2F2F2"
         visible: transferTracker == 1
                  && confirmationSent == 0
@@ -1382,7 +1513,12 @@ Rectangle {
                 }
             }
 
-            onClicked: {
+            onPressed: {
+                closeTransferModal.anchors.topMargin = 12
+            }
+
+            onReleased: {
+                closeTransferModal.anchors.topMargin = 10
                 transferTracker = 0;
                 timer.start()
             }
