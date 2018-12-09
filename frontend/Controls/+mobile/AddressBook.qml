@@ -152,12 +152,18 @@ Rectangle {
 
                     onClicked: {
                         cardShadow.verticalOffset = 4
-                        if (appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0) {
+                        if (appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0 && addressQRTracker == 0) {
                             addressTracker = 1
                             addressIndex = uniqueNR
 
                             checkCurrencyIndex()
                         }
+                    }
+
+                    onPressAndHold: {
+                        addressbookHash = address
+                        addressbookName = name
+                        addressQRTracker = 1
                     }
                 }
 

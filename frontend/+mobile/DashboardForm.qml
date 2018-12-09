@@ -52,7 +52,7 @@ Item {
                     text: "$"
                     font.pixelSize: 40
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: "#E5E5E5"
+                    color: maincolor
                 }
 
                 Label {
@@ -65,7 +65,7 @@ Item {
                     text: balanceArray[0]
                     font.pixelSize: 40
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: "#E5E5E5"
+                    color: maincolor
                 }
 
                 Label {
@@ -77,7 +77,7 @@ Item {
                     text: "." + balanceArray[1]
                     font.pixelSize: 24
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: "#E5E5E5"
+                    color: maincolor
                 }
 
                 Rectangle {
@@ -316,7 +316,7 @@ Item {
                 text: "TRANSFER"
                 font.pixelSize: 13
                 font.family: xciteMobile.name //"Brandon Grotesque"
-                color: "#C7C7C7"
+                color: maincolor //"#C7C7C7"
                 anchors.left: parent.left
                 anchors.leftMargin: 28
                 anchors.verticalCenter: plus.verticalCenter
@@ -380,7 +380,7 @@ Item {
                     text: "ADD ADDRESS"
                     font.pixelSize: 13
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: "#C7C7C7"
+                    color: maincolor //"#C7C7C7"
                     anchors.right: parent.left
                     anchors.rightMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
@@ -426,7 +426,7 @@ Item {
                     text: "COINS"
                     font.pixelSize: 13
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: "#C7C7C7"
+                    color: maincolor //"#C7C7C7"
                     anchors.right: parent.left
                     anchors.rightMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
@@ -528,6 +528,12 @@ Item {
             anchors.horizontalCenter: backgroundHome.horizontalCenter
             anchors.top: backgroundHome.top
             anchors.topMargin: 50
+        }
+
+        Controls.QrCode{
+            z: 15
+            anchors.left: parent.left
+            anchors.top: parent.top
         }
 
         Controls.Sidebar{

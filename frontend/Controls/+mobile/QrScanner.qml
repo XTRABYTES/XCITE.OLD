@@ -6,7 +6,7 @@ import QZXing 2.3
 
 Item {
     width: 325
-    height: 450
+    height: 458
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 50
@@ -37,18 +37,18 @@ Item {
     Rectangle {
         id: addressTitleBar
         width: parent.width
-        height: 42
+        height: 50
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: "#34363D"
+        color: "#42454F"
 
         Rectangle {
             width: parent.width
             height: 10
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "#34363D"
+            color: "#42454F"
         }
 
         Text {
@@ -67,7 +67,7 @@ Item {
         height: 400
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 42
+        anchors.topMargin: 50
         color: "transparent"
 
         Label {
@@ -146,20 +146,6 @@ Item {
         }
     }
 
-    DropShadow {
-        id: shadowBackButton
-        anchors.fill: cancelAddressButton
-        source: cancelAddressButton
-        horizontalOffset: 0
-        verticalOffset: 4
-        radius: 12
-        samples: 25
-        spread: 0
-        color: "black"
-        opacity: 0.3
-        transparentBorder: true
-    }
-
     Rectangle {
         id: cancelAddressButton
         width: (parent.width - 40) / 2
@@ -175,11 +161,9 @@ Item {
             anchors.fill: cancelAddressButton
 
             onPressed: {
-                shadowBackButton.verticalOffset = 0
             }
 
             onReleased: {
-                shadowBackButton.verticalOffset = 4
                 scanQRTracker = 0
                 selectedAddress = ""
                 publicKey.text = "scanning..."

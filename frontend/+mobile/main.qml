@@ -45,7 +45,7 @@ ApplicationWindow {
 
     property real btcValueBTC: 1
 
-    property var maincolor: "#0ED8D2"
+    property color maincolor: "#0ED8D2"
 
     property int onboardingTracker: 0 // check settings for real value
     property int signUpTracker: 0 // check settings for real value
@@ -63,10 +63,14 @@ ApplicationWindow {
     property int tradingTracker: 0
     property int balanceTracker: 0
     property int calculatorTracker: 0
+    property int addressQRTracker: 0
+
     property string scannedAddress: ""
     property string selectedAddress: ""
     property var calculatedAmount: ""
     property string scanning: "scanning..."
+    property string addressbookName: ""
+    property string addressbookHash: ""
     property int addressIndex: 0
     property int currencyIndex: 0
     property int totalLines: 4
@@ -78,6 +82,7 @@ ApplicationWindow {
     property int xbyTXID: 1
     property int xfuelTXID: 1
     property int selectAddressIndex: 0
+
     property real doubbleButtonWidth: 273
 
     signal marketValueChangedSignal(string currency)

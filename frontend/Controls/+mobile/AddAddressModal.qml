@@ -21,7 +21,7 @@ Rectangle {
     id: addAddressModal
     width: 325
     state: addAddressTracker == 1? "up" : "down"
-    height: (editSaved == 1)? 350 : 335
+    height: (editSaved == 1)? 358 : 343
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -130,11 +130,11 @@ Rectangle {
     Rectangle {
         id: addressTitleBar
         width: parent.width
-        height: 50
+        height: 58
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: "#34363D"
+        color: "#42454F"
         visible: editSaved == 0
                  && scanQRTracker == 0
 
@@ -143,11 +143,21 @@ Rectangle {
             text: "ADD NEW ADDRESS"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -5
+            anchors.verticalCenterOffset: -4
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             color: "#F2F2F2"
             font.letterSpacing: 2
+        }
+
+        Rectangle {
+            width: parent.width -30
+            height: 2
+            radius: 1
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 48
+            color: "#34363D"
         }
     }
 
@@ -158,7 +168,7 @@ Rectangle {
         radius: 4
         color: "#42454F"
         anchors.top: parent.top
-        anchors.topMargin: 42
+        anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
         visible: scanQRTracker == 0
 
@@ -335,7 +345,7 @@ Rectangle {
             anchors.topMargin: 15
             anchors.left: newAddress.left
             radius: 5
-            border.color: "#5E8BFE"
+            border.color: maincolor
             border.width: 2
             color: "transparent"
             visible: editSaved == 0
@@ -345,15 +355,15 @@ Rectangle {
                 anchors.fill: scanQrButton
 
                 onPressed: {
-                   parent.color = "#5E8BFE"
+                   parent.color = maincolor
                     parent.border.color = "transparent"
                     scanButtonText.color = "#F2F2F2"
                 }
 
                 onReleased: {
                     parent.color = "transparent"
-                    parent.border.color = "#5E8BFE"
-                    scanButtonText.color = "#5E8BFE"
+                    parent.border.color = maincolor
+                    scanButtonText.color = maincolor
                     scanQRTracker = 1
                     scanning = "scanning..."
                 }
@@ -364,7 +374,7 @@ Rectangle {
                 text: "SCAN QR"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                color: "#5E8BFE"
+                color: maincolor
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -434,27 +444,6 @@ Rectangle {
             }
         }
 
-        DropShadow {
-            id: shadowSaveButton
-            anchors.fill: saveButton
-            source: saveButton
-            horizontalOffset: 0
-            verticalOffset: 4
-            radius: 12
-            samples: 25
-            spread: 0
-            color: "black"
-            opacity: 0.3
-            transparentBorder: true
-            visible: newName.text != ""
-                     && newAddress.text !== ""
-                     && invalidAddress == 0
-                     && addressExists == 0
-                     && labelExists == 0
-                     && editSaved == 0
-                     && scanQRTracker == 0
-        }
-
         Rectangle {
             id: saveButton
             width: newAddress.width
@@ -463,7 +452,7 @@ Rectangle {
             color: (newName.text != ""
                     && newAddress.text !== ""
                     && invalidAddress == 0
-                    && addressExists == 0 && labelExists == 0) ? "#5E8BFE" : "#727272"
+                    && addressExists == 0 && labelExists == 0) ? maincolor : "#727272"
             anchors.bottom: addressBodyModal.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
@@ -474,11 +463,9 @@ Rectangle {
                 anchors.fill: saveButton
 
                 onPressed: {
-                    shadowSaveButton.verticalOffset = 0
                 }
 
                 onReleased: {
-                    shadowSaveButton.verticalOffset = 4
                     if (newName.text != ""
                             && newAddress.text != ""
                             && invalidAddress == 0
@@ -525,7 +512,7 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: "#5E8BFE"
+                color: maincolor
             }
         }
 
@@ -535,7 +522,7 @@ Rectangle {
             anchors.top: saveSuccess.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: "#5E8BFE"
+            color: maincolor
             font.pixelSize: 14
             font.family: "Brandon Grotesque"
             font.bold: true
@@ -547,7 +534,7 @@ Rectangle {
             width: (parent.width - 45) / 2
             height: 33
             radius: 5
-            color: "#5E8BFE"
+            color: maincolor
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter

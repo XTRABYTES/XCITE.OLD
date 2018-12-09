@@ -24,7 +24,7 @@ Rectangle {
     id: transactionModal
     width: 325
     state: transferTracker == 1? "up" : "down"
-    height: transactionSent == 1 ? 350 : ((transferSwitch.state == "off") ? 480 : 450 )
+    height: transactionSent == 1 ? 358 : ((transferSwitch.state == "off") ? 488 : 458 )
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -124,7 +124,7 @@ Rectangle {
     Rectangle {
         id: transferTitleBar
         width: parent.width/2
-        height: 50
+        height: 58
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
@@ -138,7 +138,7 @@ Rectangle {
             text: "TRANSFER"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -5
+            anchors.verticalCenterOffset: -4
             font.pixelSize: 18
             font.family: xciteMobile.name //"Brandon Grotesque"
             color: modalState == 0 ? "#F2F2F2" : "#5F5F5F"
@@ -160,7 +160,7 @@ Rectangle {
     Rectangle {
         id: historyTitleBar
         width: parent.width/2
-        height: 50
+        height: 58
         radius: 4
         anchors.top: parent.top
         anchors.right: parent.right
@@ -174,7 +174,7 @@ Rectangle {
             text: "HISTORY"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -5
+            anchors.verticalCenterOffset: -4
             font.pixelSize: 18
             font.family: xciteMobile.name //"Brandon Grotesque"
             color: modalState == 1 ? "#F2F2F2" : "#5F5F5F"
@@ -200,7 +200,7 @@ Rectangle {
         radius: 4
         color: "#42454F"
         anchors.top: parent.top
-        anchors.topMargin: 42
+        anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
 
         Controls.Switch_mobile {
@@ -227,6 +227,7 @@ Rectangle {
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
         }
         Text {
             id: sendText
@@ -240,6 +241,7 @@ Rectangle {
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
         }
 
         Image {
@@ -253,6 +255,7 @@ Rectangle {
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
         }
 
         Label {
@@ -268,6 +271,7 @@ Rectangle {
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
             onTextChanged: if (keyInput.text != "") {
                                checkAddress()
                            }
@@ -285,6 +289,7 @@ Rectangle {
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
         }
 
         Text {
@@ -299,6 +304,7 @@ Rectangle {
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
         }
 
         Text {
@@ -315,6 +321,7 @@ Rectangle {
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
         }
 
         Text {
@@ -331,6 +338,7 @@ Rectangle {
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
         }
 
         Image {
@@ -389,6 +397,7 @@ Rectangle {
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
         }
 
         Rectangle {
@@ -405,6 +414,7 @@ Rectangle {
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
 
             Controls.CurrencyPicklist {
                 id: myCoinPicklist
@@ -425,6 +435,7 @@ Rectangle {
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
 
             Image {
                 id: picklistCloseArrow
@@ -592,6 +603,7 @@ Rectangle {
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
                      && inputAmount > (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))
         }
 
@@ -645,6 +657,7 @@ Rectangle {
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
                      && keyInput.text != ""
                      && invalidAddress == 1
         }
@@ -762,30 +775,6 @@ Rectangle {
             mobile: 1
         }
 
-        DropShadow {
-            id: shadowSendButton
-            anchors.fill: sendButton
-            source: sendButton
-            horizontalOffset: 0
-            verticalOffset: 4
-            radius: 12
-            samples: 25
-            spread: 0
-            color: "black"
-            opacity: 0.3
-            transparentBorder: true
-            visible: (invalidAddress == 0
-                      && keyInput.text !== ""
-                      && sendAmount.text !== ""
-                      && inputAmount !== 0
-                      && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance)))
-                      && modalState == 0
-                      && transferSwitch.on == true
-                      && transactionSent == 0
-                      && addressbookTracker == 0
-                      && scanQRTracker == 0
-        }
-
         Rectangle {
             id: sendButton
             width: keyInput.width
@@ -804,16 +793,15 @@ Rectangle {
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && calculatorTracker == 0
 
             MouseArea {
                 anchors.fill: sendButton
 
                 onPressed: {
-                    shadowSendButton.verticalOffset = 0
                 }
 
                 onReleased: {
-                    shadowSendButton.verticalOffset = 4
                     if (invalidAddress == 0
                             && keyInput.text !== ""
                             && sendAmount.text !== ""
@@ -984,20 +972,6 @@ Rectangle {
                 visible: referenceInput.text !== ""
             }
 
-            DropShadow {
-                id: shadowConfirmButton
-                anchors.fill: confirmationSendButton
-                source: confirmationSendButton
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color: "black"
-                opacity: 0.3
-                transparentBorder: true
-            }
-
             Rectangle {
                 id: confirmationSendButton
                 width: (doubbleButtonWidth - 10) / 2
@@ -1013,11 +987,9 @@ Rectangle {
                     anchors.fill: confirmationSendButton
 
                     onPressed: {
-                        shadowConfirmButton.verticalOffset = 0
                     }
 
                     onReleased: {
-                        shadowConfirmButton.verticalOffset = 4
                         confirmationSent = 1
                         // whatever function needed to execute payment
                     }
@@ -1032,20 +1004,6 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }
-            }
-
-            DropShadow {
-                id: shadowCancelButton
-                anchors.fill: cancelSendButton
-                source: cancelSendButton
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color: "black"
-                opacity: 0.3
-                transparentBorder: true
             }
 
             Rectangle {
@@ -1063,11 +1021,9 @@ Rectangle {
                     anchors.fill: cancelSendButton
 
                     onPressed: {
-                        shadowCancelButton.verticalOffset = 0
                     }
 
                     onReleased: {
-                        shadowCancelButton.verticalOffset = 4
                         transactionSent = 0
                     }
                 }
@@ -1098,7 +1054,7 @@ Rectangle {
 
             Image {
                 id: confirmedIcon
-                source: 'qrc:/icons/rocket.svg'
+                source: 'qrc:/icons/icon-success.svg'
                 width: 120
                 height: 120
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -1154,11 +1110,9 @@ Rectangle {
                     anchors.fill: closeConfirm
 
                     onPressed: {
-                        shadowCloseButton.verticalOffset = 0
                     }
 
                     onReleased: {
-                        shadowCloseButton.verticalOffset = 4
                         transactionDate = new Date().toLocaleDateString(Qt.locale(),"MM/dd")
                         if (coinID.text == "XBY"){
                             xbyTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": xbyTXID});
@@ -1308,24 +1262,6 @@ Rectangle {
                      && addressbookTracker == 1
         }
 
-        DropShadow {
-            id: shadowCancelAddressButton
-            anchors.fill: cancelAddressButton
-            source: cancelAddressButton
-            horizontalOffset: 0
-            verticalOffset: 4
-            radius: 12
-            samples: 25
-            spread: 0
-            color: "black"
-            opacity: 0.3
-            transparentBorder: true
-            visible: modalState == 0
-                     && transferSwitch.on == true
-                     && transactionSent == 0
-                     && (addressbookTracker == 1)
-        }
-
         Rectangle {
             id: cancelAddressButton
             width: (bodyModal.width - 40) / 2
@@ -1344,11 +1280,9 @@ Rectangle {
                 anchors.fill: cancelAddressButton
 
                 onPressed: {
-                    shadowCancelAddressButton.verticalOffset = 0
                 }
 
                 onReleased: {
-                    shadowCancelAddressButton.verticalOffset = 4
                     addressbookTracker = 0
                 }
             }
@@ -1445,8 +1379,12 @@ Rectangle {
         anchors.fill: parent
         radius: 4
         color: "black"
-        opacity: 0.9
-        visible: calculatorTracker == 1
+        opacity: 0.95
+        visible: calculatorTracker == 1 && transferTracker == 1
+
+        MouseArea {
+            anchors.fill: parent
+        }
     }
 
     // Crypto converter
@@ -1454,7 +1392,7 @@ Rectangle {
     Mobile.CryptoCalculator {
         id: calculator
         toCurrency: coinID.text
-        visible: calculatorTracker == 1
+        visible: calculatorTracker == 1 && transferTracker == 1
     }
 
     Label {

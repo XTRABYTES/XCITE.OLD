@@ -45,7 +45,7 @@ TextField {
         border.color: if(mobile == 0)
                           Theme.secondaryHighlight
                       else
-                          "#34363D"
+                          maincolor //"#34363D"
 
         implicitWidth: 273
     }

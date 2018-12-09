@@ -134,7 +134,6 @@
         <file>Controls/+mobile/AddAddressModal.qml</file>
         <file>Controls/+mobile/AddCoinModal.qml</file>
         <file>Controls/+mobile/CryptoCalculator.qml</file>
-        <file>+mobile/xcalculator.qml</file>
         <file>Controls/HistoryList.qml</file>
         <file>Controls/+mobile/AddressPicklist.qml</file>
         <file>Controls/+mobile/QrScanner.qml</file>
@@ -144,5 +143,6 @@
         <file>+mobile/SignUp.qml</file>
         <file>+mobile/Home.qml</file>
         <file>+mobile/MobileAddressBook.qml</file>
+        <file>Controls/+mobile/QrCode.qml</file>
     </qresource>
 </RCC>
