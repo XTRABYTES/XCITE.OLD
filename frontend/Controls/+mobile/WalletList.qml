@@ -73,7 +73,7 @@ Rectangle {
                 width: parent.width - 55
                 height: 75 //unconfirmedCoins != 0 ? 85: 75
                 radius: 4
-                color: "#42454F"
+                color: darktheme == false? "#42454F" : "#2A2B31"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 10

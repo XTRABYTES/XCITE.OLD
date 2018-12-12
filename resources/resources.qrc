@@ -151,5 +151,6 @@
         <file>icons/add_address.svg</file>
         <file>icons/icon-coins_01.svg</file>
         <file>icons/icon-transfer_01.svg</file>
+        <file>icons/icon-darklight.svg</file>
     </qresource>
 </RCC>

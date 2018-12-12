@@ -257,7 +257,7 @@ Rectangle {
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: "#42454F"
+        color: darktheme == false? "#42454F" : "transparent"
         visible: editSaved == 0
                  && transactionSent == 0
                  && deleteAddressTracker == 0
@@ -300,7 +300,7 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: addressList.get(addressIndex).favorite === 1 ? "#FDBC40" : "#2A2C31"
+                color: addressList.get(addressIndex).favorite === 1 ? "#FDBC40" : (darktheme == false? "#2A2C31" : "#42454F")
             }
 
             MouseArea {
@@ -323,7 +323,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 48
-            color: "#34363D"
+            color: darktheme == false? "#34363D" : maincolor
         }
     }
 
@@ -332,7 +332,7 @@ Rectangle {
         width: parent.width
         height: parent.height - 50
         radius: 4
-        color: "#42454F"
+        color: darktheme == false? "#42454F" : "transparent"
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
@@ -359,7 +359,7 @@ Rectangle {
             anchors.verticalCenter: addressSwitch.verticalCenter
             font.pixelSize: 14
             font.family: xciteMobile.name //"Brandon Grotesque"
-            color: addressSwitch.on ? "#5F5F5F" : maincolor
+            color: addressSwitch.on ? "#757575" : maincolor
             visible: transactionSent == 0
                      && editSaved == 0
                      && deleteAddressTracker == 0
@@ -375,7 +375,7 @@ Rectangle {
             anchors.verticalCenter: addressSwitch.verticalCenter
             font.pixelSize: 14
             font.family: xciteMobile.name //"Brandon Grotesque"
-            color: addressSwitch.on ? maincolor : "#5F5F5F"
+            color: addressSwitch.on ? maincolor : "#757575"
             visible: transactionSent == 0
                      && editSaved == 0
                      && deleteAddressTracker == 0
@@ -1561,11 +1561,11 @@ Rectangle {
         z: 10
         text: "CLOSE"
         anchors.top: addressBodyModal.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 20
         anchors.horizontalCenter: addressBodyModal.horizontalCenter
         font.pixelSize: 14
         font.family: xciteMobile.name //"Brandon Grotesque"
-        color: "#F2F2F2"
+        color: darktheme == false? "#F2F2F2" : maincolor
         visible: addressTracker == 1
                  && confirmationSent == 0
                  && editSaved == 0
@@ -1576,10 +1576,13 @@ Rectangle {
         Rectangle{
             id: closeButton
             height: 30
-            width: parent.width
+            width: doubbleButtonWidth
+            radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
+            border.width: 2
+            border.color: darktheme == false? "transparent" : maincolor
         }
 
         MouseArea {

@@ -24,6 +24,15 @@ Item {
     anchors.horizontalCenter: Screen.horizontalCenter
     anchors.verticalCenter: Screen.verticalCenter
 
+    Rectangle {
+        width: parent.width
+        height: parent.height
+        radius: darktheme == false? 5 : 0
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: darktheme == false? "#42454F" : "transparent"
+    }
+
     property int xbyButton1State: 0
     property int xfuelButton1State: 0
     property int btcButton1State: 0
@@ -153,8 +162,8 @@ Item {
         id: calculatorModalLabel
         text: "CONVERTER"
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 50
+        anchors.verticalCenter: parent.top
+        anchors.verticalCenterOffset: 25
         font.pixelSize: 18
         font.family: xciteMobile.name //"Brandon Grotesque"
         color: "#F2F2F2"

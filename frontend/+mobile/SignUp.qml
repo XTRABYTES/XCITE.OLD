@@ -27,7 +27,7 @@ Item {
         z: 1
         width: Screen.width
         height: Screen.height
-        color: "#34363d"
+        color: "#14161B"
         visible: onboardingTracker == 1
 
         Label {

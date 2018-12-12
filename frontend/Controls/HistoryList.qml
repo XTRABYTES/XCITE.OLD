@@ -37,7 +37,8 @@ Rectangle {
             width: parent.width
             height: 30
             color: "transparent"
-            visible: amount !== 0
+            visible: amount !== 0 && inView == true
+            property bool inView: y >= (completeHistory.contentY - 5) && y <= completeHistory.span
 
             property int lineView: 0
 
@@ -50,7 +51,7 @@ Rectangle {
 
                 Connections {
                     target: completeHistory
-                    onMovementEnded: visible = false
+                    onMovementEnded: clickIndicator.visible = false
                 }
             }
 
@@ -356,5 +357,6 @@ Rectangle {
         id: completeHistory
         model: filteredTX
         delegate: historyLine
+        property real span : contentY + height
     }
 }

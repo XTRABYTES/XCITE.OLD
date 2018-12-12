@@ -128,10 +128,21 @@ Rectangle {
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: modalState == 0 ? "#42454F" : "#34363D"
+        color: darktheme == false? (modalState == 0 ? "#42454F" : "#34363D") : "transparent"
         visible: transactionSent == 0
                  && addressbookTracker == 0
                  && scanQRTracker == 0
+
+        Rectangle {
+            width : parent.width
+            height : 50
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#14161B"
+            border.width: 2
+            border.color: modalState == 0 ? maincolor : "transparent"
+            visible: darktheme == true
+        }
 
         Text {
             id: transferModalLabel
@@ -141,7 +152,7 @@ Rectangle {
             anchors.verticalCenterOffset: -4
             font.pixelSize: 18
             font.family: xciteMobile.name //"Brandon Grotesque"
-            color: modalState == 0 ? "#F2F2F2" : "#5F5F5F"
+            color: modalState == 0 ? (darktheme == false? "#F2F2F2" : maincolor) : (darktheme == false? "#5F5F5F" : "#3F3F3F")
             font.letterSpacing: 2
         }
 
@@ -164,10 +175,21 @@ Rectangle {
         radius: 4
         anchors.top: parent.top
         anchors.right: parent.right
-        color: modalState == 1 ? "#42454F" : "#34363D"
+        color: darktheme == false? (modalState == 1 ? "#42454F" : "#34363D") : "transparent"
         visible: transactionSent == 0
                  && addressbookTracker == 0
                  && scanQRTracker == 0
+
+        Rectangle {
+            width : parent.width
+            height : 50
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#14161B"
+            border.width: 2
+            border.color: modalState == 1 ? maincolor : "transparent"
+            visible: darktheme == true
+        }
 
         Text {
             id: historyModalLabel
@@ -177,7 +199,7 @@ Rectangle {
             anchors.verticalCenterOffset: -4
             font.pixelSize: 18
             font.family: xciteMobile.name //"Brandon Grotesque"
-            color: modalState == 1 ? "#F2F2F2" : "#5F5F5F"
+            color: modalState == 1 ? (darktheme == false? "#F2F2F2" : maincolor) : (darktheme == false? "#5F5F5F" : "#3F3F3F")
             font.letterSpacing: 2
         }
 
@@ -198,7 +220,7 @@ Rectangle {
         width: parent.width
         height: parent.height - 50
         radius: 4
-        color: "#42454F"
+        color: darktheme == false? "#42454F" : "transparent"
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
@@ -223,7 +245,7 @@ Rectangle {
             anchors.verticalCenter: transferSwitch.verticalCenter
             font.pixelSize: 14
             font.family: xciteMobile.name //"Brandon Grotesque"
-            color: transferSwitch.on ? "#5F5F5F" : maincolor
+            color: transferSwitch.on ? "#757575" : maincolor
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -237,7 +259,7 @@ Rectangle {
             anchors.verticalCenter: transferSwitch.verticalCenter
             font.pixelSize: 14
             font.family: xciteMobile.name //"Brandon Grotesque"
-            color: transferSwitch.on ? maincolor : "#5F5F5F"
+            color: transferSwitch.on ? maincolor : "#757575"
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -1162,7 +1184,7 @@ Rectangle {
             anchors.bottom: bodyModal.top
             anchors.bottomMargin: -4
             radius: 4
-            color: "#34363D"
+            color: darktheme == false? "#34363D" : "transparent"
             visible: modalState == 0
                      && transferSwitch.on == true
                      && transactionSent == 0
@@ -1172,6 +1194,7 @@ Rectangle {
         Rectangle {
             id: addressPicklistArea
             width: parent.width
+            radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: bodyModal.top
             anchors.topMargin: 50
@@ -1196,7 +1219,7 @@ Rectangle {
             radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: bodyModal.top
-            color: "#42454F"
+            color: darktheme == false? "#42454F" : "transparent"
             visible: modalState == 0
                      && transferSwitch.on == true
                      && transactionSent == 0
@@ -1255,7 +1278,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: bodyModal.bottom
             radius: 4
-            color: "#42454F"
+            color: darktheme == false? "#42454F" : "transparent"
             visible: modalState == 0
                      && transferSwitch.on == true
                      && transactionSent == 0
@@ -1304,6 +1327,7 @@ Rectangle {
             id: historyScrollArea
             width: parent.width
             height: 230
+            radius: 4
             anchors.top: searchTx.bottom
             anchors.topMargin: 15
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1320,10 +1344,11 @@ Rectangle {
         Rectangle {
             width: parent.width
             height: 49
+            radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: walletBalance.bottom
             anchors.topMargin: 15
-            color: "#42454F"
+            color: darktheme == false? "#42454F" : "transparent"
             visible: modalState == 1
                      && transferSwitch.state == "off"
         }
@@ -1334,7 +1359,7 @@ Rectangle {
             anchors.top: historyScrollArea.bottom
             anchors.bottom: bodyModal.bottom
             radius: 4
-            color: "#42454F"
+            color: darktheme == false? "#42454F" : "transparent"
             visible: modalState == 1
                      && transferSwitch.state == "off"
         }
@@ -1351,8 +1376,9 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin: 15
             width: Screen.width - 55
-            color: searchTx.text != "" ? "#F2F2F2" : "#727272"
+            color: searchTx.text != "" ? (darktheme == false? "#F2F2F2" : "#2A2C31") : "#727272"
             font.pixelSize: 14
+            textBackground: darktheme == false? "#2A2C31" : "white"
             mobile: 1
             addressBook: 1
             visible: modalState == 1
@@ -1377,7 +1403,6 @@ Rectangle {
 
     Rectangle {
         anchors.fill: parent
-        radius: 4
         color: "black"
         opacity: 0.95
         visible: calculatorTracker == 1 && transferTracker == 1
@@ -1404,19 +1429,23 @@ Rectangle {
         anchors.horizontalCenter: bodyModal.horizontalCenter
         font.pixelSize: 14
         font.family: xciteMobile.name //"Brandon Grotesque"
-        color: "#F2F2F2"
+        color: darktheme == false? "#F2F2F2" : maincolor
         visible: transferTracker == 1
                  && confirmationSent == 0
                  && calculatorTracker == 0
                  && scanQRTracker == 0
+                 && addressbookTracker == 0
 
         Rectangle{
             id: closeButton
             height: 30
-            width: parent.width
+            width: doubbleButtonWidth
+            radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
+            border.width: 2
+            border.color: darktheme == false? "transparent" : maincolor
         }
 
         MouseArea {

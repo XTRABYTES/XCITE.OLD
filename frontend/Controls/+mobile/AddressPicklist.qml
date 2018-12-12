@@ -33,6 +33,8 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             height: 45
             color:"transparent"
+            visible: inView == true
+            property bool inView: y >= (picklist.contentY - 5) && y <= picklist.span
 
             Rectangle {
                 id: clickIndicator
@@ -75,6 +77,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 color: "#727272"
+                visible: index != 0
             }
 
             Label {
@@ -129,5 +132,6 @@ Rectangle {
         id: picklist
         model: filteredAddresses
         delegate: contactLine
+        property real span : contentY + height
     }
 }

@@ -46,6 +46,7 @@ ApplicationWindow {
     property real btcValueBTC: 1
 
     property color maincolor: "#0ED8D2"
+    property bool darktheme: false
 
     property int onboardingTracker: 0 // check settings for real value
     property int signUpTracker: 0 // check settings for real value

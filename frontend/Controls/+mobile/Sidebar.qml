@@ -112,7 +112,8 @@ Rectangle {
         anchors.left: parent.right
         width: appsTracker == 1 ? (Screen.width - parent.width) : 0
         height: parent.height
-        color: "transparent"
+        color: "black"
+        opacity: 0.5
 
         MouseArea {
             anchors.fill: parent

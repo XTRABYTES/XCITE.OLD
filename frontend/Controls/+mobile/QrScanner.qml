@@ -41,14 +41,14 @@ Item {
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: "#42454F"
+        color: darktheme == false? "#42454F" : "transparent"
 
         Rectangle {
             width: parent.width
             height: 10
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "#42454F"
+            color: darktheme == false? "#42454F" : "transparent"
         }
 
         Text {
@@ -104,6 +104,13 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             opacity: 0.95
+
+            ColorOverlay {
+                anchors.fill: scanWindow
+                source: scanWindow
+                color: darktheme == true? "black" : "transparent"
+                opacity: darktheme == false? 0 : 0.95
+            }
         }
 
         Rectangle {

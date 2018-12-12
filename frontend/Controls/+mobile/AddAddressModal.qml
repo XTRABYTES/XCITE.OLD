@@ -134,7 +134,7 @@ Rectangle {
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: "#42454F"
+        color: darktheme == false? "#42454F" : "transaparent"
         visible: editSaved == 0
                  && scanQRTracker == 0
 
@@ -157,7 +157,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 48
-            color: "#34363D"
+            color: darktheme == false? "#34363D" : "transparent"
         }
     }
 
@@ -166,7 +166,7 @@ Rectangle {
         width: parent.width
         height: parent.height - 50
         radius: 4
-        color: "#42454F"
+        color: darktheme == false? "#42454F" : "transparent"
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
@@ -576,21 +576,24 @@ Rectangle {
         z: 10
         text: "CLOSE"
         anchors.top: addressBodyModal.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 20
         anchors.horizontalCenter: addressBodyModal.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
+        color: darktheme == false? "#F2F2F2" : maincolor
         visible: addAddressTracker == 1
                  && editSaved == 0
 
         Rectangle{
             id: closeButton
             height: 30
-            width: parent.width
+            width: doubbleButtonWidth
+            radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
+            border.width: 2
+            border.color: darktheme == false? "transparent" : maincolor
         }
 
         MouseArea {

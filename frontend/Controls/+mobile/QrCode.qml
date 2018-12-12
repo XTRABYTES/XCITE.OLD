@@ -10,7 +10,7 @@ Item {
         width: Screen.width
         height: Screen.height
         color: "black"
-        opacity: 0.5
+        opacity: 0.95
         anchors.horizontalCenter: Screen.horizontalCenter
         anchors.verticalCenter: Screen.verticalCenter
         visible: addressQRTracker == 1
@@ -24,10 +24,11 @@ Item {
         id: qrModal
         width: 325
         height: 350
-        color: "#42454F"
+        color: darktheme == false? "#42454F" : "transparent"
         radius: 4
         anchors.horizontalCenter: background.horizontalCenter
-        anchors.verticalCenter: background.verticalCenter
+        anchors.top: background.top
+        anchors.topMargin: 75
         visible: addressQRTracker == 1
     }
 
@@ -101,20 +102,23 @@ Item {
         text: "CLOSE"
         id: closeTransferModal
         anchors.top: qrModal.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 20
         anchors.horizontalCenter: qrModal.horizontalCenter
         font.pixelSize: 14
         font.family: xciteMobile.name
-        color: "#F2F2F2"
+        color: darktheme == false? "#F2F2F2" : maincolor
         visible: addressQRTracker == 1
 
         Rectangle{
             id: closeButton
             height: 30
-            width: parent.width
+            width: doubbleButtonWidth
+            radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
+            border.width: 2
+            border.color: darktheme == false? "transparent" : maincolor
         }
 
         MouseArea {

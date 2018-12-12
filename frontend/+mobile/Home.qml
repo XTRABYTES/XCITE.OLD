@@ -7,6 +7,11 @@ Item {
     width: Screen.width
     height: Screen.Height
 
+    Rectangle {
+        anchors.fill: parent
+        color: "#14161B"
+    }
+
     Timer {
         id: timer
         interval: 3000

@@ -31,7 +31,7 @@ Item {
         z: 1
         width: Screen.width
         height: Screen.height
-        color: "#34363d"
+        color: darktheme == false? "#2A2C31" : "#14161B"
 
         SwipeView {
             id: view
@@ -52,7 +52,7 @@ Item {
                     text: "$"
                     font.pixelSize: 40
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: maincolor
+                    color: "white"
                 }
 
                 Label {
@@ -65,7 +65,7 @@ Item {
                     text: balanceArray[0]
                     font.pixelSize: 40
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: maincolor
+                    color: "white"
                 }
 
                 Label {
@@ -77,7 +77,7 @@ Item {
                     text: "." + balanceArray[1]
                     font.pixelSize: 24
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: maincolor
+                    color: "white"
                 }
 
                 Rectangle {
@@ -120,7 +120,7 @@ Item {
                     z: 4.1
                     width: parent.width
                     height: 150
-                    color: "#14161B"
+                    color: darktheme == false? "#14161B" : "black"
                 }
             }
 
@@ -142,7 +142,7 @@ Item {
                     mobile: 1
                     addressBook: 1
                     onTextChanged: searchCriteria = searchForAddress.text
-                    textBackground: "#F2F2F2"
+                    textBackground: "white"
                 }
 
                 Rectangle {
@@ -179,7 +179,7 @@ Item {
                     z: 4.1
                     width: parent.width
                     height: 150
-                    color: "#14161B"
+                    color: darktheme == false? "#14161B" : "black"
                 }
             }
         }
@@ -218,29 +218,39 @@ Item {
             }
 
             Image {
-                id: notif
+                id: darklight
                 anchors.right: parent.right
                 anchors.rightMargin: 30
                 anchors.verticalCenter: headingLayout.verticalCenter
-                source: '../icons/notification_icon_03.svg'
-                width: 30
-                height: 30
+                source: 'qrc:/icons/icon-darklight.svg'
+                width: 25
+                height: 25
 
                 ColorOverlay {
-                    anchors.fill: notif
-                    source: notif
-                    color: maincolor
+                    anchors.fill: darklight
+                    source: darklight
+                    color: darktheme == true? "#757575" : maincolor
                 }
 
-                Image{
-                    id: notifAlert
-                    anchors.left: parent.right
-                    anchors.leftMargin: -16
-                    anchors.top: parent.top
-                    anchors.topMargin: 3
-                    source: 'qrc:/icons/notification_red_circle_icon.svg'
-                    width: 8
-                    height: 8
+                Rectangle {
+                    width: darklight.width
+                    height: darklight.height
+                    anchors.right: parent.right
+                    anchors.verticalCenter: darklight.verticalCenter
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == true) {
+                                darktheme = false
+                            }
+                            else if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == false) {
+                                darktheme = true
+                            }
+                        }
+                    }
                 }
             }
 
@@ -316,7 +326,7 @@ Item {
                 text: "TRANSFER"
                 font.pixelSize: 13
                 font.family: xciteMobile.name //"Brandon Grotesque"
-                color: maincolor //"#C7C7C7"
+                color: "white"
                 anchors.left: parent.left
                 anchors.leftMargin: 28
                 anchors.verticalCenter: plus.verticalCenter
@@ -380,7 +390,7 @@ Item {
                     text: "ADD ADDRESS"
                     font.pixelSize: 13
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: maincolor //"#C7C7C7"
+                    color: "white"
                     anchors.right: parent.left
                     anchors.rightMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
@@ -426,7 +436,7 @@ Item {
                     text: "COINS"
                     font.pixelSize: 13
                     font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: maincolor //"#C7C7C7"
+                    color: "white"
                     anchors.right: parent.left
                     anchors.rightMargin: 8
                     anchors.verticalCenter: parent.verticalCenter
@@ -475,12 +485,17 @@ Item {
             height: parent.height
             width: parent.width
             z: 6
-            state: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1) ? "dark" : (appsTracker == 1 ? "medium" : "clear")
+            state: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1) ? "dark" : (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 ? "medium" : "clear")
+
+            MouseArea {
+                anchors.fill: parent
+                visible: transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1
+            }
 
             states: [
                 State {
                     name: "dark"
-                    PropertyChanges { target: darkOverlay; opacity: 0.9}
+                    PropertyChanges { target: darkOverlay; opacity: 0.95}
                 },
                 State {
                     name: "medium"
