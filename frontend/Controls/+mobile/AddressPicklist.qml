@@ -22,9 +22,7 @@ Rectangle {
     color: "transparent"
 
     property int selectedWallet: 0
-    property string searchFilter:  (selectedWallet == 0 ? "XBY":
-                                                          (selectedWallet == 1 ? "XFUEL" :
-                                                                                 (selectedWallet == 2 ? "BTC" : "ETH")))
+    property string searchFilter:  (selectedWallet == 0 ? "XBY" : "XFUEL")
 
     Component {
         id: contactLine
@@ -35,11 +33,37 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             height: 45
             color:"transparent"
+            visible: inView == true
+            property bool inView: y >= (picklist.contentY - 5) && y <= picklist.span
+
+            Rectangle {
+                id: clickIndicator
+                anchors.fill: parent
+                color: "black"
+                opacity: 0.25
+                visible: false
+
+                Connections {
+                    target: picklist
+                    onMovementEnded: {
+                        clickIndicator.visible = false
+                    }
+                }
+            }
 
             MouseArea {
                 anchors.fill: parent
 
+                onPressed: {
+                    clickIndicator.visible = true
+                }
+
+                onReleased: {
+                    clickIndicator.visible = false
+                }
+
                 onClicked: {
+                    clickIndicator.visible = false
                     if (transferTracker == 1) {
                         addressbookTracker = 0;
                         selectedAddress = address
@@ -53,6 +77,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 color: "#727272"
+                visible: index != 0
             }
 
             Label {
@@ -67,7 +92,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: 30
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 16
                 font.bold: true
                 color: "#F2F2F2"
@@ -79,7 +104,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: 163
                 anchors.bottom: addressContactName.bottom
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 14
                 font.weight: Font.Light
                 color: "#F2F2F2"
@@ -107,5 +132,6 @@ Rectangle {
         id: picklist
         model: filteredAddresses
         delegate: contactLine
+        property real span : contentY + height
     }
 }

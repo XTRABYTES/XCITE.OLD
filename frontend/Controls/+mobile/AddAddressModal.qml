@@ -21,7 +21,7 @@ Rectangle {
     id: addAddressModal
     width: 325
     state: addAddressTracker == 1? "up" : "down"
-    height: (editSaved == 1)? 350 : 335
+    height: (editSaved == 1)? 358 : 343
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -114,15 +114,6 @@ Rectangle {
                     invalidAddress = 1
                 }
             }
-            else if (newCoinName.text == "BTC") {
-                if (keyInput.length === 34
-                        && newAddress.acceptableInput == true) {
-                    invalidAddress = 0
-                }
-                else {
-                    invalidAddress = 1
-                }
-            }
             else if (newCoinName.text == "XFUEL") {
                 if (newAddress.length == 34
                         && newAddress.text.substring(0,1) == "F"
@@ -139,23 +130,34 @@ Rectangle {
     Rectangle {
         id: addressTitleBar
         width: parent.width
-        height: 50
+        height: 58
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: "#34363D"
+        color: darktheme == false? "#42454F" : "transaparent"
         visible: editSaved == 0
+                 && scanQRTracker == 0
 
         Text {
             id: transferModalLabel
             text: "ADD NEW ADDRESS"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -5
+            anchors.verticalCenterOffset: -4
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             color: "#F2F2F2"
             font.letterSpacing: 2
+        }
+
+        Rectangle {
+            width: parent.width -30
+            height: 2
+            radius: 1
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 48
+            color: darktheme == false? "#34363D" : "transparent"
         }
     }
 
@@ -164,10 +166,11 @@ Rectangle {
         width: parent.width
         height: parent.height - 50
         radius: 4
-        color: "#42454F"
+        color: darktheme == false? "#42454F" : "transparent"
         anchors.top: parent.top
-        anchors.topMargin: 42
+        anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
+        visible: scanQRTracker == 0
 
         Image {
             id: newIcon
@@ -179,6 +182,7 @@ Rectangle {
             anchors.topMargin: 20
             visible: editSaved == 0
                      && picklistTracker == 0
+                     && scanQRTracker == 0
         }
 
         Label {
@@ -191,7 +195,9 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
             color: "#F2F2F2"
-            visible: editSaved == 0 && picklistTracker == 0
+            visible: editSaved == 0
+                     && picklistTracker == 0
+                     && scanQRTracker == 0
             onTextChanged: checkAddress()
                            && compareTx()
                            && compareName()
@@ -207,6 +213,7 @@ Rectangle {
             anchors.verticalCenter: newCoinName.verticalCenter
             visible: editSaved == 0
                      && picklistTracker == 0
+                     && scanQRTracker == 0
 
             ColorOverlay {
                 anchors.fill: parent
@@ -262,6 +269,7 @@ Rectangle {
             visible: editSaved == 0
                      && newName.text != ""
                      && labelExists == 1
+                     && scanQRTracker == 0
         }
 
         Controls.TextInput {
@@ -274,6 +282,7 @@ Rectangle {
             color: newAddress.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
             visible: editSaved == 0
+                     && scanQRTracker == 0
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: checkAddress()
@@ -294,6 +303,7 @@ Rectangle {
             visible: editSaved == 0
                      && newAddress.text != ""
                      && addressExists == 1
+                     && scanQRTracker == 0
         }
 
         Label {
@@ -310,6 +320,7 @@ Rectangle {
             visible: editSaved == 0
                      && newAddress.text != ""
                      && invalidAddress == 1
+                     && scanQRTracker == 0
         }
 
         Text {
@@ -334,34 +345,63 @@ Rectangle {
             anchors.topMargin: 15
             anchors.left: newAddress.left
             radius: 5
-            border.color: "#5E8BFE"
+            border.color: maincolor
             border.width: 2
             color: "transparent"
             visible: editSaved == 0
+                     && scanQRTracker == 0
 
             MouseArea {
                 anchors.fill: scanQrButton
-                onClicked: {
+
+                onPressed: {
+                   parent.color = maincolor
+                    parent.border.color = "transparent"
+                    scanButtonText.color = "#F2F2F2"
+                }
+
+                onReleased: {
+                    parent.color = "transparent"
+                    parent.border.color = maincolor
+                    scanButtonText.color = maincolor
                     scanQRTracker = 1
                     scanning = "scanning..."
                 }
             }
 
             Text {
+                id: scanButtonText
                 text: "SCAN QR"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                color: "#5E8BFE"
+                color: maincolor
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
 
+        DropShadow {
+            id: shadowTransferPicklist
+            anchors.fill: newPicklist
+            source: newPicklist
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
+            visible: picklistTracker == 1
+                     && editSaved == 0
+                     && scanQRTracker == 0
+        }
+
         Rectangle {
             id: newPicklist
             width: 100
-            height: totalLines * 35
+            height: ((totalLines + 1) * 35)-10
             radius: 4
             color: "#2A2C31"
             anchors.top: newIcon.top
@@ -369,6 +409,7 @@ Rectangle {
             anchors.left: newIcon.left
             visible: picklistTracker == 1
                      && editSaved == 0
+                     && scanQRTracker == 0
 
             Controls.CurrencyPicklist {
                 id: myCoinPicklist
@@ -381,10 +422,11 @@ Rectangle {
             height: 25
             radius: 4
             color: "#2A2C31"
-            anchors.top: newPicklist.bottom
+            anchors.bottom: newPicklist.bottom
             anchors.horizontalCenter: newPicklist.horizontalCenter
             visible: picklistTracker == 1
                      && editSaved == 0
+                     && scanQRTracker == 0
 
             Image {
                 id: picklistCloseArrow
@@ -410,16 +452,20 @@ Rectangle {
             color: (newName.text != ""
                     && newAddress.text !== ""
                     && invalidAddress == 0
-                    && addressExists == 0 && labelExists == 0) ? "#5E8BFE" : "#727272"
+                    && addressExists == 0 && labelExists == 0) ? maincolor : "#727272"
             anchors.bottom: addressBodyModal.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
+                     && scanQRTracker == 0
 
             MouseArea {
                 anchors.fill: saveButton
 
-                onClicked: {
+                onPressed: {
+                }
+
+                onReleased: {
                     if (newName.text != ""
                             && newAddress.text != ""
                             && invalidAddress == 0
@@ -444,7 +490,10 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: "#F2F2F2"
+                color: (newName.text != ""
+                        && newAddress.text !== ""
+                        && invalidAddress == 0
+                        && addressExists == 0 && labelExists == 0) ? "#F2F2F2" : "#979797"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -463,7 +512,7 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: "#5E8BFE"
+                color: maincolor
             }
         }
 
@@ -473,7 +522,7 @@ Rectangle {
             anchors.top: saveSuccess.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: "#5E8BFE"
+            color: maincolor
             font.pixelSize: 14
             font.family: "Brandon Grotesque"
             font.bold: true
@@ -485,7 +534,7 @@ Rectangle {
             width: (parent.width - 45) / 2
             height: 33
             radius: 5
-            color: "#5E8BFE"
+            color: maincolor
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
@@ -506,7 +555,7 @@ Rectangle {
                     labelExists = 0
                     invalidAddress = 0
                     scanQRTracker = 0
-                    selectedAddress = 0
+                    selectedAddress = ""
                     scanning = "scanning..."
                 }
             }
@@ -527,21 +576,24 @@ Rectangle {
         z: 10
         text: "CLOSE"
         anchors.top: addressBodyModal.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 20
         anchors.horizontalCenter: addressBodyModal.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
+        color: darktheme == false? "#F2F2F2" : maincolor
         visible: addAddressTracker == 1
                  && editSaved == 0
 
         Rectangle{
             id: closeButton
             height: 30
-            width: parent.width
+            width: doubbleButtonWidth
+            radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
+            border.width: 2
+            border.color: darktheme == false? "transparent" : maincolor
         }
 
         MouseArea {
@@ -563,12 +615,17 @@ Rectangle {
                     labelExists = 0
                     invalidAddress = 0
                     scanQRTracker = 0
-                    selectedAddress = 0
+                    selectedAddress = ""
                     scanning = "scanning..."
                 }
             }
 
+            onPressed: {
+                parent.anchors.topMargin = 14
+            }
+
             onClicked: {
+                parent.anchors.topMargin = 10
                 if (addAddressTracker == 1) {
                     addAddressTracker = 0;
                     timer.start()

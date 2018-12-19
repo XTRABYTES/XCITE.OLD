@@ -128,9 +128,19 @@ Rectangle {
                                     if (currencyList.get(i).name === name) {
                                         if (active == 0) {
                                             currencyList.setProperty(i, "active", 1)
+                                            for (var e = 0; e < addressList.count; e++) {
+                                                if (addressList.get(e).address === address) {
+                                                    addressList.setProperty(e, "active", true)
+                                                }
+                                            }
                                         }
                                         else {
                                             currencyList.setProperty(i, "active", 0)
+                                            for (var e = 0; e < addressList.count; e++) {
+                                                if (addressList.get(e).address === address) {
+                                                    addressList.setProperty(e, "active", false)
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -138,6 +148,7 @@ Rectangle {
 
                             onClicked: {
                                 compareCoin()
+                                filterActiveCoin.visible = active == 0
                                 sumBalance()
                             }
                         }
@@ -172,7 +183,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
 
-                onClicked: {
+                onPressed: {
                     addCoinSidebar.state = "closed"
                     timer.start()
                 }

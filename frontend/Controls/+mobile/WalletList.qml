@@ -48,6 +48,7 @@ Rectangle {
             visible: active == 1
 
             DropShadow {
+                id: cardShadow
                 anchors.fill: square
                 source: square
                 horizontalOffset: 0
@@ -55,8 +56,16 @@ Rectangle {
                 radius: 12
                 samples: 25
                 spread: 0
-                color:"#2A2C31"
+                color:"black"
+                opacity: 0.3
                 transparentBorder: true
+
+                Connections {
+                   target: allWallets
+                   onMovementEnded: {
+                       cardShadow.verticalOffset = 4
+                   }
+               }
             }
 
             Rectangle {
@@ -64,7 +73,7 @@ Rectangle {
                 width: parent.width - 55
                 height: 75 //unconfirmedCoins != 0 ? 85: 75
                 radius: 4
-                color: "#42454F"
+                color: darktheme == false? "#42454F" : "#2A2B31"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 10
@@ -78,7 +87,7 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: 14
                     anchors.top: parent.top
-                    anchors.topMargin: 9
+                    anchors.topMargin: 10
                     width: 25
                     height: 25
                     visible: active == 1
@@ -91,7 +100,7 @@ Rectangle {
                     anchors.verticalCenter: icon.verticalCenter
                     text: name
                     font.pixelSize: 18
-                    font.family: "Brandon Grotesque"
+                    font.family: xciteMobile.name //"Brandon Grotesque"
                     color: "#E5E5E5"
                     font.bold: true
                     visible: active == 1
@@ -104,9 +113,9 @@ Rectangle {
                     anchors.verticalCenter: coinName.verticalCenter
                     text: name
                     font.pixelSize: 18
-                    font.family: "Brandon Grotesque"
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: "#E5E5E5"
-                    font.bold: true
+                    //font.bold: true
                     visible: active == 1
                 }
 
@@ -120,9 +129,9 @@ Rectangle {
                     anchors.bottomMargin: 1
                     text: "." + amountArray[1]
                     font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: "#E5E5E5"
-                    font.bold: true
+                    //font.bold: true
                     visible: active == 1
                 }
 
@@ -134,9 +143,9 @@ Rectangle {
                     anchors.verticalCenter: coinName.verticalCenter
                     text: amountArray[0]
                     font.pixelSize: 18
-                    font.family: "Brandon Grotesque"
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: "#E5E5E5"
-                    font.bold: true
+                    //font.bold: true
                     visible: active == 1
                 }
 
@@ -146,9 +155,10 @@ Rectangle {
                     anchors.right: square.right
                     anchors.rightMargin:14
                     anchors.bottom: totalValueLabel2.bottom
+                    anchors.bottomMargin: 1
                     text: "." + amountArray[1]
                     font.pixelSize: 11
-                    font.family: "Brandon Grotesque"
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
                     visible: active == 1
@@ -158,10 +168,10 @@ Rectangle {
                     property var amountArray: (fiatValue.toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
                     id: totalValueLabel2
                     anchors.right: totalValueLabel1.left
-                    anchors.verticalCenter: price2.verticalCenter
+                    anchors.verticalCenter: price1.verticalCenter
                     text: amountArray[0]
                     font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
                     visible: active == 1
@@ -174,7 +184,7 @@ Rectangle {
                     anchors.verticalCenter: totalValueLabel2.verticalCenter
                     text: "$"
                     font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
                     visible: active == 1
@@ -184,10 +194,10 @@ Rectangle {
                     id: percentChangeLabel
                     anchors.left: price2.right
                     anchors.leftMargin: 5
-                    anchors.bottom: price2.bottom
+                    anchors.bottom: price1.bottom
                     text: percentage >= 0? "+" + percentage + "%" : percentage + "%"
-                    font.pixelSize: 12
-                    font.family: "Brandon Grotesque"
+                    font.pixelSize: 14
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: percentage <= 0 ? "#E55541" : "#4BBE2E"
                     font.bold: true
                     visible: active == 1
@@ -201,7 +211,7 @@ Rectangle {
                     anchors.bottomMargin: 10
                     text: amountArray[0]
                     font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
                     visible: active == 1
@@ -212,9 +222,10 @@ Rectangle {
                     id: price2
                     anchors.left: price1.right
                     anchors.bottom: price1.bottom
+                    anchors.bottomMargin: 1
                     text: "." + amountArray[1]
                     font.pixelSize: 11
-                    font.family: "Brandon Grotesque"
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
                     visible: active == 1
@@ -226,7 +237,7 @@ Rectangle {
                     anchors.verticalCenter: price1.verticalCenter
                     text: "$"
                     font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
+                    font.family:  xciteMobile.name //"Brandon Grotesque"
                     color: "#828282"
                     font.bold: true
                     visible: active == 1
@@ -249,7 +260,16 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
+                    onPressed: {
+                        cardShadow.verticalOffset = 0
+                    }
+
+                    onReleased: {
+                        cardShadow.verticalOffset = 4
+                    }
+
                     onClicked: {
+                        cardShadow.verticalOffset = 4
                         if (appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0) {
                             transferTracker = 1
                             currencyIndex = walletNR
@@ -267,12 +287,12 @@ Rectangle {
     }
 
     ListView {
-        anchors.fill: parent
         id: allWallets
         model: filteredCoins
         delegate: walletCard
+        anchors.fill: parent
         contentHeight: (totalWallets * 98)
         interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
-   }
+    }
 }
 
