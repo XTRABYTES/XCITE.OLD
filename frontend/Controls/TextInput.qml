@@ -98,6 +98,7 @@ TextField {
             anchors.horizontalCenter: parent.horizontalCenter
             onClicked: {
                 textInputComponent.text = ""
+                selectedAddress = ""
             }
         }
     }

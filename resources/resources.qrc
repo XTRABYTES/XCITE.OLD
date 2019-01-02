@@ -152,5 +152,17 @@
         <file>icons/icon-coins_01.svg</file>
         <file>icons/icon-transfer_01.svg</file>
         <file>icons/icon-darklight.svg</file>
+        <file>icons/icon-profile_01.svg</file>
+        <file>icons/icon-profile_02.svg</file>
+        <file>icons/icon-profile_03.svg</file>
+        <file>icons/icon-profile_04.svg</file>
+        <file>icons/icon-cell_01.svg</file>
+        <file>icons/icon-chat_01.svg</file>
+        <file>icons/icon-mail_01.svg</file>
+        <file>icons/icon-phone_01.svg</file>
+        <file>icons/icon-plus_01.svg</file>
+        <file>icons/icon-phone_02.svg</file>
+        <file>icons/icon-text_01.svg</file>
+        <file>icons/icon-pen_01.svg</file>
     </qresource>
 </RCC>

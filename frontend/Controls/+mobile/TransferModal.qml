@@ -28,6 +28,7 @@ Rectangle {
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+    anchors.topMargin: Screen.height
     visible: scanQRTracker == 0
 
     states: [
@@ -35,6 +36,7 @@ Rectangle {
             name: "up"
             PropertyChanges { target: transactionModal; anchors.topMargin: 50}
             PropertyChanges { target: transactionModal; opacity: 1}
+            PropertyChanges { target: transferSwitch; state: (switchState == 0 ? "off" : "on")}
         },
         State {
             name: "down"
@@ -51,19 +53,16 @@ Rectangle {
         }
     ]
 
-    property string coinName: currencyList.get(currencyIndex).name
-    property url coinLogo: currencyList.get(currencyIndex).logo
-    property real coinBalance: currencyList.get(currencyIndex).balance
-    property string coinAddress: currencyList.get(currencyIndex).address
-    property string coinLabel: currencyList.get(currencyIndex).label
-    property int modalState: 0
+    //property string coinName: walletList.get(walletIndex).name
+    //property real coinBalance: walletList.get(walletIndex).balance
+    //property string coinAddress: walletList.get(walletIndex).address
+    //property string coinLabel: walletList.get(walletIndex).label
     property int transactionSent: 0
     property int confirmationSent: 0
-    property int switchState: 0
     property int invalidAddress: 0
     property int decimals: (coinID.text) == "BTC" ? 8 : 4
     property var inputAmount: Number.fromLocaleString(Qt.locale("en_US"),sendAmount.text)
-    property string amountTransfer: "AMOUNT (" + coinName + ")"
+    property string amountTransfer: "AMOUNT (" + coinID.text + ")"
     property string keyTransfer: "SEND TO (PUBLIC KEY)"
     property string referenceTransfer: "REFERENCE"
     property real amountSend: 0
@@ -71,6 +70,7 @@ Rectangle {
     property string transactionDate: ""
     property string addressName: compareAddress()
     property real currentBalance: getCurrentBalance()
+    property int walletID: getWalletNR(coinID.text, walletLabel.text)
 
 
     function compareAddress(){
@@ -78,7 +78,7 @@ Rectangle {
         for(var i = 0; i < addressList.count; i++) {
             if (addressList.get(i).address === keyInput.text) {
                 if (addressList.get(i).coin === coinID.text) {
-                    fromto = (addressList.get(i).name)
+                    fromto = (addressList.get(i).label)
                 }
             }
         }
@@ -113,9 +113,9 @@ Rectangle {
 
     function getCurrentBalance(){
         var currentBalance = 0
-        for(var i = 0; i < currencyList.count; i++) {
-            if (currencyList.get(i).name === coinID.text) {
-                currentBalance = currencyList.get(i).balance
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).address === getAddress (coinID.text, walletLabel.text)) {
+                currentBalance = walletList.get(i).balance
             }
         }
         return currentBalance
@@ -123,95 +123,25 @@ Rectangle {
 
     Rectangle {
         id: transferTitleBar
-        width: parent.width/2
-        height: 58
-        radius: 4
+        width: parent.width
+        height: 50
         anchors.top: parent.top
         anchors.left: parent.left
-        color: darktheme == false? (modalState == 0 ? "#42454F" : "#34363D") : "transparent"
+        color: "transparent"
         visible: transactionSent == 0
                  && addressbookTracker == 0
                  && scanQRTracker == 0
-
-        Rectangle {
-            width : parent.width
-            height : 50
-            anchors.top: parent.top
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "#14161B"
-            border.width: 2
-            border.color: modalState == 0 ? maincolor : "transparent"
-            visible: darktheme == true
-        }
 
         Text {
             id: transferModalLabel
             text: "TRANSFER"
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -4
+            anchors.verticalCenter: parent.top
+            anchors.verticalCenterOffset: 27
             font.pixelSize: 18
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            color: modalState == 0 ? (darktheme == false? "#F2F2F2" : maincolor) : (darktheme == false? "#5F5F5F" : "#3F3F3F")
+            font.family: xciteMobile.name
+            color: darktheme == false? "#F2F2F2" : maincolor
             font.letterSpacing: 2
-        }
-
-        MouseArea {
-            height: transferTitleBar.height
-            width: parent.width
-            onClicked: {
-                if (calculatorTracker == 0) {
-                modalState = 0
-                transferSwitch.state = "off"
-                }
-            }
-        }
-    }
-
-    Rectangle {
-        id: historyTitleBar
-        width: parent.width/2
-        height: 58
-        radius: 4
-        anchors.top: parent.top
-        anchors.right: parent.right
-        color: darktheme == false? (modalState == 1 ? "#42454F" : "#34363D") : "transparent"
-        visible: transactionSent == 0
-                 && addressbookTracker == 0
-                 && scanQRTracker == 0
-
-        Rectangle {
-            width : parent.width
-            height : 50
-            anchors.top: parent.top
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "#14161B"
-            border.width: 2
-            border.color: modalState == 1 ? maincolor : "transparent"
-            visible: darktheme == true
-        }
-
-        Text {
-            id: historyModalLabel
-            text: "HISTORY"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -4
-            font.pixelSize: 18
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            color: modalState == 1 ? (darktheme == false? "#F2F2F2" : maincolor) : (darktheme == false? "#5F5F5F" : "#3F3F3F")
-            font.letterSpacing: 2
-        }
-
-        MouseArea {
-            height: historyTitleBar.height
-            width: parent.width
-            onClicked: {
-                if (calculatorTracker ==  0) {
-                modalState = 1
-                transferSwitch.state = "off"
-                }
-            }
         }
     }
 
@@ -239,12 +169,12 @@ Rectangle {
 
         Text {
             id: receiveText
-            text: modalState == 0 ? "RECEIVE" : "WALLET"
+            text: "RECEIVE"
             anchors.right: transferSwitch.left
             anchors.rightMargin: 7
             anchors.verticalCenter: transferSwitch.verticalCenter
             font.pixelSize: 14
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             color: transferSwitch.on ? "#757575" : maincolor
             visible: transactionSent == 0
                      && addressbookTracker == 0
@@ -253,12 +183,12 @@ Rectangle {
         }
         Text {
             id: sendText
-            text: modalState == 0 ?  "SEND" : "COIN"
+            text: "SEND"
             anchors.left: transferSwitch.right
             anchors.leftMargin: 7
             anchors.verticalCenter: transferSwitch.verticalCenter
             font.pixelSize: 14
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             color: transferSwitch.on ? maincolor : "#757575"
             visible: transactionSent == 0
                      && addressbookTracker == 0
@@ -268,7 +198,7 @@ Rectangle {
 
         Image {
             id: coinIcon
-            source: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).logo : currencyList.get(currencyIndex).logo
+            source: getLogo(coinID.text)
             width: 25
             height: 25
             anchors.left: sendAmount.left
@@ -278,22 +208,24 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && coinListTracker == 0
         }
 
         Label {
             id: coinID
-            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).name : currencyList.get(currencyIndex).name
+            text: newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : walletList.get(walletIndex).name
             anchors.left: coinIcon.right
             anchors.leftMargin: 7
             anchors.verticalCenter: coinIcon.verticalCenter
             font.pixelSize: 18
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.bold: true
             color: "#F2F2F2"
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && coinListTracker == 0
             onTextChanged: if (keyInput.text != "") {
                                checkAddress()
                            }
@@ -301,17 +233,21 @@ Rectangle {
 
         Label {
             id: walletLabel
-            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).label : currencyList.get(currencyIndex).label
-            anchors.right: sendAmount.right
+            text: (newWalletSelect == 0 && coinTracker == 0) ? walletList.get(defaultWallet(coinID.text)).label : walletList.get(walletIndex).label
+            anchors.right: picklistArrow2.left
+            anchors.rightMargin: 7
             anchors.verticalCenter: coinIcon.verticalCenter
             font.pixelSize: 18
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.bold: true
             color: "#F2F2F2"
-            visible: transactionSent == 0
+            visible: (transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && walletListTracker == 0)
+                     || (transferSwitch.state == "off"
+                         && walletListTracker == 0)
         }
 
         Text {
@@ -319,62 +255,46 @@ Rectangle {
             text: coinID.text
             anchors.right: sendAmount.right
             anchors.top: walletLabel.bottom
-            anchors.topMargin: 5
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            anchors.topMargin: 2
+            font.family: xciteMobile.name
             font.pixelSize: 14
             color: "#828282"
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && walletListTracker == 0
         }
 
         Text {
-            property string balance: (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance).toLocaleString(Qt.locale("en_US"), "f", decimals) : (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale("en_US"), "f", decimals))
-            property var balanceArray: balance.split('.')
+            property string balance: (walletList.get(walletID).balance).toLocaleString(Qt.locale("en_US"), "f", decimals)
             id: walletBalance1
-            text: "." + balanceArray[1]
+            text: balance
             anchors.right: walletBalance.left
             anchors.rightMargin: 5
             anchors.bottom: walletBalance.bottom
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pixelSize: 14
             color: "#828282"
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-        }
-
-        Text {
-            property string balance: (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance).toLocaleString(Qt.locale("en_US"), "f", decimals) : (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale("en_US"), "f", decimals))
-            property var balanceArray: balance.split('.')
-            id: walletBalance2
-            text: balanceArray[0]
-            anchors.right: walletBalance1.left
-            anchors.top: walletLabel.bottom
-            anchors.topMargin: 5
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.pixelSize: 14
-            color: "#828282"
-            visible: transactionSent == 0
-                     && addressbookTracker == 0
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
+                     && walletListTracker == 0
         }
 
         Image {
-            id: picklistArrow
+            id: picklistArrow1
             source: 'qrc:/icons/dropdown_icon.svg'
             height: 18
             width: 18
-            anchors.left: picklistTracker == 0 ? coinID.right : transferPicklist.right
+            anchors.left: coinListTracker == 0 ? coinID.right : transferPicklist1.right
             anchors.leftMargin: 10
             anchors.verticalCenter: coinID.verticalCenter
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
-                     && picklistTracker == 0
+                     && coinListTracker == 0
                      && calculatorTracker == 0
 
             ColorOverlay {
@@ -384,7 +304,7 @@ Rectangle {
             }
 
             Rectangle{
-                id: picklistButton
+                id: picklistButton1
                 height: 20
                 width: 20
                 radius: 10
@@ -394,19 +314,19 @@ Rectangle {
             }
 
             MouseArea {
-                anchors.fill: picklistButton
+                anchors.fill: picklistButton1
                 onClicked: {
-                    picklistLinesActive()
-                    picklistTracker = 1
+                    coinListLines(true)
+                    coinListTracker = 1
                 }
             }
         }
 
         DropShadow {
-            id: shadowTransferPicklist
+            id: shadowTransferPicklist1
             z:11
-            anchors.fill: transferPicklist
-            source: transferPicklist
+            anchors.fill: transferPicklist1
+            source: transferPicklist1
             horizontalOffset: 0
             verticalOffset: 4
             radius: 12
@@ -415,7 +335,7 @@ Rectangle {
             color: "black"
             opacity: 0.3
             transparentBorder: true
-            visible: picklistTracker == 1
+            visible: coinListTracker == 1
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -423,7 +343,7 @@ Rectangle {
         }
 
         Rectangle {
-            id: transferPicklist
+            id: transferPicklist1
             z: 11
             width: 100
             height: ((totalLines + 1) * 35)-10
@@ -432,35 +352,35 @@ Rectangle {
             anchors.top: coinIcon.top
             anchors.topMargin: -5
             anchors.left: coinIcon.left
-            visible: picklistTracker == 1
+            visible: coinListTracker == 1
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
 
-            Controls.CurrencyPicklist {
+            Controls.CoinPicklist {
                 id: myCoinPicklist
                 onlyActive: true
             }
         }
 
         Rectangle {
-            id: picklistClose
+            id: picklistClose1
             z: 11
             width: 100
             height: 25
             radius: 4
             color: "#2A2C31"
-            anchors.bottom: transferPicklist.bottom
-            anchors.horizontalCenter: transferPicklist.horizontalCenter
-            visible: picklistTracker == 1
+            anchors.bottom: transferPicklist1.bottom
+            anchors.horizontalCenter: transferPicklist1.horizontalCenter
+            visible: coinListTracker == 1
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
 
             Image {
-                id: picklistCloseArrow
+                id: picklistCloseArrow1
                 source: 'qrc:/icons/dropdown-arrow.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -470,7 +390,118 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    picklistTracker = 0
+                    coinListTracker = 0
+                }
+            }
+        }
+
+        Image {
+            id: picklistArrow2
+            source: 'qrc:/icons/dropdown_icon.svg'
+            height: 18
+            width: 18
+            anchors.right: sendAmount.right
+            anchors.verticalCenter: walletLabel.verticalCenter
+            visible: transactionSent == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && walletListTracker == 0
+                     && calculatorTracker == 0
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: "#F2F2F2"
+            }
+
+            Rectangle{
+                id: picklistButton2
+                height: 20
+                width: 20
+                radius: 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "transparent"
+            }
+
+            MouseArea {
+                anchors.fill: picklistButton2
+                onClicked: {
+                    coinWalletLines(coinID.text)
+                    walletListTracker = 1
+                }
+            }
+        }
+
+        DropShadow {
+            id: shadowTransferPicklist2
+            z:11
+            anchors.fill: transferPicklist2
+            source: transferPicklist2
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
+            visible: walletListTracker == 1
+                     && transactionSent == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+        }
+
+        Rectangle {
+            id: transferPicklist2
+            z: 11
+            width: 100
+            height: ((totalCoinWallets + 1) * 35)-10
+            radius: 4
+            color: "#2A2C31"
+            anchors.top: coinIcon.top
+            anchors.topMargin: -5
+            anchors.right: picklistArrow2.right
+            visible: walletListTracker == 1
+                     && transactionSent == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+
+            Controls.WalletPicklist {
+                id: myWalletPicklist
+                coin: coinID.text
+            }
+        }
+
+        Rectangle {
+            id: picklistClose2
+            z: 11
+            width: 100
+            height: 25
+            radius: 4
+            color: "#2A2C31"
+            anchors.bottom: transferPicklist2.bottom
+            anchors.horizontalCenter: transferPicklist2.horizontalCenter
+            visible: walletListTracker == 1
+                     && transactionSent == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+
+            Image {
+                id: picklistCloseArrow2
+                source: 'qrc:/icons/dropdown-arrow.svg'
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                rotation: 180
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    walletListTracker = 0
                 }
             }
         }
@@ -486,8 +517,7 @@ Rectangle {
             anchors.top: walletBalance.bottom
             anchors.topMargin: 20
             color: "#FFFFFF"
-            visible: modalState == 0
-                     && transferSwitch.on == false
+            visible: transferSwitch.on == false
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -505,8 +535,7 @@ Rectangle {
                 source: "image://QZXing/encode/" + publicKey.text
                 cache: false
             }
-            visible: modalState == 0
-                     && transferSwitch.on == false
+            visible: transferSwitch.on == false
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -519,12 +548,11 @@ Rectangle {
             anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter
             color: "#F2F2F2"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.bold: true
             font.pixelSize: 14
             font.letterSpacing: 1
-            visible: modalState == 0
-                     && transferSwitch.on == false
+            visible: transferSwitch.on == false
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -532,15 +560,14 @@ Rectangle {
 
         Text {
             id: publicKey
-            text: newCoinSelect == 1 ? currencyList.get(newCoinPicklist).address : currencyList.get(currencyIndex).address
+            text: walletList.get(walletID).address
             anchors.top: pubKey.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
             color: "white"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pixelSize: 12
-            visible: modalState == 0
-                     && transferSwitch.on == false
+            visible: transferSwitch.on == false
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -554,8 +581,7 @@ Rectangle {
             anchors.left: pubKey.right
             anchors.leftMargin: 15
             anchors.verticalCenter: pubKey.verticalCenter
-            visible: modalState == 0
-                     && transferSwitch.on == false
+            visible: transferSwitch.on == false
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -589,9 +615,8 @@ Rectangle {
             placeholder: amountTransfer
             color: sendAmount.text !== "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
-            validator: DoubleValidator {bottom: 0; top: (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))}
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            validator: DoubleValidator {bottom: 0; top: ((walletList.get(walletID).balance))}
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -619,14 +644,13 @@ Rectangle {
             anchors.top: sendAmount.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            font.family: xciteMobile.name
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && inputAmount > (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))
+                     && inputAmount > (walletList.get(walletID).balance)
         }
 
         Controls.TextInput {
@@ -639,8 +663,7 @@ Rectangle {
             placeholder: keyTransfer
             color: keyInput.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -658,9 +681,7 @@ Rectangle {
             anchors.topMargin: 3
             visible: false
             onTextChanged: {
-                if (transferTracker == 1) {
-                    keyInput.text = sendAddress.text
-                }
+                keyInput.text = sendAddress.text
             }
         }
 
@@ -673,9 +694,8 @@ Rectangle {
             anchors.top: keyInput.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            font.family: xciteMobile.name
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -695,8 +715,7 @@ Rectangle {
             border.color: maincolor
             border.width: 2
             color: "transparent"
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -707,14 +726,10 @@ Rectangle {
 
                 onPressed: {
                     scanQrButton.color = maincolor
-                    scanQrButton.border.color = "transparent"
-                    qrButtonText.color = "#F2F2F2"
                 }
 
                 onReleased: {
                     scanQrButton.color = "transparent"
-                    scanQrButton.border.color = maincolor
-                    qrButtonText.color = maincolor
                     scanQRTracker = 1
                     scanning = "scanning..."
                 }
@@ -723,9 +738,9 @@ Rectangle {
             Text {
                 id: qrButtonText
                 text: "SCAN QR"
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pointSize: 14
-                color: maincolor
+                color: "#F2F2F2"
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -743,8 +758,7 @@ Rectangle {
             anchors.top: keyInput.bottom
             anchors.topMargin: 20
             anchors.right: keyInput.right
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -755,25 +769,22 @@ Rectangle {
 
                 onPressed: {
                     addressBookButton.color = maincolor
-                    addressBookButton.border.color = "transparent"
-                    addressButtonText.color = "#F2F2F2"
                 }
 
                 onReleased: {
                     addressBookButton.color = "transparent"
-                    addressBookButton.border.color = maincolor
-                    addressButtonText.color = maincolor
                     addressbookTracker = 1
+                    currentAddress = getAddress(coinID.text, walletLabel.text)
                 }
             }
 
             Text {
                 id: addressButtonText
                 text: "ADDRESS BOOK"
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pointSize: 14
                 font.bold: true
-                color: maincolor
+                color: "#F2F2F2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -788,8 +799,7 @@ Rectangle {
             anchors.topMargin: 20
             color: referenceInput.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -806,12 +816,11 @@ Rectangle {
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
                     && inputAmount !== 0
-                    && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? maincolor : "#727272"
+                    && inputAmount <= (walletList.get(walletID).balance)) ? maincolor : (darktheme == false? "#727272" : "#14161B")
             anchors.bottom: bodyModal.bottom
             anchors.bottomMargin: 20
             anchors.left: referenceInput.left
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -828,7 +837,7 @@ Rectangle {
                             && keyInput.text !== ""
                             && sendAmount.text !== ""
                             && inputAmount !== 0
-                            && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))
+                            && inputAmount <= (walletList.get(walletID).balance)
                             && calculatorTracker == 0) {
                         transactionSent = 1
                         picklistTracker = 0
@@ -838,14 +847,14 @@ Rectangle {
 
             Text {
                 text: "SEND"
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pointSize: 14
                 font.bold: true
                 color: (invalidAddress == 0
                         && keyInput.text !== ""
                         && sendAmount.text !== ""
                         && inputAmount !== 0
-                        && inputAmount <= (newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).balance) : (currencyList.get(currencyIndex).balance))) ? "#F2F2F2" : "#979797"
+                        && inputAmount <= (walletList.get(walletID).balance)) ? "#F2F2F2" : (darktheme == false? "#979797" : "#3F3F3F")
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -866,13 +875,13 @@ Rectangle {
             Text {
                 id: confirmationText
                 text: "CONFIRM TRANSACTION"
-                anchors.top: parent.top
-                anchors.topMargin: 20
+                anchors.verticalCenter: parent.top
+                anchors.verticalCenterOffset: 25
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 font.weight: Font.Normal
-                color: maincolor
+                color: darktheme == false? "#F2F2F2" : maincolor
             }
 
             Text {
@@ -882,7 +891,7 @@ Rectangle {
                 anchors.leftMargin: 25
                 anchors.top: confirmationText.bottom
                 anchors.topMargin: 40
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 color: "#F2F2F2"
             }
@@ -901,7 +910,7 @@ Rectangle {
                 text: coinID.text
                 anchors.top: amount.top
                 anchors.right: amount.right
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 color: "#F2F2F2"
             }
@@ -915,7 +924,7 @@ Rectangle {
                 anchors.bottomMargin: 1
                 anchors.right: confirmationAmount.left
                 anchors.rightMargin: 7
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 12
                 color: "#F2F2F2"
             }
@@ -927,7 +936,7 @@ Rectangle {
                 text: amountArray[0]
                 anchors.top: confirmationAmount.top
                 anchors.left: amount.left
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 color: "#F2F2F2"
             }
@@ -939,7 +948,7 @@ Rectangle {
                 anchors.leftMargin: 25
                 anchors.top: sendingLabel.bottom
                 anchors.topMargin: 15
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 color: "#F2F2F2"
             }
@@ -951,7 +960,7 @@ Rectangle {
                 anchors.bottomMargin: 2
                 anchors.right: parent.right
                 anchors.rightMargin: 25
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: addressName != ""? 16 : 10
                 color: "#F2F2F2"
             }
@@ -963,7 +972,7 @@ Rectangle {
                 anchors.topMargin: 5
                 anchors.right: parent.right
                 anchors.rightMargin: 25
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 10
                 color: "#F2F2F2"
                 visible: addressName != ""
@@ -976,7 +985,7 @@ Rectangle {
                 anchors.leftMargin: 25
                 anchors.top: confirmationAddressName.bottom
                 anchors.topMargin: 15
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 color: "#F2F2F2"
                 visible: referenceInput.text !== ""
@@ -988,7 +997,7 @@ Rectangle {
                 anchors.bottom: reference.bottom
                 anchors.right: parent.right
                 anchors.rightMargin: 25
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 color: "#F2F2F2"
                 visible: referenceInput.text !== ""
@@ -1019,7 +1028,7 @@ Rectangle {
 
                 Text {
                     text: "CONFIRM"
-                    font.family: xciteMobile.name //"Brandon Grotesque"
+                    font.family: xciteMobile.name
                     font.pointSize: 14
                     color: "#F2F2F2"
                     font.bold: true
@@ -1052,7 +1061,7 @@ Rectangle {
 
                 Text {
                     text: "CANCEL"
-                    font.family: xciteMobile.name //"Brandon Grotesque"
+                    font.family: xciteMobile.name
                     font.pointSize: 14
                     font.bold: true
                     color: "#F2F2F2"
@@ -1098,24 +1107,10 @@ Rectangle {
                 anchors.horizontalCenter: confirmedIcon.horizontalCenter
                 color: maincolor
                 font.pixelSize: 14
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.bold: true
                 visible: transactionSent == 1
                          && confirmationSent == 1
-            }
-
-            DropShadow {
-                id: shadowCloseButton
-                anchors.fill: closeConfirm
-                source: closeConfirm
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color: "black"
-                opacity: 0.3
-                transparentBorder: true
             }
 
             Rectangle {
@@ -1135,21 +1130,9 @@ Rectangle {
                     }
 
                     onReleased: {
-                        transactionDate = new Date().toLocaleDateString(Qt.locale(),"MM/dd")
-                        if (coinID.text == "XBY"){
-                            xbyTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": xbyTXID});
-                            xbyTXID = xbyTXID + 1;
-                            currencyList.setProperty(1, "balance", (currentBalance - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(1, "fiatValue", ((currencyList.get(1).balance) * (currencyList.get(1).coinValue)));
-                            totalBalance = sumBalance()
-                        }
-                        if (coinID.text == "XFUEL"){
-                            xfuelTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.text, "reference": referenceText.text, "txNR": xfuelTXID});
-                            xfuelTXID = xfuelTXID + 1;
-                            currencyList.setProperty(0, "balance", (currentBalance - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(0, "fiatValue", ((currencyList.get(0).balance) * (currencyList.get(0).coinValue)));
-                            totalBalance = sumBalance()
-                        }
+                        transactionDate = new Date().toLocaleDateString(Qt.locale(),"dd MMM yy")
+                        transactionList.append ({"coinName": coinID.text, "walletLabel": walletLabel.text, "date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txPartner": keyInput.text, "reference": referenceText.text, "txid": txID })
+                        txID = txID + 1
                         sendAmount.text = ""
                         keyInput.text = ""
                         referenceInput.text = ""
@@ -1158,12 +1141,13 @@ Rectangle {
                         transactionSent = 0
                         invalidAddress = 0
                         transactionDate = ""
+                        // update wallet balance
                     }
                 }
 
                 Text {
                     text: "OK"
-                    font.family: xciteMobile.name //"Brandon Grotesque"
+                    font.family: xciteMobile.name
                     font.pointSize: 14
                     font.bold: true
                     color: "#F2F2F2"
@@ -1182,13 +1166,26 @@ Rectangle {
             height: 50
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: bodyModal.top
-            anchors.bottomMargin: -4
-            radius: 4
-            color: darktheme == false? "#34363D" : "transparent"
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            anchors.bottomMargin: darktheme == false? -8 : 0
+            color: "transparent"
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && (addressbookTracker == 1)
+        }
+
+        Label {
+            id: addressbookTitle
+            text: "ADDRESSBOOK"
+            anchors.horizontalCenter: bodyModal.horizontalCenter
+            anchors.verticalCenter: addressbookTitleBar.top
+            anchors.verticalCenterOffset: 27
+            font.pixelSize: 20
+            font.family: xciteMobile.name
+            font.bold: true
+            color: "#F2F2F2"
+            visible: transferSwitch.on == true
+                     && transactionSent == 0
+                     && ( addressbookTracker == 1)
         }
 
         Rectangle {
@@ -1201,8 +1198,7 @@ Rectangle {
             anchors.bottom: bodyModal.bottom
             anchors.bottomMargin: 63
             color: "transparent"
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 1
 
@@ -1212,30 +1208,16 @@ Rectangle {
             }
         }
 
-        Rectangle {
-            id: addressbookSpacerBar
-            width: parent.width
-            height: 50
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: bodyModal.top
-            color: darktheme == false? "#42454F" : "transparent"
-            visible: modalState == 0
-                     && transferSwitch.on == true
-                     && transactionSent == 0
-                     && addressbookTracker == 1
-        }
-
         Image {
             id: addressbookCoinLogo
             source: coinIcon.source
             height: 25
             width: 25
-            anchors.verticalCenter: addressbookSpacerBar.verticalCenter
+            anchors.verticalCenter: parent.top
+            anchors.verticalCenterOffset: 25
             anchors.left: parent.left
             anchors.leftMargin: 30
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 1
         }
@@ -1247,31 +1229,14 @@ Rectangle {
             anchors.leftMargin: 7
             anchors.verticalCenter: addressbookCoinLogo.verticalCenter
             font.pixelSize: 18
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.bold: true
             color: "#F2F2F2"
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 1
         }
-
-        Label {
-            id: addressbookTitle
-            text: "ADDRESSBOOK"
-            anchors.horizontalCenter: bodyModal.horizontalCenter
-            anchors.verticalCenter: addressbookTitleBar.verticalCenter
-            anchors.verticalCenterOffset: -2
-            font.pixelSize: 20
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.bold: true
-            color: "#F2F2F2"
-            visible: modalState == 0
-                     && transferSwitch.on == true
-                     && transactionSent == 0
-                     && ( addressbookTracker == 1)
-        }
-
+        /**
         Rectangle {
             width: parent.width
             height: 63
@@ -1279,23 +1244,23 @@ Rectangle {
             anchors.bottom: bodyModal.bottom
             radius: 4
             color: darktheme == false? "#42454F" : "transparent"
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 1
         }
-
+        */
         Rectangle {
             id: cancelAddressButton
             width: (bodyModal.width - 40) / 2
             height: 33
             radius: 5
-            color: maincolor
+            color: "transparent"
+            border.color: maincolor
+            border.width: 2
             anchors.bottom: bodyModal.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: bodyModal.horizontalCenter
-            visible: modalState == 0
-                     && transferSwitch.on == true
+            visible: transferSwitch.on == true
                      && transactionSent == 0
                      && (addressbookTracker == 1)
 
@@ -1303,112 +1268,25 @@ Rectangle {
                 anchors.fill: cancelAddressButton
 
                 onPressed: {
+                   cancelAddressButton.color = maincolor
                 }
 
                 onReleased: {
+                    cancelAddressButton.color = "transparent"
                     addressbookTracker = 0
+                    currentAddress = ""
                 }
             }
 
             Text {
                 text: "BACK"
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pointSize: 14
                 font.bold: true
                 color: "#F2F2F2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
-        }
-
-        // History wallet state
-
-        Rectangle {
-            id: historyScrollArea
-            width: parent.width
-            height: 230
-            radius: 4
-            anchors.top: searchTx.bottom
-            anchors.topMargin: 15
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
-            visible: modalState == 1 && transferSwitch.state == "off"
-
-            Controls.HistoryList {
-                id: myHistoryList
-                searchFilter: searchTx.text
-                selectedWallet: newCoinSelect == 1 ? (currencyList.get(newCoinPicklist).name === "XFUEL" ? 0: 1) : currencyIndex
-            }
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 49
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: walletBalance.bottom
-            anchors.topMargin: 15
-            color: darktheme == false? "#42454F" : "transparent"
-            visible: modalState == 1
-                     && transferSwitch.state == "off"
-        }
-
-        Rectangle {
-            width: parent.width
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: historyScrollArea.bottom
-            anchors.bottom: bodyModal.bottom
-            radius: 4
-            color: darktheme == false? "#42454F" : "transparent"
-            visible: modalState == 1
-                     && transferSwitch.state == "off"
-        }
-
-        Controls.TextInput {
-            id: searchTx
-            height: 34
-            placeholder: "SEARCH TRANSACTIONS"
-            //anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: walletBalance.bottom
-            anchors.topMargin: 15
-            anchors.left: parent.left
-            anchors.leftMargin: 15
-            anchors.right: parent.right
-            anchors.rightMargin: 15
-            width: Screen.width - 55
-            color: searchTx.text != "" ? (darktheme == false? "#F2F2F2" : "#2A2C31") : "#727272"
-            font.pixelSize: 14
-            textBackground: darktheme == false? "#2A2C31" : "white"
-            mobile: 1
-            addressBook: 1
-            visible: modalState == 1
-                     && transferSwitch.state == "off"
-        }
-
-        // History coin state
-
-        Label {
-            id: coinhistorySoon
-            text: "Coming SOON"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "#F2F2F2"
-            font.pixelSize: 18
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.bold: true
-            visible: modalState == 1
-                     && transferSwitch.state == "on"
-        }
-    }
-
-    Rectangle {
-        anchors.fill: parent
-        color: "black"
-        opacity: 0.95
-        visible: calculatorTracker == 1 && transferTracker == 1
-
-        MouseArea {
-            anchors.fill: parent
         }
     }
 
@@ -1431,6 +1309,7 @@ Rectangle {
         font.family: xciteMobile.name //"Brandon Grotesque"
         color: darktheme == false? "#F2F2F2" : maincolor
         visible: transferTracker == 1
+                 && transactionSent == 0
                  && confirmationSent == 0
                  && calculatorTracker == 0
                  && scanQRTracker == 0
@@ -1438,8 +1317,8 @@ Rectangle {
 
         Rectangle{
             id: closeButton
-            height: 30
-            width: doubbleButtonWidth
+            height: 34
+            width: darktheme == false? closeTransferModal.width : doubbleButtonWidth
             radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -1458,24 +1337,26 @@ Rectangle {
                 running: false
 
                 onTriggered: {
-                    addressbookTracker = 0;
-                    picklistTracker = 0;
-                    modalState = 0
-                    currencyIndex = 0
-                    transferSwitch.state = "off"
+                    addressbookTracker = 0
+                    coinListTracker = 0
+                    walletListTracker = 0
+                    walletIndex = 0
+                    addressIndex = 0
+                    switchState = 0
                     transactionSent =0
                     confirmationSent = 0
                     newCoinSelect = 0
                     newCoinPicklist = 0
+                    newWalletPicklist = 0
+                    newWalletSelect = 0
                     selectedAddress = ""
                     sendAmount.text = ""
-                    keyInput.text = ""
+                    keyInput.text = sendAddress.text
                     referenceInput.text = ""
                     invalidAddress = 0
                     calculatorTracker = 0
                     calculatedAmount = ""
                     scanQRTracker = 0
-                    selectedAddress = ""
                     scanning = "scanning..."
                 }
             }

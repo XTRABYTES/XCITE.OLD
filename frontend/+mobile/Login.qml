@@ -36,7 +36,7 @@ Item {
             anchors.topMargin: 60
             color: maincolor
             font.pixelSize: 18
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
         }
 
         Rectangle {
@@ -53,7 +53,6 @@ Item {
 
                 onReleased: {
                     loginTracker = 1
-                    sumBalance()
                     mainRoot.pop()
                     mainRoot.push("../Home.qml")
                 }
@@ -62,7 +61,7 @@ Item {
             Text {
                 id: qrButtonText
                 text: "START"
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pointSize: 14
                 color: "#F2F2F2"
                 font.bold: true

@@ -144,5 +144,13 @@
         <file>+mobile/Home.qml</file>
         <file>+mobile/MobileAddressBook.qml</file>
         <file>Controls/+mobile/QrCode.qml</file>
+        <file>Controls/+mobile/CoinPicklist.qml</file>
+        <file>Controls/+mobile/WalletPicklist.qml</file>
+        <file>Controls/+mobile/CoinModal.qml</file>
+        <file>Controls/+mobile/WalletDetailList.qml</file>
+        <file>Controls/+mobile/CoinList.qml</file>
+        <file>Controls/+mobile/Contacts.qml</file>
+        <file>Controls/+mobile/AddContact.qml</file>
+        <file>Controls/+mobile/PictureList.qml</file>
     </qresource>
 </RCC>

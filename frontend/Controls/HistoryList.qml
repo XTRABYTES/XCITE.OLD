@@ -26,8 +26,8 @@ Rectangle {
     color: "transparent"
 
     property string searchFilter: ""
-    property int selectedWallet: 0
-    property string txcoinName: currencyList.get(selectedWallet).name
+    property string selectedCoin: ""
+    property string selectedWallet: ""
 
     Component {
         id: historyLine
@@ -45,7 +45,7 @@ Rectangle {
             Rectangle {
                 id: clickIndicator
                 anchors.fill: parent
-                color: "black"
+                color: darktheme == false? "black" : maincolor
                 opacity: 0.25
                 visible: false
 
@@ -169,13 +169,13 @@ Rectangle {
             }
 
             Label {
-                id: txPartner
+                id: idPartner
 
                 function compareAddress(){
                     var fromto = ""
                     for(var i = 0; i < addressList.count; i++) {
-                        if (addressList.get(i).address === txpartnerHash) {
-                            if (addressList.get(i).coin === txcoinName) {
+                        if (addressList.get(i).address === txPartner) {
+                            if (addressList.get(i).coin === selectedCoin) {
                                 fromto = (addressList.get(i).name)
                             }
                         }
@@ -185,7 +185,7 @@ Rectangle {
 
                 property string txpartnerName: compareAddress()
 
-                text: (amount > 0 ? "from " : "to ") + (txpartnerName !== "" ? txpartnerName : txpartnerHash)
+                text: (amount > 0 ? "from " : "to ") + (txpartnerName !== "" ? txpartnerName : txPartner)
                 anchors.left: left2.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
@@ -270,7 +270,7 @@ Rectangle {
                 anchors.left: left3.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 14
                 color: "#F2F2F2"
                 visible: lineView == 2
@@ -295,18 +295,18 @@ Rectangle {
                 onClicked: {
                     clickIndicator.visible = false
                     if (lineView == 0) {
-                        if (selectedWallet == 1) {
+                        if (selectedCoin == "XBY") {
                             Qt.openUrlExternally("https://xtrabytes.global/explorer/xby?open=%2Fexplorer%2Fxby%2Ftx%2F" + txid)
                         }
-                        else if (selectedWallet == 0) {
+                        else if (selectedCoin == "XFUEL") {
                             Qt.openUrlExternally("https://xtrabytes.global/explorer/xfuel?open=%2Fexplorer%2Fxfuel%2Ftx%2F" + txid)
                         }
                     }
                     else if (lineView == 1) {
-                        if (selectedWallet == 1) {
+                        if (selectedCoin == "XBY") {
                             Qt.openUrlExternally("https://xtrabytes.global/explorer/xby?open=%2Faddress%2Fxby%2F" + txpartnerHash)
                         }
-                        else if (selectedWallet == 0) {
+                        else if (selectedCoin == "XFUEL") {
                             Qt.openUrlExternally("https://xtrabytes.global/explorer/xfuel?open=%2Faddress%2Fxfuel%2F" + txpartnerHash)
                         }
                     }
@@ -317,8 +317,18 @@ Rectangle {
 
     SortFilterProxyModel {
         id: filteredTX
-        sourceModel:(selectedWallet == 1 ? xbyTXHistory : xfuelTXHistory)
+        sourceModel:transactionList
         filters: [
+            RegExpFilter {
+                roleName: "name"
+                pattern: selectedCoin
+                caseSensitivity: Qt.CaseInsensitive
+            },
+            RegExpFilter {
+                roleName: "label"
+                pattern: selectedWallet
+                caseSensitivity: Qt.CaseInsensitive
+            },
             AnyOf {
                 RegExpFilter {
                     roleName: "reference"
@@ -326,12 +336,7 @@ Rectangle {
                     caseSensitivity: Qt.CaseInsensitive
                 }
                 RegExpFilter {
-                    roleName: "txpartnerHash"
-                    pattern: searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "txid"
+                    roleName: "txPartner"
                     pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
@@ -348,7 +353,7 @@ Rectangle {
             }
         ]
         sorters: [
-            RoleSorter { roleName: "txNR" ; sortOrder: Qt.DescendingOrder }
+            RoleSorter { roleName: "txID" ; sortOrder: Qt.DescendingOrder }
         ]
     }
 
