@@ -16,6 +16,7 @@ import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import Clipboard 1.0
 import QZXing 2.3
+import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
 import "qrc:/Controls/+mobile" as Mobile
@@ -70,7 +71,7 @@ Rectangle {
     property string transactionDate: ""
     property string addressName: compareAddress()
     property real currentBalance: getCurrentBalance()
-    property int walletID: getWalletNR(coinID.text, walletLabel.text)
+    property int selectedWallet: getWalletNR(coinID.text, walletLabel.text)
 
 
     function compareAddress(){
@@ -267,7 +268,7 @@ Rectangle {
         }
 
         Text {
-            property string balance: (walletList.get(walletID).balance).toLocaleString(Qt.locale("en_US"), "f", decimals)
+            property string balance: (walletList.get(selectedWallet).balance).toLocaleString(Qt.locale("en_US"), "f", decimals)
             id: walletBalance1
             text: balance
             anchors.right: walletBalance.left
@@ -315,6 +316,9 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton1
+
+                onPressed: { click01.play() }
+
                 onClicked: {
                     coinListLines(true)
                     coinListTracker = 1
@@ -426,6 +430,9 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton2
+
+                onPressed: { click01.play() }
+
                 onClicked: {
                     coinWalletLines(coinID.text)
                     walletListTracker = 1
@@ -560,7 +567,7 @@ Rectangle {
 
         Text {
             id: publicKey
-            text: walletList.get(walletID).address
+            text: walletList.get(selectedWallet).address
             anchors.top: pubKey.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
@@ -615,7 +622,7 @@ Rectangle {
             placeholder: amountTransfer
             color: sendAmount.text !== "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
-            validator: DoubleValidator {bottom: 0; top: ((walletList.get(walletID).balance))}
+            validator: DoubleValidator {bottom: 0; top: ((walletList.get(selectedWallet).balance))}
             visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 0
@@ -650,7 +657,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && inputAmount > (walletList.get(walletID).balance)
+                     && inputAmount > (walletList.get(selectedWallet).balance)
         }
 
         Controls.TextInput {
@@ -726,6 +733,7 @@ Rectangle {
 
                 onPressed: {
                     scanQrButton.color = maincolor
+                    click01.play()
                 }
 
                 onReleased: {
@@ -769,6 +777,7 @@ Rectangle {
 
                 onPressed: {
                     addressBookButton.color = maincolor
+                    click01.play()
                 }
 
                 onReleased: {
@@ -816,7 +825,7 @@ Rectangle {
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
                     && inputAmount !== 0
-                    && inputAmount <= (walletList.get(walletID).balance)) ? maincolor : (darktheme == false? "#727272" : "#14161B")
+                    && inputAmount <= (walletList.get(selectedWallet).balance)) ? maincolor : (darktheme == false? "#727272" : "#14161B")
             anchors.bottom: bodyModal.bottom
             anchors.bottomMargin: 20
             anchors.left: referenceInput.left
@@ -829,15 +838,14 @@ Rectangle {
             MouseArea {
                 anchors.fill: sendButton
 
-                onPressed: {
-                }
+                onPressed: { click01.play() }
 
                 onReleased: {
                     if (invalidAddress == 0
                             && keyInput.text !== ""
                             && sendAmount.text !== ""
                             && inputAmount !== 0
-                            && inputAmount <= (walletList.get(walletID).balance)
+                            && inputAmount <= (walletList.get(selectedWallet).balance)
                             && calculatorTracker == 0) {
                         transactionSent = 1
                         picklistTracker = 0
@@ -854,7 +862,7 @@ Rectangle {
                         && keyInput.text !== ""
                         && sendAmount.text !== ""
                         && inputAmount !== 0
-                        && inputAmount <= (walletList.get(walletID).balance)) ? "#F2F2F2" : (darktheme == false? "#979797" : "#3F3F3F")
+                        && inputAmount <= (walletList.get(selectedWallet).balance)) ? "#F2F2F2" : (darktheme == false? "#979797" : "#3F3F3F")
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -1017,8 +1025,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: confirmationSendButton
 
-                    onPressed: {
-                    }
+                    onPressed: { click01.play() }
 
                     onReleased: {
                         confirmationSent = 1
@@ -1051,8 +1058,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: cancelSendButton
 
-                    onPressed: {
-                    }
+                    onPressed: { click01.play() }
 
                     onReleased: {
                         transactionSent = 0
@@ -1126,8 +1132,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: closeConfirm
 
-                    onPressed: {
-                    }
+                    onPressed: { click01.play() }
 
                     onReleased: {
                         transactionDate = new Date().toLocaleDateString(Qt.locale(),"dd MMM yy")
@@ -1269,6 +1274,7 @@ Rectangle {
 
                 onPressed: {
                    cancelAddressButton.color = maincolor
+                   click01.play()
                 }
 
                 onReleased: {
@@ -1363,6 +1369,7 @@ Rectangle {
 
             onPressed: {
                 closeTransferModal.anchors.topMargin = 12
+                click01.play()
             }
 
             onReleased: {

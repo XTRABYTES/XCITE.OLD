@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
 
@@ -37,7 +38,7 @@ Item {
     property int xfuelButton1State: 0
     property int btcButton1State: 0
     property int usdButton1State: 1
-    property string fromCurrency: "USD"
+    property string fromCurrency: "FIAT"
     property var fromAmount: Number.fromLocaleString(Qt.locale("en_US"),inputAmount.text)
     property string toCurrency: "XFUEL"
     property string output: ""
@@ -124,7 +125,7 @@ Item {
                     newAmount = (fromAmount / btcValueXFUEL).toLocaleString(Qt.locale("en_US"), "f", decimals)
                 }
             }
-            else if (fromCurrency == "USD") {
+            else if (fromCurrency == "FIAT") {
                 if (toCurrency == "XBY") {
                     if ((fromAmount / valueXBY) >= 1000000) {
                         decimals = 2
@@ -357,7 +358,7 @@ Item {
 
         Text {
             id: usdButton1Label
-            text : "USD"
+            text : settings.defaultCurrency
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
@@ -371,7 +372,7 @@ Item {
             onClicked: {
                 if (usdButton1State == 0) {
                     usdButton1State = 1
-                    fromCurrency = "USD"
+                    fromCurrency = "FIAT"
                     xbyButton1State = 0
                     xfuelButton1State = 0
                     btcButton1State = 0
@@ -854,6 +855,9 @@ Item {
 
         MouseArea {
             anchors.fill: confirmationSendButton
+
+            onPressed: { click01.play() }
+
             onClicked: {
                 calculatedAmount = Number.fromLocaleString(Qt.locale("en_US"),outputAmount.text)
                 calculatorTracker = 0
@@ -885,6 +889,8 @@ Item {
 
         MouseArea {
             anchors.fill: cancelSendButton
+
+            onPressed: { click01.play() }
 
             onClicked: {
                 calculatorTracker = 0

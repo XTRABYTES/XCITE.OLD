@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import Clipboard 1.0
 import Qt.labs.settings 1.0
 import Qt.labs.folderlistmodel 2.11
+import QtMultimedia 5.8
 
 ApplicationWindow {
     property bool isNetworkActive: false
@@ -89,6 +90,7 @@ ApplicationWindow {
     property int addAddressTracker: 0
     property int addCoinTracker: 0
     property int addContactTracker: 0
+    property int editContactTracker: 0
     property int coinListTracker: 0
     property int walletListTracker: 0
     property int addressbookTracker: 0
@@ -533,6 +535,18 @@ ApplicationWindow {
 
     Component.onCompleted: {
 
+        profilePictures.setProperty(0, "photo", 'qrc:/icons/icon-profile_01.svg');
+        profilePictures.setProperty(0, "pictureNR", pictureID);
+        pictureID = pictureID +1;
+        profilePictures.append({"photo": 'qrc:/icons/icon-profile_02.svg', "pictureNR": pictureID});
+        pictureID = pictureID +1;
+        profilePictures.append({"photo": 'qrc:/icons/icon-profile_03.svg', "pictureNR": pictureID});
+        pictureID = pictureID +1;
+        profilePictures.append({"photo": 'qrc:/icons/icon-profile_04.svg', "pictureNR": pictureID});
+        pictureID = pictureID +1;
+
+        addOwnContact();
+
         if (signUpTracker == 0) {
             mainRoot.push("../SignUp.qml")
         }
@@ -576,4 +590,10 @@ ApplicationWindow {
         id: network
         handler: wallet
     }
+
+    SoundEffect {
+        id: click01
+        source: "qrc:/sounds/click_01.wav"
+        volume: 0.15
+   }
 }

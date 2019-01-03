@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
 
@@ -212,6 +213,9 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton
+
+                onPressed: { click01.play() }
+
                 onClicked: {
                     coinListLines(false)
                     coinListTracker = 1
@@ -347,6 +351,7 @@ Rectangle {
                     parent.color = maincolor
                     parent.border.color = "transparent"
                     scanButtonText.color = "#F2F2F2"
+                    click01.play()
                 }
 
                 onReleased: {
@@ -451,8 +456,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: saveButton
 
-                onPressed: {
-                }
+                onPressed: { click01.play() }
 
                 onReleased: {
                     if (newName.text != ""
@@ -524,6 +528,8 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: closeSave
+
+                onPressed: { click01.play() }
 
                 onClicked: {
                     addAddressTracker = 0;
@@ -604,6 +610,7 @@ Rectangle {
 
             onPressed: {
                 parent.anchors.topMargin = 14
+                click01.play()
             }
 
             onClicked: {

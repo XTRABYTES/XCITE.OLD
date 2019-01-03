@@ -144,6 +144,7 @@ Rectangle {
 
                     onPressed: {
                         cardShadow.verticalOffset = 0
+                        click01.play()
                     }
 
                     onReleased: {
@@ -151,16 +152,14 @@ Rectangle {
                     }
 
                     onClicked: {
-                        cardShadow.verticalOffset = 4
-                        if (appsTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && transferTracker == 0) {
-                            contactIndex = contactNR
-                            contactTracker = 1
-                        }
+                        contactIndex = contactNR
+                        contactTracker = 1
                     }
 
                     onPressAndHold: {
                         cardShadow.verticalOffset = 4
-                        //edit contact info
+                        contactIndex = contactNR
+                        editContactTracker = 1
                     }
                 }
             }

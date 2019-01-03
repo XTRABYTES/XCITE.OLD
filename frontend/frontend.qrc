@@ -152,5 +152,6 @@
         <file>Controls/+mobile/Contacts.qml</file>
         <file>Controls/+mobile/AddContact.qml</file>
         <file>Controls/+mobile/PictureList.qml</file>
+        <file>Controls/+mobile/ContactModal.qml</file>
     </qresource>
 </RCC>

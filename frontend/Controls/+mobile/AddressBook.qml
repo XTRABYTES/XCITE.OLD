@@ -15,6 +15,7 @@ import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.0
 import SortFilterProxyModel 0.2
 import QtQuick.Window 2.2
+import QtMultimedia 5.8
 
 Rectangle {
     id: allAddressCards
@@ -166,6 +167,7 @@ Rectangle {
 
                    onPressed: {
                         cardShadow.verticalOffset = 0
+                        click01.play()
                     }
 
                     onReleased: {
@@ -229,6 +231,7 @@ Rectangle {
 
                         onPressed: {
                             transfer.color = maincolor
+                            click01.play()
                         }
 
                         onReleased: {

@@ -1,5 +1,5 @@
 /**
- * Filename: AddContact.qml
+ * Filename: ContactModal.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -19,9 +19,9 @@ import QtMultimedia 5.8
 import "qrc:/Controls" as Controls
 
 Rectangle {
-    id: addContactModal
+    id: editContactModal
     width: 325
-    state: addContactTracker == 1? "up" : "down"
+    state: editContactTracker == 1? "up" : "down"
     height: editSaved == 1? 360 : 465
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
@@ -30,11 +30,11 @@ Rectangle {
     states: [
         State {
             name: "up"
-            PropertyChanges { target: addContactModal; anchors.topMargin: 50}
+            PropertyChanges { target: editContactModal; anchors.topMargin: 50}
         },
         State {
             name: "down"
-            PropertyChanges { target: addContactModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: editContactModal; anchors.topMargin: Screen.height}
         }
     ]
 
@@ -42,7 +42,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addContactModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: editContactModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
         }
     ]
 
@@ -52,8 +52,35 @@ Rectangle {
     function compareName() {
         contactExists = 0
         for(var i = 0; i < contactList.count; i++) {
-            if (contactList.get(i).firstName === newFirstname.text && contactList.get(i).lastName === newLastname.text  && contactList.get(i).remove === false) {
-                contactExists = 1
+            if (contactList.get(i).contactNR !== contactIndex && contactList.get(i).remove === false) {
+                if (newFirstname.text !== ""){
+                    if (contactList.get(i).firstName === newFirstname.text) {
+                        if (newLastname.text !== "") {
+                            if (contactList.get(i).lastName === newLastname.text) {
+                                contactExists = 1
+                            }
+                        }
+                        else {
+                            if (contactList.get(i).lastName === newLastname.placeholder) {
+                                contactExists = 1
+                            }
+                        }
+                    }
+                }
+                else {
+                    if (contactList.get(i).firstName === newFirstname.placeholder) {
+                        if (newLastname.text !== "") {
+                            if (contactList.get(i).lastName === newLastname.text) {
+                                contactExists = 1
+                            }
+                        }
+                        else {
+                            if (contactList.get(i).lastName === newLastname.placeholder) {
+                                contactExists = 1
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -68,9 +95,10 @@ Rectangle {
         visible: editSaved == 0
 
 
-        Text {
-            id: transferModalLabel
-            text: "ADD NEW CONTACT"
+        Label {
+            id: contactModalLabel
+            width: parent.width - 28
+            text: contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.top
             anchors.verticalCenterOffset: 27
@@ -78,6 +106,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             color: darktheme == false? "#F2F2F2" : maincolor
             font.letterSpacing: 2
+            elide: Text.ElideRight
         }
 
     }
@@ -109,7 +138,7 @@ Rectangle {
 
         Image {
             id: newPhoto
-            source: profilePictures.get(0).photo
+            source: contactList.get(contactIndex).photo
             height: 100
             width: 100
             anchors.left: parent.left
@@ -121,6 +150,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newFirstname
+            text: contactList.get(contactIndex).firstName
             height: 34
             placeholder: "FIRST NAME"
             anchors.bottom: newPhoto.verticalCenter
@@ -131,14 +161,16 @@ Rectangle {
             anchors.leftMargin: 25
             color: newFirstname.text != "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             visible: editSaved == 0
             mobile: 1
+            deleteBtn: contactIndex == 0? 0 : 1
+            readOnly: contactIndex == 0
             onTextChanged: compareName()
         }
 
         Controls.TextInput {
             id: newLastname
+            text: contactList.get(contactIndex).lastName
             height: 34
             placeholder: "LAST NAME"
             anchors.left: newFirstname.left
@@ -147,9 +179,10 @@ Rectangle {
             anchors.topMargin: 10
             color: newLastname.text !== "" ? "#F2F2F2" : "#727272"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             visible: editSaved == 0
             mobile: 1
+            deleteBtn: contactIndex == 0? 0 : 1
+            readOnly: contactIndex == 0
             onTextChanged: compareName()
         }
 
@@ -171,6 +204,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newTel
+            text: contactList.get(contactIndex).telNR
             height: 34
             placeholder: "TELEPHONE NUMBER"
             anchors.left: newPhoto.left
@@ -186,6 +220,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newCell
+            text: contactList.get(contactIndex).cellNR
             height: 34
             placeholder: "CELLPHONE NUMBER"
             anchors.left: newTel.left
@@ -201,6 +236,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newMail
+            text: contactList.get(contactIndex).mailAddress
             height: 34
             placeholder: "EMAIL ADDRESS"
             anchors.left: newCell.left
@@ -215,6 +251,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newChat
+            text: contactList.get(contactIndex).chatID
             height: 34
             placeholder: "X-CHAT ID"
             anchors.left: newMail.left
@@ -232,9 +269,7 @@ Rectangle {
             width: parent.width - 28
             height: 34
             radius: 5
-            color: (newFirstname.text !== ""
-                    && newLastname.text !== ""
-                    && contactExists == 0) ? maincolor : "#727272"
+            color: (contactExists == 0) ? maincolor : "#727272"
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
@@ -246,11 +281,17 @@ Rectangle {
                 onPressed: { click01.play() }
 
                 onReleased: {
-                    if (newFirstname.text !== ""
-                            && newLastname.text !== ""
-                            && contactExists == 0) {
-                        contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
-                        contactID = contactID +1;
+                    if (contactExists == 0) {
+                        if (newFirstname.text !== "") {
+                            contactList.setProperty(contactIndex, "firstName", newFirstname.text)
+                        };
+                        if (newLastname.text !== "") {
+                            contactList.setProperty(contactIndex, "lastName", newLastname.text)
+                        };
+                        contactList.setProperty(contactIndex, "telNR", newTel.text);
+                        contactList.setProperty(contactIndex, "cellNR", newCell.text);
+                        contactList.setProperty(contactIndex, "mailAddress", newMail.text);
+                        contactList.setProperty(contactIndex, "chatID", newChat.text);
                         editSaved = 1
                     }
                 }
@@ -261,9 +302,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: (newFirstname.text !== ""
-                        && newLastname.text !== ""
-                        && contactExists == 0) ? "#F2F2F2" : "#979797"
+                color: (contactExists == 0) ? "#F2F2F2" : "#979797"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -299,7 +338,7 @@ Rectangle {
 
         Label {
             id: saveSuccessName
-            text: newFirstname.text + " " + newLastname.text
+            text: contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName
             anchors.top: saveSuccess.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveSuccess.horizontalCenter
@@ -312,7 +351,7 @@ Rectangle {
 
         Label {
             id: saveSuccessLabel
-            text: "Saved!"
+            text: "Changed!"
             anchors.top: saveSuccess.bottom
             anchors.topMargin: 40
             anchors.horizontalCenter: saveSuccess.horizontalCenter
@@ -340,13 +379,7 @@ Rectangle {
                 onPressed: { click01.play() }
 
                 onClicked: {
-                    addContactTracker = 0;
-                    newFirstname.text = "";
-                    newLastname.text = "";
-                    newTel.text = "";
-                    newCell.text = "";
-                    newMail.text = "";
-                    newChat.text = "";
+                    editContactTracker = 0;
                     contactExists = 0;
                     editSaved = 0
                 }
@@ -367,19 +400,19 @@ Rectangle {
         id: closeAddressModal
         z: 10
         text: "CLOSE"
-        anchors.top: addContactModal.bottom
+        anchors.top: editContactModal.bottom
         anchors.topMargin: 20
-        anchors.horizontalCenter: addContactModal.horizontalCenter
+        anchors.horizontalCenter: editContactModal.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == false? "#F2F2F2" : maincolor
-        visible: addContactTracker == 1
+        visible: editContactTracker == 1
                  && editSaved == 0
 
         Rectangle{
             id: closeButton
             height: 34
-            width: doubbleButtonWidth
+            width: doubbleButtonWidth / 2
             radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -394,13 +427,7 @@ Rectangle {
             onPressed: { click01.play() }
 
             onClicked: {
-                addContactTracker = 0;
-                newFirstname.text = "";
-                newLastname.text = "";
-                newTel.text = "";
-                newCell.text = "";
-                newMail.text = "";
-                newChat.text = "";
+                editContactTracker = 0;
                 contactExists = 0;
             }
         }

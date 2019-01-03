@@ -3,6 +3,7 @@ import QtQuick 2.7
 import QtMultimedia 5.5
 import QtGraphicalEffects 1.0
 import QZXing 2.3
+import QtMultimedia 5.8
 
 Item {
     width: 325
@@ -163,6 +164,7 @@ Item {
 
             onPressed: {
                 cancelScanButton.color = maincolor
+                click01.play()
             }
 
             onReleased: {

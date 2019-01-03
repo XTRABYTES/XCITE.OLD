@@ -38,18 +38,6 @@ Item {
         walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
         walletID = walletID +1;
 
-        profilePictures.setProperty(0, "photo", 'qrc:/icons/icon-profile_01.svg');
-        profilePictures.setProperty(0, "pictureNR", pictureID);
-        pictureID = pictureID +1;
-        profilePictures.append({"photo": 'qrc:/icons/icon-profile_02.svg', "pictureNR": pictureID});
-        pictureID = pictureID +1;
-        profilePictures.append({"photo": 'qrc:/icons/icon-profile_03.svg', "pictureNR": pictureID});
-        pictureID = pictureID +1;
-        profilePictures.append({"photo": 'qrc:/icons/icon-profile_04.svg', "pictureNR": pictureID});
-        pictureID = pictureID +1;
-
-        addOwnContact();
-
         loadContactList ();
 
         addWalletsToAddressList();

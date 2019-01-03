@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
 import "qrc:/Controls/+mobile" as Mobile
@@ -50,6 +51,7 @@ Rectangle {
 
     onStateChanged: {
         checkMyAddress()
+        console.log("addressModal state: " + state)
     }
 
     property string coinName: addressList.get(addressIndex).coin
@@ -306,8 +308,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: saveEditButton
 
-                onPressed: {
-                }
+                onPressed: { click01.play() }
 
                 onClicked: {
                     if (doubleAddress == 0
@@ -375,6 +376,9 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton1
+
+                onPressed: { click01.play() }
+
                 onClicked: {
                     coinListLines(false)
                     coinListTracker = 1
@@ -404,6 +408,8 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: deleteButton
+
+                onPressed: { click01.play() }
 
                 onClicked: {
                     deleteAddressTracker = 1
@@ -530,6 +536,7 @@ Rectangle {
                     scanQrButton.color = maincolor
                     scanQrButton.border.color = "transparent"
                     scanQrButtonText.color = "#F2F2F2"
+                    click01.play()
                 }
 
                 onReleased: {
@@ -688,6 +695,7 @@ Rectangle {
 
                 onPressed: {
                     closeSaveEdit.color = maincolor
+                    click01.play()
                 }
 
                 onCanceled: {
@@ -772,8 +780,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                    onPressed: {
-                    }
+                    onPressed: { click01.play() }
 
                     onReleased: {
                         deleteConfirmed = 1
@@ -809,8 +816,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                    onPressed: {
-                    }
+                    onPressed: { click01.play() }
 
                     onReleased: {
                         deleteAddressTracker = 0
@@ -901,6 +907,7 @@ Rectangle {
 
                 onPressed: {
                     closeDelete.color = maincolor
+                    click01.play()
                 }
 
                 onCanceled: {
@@ -977,6 +984,7 @@ Rectangle {
 
             onPressed: {
                 parent.anchors.topMargin = 14
+                click01.play()
             }
 
             onReleased: {

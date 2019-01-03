@@ -15,6 +15,7 @@ import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
+import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
 
@@ -25,16 +26,6 @@ Item {
     property int pageTracker: view.currentIndex == 0 ? 0 : 1
     property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
     property string searchCriteria:""
-
-    focus: true
-
-    Keys.onReleased: {
-        if (event.key === Qt.Key_Back) {
-            console.log("Back button captured!")
-            event.accepted = true
-            exitTracker = 1
-        }
-    }
 
     Rectangle {
         id: backgroundHome
@@ -526,6 +517,8 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
+                        onPressed: { click01.play() }
+
                         onClicked: {
                             if (coinTracker == 1) {
                                 countWallets()
@@ -639,9 +632,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: transferButton
 
-                                    onPressed: {
-
-                                    }
+                                    onPressed: { click01.play() }
 
                                     onReleased: {
 
@@ -706,9 +697,7 @@ Item {
                                     MouseArea {
                                         anchors.fill: parent
 
-                                        onPressed: {
-
-                                        }
+                                        onPressed: { click01.play() }
 
                                         onReleased: {
 
@@ -1124,6 +1113,8 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
+                        onPressed: { click01.play() }
+
                         onClicked: {
                             if (addressQRTracker == 0) {
                                 if (contactTracker == 1) {
@@ -1214,6 +1205,8 @@ Item {
                     }
                     MouseArea {
                         anchors.fill: parent
+
+                        onPressed: { click01.play() }
 
                         onClicked: {
                             addAddressTracker = 1
@@ -1351,13 +1344,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: transferButton2
 
-                                    onPressed: {
-
-                                    }
-
-                                    onReleased: {
-
-                                    }
+                                    onPressed: { click01.play() }
 
                                     onClicked: {
                                         if (transferTracker == 0 && addAddressTracker == 0) {
@@ -1410,9 +1397,7 @@ Item {
                                     MouseArea {
                                         anchors.fill: addContactButton
 
-                                        onPressed: {
-
-                                        }
+                                        onPressed: { click01.play() }
 
                                         onReleased: {
 
@@ -1489,6 +1474,8 @@ Item {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.verticalCenter: parent.verticalCenter
 
+                                    onPressed: { click01.play() }
+
                                     onClicked: {
                                         if(contactList.get(contactIndex).mailAddress !== "") {
                                             Qt.openUrlExternally('mailto:' + contactList.get(contactIndex).mailAddress)
@@ -1517,6 +1504,8 @@ Item {
                                     height: 30
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.verticalCenter: parent.verticalCenter
+
+                                    onPressed: { click01.play() }
 
                                     onClicked: {
                                         if(contactList.get(contactIndex).cellNR !== "") {
@@ -1547,6 +1536,8 @@ Item {
                                     height: 30
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.verticalCenter: parent.verticalCenter
+
+                                    onPressed: { click01.play() }
 
                                     onClicked: {
                                         if(contactList.get(contactIndex).telNR !== "") {
@@ -1671,6 +1662,8 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
 
+                            onPressed: { click01.play() }
+
                             onClicked: {
                                 Qt.openUrlExternally('tel:' + contactList.get(contactIndex).cellNR)
                                 cellTracker = 0
@@ -1701,6 +1694,8 @@ Item {
                             height: 30
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
+
+                            onPressed: { click01.play() }
 
                             onClicked: {
                                 Qt.openUrlExternally('sms:' + contactList.get(contactIndex).cellNR)
@@ -1738,6 +1733,9 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
+
+                    onPressed: { click01.play() }
+
                     onClicked: {
                         if (transferTracker == 0 && coinTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0) {
                             appsTracker = 1
@@ -1770,6 +1768,8 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+
+                        onPressed: { click01.play() }
 
                         onClicked: {
                             if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == true) {
@@ -1856,11 +1856,11 @@ Item {
             height: parent.height
             width: parent.width
             z: 6
-            state: (walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1) ? "dark" : ((appsTracker == 1)? "medium" : "clear")
+            state: (walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1 || editContactTracker == 1) ? "dark" : ((appsTracker == 1)? "medium" : "clear")
 
             MouseArea {
                 anchors.fill: parent
-                visible: walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1
+                visible: walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1 || editContactTracker == 1
             }
 
             states: [
@@ -1888,16 +1888,6 @@ Item {
         }
 
         /**
-        Controls.CoinModal {
-            id: coinModal
-            z: 10
-        }
-
-        Controls.WalletModal {
-            id: walletModal
-            z: 10
-        }
-
         Controls.HistoryModal {
             id: historyModal
             z: 10
@@ -1906,6 +1896,13 @@ Item {
 
         Controls.AddContact {
             id: contactModal
+            z: 10
+            anchors.horizontalCenter: backgroundHome.horizontalCenter
+            anchors.top: backgroundHome.top
+        }
+
+        Controls.ContactModal {
+            id: editContactModal
             z: 10
             anchors.horizontalCenter: backgroundHome.horizontalCenter
             anchors.top: backgroundHome.top
