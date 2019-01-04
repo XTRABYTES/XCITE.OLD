@@ -39,7 +39,7 @@ Rectangle {
             Rectangle {
                 id: clickIndicator
                 anchors.fill: parent
-                color: "black"
+                color: maincolor
                 opacity: 0.25
                 visible: false
 
@@ -55,7 +55,9 @@ Rectangle {
                 anchors.fill: parent
 
                 onPressed: {
-                    clickIndicator.visible = true
+                    if (currentAddress != address) {
+                        clickIndicator.visible = true
+                    }
                 }
 
                 onReleased: {
@@ -64,7 +66,7 @@ Rectangle {
 
                 onClicked: {
                     clickIndicator.visible = false
-                    if (transferTracker == 1) {
+                    if (transferTracker == 1 && currentAddress != address) {
                         addressbookTracker = 0;
                         selectedAddress = address
                     }
@@ -73,41 +75,48 @@ Rectangle {
 
             Rectangle {
                 height: 1
-                width: parent.width - 10
+                width: parent.width - 60
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                color: "#727272"
+                color: darktheme == false? "#727272" : maincolor
                 visible: index != 0
             }
 
             Label {
                 id: addressContactName
-                text: {
-                    if (name.length > 12) {
-                        name.substring(0,12) + "..."}
-                    else {
-                        name
-                    }
-                }
+                width: 115
+                text: label
                 anchors.left: parent.left
                 anchors.leftMargin: 30
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 font.bold: true
                 color: "#F2F2F2"
+                clip: contentWidth > width
+                elide: Text.ElideRight
             }
 
             Label {
                 id: addressHash
-                text: (address).substring(0,17) + "..."
+                text: address
                 anchors.left: parent.left
-                anchors.leftMargin: 163
+                anchors.leftMargin: 155
+                anchors.right: parent.right
+                anchors.rightMargin: 30
                 anchors.bottom: addressContactName.bottom
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 14
-                font.weight: Font.Light
                 color: "#F2F2F2"
+                clip: contentWidth > width
+                elide: Text.ElideRight
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "black"
+                opacity: 0.6
+                visible: currentAddress == address
             }
         }
     }

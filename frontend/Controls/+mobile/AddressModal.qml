@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
 import "qrc:/Controls/+mobile" as Mobile
@@ -22,10 +23,11 @@ Rectangle {
     id: addressModal
     width: 325
     state: addressTracker == 0 ? "down" : "up"
-    height: scanQRTracker == 1 ? 458 : ((transactionSent == 1 || editSaved == 1 || deleteAddressTracker == 1 || deleteConfirmed == 1)? 358 : (addressSwitch.state == "off" || scanQRTracker == 0) ? 393 : 358)
+    height: (editSaved == 1 || deleteAddressTracker == 1 || deleteConfirmed == 1)? 360 : myAddress == 1? 300 : 320
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+    anchors.topMargin: 50
     visible: scanQRTracker == 0
 
     states: [
@@ -44,96 +46,58 @@ Rectangle {
             from: "*"
             to: "*"
             NumberAnimation { target: addressModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
-            //PropertyAnimation { target: addressModal; property: "visible"; duration: 300}
         }
     ]
 
+    onStateChanged: {
+        checkMyAddress()
+        console.log("addressModal state: " + state)
+    }
+
     property string coinName: addressList.get(addressIndex).coin
-    property string sendAddress: addressList.get(addressIndex).address
-    property string addressName: addressList.get(addressIndex).name
-    property int switchState: 0
-    property int addressBookTracker: 0
+    property string addressHash: addressList.get(addressIndex).address
+    property string addressName: addressList.get(addressIndex).label
     property int deleteAddressTracker: 0
-    property int transactionSent: 0
-    property int confirmationSent: 0
     property int editSaved: 0
     property int deleteConfirmed: 0
-    property int addressNR: 0
     property int invalidAddress: 0
-    property int doubbleAddress: 0
+    property int doubleAddress: 0
     property int labelExists: 0
     property int myAddress: 0
-    property int decimals: (newCoinName.text) == "BTC" ? 8 : 4
-    property var inputAmount: Number.fromLocaleString(Qt.locale("en_US"),sendAmount.text)
-    property string amountTransfer: "AMOUNT (" + newCoinName.text + ")"
-    property string referenceTransfer: "REFERENCE"
-    property string transactionDate: ""
-    property string transactionName: compareAddress()
-
-
-    function compareAddress(){
-        var fromto = ""
-        for(var i = 0; i < addressList.count; i++) {
-            if (addressList.get(i).address === keyInput.placeholder) {
-                if (addressList.get(i).coin === newCoinName.text) {
-                    fromto = (addressList.get(i).name)
-                }
-            }
-        }
-        return fromto
-    }
 
     function checkMyAddress(){
         myAddress = 0
-        for(var i = 0; i < addressList.count; i++) {
-            if (addressList.get(i).name === newName.placeholder) {
-                if (addressList.get(i).address === receivingAddress || addressList.get(i).address === receivingAddressXFUEL || addressList.get(i).address === receivingAddressBTC || addressList.get(i).address === receivingAddressETH) {
-                    myAddress = 1
-                }
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === coinName && walletList.get(i).address === addressHash) {
+                myAddress = 1
             }
         }
     }
 
     function compareTx(){
-        doubbleAddress = 0
+        doubleAddress = 0
         for(var i = 0; i < addressList.count; i++) {
             if (newAddress.text != "") {
                 if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY") {
-                        if (addressList.get(i).address === newAddress.text) {
-                            if (addressList.get(i).active === true) {
-                                doubbleAddress = 1
-                            }
-                        }
+                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    doubleAddress = 1
                     }
                 }
                 else {
-                    if (addressList.get(i).coin === newCoinName.text) {
-                        if (addressList.get(i).address === newAddress.text) {
-                            if (addressList.get(i).active === true) {
-                                doubbleAddress = 1
-                            }
-                        }
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                        doubleAddress = 1
                     }
                 }
             }
             else {
                 if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY") {
-                        if (addressList.get(i).address === newAddress.placeholder) {
-                            if (addressList.get(i).active === true) {
-                                doubbleAddress = 1
-                            }
-                        }
+                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    doubleAddress = 1
                     }
                 }
                 else {
-                    if (addressList.get(i).coin === newCoinName.text) {
-                        if (addressList.get(i).address === newAddress.placeholder) {
-                            if (addressList.get(i).active === true) {
-                                doubbleAddress = 1
-                            }
-                        }
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                        doubleAddress = 1
                     }
                 }
             }
@@ -143,42 +107,28 @@ Rectangle {
     function compareName(){
         labelExists = 0
         for(var i = 0; i < addressList.count; i++) {
-            if (newName.text != "") {
-                if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY") {
-                        if (addressList.get(i).name === newName.text) {
-                            if (addressList.get(i).active === true) {
-                                labelExists = 1
-                            }
+            if (addressList.get(i).contact === contactIndex) {
+                if (newName.text != "") {
+                    if (newCoinName.text == "XBY") {
+                        if (addressList.get(i).coin === "XBY" && addressList.get(i).label === newName.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                        labelExists = 1
+                        }
+                    }
+                    else {
+                        if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === newName.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                            labelExists = 1
                         }
                     }
                 }
                 else {
-                    if (addressList.get(i).coin === newCoinName.text) {
-                        if (addressList.get(i).name === newName.text) {
-                            if (addressList.get(i).active === true) {
-                                labelExists = 1
-                            }
+                    if (newCoinName.text == "XBY") {
+                        if (addressList.get(i).coin === "XBY" && addressList.get(i).label === newName.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                        labelExists = 1
                         }
                     }
-                }
-            }
-            else {
-                if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY") {
-                        if (addressList.get(i).name === newName.placeholder) {
-                            if (addressList.get(i).active === true) {
-                                labelExists = 1
-                            }
-                        }
-                    }
-                }
-                else {
-                    if (addressList.get(i).coin === newCoinName.text) {
-                        if (addressList.get(i).name === newName.placeholder) {
-                            if (addressList.get(i).active === true) {
-                                labelExists = 1
-                            }
+                    else {
+                        if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === newName.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                            labelExists = 1
                         }
                     }
                 }
@@ -190,9 +140,7 @@ Rectangle {
         invalidAddress = 0
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY") {
-                if (newAddress.length == 34
-                        && newAddress.text.substring(0,1) == "B"
-                        && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "B" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -200,9 +148,7 @@ Rectangle {
                 }
             }
             else if (newCoinName.text == "XFUEL") {
-                if (newAddress.length == 34
-                        && newAddress.text.substring(0,1) == "F"
-                        && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "F" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -212,8 +158,7 @@ Rectangle {
         }
         else {
             if (newCoinName.text == "XBY") {
-                if (newAddress.placeholder.length == 34
-                        && newAddress.placeholder.substring(0,1) == "B") {
+                if (newAddress.placeholder.length == 34 && newAddress.placeholder.substring(0,1) == "B") {
                     invalidAddress = 0
                 }
                 else {
@@ -221,8 +166,7 @@ Rectangle {
                 }
             }
             else if (newCoinName.text == "XFUEL") {
-                if (newAddress.placeholder.length == 34
-                        && newAddress.placeholder.substring(0,1) == "F") {
+                if (newAddress.placeholder.length == 34 && newAddress.placeholder.substring(0,1) == "F") {
                     invalidAddress = 0
                 }
                 else {
@@ -232,34 +176,15 @@ Rectangle {
         }
     }
 
-    function checkCurrencyIndex() {
-        for(var i = 0; i < currencyList.count; i++) {
-            if (newCoinSelect == 1 && currencyList.get(newCoinPicklist).name === currencyList.get(i).name) {
-                currencyIndex = i
-            }
-        }
-    }
-
-    function getCurrentBalance(){
-        var currentBalance = 0
-        for(var i = 0; i < currencyList.count; i++) {
-            if (currencyList.get(i).name === newCoinName.text) {
-                currentBalance = currencyList.get(i).balance
-            }
-        }
-        return currentBalance
-    }
-
     Rectangle {
         id: addressTitleBar
         width: parent.width
-        height: 58
+        height: 50
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: darktheme == false? "#42454F" : "transparent"
+        color: "transparent"
         visible: editSaved == 0
-                 && transactionSent == 0
                  && deleteAddressTracker == 0
 
         Image {
@@ -268,23 +193,25 @@ Rectangle {
             height: 25
             source: addressList.get(addressIndex).logo
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -4
             anchors.left: parent.left
             anchors.leftMargin: 15
-            visible: scanQRTracker == 0
         }
 
         Text {
             id: transferModalLabel
-            text: addressName
+            text: addressName + " (" + contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName + ")"
             anchors.left: titleIcon.right
             anchors.leftMargin: 7
+            anchors.right: favoriteAddressIcon.left
+            anchors.rightMargin: 7
             anchors.verticalCenter: titleIcon.verticalCenter
             anchors.verticalCenterOffset: -1
             font.pixelSize: 20
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             color: "#F2F2F2"
-            visible: scanQRTracker == 0
+            elide: Text.ElideRight
+
+            onTextChanged: {checkMyAddress()}
         }
 
         Image {
@@ -295,7 +222,7 @@ Rectangle {
             anchors.verticalCenter: titleIcon.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: 15
-            visible: editSaved == 0 && scanQRTracker == 0
+            visible: editSaved == 0
 
             ColorOverlay {
                 anchors.fill: parent
@@ -315,16 +242,6 @@ Rectangle {
                 }
             }
         }
-
-        Rectangle {
-            width: parent.width -30
-            height: 2
-            radius: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 48
-            color: darktheme == false? "#34363D" : maincolor
-        }
     }
 
     Rectangle {
@@ -337,645 +254,109 @@ Rectangle {
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
 
-        Controls.Switch_mobile {
-            id: addressSwitch
-            anchors.horizontalCenter: addressBodyModal.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 20
-            state: switchState == 0 ? "off" : "on"
-            visible: transactionSent == 0
-                     && editSaved == 0
-                     && deleteAddressTracker == 0
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-            onStateChanged: checkMyAddress()
-        }
-
-        Text {
-            id: sendText
-            text: "SEND"
-            anchors.right: addressSwitch.left
-            anchors.rightMargin: 7
-            anchors.verticalCenter: addressSwitch.verticalCenter
-            font.pixelSize: 14
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            color: addressSwitch.on ? "#757575" : maincolor
-            visible: transactionSent == 0
-                     && editSaved == 0
-                     && deleteAddressTracker == 0
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-        }
-
-        Text {
-            id: editText
-            text: "EDIT"
-            anchors.left: addressSwitch.right
-            anchors.leftMargin: 7
-            anchors.verticalCenter: addressSwitch.verticalCenter
-            font.pixelSize: 14
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            color: addressSwitch.on ? maincolor : "#757575"
-            visible: transactionSent == 0
-                     && editSaved == 0
-                     && deleteAddressTracker == 0
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-        }
-
-        // Send state
-
         Image {
             id: newIcon
-            source: newCoinSelect == 1? currencyList.get(newCoinPicklist).logo : addressList.get(addressIndex).logo
+            source: getLogo(newCoinName.text)
             height: 25
             width: 25
-            anchors.left: sendAmount.left
-            anchors.top: addressSwitch.bottom
-            anchors.topMargin: 10
-            visible: picklistTracker == 0
+            anchors.left: newName.left
+            anchors.top: parent.top
+            anchors.topMargin: 20
+            visible: coinListTracker == 0
                      && editSaved == 0
-                     && transactionSent == 0
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
         }
 
         Label {
             id: newCoinName
-            text: newCoinSelect == 1? currencyList.get(newCoinPicklist).name : addressList.get(addressIndex).coin
+            text: newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : addressList.get(addressIndex).coin
             anchors.left: newIcon.right
             anchors.leftMargin: 7
             anchors.verticalCenter: newIcon.verticalCenter
             font.pixelSize: 18
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.bold: true
             color: "#F2F2F2"
-            visible: picklistTracker == 0
+            visible: coinListTracker == 0
                      && editSaved == 0
-                     && transactionSent == 0
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-            onTextChanged: if (addressSwitch.state == "on") {
-                               checkAddress() && compareName() && compareTx()
-                           }
-        }
 
-        Label {
-            id: walletLabel
-            text: currencyList.get(currencyIndex).label
-            anchors.right: sendAmount.right
-            anchors.verticalCenter: newIcon.verticalCenter
-            font.pixelSize: 18
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.bold: true
-            color: "#F2F2F2"
-            visible: editSaved == 0
-                     && transactionSent == 0
-                     && addressSwitch.state == "off"
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-        }
-
-        Text {
-            id: walletBalance
-            text: newCoinName.text
-            anchors.right: sendAmount.right
-            anchors.top: walletLabel.bottom
-            anchors.topMargin: 5
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.pixelSize: 14
-            color: "#828282"
-            visible: editSaved == 0
-                     && transactionSent == 0
-                     && addressSwitch.state == "off"
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-        }
-
-        Text {
-            property string balance: (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale("en_US"), "f", decimals)
-            property var balanceArray: balance.split('.')
-            id: walletBalance1
-            text:  "." + balanceArray[1]
-            anchors.right: walletBalance.left
-            anchors.rightMargin: 5
-            anchors.bottom: walletBalance.bottom
-            anchors.topMargin: 5
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.pixelSize: 14
-            color: "#828282"
-            visible: editSaved == 0
-                     && transactionSent == 0
-                     && addressSwitch.state == "off"
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-        }
-
-        Text {
-            property string balance: (currencyList.get(currencyIndex).balance).toLocaleString(Qt.locale("en_US"), "f", decimals)
-            property var balanceArray: balance.split('.')
-            id: walletBalance2
-            text: balanceArray[0]
-            anchors.right: walletBalance1.left
-            anchors.top: walletLabel.bottom
-            anchors.topMargin: 5
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.pixelSize: 14
-            color: "#828282"
-            visible: editSaved == 0
-                     && transactionSent == 0
-                     && addressSwitch.state == "off"
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-        }
-
-        Mobile.AmountInput {
-            id: sendAmount
-            height: 34
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: walletBalance.bottom
-            anchors.topMargin: 15
-            placeholder: amountTransfer
-            color: sendAmount.text !== "" ? "#F2F2F2" : "#727272"
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.pixelSize: 14
-            inputMethodHints: Qt.ImhFormattedNumbersOnly
-            validator: DoubleValidator {bottom: 0; top: (currencyList.get(currencyIndex).balance)}
-            visible: transactionSent == 0
-                     && addressSwitch.state == "off"
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-            mobile: 1
-        }
-
-        Text {
-            id: calculated
-            text: calculatedAmount
-            anchors.left: sendAmount.left
-            anchors.top: sendAmount.bottom
-            anchors.topMargin: 3
-            visible: false
             onTextChanged: {
-                sendAmount.text = calculated.text
+                if (newCoinSelect == 1) {
+                    checkAddress()
+                    compareName()
+                    compareTx()
+                }
             }
         }
 
-        Label {
-            text: "*insufficient funds"
-            color: "#FD2E2E"
-            anchors.left: sendAmount.left
-            anchors.leftMargin: 5
-            anchors.top: sendAmount.bottom
-            anchors.topMargin: 1
-            font.pixelSize: 11
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            visible: transactionSent == 0
-                     && addressSwitch.state == "off"
-                     && inputAmount > (currencyList.get(currencyIndex).balance)
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-        }
-
-        Controls.TextInput {
-            id: keyInput
-            height: 34
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: sendAmount.bottom
-            anchors.topMargin: 15
-            placeholder: sendAddress
-            color: "#F2F2F2"
-            font.pixelSize: 14
-            visible: transactionSent == 0
-                     && addressSwitch.state == "off"
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-            readOnly: true
-            mobile: 1
-            deleteBtn: 0
-        }
-
-        Controls.TextInput {
-            id: referenceInput
-            height: 34
-            placeholder: referenceTransfer
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: keyInput.bottom
-            anchors.topMargin: 15
-            color: referenceInput.text != "" ? "#F2F2F2" : "#727272"
-            font.pixelSize: 14
-            visible: transactionSent == 0
-                     && addressSwitch.state == "off"
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-            mobile: 1
-        }
-
         Rectangle {
-            id: transferModalButton
-            width: sendAmount.width
-            height: 33
+            id: saveEditButton
+            width: newName.width
+            height: 34
             radius: 5
-            color: (addressSwitch.state == "off"
-                    && sendAmount.text != ""
-                    && inputAmount !== 0
-                    && inputAmount <= (currencyList.get(currencyIndex).balance)) ? maincolor :
-                                                                                   ((addressSwitch.state == "on"
-                                                                                     && doubbleAddress == 0
-                                                                                     && labelExists == 0
-                                                                                     && invalidAddress == 0
-                                                                                     && myAddress == 0) ? maincolor :
-                                                                                                               "#727272")
+            color: (doubleAddress == 0
+                    && labelExists == 0
+                    && invalidAddress == 0
+                    && myAddress == 0) ? maincolor : (darktheme == false? "#727272" : "#14161B")
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
-            anchors.left: referenceInput.left
-            visible: transactionSent == 0
-                     && editSaved == 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: editSaved == 0
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
 
             MouseArea {
-                anchors.fill: transferModalButton
+                anchors.fill: saveEditButton
 
-                onPressed: {
-                }
+                onPressed: { click01.play() }
 
                 onClicked: {
-                    if (addressSwitch.state == "off"){
-                        if (sendAmount.text !== ""
-                                && inputAmount !== 0
-                                && inputAmount <= (currencyList.get(currencyIndex).balance)
-                                && myAddress == 0) {
-                            transactionSent = 1
-                            doubbleAddress = 0
-                            labelExists = 0
-                            invalidAddress = 0
+                    if (doubleAddress == 0
+                            && labelExists == 0
+                            && invalidAddress == 0
+                            && myAddress == 0) {
+                        if (newCoinSelect == 1) {
+                            addressList.setProperty(addressIndex, "logo", coinList.get(newCoinPicklist).logo);
+                            addressList.setProperty(addressIndex, "coin", coinList.get(newCoinPicklist).name);
                         }
-                    }
-                    else {
-                        if (doubbleAddress == 0
-                                && labelExists == 0
-                                && invalidAddress == 0) {
-                            checkCurrencyIndex()
-                            if (newCoinSelect == 1) {
-                                addressList.setProperty(addressIndex, "logo", currencyList.get(newCoinPicklist).logo);
-                            }
-                            if (newCoinSelect == 1) {
-                                addressList.setProperty(addressIndex, "coin", currencyList.get(newCoinPicklist).name);
-                            }
-                            if (newName.text !== "") {
-                                addressList.setProperty(addressIndex, "name", newName.text);
-                            }
-                            if (newAddress.text !== "") {
-                                addressList.setProperty(addressIndex, "address", newAddress.text);
-                            }
-                            editSaved = 1
-                            picklistTracker = 0
+                        if (newName.text !== "") {
+                            addressList.setProperty(addressIndex, "label", newName.text);
                         }
+                        if (newAddress.text !== "") {
+                            addressList.setProperty(addressIndex, "address", newAddress.text);
+                        }
+                        editSaved = 1
+                        coinListTracker = 0
                     }
                 }
             }
 
             Text {
-                text: addressSwitch.state == "off" ? "SEND" : "SAVE"
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                text: "SAVE"
+                font.family: xciteMobile.name
                 font.pointSize: 14
                 font.bold: true
-                color: (addressSwitch.state == "off"
-                        && sendAmount.text != ""
-                        && inputAmount !== 0
-                        && inputAmount <= (currencyList.get(currencyIndex).balance)) ? "#F2F2F2" :
-                                                                                       ((addressSwitch.state == "on"
-                                                                                         && doubbleAddress == 0
-                                                                                         && labelExists == 0
-                                                                                         && invalidAddress == 0
-                                                                                         && myAddress == 0) ? "#F2F2F2" :
-                                                                                                                   "#979797")
+                color: (doubleAddress == 0
+                        && labelExists == 0
+                        && invalidAddress == 0
+                        && myAddress == 0) ? "#F2F2F2" : (darktheme == false? "#979797" : "#3F3F3F")
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
-
-        // Transfer confirm state
-
-        Rectangle {
-            id: sendConfirmation
-            width: parent.width
-            height: parent.height
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
-            visible: transactionSent == 1
-                     && confirmationSent == 0
-
-            Text {
-                id: confirmationText
-                text: "CONFIRM TRANSACTION"
-                anchors.top: parent.top
-                anchors.topMargin: 20
-                anchors.horizontalCenter: parent.horizontalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 16
-                color: maincolor
-            }
-
-            Text {
-                id: sendingLabel
-                text: "SENDING:"
-                anchors.left: parent.left
-                anchors.leftMargin: 25
-                anchors.top: confirmationText.bottom
-                anchors.topMargin: 40
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 16
-                color: "#F2F2F2"
-            }
-
-            Item {
-                id:amount
-                implicitWidth: confirmationAmount.implicitWidth + confirmationAmount1.implicitWidth + confirmationAmount2.implicitWidth + 7
-                implicitHeight: confirmationAmount.implicitHeight
-                anchors.bottom: sendingLabel.bottom
-                anchors.right: parent.right
-                anchors.rightMargin: 25
-            }
-
-            Text {
-                id: confirmationAmount
-                text: newCoinName.text
-                anchors.top: amount.top
-                anchors.right: amount.right
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 16
-                color: "#F2F2F2"
-            }
-
-            Text {
-                property string transferAmount: inputAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
-                property var amountArray: transferAmount.split('.')
-                id: confirmationAmount1
-                text: "." + amountArray[1]
-                anchors.bottom: confirmationAmount.bottom
-                anchors.bottomMargin: 1
-                anchors.right: confirmationAmount.left
-                anchors.rightMargin: 7
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 12
-                color: "#F2F2F2"
-            }
-
-            Text {
-                property string transferAmount: inputAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
-                property var amountArray: transferAmount.split('.')
-                id: confirmationAmount2
-                text: amountArray[0]
-                anchors.top: confirmationAmount.top
-                anchors.left: amount.left
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 16
-                color: "#F2F2F2"
-            }
-
-            Text {
-                id: to
-                text: "TO:"
-                anchors.left: parent.left
-                anchors.leftMargin: 25
-                anchors.top: sendingLabel.bottom
-                anchors.topMargin: 15
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 16
-                color: "#F2F2F2"
-            }
-
-            Text {
-                id: confirmationAddress
-                text: keyInput.placeholder
-                anchors.bottom: to.bottom
-                anchors.bottomMargin: 2
-                anchors.right: parent.right
-                anchors.rightMargin: 25
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 12
-                color: "#F2F2F2"
-            }
-
-            Text {
-                id: confirmationAddressName
-                text: "(" + transactionName + ")"
-                anchors.top: confirmationAddress.bottom
-                anchors.topMargin: 5
-                anchors.right: parent.right
-                anchors.rightMargin: 25
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 16
-                color: "#F2F2F2"
-                visible: transactionName != ""
-            }
-
-            Text {
-                id: reference
-                text: "REF.:"
-                anchors.left: parent.left
-                anchors.leftMargin: 25
-                anchors.top: confirmationAddressName.bottom
-                anchors.topMargin: 15
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 16
-                color: "#F2F2F2"
-                visible: referenceInput.text !== ""
-            }
-
-            Text {
-                id: referenceText
-                text: referenceInput.text
-                anchors.bottom: reference.bottom
-                anchors.right: parent.right
-                anchors.rightMargin: 25
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.pixelSize: 16
-                color: "#F2F2F2"
-                visible: referenceInput.text !== ""
-            }
-
-            Rectangle {
-                id: confirmationSendButton
-                width: (doubbleButtonWidth - 10) / 2
-                height: 33
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
-                anchors.right: parent.horizontalCenter
-                anchors.rightMargin: 5
-                radius: 5
-                color: "#4BBE2E"
-
-                MouseArea {
-                    anchors.fill: confirmationSendButton
-
-                    onPressed: {
-                    }
-
-                    onReleased: {
-                        confirmationSent = 1
-                        // whatever function needed to execute payment
-                    }
-                }
-
-                Text {
-                    text: "CONFIRM"
-                    font.family: xciteMobile.name //"Brandon Grotesque"
-                    font.pointSize: 14
-                    color: "#F2F2F2"
-                    font.bold: true
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-
-            Rectangle {
-                id: cancelSendButton
-                width: (doubbleButtonWidth - 10) / 2
-                height: 33
-                radius: 5
-                color: "#E55541"
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
-                anchors.left: parent.horizontalCenter
-                anchors.leftMargin: 5
-
-                MouseArea {
-                    anchors.fill: cancelSendButton
-
-                    onPressed: {
-                    }
-
-                    onReleased: {
-                        transactionSent = 0
-                    }
-                }
-
-                Text {
-                    text: "CANCEL"
-                    font.family: xciteMobile.name //"Brandon Grotesque"
-                    font.pointSize: 14
-                    font.bold: true
-                    color: "#F2F2F2"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-        }
-
-        // Transfer sent state
-
-        Rectangle {
-            id: transferConfirmed
-            width: parent.width
-            height: parent.height
-            color: "transparent"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            visible: transactionSent == 1
-                     && confirmationSent == 1
-
-            Image {
-                id: confirmedIcon
-                source: 'qrc:/icons/icon-success.svg'
-                width: 120
-                height: 120
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -15
-
-                ColorOverlay {
-                    anchors.fill: parent
-                    source: confirmedIcon
-                    color: maincolor
-                }
-            }
-
-            Label {
-                id: confirmedIconLabel
-                text: "Transaction sent!"
-                anchors.top: confirmedIcon.bottom
-                anchors.topMargin: 10
-                anchors.horizontalCenter: confirmedIcon.horizontalCenter
-                color: maincolor
-                font.pixelSize: 14
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                font.bold: true
-            }
-
-            Rectangle {
-                id: closeConfirm
-                width: (parent.width - 45) / 2
-                height: 33
-                radius: 5
-                color: maincolor
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                MouseArea {
-                    anchors.fill: closeConfirm
-
-                    onPressed: {
-                    }
-
-                    onReleased: {
-                        transactionDate = new Date().toLocaleDateString(Qt.locale(), "MM/dd")
-                        if (newCoinName.text == "XBY"){
-                            xbyTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.placeholder, "reference": referenceText.text, "txNR": xbyTXID});
-                            xbyTXID = xbyTXID + 1;
-                            currencyList.setProperty(0, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(0, "fiatValue", ((currencyList.get(0).balance) * (currencyList.get(0).coinValue)));
-                            totalBalance = sumBalance()
-                        }
-                        if (newCoinName.text == "XFUEL"){
-                            xfuelTXHistory.append ({"date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txid": "", "txpartnerHash": keyInput.placeholder, "reference": referenceText.text, "txNR": xfuelTXID});
-                            xfuelTXID = xfuelTXID + 1;
-                            currencyList.setProperty(1, "balance", (getCurrentBalance() - Number.fromLocaleString(Qt.locale("en_US"), sendAmount.text)));
-                            currencyList.setProperty(1, "fiatValue", ((currencyList.get(1).balance) * (currencyList.get(1).coinValue)));
-                            totalBalance = sumBalance()
-                        }
-
-                        sendAmount.text = ""
-                        referenceInput.text = ""
-                        confirmationSent = 0
-                        transactionSent = 0
-                        transactionDate = ""
-                    }
-                }
-
-                Text {
-                    text: "OK"
-                    font.family: xciteMobile.name //"Brandon Grotesque"
-                    font.pointSize: 14
-                    font.bold: true
-                    color: "#F2F2F2"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-        }
-
-        // Edit address state
 
         Image {
-            id: picklistArrow
+            id: picklistArrow1
             source: 'qrc:/icons/dropdown_icon.svg'
             height: 20
             width: 20
-            anchors.left: picklistTracker == 0 ? newCoinName.right : newPicklist.right
+            anchors.left: coinListTracker == 0 ? newCoinName.right : newPicklist1.right
             anchors.leftMargin: 10
             anchors.verticalCenter: newCoinName.verticalCenter
-            visible: addressSwitch.state == "on"
-                     && editSaved == 0
-                     && picklistTracker == 0
+            visible: editSaved == 0
+                     && coinListTracker == 0
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
+                     && myAddress == 0
 
             ColorOverlay {
                 anchors.fill: parent
@@ -984,7 +365,7 @@ Rectangle {
             }
 
             Rectangle {
-                id: picklistButton
+                id: picklistButton1
                 height: 20
                 width: 20
                 radius: 10
@@ -994,10 +375,13 @@ Rectangle {
             }
 
             MouseArea {
-                anchors.fill: picklistButton
+                anchors.fill: picklistButton1
+
+                onPressed: { click01.play() }
+
                 onClicked: {
-                    picklistLines()
-                    picklistTracker = 1
+                    coinListLines(false)
+                    coinListTracker = 1
                 }
             }
         }
@@ -1009,12 +393,10 @@ Rectangle {
             width: 18
             anchors.right: parent.right
             anchors.rightMargin: 40
-            anchors.verticalCenter: picklistArrow.verticalCenter
-            visible: addressSwitch.state == "on"
-                     && editSaved == 0
+            anchors.verticalCenter: picklistArrow1.verticalCenter
+            visible: editSaved == 0
                      && deleteAddressTracker == 0
                      && myAddress == 0
-                     && scanQRTracker == 0
             Rectangle {
                 id: deleteButton
                 height: 20
@@ -1027,6 +409,8 @@ Rectangle {
             MouseArea {
                 anchors.fill: deleteButton
 
+                onPressed: { click01.play() }
+
                 onClicked: {
                     deleteAddressTracker = 1
                 }
@@ -1035,58 +419,55 @@ Rectangle {
 
         Controls.TextInput {
             id: newName
+            text: ""
             height: 34
-            // radius: 8
             placeholder: addressName
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: walletBalance.bottom
+            anchors.top: newIcon.bottom
             anchors.topMargin: 15
-            color: newName.text == "" ? "#727272" : "#F2F2F2"
+            color: myAddress == 0 ? (newName.text == "" ? "#727272" : "#F2F2F2") : "#F2F2F2"
             font.pixelSize: 14
-            visible: addressSwitch.state == "on"
-                     && editSaved == 0
+            visible: editSaved == 0
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
             mobile: 1
+            readOnly: myAddress == 1
             onTextChanged: compareName()
         }
 
         Label {
             id: nameWarning
-            text: "Already a contact with this name!"
+            text: "Already an address with this label for this contact!"
             color: "#FD2E2E"
             anchors.left: newName.left
             anchors.leftMargin: 5
             anchors.top: newName.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            visible: addressSwitch.state == "on"
-                     && editSaved == 0
-                     && newName.text != ""
+            font.family: xciteMobile.name
+            visible: editSaved == 0
                      && labelExists == 1
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
         }
 
         Controls.TextInput {
             id: newAddress
+            text: ""
             height: 34
-            // radius: 8
-            placeholder: sendAddress
+            placeholder: addressHash
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
             color: myAddress == 0 ? (newAddress.text == "" ? "#727272" : "#F2F2F2") : "#F2F2F2"
             font.pixelSize: 14
-            visible: addressSwitch.state == "on"
-                     && editSaved == 0
+            visible: editSaved == 0
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
             mobile: 1
             readOnly: myAddress == 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
-            onTextChanged: checkAddress() && compareTx()
+            onTextChanged: {
+                checkAddress()
+                compareTx()
+            }
         }
 
         Label {
@@ -1098,13 +479,10 @@ Rectangle {
             anchors.top: newAddress.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            visible: addressSwitch.state == "on"
-                     && editSaved == 0
-                     && doubbleAddress == 1
-                     && newAddress.text != ""
+            font.family: xciteMobile.name
+            visible: editSaved == 0
+                     && doubleAddress == 1
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
         }
 
         Label {
@@ -1116,13 +494,10 @@ Rectangle {
             anchors.top: newAddress.bottom
             anchors.topMargin: 1
             font.pixelSize: 11
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            visible: addressSwitch.state == "on"
-                     && editSaved == 0
+            font.family: xciteMobile.name
+            visible: editSaved == 0
                      && invalidAddress == 1
-                     && newAddress.text != ""
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
         }
 
         Text {
@@ -1152,8 +527,6 @@ Rectangle {
             color: "transparent"
             visible: editSaved == 0
                      && deleteAddressTracker == 0
-                     && addressSwitch.state == "on"
-                     && scanQRTracker == 0
                      && myAddress == 0
 
             MouseArea {
@@ -1163,6 +536,7 @@ Rectangle {
                     scanQrButton.color = maincolor
                     scanQrButton.border.color = "transparent"
                     scanQrButtonText.color = "#F2F2F2"
+                    click01.play()
                 }
 
                 onReleased: {
@@ -1177,7 +551,7 @@ Rectangle {
             Text {
                 id: scanQrButtonText
                 text: "SCAN QR"
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pointSize: 14
                 color: maincolor
                 font.bold: true
@@ -1187,9 +561,9 @@ Rectangle {
         }
 
         DropShadow {
-            id: shadowTransferPicklist
-            anchors.fill: newPicklist
-            source: newPicklist
+            id: shadowTransferPicklist1
+            anchors.fill: newPicklist1
+            source: newPicklist1
             horizontalOffset: 0
             verticalOffset: 4
             radius: 12
@@ -1198,15 +572,13 @@ Rectangle {
             color: "black"
             opacity: 0.3
             transparentBorder: true
-            visible: addressSwitch.state == "on"
-                     && picklistTracker == 1
+            visible: coinListTracker == 1
                      && editSaved == 0
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
         }
 
         Rectangle {
-            id: newPicklist
+            id: newPicklist1
             width: 100
             height: ((totalLines + 1) * 35)-10
             radius: 4
@@ -1214,30 +586,26 @@ Rectangle {
             anchors.top: newIcon.top
             anchors.topMargin: -5
             anchors.left: newIcon.left
-            visible: addressSwitch.state == "on"
-                     && picklistTracker == 1
+            visible: coinListTracker == 1
                      && editSaved == 0
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
 
-            Controls.CurrencyPicklist {
+            Controls.CoinPicklist {
                 id: myCoinPicklist
             }
         }
 
         Rectangle {
-            id: picklistClose
+            id: picklistClose1
             width: 100
             height: 25
             radius: 4
             color: "#2A2C31"
-            anchors.bottom: newPicklist.bottom
-            anchors.horizontalCenter: newPicklist.horizontalCenter
-            visible: addressSwitch.state == "on"
-                     && picklistTracker == 1
+            anchors.bottom: newPicklist1.bottom
+            anchors.horizontalCenter: newPicklist1.horizontalCenter
+            visible: coinListTracker == 1
                      && editSaved == 0
                      && deleteAddressTracker == 0
-                     && scanQRTracker == 0
 
             Image {
                 id: picklistCloseArrow
@@ -1250,7 +618,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    picklistTracker = 0
+                    coinListTracker = 0
                 }
             }
         }
@@ -1265,8 +633,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -15
-            visible: addressSwitch.state == "on"
-                     && editSaved == 1
+            visible: editSaved == 1
 
             ColorOverlay {
                 anchors.fill: parent
@@ -1281,12 +648,11 @@ Rectangle {
             anchors.top: saveSuccess.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: "#5E8BFE"
+            color: maincolor
             font.pixelSize: 14
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.bold: true
-            visible: addressSwitch.state == "on"
-                     && editSaved == 1
+            visible: editSaved == 1
         }
 
         Rectangle {
@@ -1294,34 +660,58 @@ Rectangle {
             width: (parent.width - 45) / 2
             height: 33
             radius: 5
-            color: maincolor
+            color: "transparent"
+            border.color: maincolor
+            border.width: 2
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: addressSwitch.state == "on"
-                     && editSaved == 1
+            visible: editSaved == 1
 
             MouseArea {
                 anchors.fill: closeSaveEdit
 
+                Timer {
+                    id: timerSave
+                    interval: 300
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        newCoinPicklist = 0
+                        newCoinSelect = 0
+                        coinListTracker = 0
+                        newName.text = ""
+                        newAddress.text = ""
+                        invalidAddress = 0
+                        editSaved = 0
+                        deleteAddressTracker = 0
+                        deleteConfirmed = 0
+                        scanQRTracker = 0
+                        selectedAddress = ""
+                        scanning = "scanning..."
+                    }
+                }
+
                 onPressed: {
+                    closeSaveEdit.color = maincolor
+                    click01.play()
+                }
+
+                onCanceled: {
+                    closeSaveEdit.color = "transparent"
                 }
 
                 onReleased: {
-                    newName.text = ""
-                    newAddress.text = ""
-                    editSaved = 0
-                    newCoinPicklist = 0
-                    newCoinSelect = 0
-                    doubbleAddress = 0
-                    labelExists = 0
-                    invalidAddress = 0
+                   closeSaveEdit.color = "transparent"
+                   addressTracker = 0;
+                   timerSave.start()
                 }
             }
 
             Text {
                 text: "OK"
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pointSize: 14
                 font.bold: true
                 color: "#F2F2F2"
@@ -1348,7 +738,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 60
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 color: "#F2F2F2"
             }
@@ -1359,7 +749,7 @@ Rectangle {
                 anchors.top: deleteText.bottom
                 anchors.topMargin: 7
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 font.bold: true
                 color: "#F2F2F2"
@@ -1367,11 +757,11 @@ Rectangle {
 
             Text {
                 id: deleteAddressHash
-                text: sendAddress
+                text: addressHash
                 anchors.top: deleteAddressName.bottom
                 anchors.topMargin: 7
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 color: "#F2F2F2"
             }
@@ -1390,12 +780,11 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                    onPressed: {
-                    }
+                    onPressed: { click01.play() }
 
                     onReleased: {
                         deleteConfirmed = 1
-                        addressList.setProperty(addressIndex, "active", false)
+                        addressList.setProperty(addressIndex, "remove", true)
                         doubbleAddress = 0
                         labelExists = 0
                         invalidAddress = 0
@@ -1404,7 +793,7 @@ Rectangle {
 
                 Text {
                     text: "CONFIRM"
-                    font.family: xciteMobile.name //"Brandon Grotesque"
+                    font.family: xciteMobile.name
                     font.pointSize: 14
                     color: "#F2F2F2"
                     font.bold: true
@@ -1427,8 +816,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                    onPressed: {
-                    }
+                    onPressed: { click01.play() }
 
                     onReleased: {
                         deleteAddressTracker = 0
@@ -1437,7 +825,7 @@ Rectangle {
 
                 Text {
                     text: "CANCEL"
-                    font.family: xciteMobile.name //"Brandon Grotesque"
+                    font.family: xciteMobile.name
                     font.pointSize: 14
                     font.bold: true
                     color: "#F2F2F2"
@@ -1457,8 +845,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -15
-            visible: addressSwitch.state == "on"
-                     && deleteConfirmed == 1
+            visible: deleteConfirmed == 1
 
             ColorOverlay {
                 anchors.fill: parent
@@ -1475,10 +862,9 @@ Rectangle {
             anchors.horizontalCenter: deleteSuccess.horizontalCenter
             color: maincolor
             font.pixelSize: 14
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.bold: true
-            visible: addressSwitch.state == "on"
-                     && deleteConfirmed == 1
+            visible: deleteConfirmed == 1
         }
 
         Rectangle {
@@ -1486,35 +872,31 @@ Rectangle {
             width: (parent.width - 45) / 2
             height: 33
             radius: 5
-            color: maincolor
+            color: "transparent"
+            border.color: maincolor
+            border.width: 2
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: addressSwitch.state == "on"
-                     && deleteConfirmed == 1
+            visible: deleteConfirmed == 1
 
             MouseArea {
                 anchors.fill: closeDelete
 
-                onPressed: {
-                }
+                Timer {
+                    id: timerDelete
+                    interval: 300
+                    repeat: false
+                    running: false
 
-                onReleased: {
-                    if (addressTracker == 1) {
-                        addressTracker = 0;
-                        picklistTracker = 0
+                    onTriggered: {
                         newCoinPicklist = 0
                         newCoinSelect = 0
-                        addressIndex = 0
-                        currencyIndex = 0
-                        addressSwitch.state = "off"
-                        transactionSent =0
-                        confirmationSent = 0
-                        sendAmount.text = ""
-                        referenceInput.text = ""
+                        coinListTracker = 0
                         newName.text = ""
                         newAddress.text = ""
                         invalidAddress = 0
+                        editSaved = 0
                         deleteAddressTracker = 0
                         deleteConfirmed = 0
                         scanQRTracker = 0
@@ -1522,11 +904,26 @@ Rectangle {
                         scanning = "scanning..."
                     }
                 }
+
+                onPressed: {
+                    closeDelete.color = maincolor
+                    click01.play()
+                }
+
+                onCanceled: {
+                    closeDelete.color = "transparent"
+                }
+
+                onReleased: {
+                   closeDelete.color = "transparent"
+                   addressTracker = 0;
+                   timerDelete.start()
+                }
             }
 
             Text {
                 text: "OK"
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pointSize: 14
                 font.bold: true
                 color: "#F2F2F2"
@@ -1535,27 +932,6 @@ Rectangle {
             }
         }
     }
-
-    Rectangle {
-        anchors.fill: parent
-        radius: 4
-        color: "black"
-        opacity: 0.95
-        visible: calculatorTracker == 1 && addressTracker == 1
-
-        MouseArea {
-            anchors.fill: parent
-        }
-    }
-
-    // Crypto converter
-
-    Mobile.CryptoCalculator {
-        id: calculator
-        toCurrency: newCoinName.text
-        visible: calculatorTracker == 1 && addressTracker == 1
-    }
-
     Label {
         id: closeAddressModal
         z: 10
@@ -1564,19 +940,14 @@ Rectangle {
         anchors.topMargin: 20
         anchors.horizontalCenter: addressBodyModal.horizontalCenter
         font.pixelSize: 14
-        font.family: xciteMobile.name //"Brandon Grotesque"
+        font.family: "Brandon Grotesque"
         color: darktheme == false? "#F2F2F2" : maincolor
-        visible: addressTracker == 1
-                 && confirmationSent == 0
-                 && editSaved == 0
-                 && deleteConfirmed == 0
-                 && calculatorTracker == 0
-                 && scanQRTracker == 0
+        visible: editSaved == 0
 
         Rectangle{
             id: closeButton
-            height: 30
-            width: doubbleButtonWidth
+            height: 34
+            width: darktheme == false? closeAddressModal.width : doubbleButtonWidth
             radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -1595,39 +966,31 @@ Rectangle {
                 running: false
 
                 onTriggered: {
-                    picklistTracker = 0
                     newCoinPicklist = 0
                     newCoinSelect = 0
-                    addressIndex = 0
-                    currencyIndex = 0
-                    addressSwitch.state = "off"
-                    transactionSent =0
-                    confirmationSent = 0
-                    sendAmount.text = ""
-                    referenceInput.text = ""
+                    coinListTracker = 0
                     newName.text = ""
                     newAddress.text = ""
                     invalidAddress = 0
+                    editSaved = 0
                     deleteAddressTracker = 0
                     deleteConfirmed = 0
-                    calculatorTracker = 0
-                    calculatedAmount = ""
                     scanQRTracker = 0
                     selectedAddress = ""
+                    myAddress = 0
                     scanning = "scanning..."
                 }
             }
 
             onPressed: {
-                closeAddressModal.anchors.topMargin = 12
+                parent.anchors.topMargin = 14
+                click01.play()
             }
 
             onReleased: {
-                closeAddressModal.anchors.topMargin = 10
-                if (addressTracker == 1) {
-                    addressTracker = 0;
-                    timer.start()
-                }
+                parent.anchors.topMargin = 10
+                addressTracker = 0;
+                timer.start()
             }
         }
     }

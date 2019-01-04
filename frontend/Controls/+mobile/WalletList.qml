@@ -22,6 +22,8 @@ Rectangle {
     height: parent.height
     color: "transparent"
 
+    property alias cardSpacing: allWallets.spacing
+
     Component {
         id: walletCard
 
@@ -29,23 +31,8 @@ Rectangle {
             id: currencyRow
             color: "transparent"
             width: Screen.width
-            height: {
-                if (active == 0) {
-                    0
-                }
-                else {
-                    85
-                }
-            }
-                    /**if (unconfirmedCoins != 0) {
-                        95
-                    }
-                    else {
-                        85
-                    }
-                }
-            }*/
-            visible: active == 1
+            height: 135
+            anchors.horizontalCenter: parent.horizontalCenter
 
             DropShadow {
                 id: cardShadow
@@ -57,205 +44,25 @@ Rectangle {
                 samples: 25
                 spread: 0
                 color:"black"
-                opacity: 0.3
+                opacity: 0.4
                 transparentBorder: true
 
                 Connections {
-                   target: allWallets
-                   onMovementEnded: {
-                       cardShadow.verticalOffset = 4
-                   }
-               }
+                    target: allWallets
+                    onMovementEnded: {
+                        cardShadow.verticalOffset = 4
+                    }
+                }
             }
 
             Rectangle {
                 id: square
                 width: parent.width - 55
-                height: 75 //unconfirmedCoins != 0 ? 85: 75
+                height: 125
                 radius: 4
                 color: darktheme == false? "#42454F" : "#2A2B31"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: 10
-                visible: active == 1
-
-
-
-                Image {
-                    id: icon
-                    source: logo
-                    anchors.left: parent.left
-                    anchors.leftMargin: 14
-                    anchors.top: parent.top
-                    anchors.topMargin: 10
-                    width: 25
-                    height: 25
-                    visible: active == 1
-                }
-
-                Text {
-                    id: coinName
-                    anchors.left: icon.right
-                    anchors.leftMargin: 7
-                    anchors.verticalCenter: icon.verticalCenter
-                    text: name
-                    font.pixelSize: 18
-                    font.family: xciteMobile.name //"Brandon Grotesque"
-                    color: "#E5E5E5"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    id: amountSizeLabel
-                    anchors.right: parent.right
-                    anchors.rightMargin: 14
-                    anchors.verticalCenter: coinName.verticalCenter
-                    text: name
-                    font.pixelSize: 18
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: "#E5E5E5"
-                    //font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property int decimals: name == "BTC" ? 8 : (balance >= 100000 ? 2 : 4)
-                    property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
-                    id: amountSizeLabel1
-                    anchors.right: amountSizeLabel.left
-                    anchors.rightMargin: 5
-                    anchors.bottom: amountSizeLabel.bottom
-                    anchors.bottomMargin: 1
-                    text: "." + amountArray[1]
-                    font.pixelSize: 14
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: "#E5E5E5"
-                    //font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property int decimals: name == "BTC" ? 8 : (balance >= 100000 ? 2 : 4)
-                    property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
-                    id: amountSizeLabel2
-                    anchors.right: amountSizeLabel1.left
-                    anchors.verticalCenter: coinName.verticalCenter
-                    text: amountArray[0]
-                    font.pixelSize: 18
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: "#E5E5E5"
-                    //font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property var amountArray: (fiatValue.toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
-                    id: totalValueLabel1
-                    anchors.right: square.right
-                    anchors.rightMargin:14
-                    anchors.bottom: totalValueLabel2.bottom
-                    anchors.bottomMargin: 1
-                    text: "." + amountArray[1]
-                    font.pixelSize: 11
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property var amountArray: (fiatValue.toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
-                    id: totalValueLabel2
-                    anchors.right: totalValueLabel1.left
-                    anchors.verticalCenter: price1.verticalCenter
-                    text: amountArray[0]
-                    font.pixelSize: 14
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Label {
-                    id: dollarSign2
-                    anchors.right: totalValueLabel2.left
-                    anchors.leftMargin: 0
-                    anchors.verticalCenter: totalValueLabel2.verticalCenter
-                    text: "$"
-                    font.pixelSize: 14
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    id: percentChangeLabel
-                    anchors.left: price2.right
-                    anchors.leftMargin: 5
-                    anchors.bottom: price1.bottom
-                    text: percentage >= 0? "+" + percentage + "%" : percentage + "%"
-                    font.pixelSize: 14
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: percentage <= 0 ? "#E55541" : "#4BBE2E"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property var amountArray: (coinValue.toLocaleString(Qt.locale("en_US"), "f", 4)).split('.')
-                    id: price1
-                    anchors.left: dollarSign1.right
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 10
-                    text: amountArray[0]
-                    font.pixelSize: 14
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property var amountArray: (coinValue.toLocaleString(Qt.locale("en_US"), "f", 4)).split('.')
-                    id: price2
-                    anchors.left: price1.right
-                    anchors.bottom: price1.bottom
-                    anchors.bottomMargin: 1
-                    text: "." + amountArray[1]
-                    font.pixelSize: 11
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Label {
-                    id: dollarSign1
-                    anchors.left: icon.left
-                    anchors.verticalCenter: price1.verticalCenter
-                    text: "$"
-                    font.pixelSize: 14
-                    font.family:  xciteMobile.name //"Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                /**Text {
-                    id: unconfirmed
-                    anchors.right: squamountSizeLabelare.right
-                    anchors.top: amountSizeLabel.bottom
-                    anchors.topMargin: 4
-                    text: "Unconfirmed " + unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", 4) + " " + name
-                    font.pixelSize: 12
-                    font.family: "Brandon Grotesque"
-                    color: "#F2F2F2"
-                    font.weight: Font.Light
-                    font.italic: true
-                    visible: unconfirmedCoins != 0 && active == 1
-                }*/
 
                 MouseArea {
                     anchors.fill: parent
@@ -268,11 +75,267 @@ Rectangle {
                         cardShadow.verticalOffset = 4
                     }
 
-                    onClicked: {
+
+                    onPressAndHold: {
                         cardShadow.verticalOffset = 4
-                        if (appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0) {
+                        // edit wallet info
+                    }
+                }
+
+                Image {
+                    id: walletFavorite
+                    source: 'qrc:/icons/icon-favorite.svg'
+                    width: 18
+                    height: 18
+                    anchors.verticalCenter: walletName.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 14
+
+                    ColorOverlay {
+                        id: favoriteColor
+                        anchors.fill: parent
+                        source: parent
+                        color: favorite == true ? "#FDBC40" : "#2A2C31"
+                    }
+                    state: favorite == true ? "yes" : "no"
+
+                    states: [
+                        State {
+                            name: "yes"
+                            PropertyChanges { target: favoriteColor; color: "#FDBC40"}
+                            PropertyChanges { target: walletFavorite; width: 20}
+                            PropertyChanges { target: walletFavorite; height: 20}
+                        },
+                        State {
+                            name: "no"
+                            PropertyChanges { target: favoriteColor; opacity: "#2A2C31"}
+                            PropertyChanges { target: walletFavorite; width: 18}
+                            PropertyChanges { target: walletFavorite; height: 18}
+                        }
+                    ]
+
+                    transitions: [
+                        Transition {
+                            from: "no"
+                            to: "yes"
+                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
+                            NumberAnimation { target: walletFavorite; properties: "width, height"; duration: 200; easing.type: Easing.OutBack}
+                        },
+                        Transition {
+                            from: "yes"
+                            to: "no"
+                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
+                            NumberAnimation { target: walletFavorite; properties: "width, height"; duration: 200; easing.type: Easing.InBack}
+                        }
+                    ]
+                }
+
+                Rectangle {
+                    id: favoriteButton
+                    width: 30
+                    height: 30
+                    anchors.verticalCenter: walletFavorite.verticalCenter
+                    anchors.horizontalCenter: walletFavorite.horizontalCenter
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if (favorite == true) {
+                                walletList.setProperty(walletNR, "favorite", false)
+                            }
+                            else {
+                                resetFavorites(name)
+                                walletList.setProperty(walletNR, "favorite", true)
+                            }
+                        }
+                    }
+                }
+
+                Text {
+                    id: walletName
+                    anchors.left: parent.left
+                    anchors.leftMargin: 40
+                    anchors.verticalCenter: amountSizeLabel.verticalCenter
+                    text: label
+                    font.pixelSize: 18
+                    font.family: xciteMobile.name
+                    color: "#E5E5E5"
+                    font.bold: true
+                }
+
+                Text {
+                    id: amountSizeLabel
+                    anchors.right: parent.right
+                    anchors.rightMargin: 14
+                    anchors.top: parent.top
+                    anchors.topMargin: 10
+                    text: name
+                    font.pixelSize: 18
+                    font.family:  xciteMobile.name
+                    color: "#E5E5E5"
+                }
+
+                Text {
+                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
+                    property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                    id: amountSizeLabel1
+                    anchors.right: amountSizeLabel.left
+                    anchors.rightMargin: 3
+                    anchors.bottom: amountSizeLabel.bottom
+                    anchors.bottomMargin: 1
+                    text:  "." + amountArray[1]
+                    font.pixelSize: 14
+                    font.family:  xciteMobile.name
+                    color: "#E5E5E5"
+                }
+
+                Text {
+                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
+                    property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                    id: amountSizeLabel2
+                    anchors.right: amountSizeLabel1.left
+                    anchors.verticalCenter: walletName.verticalCenter
+                    text: amountArray[0]
+                    font.pixelSize: 18
+                    font.family:  xciteMobile.name
+                    color: "#E5E5E5"
+                }
+
+                Label {
+                    id: unconfirmedTicker
+                    text: name
+                    anchors.right: amountSizeLabel.right
+                    anchors.top: amountSizeLabel.bottom
+                    anchors.topMargin: 2
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: "#E5E5E5"
+                }
+
+                Label {
+                    property int decimals: unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2)
+                    property var unconfirmedArray: (unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                    id: unconfirmedTotal1
+                    text: "." + unconfirmedArray[1]
+                    anchors.right: unconfirmedTicker.left
+                    anchors.bottom: unconfirmedTicker.bottom
+                    anchors.rightMargin: 3
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: "#E5E5E5"
+                }
+
+                Label {
+                    property int decimals: unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2)
+                    property var unconfirmedArray: (unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                    id: unconfirmedTotal2
+                    text: unconfirmedArray[0]
+                    anchors.right: unconfirmedTotal1.left
+                    anchors.top: unconfirmedTotal1.top
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: "#E5E5E5"
+                }
+
+                Label {
+                    id: unconfirmedLabel
+                    text: "Unconfirmed:"
+                    anchors.right: parent.right
+                    anchors.top: unconfirmedTotal2.top
+                    anchors.rightMargin: 135
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: "#E5E5E5"
+                }
+
+                Rectangle {
+                    id: transfer
+                    height: 34
+                    width: (parent.width - 38) / 2
+                    radius: 5
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 14
+                    anchors.left: parent.left
+                    anchors.leftMargin: 14
+                    color: "transparent"
+                    border.color: maincolor
+                    border.width: 2
+
+                    Label {
+                        text: "TRANSFER"
+                        font.family: xciteMobile.name //"Brandon Grotesque"
+                        font.pointSize: 14
+                        font.bold: true
+                        color: "#F2F2F2"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            transfer.color = maincolor
+                        }
+
+                        onReleased: {
+                            transfer.color = "transparent"
+                        }
+
+                        onCanceled: {
+                            transfer.color = "transparent"
+                        }
+
+                        onClicked: {
+                            walletIndex = walletNR
+                            switchState = 0
                             transferTracker = 1
-                            currencyIndex = walletNR
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: history
+                    height: 34
+                    width: (parent.width - 38) / 2
+                    radius: 5
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 14
+                    anchors.right: parent.right
+                    anchors.rightMargin: 14
+                    color: "transparent"
+                    border.color: maincolor
+                    border.width: 2
+
+                    Label {
+                        text: "HISTORY"
+                        font.family: xciteMobile.name //"Brandon Grotesque"
+                        font.pointSize: 14
+                        font.bold: true
+                        color: "#F2F2F2"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            history.color = maincolor
+                        }
+
+                        onReleased: {
+                            history.color = "transparent"
+                        }
+
+                        onCanceled: {
+                            history.color = "transparent"
+                        }
+
+                        onClicked: {
+                            walletIndex = walletNR
+                            historyTracker = 1
                         }
                     }
                 }
@@ -281,17 +344,29 @@ Rectangle {
     }
 
     SortFilterProxyModel {
-        id: filteredCoins
-        sourceModel: currencyList
-        sorters: RoleSorter { roleName: "fiatValue" ; sortOrder: Qt.DescendingOrder }
+        id: filteredWallets
+        sourceModel: walletList
+        filters: [
+            RegExpFilter {
+                roleName: "name"
+                pattern: getName(coinIndex)
+            },
+            ValueFilter {
+                roleName: "remove"
+                value: false
+            }
+
+        ]
+        sorters: RoleSorter { roleName: "balance" ; sortOrder: Qt.DescendingOrder }
     }
 
     ListView {
         id: allWallets
-        model: filteredCoins
+        model: filteredWallets
         delegate: walletCard
+        spacing: 0
         anchors.fill: parent
-        contentHeight: (totalWallets * 98)
+        contentHeight: (filteredWallets.count  * 135) + 75
         interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
     }
 }

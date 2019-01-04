@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
 
@@ -52,25 +53,19 @@ Rectangle {
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
+    property int contact: contactIndex
 
     function compareTx() {
-        addressExists = 0
         for(var i = 0; i < addressList.count; i++) {
-            if (newCoinName.text == "XBY") {
-                if (addressList.get(i).coin === "XBY") {
-                    if (addressList.get(i).address === newAddress.text) {
-                        if (addressList.get(i).active === true) {
-                            addressExists = 1
-                        }
+            if (newAddress.text != "") {
+                if (newCoinName.text == "XBY") {
+                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false) {
+                    addressExists = 1
                     }
                 }
-            }
-            else {
-                if (addressList.get(i).coin === newCoinName.text) {
-                    if (addressList.get(i).address === newAddress.text) {
-                        if (addressList.get(i).active === true) {
-                            addressExists = 1
-                        }
+                else {
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false) {
+                        addressExists = 1
                     }
                 }
             }
@@ -80,21 +75,15 @@ Rectangle {
     function compareName() {
         labelExists = 0
         for(var i = 0; i < addressList.count; i++) {
-            if (newCoinName.text == "XBY") {
-                if (addressList.get(i).coin === "XBY") {
-                    if (addressList.get(i).name === newName.text) {
-                        if (addressList.get(i).active === true) {
-                            labelExists = 1
-                        }
+            if (addressList.get(i).contact === contact) {
+                if (newCoinName.text == "XBY") {
+                    if (addressList.get(i).coin === "XBY" && addressList.get(i).label === newName.text && addressList.get(i).remove === false) {
+                        labelExists = 1
                     }
                 }
-            }
-            else {
-                if (addressList.get(i).coin === newCoinName.text) {
-                    if (addressList.get(i).name === newName.text) {
-                        if (addressList.get(i).active === true) {
-                            labelExists = 1
-                        }
+                else {
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === newName.text && addressList.get(i).remove === false) {
+                        labelExists = 1
                     }
                 }
             }
@@ -105,9 +94,7 @@ Rectangle {
         invalidAddress = 0
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY") {
-                if (newAddress.length == 34
-                        && newAddress.text.substring(0,1) == "B"
-                        && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "B" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -115,9 +102,7 @@ Rectangle {
                 }
             }
             else if (newCoinName.text == "XFUEL") {
-                if (newAddress.length == 34
-                        && newAddress.text.substring(0,1) == "F"
-                        && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "F" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -130,11 +115,11 @@ Rectangle {
     Rectangle {
         id: addressTitleBar
         width: parent.width
-        height: 58
+        height: 50
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: darktheme == false? "#42454F" : "transaparent"
+        color: "transparent"
         visible: editSaved == 0
                  && scanQRTracker == 0
 
@@ -142,22 +127,12 @@ Rectangle {
             id: transferModalLabel
             text: "ADD NEW ADDRESS"
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -4
+            anchors.verticalCenter: parent.top
+            anchors.verticalCenterOffset: 27
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             color: "#F2F2F2"
             font.letterSpacing: 2
-        }
-
-        Rectangle {
-            width: parent.width -30
-            height: 2
-            radius: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 48
-            color: darktheme == false? "#34363D" : "transparent"
         }
     }
 
@@ -174,20 +149,20 @@ Rectangle {
 
         Image {
             id: newIcon
-            source: newCoinSelect == 1? currencyList.get(newCoinPicklist).logo : currencyList.get(0).logo
+            source: newCoinSelect == 1? coinList.get(newCoinPicklist).logo : coinList.get(0).logo
             height: 25
             width: 25
             anchors.left: newName.left
             anchors.top: parent.top
             anchors.topMargin: 20
             visible: editSaved == 0
-                     && picklistTracker == 0
+                     && coinListTracker == 0
                      && scanQRTracker == 0
         }
 
         Label {
             id: newCoinName
-            text: newCoinSelect == 1? currencyList.get(newCoinPicklist).name : currencyList.get(0).name
+            text: newCoinSelect == 1? coinList.get(newCoinPicklist).name : coinList.get(0).name
             anchors.left: newIcon.right
             anchors.leftMargin: 7
             anchors.verticalCenter: newIcon.verticalCenter
@@ -196,11 +171,15 @@ Rectangle {
             font.weight: Font.Bold
             color: "#F2F2F2"
             visible: editSaved == 0
-                     && picklistTracker == 0
+                     && coinListTracker == 0
                      && scanQRTracker == 0
-            onTextChanged: checkAddress()
-                           && compareTx()
-                           && compareName()
+            onTextChanged: {
+                if (newCoinName.text != ""){
+                    checkAddress();
+                    compareTx();
+                    compareName()
+                }
+            }
         }
 
         Image {
@@ -208,11 +187,11 @@ Rectangle {
             source: 'qrc:/icons/dropdown_icon.svg'
             height: 20
             width: 20
-            anchors.left: picklistTracker == 0 ? newCoinName.right : newPicklist.right
+            anchors.left: coinListTracker == 0 ? newCoinName.right : newPicklist.right
             anchors.leftMargin: 10
             anchors.verticalCenter: newCoinName.verticalCenter
             visible: editSaved == 0
-                     && picklistTracker == 0
+                     && coinListTracker == 0
                      && scanQRTracker == 0
 
             ColorOverlay {
@@ -229,14 +208,17 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "transparent"
-                visible: picklistTracker == 0
+                visible: coinListTracker == 0
             }
 
             MouseArea {
                 anchors.fill: picklistButton
+
+                onPressed: { click01.play() }
+
                 onClicked: {
-                    picklistLines()
-                    picklistTracker = 1
+                    coinListLines(false)
+                    coinListTracker = 1
                 }
             }
         }
@@ -244,7 +226,8 @@ Rectangle {
         Controls.TextInput {
             id: newName
             height: 34
-            placeholder: "CONTACT NAME"
+            placeholder: "ADDRESS LABEL"
+            text: ""
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
@@ -252,12 +235,17 @@ Rectangle {
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
-            onTextChanged: compareName()
+            onTextChanged: {
+                if(newName.text != "") {
+                    compareName();
+                    compareTx()
+                }
+            }
         }
 
         Label {
             id: nameWarning
-            text: "Already a contact with this name!"
+            text: "Already an address with this label!"
             color: "#FD2E2E"
             anchors.left: newName.left
             anchors.leftMargin: 5
@@ -276,6 +264,7 @@ Rectangle {
             id: newAddress
             height: 34
             placeholder: "PUBLIC KEY"
+            text: ""
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
@@ -285,8 +274,12 @@ Rectangle {
                      && scanQRTracker == 0
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
-            onTextChanged: checkAddress()
-                           && compareTx()
+            onTextChanged: {
+                if(newAddress.text != ""){
+                    checkAddress();
+                    compareTx()
+                }
+            }
         }
 
         Label {
@@ -355,9 +348,10 @@ Rectangle {
                 anchors.fill: scanQrButton
 
                 onPressed: {
-                   parent.color = maincolor
+                    parent.color = maincolor
                     parent.border.color = "transparent"
                     scanButtonText.color = "#F2F2F2"
+                    click01.play()
                 }
 
                 onReleased: {
@@ -393,7 +387,7 @@ Rectangle {
             color: "black"
             opacity: 0.3
             transparentBorder: true
-            visible: picklistTracker == 1
+            visible: coinListTracker == 1
                      && editSaved == 0
                      && scanQRTracker == 0
         }
@@ -407,11 +401,11 @@ Rectangle {
             anchors.top: newIcon.top
             anchors.topMargin: -5
             anchors.left: newIcon.left
-            visible: picklistTracker == 1
+            visible: coinListTracker == 1
                      && editSaved == 0
                      && scanQRTracker == 0
 
-            Controls.CurrencyPicklist {
+            Controls.CoinPicklist {
                 id: myCoinPicklist
             }
         }
@@ -424,7 +418,7 @@ Rectangle {
             color: "#2A2C31"
             anchors.bottom: newPicklist.bottom
             anchors.horizontalCenter: newPicklist.horizontalCenter
-            visible: picklistTracker == 1
+            visible: coinListTracker == 1
                      && editSaved == 0
                      && scanQRTracker == 0
 
@@ -439,7 +433,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    picklistTracker = 0
+                    coinListTracker = 0
                 }
             }
         }
@@ -462,8 +456,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: saveButton
 
-                onPressed: {
-                }
+                onPressed: { click01.play() }
 
                 onReleased: {
                     if (newName.text != ""
@@ -471,16 +464,9 @@ Rectangle {
                             && invalidAddress == 0
                             && addressExists == 0
                             && labelExists == 0) {
-                        if (newCoinSelect == 0) {
-                            addressList.append({"address": newAddress.text, "name": newName.text, "logo": (currencyList.get(0).logo), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID});
-                            addressID = addressID +1;
-                            editSaved = 1
-                        }
-                        else {
-                            addressList.append({"address": newAddress.text, "name": newName.text, "logo": (currencyList.get(newCoinPicklist).logo), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID});
-                            addressID = addressID +1;
-                            editSaved = 1
-                        }
+                        addressList.append({"contact": contactIndex, "address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
+                        addressID = addressID +1;
+                        editSaved = 1
                     }
                 }
             }
@@ -543,10 +529,12 @@ Rectangle {
             MouseArea {
                 anchors.fill: closeSave
 
+                onPressed: { click01.play() }
+
                 onClicked: {
                     addAddressTracker = 0;
                     editSaved = 0;
-                    picklistTracker = 0
+                    coinListTracker = 0
                     newCoinPicklist = 0
                     newCoinSelect = 0
                     newName.text = ""
@@ -586,7 +574,7 @@ Rectangle {
 
         Rectangle{
             id: closeButton
-            height: 30
+            height: 34
             width: doubbleButtonWidth
             radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
@@ -606,7 +594,7 @@ Rectangle {
                 running: false
 
                 onTriggered: {
-                    picklistTracker = 0
+                    coinListTracker = 0
                     newCoinPicklist = 0
                     newCoinSelect = 0
                     newName.text = ""
@@ -622,6 +610,7 @@ Rectangle {
 
             onPressed: {
                 parent.anchors.topMargin = 14
+                click01.play()
             }
 
             onClicked: {

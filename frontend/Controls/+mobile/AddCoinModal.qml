@@ -20,10 +20,10 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: addCoinModal
     width: parent.width
-    height: parent.height - 150
+    height: parent.height - 180
     color: "transparent"
     anchors.top: parent.top
-    anchors.topMargin: 150
+    anchors.topMargin: 180
     anchors.right: parent.right
 
     property alias sidebarState: addCoinSidebar.state
@@ -85,7 +85,7 @@ Rectangle {
                             anchors.verticalCenter: icon.verticalCenter
                             text: name
                             font.pixelSize: 18
-                            font.family: "Brandon Grotesque"
+                            font.family: xciteMobile.name
                             color: "#E5E5E5"
                             font.bold: true
                         }
@@ -98,7 +98,7 @@ Rectangle {
                             anchors.verticalCenter: parent.verticalCenter
                             color: "black"
                             opacity: .25
-                            visible: active == 0
+                            visible: active == false
                         }
 
                         Rectangle {
@@ -124,21 +124,31 @@ Rectangle {
                             anchors.fill: parent
 
                             function compareCoin() {
-                                for(var i = 0; i < currencyList.count; i++) {
-                                    if (currencyList.get(i).name === name) {
-                                        if (active == 0) {
-                                            currencyList.setProperty(i, "active", 1)
+                                for(var i = 0; i < coinList.count; i++) {
+                                    if (coinList.get(i).name === name) {
+                                        if (active == false) {
+                                            coinList.setProperty(i, "active", true)
                                             for (var e = 0; e < addressList.count; e++) {
-                                                if (addressList.get(e).address === address) {
+                                                if (addressList.get(e).coin === name) {
                                                     addressList.setProperty(e, "active", true)
+                                                }
+                                            }
+                                            for (var y = 0; y < walletList.count; y++) {
+                                                if (walletList.get(y).name === name) {
+                                                    walletList.setProperty(y, "active", true)
                                                 }
                                             }
                                         }
                                         else {
-                                            currencyList.setProperty(i, "active", 0)
-                                            for (var e = 0; e < addressList.count; e++) {
-                                                if (addressList.get(e).address === address) {
-                                                    addressList.setProperty(e, "active", false)
+                                            coinList.setProperty(i, "active", false)
+                                            for (var a = 0; a < addressList.count; a++) {
+                                                if (addressList.get(a).coin === name) {
+                                                    addressList.setProperty(a, "active", false)
+                                                }
+                                            }
+                                            for (var o = 0; o < walletList.count; o++) {
+                                                if (walletList.get(o).name === name) {
+                                                    walletList.setProperty(o, "active", false)
                                                 }
                                             }
                                         }
@@ -148,7 +158,7 @@ Rectangle {
 
                             onClicked: {
                                 compareCoin()
-                                filterActiveCoin.visible = active == 0
+                                filterActiveCoin.visible = active == false
                                 sumBalance()
                             }
                         }
@@ -158,7 +168,7 @@ Rectangle {
             ListView {
                 anchors.fill: parent
                 id: allWallets
-                model: currencyList
+                model: coinList
                 delegate: walletCard
           }
 

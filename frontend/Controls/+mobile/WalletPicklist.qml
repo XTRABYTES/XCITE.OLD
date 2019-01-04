@@ -1,5 +1,5 @@
 /**
-* Filename: CurrencyPicklist.qml
+* Filename: WalletPicklist.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
 * blockchain protocol to host decentralized applications
@@ -14,17 +14,16 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import SortFilterProxyModel 0.2
 
-
 Rectangle {
     id: completePicklist
     width: 100
-    height: totalLines * 35 < 175 ? totalLines * 35 : 175
+    height: totalCoinWallets * 35 < 175 ? totalCoinWallets * 35 : 175
     radius: 5
     color: "#2A2C31"
 
-    property bool onlyActive: false
+    property string coin: ""
 
-    Component.onCompleted: picklistLines()
+    Component.onCompleted: coinWalletLines(coin)
 
     Component {
         id: picklistEntry
@@ -43,25 +42,15 @@ Rectangle {
                 visible: false
             }
 
-            Image {
-                id: picklistCoinLogo
-                source: logo
-                height: 20
-                width: 20
-                anchors.left: parent.left
-                anchors.leftMargin: 7
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
             Label {
-                id: pickListCoinName
-                text: name
+                id: pickListWalletLabel
+                text: label
                 color: "#F2F2F2"
                 font.pixelSize: 16
-                font.family: xciteMobile.name //"Brandon Grotesque"
-                anchors.verticalCenter: picklistCoinLogo.verticalCenter
-                anchors.left: picklistCoinLogo.right
-                anchors.leftMargin: 7
+                font.family: xciteMobile.name
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                anchors.rightMargin: 10
             }
 
             MouseArea {
@@ -81,9 +70,9 @@ Rectangle {
 
                 onClicked: {
                     clickIndicator.visible = false
-                    newCoinPicklist = index;
-                    newCoinSelect = 1
-                    picklistTracker = 0
+                    walletIndex = walletNR;
+                    newWalletSelect = 1
+                    walletListTracker = 0
                 }
             }
 
@@ -93,24 +82,28 @@ Rectangle {
                 color: "#5F5F5F"
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                visible: index < totalLines ? true : false
+                visible: index < totalCoinWallets ? true : false
             }
         }
     }
 
     SortFilterProxyModel {
-        id: filteredCurrencies
-        sourceModel: coinList
+        id: filteredWallets
+        sourceModel: walletList
         filters: [
             ValueFilter {
-                enabled: onlyActive == true
-                roleName: "active"
-                value: true
+                roleName: "remove"
+                value: false
+            },
+            RegExpFilter {
+                roleName: "name"
+                pattern: coin
             }
+
         ]
         sorters: [
             RoleSorter { roleName: "favorite"; sortOrder: Qt.DescendingOrder },
-            StringSorter { roleName: "name" }
+            StringSorter { roleName: "label" }
         ]
 
     }
@@ -118,9 +111,9 @@ Rectangle {
     ListView {
         anchors.fill: parent
         id: pickList
-        model: filteredCurrencies
+        model: filteredWallets
         delegate: picklistEntry
-        interactive: false
+        interactive: totalCoinWallets * 35 < 175
     }
 }
 

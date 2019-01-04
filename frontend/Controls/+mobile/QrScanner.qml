@@ -3,6 +3,7 @@ import QtQuick 2.7
 import QtMultimedia 5.5
 import QtGraphicalEffects 1.0
 import QZXing 2.3
+import QtMultimedia 5.8
 
 Item {
     width: 325
@@ -41,15 +42,7 @@ Item {
         radius: 4
         anchors.top: parent.top
         anchors.left: parent.left
-        color: darktheme == false? "#42454F" : "transparent"
-
-        Rectangle {
-            width: parent.width
-            height: 10
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: darktheme == false? "#42454F" : "transparent"
-        }
+        color: "transparent"
 
         Text {
             id: scanQRLabel
@@ -58,7 +51,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             font.pixelSize: 20
             font.family: xciteMobile.name //"Brandon Grotesque"
-            color: "#F2F2F2"
+            color: darktheme == false? "#F2F2F2" : maincolor
         }
     }
 
@@ -154,23 +147,28 @@ Item {
     }
 
     Rectangle {
-        id: cancelAddressButton
+        id: cancelScanButton
         width: (parent.width - 40) / 2
-        height: 33
+        height: 34
         radius: 5
-        color: maincolor
+        color: "transparent"
+        border.color: maincolor
+        border.width: 2
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
         visible: scanQRTracker == 1
 
         MouseArea {
-            anchors.fill: cancelAddressButton
+            anchors.fill: cancelScanButton
 
             onPressed: {
+                cancelScanButton.color = maincolor
+                click01.play()
             }
 
             onReleased: {
+                cancelScanButton.color = "transparent"
                 scanQRTracker = 0
                 selectedAddress = ""
                 publicKey.text = "scanning..."

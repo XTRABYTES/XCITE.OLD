@@ -1,5 +1,5 @@
 /**
-* Filename: CurrencyPicklist.qml
+* Filename: CoinPicklist.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
 * blockchain protocol to host decentralized applications
@@ -24,7 +24,7 @@ Rectangle {
 
     property bool onlyActive: false
 
-    Component.onCompleted: picklistLines()
+    Component.onCompleted: coinListLines()
 
     Component {
         id: picklistEntry
@@ -81,9 +81,9 @@ Rectangle {
 
                 onClicked: {
                     clickIndicator.visible = false
-                    newCoinPicklist = index;
+                    newCoinPicklist = coinID;
                     newCoinSelect = 1
-                    picklistTracker = 0
+                    coinListTracker = 0
                 }
             }
 
@@ -120,7 +120,7 @@ Rectangle {
         id: pickList
         model: filteredCurrencies
         delegate: picklistEntry
-        interactive: false
+        interactive: totalLines * 35 < 175
     }
 }
 
