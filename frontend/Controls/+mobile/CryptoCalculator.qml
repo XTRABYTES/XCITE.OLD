@@ -26,6 +26,16 @@ Item {
     anchors.verticalCenter: Screen.verticalCenter
 
     Rectangle {
+        id: background
+        width: Screen.width
+        height: Screen.height
+        color: "black"
+        opacity: 0.8
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+    }
+
+    Rectangle {
         width: parent.width
         height: parent.height
         radius: darktheme == false? 5 : 0

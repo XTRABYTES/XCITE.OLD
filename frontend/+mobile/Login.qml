@@ -30,26 +30,131 @@ Item {
 
         Label {
             id: welcomeText
-            text: "This will be the page for loging in"
+            text: "WELCOME TO XCITE"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: 60
+            anchors.topMargin: 25
             color: maincolor
+            font.pixelSize: 24
+            font.family: xciteMobile.name
+            font.bold: true
+        }
+
+        Label {
+            id: addWalletText
+            text: "Let's start by adding a wallet"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: welcomeText.bottom
+            color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
         }
 
         Rectangle {
-            id: startButton
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
-            anchors.horizontalCenter: parent.horizontalCenter
+            id: selectAddMode
+            height: 240
+            width : parent.width - 50
             anchors.verticalCenter: parent.verticalCenter
-            radius: 5
-            color: maincolor
+            anchors.verticalCenterOffset: -25
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+
+            Text {
+                id: createAddressText
+                width: parent.implicitWidth -50
+                maximumLineCount: 2
+                anchors.left: parent.left
+                anchors.leftMargin: 25
+                anchors.right: parent.right
+                anchors.rightMargin: 25
+                verticalAlignment: Text.AlignJustify
+                wrapMode: Text.WordWrap
+                text: "If you don’t have an <b>XFUEL</b> wallet or you wish to create a new one."
+                anchors.top: parent.top
+                color: "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+            }
+
+            Rectangle {
+                id: createAddressButton
+                width: doubbleButtonWidth
+                height: 33
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: createAddressText.bottom
+                anchors.topMargin: 15
+                radius: 5
+                color: maincolor
+
+                MouseArea {
+                    anchors.fill: createAddressButton
+                }
+
+                Text {
+                    id: createButtonText
+                    text: "CREATE NEW ADDRESS"
+                    font.family: xciteMobile.name
+                    font.pointSize: 14
+                    color: "#F2F2F2"
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Text {
+                id: importAddressText
+                width: parent.implicitWidth - 50
+                anchors.left: parent.left
+                anchors.leftMargin: 25
+                anchors.right: parent.right
+                anchors.rightMargin: 25
+                verticalAlignment: Text.AlignJustify
+                text: "If you already have an <b>XFUEL</b> wallet."
+                anchors.bottom: importAddressButton.top
+                anchors.bottomMargin: 15
+                color: "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+            }
+
+            Rectangle {
+                id: importAddressButton
+                width: doubbleButtonWidth
+                height: 33
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                radius: 5
+                color: maincolor
+
+                MouseArea {
+                    anchors.fill: importAddressButton
+                }
+
+                Text {
+                    id: importButtonText
+                    text: "IMPORT PRIVATE KEY"
+                    font.family: xciteMobile.name
+                    font.pointSize: 14
+                    color: "#F2F2F2"
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
+        Rectangle {
+            id: skipButton
+            width: skipButtonText.implicitWidth
+            height: 40
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: selectAddMode.bottom
+            anchors.topMargin: 25
+            color: "transparent"
 
             MouseArea {
-                anchors.fill: startButton
+                anchors.fill: skipButton
 
                 onReleased: {
                     loginTracker = 1
@@ -59,15 +164,25 @@ Item {
             }
 
             Text {
-                id: qrButtonText
-                text: "START"
+                id: skipButtonText
+                text: "Skip"
                 font.family: xciteMobile.name
-                font.pointSize: 14
+                font.pointSize: 18
                 color: "#F2F2F2"
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
+        }
+
+        Image {
+            id: combinationMark
+            source: 'qrc:/icons/xby_logo_TM.svg'
+            height: 23.4
+            width: 150
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 35
         }
     }
 }

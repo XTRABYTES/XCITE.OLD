@@ -27,46 +27,75 @@ Item {
         height: Screen.height
         color: "#14161B"
 
-        Label {
-            id: welcomeText
-            text: "Welcome to XCITE, let's get you started!"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 60
-            color: maincolor
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-        }
-
         Rectangle {
-            id: startButton
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
+            width: welcomeText.implicitWidth
+            height: 180
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            radius: 5
-            color: maincolor
+            anchors.verticalCenterOffset: -50
+            color: "transparent"
 
-            MouseArea {
-                anchors.fill: startButton
+            Label {
+                id: welcomeText
+                text: "XCITE"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                color: "#F2F2F2"
+                font.pixelSize: 64
+                font.family: xciteMobile.name
+            }
 
-                onReleased: {
-                    onboardingTracker = 1
-                    mainRoot.pop()
-                    mainRoot.push("../SignUp.qml")
+            Label {
+                id: version
+                text: "V 1.0"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: welcomeText.bottom
+                anchors.topMargin: -20
+                color: maincolor
+                font.pixelSize: 24
+                font.family: xciteMobile.name
+            }
+
+            Rectangle {
+                id: startButton
+                width: (doubbleButtonWidth - 10) / 2
+                height: 33
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                radius: 5
+                color: maincolor
+
+                MouseArea {
+                    anchors.fill: startButton
+
+                    onReleased: {
+                        onboardingTracker = 1
+                        mainRoot.pop()
+                        mainRoot.push("../Login.qml")
+                    }
+                }
+
+                Text {
+                    id: qrButtonText
+                    text: "LET'S GO"
+                    font.family: xciteMobile.name
+                    font.pointSize: 14
+                    color: "#F2F2F2"
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
+        }
 
-            Text {
-                id: qrButtonText
-                text: "START"
-                font.family: xciteMobile.name
-                font.pointSize: 14
-                color: "#F2F2F2"
-                font.bold: true
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        Image {
+            id: combinationMark
+            source: 'qrc:/icons/xby_logo_TM.svg'
+            height: 23.4
+            width: 150
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 35
         }
     }
 }

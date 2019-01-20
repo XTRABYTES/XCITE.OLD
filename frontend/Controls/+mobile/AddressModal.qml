@@ -51,7 +51,6 @@ Rectangle {
 
     onStateChanged: {
         checkMyAddress()
-        console.log("addressModal state: " + state)
     }
 
     property string coinName: addressList.get(addressIndex).coin

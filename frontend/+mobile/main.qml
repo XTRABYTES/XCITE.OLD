@@ -77,7 +77,7 @@ ApplicationWindow {
     property real doubbleButtonWidth: 273
 
     // Trackers
-    property int onboardingTracker: 1 // check settings for real value
+    property int onboardingTracker: 0 // check settings for real value
     property int signUpTracker: 1 // check settings for real value
     property int loginTracker: 0
     property int appsTracker: 0
@@ -515,6 +515,7 @@ ApplicationWindow {
             txPartner: ""
             reference: ""
             txid: 0
+            txNR: 0
         }
     }
 
@@ -593,7 +594,7 @@ ApplicationWindow {
 
     SoundEffect {
         id: click01
-        source: "qrc:/sounds/click_01.wav"
+        source: "qrc:/sounds/click_02.wav"
         volume: 0.15
    }
 }

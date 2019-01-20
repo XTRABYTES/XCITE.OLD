@@ -153,5 +153,6 @@
         <file>Controls/+mobile/AddContact.qml</file>
         <file>Controls/+mobile/PictureList.qml</file>
         <file>Controls/+mobile/ContactModal.qml</file>
+        <file>Controls/+mobile/HistoryModal.qml</file>
     </qresource>
 </RCC>

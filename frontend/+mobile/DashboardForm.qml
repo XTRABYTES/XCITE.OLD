@@ -517,7 +517,16 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
-                        onPressed: { click01.play() }
+                        onPressed: {
+                            click01.play()
+                            backButton1.color = "#0ED8D2"
+                            backButton1.opacity = 0.5
+                        }
+
+                        onReleased: {
+                            backButton1.color = darktheme == false? "#2A2C31" : "#14161B"
+                            backButton1.opacity = 0.75
+                        }
 
                         onClicked: {
                             if (coinTracker == 1) {
@@ -1113,7 +1122,16 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
-                        onPressed: { click01.play() }
+                        onPressed: {
+                            click01.play()
+                            backButton3.color = "#0ED8D2"
+                            backButton3.opacity = 0.5
+                        }
+
+                        onReleased: {
+                            backButton3.color = darktheme == false? "#2A2C31" : "#14161B"
+                            backButton3.opacity = 0.75
+                        }
 
                         onClicked: {
                             if (addressQRTracker == 0) {
@@ -1206,7 +1224,16 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
-                        onPressed: { click01.play() }
+                        onPressed: {
+                            click01.play()
+                            addButton3.color = "#0ED8D2"
+                            addButton3.opacity = 0.5
+                        }
+
+                        onReleased: {
+                            addButton3.color = darktheme == false? "#2A2C31" : "#14161B"
+                            addButton3.opacity = 0.75
+                        }
 
                         onClicked: {
                             addAddressTracker = 1
@@ -1887,12 +1914,10 @@ Item {
             ]
         }
 
-        /**
         Controls.HistoryModal {
             id: historyModal
             z: 10
         }
-        */
 
         Controls.AddContact {
             id: contactModal
