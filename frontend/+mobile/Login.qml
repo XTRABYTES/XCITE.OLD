@@ -25,7 +25,7 @@ Item {
         z: 1
         width: Screen.width
         height: Screen.height
-        color: "#14161B"
+        color: "#1B2934"
         visible: signUpTracker == 1
 
         Label {
@@ -61,13 +61,10 @@ Item {
 
             Text {
                 id: createAddressText
-                width: parent.implicitWidth -50
+                width: doubbleButtonWidth
                 maximumLineCount: 2
-                anchors.left: parent.left
-                anchors.leftMargin: 25
-                anchors.right: parent.right
-                anchors.rightMargin: 25
-                verticalAlignment: Text.AlignJustify
+                anchors.left: createAddressButton.left
+                horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
                 text: "If you don’t have an <b>XFUEL</b> wallet or you wish to create a new one."
                 anchors.top: parent.top
@@ -104,12 +101,9 @@ Item {
 
             Text {
                 id: importAddressText
-                width: parent.implicitWidth - 50
-                anchors.left: parent.left
-                anchors.leftMargin: 25
-                anchors.right: parent.right
-                anchors.rightMargin: 25
-                verticalAlignment: Text.AlignJustify
+                width: doubbleButtonWidth
+                anchors.left: importAddressButton.left
+                horizontalAlignment: Text.AlignJustify
                 text: "If you already have an <b>XFUEL</b> wallet."
                 anchors.bottom: importAddressButton.top
                 anchors.bottomMargin: 15

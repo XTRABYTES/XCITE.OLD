@@ -29,11 +29,7 @@ ApplicationWindow {
     width: Screen.width
     height: Screen.height
     title: qsTr("XCITE")
-    color: "#2B2C31"
-
-    overlay.modal: Rectangle {
-        color: "#c92a2c31"
-    }
+    color: "#1B2934"
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -530,7 +526,7 @@ ApplicationWindow {
     // Order of the pages
     StackView {
         id: mainRoot
-        initialItem: "../Login.qml"
+        initialItem: "../Onboarding.qml"
         anchors.fill: parent
     }
 

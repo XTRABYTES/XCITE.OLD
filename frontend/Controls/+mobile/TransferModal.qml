@@ -142,7 +142,7 @@ Rectangle {
             anchors.verticalCenterOffset: 27
             font.pixelSize: 18
             font.family: xciteMobile.name
-            color: darktheme == false? "#F2F2F2" : maincolor
+            color: "#F2F2F2"
             font.letterSpacing: 2
         }
     }
@@ -152,7 +152,7 @@ Rectangle {
         width: parent.width
         height: parent.height - 50
         radius: 4
-        color: darktheme == false? "#42454F" : "transparent"
+        color: darktheme == false? "#F7F7F7" : "#1B2934"
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
@@ -222,7 +222,7 @@ Rectangle {
             font.pixelSize: 18
             font.family: xciteMobile.name
             font.bold: true
-            color: "#F2F2F2"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -242,7 +242,7 @@ Rectangle {
             font.pixelSize: 18
             font.family: xciteMobile.name
             font.bold: true
-            color: "#F2F2F2"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             visible: (transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -260,7 +260,7 @@ Rectangle {
             anchors.topMargin: 2
             font.family: xciteMobile.name
             font.pixelSize: 14
-            color: "#828282"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -277,7 +277,7 @@ Rectangle {
             anchors.bottom: walletBalance.bottom
             font.family: xciteMobile.name
             font.pixelSize: 14
-            color: "#828282"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             visible: transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -302,7 +302,7 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Rectangle{
@@ -416,7 +416,7 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Rectangle{
@@ -555,7 +555,7 @@ Rectangle {
             anchors.top: qrBorder.bottom
             anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "#F2F2F2"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             font.family: xciteMobile.name
             font.bold: true
             font.pixelSize: 14
@@ -572,7 +572,7 @@ Rectangle {
             anchors.top: pubKey.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
-            color: "white"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             font.family: xciteMobile.name
             font.pixelSize: 12
             visible: transferSwitch.on == false
@@ -593,6 +593,12 @@ Rectangle {
                      && transactionSent == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+            }
 
             Rectangle {
                 id: copyButton
@@ -622,6 +628,7 @@ Rectangle {
             anchors.topMargin: 20
             placeholder: amountTransfer
             color: sendAmount.text !== "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             validator: DoubleValidator {bottom: 0; top: ((walletList.get(selectedWallet).balance))}
             visible: transferSwitch.on == true
@@ -670,6 +677,7 @@ Rectangle {
             anchors.topMargin: 15
             placeholder: keyTransfer
             color: keyInput.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: transferSwitch.on == true
                      && transactionSent == 0
@@ -720,7 +728,7 @@ Rectangle {
             anchors.topMargin: 20
             anchors.left: keyInput.left
             radius: 5
-            border.color: maincolor
+            border.color: darktheme == false? "#42454F" : "#0ED8D2"
             border.width: 2
             color: "transparent"
             visible: transferSwitch.on == true
@@ -733,7 +741,6 @@ Rectangle {
                 anchors.fill: scanQrButton
 
                 onPressed: {
-                    scanQrButton.color = maincolor
                     click01.play()
                 }
 
@@ -749,7 +756,7 @@ Rectangle {
                 text: "SCAN QR"
                 font.family: xciteMobile.name
                 font.pointSize: 14
-                color: "#F2F2F2"
+                color: darktheme == false? "#0ED8D2" : "#F2F2F2"
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -761,7 +768,7 @@ Rectangle {
             width: (doubbleButtonWidth - 10) / 2
             height: 33
             radius: 5
-            border.color: maincolor
+            border.color: darktheme == false? "#42454F" : "#0ED8D2"
             border.width: 2
             color: "transparent"
             anchors.top: keyInput.bottom
@@ -777,7 +784,6 @@ Rectangle {
                 anchors.fill: addressBookButton
 
                 onPressed: {
-                    addressBookButton.color = maincolor
                     click01.play()
                 }
 
@@ -794,7 +800,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pointSize: 14
                 font.bold: true
-                color: "#F2F2F2"
+                color: darktheme == false? "#0ED8D2" : "#F2F2F2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -808,6 +814,7 @@ Rectangle {
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 20
             color: referenceInput.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: transferSwitch.on == true
                      && transactionSent == 0
@@ -891,7 +898,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pixelSize: 16
                 font.weight: Font.Normal
-                color: darktheme == false? "#F2F2F2" : maincolor
+                color: "#F2F2F2"
             }
 
             Text {
@@ -903,7 +910,7 @@ Rectangle {
                 anchors.topMargin: 30
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Item {
@@ -922,7 +929,7 @@ Rectangle {
                 anchors.right: amount.right
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Text {
@@ -936,7 +943,7 @@ Rectangle {
                 anchors.rightMargin: 7
                 font.family: xciteMobile.name
                 font.pixelSize: 12
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Text {
@@ -948,7 +955,7 @@ Rectangle {
                 anchors.left: amount.left
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Text {
@@ -960,7 +967,7 @@ Rectangle {
                 anchors.topMargin: 15
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Text {
@@ -972,7 +979,7 @@ Rectangle {
                 anchors.rightMargin: 25
                 font.family: xciteMobile.name
                 font.pixelSize: addressName != ""? 16 : 10
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Text {
@@ -984,7 +991,7 @@ Rectangle {
                 anchors.rightMargin: 25
                 font.family: xciteMobile.name
                 font.pixelSize: 10
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 visible: addressName != ""
             }
 
@@ -997,7 +1004,7 @@ Rectangle {
                 anchors.topMargin: 5
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 visible: referenceInput.text !== ""
             }
 
@@ -1009,7 +1016,7 @@ Rectangle {
                 anchors.rightMargin: 25
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 visible: referenceInput.text !== ""
             }
 
@@ -1022,7 +1029,7 @@ Rectangle {
                 anchors.topMargin: 15
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Item {
@@ -1041,7 +1048,7 @@ Rectangle {
                 anchors.right: feeAmount.right
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Text {
@@ -1053,7 +1060,7 @@ Rectangle {
                 anchors.rightMargin: 7
                 font.family: xciteMobile.name
                 font.pixelSize: 12
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Text {
@@ -1063,7 +1070,7 @@ Rectangle {
                 anchors.left: feeAmount.left
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Rectangle {
@@ -1244,7 +1251,7 @@ Rectangle {
             font.pixelSize: 20
             font.family: xciteMobile.name
             font.bold: true
-            color: "#F2F2F2"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             visible: transferSwitch.on == true
                      && transactionSent == 0
                      && ( addressbookTracker == 1)
@@ -1293,24 +1300,12 @@ Rectangle {
             font.pixelSize: 18
             font.family: xciteMobile.name
             font.bold: true
-            color: "#F2F2F2"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             visible: transferSwitch.on == true
                      && transactionSent == 0
                      && addressbookTracker == 1
         }
-        /**
-        Rectangle {
-            width: parent.width
-            height: 63
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: bodyModal.bottom
-            radius: 4
-            color: darktheme == false? "#42454F" : "transparent"
-            visible: transferSwitch.on == true
-                     && transactionSent == 0
-                     && addressbookTracker == 1
-        }
-        */
+
         Rectangle {
             id: cancelAddressButton
             width: (bodyModal.width - 40) / 2
@@ -1330,7 +1325,6 @@ Rectangle {
                 anchors.fill: cancelAddressButton
 
                 onPressed: {
-                   cancelAddressButton.color = maincolor
                    click01.play()
                 }
 
@@ -1346,7 +1340,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pointSize: 14
                 font.bold: true
-                color: "#F2F2F2"
+                color: darktheme == false? "#0ED8D2" : "#F2F2F2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -1369,8 +1363,8 @@ Rectangle {
         anchors.topMargin: 10
         anchors.horizontalCenter: bodyModal.horizontalCenter
         font.pixelSize: 14
-        font.family: xciteMobile.name //"Brandon Grotesque"
-        color: darktheme == false? "#F2F2F2" : maincolor
+        font.family: xciteMobile.name
+        color: "#F2F2F2"
         visible: transferTracker == 1
                  && transactionSent == 0
                  && confirmationSent == 0
@@ -1381,14 +1375,12 @@ Rectangle {
         Rectangle{
             id: closeButton
             height: 34
-            width: darktheme == false? closeTransferModal.width : doubbleButtonWidth
+            width: doubbleButtonWidth
             radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
-            border.width: 2
-            border.color: darktheme == false? "transparent" : maincolor
-        }
+         }
 
         MouseArea {
             anchors.fill: closeButton

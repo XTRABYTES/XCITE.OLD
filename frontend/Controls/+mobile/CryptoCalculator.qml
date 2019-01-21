@@ -41,7 +41,7 @@ Item {
         radius: darktheme == false? 5 : 0
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        color: darktheme == false? "#42454F" : "transparent"
+        color: darktheme == false? "#F7F7F7" : "#1B2934"
     }
 
     property int xbyButton1State: 0
@@ -176,7 +176,7 @@ Item {
         anchors.verticalCenter: parent.top
         anchors.verticalCenterOffset: 25
         font.pixelSize: 18
-        font.family: xciteMobile.name //"Brandon Grotesque"
+        font.family: xciteMobile.name
         color: "#F2F2F2"
     }
 
@@ -190,6 +190,7 @@ Item {
         anchors.top: calculatorModalLabel.bottom
         anchors.topMargin: 25
         color: "#0ED8D2"
+        textBackground: darktheme == false? "#484A4D" : "#0B0B09"
         font.pixelSize: 14
         font.bold: true
         horizontalAlignment: TextInput.AlignRight
@@ -200,12 +201,12 @@ Item {
 
     Label {
         id: inputAmountTicker
-        text: fromCurrency
+        text: fromCurrency == "FIAT"? settings.defaultCurrency : fromCurrency
         rightPadding: 0
-        font.family: xciteMobile.name //"Brandon Grotesque"
+        font.family: xciteMobile.name
         font.pointSize: 20
         font.bold: true
-        color: "#F2F2F2"
+        color: darktheme == false? "#2A2C31" : "#F2F2F2"
         anchors.right: parent.right
         anchors.rightMargin: 25
         anchors.verticalCenter: inputAmount.verticalCenter
@@ -218,7 +219,7 @@ Item {
         anchors.rightMargin: 18
         anchors.top: inputAmount.bottom
         anchors.topMargin: 10
-        color: "#F2F2F2"
+        color: darktheme == false? "#2A2C31" : "#F2F2F2"
         font.family: xciteMobile.name
         font.pixelSize: 20
         font.bold: true
@@ -234,10 +235,10 @@ Item {
         id: outputAmountTicker
         text: toCurrency
         rightPadding: 0
-        font.family: xciteMobile.name //"Brandon Grotesque"
+        font.family: xciteMobile.name
         font.pointSize: 20
         font.bold: true
-        color: "#F2F2F2"
+        color: darktheme == false? "#2A2C31" : "#F2F2F2"
         anchors.right: inputAmountTicker.right
         anchors.verticalCenter: outputAmount.verticalCenter
     }
@@ -258,7 +259,7 @@ Item {
         Text {
             id: xbyButton1Label
             text : "XBY"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pointSize: 14
             font.bold: true
             color: xbyButton1State == 1 ? "#F2F2F2" : "#5F5F5F"
@@ -295,7 +296,7 @@ Item {
         Text {
             id: xfuelButton1Label
             text : "XFUEL"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pointSize: 14
             font.bold: true
             color: xfuelButton1State == 1 ? "#F2F2F2" : "#5F5F5F"
@@ -332,7 +333,7 @@ Item {
         Text {
             id: btcButton1Label
             text : "BTC"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pointSize: 14
             font.bold: true
             color: btcButton1State == 1 ? "#F2F2F2" : "#5F5F5F"
@@ -369,7 +370,7 @@ Item {
         Text {
             id: usdButton1Label
             text : settings.defaultCurrency
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pointSize: 14
             font.bold: true
             color: usdButton1State == 1 ? "#F2F2F2" : "#5F5F5F"
@@ -407,10 +408,10 @@ Item {
         Text {
             id: button1Label
             text : "1"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -420,11 +421,13 @@ Item {
             onPressed: {
                 button1.color = maincolor
                 button1.border.color = "transparent"
+                button1Label.color = "#F2F2F2"
                 inputAmount.text = inputAmount.text + "1"
             }
             onReleased: {
                 button1.color = "transparent"
                 button1.border.color = maincolor
+                button1Label.color = maincolor
             }
         }
     }
@@ -447,7 +450,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -457,11 +460,13 @@ Item {
             onPressed: {
                 button2.color = maincolor
                 button2.border.color = "transparent"
+                button2Label.color = "#F2F2F2"
                 inputAmount.text = inputAmount.text + "2"
             }
             onReleased: {
                 button2.color = "transparent"
                 button2.border.color = maincolor
+                buttonLabel.color = maincolor
             }
         }
     }
@@ -484,7 +489,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -494,11 +499,13 @@ Item {
             onPressed: {
                 button3.color = maincolor
                 button3.border.color = "transparent"
+                button3Label.color = "#F2F2F2"
                 inputAmount.text = inputAmount.text + "3"
             }
             onReleased: {
                 button3.color = "transparent"
                 button3.border.color = maincolor
+                button3Label.color = maincolor
             }
         }
     }
@@ -522,7 +529,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -532,11 +539,13 @@ Item {
             onPressed: {
                 button4.color = maincolor
                 button4.border.color = "transparent"
+                button4Label.color = "#F2F2F2"
                 inputAmount.text = inputAmount.text + "4"
             }
             onReleased: {
                 button4.color = "transparent"
                 button4.border.color = maincolor
+                button4Label.color = maincolor
             }
         }
     }
@@ -559,7 +568,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -569,11 +578,13 @@ Item {
             onPressed: {
                 button5.color = maincolor
                 button5.border.color = "transparent"
+                button5Label.color = "#F2F2F2"
                 inputAmount.text = inputAmount.text + "5"
             }
             onReleased: {
                 button5.color = "transparent"
                 button5.border.color = maincolor
+                button5Label.color = maincolor
             }
         }
     }
@@ -596,7 +607,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -606,11 +617,13 @@ Item {
             onPressed: {
                 button6.color = maincolor
                 button6.border.color = "transparent"
+                button6Label.color = "#F2F2F2"
                 inputAmount.text = inputAmount.text + "6"
             }
             onReleased: {
                 button6.color = "transparent"
                 button6.border.color = maincolor
+                button6Label.color = maincolor
             }
         }
     }
@@ -634,7 +647,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -644,11 +657,13 @@ Item {
             onPressed: {
                 button7.color = maincolor
                 button7.border.color = "transparent"
+                button7Label.color = "#F2F2F2"
                 inputAmount.text = inputAmount.text + "7"
             }
             onReleased: {
                 button7.color = "transparent"
                 button7.border.color = maincolor
+                button7Label.color = maincolor
             }
         }
     }
@@ -671,7 +686,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -681,11 +696,13 @@ Item {
             onPressed: {
                 button8.color = maincolor
                 button8.border.color = "transparent"
+                button8Label.color = "#F2F2F2"
                 inputAmount.text = inputAmount.text + "8"
             }
             onReleased: {
                 button8.color = "transparent"
                 button8.border.color = maincolor
+                button8Label.color = maincolor
             }
         }
     }
@@ -708,7 +725,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -718,11 +735,13 @@ Item {
             onPressed: {
                 button9.color = maincolor
                 button9.border.color = "transparent"
+                button9Label.color = "#F2F2F2"
                 inputAmount.text = inputAmount.text + "9"
             }
             onReleased: {
                 button9.color = "transparent"
                 button9.border.color = maincolor
+                button9Label.color = maincolor
             }
         }
     }
@@ -746,7 +765,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -756,11 +775,13 @@ Item {
             onPressed: {
                 buttonC.color = maincolor
                 buttonC.border.color = "transparent"
+                buttonCLabel.color = "#F2F2F2"
                 inputAmount.text = (inputAmount.text).slice(0, - 1)
             }
             onReleased: {
                 buttonC.color = "transparent"
                 buttonC.border.color = maincolor
+                buttonCLabel.color = maincolor
             }
 
             onPressAndHold: {
@@ -787,7 +808,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -797,6 +818,7 @@ Item {
             onPressed: {
                 button0.color = maincolor
                 button0.border.color = "transparent"
+                button0Label.color = "#F2F2F2"
                 if (inputAmount.text != "") {
                     inputAmount.text = inputAmount.text + "0"
                 }
@@ -804,6 +826,7 @@ Item {
             onReleased: {
                 button0.color = "transparent"
                 button0.border.color = maincolor
+                button0Label.color = maincolor
             }
         }
     }
@@ -826,7 +849,7 @@ Item {
             font.family: xciteMobile.name //"Brandon Grotesque"
             font.pointSize: 20
             font.bold: true
-            color: "#F2F2F2"
+            color: maincolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -837,6 +860,7 @@ Item {
                 if(inputAmount.text.includes(".") === false) {
                     buttonDec.color = maincolor
                     buttonDec.border.color = "transparent"
+                    buttonDecLabel.color = "#F2F2F2"
                     if (inputAmount.text != "") {
                         inputAmount.text = inputAmount.text + "."
                     }
@@ -848,6 +872,7 @@ Item {
             onReleased: {
                 buttonDec.color = "transparent"
                 buttonDec.border.color = maincolor
+                buttonDecLabel.color = maincolor
             }
         }
     }

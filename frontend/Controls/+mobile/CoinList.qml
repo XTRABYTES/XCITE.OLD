@@ -45,35 +45,14 @@ Rectangle {
                 }
             }
 
-            DropShadow {
-                id: cardShadow
-                anchors.fill: square
-                source: square
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color:"black"
-                opacity: 0.4
-                transparentBorder: true
-
-                Connections {
-                    target: allCoins
-                    onMovementEnded: {
-                        cardShadow.verticalOffset = 4
-                    }
-                }
-            }
-
             Rectangle {
                 id: square
                 width: parent.width - 55
                 height: 75
                 radius: 4
-                color: darktheme == false? "#42454F" : "transparent"
+                color: "transparent"
                 border.width: 2
-                border.color: darktheme == false? "transparent" : "#42454F"
+                border.color: darktheme == false? "#42454F" : "#0ED8D2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
 
@@ -110,7 +89,7 @@ Rectangle {
                     text: name
                     font.pixelSize: 18
                     font.family: xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.bold: true
                 }
 
@@ -122,7 +101,7 @@ Rectangle {
                     text: name
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
@@ -137,7 +116,7 @@ Rectangle {
                     text:  "." + amountArray[1]
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
@@ -150,7 +129,7 @@ Rectangle {
                     text: amountArray[0]
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
@@ -165,7 +144,6 @@ Rectangle {
                     font.pixelSize: 11
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    //font.bold: true
                 }
 
                 Text {
@@ -178,7 +156,6 @@ Rectangle {
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    //font.bold: true
                 }
 
                 Label {
@@ -190,7 +167,6 @@ Rectangle {
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    //font.bold: true
                 }
 
                 Text {
@@ -215,7 +191,6 @@ Rectangle {
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    //font.bold: true
                 }
 
                 Text {
@@ -228,7 +203,6 @@ Rectangle {
                     font.pixelSize: 11
                     font.family: xciteMobile.name
                     color: "#828282"
-                    //font.bold: true
                 }
 
                 Label {
@@ -239,22 +213,12 @@ Rectangle {
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    //font.bold: true
                 }
 
                 MouseArea {
                     anchors.fill: parent
 
-                    onPressed: {
-                        cardShadow.verticalOffset = 0
-                    }
-
-                    onReleased: {
-                        cardShadow.verticalOffset = 4
-                    }
-
-                    onClicked: {
-                        cardShadow.verticalOffset = 4
+                   onClicked: {
                         if (coinTracker == 0 && appsTracker == 0 && addCoinTracker == 0 && transferTracker == 0) {
                             coinIndex = coinID
                             countWallets()
@@ -262,10 +226,6 @@ Rectangle {
                         }
                     }
 
-                    onPressAndHold: {
-                        cardShadow.verticalOffset = 4
-                        //edit contact info
-                    }
                 }
             }
 

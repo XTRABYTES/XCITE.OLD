@@ -170,5 +170,7 @@
         <file>icons/XFUEL_card_logo_colored_01.svg</file>
         <file>icons/xby_logo_TM.svg</file>
         <file>icons/xby_logo_TM_01.svg</file>
+        <file>icons/XBY_card_logo_01.svg</file>
+        <file>icons/XFUEL_card_logo_01.svg</file>
     </qresource>
 </RCC>

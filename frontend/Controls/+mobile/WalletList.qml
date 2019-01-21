@@ -34,35 +34,14 @@ Rectangle {
             height: 135
             anchors.horizontalCenter: parent.horizontalCenter
 
-            DropShadow {
-                id: cardShadow
-                anchors.fill: square
-                source: square
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color:"black"
-                opacity: 0.4
-                transparentBorder: true
-
-                Connections {
-                    target: allWallets
-                    onMovementEnded: {
-                        cardShadow.verticalOffset = 4
-                    }
-                }
-            }
-
             Rectangle {
                 id: square
                 width: parent.width - 55
                 height: 125
                 radius: 4
-                color: darktheme == false? "#42454F" : "transparent"
+                color: "transparent"
                 border.width: 2
-                border.color: darktheme == false? "transparent" : "#42454F"
+                border.color: darktheme == false? "#42454F" : "#0ED8D2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
 
@@ -162,7 +141,7 @@ Rectangle {
                     text: label
                     font.pixelSize: 18
                     font.family: xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.bold: true
                 }
 
@@ -175,7 +154,7 @@ Rectangle {
                     text: name
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
@@ -189,7 +168,7 @@ Rectangle {
                     text:  "." + amountArray[1]
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
@@ -201,7 +180,7 @@ Rectangle {
                     text: amountArray[0]
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Label {
@@ -212,7 +191,7 @@ Rectangle {
                     anchors.topMargin: 2
                     font.pixelSize: 12
                     font.family: xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Label {
@@ -225,7 +204,7 @@ Rectangle {
                     anchors.rightMargin: 3
                     font.pixelSize: 12
                     font.family: xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Label {
@@ -237,7 +216,7 @@ Rectangle {
                     anchors.top: unconfirmedTotal1.top
                     font.pixelSize: 12
                     font.family: xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Label {
@@ -248,7 +227,7 @@ Rectangle {
                     anchors.rightMargin: 135
                     font.pixelSize: 12
                     font.family: xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Rectangle {
@@ -261,7 +240,7 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: 14
                     color: "transparent"
-                    border.color: maincolor
+                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
                     border.width: 2
 
                     Label {
@@ -269,7 +248,7 @@ Rectangle {
                         font.family: xciteMobile.name //"Brandon Grotesque"
                         font.pointSize: 14
                         font.bold: true
-                        color: "#F2F2F2"
+                        color: darktheme == false? "#0ED8D2" : "#F2F2F2"
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -307,7 +286,7 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.rightMargin: 14
                     color: "transparent"
-                    border.color: maincolor
+                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
                     border.width: 2
 
                     Label {
@@ -315,7 +294,7 @@ Rectangle {
                         font.family: xciteMobile.name //"Brandon Grotesque"
                         font.pointSize: 14
                         font.bold: true
-                        color: "#F2F2F2"
+                        color: darktheme == false? "#0ED8D2" : "#F2F2F2"
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                     }

@@ -9,11 +9,10 @@ Item {
         id: background
         width: parent.width
         height: parent.height
-        color: "black"
+        color: darktheme == false? "white" : "black"
         opacity: 0.95
         anchors.horizontalCenter: Screen.horizontalCenter
         anchors.top: parent.top
-        //visible: addressQRTracker == 1
 
         MouseArea {
             anchors.fill: parent
@@ -24,12 +23,11 @@ Item {
         id: qrModal
         width: 325
         height: 340
-        color: darktheme == false? "#42454F" : "transparent"
+        color: darktheme == false? "#F7F7F7" : "#1B2934"
         radius: 4
         anchors.horizontalCenter: background.horizontalCenter
         anchors.top: background.top
         anchors.topMargin: 10
-        //visible: addressQRTracker == 1
     }
 
     Text {
@@ -37,12 +35,11 @@ Item {
         anchors.top: qrModal.top
         anchors.topMargin: 10
         anchors.horizontalCenter: background.horizontalCenter
-        color: "white"
+        color: darktheme == false? "#2A2C31" : "#F2F2F2"
         font.family: xciteMobile.name
         font.bold: true
         font.pixelSize: 20
         font.letterSpacing: 1
-        //visible: addressQRTracker == 1
     }
 
     Rectangle {
@@ -54,7 +51,6 @@ Item {
         anchors.top: qrModal.top
         anchors.topMargin: 47.5
         color: "#FFFFFF"
-        //visible: addressQRTracker == 1
     }
 
     Item {
@@ -63,7 +59,6 @@ Item {
         height: (qrBorder.height / 7) * 6
         anchors.horizontalCenter: qrBorder.horizontalCenter
         anchors.verticalCenter: qrBorder.verticalCenter
-        //visible: addressQRTracker == 1
 
         Image {
             anchors.fill: parent
@@ -78,12 +73,11 @@ Item {
         anchors.top: qrBorder.bottom
         anchors.topMargin: 15
         anchors.horizontalCenter: background.horizontalCenter
-        color: "white"
+        color: darktheme == false? "#2A2C31" : "#F2F2F2"
         font.family: xciteMobile.name
         font.bold: true
         font.pixelSize: 14
         font.letterSpacing: 1
-        //visible: addressQRTracker == 1
     }
 
     Text {
@@ -92,9 +86,8 @@ Item {
         anchors.top: pubKey.bottom
         anchors.topMargin: 10
         anchors.horizontalCenter: pubKey.horizontalCenter
-        color: "white"
+        color: darktheme == false? "#2A2C31" : "#F2F2F2"
         font.family: xciteMobile.name
         font.pixelSize: 12
-        //visible: addressQRTracker == 1
     }
 }

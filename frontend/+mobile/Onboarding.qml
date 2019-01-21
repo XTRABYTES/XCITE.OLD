@@ -1,4 +1,4 @@
-/**
+ /**
  * Filename: Onboarding.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -25,7 +25,7 @@ Item {
         z: 1
         width: Screen.width
         height: Screen.height
-        color: "#14161B"
+        color: "#1B2934"
 
         Rectangle {
             width: welcomeText.implicitWidth
