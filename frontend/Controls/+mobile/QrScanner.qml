@@ -13,6 +13,8 @@ Item {
     anchors.topMargin: 50
     visible: scanQRTracker == 1
 
+    property alias key: pubKey.text
+
     Timer {
         id: timer
         interval: 1000
@@ -28,7 +30,7 @@ Item {
     Camera {
         id: camera
         position: Camera.BackFace
-        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
+        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addWalletTracker) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
         focus {
             focusMode: Camera.FocusContinuous
             focusPointMode: CameraFocus.FocusPointAuto
@@ -50,8 +52,8 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             font.pixelSize: 20
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            color: darktheme == false? "#F2F2F2" : maincolor
+            font.family: xciteMobile.name
+            color: "#F2F2F2"
         }
     }
 
@@ -68,7 +70,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: scanFrame.verticalCenter
             color: "#F2F2F2"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.bold: true
             font.pixelSize: 14
             font.italic: true
@@ -101,8 +103,8 @@ Item {
             ColorOverlay {
                 anchors.fill: scanWindow
                 source: scanWindow
-                color: darktheme == true? "black" : "transparent"
-                opacity: darktheme == false? 0 : 0.95
+                color: darktheme == false? "white" : "black"
+                opacity: 0.95
             }
         }
 
@@ -126,7 +128,7 @@ Item {
             anchors.topMargin: 285
             anchors.horizontalCenter: parent.horizontalCenter
             color: "#F2F2F2"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.bold: true
             font.pixelSize: 14
             font.letterSpacing: 1
@@ -139,7 +141,7 @@ Item {
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
             color: "white"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pixelSize: 12
             font.italic: publicKey.text == "scanning..."
 

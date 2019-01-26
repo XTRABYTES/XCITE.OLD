@@ -1,0 +1,64 @@
+[
+    {
+        "outputFile": "C:\\Users\\Joeri\\Desktop\\XCITE\\XCITE\\android-build\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-fa\\values-fa.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 113,
+                    "endOffset": 164
+                },
+                "from": {
+                    "file": "C:\\Qt\\5.11.1\\android_armv7\\src\\android\\java\\res\\values-fa\\strings.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 293,
+                        "endColumn": 113,
+                        "endOffset": 402
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 169,
+                    "endColumn": 123,
+                    "endOffset": 288
+                },
+                "from": {
+                    "file": "C:\\Qt\\5.11.1\\android_armv7\\src\\android\\java\\res\\values-fa\\strings.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 168,
+                        "endColumn": 123,
+                        "endOffset": 287
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 293,
+                    "endColumn": 109,
+                    "endOffset": 398
+                },
+                "from": {
+                    "file": "C:\\Qt\\5.11.1\\android_armv7\\src\\android\\java\\res\\values-fa\\strings.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 57,
+                        "endColumn": 109,
+                        "endOffset": 162
+                    }
+                }
+            }
+        ]
+    }
+]

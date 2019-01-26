@@ -36,31 +36,14 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: Screen.horizontalCenter
 
-            DropShadow {
-                id: cardShadow
-                anchors.fill: cardBackground
-                source: cardBackground
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color:"black"
-                opacity: 0.4
-                transparentBorder: true
-
-                Connections {
-                    target: allAddresses
-                    onMovementEnded: cardShadow.verticalOffset = 4
-                }
-            }
-
             Rectangle {
                 id: cardBackground
                 width: parent.width - 55
                 height: 125
                 radius: 4
-                color: darktheme == false? "#42454F" : "#34363B"
+                color: darktheme == false? "#F2F2F2" : "#1B2934"
+                border.width: 1
+                border.color: darktheme == false? "#42454F" : "transparent"
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -78,7 +61,7 @@ Rectangle {
                 Label {
                     id: addressCoinName
                     text: coin
-                    color: "#F2F2F2"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     font.bold: true
@@ -90,7 +73,7 @@ Rectangle {
                 Label {
                     id: addressName
                     text: label
-                    color: "#F2F2F2"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     font.bold: true
@@ -102,7 +85,7 @@ Rectangle {
                 Text {
                     id: addressHash
                     text: address
-                    color: "#F2F2F2"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.pixelSize: 13
                     font.family: "Brandon Grotesque"
                     font.weight: Font.Light
@@ -166,16 +149,10 @@ Rectangle {
                     anchors.fill: parent
 
                    onPressed: {
-                        cardShadow.verticalOffset = 0
                         click01.play()
                     }
 
-                    onReleased: {
-                        cardShadow.verticalOffset = 4
-                    }
-
                     onPressAndHold: {
-                        cardShadow.verticalOffset = 4
                         addressIndex = uniqueNR
                         addressTracker = 1
                     }
@@ -213,7 +190,7 @@ Rectangle {
                     anchors.bottomMargin: 14
                     anchors.left: addressCoinLogo.left
                     color: "transparent"
-                    border.color: maincolor
+                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
                     border.width: 2
 
                     Label {
@@ -221,7 +198,7 @@ Rectangle {
                         font.family: xciteMobile.name
                         font.pointSize: 14
                         font.bold: true
-                        color: "#F2F2F2"
+                        color: darktheme == false? "#0ED8D2" : "#F2F2F2"
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -261,7 +238,7 @@ Rectangle {
                     anchors.bottomMargin: 14
                     anchors.right: addressName.right
                     color: "transparent"
-                    border.color: maincolor
+                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
                     border.width: 2
 
                     Label {
@@ -269,7 +246,7 @@ Rectangle {
                         font.family: xciteMobile.name
                         font.pointSize: 14
                         font.bold: true
-                        color: "#F2F2F2"
+                        color: darktheme == false? "#0ED8D2" : "#F2F2F2"
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                     }

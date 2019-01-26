@@ -32,7 +32,7 @@ Rectangle {
         id: addCoinSidebar
         height: parent.height
         width: 0
-        color: "#34363D"
+        color: darktheme == false ? "#34363D" : "#2A2C31"
         anchors.top: parent.top
         anchors.right: parent.right
         state: "closed"

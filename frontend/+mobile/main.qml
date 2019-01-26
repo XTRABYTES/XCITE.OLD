@@ -29,11 +29,7 @@ ApplicationWindow {
     width: Screen.width
     height: Screen.height
     title: qsTr("XCITE")
-    color: "#2B2C31"
-
-    overlay.modal: Rectangle {
-        color: "#c92a2c31"
-    }
+    color: "#1B2934"
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -73,13 +69,17 @@ ApplicationWindow {
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
-    property bool darktheme: false
     property real doubbleButtonWidth: 273
 
+    // Global setting, editable
+    property bool darktheme: true
+    property string username: ""
+    property string selectedPage: ""
+
     // Trackers
-    property int onboardingTracker: 1 // check settings for real value
-    property int signUpTracker: 1 // check settings for real value
     property int loginTracker: 0
+    property int addWalletTracker: 0
+    property int createWalletTracker: 0
     property int appsTracker: 0
     property int coinTracker: 0
     property int walletTracker: 0
@@ -515,6 +515,7 @@ ApplicationWindow {
             txPartner: ""
             reference: ""
             txid: 0
+            txNR: 0
         }
     }
 
@@ -529,7 +530,7 @@ ApplicationWindow {
     // Order of the pages
     StackView {
         id: mainRoot
-        initialItem: "../Login.qml"
+        initialItem: "../Onboarding.qml"
         anchors.fill: parent
     }
 
@@ -546,13 +547,6 @@ ApplicationWindow {
         pictureID = pictureID +1;
 
         addOwnContact();
-
-        if (signUpTracker == 0) {
-            mainRoot.push("../SignUp.qml")
-        }
-        if (onboardingTracker == 0) {
-            mainRoot.push("../Onboarding.qml")
-        }
     }
 
     // Global components
@@ -593,7 +587,7 @@ ApplicationWindow {
 
     SoundEffect {
         id: click01
-        source: "qrc:/sounds/click_01.wav"
+        source: "qrc:/sounds/click_02.wav"
         volume: 0.15
    }
 }

@@ -142,16 +142,20 @@
         <file>+mobile/Onboarding.qml</file>
         <file>+mobile/SignUp.qml</file>
         <file>+mobile/Home.qml</file>
-        <file>+mobile/MobileAddressBook.qml</file>
         <file>Controls/+mobile/QrCode.qml</file>
         <file>Controls/+mobile/CoinPicklist.qml</file>
         <file>Controls/+mobile/WalletPicklist.qml</file>
-        <file>Controls/+mobile/CoinModal.qml</file>
         <file>Controls/+mobile/WalletDetailList.qml</file>
         <file>Controls/+mobile/CoinList.qml</file>
         <file>Controls/+mobile/Contacts.qml</file>
         <file>Controls/+mobile/AddContact.qml</file>
         <file>Controls/+mobile/PictureList.qml</file>
         <file>Controls/+mobile/ContactModal.qml</file>
+        <file>Controls/+mobile/HistoryModal.qml</file>
+        <file>Controls/+mobile/AddWallet.qml</file>
+        <file>Controls/+mobile/CreateWallet.qml</file>
+        <file>../resources/icons/XFUEL_card_logo_01.svg</file>
+        <file>+mobile/InitialSetup.qml</file>
+        <file>+mobile/CreateAccount.qml</file>
     </qresource>
 </RCC>

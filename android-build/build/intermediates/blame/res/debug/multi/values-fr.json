@@ -1,0 +1,83 @@
+[
+    {
+        "outputFile": "C:\\Users\\Joeri\\Desktop\\XCITE\\XCITE\\android-build\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-fr\\values-fr.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 117,
+                    "endOffset": 168
+                },
+                "from": {
+                    "file": "C:\\Qt\\5.11.1\\android_armv7\\src\\android\\java\\res\\values-fr\\strings.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 307,
+                        "endColumn": 117,
+                        "endOffset": 420
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 173,
+                    "endColumn": 121,
+                    "endOffset": 290
+                },
+                "from": {
+                    "file": "C:\\Qt\\5.11.1\\android_armv7\\src\\android\\java\\res\\values-fr\\strings.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 184,
+                        "endColumn": 121,
+                        "endOffset": 301
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 295,
+                    "endColumn": 125,
+                    "endOffset": 416
+                },
+                "from": {
+                    "file": "C:\\Qt\\5.11.1\\android_armv7\\src\\android\\java\\res\\values-fr\\strings.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 57,
+                        "endColumn": 125,
+                        "endOffset": 178
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 5,
+                    "startColumn": 4,
+                    "startOffset": 421,
+                    "endColumn": 102,
+                    "endOffset": 519
+                },
+                "from": {
+                    "file": "C:\\Qt\\5.11.1\\android_armv7\\src\\android\\java\\res\\values-fr\\strings.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 426,
+                        "endColumn": 102,
+                        "endOffset": 524
+                    }
+                }
+            }
+        ]
+    }
+]

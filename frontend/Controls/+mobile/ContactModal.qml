@@ -104,7 +104,7 @@ Rectangle {
             anchors.verticalCenterOffset: 27
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
-            color: darktheme == false? "#F2F2F2" : maincolor
+            color: "#F2F2F2"
             font.letterSpacing: 2
             elide: Text.ElideRight
         }
@@ -116,7 +116,7 @@ Rectangle {
         width: parent.width
         height: parent.height - 50
         radius: 4
-        color: darktheme == false? "#42454F" : "transparent"
+        color: darktheme == false? "#F7F7F7" : "#1B2934"
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
@@ -160,6 +160,7 @@ Rectangle {
             anchors.left: newPhoto.right
             anchors.leftMargin: 25
             color: newFirstname.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
@@ -178,6 +179,7 @@ Rectangle {
             anchors.top: newFirstname.bottom
             anchors.topMargin: 10
             color: newLastname.text !== "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
@@ -212,6 +214,7 @@ Rectangle {
             anchors.top: newPhoto.bottom
             anchors.topMargin: 45
             color: newTel.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
@@ -228,6 +231,7 @@ Rectangle {
             anchors.top: newTel.bottom
             anchors.topMargin: 10
             color: newCell.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
@@ -244,6 +248,7 @@ Rectangle {
             anchors.top: newCell.bottom
             anchors.topMargin: 10
             color: newMail.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
@@ -259,6 +264,7 @@ Rectangle {
             anchors.top: newMail.bottom
             anchors.topMargin: 10
             color: newChat.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
@@ -342,7 +348,7 @@ Rectangle {
             anchors.top: saveSuccess.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: "#F2F2F2"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             font.bold: true
@@ -405,7 +411,7 @@ Rectangle {
         anchors.horizontalCenter: editContactModal.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: darktheme == false? "#F2F2F2" : maincolor
+        color: "#F2F2F2"
         visible: editContactTracker == 1
                  && editSaved == 0
 
@@ -417,8 +423,6 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
-            border.width: 2
-            border.color: darktheme == false? "transparent" : maincolor
         }
 
         MouseArea {

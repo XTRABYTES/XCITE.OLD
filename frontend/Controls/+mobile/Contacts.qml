@@ -35,33 +35,14 @@ Rectangle {
             height: 85
             anchors.horizontalCenter: parent.horizontalCenter
 
-            DropShadow {
-                id: cardShadow
-                anchors.fill: square
-                source: square
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color:"black"
-                opacity: 0.4
-                transparentBorder: true
-
-                Connections {
-                    target: allContacts
-                    onMovementEnded: {
-                        cardShadow.verticalOffset = 4
-                    }
-                }
-            }
-
             Rectangle {
                 id: square
                 width: parent.width - 55
                 height: 75
                 radius: 4
-                color: darktheme == false? "#42454F" : "#2A2B31"
+                color: darktheme == false? "#F2F2F2" : "#1B2934"
+                border.width: 1
+                border.color: darktheme == false? "#42454F" : "transparent"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
 
@@ -99,8 +80,7 @@ Rectangle {
                     font.pixelSize: 16
                     font.family: xciteMobile.name
                     font.capitalization: Font.AllUppercase
-                    color: "#E5E5E5"
-                    //font.bold: true
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Label {
@@ -111,8 +91,7 @@ Rectangle {
                     text: firstName
                     font.pixelSize: 16
                     font.family:  xciteMobile.name
-                    color: "#E5E5E5"
-                    //font.bold:true
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Label {
@@ -124,7 +103,7 @@ Rectangle {
                     text: addressesCount.text === 1? "address" : "addresses"
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Label {
@@ -136,20 +115,11 @@ Rectangle {
                     text: countAddressesContact(contactNR)
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
-                    color: "#E5E5E5"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 MouseArea {
                     anchors.fill: parent
-
-                    onPressed: {
-                        cardShadow.verticalOffset = 0
-                        click01.play()
-                    }
-
-                    onReleased: {
-                        cardShadow.verticalOffset = 4
-                    }
 
                     onClicked: {
                         contactIndex = contactNR
@@ -157,7 +127,6 @@ Rectangle {
                     }
 
                     onPressAndHold: {
-                        cardShadow.verticalOffset = 4
                         contactIndex = contactNR
                         editContactTracker = 1
                     }

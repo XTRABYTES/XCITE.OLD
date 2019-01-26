@@ -32,7 +32,7 @@ Item {
         z: 1
         width: Screen.width
         height: Screen.height
-        color: darktheme == false? "#2A2C31" : "#14161B"
+        color: darktheme == false? "#F7F7F7" : "#14161B"
 
         SwipeView {
             id: view
@@ -40,7 +40,6 @@ Item {
             currentIndex: 0
             anchors.fill: parent
             interactive: (appsTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addCoinTracker == 1) ? false : true
-            visible: loginTracker == 1
 
             Item {
                 id: dashForm
@@ -54,7 +53,7 @@ Item {
                     anchors.right: parent.right
                     anchors.rightMargin: 55/2
                     radius: 4
-                    color: darktheme == false? "#2A2C31" : "#14161B"
+                    color: "#0B0B09"
                     state: coinTracker == 0? "big" : "small"
 
                     states: [
@@ -85,7 +84,7 @@ Item {
                     samples: 17
                     horizontalOffset: 0
                     verticalOffset: 2
-                    color: darktheme == false? "#14161B" : "black"
+                    color: "black"
                 }
 
                 DropShadow {
@@ -446,7 +445,7 @@ Item {
                     radius: 25
                     anchors.fill: backButton
                     color: darktheme == false? "#2A2C31" : "#14161B"
-                    opacity: 0.75
+                    opacity: 0.1
                     visible: backButton.visible
 
                 }
@@ -477,7 +476,7 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: maincolor
+                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
                     border.width: 2
                     visible: anchors.rightMargin > -110
                     state: coinTracker == 1 ? "inView" : "hidden"
@@ -511,13 +510,22 @@ Item {
                         ColorOverlay {
                             anchors.fill: parent
                             source: parent
-                            color: maincolor
+                            color: darktheme == false? "#42454F" : "#0ED8D2"
                         }
                     }
                     MouseArea {
                         anchors.fill: parent
 
-                        onPressed: { click01.play() }
+                        onPressed: {
+                            click01.play()
+                            backButton1.color = "#0ED8D2"
+                            backButton1.opacity = 0.5
+                        }
+
+                        onReleased: {
+                            backButton1.color = darktheme == false? "#2A2C31" : "#14161B"
+                            backButton1.opacity = 0.1
+                        }
 
                         onClicked: {
                             if (coinTracker == 1) {
@@ -540,7 +548,7 @@ Item {
                     width: parent.width
                     height: 150
                     anchors.top: parent.top
-                    color: darktheme == false? "#42454F" : "#2A2B31"
+                    color: "#1B2934"
 
                     MouseArea {
                         anchors.fill: parent
@@ -921,13 +929,13 @@ Item {
                     anchors.bottom: homeHeader2.bottom
                     anchors.bottomMargin: 25
                     width: Screen.width - 55
-                    color: searchForAddress.text != "" ? "#2A2C31" : "#727272"
+                    color: searchForAddress.text != "" ? "#F2F2F2" : "#727272"
+                    textBackground: "#0B0B09"
                     font.pixelSize: 14
                     font.capitalization: Font.AllUppercase
                     mobile: 1
                     addressBook: 1
                     onTextChanged: searchCriteria = searchForAddress.text
-                    textBackground: "white"
                     visible: width > 0
                     state: contactTracker == 1? "hidden" : "inView"
 
@@ -1042,7 +1050,7 @@ Item {
                     radius: 25
                     anchors.fill: backButton2
                     color: darktheme == false? "#2A2C31" : "#14161B"
-                    opacity: 0.75
+                    opacity: 0.1
                     visible: backButton2.visible
 
                 }
@@ -1073,7 +1081,7 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: maincolor
+                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
                     border.width: 2
                     visible: anchors.rightMargin > -110
                     state: contactTracker == 1 ? "inView" : "hidden"
@@ -1107,13 +1115,22 @@ Item {
                         ColorOverlay {
                             anchors.fill: parent
                             source: parent
-                            color: maincolor
+                            color: darktheme == false? "#42454F" : "#0ED8D2"
                         }
                     }
                     MouseArea {
                         anchors.fill: parent
 
-                        onPressed: { click01.play() }
+                        onPressed: {
+                            click01.play()
+                            backButton3.color = "#0ED8D2"
+                            backButton3.opacity = 0.5
+                        }
+
+                        onReleased: {
+                            backButton3.color = darktheme == false? "#2A2C31" : "#14161B"
+                            backButton3.opacity = 0.1
+                        }
 
                         onClicked: {
                             if (addressQRTracker == 0) {
@@ -1135,7 +1152,7 @@ Item {
                     radius: 25
                     anchors.fill: addButton2
                     color: darktheme == false? "#2A2C31" : "#14161B"
-                    opacity: 0.75
+                    opacity: 0.1
                     visible: addButton2.visible
 
                 }
@@ -1166,7 +1183,7 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: maincolor
+                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
                     border.width: 2
                     visible: anchors.leftMargin > -110
                     state: (contactTracker == 1 && addressQRTracker == 0)? "inView" : "hidden"
@@ -1200,13 +1217,22 @@ Item {
                         ColorOverlay {
                             anchors.fill: parent
                             source: parent
-                            color: maincolor
+                            color: darktheme == false? "#42454F" : "#0ED8D2"
                         }
                     }
                     MouseArea {
                         anchors.fill: parent
 
-                        onPressed: { click01.play() }
+                        onPressed: {
+                            click01.play()
+                            addButton3.color = "#0ED8D2"
+                            addButton3.opacity = 0.5
+                        }
+
+                        onReleased: {
+                            addButton3.color = darktheme == false? "#2A2C31" : "#14161B"
+                            addButton3.opacity = 0.1
+                        }
 
                         onClicked: {
                             addAddressTracker = 1
@@ -1253,7 +1279,7 @@ Item {
                     width: parent.width
                     height: 150
                     anchors.top: parent.top
-                    color: darktheme == false? "#42454F" : "#2A2B31"
+                    color: "#1B2934"
                     MouseArea {
                         anchors.fill: parent
                     }
@@ -1714,7 +1740,6 @@ Item {
             height: 150
             anchors.top: parent.top
             color: "transparent"
-            visible: loginTracker == 1
 
             Image {
                 id: apps
@@ -1887,12 +1912,10 @@ Item {
             ]
         }
 
-        /**
         Controls.HistoryModal {
             id: historyModal
             z: 10
         }
-        */
 
         Controls.AddContact {
             id: contactModal

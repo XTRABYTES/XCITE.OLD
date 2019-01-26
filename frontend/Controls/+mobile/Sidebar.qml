@@ -52,17 +52,39 @@ Rectangle {
         height: 40
         z: 100
         visible: appsTracker == 1
-        /**MouseArea {
-            anchors.fill: settings
-            onClicked: {
-                mainRoot.push("../Settings.qml")
-                appsTracker = 0
-            }
-        }*/
         ColorOverlay {
             anchors.fill: settings
             source: settings
             color: maincolor
+        }
+        Text {
+            id: settingsText
+            text: "SETTINGS"
+            anchors.top: parent.bottom
+            anchors.topMargin: 5
+            color: maincolor
+            font.family: xciteMobile.name //"Brandon Grotesque"
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.bold: true
+        }
+        Rectangle {
+            id: settingsButtonArea
+            width: settings.width
+            height: settings.height
+            anchors.left: settings.left
+            anchors.bottom: settings.bottom
+            color: "transparent"
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (selectedPage != "settings") {
+                        mainRoot.pop()
+                        mainRoot.push("../Settings.qml")
+                        appsTracker = 0
+                        selectedPage = "settings"
+                    }
+                }
+            }
         }
     }
 
@@ -96,13 +118,17 @@ Rectangle {
             width: home.width
             height: home.height
             anchors.left: home.left
-            anchors.bottom: homeText.bottom
+            anchors.bottom: home.bottom
             color: "transparent"
             MouseArea {
-                anchors.fill: homeButtonArea
+                anchors.fill: parent
                 onClicked: {
-                    mainRoot.pop("../DashboardForm.qml")
-                    appsTracker = 0
+                    if (selectedPage != "home") {
+                        mainRoot.pop()
+                        mainRoot.push("../DashboardForm.qml")
+                        appsTracker = 0
+                        selectedPage = "home"
+                    }
                 }
             }
         }

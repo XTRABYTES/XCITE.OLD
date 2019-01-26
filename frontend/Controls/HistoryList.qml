@@ -59,7 +59,6 @@ Rectangle {
                 id: txDate
                 text: date
                 anchors.left: parent.left
-                anchors.leftMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 14
@@ -104,7 +103,6 @@ Rectangle {
                 width: 14
                 height: 16
                 anchors.right: parent.right
-                anchors.rightMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 visible: lineView == 0
 
@@ -138,7 +136,6 @@ Rectangle {
                 width: 14
                 height: 16
                 anchors.left: parent.left
-                anchors.leftMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 rotation: 180
                 visible: lineView == 1
@@ -176,7 +173,7 @@ Rectangle {
                     for(var i = 0; i < addressList.count; i++) {
                         if (addressList.get(i).address === txPartner) {
                             if (addressList.get(i).coin === selectedCoin) {
-                                fromto = (addressList.get(i).name)
+                                fromto = (contactList.get(addressList.get(i).contact).firstName) + " " + (contactList.get(addressList.get(i).contact).lastName) + " (" + addressList.get(i).label + ")"
                             }
                         }
                     }
@@ -200,7 +197,6 @@ Rectangle {
                 width: 14
                 height: 16
                 anchors.right: parent.right
-                anchors.rightMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 visible: lineView == 1
 
@@ -234,7 +230,6 @@ Rectangle {
                 width: 14
                 height: 16
                 anchors.left: parent.left
-                anchors.leftMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 rotation: 180
                 visible: lineView == 2
@@ -320,12 +315,12 @@ Rectangle {
         sourceModel:transactionList
         filters: [
             RegExpFilter {
-                roleName: "name"
+                roleName: "coinName"
                 pattern: selectedCoin
                 caseSensitivity: Qt.CaseInsensitive
             },
             RegExpFilter {
-                roleName: "label"
+                roleName: "walletLabel"
                 pattern: selectedWallet
                 caseSensitivity: Qt.CaseInsensitive
             },
@@ -350,10 +345,15 @@ Rectangle {
                     pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
+                RegExpFilter {
+                    roleName: "txid"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
             }
         ]
         sorters: [
-            RoleSorter { roleName: "txID" ; sortOrder: Qt.DescendingOrder }
+            RoleSorter { roleName: "txNR" ; sortOrder: Qt.DescendingOrder }
         ]
     }
 

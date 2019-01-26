@@ -51,7 +51,6 @@ Rectangle {
 
     onStateChanged: {
         checkMyAddress()
-        console.log("addressModal state: " + state)
     }
 
     property string coinName: addressList.get(addressIndex).coin
@@ -198,7 +197,7 @@ Rectangle {
         }
 
         Text {
-            id: transferModalLabel
+            id: addressModalLabel
             text: addressName + " (" + contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName + ")"
             anchors.left: titleIcon.right
             anchors.leftMargin: 7
@@ -249,7 +248,7 @@ Rectangle {
         width: parent.width
         height: parent.height - 50
         radius: 4
-        color: darktheme == false? "#42454F" : "transparent"
+        color: darktheme == false? "#F7F7F7" : "#1B2934"
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
@@ -276,7 +275,7 @@ Rectangle {
             font.pixelSize: 18
             font.family: xciteMobile.name
             font.bold: true
-            color: "#F2F2F2"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             visible: coinListTracker == 0
                      && editSaved == 0
                      && deleteAddressTracker == 0
@@ -361,7 +360,7 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Rectangle {
@@ -397,6 +396,13 @@ Rectangle {
             visible: editSaved == 0
                      && deleteAddressTracker == 0
                      && myAddress == 0
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+            }
+
             Rectangle {
                 id: deleteButton
                 height: 20
@@ -426,6 +432,7 @@ Rectangle {
             anchors.top: newIcon.bottom
             anchors.topMargin: 15
             color: myAddress == 0 ? (newName.text == "" ? "#727272" : "#F2F2F2") : "#F2F2F2"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: editSaved == 0
                      && deleteAddressTracker == 0
@@ -458,6 +465,7 @@ Rectangle {
             anchors.top: newName.bottom
             anchors.topMargin: 15
             color: myAddress == 0 ? (newAddress.text == "" ? "#727272" : "#F2F2F2") : "#F2F2F2"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: editSaved == 0
                      && deleteAddressTracker == 0
@@ -740,7 +748,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Text {
@@ -752,7 +760,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pixelSize: 16
                 font.bold: true
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Text {
@@ -763,7 +771,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Rectangle {
@@ -941,7 +949,7 @@ Rectangle {
         anchors.horizontalCenter: addressBodyModal.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: darktheme == false? "#F2F2F2" : maincolor
+        color: "#F2F2F2"
         visible: editSaved == 0
 
         Rectangle{
@@ -952,8 +960,6 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
-            border.width: 2
-            border.color: darktheme == false? "transparent" : maincolor
         }
 
         MouseArea {

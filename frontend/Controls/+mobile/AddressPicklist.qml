@@ -84,8 +84,8 @@ Rectangle {
 
             Label {
                 id: addressContactName
-                width: 115
-                text: label
+                width: 130
+                text: contact == 0? ("My address (" + label + ")") : ((contactList.get(contact).firstName).substring(0,1) + ". " + (contactList.get(contact).lastName) + " (" + label + ")")
                 anchors.left: parent.left
                 anchors.leftMargin: 30
                 anchors.verticalCenter: parent.verticalCenter
@@ -101,7 +101,7 @@ Rectangle {
                 id: addressHash
                 text: address
                 anchors.left: parent.left
-                anchors.leftMargin: 155
+                anchors.leftMargin: 170
                 anchors.right: parent.right
                 anchors.rightMargin: 30
                 anchors.bottom: addressContactName.bottom

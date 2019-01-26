@@ -141,7 +141,7 @@ Rectangle {
         width: parent.width
         height: parent.height - 50
         radius: 4
-        color: darktheme == false? "#42454F" : "transparent"
+        color: darktheme == false? "#F7F7F7" : "#1B2934"
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
@@ -169,7 +169,7 @@ Rectangle {
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             font.weight: Font.Bold
-            color: "#F2F2F2"
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             visible: editSaved == 0
                      && coinListTracker == 0
                      && scanQRTracker == 0
@@ -197,7 +197,7 @@ Rectangle {
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: "#F2F2F2"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
             }
 
             Rectangle {
@@ -232,6 +232,7 @@ Rectangle {
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
             color: newName.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
@@ -269,6 +270,7 @@ Rectangle {
             anchors.top: newName.bottom
             anchors.topMargin: 15
             color: newAddress.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
             font.pixelSize: 14
             visible: editSaved == 0
                      && scanQRTracker == 0
@@ -301,7 +303,7 @@ Rectangle {
 
         Label {
             id: addressWarning2
-            text: "Invalid address!"
+            text: "Invalid address format!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
             anchors.leftMargin: 5
@@ -338,7 +340,7 @@ Rectangle {
             anchors.topMargin: 15
             anchors.left: newAddress.left
             radius: 5
-            border.color: maincolor
+            border.color: darktheme == false? "#42454F" : "#0ED8D2"
             border.width: 2
             color: "transparent"
             visible: editSaved == 0
@@ -368,7 +370,7 @@ Rectangle {
                 text: "SCAN QR"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                color: maincolor
+                color: darktheme == false? "#0ED8D2" : "#F2F2F2"
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -568,7 +570,7 @@ Rectangle {
         anchors.horizontalCenter: addressBodyModal.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: darktheme == false? "#F2F2F2" : maincolor
+        color: "#F2F2F2"
         visible: addAddressTracker == 1
                  && editSaved == 0
 
@@ -580,8 +582,6 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
-            border.width: 2
-            border.color: darktheme == false? "transparent" : maincolor
         }
 
         MouseArea {
