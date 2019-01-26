@@ -157,7 +157,7 @@ Rectangle {
 
         Label {
             id: nameWarning1
-            text: "Contact alreade exists!"
+            text: "Contact already exists!"
             color: "#FD2E2E"
             anchors.horizontalCenter: newLastname.horizontalCenter
             anchors.top: newLastname.bottom

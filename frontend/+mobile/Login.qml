@@ -19,164 +19,216 @@ import QtQuick.Layouts 1.3
 import "qrc:/Controls" as Controls
 
 Item {
+    id: loginModal
+    width: Screen.width
+    height: Screen.height
+
+    property int nameError: 0
+    property int passError: 0
 
     Rectangle {
-        id: backgroundTrading
-        z: 1
-        width: Screen.width
-        height: Screen.height
-        color: "#1B2934"
-        visible: signUpTracker == 1
+        id: login
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        width: 325
+        height: 250
+        state: loginTracker == 1? "up" : "down"
+        color: "transparent"
+
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: login; anchors.topMargin: (parent.height/2) - (login.height)}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: login; anchors.topMargin: parent.height + 50}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: login; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            }
+        ]
+
+        // login function
 
         Label {
-            id: welcomeText
-            text: "WELCOME TO XCITE"
+            id: loginModalLabel
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 25
-            color: maincolor
-            font.pixelSize: 24
-            font.family: xciteMobile.name
-            font.bold: true
+            anchors.verticalCenter: parent.top
+            anchors.verticalCenterOffset: 27
+            text: "LOG IN TO YOUR ACCOUNT"
+            font.pixelSize: 18
+            font.family: "Brandon Grotesque"
+            color: "#F2F2F2"
+            font.letterSpacing: 2
+        }
+
+        Rectangle {
+            id: loginModalBody
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            width: parent.width
+            height: parent.height - 50
+            radius: 5
+            color: "#1B2934"
+
+            Controls.TextInput {
+                id: userName
+                height: 34
+                placeholder: "USERNAME"
+                text: ""
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: loginModalBody.top
+                anchors.topMargin: 25
+                color: userName.text != "" ? "#F2F2F2" : "#727272"
+                textBackground: "#0B0B09"
+                font.pixelSize: 14
+            }
+
+            Text {
+                id: userNameError
+                text: "Username does not exist!"
+                color: "#FD2E2E"
+                anchors.left: userName.left
+                anchors.leftMargin: 5
+                anchors.top: userName.bottom
+                anchors.topMargin: 1
+                font.pixelSize: 11
+                font.family: "Brandon Grotesque"
+                font.weight: Font.Normal
+                visible: nameError == 1
+            }
+
+            Controls.TextInput {
+                id: passWord
+                height: 34
+                placeholder: "PASSWORD"
+                text: ""
+                echoMode: TextInput.Password
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: userName.bottom
+                anchors.topMargin: 30
+                color: passWord.text != "" ? "#F2F2F2" : "#727272"
+                textBackground: "#0B0B09"
+                font.pixelSize: 14
+            }
+
+            Text {
+                id: passWordError
+                text: "Password is not correct!"
+                color: "#FD2E2E"
+                anchors.left: passWord.left
+                anchors.leftMargin: 5
+                anchors.top: passWord.bottom
+                anchors.topMargin: 1
+                font.pixelSize: 11
+                font.family: "Brandon Grotesque"
+                font.weight: Font.Normal
+                visible: passError == 1
+            }
+
+            Rectangle {
+                id: logInButton
+                width: userName.width
+                height: 33
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                anchors.left: userName.left
+                radius: 5
+                color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                    }
+
+                    onReleased: {
+                        if (userName.text != "" && passWord.text != "") {
+                            // function to add check if username exists
+                            // if username does not exist return nameError = 1
+                            // if username exists return nameError = 0, check password
+                            // if password is wrong return passError = 1
+                            // if password is correct return passError = 0 and proceed with login
+                            mainRoot.pop()
+                            mainRoot.push("../Home.qml")
+                            loginTracker = 0
+                            selectedPage = "home"
+                            username = userName.text
+                        }
+                    }
+                }
+
+                Text {
+                    id: logInButtonText
+                    text: "LOG IN"
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    color: (userName.text != "" && passWord.text != "") ? "#F2F2F2" : "#979797"
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
         }
 
         Label {
-            id: addWalletText
-            text: "Let's start by adding a wallet"
+            id: noAccount
+            text: "You don't have an account?"
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: welcomeText.bottom
+            anchors.top: login.bottom
+            anchors.topMargin: 70
             color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
         }
 
-        Rectangle {
-            id: selectAddMode
-            height: 240
-            width : parent.width - 50
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -25
+        Label {
+            id: createAccount
+            text: "Create one here."
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
-
-            Text {
-                id: createAddressText
-                width: doubbleButtonWidth
-                maximumLineCount: 2
-                anchors.left: createAddressButton.left
-                horizontalAlignment: Text.AlignJustify
-                wrapMode: Text.WordWrap
-                text: "If you don’t have an <b>XFUEL</b> wallet or you wish to create a new one."
-                anchors.top: parent.top
-                color: "#F2F2F2"
-                font.pixelSize: 18
-                font.family: xciteMobile.name
-            }
+            anchors.top: noAccount.bottom
+            anchors.topMargin: 15
+            color: "#F2F2F2"
+            font.pixelSize: 18
+            font.family: xciteMobile.name
 
             Rectangle {
-                id: createAddressButton
-                width: doubbleButtonWidth
-                height: 33
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: createAddressText.bottom
-                anchors.topMargin: 15
-                radius: 5
-                color: maincolor
-
-                MouseArea {
-                    anchors.fill: createAddressButton
-                }
-
-                Text {
-                    id: createButtonText
-                    text: "CREATE NEW ADDRESS"
-                    font.family: xciteMobile.name
-                    font.pointSize: 14
-                    color: "#F2F2F2"
-                    font.bold: true
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-
-            Text {
-                id: importAddressText
-                width: doubbleButtonWidth
-                anchors.left: importAddressButton.left
-                horizontalAlignment: Text.AlignJustify
-                text: "If you already have an <b>XFUEL</b> wallet."
-                anchors.bottom: importAddressButton.top
-                anchors.bottomMargin: 15
-                color: "#F2F2F2"
-                font.pixelSize: 18
-                font.family: xciteMobile.name
-            }
-
-            Rectangle {
-                id: importAddressButton
-                width: doubbleButtonWidth
-                height: 33
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                radius: 5
-                color: maincolor
-
-                MouseArea {
-                    anchors.fill: importAddressButton
-                }
-
-                Text {
-                    id: importButtonText
-                    text: "IMPORT PRIVATE KEY"
-                    font.family: xciteMobile.name
-                    font.pointSize: 14
-                    color: "#F2F2F2"
-                    font.bold: true
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-        }
-
-        Rectangle {
-            id: skipButton
-            width: skipButtonText.implicitWidth
-            height: 40
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: selectAddMode.bottom
-            anchors.topMargin: 25
-            color: "transparent"
-
-            MouseArea {
-                anchors.fill: skipButton
-
-                onReleased: {
-                    loginTracker = 1
-                    mainRoot.pop()
-                    mainRoot.push("../Home.qml")
-                }
-            }
-
-            Text {
-                id: skipButtonText
-                text: "Skip"
-                font.family: xciteMobile.name
-                font.pointSize: 18
-                color: "#F2F2F2"
-                font.bold: true
+                id: createAccountButton
+                width: parent.width
+                height: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        mainRoot.pop()
+                        mainRoot.push("../CreateAccount.qml")
+                        loginTracker = 0
+                    }
+                }
             }
         }
 
-        Image {
-            id: combinationMark
-            source: 'qrc:/icons/xby_logo_TM.svg'
-            height: 23.4
-            width: 150
+        Rectangle {
+            id: underline
+            width: createAccount.width
+            height: 1
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 35
+            anchors.top: createAccount.bottom
+            anchors.topMargin: 5
+            color: "#F2F2F2"
         }
     }
 }
+

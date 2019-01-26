@@ -22,16 +22,33 @@ import "../Controls" as Controls
   * Main page
   */
 
-Item {
+Rectangle {
+    id: backgroundSignUp
+    z: 1
+    width: Screen.width
+    height: Screen.height
+    color: "#1B2934"
 
-    Loader {
-        id: pageLoader
+    Image {
+        id: largeLogo
+        source: 'qrc:/icons/XBY_logo_large.svg'
+        width: parent.width * 2
+        height: (largeLogo.width / 75) * 65
+        anchors.top: parent.top
+        anchors.topMargin: 63
+        anchors.right: parent.right
+        opacity: 0.5
     }
-    Controls.Header {
-        id: heading
-        text: qsTr("SETTINGS")
-        showBack: false
-        Layout.topMargin: 30
+    Label {
+        id: welcomeText
+        text: "WELCOME TO XCITE"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 25
+        color: "#F2F2F2"
+        font.pixelSize: 24
+        font.family: xciteMobile.name
+        font.bold: true
     }
     Image {
         id: back
@@ -44,8 +61,13 @@ Item {
         height: 15
 
         MouseArea {
-             anchors.fill: back
-             onClicked: mainRoot.pop("../DashboardForm.qml")
+            anchors.fill: back
+            onClicked: {
+                mainRoot.pop()
+                mainRoot.push("../DashboardForm.qml")
+                appsTracker = 0
+                selectedPage = "home"
+            }
         }
     }
 }

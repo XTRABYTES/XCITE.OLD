@@ -13,6 +13,8 @@ Item {
     anchors.topMargin: 50
     visible: scanQRTracker == 1
 
+    property alias key: pubKey.text
+
     Timer {
         id: timer
         interval: 1000
@@ -28,7 +30,7 @@ Item {
     Camera {
         id: camera
         position: Camera.BackFace
-        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
+        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addWalletTracker) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
         focus {
             focusMode: Camera.FocusContinuous
             focusPointMode: CameraFocus.FocusPointAuto

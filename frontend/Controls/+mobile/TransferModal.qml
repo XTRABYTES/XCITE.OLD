@@ -652,7 +652,7 @@ Rectangle {
         }
 
         Label {
-            text: "*insufficient funds"
+            text: "Insufficient funds"
             color: "#FD2E2E"
             anchors.left: sendAmount.left
             anchors.leftMargin: 5
@@ -703,7 +703,7 @@ Rectangle {
 
         Label {
             id: addressWarning
-            text: "Invalid address!"
+            text: "Invalid address format!"
             color: "#FD2E2E"
             anchors.left: keyInput.left
             anchors.leftMargin: 5

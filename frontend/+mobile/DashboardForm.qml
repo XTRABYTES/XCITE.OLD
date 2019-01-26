@@ -32,7 +32,7 @@ Item {
         z: 1
         width: Screen.width
         height: Screen.height
-        color: darktheme == false? "#F7F7F7" : "#2A2C31"
+        color: darktheme == false? "#F7F7F7" : "#14161B"
 
         SwipeView {
             id: view
@@ -40,7 +40,6 @@ Item {
             currentIndex: 0
             anchors.fill: parent
             interactive: (appsTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addCoinTracker == 1) ? false : true
-            visible: loginTracker == 1
 
             Item {
                 id: dashForm
@@ -1741,7 +1740,6 @@ Item {
             height: 150
             anchors.top: parent.top
             color: "transparent"
-            visible: loginTracker == 1
 
             Image {
                 id: apps

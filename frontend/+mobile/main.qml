@@ -69,13 +69,17 @@ ApplicationWindow {
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
-    property bool darktheme: false
     property real doubbleButtonWidth: 273
 
+    // Global setting, editable
+    property bool darktheme: true
+    property string username: ""
+    property string selectedPage: ""
+
     // Trackers
-    property int onboardingTracker: 0 // check settings for real value
-    property int signUpTracker: 1 // check settings for real value
     property int loginTracker: 0
+    property int addWalletTracker: 0
+    property int createWalletTracker: 0
     property int appsTracker: 0
     property int coinTracker: 0
     property int walletTracker: 0
@@ -543,13 +547,6 @@ ApplicationWindow {
         pictureID = pictureID +1;
 
         addOwnContact();
-
-        if (signUpTracker == 0) {
-            mainRoot.push("../SignUp.qml")
-        }
-        if (onboardingTracker == 0) {
-            mainRoot.push("../Onboarding.qml")
-        }
     }
 
     // Global components

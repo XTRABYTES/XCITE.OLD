@@ -21,11 +21,22 @@ import "qrc:/Controls" as Controls
 Item {
 
     Rectangle {
-        id: backgroundTrading
+        id: backgroundSplash
         z: 1
         width: Screen.width
         height: Screen.height
         color: "#1B2934"
+
+        Image {
+            id: largeLogo
+            source: 'qrc:/icons/XBY_logo_large.svg'
+            width: parent.width * 2
+            height: (largeLogo.width / 75) * 65
+            anchors.top: parent.top
+            anchors.topMargin: 63
+            anchors.right: parent.right
+            opacity: 0.5
+        }
 
         Rectangle {
             width: welcomeText.implicitWidth
@@ -69,9 +80,7 @@ Item {
                     anchors.fill: startButton
 
                     onReleased: {
-                        onboardingTracker = 1
-                        mainRoot.pop()
-                        mainRoot.push("../Login.qml")
+                        loginTracker = 1
                     }
                 }
 
@@ -88,6 +97,34 @@ Item {
             }
         }
 
+        Label {
+            id: closeButtonLabel
+            z:10
+            text: "CLOSE"
+            anchors.bottom: combinationMark.top
+            anchors.bottomMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            color: "#F2F2F2"
+
+            Rectangle{
+                id: closeButton
+                height: 34
+                width: doubbleButtonWidth
+                radius: 4
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                color: "transparent"
+            }
+
+            MouseArea {
+                anchors.fill: closeButton
+
+                onClicked: Qt.quit()
+            }
+        }
+
         Image {
             id: combinationMark
             source: 'qrc:/icons/xby_logo_TM.svg'
@@ -96,6 +133,41 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 35
+        }
+
+        Rectangle {
+            id: overlay
+            z: 9
+            height: parent.height
+            width: parent.width
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "black"
+            state: loginTracker == 1? "dark" : "clear"
+
+            states: [
+                State {
+                    name: "dark"
+                    PropertyChanges { target: overlay; opacity: 0.95}
+                },
+                State {
+                    name: "clear"
+                    PropertyChanges { target: overlay; opacity: 0}
+                }
+            ]
+
+            transitions: [
+                Transition {
+                    from: "*"
+                    to: "*"
+                    NumberAnimation { target: overlay; property: "opacity"; duration: 300}
+                }
+            ]
+        }
+
+        Login {
+            id: myLogin
+            z: 9
         }
     }
 }

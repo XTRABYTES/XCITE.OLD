@@ -303,7 +303,7 @@ Rectangle {
 
         Label {
             id: addressWarning2
-            text: "Invalid address!"
+            text: "Invalid address format!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
             anchors.leftMargin: 5

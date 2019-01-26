@@ -172,5 +172,9 @@
         <file>icons/xby_logo_TM_01.svg</file>
         <file>icons/XBY_card_logo_01.svg</file>
         <file>icons/XFUEL_card_logo_01.svg</file>
+        <file>icons/icon-error_01.svg</file>
+        <file>icons/icon-close_01.svg</file>
+        <file>icons/XBY_logo_large.svg</file>
+        <file>icons/icon-questionmark_01.svg</file>
     </qresource>
 </RCC>

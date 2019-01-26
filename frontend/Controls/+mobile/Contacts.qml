@@ -40,9 +40,9 @@ Rectangle {
                 width: parent.width - 55
                 height: 75
                 radius: 4
-                color: "transparent"
-                border.width: 2
-                border.color: darktheme == false? "#42454F" : "#0ED8D2"
+                color: darktheme == false? "#F2F2F2" : "#1B2934"
+                border.width: 1
+                border.color: darktheme == false? "#42454F" : "transparent"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
 
