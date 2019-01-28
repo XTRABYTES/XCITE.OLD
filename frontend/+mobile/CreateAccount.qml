@@ -154,6 +154,7 @@ Rectangle {
 
                             onClicked: {
                                 //function to check is username is available, return usernameWarning = 1 if username ealready exists
+                                userExists(userName.text)
                             }
                         }
                     }
@@ -309,6 +310,9 @@ Rectangle {
                     }
                     onUserCreationFailed: {
                         //Called when for some other reason user creation failed. Maybe server not accessible etc
+                    }
+                    onSettingsServerError: {
+                        loginError = 1
                     }
                 }
             }

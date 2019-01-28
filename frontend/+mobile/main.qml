@@ -140,6 +140,7 @@ ApplicationWindow {
     signal localeChange(string locale)
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
+    signal userExists(string username)
     signal clearAllSettings
 
     // Global functions

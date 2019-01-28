@@ -137,6 +137,9 @@ ApplicationWindow {
     signal xChatMessageReceived(string message, date datetime)
     signal localeChange(string locale)
     signal clearAllSettings
+    signal userLogin(string username, string password)
+    signal createUser(string username, string password)
+    signal userExists(string username)
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())

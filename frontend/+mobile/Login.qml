@@ -175,6 +175,10 @@ Item {
                     onLoginFailedChanged: {
                         passError = 1
                     }
+
+                    onSettingsServerError: {
+                        loginError = 1
+                    }
                 }
 
                 Text {

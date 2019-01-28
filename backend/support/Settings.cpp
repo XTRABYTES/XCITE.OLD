@@ -73,6 +73,7 @@ bool Settings::UserExists(QString username){
     query.exec();
     while (query.next()) {
         db.close();
+        emit userAlreadyExists();
         return true;
     }
     db.close();
@@ -81,7 +82,6 @@ bool Settings::UserExists(QString username){
 
 void Settings::CreateUser(QString username, QString password){
     if(UserExists(username)){
-        emit userAlreadyExists();
         return;
     }
 
@@ -158,7 +158,7 @@ QString Settings::LoadSettings(QString username, QString password){
 QSqlDatabase Settings::OpenDBConnection(){
     // Development database in use
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("<CHANGE TO YOUR ACTUAL PROJECT FOLDER>/dev-db/xtrabytes");
+    db.setDatabaseName("/users/tuukkapeltoniemi/Documents-NotCloud/Development/XtraBytes/xcite-tuukkapel/XCITE/dev-db/xtrabytes");
 
     // Release database to be used
     //QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
@@ -167,6 +167,7 @@ QSqlDatabase Settings::OpenDBConnection(){
     //db.setUserName("xxxx");
     //db.setPassword("xxx");
 
-    db.open();
+    if (!db.open())
+        emit settingsServerError();
     return db;
 }
