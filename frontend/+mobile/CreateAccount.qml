@@ -279,8 +279,11 @@ Rectangle {
                         if (usernameWarning == 0 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
                             // if checkUsername = 0 run fucntion to check if username exists and return usernameWarning
                             // if returned usernameWarning = 0 or checkUsername = 1 run function to create account
-                            accountCreated = 1
-                            username = userName.text
+
+                            //accountCreated = 1
+                            //username = userName.text
+
+                            createUser(userName.text, passWord1.text)
                         }
                     }
                 }
@@ -294,6 +297,22 @@ Rectangle {
                     font.bold: true
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Connections {
+                    target: UserSettings
+                    onUserCreationSucceeded: {
+                        mainRoot.pop()
+                        mainRoot.push("../Home.qml")
+                        loginTracker = 0
+                        selectedPage = "home"
+                    }
+                    onUserAlreadyExists: {
+                        usernameWarning = 1
+                    }
+                    onUserCreationFailed: {
+                        //Called when for some other reason user creation failed. Maybe server not accessible etc
+                    }
                 }
             }
 

@@ -15,7 +15,7 @@ VERSION_BUILD=0
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui xml quick svg charts
+QT	+= core gui xml quick svg charts sql
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -63,7 +63,8 @@ SOURCES += main/main.cpp \
             backend/integrations/MarketValue.cpp \
             backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
-            backend/support/Settings.cpp
+            backend/support/Settings.cpp \
+    backend/support/qaesencryption.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -83,7 +84,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
     backend/support/Settings.hpp \
-    backend/integrations/MarketValue.hpp
+    backend/integrations/MarketValue.hpp \
+    backend/support/qaesencryption.h
 
 DISTFILES += \
     xcite.ico \
@@ -92,7 +94,8 @@ DISTFILES += \
     packages/global.xtrabytes.xcite/meta/installscript.qs \
     packages/global.xtrabytes.xcite/meta/license.txt \
     config/banner.png \
-    config/logo.png
+    config/logo.png \
+    dev-db/xtrabytes
 
 RC_ICONS = xcite.ico
 CONFIG(debug, debug|release) {
