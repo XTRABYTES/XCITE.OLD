@@ -94,8 +94,6 @@ void Settings::CreateUser(QString username, QString password){
     query.addBindValue(username);
     query.addBindValue(encodedText);
     query.exec();
-
-    QVariant userID = query.lastInsertId();
     db.close();
 
     if (UserExists(username))

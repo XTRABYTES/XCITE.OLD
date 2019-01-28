@@ -280,9 +280,6 @@ Rectangle {
                             // if checkUsername = 0 run fucntion to check if username exists and return usernameWarning
                             // if returned usernameWarning = 0 or checkUsername = 1 run function to create account
 
-                            //accountCreated = 1
-                            //username = userName.text
-
                             createUser(userName.text, passWord1.text)
                         }
                     }
