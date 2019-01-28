@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\Joeri\Desktop\XCITE\XCITE\android-build\libs\QtMultimedia.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="28.0.3"
+        sha1="938a5a931b77753468e9186ee591534a19e9f2dd">
+        <dex dex="C:\Users\Joeri\Desktop\XCITE\XCITE\android-build\build\intermediates\pre-dexed\debug\QtMultimedia_81c548f235dcc2fa8c37edd679b1c8677b795c55.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Joeri\Desktop\XCITE\XCITE\android-build\libs\QtAndroidBearer.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="28.0.3"
+        sha1="f4dd75cd57deb81320661ca38e5b2388c34da6f3">
+        <dex dex="C:\Users\Joeri\Desktop\XCITE\XCITE\android-build\build\intermediates\pre-dexed\debug\QtAndroidBearer_4d06885ea9b189e004595778bb52f0777ec4a31c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Joeri\Desktop\XCITE\XCITE\android-build\libs\QtAndroid.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="28.0.3"
+        sha1="0c1b58ec804008974db4988bcf630641e198e8be">
+        <dex dex="C:\Users\Joeri\Desktop\XCITE\XCITE\android-build\build\intermediates\pre-dexed\debug\QtAndroid_65b4c5e7c09b62b123ca93f51933c021cc01855f.jar" />
+    </item>
+
+</items>

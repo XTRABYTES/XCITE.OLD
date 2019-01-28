@@ -25,11 +25,10 @@ Item {
     function toggle() {
         if (toggleswitch.state == "on"){
             toggleswitch.state = "off"
-            picklistTracker = 0
         }
         else
             toggleswitch.state = "on"
-            picklistTracker = 0
+
     }
 
     function releaseSwitch() {

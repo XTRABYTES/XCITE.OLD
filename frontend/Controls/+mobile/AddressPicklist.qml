@@ -22,9 +22,7 @@ Rectangle {
     color: "transparent"
 
     property int selectedWallet: 0
-    property string searchFilter:  (selectedWallet == 0 ? "XBY":
-                                                          (selectedWallet == 1 ? "XFUEL" :
-                                                                                 (selectedWallet == 2 ? "BTC" : "ETH")))
+    property string searchFilter:  (selectedWallet == 0 ? "XBY" : "XFUEL")
 
     Component {
         id: contactLine
@@ -35,12 +33,40 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             height: 45
             color:"transparent"
+            visible: inView == true
+            property bool inView: y >= (picklist.contentY - 5) && y <= picklist.span
+
+            Rectangle {
+                id: clickIndicator
+                anchors.fill: parent
+                color: maincolor
+                opacity: 0.25
+                visible: false
+
+                Connections {
+                    target: picklist
+                    onMovementEnded: {
+                        clickIndicator.visible = false
+                    }
+                }
+            }
 
             MouseArea {
                 anchors.fill: parent
 
+                onPressed: {
+                    if (currentAddress != address) {
+                        clickIndicator.visible = true
+                    }
+                }
+
+                onReleased: {
+                    clickIndicator.visible = false
+                }
+
                 onClicked: {
-                    if (transferTracker == 1) {
+                    clickIndicator.visible = false
+                    if (transferTracker == 1 && currentAddress != address) {
                         addressbookTracker = 0;
                         selectedAddress = address
                     }
@@ -49,40 +75,48 @@ Rectangle {
 
             Rectangle {
                 height: 1
-                width: parent.width - 10
+                width: parent.width - 60
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                color: "#727272"
+                color: darktheme == false? "#727272" : maincolor
+                visible: index != 0
             }
 
             Label {
                 id: addressContactName
-                text: {
-                    if (name.length > 12) {
-                        name.substring(0,12) + "..."}
-                    else {
-                        name
-                    }
-                }
+                width: 130
+                text: contact == 0? ("My address (" + label + ")") : ((contactList.get(contact).firstName).substring(0,1) + ". " + (contactList.get(contact).lastName) + " (" + label + ")")
                 anchors.left: parent.left
                 anchors.leftMargin: 30
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 16
                 font.bold: true
                 color: "#F2F2F2"
+                clip: contentWidth > width
+                elide: Text.ElideRight
             }
 
             Label {
                 id: addressHash
-                text: (address).substring(0,17) + "..."
+                text: address
                 anchors.left: parent.left
-                anchors.leftMargin: 163
+                anchors.leftMargin: 170
+                anchors.right: parent.right
+                anchors.rightMargin: 30
                 anchors.bottom: addressContactName.bottom
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 14
-                font.weight: Font.Light
                 color: "#F2F2F2"
+                clip: contentWidth > width
+                elide: Text.ElideRight
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "black"
+                opacity: 0.6
+                visible: currentAddress == address
             }
         }
     }
@@ -107,5 +141,6 @@ Rectangle {
         id: picklist
         model: filteredAddresses
         delegate: contactLine
+        property real span : contentY + height
     }
 }

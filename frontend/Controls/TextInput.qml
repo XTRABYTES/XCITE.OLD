@@ -26,15 +26,12 @@ TextField {
 
     id: textInputComponent
     color: "white"
-    font.weight: if(mobile == 0)
-                     Font.Light
-                 else
-                     Font.Bold
-    font.pixelSize: 24
+    font.family: xciteMobile.name
+    font.pixelSize: 26
     leftPadding: 18
     rightPadding: deleteBtn == 0 ? 18 : textboxHeight
-    topPadding: 10
-    bottomPadding: 10
+    topPadding: 6
+    bottomPadding: 4
     verticalAlignment: Text.AlignVCenter
     selectByMouse: true
     background: Rectangle {
@@ -48,7 +45,7 @@ TextField {
         border.color: if(mobile == 0)
                           Theme.secondaryHighlight
                       else
-                          "#34363D"
+                          maincolor //"#34363D"
 
         implicitWidth: 273
     }
@@ -101,6 +98,7 @@ TextField {
             anchors.horizontalCenter: parent.horizontalCenter
             onClicked: {
                 textInputComponent.text = ""
+                selectedAddress = ""
             }
         }
     }

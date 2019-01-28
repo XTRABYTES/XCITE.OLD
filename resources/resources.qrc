@@ -143,5 +143,38 @@
         <file>icons/icon-converter.svg</file>
         <file>icons/icon-coins.svg</file>
         <file>scan-window.svg</file>
+        <file>fonts/Brandon_reg.otf</file>
+        <file>fonts/CandelaBook.otf</file>
+        <file>fonts/merge_light.otf</file>
+        <file>fonts/Orkney-Regular.otf</file>
+        <file>scan-window_01.svg</file>
+        <file>icons/add_address.svg</file>
+        <file>icons/icon-coins_01.svg</file>
+        <file>icons/icon-transfer_01.svg</file>
+        <file>icons/icon-darklight.svg</file>
+        <file>icons/icon-profile_01.svg</file>
+        <file>icons/icon-profile_02.svg</file>
+        <file>icons/icon-profile_03.svg</file>
+        <file>icons/icon-profile_04.svg</file>
+        <file>icons/icon-cell_01.svg</file>
+        <file>icons/icon-chat_01.svg</file>
+        <file>icons/icon-mail_01.svg</file>
+        <file>icons/icon-phone_01.svg</file>
+        <file>icons/icon-plus_01.svg</file>
+        <file>icons/icon-phone_02.svg</file>
+        <file>icons/icon-text_01.svg</file>
+        <file>icons/icon-pen_01.svg</file>
+        <file>sounds/click_01.wav</file>
+        <file>sounds/click_02.wav</file>
+        <file>icons/XBY_card_logo_colored_01.svg</file>
+        <file>icons/XFUEL_card_logo_colored_01.svg</file>
+        <file>icons/xby_logo_TM.svg</file>
+        <file>icons/xby_logo_TM_01.svg</file>
+        <file>icons/XBY_card_logo_01.svg</file>
+        <file>icons/XFUEL_card_logo_01.svg</file>
+        <file>icons/icon-error_01.svg</file>
+        <file>icons/icon-close_01.svg</file>
+        <file>icons/XBY_logo_large.svg</file>
+        <file>icons/icon-questionmark_01.svg</file>
     </qresource>
 </RCC>

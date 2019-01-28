@@ -15,6 +15,7 @@ import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.0
 import SortFilterProxyModel 0.2
 import QtQuick.Window 2.2
+import QtMultimedia 5.8
 
 Rectangle {
     id: allAddressCards
@@ -22,7 +23,7 @@ Rectangle {
     height: parent.height
     color: "transparent"
 
-    property string searchFilter: ""
+    property alias cardSpacing: allAddresses.spacing
     property int favoriteNR: 0
 
     Component {
@@ -31,29 +32,19 @@ Rectangle {
         Rectangle {
             id: addressRow
             width: Screen.width
-            height: 85
+            height: 135
             color: "transparent"
             anchors.horizontalCenter: Screen.horizontalCenter
-
-            DropShadow {
-                anchors.fill: cardBackground
-                source: cardBackground
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color:"#2A2C31"
-                transparentBorder: true
-            }
 
             Rectangle {
                 id: cardBackground
                 width: parent.width - 55
-                height: 75
+                height: 125
                 radius: 4
-                color: "#42454F"
-                anchors.bottom: parent.bottom
+                color: darktheme == false? "#F2F2F2" : "#1B2934"
+                border.width: 1
+                border.color: darktheme == false? "#42454F" : "transparent"
+                anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Image {
@@ -61,8 +52,8 @@ Rectangle {
                     source: logo
                     height: 22
                     width: 22
-                    anchors.right: cardBackground.right
-                    anchors.rightMargin: 14
+                    anchors.left: cardBackground.left
+                    anchors.leftMargin: 14
                     anchors.top: cardBackground.top
                     anchors.topMargin: 10
                 }
@@ -70,39 +61,38 @@ Rectangle {
                 Label {
                     id: addressCoinName
                     text: coin
-                    color: "#F2F2F2"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     anchors.verticalCenter: addressCoinLogo.verticalCenter
-                    anchors.right: addressCoinLogo.left
-                    anchors.rightMargin: 7
+                    anchors.left: addressCoinLogo.right
+                    anchors.leftMargin: 7
                 }
 
                 Label {
                     id: addressName
-                    text: name
-                    color: "#F2F2F2"
+                    text: label
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.pixelSize: 16
                     font.family: "Brandon Grotesque"
                     font.bold: true
                     anchors.verticalCenter: addressCoinLogo.verticalCenter
-                    anchors.left: cardBackground.left
-                    anchors.leftMargin: 14
+                    anchors.right: cardBackground.right
+                    anchors.rightMargin: 14
                 }
 
                 Text {
                     id: addressHash
                     text: address
-                    color: "#F2F2F2"
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.pixelSize: 13
                     font.family: "Brandon Grotesque"
                     font.weight: Font.Light
-                    anchors.bottom: cardBackground.bottom
-                    anchors.bottomMargin: 10
-                    anchors.left: addressName.left
-                    anchors.leftMargin: 21
-                    anchors.right: addressCoinLogo.right
+                    anchors.bottom: transfer.top
+                    anchors.bottomMargin: 15
+                    anchors.left: addressCoinName.left
+                    anchors.right: addressName.right
                     elide: Text.ElideRight
                 }
 
@@ -113,37 +103,58 @@ Rectangle {
                     height: 18
                     anchors.verticalCenter: addressHash.verticalCenter
                     anchors.verticalCenterOffset: -2
-                    anchors.right: addressHash.left
-                    anchors.rightMargin: 7
+                    anchors.horizontalCenter: addressCoinLogo.horizontalCenter
+
 
                     ColorOverlay {
+                        id: favoriteColor
                         anchors.fill: parent
                         source: parent
                         color: favorite == 1 ? "#FDBC40" : "#2A2C31"
                     }
+                    state: favorite == 1 ? "yes" : "no"
+
+                    states: [
+                        State {
+                            name: "yes"
+                            PropertyChanges { target: favoriteColor; color: "#FDBC40"}
+                            PropertyChanges { target: addressFavorite; width: 20}
+                            PropertyChanges { target: addressFavorite; height: 20}
+                        },
+                        State {
+                            name: "no"
+                            PropertyChanges { target: favoriteColor; opacity: "#2A2C31"}
+                            PropertyChanges { target: addressFavorite; width: 18}
+                            PropertyChanges { target: addressFavorite; height: 18}
+                        }
+                    ]
+
+                    transitions: [
+                        Transition {
+                            from: "no"
+                            to: "yes"
+                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
+                            NumberAnimation { target: addressFavorite; properties: "width, height"; duration: 200; easing.type: Easing.OutBack}
+                        },
+                        Transition {
+                            from: "yes"
+                            to: "no"
+                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
+                            NumberAnimation { target: addressFavorite; properties: "width, height"; duration: 200; easing.type: Easing.InBack}
+                        }
+                    ]
                 }
 
                 MouseArea {
                     anchors.fill: parent
 
-                    onClicked: {
-                        if (appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0) {
-                            addressTracker = 1
-                            addressIndex = uniqueNR
-                            //selectedAddress = ""
-                            if (coin === currencyList.get(0).name) {
-                                currencyIndex = 0
-                            }
-                            if (coin === currencyList.get(1).name) {
-                                currencyIndex = 1
-                            }
-                            if (coin === currencyList.get(2).name) {
-                                currencyIndex = 2
-                            }
-                            if (coin === currencyList.get(3).name) {
-                                currencyIndex = 3
-                            }
-                        }
+                   onPressed: {
+                        click01.play()
+                    }
+
+                    onPressAndHold: {
+                        addressIndex = uniqueNR
+                        addressTracker = 1
                     }
                 }
 
@@ -169,6 +180,98 @@ Rectangle {
                         }
                     }
                 }
+
+                Rectangle {
+                    id: transfer
+                    height: 34
+                    width: (parent.width - 38) / 2
+                    radius: 5
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 14
+                    anchors.left: addressCoinLogo.left
+                    color: "transparent"
+                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
+                    border.width: 2
+
+                    Label {
+                        text: "TRANSFER"
+                        font.family: xciteMobile.name
+                        font.pointSize: 14
+                        font.bold: true
+                        color: darktheme == false? "#0ED8D2" : "#F2F2F2"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            transfer.color = maincolor
+                            click01.play()
+                        }
+
+                        onReleased: {
+                            transfer.color = "transparent"
+                        }
+
+                        onCanceled: {
+                            transfer.color = "transparent"
+                        }
+
+                        onClicked: {
+                            selectedAddress = addressHash.text
+                            walletIndex = defaultWallet(coin)
+                            addressIndex = uniqueNR
+                            switchState = 1
+                            transferTracker = 1
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: details
+                    height: 34
+                    width: (parent.width - 38) / 2
+                    radius: 5
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 14
+                    anchors.right: addressName.right
+                    color: "transparent"
+                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
+                    border.width: 2
+
+                    Label {
+                        text: "QR CODE"
+                        font.family: xciteMobile.name
+                        font.pointSize: 14
+                        font.bold: true
+                        color: darktheme == false? "#0ED8D2" : "#F2F2F2"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            details.color = maincolor
+                        }
+
+                        onReleased: {
+                            details.color = "transparent"
+                        }
+
+                        onCanceled: {
+                            details.color = "transparent"
+                        }
+
+                        onClicked: {
+                            addressIndex = uniqueNR
+                            addressQRTracker = 1
+                        }
+                    }
+                }
             }
         }
     }
@@ -178,32 +281,23 @@ Rectangle {
         sourceModel: addressList
         filters: [
             ValueFilter {
+                roleName: "contact"
+                value: contactIndex
+            },
+
+            ValueFilter {
                     roleName: "active"
                     value: true
             },
-            AnyOf {
-                RegExpFilter {
-                    roleName: "name"
-                    pattern: searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "address"
-                    pattern: searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "coin"
-                    pattern: searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
+            ValueFilter {
+                roleName: "remove"
+                value: false
             }
         ]
         sorters: [
             RoleSorter { roleName: "favorite"; sortOrder: Qt.DescendingOrder },
-            StringSorter { roleName: "name" },
             StringSorter { roleName: "coin" },
-            StringSorter { roleName: "address" }
+            StringSorter { roleName: "label" }
         ]
     }
 
@@ -212,7 +306,8 @@ Rectangle {
         id: allAddresses
         model: filteredAddress
         delegate: addressCard
-        contentHeight: (totalAddresses * 80)
+        spacing: 0
+        contentHeight: (filteredAddress.count * 85) + 75
         interactive: appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0
     }
 }

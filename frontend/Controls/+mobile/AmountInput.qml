@@ -26,12 +26,12 @@ TextField {
 
     id: textInputComponent
     color: "white"
-    font.weight: Font.Bold
-    font.pixelSize: 24
+    font.family: xciteMobile.name //"Brandon Grotesque"
+    font.pixelSize: 26
     leftPadding: 42
     rightPadding: textboxHeight
-    topPadding: 10
-    bottomPadding: 10
+    topPadding: 6
+    bottomPadding: 4
     verticalAlignment: Text.AlignVCenter
     selectByMouse: true
     inputMethodHints: Qt.ImhFormattedNumbersOnly

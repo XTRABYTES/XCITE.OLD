@@ -26,8 +26,8 @@ Rectangle {
     color: "transparent"
 
     property string searchFilter: ""
-    property int selectedWallet: 0
-    property string txcoinName: currencyList.get(selectedWallet).name
+    property string selectedCoin: ""
+    property string selectedWallet: ""
 
     Component {
         id: historyLine
@@ -37,17 +37,30 @@ Rectangle {
             width: parent.width
             height: 30
             color: "transparent"
-            visible: amount !== 0
+            visible: amount !== 0 && inView == true
+            property bool inView: y >= (completeHistory.contentY - 5) && y <= completeHistory.span
 
             property int lineView: 0
+
+            Rectangle {
+                id: clickIndicator
+                anchors.fill: parent
+                color: darktheme == false? "black" : maincolor
+                opacity: 0.25
+                visible: false
+
+                Connections {
+                    target: completeHistory
+                    onMovementEnded: clickIndicator.visible = false
+                }
+            }
 
             Label {
                 id: txDate
                 text: date
                 anchors.left: parent.left
-                anchors.leftMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 14
                 color: "#F2F2F2"
                 visible: lineView == 0
@@ -78,7 +91,7 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.rightMargin: 45
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: 14
                 color: "#F2F2F2"
                 visible: lineView == 0
@@ -90,7 +103,6 @@ Rectangle {
                 width: 14
                 height: 16
                 anchors.right: parent.right
-                anchors.rightMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 visible: lineView == 0
 
@@ -124,7 +136,6 @@ Rectangle {
                 width: 14
                 height: 16
                 anchors.left: parent.left
-                anchors.leftMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 rotation: 180
                 visible: lineView == 1
@@ -155,14 +166,14 @@ Rectangle {
             }
 
             Label {
-                id: txPartner
+                id: idPartner
 
                 function compareAddress(){
                     var fromto = ""
                     for(var i = 0; i < addressList.count; i++) {
-                        if (addressList.get(i).address === txpartnerHash) {
-                            if (addressList.get(i).coin === txcoinName) {
-                                fromto = (addressList.get(i).name)
+                        if (addressList.get(i).address === txPartner) {
+                            if (addressList.get(i).coin === selectedCoin) {
+                                fromto = (contactList.get(addressList.get(i).contact).firstName) + " " + (contactList.get(addressList.get(i).contact).lastName) + " (" + addressList.get(i).label + ")"
                             }
                         }
                     }
@@ -171,11 +182,11 @@ Rectangle {
 
                 property string txpartnerName: compareAddress()
 
-                text: (amount > 0 ? "from " : "to ") + (txpartnerName !== "" ? txpartnerName : txpartnerHash)
+                text: (amount > 0 ? "from " : "to ") + (txpartnerName !== "" ? txpartnerName : txPartner)
                 anchors.left: left2.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 font.pixelSize: txpartnerName !== "" ? 14 : 11
                 color: "#F2F2F2"
                 visible: lineView == 1
@@ -186,7 +197,6 @@ Rectangle {
                 width: 14
                 height: 16
                 anchors.right: parent.right
-                anchors.rightMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 visible: lineView == 1
 
@@ -220,7 +230,6 @@ Rectangle {
                 width: 14
                 height: 16
                 anchors.left: parent.left
-                anchors.leftMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 rotation: 180
                 visible: lineView == 2
@@ -256,7 +265,7 @@ Rectangle {
                 anchors.left: left3.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: "Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 14
                 color: "#F2F2F2"
                 visible: lineView == 2
@@ -270,32 +279,51 @@ Rectangle {
                 anchors.rightMargin: 10
                 height: txAmount.height
 
+                onPressed: {
+                    clickIndicator.visible = true
+                }
+
+                onReleased: {
+                    clickIndicator.visible = false
+                }
+
                 onClicked: {
-                    if (selectedWallet == 0) {
-                        Qt.openUrlExternally("https://xtrabytes.global/explorer/xby?open=%2Fexplorer%2Fxby%2Ftx%2F" + txid)
+                    clickIndicator.visible = false
+                    if (lineView == 0) {
+                        if (selectedCoin == "XBY") {
+                            Qt.openUrlExternally("https://xtrabytes.global/explorer/xby?open=%2Fexplorer%2Fxby%2Ftx%2F" + txid)
+                        }
+                        else if (selectedCoin == "XFUEL") {
+                            Qt.openUrlExternally("https://xtrabytes.global/explorer/xfuel?open=%2Fexplorer%2Fxfuel%2Ftx%2F" + txid)
+                        }
                     }
-                    else if (selectedWallet == 1) {
-                        Qt.openUrlExternally("https://xtrabytes.global/explorer/xfuel?open=%2Fexplorer%2Fxfuel%2Ftx%2F" + txid)
-                    }
-                    else if (selectedWallet == 2) {
-                        Qt.openUrlExternally("https://blockexplorer.com/tx/" + txid)
-                    }
-                    else if (selectedWallet == 3) {
-                        Qt.openUrlExternally("https://etherscan.io/tx/" + txid)
+                    else if (lineView == 1) {
+                        if (selectedCoin == "XBY") {
+                            Qt.openUrlExternally("https://xtrabytes.global/explorer/xby?open=%2Faddress%2Fxby%2F" + txpartnerHash)
+                        }
+                        else if (selectedCoin == "XFUEL") {
+                            Qt.openUrlExternally("https://xtrabytes.global/explorer/xfuel?open=%2Faddress%2Fxfuel%2F" + txpartnerHash)
+                        }
                     }
                 }
             }
         }
     }
 
-
-
     SortFilterProxyModel {
         id: filteredTX
-        sourceModel:(selectedWallet == 0 ? xbyTXHistory :
-                                           (selectedWallet == 1 ? xfuelTXHistory :
-                                                                  (selectedWallet == 2 ? btcTXHistory : ethTXHistory)))
+        sourceModel:transactionList
         filters: [
+            RegExpFilter {
+                roleName: "coinName"
+                pattern: selectedCoin
+                caseSensitivity: Qt.CaseInsensitive
+            },
+            RegExpFilter {
+                roleName: "walletLabel"
+                pattern: selectedWallet
+                caseSensitivity: Qt.CaseInsensitive
+            },
             AnyOf {
                 RegExpFilter {
                     roleName: "reference"
@@ -303,12 +331,7 @@ Rectangle {
                     caseSensitivity: Qt.CaseInsensitive
                 }
                 RegExpFilter {
-                    roleName: "txpartnerHash"
-                    pattern: searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "txid"
+                    roleName: "txPartner"
                     pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
@@ -319,6 +342,11 @@ Rectangle {
                 }
                 RegExpFilter {
                     roleName: "date"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "txid"
                     pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
@@ -334,5 +362,6 @@ Rectangle {
         id: completeHistory
         model: filteredTX
         delegate: historyLine
+        property real span : contentY + height
     }
 }
