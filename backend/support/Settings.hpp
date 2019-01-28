@@ -51,7 +51,6 @@ private:
     QTranslator m_translator;
     QQmlApplicationEngine *m_engine;
     QSettings *m_settings;
-    bool m_loginSucceeded;
 
 private slots:
     QSqlDatabase OpenDBConnection();

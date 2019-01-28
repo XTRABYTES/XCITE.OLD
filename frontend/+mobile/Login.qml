@@ -25,7 +25,6 @@ Item {
 
     property int nameError: 0
     property int passError: 0
-    property int loginStatus: 0
 
     Rectangle {
         id: login
