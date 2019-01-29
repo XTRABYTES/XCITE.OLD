@@ -28,7 +28,8 @@ Rectangle {
     property int usernameWarning: 0
     property int passwordWarning1: 0
     property int passwordWarning2: 0
-    property int checkUsername: 0
+    property int availableUsername: 0
+    property int loginError: 0
 
     function validation(text){
         var regExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
@@ -131,6 +132,7 @@ Rectangle {
 
                 onTextChanged: {
                     usernameLength(userName.text)
+                    availableUsername = 0
                 }
 
                 Image {
@@ -153,11 +155,22 @@ Rectangle {
                             anchors.fill: parent
 
                             onClicked: {
-                                //function to check is username is available, return usernameWarning = 1 if username ealready exists
+                                //function to check is username is available
                                 userExists(userName.text)
                             }
                         }
                     }
+                }
+
+                Image {
+                    id: usernameOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 7
+                    visible: availableUsername == 1
                 }
             }
 
@@ -204,6 +217,7 @@ Rectangle {
                 font.pixelSize: 14
 
                 onTextChanged: {
+                    //check if password has valid format
                     validation(passWord1.text);
                 }
             }
@@ -236,6 +250,7 @@ Rectangle {
                 font.pixelSize: 14
 
                 onTextChanged: {
+                    //check if passwords match
                     if (passWord2.text != passWord1.text){
                         passwordWarning2 = 1
                     }
@@ -278,9 +293,7 @@ Rectangle {
 
                     onReleased: {
                         if (usernameWarning == 0 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
-                            // if checkUsername = 0 run fucntion to check if username exists and return usernameWarning
-                            // if returned usernameWarning = 0 or checkUsername = 1 run function to create account
-
+                            // create account
                             createUser(userName.text, passWord1.text)
                         }
                     }
@@ -300,20 +313,22 @@ Rectangle {
                 Connections {
                     target: UserSettings
                     onUserCreationSucceeded: {
-                        mainRoot.pop()
-                        mainRoot.push("../Home.qml")
-                        loginTracker = 0
-                        selectedPage = "home"
+                        accountCreated = 1
+                        username = userName.text
                     }
                     onUserAlreadyExists: {
                         usernameWarning = 1
+                        availableUsername = 0
                     }
                     onUserCreationFailed: {
-                        //Called when for some other reason user creation failed. Maybe server not accessible etc
-                    }
-                    onSettingsServerError: {
                         loginError = 1
                     }
+                    onSettingsServerError: {
+                        networkError = 1
+                    }
+                    //onUsernameAvailable: {
+                    //    availableUsername = 1
+                    //}
                 }
             }
 
@@ -475,3 +490,4 @@ Rectangle {
         }
     }
 }
+

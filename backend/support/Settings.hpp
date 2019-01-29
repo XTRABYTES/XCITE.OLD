@@ -46,6 +46,7 @@ signals:
     void userCreationSucceeded();
     void userCreationFailed();
     void userAlreadyExists();
+    void usernameAvailable();
     void settingsServerError();
 
 private:

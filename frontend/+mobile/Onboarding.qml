@@ -27,6 +27,16 @@ Item {
         height: Screen.height
         color: "#1B2934"
 
+        LinearGradient {
+                anchors.fill: parent
+                start: Qt.point(0, 0)
+                end: Qt.point(0, parent.height)
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 1.0; color: "#161E33" }
+                }
+        }
+
         Image {
             id: largeLogo
             source: 'qrc:/icons/XBY_logo_large.svg'
@@ -74,7 +84,20 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
                 radius: 5
-                color: maincolor
+                color: "#1B2934"
+                opacity: 0.5
+
+                LinearGradient {
+                        anchors.fill: parent
+                        source: parent
+                        start: Qt.point(x, y)
+                        end: Qt.point(x, parent.height)
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "transparent" }
+                            GradientStop { position: 1.0; color: "#0ED8D2" }
+                        }
+                }
+
 
                 MouseArea {
                     anchors.fill: startButton
@@ -83,17 +106,29 @@ Item {
                         loginTracker = 1
                     }
                 }
+            }
 
-                Text {
-                    id: qrButtonText
-                    text: "LET'S GO"
-                    font.family: xciteMobile.name
-                    font.pointSize: 14
-                    color: "#F2F2F2"
-                    font.bold: true
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                }
+            Text {
+                id: qrButtonText
+                text: "LET'S GO"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                color: "#F2F2F2"
+                font.bold: true
+                anchors.horizontalCenter: startButton.horizontalCenter
+                anchors.verticalCenter: startButton.verticalCenter
+            }
+
+            Rectangle {
+                width: (doubbleButtonWidth - 10) / 2
+                height: 33
+                anchors.horizontalCenter: startButton.horizontalCenter
+                anchors.bottom: startButton.bottom
+                radius: 5
+                color: "transparent"
+                opacity: 0.5
+                border.width: 1
+                border.color: "#0ED8D2"
             }
         }
 
@@ -167,7 +202,7 @@ Item {
 
         Login {
             id: myLogin
-            z: 9
+            z: 10
         }
     }
 }
