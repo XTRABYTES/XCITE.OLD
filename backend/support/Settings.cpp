@@ -12,6 +12,11 @@
 
 #include "Settings.hpp"
 
+Settings::Settings(QObject *parent) :
+    QObject(parent)
+{
+}
+
 Settings::Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent) :
     QObject(parent)
 {
@@ -56,4 +61,113 @@ void Settings::onClearAllSettings() {
     m_settings->sync();
 
     m_settings->setFallbacksEnabled(fallbacks);
+}
+
+// Onboarding and login functions
+
+bool Settings::UserExists(QString username){
+    QSqlDatabase db = OpenDBConnection();
+    QSqlQuery query;
+    query.prepare("SELECT id from xciteSettings where username = ?");
+    query.addBindValue(username);
+    query.exec();
+    while (query.next()) {
+        db.close();
+        emit userAlreadyExists();
+        return true;
+    }
+    db.close();
+    return false;
+}
+
+void Settings::CreateUser(QString username, QString password){
+    if(UserExists(username)){
+        return;
+    }
+
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    QByteArray encodedText = encryption.encode(QString("<xtrabytes>").toLocal8Bit(), (password + "xtrabytesxtrabytes").toLocal8Bit());
+
+    QSqlDatabase db = OpenDBConnection();
+    QSqlQuery query;
+    query.prepare("INSERT INTO xciteSettings (username, dateCreated, dateUpdated, settings) VALUES (?, datetime('now'), strftime('%s','now'), ?)");
+    query.addBindValue(username);
+    query.addBindValue(encodedText);
+    query.exec();
+    db.close();
+
+    if (UserExists(username))
+        emit userCreationSucceeded();
+    else
+        emit userCreationFailed();
+
+}
+
+void Settings::login(QString username, QString password){
+    QByteArray result;
+    QSqlDatabase db = OpenDBConnection();
+    QSqlQuery query;
+    query.prepare("SELECT settings from xciteSettings where username = ?");
+    query.addBindValue(username);
+    query.exec();
+    while (query.next()) {
+           result = query.value(0).toByteArray();
+    }
+    db.close();
+
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    QByteArray decodedSettings = encryption.decode(result, (password + "xtrabytesxtrabytes").toLocal8Bit());
+    if(decodedSettings.startsWith("<xtrabytes>"))
+        emit loginSucceededChanged();
+    else
+        emit loginFailedChanged();
+}
+
+// User setting functions (Not yet in use)
+
+bool Settings::SaveSettings(){
+    QSqlDatabase db = OpenDBConnection();
+
+    return true;
+}
+
+QString Settings::LoadSettings(QString username, QString password){
+    QByteArray result;
+    QSqlDatabase db = OpenDBConnection();
+    QSqlQuery query;
+    query.prepare("SELECT settings from xciteSettings where username = ?");
+    query.addBindValue(username);
+    query.exec();
+    while (query.next()) {
+           result = query.value(0).toByteArray();
+    }
+    db.close();
+
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    QByteArray decodedSettings = encryption.decode(result, (password + "xtrabytesxtrabytes").toLocal8Bit());
+    if(decodedSettings.startsWith("<xtrabytes>")){
+       QString settings = decodedSettings.left(11);
+        return settings;
+    }
+
+    return "";
+}
+
+// General functions
+
+QSqlDatabase Settings::OpenDBConnection(){
+    // Development database in use
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("<CHANGE TO YOUR ABSOLUTE PROJECT FOLDER>/dev-db/xtrabytes");
+
+    // Release database to be used
+    //QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    //db.setHostName("xxx.xxx.xxx.xxx");
+    //db.setDatabaseName("xxx");
+    //db.setUserName("xxxx");
+    //db.setPassword("xxx");
+
+    if (!db.open())
+        emit settingsServerError();
+    return db;
 }

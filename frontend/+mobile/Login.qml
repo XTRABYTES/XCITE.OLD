@@ -157,12 +157,27 @@ Item {
                             // if username exists return nameError = 0, check password
                             // if password is wrong return passError = 1
                             // if password is correct return passError = 0 and proceed with login
-                            mainRoot.pop()
-                            mainRoot.push("../Home.qml")
-                            loginTracker = 0
-                            selectedPage = "home"
-                            username = userName.text
+                            userLogin(userName.text, passWord.text)
+
                         }
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+                    onLoginSucceededChanged: {
+                        mainRoot.pop()
+                        mainRoot.push("../Home.qml")
+                        loginTracker = 0
+                        selectedPage = "home"
+                    }
+
+                    onLoginFailedChanged: {
+                        passError = 1
+                    }
+
+                    onSettingsServerError: {
+                        loginError = 1
                     }
                 }
 

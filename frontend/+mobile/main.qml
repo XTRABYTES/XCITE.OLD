@@ -134,8 +134,13 @@ ApplicationWindow {
     property int pictureID: 0
 
     // Signals
+    signal loginSuccesfulSignal(string username, string password)
+    signal loginFailed()
     signal marketValueChangedSignal(string currency)
     signal localeChange(string locale)
+    signal userLogin(string username, string password)
+    signal createUser(string username, string password)
+    signal userExists(string username)
     signal clearAllSettings
 
     // Global functions
