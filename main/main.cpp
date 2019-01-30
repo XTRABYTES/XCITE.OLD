@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<XChatConversationModel>("XChatConversationModel", 0, 1, "XChatConversationModel");
     qmlRegisterType<AddressBookModel>("AddressBookModel", 0, 1, "AddressBookModel");
     qmlRegisterType<ClipboardProxy>("Clipboard", 1, 0, "Clipboard");
+    qmlRegisterType<Settings>("xtrabytes.xcite.settings", 1, 0, "XCiteSettings");
 
     QQmlApplicationEngine engine;
     QZXing::registerQMLImageProvider(engine);
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
     // wire-up market value
     MarketValue marketValue;
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
-    
+
 	// set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
@@ -84,6 +85,10 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("ReleaseChecker", &releaseChecker);
     releaseChecker.checkForUpdate();
 
+    QSettings appSettings;
+    Settings settings(&engine, &appSettings);
+    engine.rootContext()->setContextProperty("UserSettings", &settings);
+
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty()) {
         return -1;
@@ -91,8 +96,9 @@ int main(int argc, char *argv[])
 
     QObject *rootObject = engine.rootObjects().first();
 
-    QSettings appSettings;
-    Settings settings(&engine, &appSettings);
+    QObject::connect(rootObject, SIGNAL(userLogin(QString, QString)), &settings, SLOT(login(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(createUser(QString, QString)), &settings, SLOT(CreateUser(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(userExists(QString)), &settings, SLOT(UserExists(QString)));
     QObject::connect(rootObject, SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
     QObject::connect(rootObject, SIGNAL(clearAllSettings()), &settings, SLOT(onClearAllSettings()));
 

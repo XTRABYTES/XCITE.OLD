@@ -18,22 +18,44 @@
 #include <QCoreApplication>
 #include <QQmlApplicationEngine>
 #include <QSettings>
+#include <QtSql>
+#include "qaesencryption.h"
 
 class Settings : public QObject
 {
     Q_OBJECT
+
 public:
+    Settings(QObject *parent = 0);
     Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent = 0);
     void setLocale(QString);
+    QJsonDocument Addresses;
 
 public slots:
     void onLocaleChange(QString);
     void onClearAllSettings();
+    void login(QString username, QString password);
+    bool SaveSettings();
+    QString LoadSettings(QString username, QString password);
+    bool UserExists(QString username);
+    void CreateUser(QString username, QString password);
+
+signals:
+    void loginSucceededChanged();
+    void loginFailedChanged();
+    void userCreationSucceeded();
+    void userCreationFailed();
+    void userAlreadyExists();
+    void settingsServerError();
 
 private:
     QTranslator m_translator;
     QQmlApplicationEngine *m_engine;
     QSettings *m_settings;
+
+private slots:
+    QSqlDatabase OpenDBConnection();
+
 };
 
 #endif // SETTINGS_HPP
