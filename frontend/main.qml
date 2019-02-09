@@ -140,7 +140,6 @@ ApplicationWindow {
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
     signal userExists(string username)
-    signal savePincode(string pincode)
 
     function xchatResponse(response) {
         xChatMessageReceived(response, new Date())

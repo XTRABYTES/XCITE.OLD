@@ -251,6 +251,7 @@ Rectangle {
                             editSaved = 1
                             userSettings.pincode = newPin1.text
                             userSettings.pinlock = true
+                            savePincode(newPin1.text)
                             newPin1.text = ""
                             newPin2.text = ""
                             timer1.start()
@@ -475,7 +476,8 @@ Rectangle {
                     onClicked: {
                         if (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError4 == 0) {
                             editSaved = 1
-                            userSettings.pincode = newPin1.text
+                            userSettings.pincode = changePin1.text
+                            savePincode(changePin1.text)
                             currentPin.text = ""
                             changePin1.text = ""
                             changePin2.text = ""
@@ -592,7 +594,7 @@ Rectangle {
                         passError1 = 0
                         passError2 = 0
                         passTry = passTry + 1
-                        if (pin.text !== userSettings.pincode) {
+                        if (!checkPincode(pin.text)) {
                             pinError = 1
                             pin.text = ""
                             if (passTry == 3) {

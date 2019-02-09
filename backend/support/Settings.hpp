@@ -39,7 +39,8 @@ public slots:
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
     void SaveAddresses(QVariant addresslist);
-    void SavePincode(QString pincode);
+    void onSavePincode(QString pincode);
+    bool checkPincode(QString pincode);
 
 signals:
     void loginSucceededChanged();

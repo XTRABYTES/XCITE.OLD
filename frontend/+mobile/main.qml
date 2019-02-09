@@ -161,6 +161,7 @@ ApplicationWindow {
     signal clearAllSettings
     signal saveAddressBook(var addresses)
     signal savePincode(string pincode)
+    signal checkPincode(string pincode)
 
     // Global functions
     function countWallets() {

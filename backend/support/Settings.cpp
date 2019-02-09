@@ -135,8 +135,7 @@ bool Settings::SaveSettings(){
         settings += m_addresses[i] + ",";
     }
 
-    QString enc_pincode = encryption.encode((QString("<xtrabytes>") + m_pincode).toLocal8Bit(), (m_password + "xtrabytesxtrabytes").toLocal8Bit());
-    settings += "\"pincode\": \"" + enc_pincode + "\",";
+    settings += "\"pincode\": \"" + m_pincode + "\",";
 
     QByteArray encodedText = encryption.encode((QString("<xtrabytes>") + settings).toLocal8Bit(), (m_password + "xtrabytesxtrabytes").toLocal8Bit());
 
@@ -175,9 +174,19 @@ void Settings::SaveAddresses(QVariant addresslist){
     SaveSettings();
 }
 
-void Settings::SavePincode(QString pincode){
-    m_pincode = pincode;
+void Settings::onSavePincode(QString pincode){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    m_pincode = encryption.encode((QString("<xtrabytes>") + pincode).toLocal8Bit(), (m_password + "xtrabytesxtrabytes").toLocal8Bit());;
     SaveSettings();
+}
+
+bool Settings::checkPincode(QString pincode){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    QString enc_pincode = encryption.encode((QString("<xtrabytes>") + pincode).toLocal8Bit(), (m_password + "xtrabytesxtrabytes").toLocal8Bit());;
+    if (enc_pincode == m_pincode)
+        return true;
+    else
+        return false;
 }
 
 // General functions
