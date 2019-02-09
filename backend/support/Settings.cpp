@@ -159,7 +159,7 @@ QString Settings::LoadSettings(QString username, QString password){
 QSqlDatabase Settings::OpenDBConnection(){
     // Development database in use
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("<PATH_TO_YOUR_XCITE_DIRECTORY/dev-db/xtrabytes");
+    db.setDatabaseName("C:/Users/Joeri/Desktop/XCITE/XCITE_NEW/XCITE/dev-db/xtrabytes");
 
     // Release database to be used
     //QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");

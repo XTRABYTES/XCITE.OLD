@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: historyModal
-    width: 325
+    width: Screen.width
     state: historyTracker == 1? "up" : "down"
-    height: 500
+    height: Screen.height
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -30,7 +30,7 @@ Rectangle {
     states: [
         State {
             name: "up"
-            PropertyChanges { target: historyModal; anchors.topMargin: 50}
+            PropertyChanges { target: historyModal; anchors.topMargin: 0}
         },
         State {
             name: "down"
@@ -46,99 +46,99 @@ Rectangle {
         }
     ]
 
-    Rectangle {
-        id: historysTitleBar
-        width: parent.width
-        height: 50
-        radius: 4
+    Text {
+        id: historyModalLabel
+        text: "TRANSACTION HISTORY"
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.left: parent.left
-        color: "transparent"
+        anchors.topMargin: 10
+        font.pixelSize: 20
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
+    }
 
-        Text {
-            id: historyModalLabel
-            text: "TRANSACTION HISTORY"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.top
-            anchors.verticalCenterOffset: 27
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            color: "#F2F2F2"
-            font.letterSpacing: 2
-        }
+    Image {
+        id: newIcon
+        source: getLogo(walletList.get(walletIndex).name)
+        height: 30
+        width: 30
+        anchors.left: searchInput.left
+        anchors.top: historyModalLabel.bottom
+        anchors.topMargin: 30
+    }
+
+    Label {
+        id: newCoinName
+        text: walletList.get(walletIndex).name
+        anchors.left: newIcon.right
+        anchors.leftMargin: 7
+        anchors.verticalCenter: newIcon.verticalCenter
+        font.pixelSize: 24
+        font.family: "Brandon Grotesque"
+        font.weight: Font.Bold
+        font.letterSpacing: 2
+        color: "#F2F2F2"
+    }
+
+    Label {
+        id: newWalletLabel
+        text: walletList.get(walletIndex).label
+        anchors.right: searchInput.right
+        anchors.bottom: newIcon.bottom
+        anchors.bottomMargin: 1
+        font.pixelSize: 20
+        font.family: "Brandon Grotesque"
+        font.weight: Font.Bold
+        color: "#F2F2F2"
+    }
+
+    Controls.TextInput {
+        id: searchInput
+        height: 34
+        width: parent.width - 56
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: newIcon.bottom
+        anchors.topMargin: 25
+        placeholder: "SEARCH TRANSACTIONS"
+        color: text != ""? "#F2F2F2" : "#727272"
+        textBackground: "#0B0B09"
+        font.pixelSize: 14
+        mobile: 1
     }
 
     Rectangle {
-        id: historyBodyModal
-        width: parent.width
-        height: parent.height - 50
-        radius: 4
-        color: darktheme == false? "#42454F" : "transparent"
-        anchors.top: parent.top
-        anchors.topMargin: 50
+        id: historyList
+        width: searchInput.width
+        anchors.top: searchInput.bottom
+        anchors.topMargin: 15
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: "transparent"
+
+        Controls.HistoryList {
+            id: myHistory
+            searchFilter: searchInput.text
+            selectedCoin: newCoinName.text
+            selectedWallet: newWalletLabel.text
+        }
+    }
+
+    Item {
+        z: 3
+        width: Screen.width
+        height: 125
+        anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
-
-        Image {
-            id: newIcon
-            source: getLogo(walletList.get(walletIndex).name)
-            height: 25
-            width: 25
-            anchors.left: searchInput.left
-            anchors.top: parent.top
-            anchors.topMargin: 20
-        }
-
-        Label {
-            id: newCoinName
-            text: walletList.get(walletIndex).name
-            anchors.left: newIcon.right
-            anchors.leftMargin: 7
-            anchors.verticalCenter: newIcon.verticalCenter
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
-            color: "#F2F2F2"
-        }
-
-        Label {
-            id: newWalletLabel
-            text: walletList.get(walletIndex).label
-            anchors.right: searchInput.right
-            anchors.verticalCenter: newIcon.verticalCenter
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
-            color: "#F2F2F2"
-        }
-
-        Controls.TextInput {
-            id: searchInput
-            height: 34
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: newIcon.bottom
-            anchors.topMargin: 25
-            placeholder: "SEARCH TRANSACTIONS"
-            color: text != ""? "#F2F2F2" : "#727272"
-            font.pixelSize: 14
-            mobile: 1
-        }
-
-        Rectangle {
-            id: historyList
-            width: searchInput.width
-            anchors.top: searchInput.bottom
-            anchors.topMargin: 15
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
-
-            Controls.HistoryList {
-                id: myHistory
-                searchFilter: searchInput.text
-                selectedCoin: newCoinName.text
-                selectedWallet: newWalletLabel.text
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(x, y)
+            end: Qt.point(x, y + height)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
             }
         }
     }
@@ -147,23 +147,22 @@ Rectangle {
         id: closeHistoryModal
         z: 10
         text: "CLOSE"
-        anchors.top: historyBodyModal.bottom
-        anchors.topMargin: 20
-        anchors.horizontalCenter: historyBodyModal.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: darktheme == false? "#F2F2F2" : maincolor
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
 
         Rectangle{
             id: closeButton
             height: 34
-            width: doubbleButtonWidth
+            width: closeHistoryModal.width
             radius: 4
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
-            border.width: 2
-            border.color: darktheme == false? "transparent" : maincolor
+
         }
 
         MouseArea {
