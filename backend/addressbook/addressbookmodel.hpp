@@ -20,6 +20,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QStandardPaths>
+#include "../support/Settings.hpp"
 
 class Address : public QObject
 {

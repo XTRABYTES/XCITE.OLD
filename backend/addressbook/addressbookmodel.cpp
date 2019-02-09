@@ -36,6 +36,8 @@ int AddressBookModel::append(QString name, QString address)
     items.append(addr);
     endInsertRows();
 
+    save();
+
     return idx;
 }
 
@@ -49,6 +51,8 @@ int AddressBookModel::remove(int idx)
         free(addr);
     }
 
+    save();
+
     return (idx > 0 ? idx : 0);
 }
 
@@ -61,6 +65,8 @@ void AddressBookModel::update(int idx, QString name, QString address)
 
     addr->m_name = name;
     addr->m_address = address;
+
+    save();
 
     emit dataChanged(index(idx), index(idx));
 }
@@ -133,22 +139,6 @@ QVariant AddressBookModel::data(const QModelIndex &index, int role) const
 
 bool AddressBookModel::save()
 {
-    QString savePath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    QDir path = QDir(savePath);
-
-    if (!path.exists())
-    {
-        path.mkpath(".");
-    }
-
-    // TODO: Must be a QT way to create paths in a better fashion
-    QFile f(savePath + "/" + "addresses.json");
-
-    if (!f.open(QIODevice::WriteOnly)) {
-        qWarning("Unable to save addressbook");
-        return false;
-    }
-
     QJsonArray addresses;
     for (int i = 0; i < items.size(); i++) {
         QJsonObject entry;
@@ -158,37 +148,28 @@ bool AddressBookModel::save()
     }
 
     QJsonDocument doc(addresses);
-    f.write(doc.toJson());
+    QString strJson(doc.toJson(QJsonDocument::Compact));
 
+    // SAVE TO DB
+    Settings settings;
+    settings.SaveAddresses(strJson);
     return true;
 }
 
 bool AddressBookModel::load()
 {
-    QString loadPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    QFile f(loadPath + "/" + "addresses.json");
+    // LOAD FROM DB
+    //QJsonDocument json(QJsonDocument::fromJson());
+    //if (!json.isArray()) {
+    //    qWarning("Load addressbook failed, expected array in addresses.json");
+    //    return false;
+    //}
 
-    if (!f.open(QIODevice::ReadOnly)) {
-        // TODO: Temporary pre-populate addressbook to make life easier for testing
-        append("enervey", "XZhRoyup9cbVguuqDUWWBuqhLmE483FtXW");
-        append("james87uk", "XLGSfK2RhjvEbkGMe4WVk2R8k9auLESAsv");
-        append("nrocy", "XYjAvodSHYRBzWv1WGb1bCtmVfMvGDSYAJ");
-        append("posey", "XJmqWTfBQwZk2QgU3eFnbtenUHXXPmsgPa");
-
-        return false;
-    }
-
-    QJsonDocument json(QJsonDocument::fromJson(f.readAll()));
-    if (!json.isArray()) {
-        qWarning("Load addressbook failed, expected array in addresses.json");
-        return false;
-    }
-
-    QJsonArray entries = json.array();
-    for (int i = 0; i < entries.size(); i++) {
-        QJsonObject entry = entries[i].toObject();
-        append(entry["name"].toString(), entry["address"].toString());
-    }
+    //QJsonArray entries = json.array();
+    //for (int i = 0; i < entries.size(); i++) {
+    //    QJsonObject entry = entries[i].toObject();
+    //    append(entry["name"].toString(), entry["address"].toString());
+    //}
 
     return true;
 }
