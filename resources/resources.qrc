@@ -176,5 +176,11 @@
         <file>icons/icon-close_01.svg</file>
         <file>icons/XBY_logo_large.svg</file>
         <file>icons/icon-questionmark_01.svg</file>
+        <file>icons/icon-ok_01.svg</file>
+        <file>backgrounds/stars.jpg</file>
+        <file>scan-window_02.svg</file>
+        <file>icons/XBY_logo_big.svg</file>
+        <file>icons/XFUEL_logo_big.svg</file>
+        <file>gifs/loading_02.gif</file>
     </qresource>
 </RCC>

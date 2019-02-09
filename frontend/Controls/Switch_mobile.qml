@@ -50,6 +50,8 @@ Item {
         radius: 15
         color: "black"
         opacity: 0.35
+        border.color: "#F2F2F2"
+        border.width: 1
 
         MouseArea {
             anchors.fill: parent

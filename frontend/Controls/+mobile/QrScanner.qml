@@ -4,13 +4,13 @@ import QtMultimedia 5.5
 import QtGraphicalEffects 1.0
 import QZXing 2.3
 import QtMultimedia 5.8
+import QtQuick.Window 2.2
 
 Item {
-    width: 325
-    height: 458
+    width: Screen.width
+    height: Screen.height
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    anchors.topMargin: 50
     visible: scanQRTracker == 1
 
     property alias key: pubKey.text
@@ -38,32 +38,12 @@ Item {
     }
 
     Rectangle {
-        id: addressTitleBar
         width: parent.width
-        height: 50
-        radius: 4
-        anchors.top: parent.top
-        anchors.left: parent.left
-        color: "transparent"
-
-        Text {
-            id: scanQRLabel
-            text: "SCAN QR CODE"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: 20
-            font.family: xciteMobile.name
-            color: "#F2F2F2"
-        }
-    }
-
-    Rectangle {
-        width: parent.width
-        height: 400
+        height: parent.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 50
         color: "transparent"
+        clip: true
 
         Label {
             text: "activating camera..."
@@ -81,11 +61,12 @@ Item {
             id: videoOutput
             source: camera
             width: parent.width
-            height: parent.height
             fillMode: VideoOutput.PreserveAspectCrop
             autoOrientation: true
-            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: scanFrame.horizontalCenter
+            anchors.verticalCenter: scanFrame.verticalcenter
             filters: [
                 qrFilter
             ]
@@ -93,19 +74,28 @@ Item {
 
         Image {
             id: scanWindow
-            source: 'qrc:/scan-window_01.svg'
-            width: 325
-            height: 400
+            source: 'qrc:/scan-window_02.svg'
+            anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            opacity: 0.95
+            opacity: 0.9
 
             ColorOverlay {
                 anchors.fill: scanWindow
                 source: scanWindow
                 color: darktheme == false? "white" : "black"
-                opacity: 0.95
+                opacity: 0.99
             }
+        }
+
+        Text {
+            id: scanQRLabel
+            text: "SCAN QR CODE"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            font.pixelSize: 20
+            font.family: xciteMobile.name
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
         }
 
         Rectangle {
@@ -115,19 +105,19 @@ Item {
             radius: 10
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: 50
+            anchors.topMargin: 150
             color: "transparent"
-            border.width: 2
-            border.color: "#F2F2F2"
+            border.width: 1
+            border.color: darktheme == true? "#F2F2F2" : "#2A2C31"
         }
 
         Label {
             id: pubKey
             text: "PUBLIC KEY"
-            anchors.top: parent.top
-            anchors.topMargin: 285
+            anchors.top: scanFrame.bottom
+            anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "#F2F2F2"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
             font.family: xciteMobile.name
             font.bold: true
             font.pixelSize: 14
@@ -140,7 +130,7 @@ Item {
             anchors.top: pubKey.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: pubKey.horizontalCenter
-            color: "white"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
             font.family: xciteMobile.name
             font.pixelSize: 12
             font.italic: publicKey.text == "scanning..."
@@ -150,14 +140,11 @@ Item {
 
     Rectangle {
         id: cancelScanButton
-        width: (parent.width - 40) / 2
+        width: doubbleButtonWidth / 2
         height: 34
-        radius: 5
         color: "transparent"
-        border.color: maincolor
-        border.width: 2
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 20
+        anchors.bottomMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
         visible: scanQRTracker == 1
 
@@ -165,27 +152,31 @@ Item {
             anchors.fill: cancelScanButton
 
             onPressed: {
-                cancelScanButton.color = maincolor
                 click01.play()
             }
 
+            onCanceled: {
+            }
+
             onReleased: {
-                cancelScanButton.color = "transparent"
+            }
+
+            onClicked: {
                 scanQRTracker = 0
                 selectedAddress = ""
                 publicKey.text = "scanning..."
             }
         }
+    }
 
-        Text {
-            text: "BACK"
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: "#F2F2F2"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-        }
+    Text {
+        text: "BACK"
+        font.family: xciteMobile.name //"Brandon Grotesque"
+        font.pointSize: 14
+        font.bold: true
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        anchors.horizontalCenter: cancelScanButton.horizontalCenter
+        anchors.verticalCenter: cancelScanButton.verticalCenter
     }
 
     QZXingFilter {

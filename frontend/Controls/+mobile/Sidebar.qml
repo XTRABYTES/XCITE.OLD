@@ -63,7 +63,7 @@ Rectangle {
             anchors.top: parent.bottom
             anchors.topMargin: 5
             color: maincolor
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
         }
@@ -78,10 +78,10 @@ Rectangle {
                 anchors.fill: parent
                 onClicked: {
                     if (selectedPage != "settings") {
-                        mainRoot.pop()
-                        mainRoot.push("../Settings.qml")
                         appsTracker = 0
                         selectedPage = "settings"
+                        mainRoot.pop("../DashboardForm.qml")
+                        mainRoot.push("../WalletSettings.qml")
                     }
                 }
             }
@@ -109,7 +109,7 @@ Rectangle {
             anchors.top: parent.bottom
             anchors.topMargin: 5
             color: maincolor
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
         }
@@ -123,11 +123,11 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
+                    appsTracker = 0
                     if (selectedPage != "home") {
-                        mainRoot.pop()
-                        mainRoot.push("../DashboardForm.qml")
-                        appsTracker = 0
                         selectedPage = "home"
+                        // pop current page
+                        mainRoot.push("../DashboardForm.qml")
                     }
                 }
             }

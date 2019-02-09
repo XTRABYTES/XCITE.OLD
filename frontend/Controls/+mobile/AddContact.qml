@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addContactModal
-    width: 325
+    width: Screen.width
     state: addContactTracker == 1? "up" : "down"
-    height: editSaved == 1? 360 : 465
+    height: Screen.height
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -30,7 +30,7 @@ Rectangle {
     states: [
         State {
             name: "up"
-            PropertyChanges { target: addContactModal; anchors.topMargin: 50}
+            PropertyChanges { target: addContactModal; anchors.topMargin: 0}
         },
         State {
             name: "down"
@@ -42,7 +42,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addContactModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: addContactModal; property: "anchors.topMargin"; duration: 400; easing.type: Easing.OutCubic}
         }
     ]
 
@@ -58,39 +58,37 @@ Rectangle {
         }
     }
 
-    Rectangle {
-        id: contactTitleBar
-        width: parent.width
-        height: 50
+    Text {
+        id: addContactModalLabel
+        text: "ADD NEW CONTACT"
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.left: parent.left
-        color: "transparent"
+        anchors.topMargin: 10
+        font.pixelSize: 20
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
         visible: editSaved == 0
-
-
-        Text {
-            id: transferModalLabel
-            text: "ADD NEW CONTACT"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.top
-            anchors.verticalCenterOffset: 27
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            color: "#F2F2F2"
-            font.letterSpacing: 2
-        }
-
     }
 
-    Rectangle {
-        id: contactBodyModal
+    Flickable {
+        id: scrollArea
         width: parent.width
-        height: parent.height - 50
-        radius: 4
-        color: darktheme == false? "#F7F7F7" : "#1B2934"
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
+        contentHeight: editSaved == 0? addContactScrollArea.height + 125 : scrollArea.height + 125
+        anchors.left: parent.left
+        anchors.top: addContactModalLabel.bottom
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        boundsBehavior: Flickable.StopAtBounds
+        clip: true
+
+        Rectangle {
+            id: addContactScrollArea
+            width: parent.width
+            anchors.top: parent.top
+            anchors.bottom: saveButton.bottom
+            color: "transparent"
+        }
 
         DropShadow {
             id: shadowPhoto
@@ -113,9 +111,9 @@ Rectangle {
             height: 100
             width: 100
             anchors.left: parent.left
-            anchors.leftMargin: 14
+            anchors.leftMargin: 28
             anchors.top: parent.top
-            anchors.topMargin: 20
+            anchors.topMargin: 30
             visible: editSaved == 0
         }
 
@@ -126,11 +124,11 @@ Rectangle {
             anchors.bottom: newPhoto.verticalCenter
             anchors.bottomMargin: 5
             anchors.right: parent.right
-            anchors.rightMargin: 14
+            anchors.rightMargin: 28
             anchors.left: newPhoto.right
             anchors.leftMargin: 25
-            color: newFirstname.text != "" ? "#F2F2F2" : "#727272"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            color: newFirstname.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             visible: editSaved == 0
@@ -146,8 +144,8 @@ Rectangle {
             anchors.right: newFirstname.right
             anchors.top: newFirstname.bottom
             anchors.topMargin: 10
-            color: newLastname.text !== "" ? "#F2F2F2" : "#727272"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            color: newLastname.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             visible: editSaved == 0
@@ -179,8 +177,8 @@ Rectangle {
             anchors.right: newLastname.right
             anchors.top: newPhoto.bottom
             anchors.topMargin: 45
-            color: newTel.text != "" ? "#F2F2F2" : "#727272"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            color: newTel.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
@@ -195,8 +193,8 @@ Rectangle {
             anchors.right: newTel.right
             anchors.top: newTel.bottom
             anchors.topMargin: 10
-            color: newCell.text != "" ? "#F2F2F2" : "#727272"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            color: newCell.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
@@ -211,8 +209,8 @@ Rectangle {
             anchors.right: newCell.right
             anchors.top: newCell.bottom
             anchors.topMargin: 10
-            color: newMail.text != "" ? "#F2F2F2" : "#727272"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            color: newMail.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
@@ -226,8 +224,8 @@ Rectangle {
             anchors.right: newMail.right
             anchors.top: newMail.bottom
             anchors.topMargin: 10
-            color: newChat.text != "" ? "#F2F2F2" : "#727272"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            color: newChat.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
@@ -235,60 +233,83 @@ Rectangle {
 
         Rectangle {
             id: saveButton
-            width: parent.width - 28
+            width: parent.width - 56
             height: 34
-            radius: 5
             color: (newFirstname.text !== ""
                     && newLastname.text !== ""
                     && contactExists == 0) ? maincolor : "#727272"
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
+            opacity: 0.25
+            anchors.top: newChat.bottom
+            anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
 
             MouseArea {
                 anchors.fill: saveButton
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    parent.opacity = 0.5
+                    click01.play()
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
 
                 onReleased: {
+                    parent.opacity = 0.25
+                }
+
+                onClicked: {
                     if (newFirstname.text !== ""
                             && newLastname.text !== ""
                             && contactExists == 0) {
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
                         editSaved = 1
+                        saveAddressBook(contactList)
                     }
                 }
             }
+        }
 
-            Text {
-                text: "SAVE"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: (newFirstname.text !== ""
-                        && newLastname.text !== ""
-                        && contactExists == 0) ? "#F2F2F2" : "#979797"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        Text {
+            text: "SAVE"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: (newFirstname.text !== ""
+                    && newLastname.text !== ""
+                    && contactExists == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            visible: editSaved == 0
+        }
+
+        Rectangle {
+            width: newTel.width
+            height: 34
+            anchors.bottom: saveButton.bottom
+            anchors.left: saveButton.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: (newFirstname.text !== ""
+                           && newLastname.text !== ""
+                           && contactExists == 0) ? maincolor : "#979797"
+            border.width: 1
+            visible: editSaved == 0
         }
 
         // save state
 
-        DropShadow {
-            id: shadowPhotoSave
-            anchors.fill: saveSuccess
-            source: saveSuccess
-            horizontalOffset: 0
-            verticalOffset: 4
-            radius: 12
-            samples: 25
-            spread: 0
-            color: "black"
-            opacity: 0.3
-            transparentBorder: true
+        Rectangle {
+            id: saveConfirmed
+            width: parent.width
+            height: saveSuccess.height + saveSuccessName.height + saveSuccessLabel.height + closeSave.height + 100
+            color: "transparent"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -125
             visible: editSaved == 1
         }
 
@@ -298,8 +319,7 @@ Rectangle {
             height: 100
             width: 100
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 50
+            anchors.top: saveConfirmed.top
             visible: editSaved == 1
         }
 
@@ -322,7 +342,7 @@ Rectangle {
             anchors.top: saveSuccess.bottom
             anchors.topMargin: 40
             anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: maincolor
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             font.bold: true
@@ -332,18 +352,29 @@ Rectangle {
         Rectangle {
             id: closeSave
             width: doubbleButtonWidth / 2
-            height: 33
-            radius: 5
+            height: 34
             color: maincolor
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
+            opacity: 0.25
+            anchors.top: saveSuccessLabel.bottom
+            anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 1
 
             MouseArea {
                 anchors.fill: closeSave
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    parent.opacity = 0.5
+                    click01.play()
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
+
+                onReleased: {
+                    parent.opacity = 0.25
+                }
 
                 onClicked: {
                     addContactTracker = 0;
@@ -357,36 +388,68 @@ Rectangle {
                     editSaved = 0
                 }
             }
-            Text {
-                text: "OK"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#F2F2F2"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Text {
+            text: "OK"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#F2F2F2"
+            anchors.horizontalCenter: closeSave.horizontalCenter
+            anchors.verticalCenter: closeSave.verticalCenter
+            visible: editSaved == 1
+        }
+
+        Rectangle {
+            width: doubbleButtonWidth / 2
+            height: 34
+            anchors.bottom: closeSave.bottom
+            anchors.left: closeSave.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: maincolor
+            border.width: 1
+            visible: editSaved == 1
+        }
+    }
+
+    Item {
+        z: 3
+        width: Screen.width
+        height: 125
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(x, y)
+            end: Qt.point(x, y + height)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
             }
         }
     }
 
     Label {
-        id: closeAddressModal
+        id: closeContactModal
         z: 10
-        text: "CLOSE"
-        anchors.top: addContactModal.bottom
-        anchors.topMargin: 20
-        anchors.horizontalCenter: addContactModal.horizontalCenter
+        text: "BACK"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
         visible: addContactTracker == 1
                  && editSaved == 0
 
         Rectangle{
             id: closeButton
             height: 34
-            width: doubbleButtonWidth
-            radius: 4
+            width: doubbleButtonWidth / 2
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
@@ -395,7 +458,9 @@ Rectangle {
         MouseArea {
             anchors.fill: closeButton
 
-            onPressed: { click01.play() }
+            onPressed: {
+                click01.play()
+            }
 
             onClicked: {
                 addContactTracker = 0;

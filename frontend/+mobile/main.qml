@@ -18,6 +18,7 @@ import Clipboard 1.0
 import Qt.labs.settings 1.0
 import Qt.labs.folderlistmodel 2.11
 import QtMultimedia 5.8
+import QtGraphicalEffects 1.0
 
 ApplicationWindow {
     property bool isNetworkActive: false
@@ -29,7 +30,9 @@ ApplicationWindow {
     width: Screen.width
     height: Screen.height
     title: qsTr("XCITE")
-    color: "#1B2934"
+    color: "#14161B"
+
+
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -52,9 +55,10 @@ ApplicationWindow {
 
     // BTC information
     property real btcValueBTC: 1
-    property real valueBTCUSD: 3547.43
-    property real valueBTCEUR: 3130.20
-    property real valueBTC: settings.defaultCurrency == "USD"? valueBTCUSD : valueBTCEUR
+    property real valueBTCUSD: 3353.20
+    property real valueBTCEUR: 2966.10
+    property real valueBTCGBP: 2597.53
+    property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : valueBTCGBP
 
     // Coin info, retrieved from server
     property string nameXBY: "XBY"
@@ -69,10 +73,13 @@ ApplicationWindow {
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
-    property real doubbleButtonWidth: 273
+    property color themecolor: darktheme == true? "#F2F2F2" : "#2A2C31"
+    property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
+    property real doubbleButtonWidth: Screen.width - 56
 
     // Global setting, editable
-    property bool darktheme: true
+    property bool darktheme: userSettings.theme == "dark"? true : false
+    property string fiatTicker: fiatCurrencies.get(userSettings.defaultCurrency).ticker
     property string username: ""
     property string selectedPage: ""
 
@@ -101,8 +108,11 @@ ApplicationWindow {
     property int addressQRTracker: 0
     property int pictureTracker: 0
     property int cellTracker: 0
+    property int currencyTracker: 0
+    property int pincodeTracker: 0
 
     // Global variables
+    property int networkError: 0
     property int photoSelect: 0
     property int newCoinPicklist: 0
     property int newCoinSelect: 0
@@ -132,6 +142,13 @@ ApplicationWindow {
     property int txID: 1
     property int selectAddressIndex: 0
     property int pictureID: 0
+    property int currencyID: 0
+    property int createPin: 0
+    property int changePin: 0
+    property int unlockPin: 0
+    property int pinOK: 0
+    property int pinError: 0
+    property int requestSend: 0
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -142,6 +159,9 @@ ApplicationWindow {
     signal createUser(string username, string password)
     signal userExists(string username)
     signal clearAllSettings
+    signal saveAddressBook(var addresses)
+    signal savePincode(string pincode)
+    signal checkPincode(string pincode)
 
     // Global functions
     function countWallets() {
@@ -259,11 +279,31 @@ ApplicationWindow {
         return logo
     }
 
+    function getLogoBig(coin) {
+        var logo = ''
+        for(var i = 0; i < coinList.count; i++) {
+            if (coinList.get(i).name === coin) {
+                logo = coinList.get(i).logoBig
+            }
+        }
+        return logo
+    }
+
     function getName(coin) {
         var name = ""
         for(var i = 0; i < coinList.count; i++) {
             if (coinList.get(i).coinID === coin) {
                 name = coinList.get(i).name
+            }
+        }
+        return name
+    }
+
+    function getFullName(coin) {
+        var name = ""
+        for(var i = 0; i < coinList.count; i++) {
+            if (coinList.get(i).coinID === coin) {
+                name = coinList.get(i).fullname
             }
         }
         return name
@@ -500,7 +540,9 @@ ApplicationWindow {
         id: coinList
         ListElement {
             name: ""
+            fullname: ""
             logo: ''
+            logoBig: ''
             coinValueBTC: 0
             fiatValue: 0
             percentage: 0
@@ -532,14 +574,25 @@ ApplicationWindow {
         }
     }
 
+    ListModel {
+        id: fiatCurrencies
+        ListElement {
+            currency: ""
+            ticker: ""
+            currencyNR: 0
+        }
+    }
+
     // Order of the pages
     StackView {
         id: mainRoot
-        initialItem: "../Onboarding.qml"
+        initialItem: "../main.qml"
         anchors.fill: parent
     }
 
     Component.onCompleted: {
+
+        mainRoot.push("../Onboarding.qml")
 
         profilePictures.setProperty(0, "photo", 'qrc:/icons/icon-profile_01.svg');
         profilePictures.setProperty(0, "pictureNR", pictureID);
@@ -551,7 +604,14 @@ ApplicationWindow {
         profilePictures.append({"photo": 'qrc:/icons/icon-profile_04.svg', "pictureNR": pictureID});
         pictureID = pictureID +1;
 
-        addOwnContact();
+        fiatCurrencies.setProperty(0, "currency", "USD");
+        fiatCurrencies.setProperty(0, "ticker", "$");
+        fiatCurrencies.setProperty(0, "currencyNR", currencyID);
+        currencyID = currencyID + 1
+        fiatCurrencies.append({"currency": "EUR", "ticker": "€", "currencyNR": currencyID});
+        currencyID = currencyID + 1
+        fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": currencyID});
+        currencyID = currencyID + 1
     }
 
     // Global components
@@ -560,18 +620,19 @@ ApplicationWindow {
     }
 
     Settings {
-        id: settings
+        id: userSettings
         property string locale: "en_us"
-        property bool onboardingCompleted: true
-        property string defaultCurrency: "USD"
-    }
+        property int defaultCurrency: 0
+        property string theme: "dark"
+        property bool pinlock: false
+        property string pincode: ""
 
-    Settings {
-        id: developerSettings
-        category: "developer"
-        property bool skipOnboarding: true
-        property bool skipLogin: true
-
+        //update settings
+        //onLocaleChanged:
+        //onDefaultCurrencyChanged:
+        //onThemeChanged:
+        //onPinlockChanged:
+        //onPincodeChanged:
     }
 
     // Global fonts

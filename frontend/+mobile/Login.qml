@@ -75,123 +75,167 @@ Item {
             anchors.bottom: parent.bottom
             width: parent.width
             height: parent.height - 50
-            radius: 5
             color: "#1B2934"
+            opacity: 0.25
 
-            Controls.TextInput {
-                id: userName
-                height: 34
-                placeholder: "USERNAME"
-                text: ""
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: loginModalBody.top
-                anchors.topMargin: 25
-                color: userName.text != "" ? "#F2F2F2" : "#727272"
-                textBackground: "#0B0B09"
-                font.pixelSize: 14
+            LinearGradient {
+                anchors.fill: parent
+                source: parent
+                start: Qt.point(x, y)
+                end: Qt.point(x, parent.height)
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 1.0; color: "#0ED8D2" }
+                }
             }
+        }
 
-            Text {
-                id: userNameError
-                text: "Username does not exist!"
-                color: "#FD2E2E"
-                anchors.left: userName.left
-                anchors.leftMargin: 5
-                anchors.top: userName.bottom
-                anchors.topMargin: 1
-                font.pixelSize: 11
-                font.family: "Brandon Grotesque"
-                font.weight: Font.Normal
-                visible: nameError == 1
-            }
+        Rectangle {
+            anchors.horizontalCenter: loginModalBody.horizontalCenter
+            anchors.bottom: loginModalBody.bottom
+            width: loginModalBody.width
+            height: loginModalBody.height
+            color: "transparent"
+            border.color: maincolor
+            border.width: 1
+            opacity: 0.50
+        }
 
-            Controls.TextInput {
-                id: passWord
-                height: 34
-                placeholder: "PASSWORD"
-                text: ""
-                echoMode: TextInput.Password
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: userName.bottom
-                anchors.topMargin: 30
-                color: passWord.text != "" ? "#F2F2F2" : "#727272"
-                textBackground: "#0B0B09"
-                font.pixelSize: 14
-            }
+        Controls.TextInput {
+            id: userName
+            height: 34
+            placeholder: "USERNAME"
+            text: ""
+            anchors.horizontalCenter: loginModalBody.horizontalCenter
+            anchors.top: loginModalBody.top
+            anchors.topMargin: 25
+            color: userName.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: "#0B0B09"
+            mobile: 1
+            font.pixelSize: 14
+        }
 
-            Text {
-                id: passWordError
-                text: "Password is not correct!"
-                color: "#FD2E2E"
-                anchors.left: passWord.left
-                anchors.leftMargin: 5
-                anchors.top: passWord.bottom
-                anchors.topMargin: 1
-                font.pixelSize: 11
-                font.family: "Brandon Grotesque"
-                font.weight: Font.Normal
-                visible: passError == 1
-            }
+        Text {
+            id: userNameError
+            text: "Username does not exist!"
+            color: "#FD2E2E"
+            anchors.left: userName.left
+            anchors.leftMargin: 5
+            anchors.top: userName.bottom
+            anchors.topMargin: 1
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Normal
+            visible: nameError == 1
+        }
 
-            Rectangle {
-                id: logInButton
-                width: userName.width
-                height: 33
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
-                anchors.left: userName.left
-                radius: 5
-                color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
+        Controls.TextInput {
+            id: passWord
+            height: 34
+            placeholder: "PASSWORD"
+            text: ""
+            echoMode: TextInput.Password
+            anchors.horizontalCenter: loginModalBody.horizontalCenter
+            anchors.top: userName.bottom
+            anchors.topMargin: 30
+            color: passWord.text != "" ? "#F2F2F2" : "#727272"
+            textBackground: "#0B0B09"
+            mobile: 1
+            font.pixelSize: 14
+            font.letterSpacing: 2
+        }
 
-                MouseArea {
-                    anchors.fill: parent
+        Text {
+            id: passWordError
+            text: "Username & Password combination is not correct!"
+            color: "#FD2E2E"
+            anchors.left: passWord.left
+            anchors.leftMargin: 5
+            anchors.top: passWord.bottom
+            anchors.topMargin: 1
+            font.pixelSize: 11
+            font.family: "Brandon Grotesque"
+            font.weight: Font.Normal
+            visible: passError == 1 && networkError == 0
+        }
 
-                    onPressed: {
-                        click01.play()
-                    }
+        Rectangle {
+            id: logInButton
+            width: userName.width
+            height: 34
+            anchors.bottom: loginModalBody.bottom
+            anchors.bottomMargin: 20
+            anchors.left: userName.left
+            color: (userName.text != "" && passWord.text != "") ? "#1B2934" : "#727272"
+            opacity: 0.50
 
-                    onReleased: {
-                        if (userName.text != "" && passWord.text != "") {
-                            // function to add check if username exists
-                            // if username does not exist return nameError = 1
-                            // if username exists return nameError = 0, check password
-                            // if password is wrong return passError = 1
-                            // if password is correct return passError = 0 and proceed with login
-                            userLogin(userName.text, passWord.text)
+            MouseArea {
+                anchors.fill: parent
 
-                        }
-                    }
+                onPressed: {
+                    click01.play()
                 }
 
-                Connections {
-                    target: UserSettings
-                    onLoginSucceededChanged: {
+                onReleased: {
+                    if (userName.text != "" && passWord.text != "" && networkError == 0) {
+                        //userLogin(userName.text, passWord.text)
+                        username = userName.text
                         mainRoot.pop()
                         mainRoot.push("../Home.qml")
+                        passError = 0
+                        networkError = 0
                         loginTracker = 0
                         selectedPage = "home"
                     }
-
-                    onLoginFailedChanged: {
-                        passError = 1
-                    }
-
-                    onSettingsServerError: {
-                        loginError = 1
-                    }
-                }
-
-                Text {
-                    id: logInButtonText
-                    text: "LOG IN"
-                    font.family: "Brandon Grotesque"
-                    font.pointSize: 14
-                    color: (userName.text != "" && passWord.text != "") ? "#F2F2F2" : "#979797"
-                    font.bold: true
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
+
+            Connections {
+                target: UserSettings
+                onLoginSucceededChanged: {
+                    username = userName.text
+                    mainRoot.pop()
+                    mainRoot.push("../Home.qml")
+                    passError = 0
+                    networkError = 0
+                    loginTracker = 0
+                    selectedPage = "home"
+                }
+
+                onLoginFailedChanged: {
+                    if(networkError == 0){
+                        passError = 1
+                        passWord.text = ""
+                    }
+                }
+
+                onSettingsServerError: {
+                    networkError = 1
+                    passWord.text = ""
+                }
+            }
+        }
+
+        Text {
+            id: logInButtonText
+            text: "LOG IN"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            color: (userName.text != "" && passWord.text != "") ? "#F2F2F2" : "#979797"
+            font.bold: true
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+        }
+
+        Rectangle {
+            width: userName.width
+            height: 34
+            anchors.bottom: loginModalBody.bottom
+            anchors.bottomMargin: 20
+            anchors.left: userName.left
+            color: "transparent"
+            border.color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
+            opacity: 0.50
         }
 
         Label {
@@ -217,14 +261,14 @@ Item {
 
             Rectangle {
                 id: createAccountButton
-                width: parent.width
+                width: createAccount.width
                 height: 30
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: createAccount.horizontalCenter
+                anchors.verticalCenter: createAccount.verticalCenter
                 color: "transparent"
 
                 MouseArea {
-                    anchors.fill: parent
+                    anchors.fill: createAccountButton
 
                     onClicked: {
                         mainRoot.pop()
@@ -243,6 +287,112 @@ Item {
             anchors.top: createAccount.bottom
             anchors.topMargin: 5
             color: "#F2F2F2"
+        }
+    }
+
+    Rectangle {
+        id: serverError
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.top
+        width: Screen.width
+        height: 100
+        state: networkError == 0? "up" : "down"
+        color: "black"
+        opacity: 0.9
+
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: serverError; anchors.bottomMargin: 0}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: serverError; anchors.bottomMargin: -100}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
+            }
+        ]
+
+        Label {
+            id: serverErrorText
+            text: "A network error occured, please try again later."
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            color: "#FD2E2E"
+            font.pixelSize: 18
+            font.family: xciteMobile.name
+        }
+
+        Rectangle {
+            id: okButton
+            width: (doubbleButtonWidth - 10) / 2
+            height: 33
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            radius: 5
+            color: "#1B2934"
+            opacity: 0.5
+
+            LinearGradient {
+                anchors.fill: parent
+                source: parent
+                start: Qt.point(x, y)
+                end: Qt.point(x, parent.height)
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 1.0; color: "#0ED8D2" }
+                }
+            }
+
+
+            MouseArea {
+                anchors.fill: parent
+
+                onReleased: {
+                    networkError = 0
+                    passError = 0
+                }
+            }
+        }
+
+        Text {
+            id: okButtonText
+            text: "OK"
+            font.family: xciteMobile.name
+            font.pointSize: 14
+            color: "#F2F2F2"
+            font.bold: true
+            anchors.horizontalCenter: okButton.horizontalCenter
+            anchors.verticalCenter: okButton.verticalCenter
+        }
+
+        Rectangle {
+            width: (doubbleButtonWidth - 10) / 2
+            height: 33
+            anchors.horizontalCenter: okButton.horizontalCenter
+            anchors.bottom: okButton.bottom
+            radius: 5
+            color: "transparent"
+            opacity: 0.5
+            border.width: 1
+            border.color: "#0ED8D2"
+        }
+
+        Rectangle {
+            width: parent.width
+            height: 1
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            color: "black"
         }
     }
 }

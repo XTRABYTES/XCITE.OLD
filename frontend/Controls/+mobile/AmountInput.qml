@@ -23,6 +23,7 @@ TextField {
     property int deleteBtn: 1
     property alias textBackground: inputBackground.color
     property int textboxHeight: textInputComponent.height
+    property int calculator : 1
 
     id: textInputComponent
     color: "white"
@@ -38,7 +39,6 @@ TextField {
     background: Rectangle {
         id: inputBackground
         color: "#34363D"
-        radius: 4
         border.width: parent.activeFocus ? 2 : 0
         border.color: "#34363D"
         implicitWidth: 273
@@ -82,7 +82,7 @@ TextField {
         ColorOverlay {
             anchors.fill: parent
             source: parent
-            color: "#F2F2F2"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
         }
 
         MouseArea {
@@ -104,11 +104,12 @@ TextField {
         anchors.left: textInputComponent.left
         anchors.leftMargin: 11
         anchors.verticalCenter: textInputComponent.verticalCenter
+        visible: calculator == 1
 
         ColorOverlay {
             anchors.fill: parent
             source: parent
-            color: "#F2F2F2"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
         }
 
         MouseArea {

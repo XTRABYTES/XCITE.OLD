@@ -80,7 +80,7 @@ Rectangle {
             anchors.verticalCenterOffset: 27
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
-            color: "#F2F2F2"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
             font.letterSpacing: 2
         }
     }
@@ -88,12 +88,25 @@ Rectangle {
     Rectangle {
         id: createWalletBodyModal
         width: parent.width
-        height: createWalletModal.height - 50
+        height: parent.height - 50
         radius: 4
-        color: darktheme == false? "#F7F7F7" : "#1B2934"
+        color: darktheme == false? "#F7F7F7" : "#14161B"
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
+
+        LinearGradient {
+                anchors.fill: parent
+                source: parent
+                start: Qt.point(0, 0)
+                end: Qt.point(0, parent.height)
+                opacity: darktheme == false? 0.05 : 0.2
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: darktheme == false?"#00072778" : "#FF162124" }
+                    GradientStop { position: 1.0; color: darktheme == false?"#FF072778" : "#00162124" }
+                }
+        }
+
 
         Text {
             id: createWalletText
@@ -483,7 +496,7 @@ Rectangle {
         anchors.horizontalCenter: createWalletBodyModal.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
         visible: editSaved == 0
                  && createWallet == 0
                  && scanQRTracker == 0
