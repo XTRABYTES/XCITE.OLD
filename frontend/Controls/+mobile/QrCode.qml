@@ -6,12 +6,12 @@ import QtQuick.Controls 2.3
 Item {
 
     Rectangle {
-        id: background
+        id: qrModal
         width: parent.width
         height: parent.height
-        color: darktheme == false? "white" : "black"
-        opacity: 0.95
-        anchors.horizontalCenter: Screen.horizontalCenter
+        color: darktheme == false? "#FDFDFD" : "#14161B"
+        radius: 4
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
 
         MouseArea {
@@ -19,22 +19,11 @@ Item {
         }
     }
 
-    Rectangle {
-        id: qrModal
-        width: 325
-        height: 340
-        color: darktheme == false? "#F7F7F7" : "#1B2934"
-        radius: 4
-        anchors.horizontalCenter: background.horizontalCenter
-        anchors.top: background.top
-        anchors.topMargin: 10
-    }
-
     Text {
         text:  addressList.get(addressIndex).coin + " (" + addressList.get(addressIndex).label + ")"
         anchors.top: qrModal.top
         anchors.topMargin: 10
-        anchors.horizontalCenter: background.horizontalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
         color: darktheme == false? "#2A2C31" : "#F2F2F2"
         font.family: xciteMobile.name
         font.bold: true
@@ -44,10 +33,10 @@ Item {
 
     Rectangle {
         id: qrBorder
-        radius: 8
+        radius: 4
         width: 210
         height: 210
-        anchors.horizontalCenter: background.horizontalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: qrModal.top
         anchors.topMargin: 47.5
         color: "#FFFFFF"
@@ -72,7 +61,7 @@ Item {
         text: "PUBLIC KEY"
         anchors.top: qrBorder.bottom
         anchors.topMargin: 15
-        anchors.horizontalCenter: background.horizontalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
         color: darktheme == false? "#2A2C31" : "#F2F2F2"
         font.family: xciteMobile.name
         font.bold: true

@@ -40,7 +40,7 @@ TextField {
                    "#2A2C31"
                else
                    "#34363D"
-        radius: 4
+        radius: mobile == 0? 4 : 0
         border.width: parent.activeFocus ? 2 : 0
         border.color: if(mobile == 0)
                           Theme.secondaryHighlight
@@ -88,7 +88,7 @@ TextField {
         ColorOverlay {
             anchors.fill: parent
             source: parent
-            color: "#F2F2F2"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
         }
 
         MouseArea {

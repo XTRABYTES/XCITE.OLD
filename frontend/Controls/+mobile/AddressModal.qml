@@ -21,9 +21,9 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addressModal
-    width: 325
+    width: Screen.width
     state: addressTracker == 0 ? "down" : "up"
-    height: (editSaved == 1 || deleteAddressTracker == 1 || deleteConfirmed == 1)? 360 : myAddress == 1? 300 : 320
+    height: Screen.height
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -33,7 +33,7 @@ Rectangle {
     states: [
         State {
             name: "up"
-            PropertyChanges { target: addressModal; anchors.topMargin: 50}
+            PropertyChanges { target: addressModal; anchors.topMargin: 0}
         },
         State {
             name: "down"
@@ -45,7 +45,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addressModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: addressModal; property: "anchors.topMargin"; duration: 400; easing.type: Easing.OutCubic}
         }
     ]
 
@@ -56,6 +56,7 @@ Rectangle {
     property string coinName: addressList.get(addressIndex).coin
     property string addressHash: addressList.get(addressIndex).address
     property string addressName: addressList.get(addressIndex).label
+    property int contact: addressList.get(addressIndex).contact
     property int deleteAddressTracker: 0
     property int editSaved: 0
     property int deleteConfirmed: 0
@@ -79,7 +80,7 @@ Rectangle {
             if (newAddress.text != "") {
                 if (newCoinName.text == "XBY") {
                     if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
-                    doubleAddress = 1
+                        doubleAddress = 1
                     }
                 }
                 else {
@@ -91,7 +92,7 @@ Rectangle {
             else {
                 if (newCoinName.text == "XBY") {
                     if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
-                    doubleAddress = 1
+                        doubleAddress = 1
                     }
                 }
                 else {
@@ -109,24 +110,24 @@ Rectangle {
             if (addressList.get(i).contact === contactIndex) {
                 if (newName.text != "") {
                     if (newCoinName.text == "XBY") {
-                        if (addressList.get(i).coin === "XBY" && addressList.get(i).label === newName.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
-                        labelExists = 1
+                        if (addressList.get(i).coin === "XBY" && addressList.get(i).label === newName.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
+                            labelExists = 1
                         }
                     }
                     else {
-                        if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === newName.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                        if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === newName.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                             labelExists = 1
                         }
                     }
                 }
                 else {
                     if (newCoinName.text == "XBY") {
-                        if (addressList.get(i).coin === "XBY" && addressList.get(i).label === newName.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
-                        labelExists = 1
+                        if (addressList.get(i).coin === "XBY" && addressList.get(i).label === newName.placeholder && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
+                            labelExists = 1
                         }
                     }
                     else {
-                        if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === newName.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                        if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === newName.placeholder && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                             labelExists = 1
                         }
                     }
@@ -175,39 +176,42 @@ Rectangle {
         }
     }
 
-    Rectangle {
-        id: addressTitleBar
-        width: parent.width
-        height: 50
-        radius: 4
+    Text {
+        id: addressModalLabel
+        text: "EDIT ADDRESS"
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.left: parent.left
-        color: "transparent"
-        visible: editSaved == 0
-                 && deleteAddressTracker == 0
+        anchors.topMargin: 10
+        font.pixelSize: 20
+        font.family: xciteMobile.name
+        font.letterSpacing: 2
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        elide: Text.ElideRight
+    }
 
-        Image {
-            id: titleIcon
-            width: 25
-            height: 25
-            source: addressList.get(addressIndex).logo
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 15
-        }
+    Flickable {
+        id: scrollArea
+        width: parent.width
+        contentHeight: (editSaved == 0 && deleteAddressTracker == 0)? addressScrollArea.height + 125 : scrollArea.height + 125
+        anchors.left: parent.left
+        anchors.top: addressModalLabel.bottom
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        boundsBehavior: Flickable.StopAtBounds
+        clip: true
 
         Text {
-            id: addressModalLabel
+            id: addressNameLabel
             text: addressName + " (" + contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName + ")"
-            anchors.left: titleIcon.right
-            anchors.leftMargin: 7
+            anchors.left: parent.left
+            anchors.leftMargin: 28
             anchors.right: favoriteAddressIcon.left
             anchors.rightMargin: 7
-            anchors.verticalCenter: titleIcon.verticalCenter
-            anchors.verticalCenterOffset: -1
+            anchors.top: parent.top
             font.pixelSize: 20
             font.family: xciteMobile.name
-            color: "#F2F2F2"
+            font.letterSpacing: 2
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
             elide: Text.ElideRight
 
             onTextChanged: {checkMyAddress()}
@@ -218,15 +222,15 @@ Rectangle {
             source: 'qrc:/icons/icon-favorite.svg'
             width: 25
             height: 25
-            anchors.verticalCenter: titleIcon.verticalCenter
+            anchors.verticalCenter: addressNameLabel.verticalCenter
             anchors.right: parent.right
-            anchors.rightMargin: 15
+            anchors.rightMargin: 28
             visible: editSaved == 0
 
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: addressList.get(addressIndex).favorite === 1 ? "#FDBC40" : (darktheme == false? "#2A2C31" : "#42454F")
+                color: addressList.get(addressIndex).favorite === 1 ? "#FDBC40" : "#979797"
             }
 
             MouseArea {
@@ -241,26 +245,24 @@ Rectangle {
                 }
             }
         }
-    }
 
-    Rectangle {
-        id: addressBodyModal
-        width: parent.width
-        height: parent.height - 50
-        radius: 4
-        color: darktheme == false? "#F7F7F7" : "#1B2934"
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
+        Rectangle {
+            id: addressScrollArea
+            width: parent.width
+            anchors.top: parent.top
+            anchors.bottom: deleteAddress.bottom
+            color: "transparent"
+        }
+
 
         Image {
             id: newIcon
             source: getLogo(newCoinName.text)
-            height: 25
-            width: 25
+            height: 30
+            width: 30
             anchors.left: newName.left
             anchors.top: parent.top
-            anchors.topMargin: 20
+            anchors.topMargin: 50
             visible: coinListTracker == 0
                      && editSaved == 0
                      && deleteAddressTracker == 0
@@ -272,10 +274,11 @@ Rectangle {
             anchors.left: newIcon.right
             anchors.leftMargin: 7
             anchors.verticalCenter: newIcon.verticalCenter
-            font.pixelSize: 18
+            font.pixelSize: 24
             font.family: xciteMobile.name
+            font.letterSpacing: 2
             font.bold: true
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: coinListTracker == 0
                      && editSaved == 0
                      && deleteAddressTracker == 0
@@ -293,13 +296,13 @@ Rectangle {
             id: saveEditButton
             width: newName.width
             height: 34
-            radius: 5
             color: (doubleAddress == 0
                     && labelExists == 0
                     && invalidAddress == 0
-                    && myAddress == 0) ? maincolor : (darktheme == false? "#727272" : "#14161B")
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
+                    && myAddress == 0) ? maincolor : "#727272"
+            opacity: 0.25
+            anchors.top: scanQrButton.bottom
+            anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
                      && deleteAddressTracker == 0
@@ -307,7 +310,18 @@ Rectangle {
             MouseArea {
                 anchors.fill: saveEditButton
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    parent.opacity = 0.5
+                    click01.play()
+                }
+
+                onReleased: {
+                    parent.opacity = 0.25
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
 
                 onClicked: {
                     if (doubleAddress == 0
@@ -329,19 +343,38 @@ Rectangle {
                     }
                 }
             }
+        }
 
-            Text {
-                text: "SAVE"
-                font.family: xciteMobile.name
-                font.pointSize: 14
-                font.bold: true
-                color: (doubleAddress == 0
-                        && labelExists == 0
-                        && invalidAddress == 0
-                        && myAddress == 0) ? "#F2F2F2" : (darktheme == false? "#979797" : "#3F3F3F")
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        Text {
+            text: "SAVE"
+            font.family: xciteMobile.name
+            font.pointSize: 14
+            font.bold: true
+            color: (doubleAddress == 0
+                    && labelExists == 0
+                    && invalidAddress == 0
+                    && myAddress == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+            anchors.horizontalCenter: saveEditButton.horizontalCenter
+            anchors.verticalCenter: saveEditButton.verticalCenter
+            visible: editSaved == 0
+                     && deleteAddressTracker == 0
+        }
+
+        Rectangle {
+            width: newName.width
+            height: 34
+            color: "transparent"
+            border.color: (doubleAddress == 0
+                           && labelExists == 0
+                           && invalidAddress == 0
+                           && myAddress == 0) ? maincolor : "#727272"
+            border.width: 1
+            opacity: 0.25
+            anchors.top: scanQrButton.bottom
+            anchors.topMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: editSaved == 0
+                     && deleteAddressTracker == 0
         }
 
         Image {
@@ -356,11 +389,12 @@ Rectangle {
                      && coinListTracker == 0
                      && deleteAddressTracker == 0
                      && myAddress == 0
+                     && contact != 0
 
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
             Rectangle {
@@ -390,17 +424,18 @@ Rectangle {
             source: 'qrc:/icons/trashcan_big.svg'
             height: 26
             width: 18
-            anchors.right: parent.right
-            anchors.rightMargin: 40
-            anchors.verticalCenter: picklistArrow1.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: saveEditButton.bottom
+            anchors.topMargin: 40
             visible: editSaved == 0
                      && deleteAddressTracker == 0
                      && myAddress == 0
+                     && contact != 0
 
             ColorOverlay {
                 anchors.fill: parent
                 source: parent
-                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
             Rectangle {
@@ -415,7 +450,9 @@ Rectangle {
             MouseArea {
                 anchors.fill: deleteButton
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    click01.play()
+                }
 
                 onClicked: {
                     deleteAddressTracker = 1
@@ -428,16 +465,19 @@ Rectangle {
             text: ""
             height: 34
             placeholder: addressName
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+            anchors.right: parent.right
+            anchors.rightMargin: 28
             anchors.top: newIcon.bottom
-            anchors.topMargin: 15
-            color: myAddress == 0 ? (newName.text == "" ? "#727272" : "#F2F2F2") : "#F2F2F2"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            anchors.topMargin: 25
+            color: newName.text != "" ? themecolor : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
+            readOnly: contact == 0
             visible: editSaved == 0
                      && deleteAddressTracker == 0
             mobile: 1
-            readOnly: myAddress == 1
             onTextChanged: compareName()
         }
 
@@ -460,17 +500,18 @@ Rectangle {
             id: newAddress
             text: ""
             height: 34
+            width: newName.width
             placeholder: addressHash
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
-            color: myAddress == 0 ? (newAddress.text == "" ? "#727272" : "#F2F2F2") : "#F2F2F2"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            color: newAddress.text != "" ? themecolor : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
+            readOnly: contact == 0
             visible: editSaved == 0
                      && deleteAddressTracker == 0
             mobile: 1
-            readOnly: myAddress == 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
                 checkAddress()
@@ -525,13 +566,12 @@ Rectangle {
         Rectangle {
             id: scanQrButton
             width: newAddress.width
-            height: 33
+            height: 34
             anchors.top: newAddress.bottom
             anchors.topMargin: 15
             anchors.left: newAddress.left
-            radius: 5
             border.color: maincolor
-            border.width: 2
+            border.width: 1
             color: "transparent"
             visible: editSaved == 0
                      && deleteAddressTracker == 0
@@ -541,16 +581,19 @@ Rectangle {
                 anchors.fill: scanQrButton
 
                 onPressed: {
-                    scanQrButton.color = maincolor
-                    scanQrButton.border.color = "transparent"
-                    scanQrButtonText.color = "#F2F2F2"
                     click01.play()
+                    border.color = darktheme == true? "#F2F2F2" : "#2A2C31"
                 }
 
                 onReleased: {
-                    scanQrButton.color = "transparent"
-                    scanQrButton.border.color = maincolor
-                    scanQrButtonText.color = maincolor
+                    border.color = maincolor
+                }
+
+                onCanceled: {
+                    border.color = maincolor
+                }
+
+                onClicked: {
                     scanQRTracker = 1
                     scanning = "scanning..."
                 }
@@ -633,14 +676,24 @@ Rectangle {
 
         // Edit saved state
 
+        Rectangle {
+            id: saveConfirmed
+            width: parent.width
+            height: saveSuccess.height + saveSuccessLabel.height + closeSaveEdit.height + 60
+            color: "transparent"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -125
+            visible: editSaved == 1
+        }
+
         Image {
             id: saveSuccess
             source: 'qrc:/icons/icon-success.svg'
             height: 100
             width: 100
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -15
+            anchors.top: saveConfirmed.top
             visible: editSaved == 1
 
             ColorOverlay {
@@ -656,7 +709,7 @@ Rectangle {
             anchors.top: saveSuccess.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: maincolor
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
             font.pixelSize: 14
             font.family: xciteMobile.name
             font.bold: true
@@ -665,14 +718,12 @@ Rectangle {
 
         Rectangle {
             id: closeSaveEdit
-            width: (parent.width - 45) / 2
-            height: 33
-            radius: 5
-            color: "transparent"
-            border.color: maincolor
-            border.width: 2
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: maincolor
+            opacity: 0.25
+            anchors.top: saveSuccessLabel.bottom
+            anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 1
 
@@ -702,30 +753,47 @@ Rectangle {
                 }
 
                 onPressed: {
-                    closeSaveEdit.color = maincolor
+                    parent.opacity = 0.5
                     click01.play()
                 }
 
                 onCanceled: {
-                    closeSaveEdit.color = "transparent"
+                    parent.opacity = 0.25
                 }
 
                 onReleased: {
-                   closeSaveEdit.color = "transparent"
-                   addressTracker = 0;
-                   timerSave.start()
+                    parent.opacity = 0.25
+
+                }
+
+                onClicked: {
+                    addressTracker = 0;
+                    timerSave.start()
                 }
             }
+        }
 
-            Text {
-                text: "OK"
-                font.family: xciteMobile.name
-                font.pointSize: 14
-                font.bold: true
-                color: "#F2F2F2"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        Text {
+            text: "OK"
+            font.family: xciteMobile.name
+            font.pointSize: 14
+            font.bold: true
+            color: darktheme == true? "#F2F2F2" : maincolor
+            anchors.horizontalCenter: closeSaveEdit.horizontalCenter
+            anchors.verticalCenter: closeSaveEdit.verticalCenter
+            visible: editSaved == 1
+        }
+
+        Rectangle {
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: "transparent"
+            opacity: 0.5
+            border.color: maincolor
+            border.width: 1
+            anchors.bottom: closeSaveEdit.bottom
+            anchors.horizontalCenter: closeSaveEdit.horizontalCenter
+            visible: editSaved == 1
         }
 
         // Delete confirm state
@@ -733,8 +801,9 @@ Rectangle {
         Rectangle {
             id: deleteConfirmation
             width: parent.width
-            height: parent.height
+            height: deleteText.height + deleteAddressName.height + deleteAddressHash.height + confirmationDeleteButton.height + 64
             anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -125
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: deleteAddressTracker == 1
@@ -744,11 +813,10 @@ Rectangle {
                 id: deleteText
                 text: "You are about to delete:"
                 anchors.top: parent.top
-                anchors.topMargin: 60
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
             Text {
@@ -760,7 +828,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pixelSize: 16
                 font.bold: true
-                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
             Text {
@@ -771,79 +839,136 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.family: xciteMobile.name
                 font.pixelSize: 16
-                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
             Rectangle {
                 id: confirmationDeleteButton
                 width: (doubbleButtonWidth - 10) / 2
-                height: 33
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
+                height: 34
+                anchors.top: deleteAddressHash.bottom
+                anchors.topMargin: 50
                 anchors.right: parent.horizontalCenter
                 anchors.rightMargin: 5
-                radius: 5
                 color: "#4BBE2E"
+                opacity: 0.25
 
                 MouseArea {
                     anchors.fill: parent
 
-                    onPressed: { click01.play() }
+                    onPressed: {
+                        parent.opacity = 0.5
+                        click01.play()
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 0.25
+                    }
 
                     onReleased: {
+                        parent.opacity = 0.25
+                    }
+
+                    onClicked: {
                         deleteConfirmed = 1
                         addressList.setProperty(addressIndex, "remove", true)
-                        doubbleAddress = 0
+                        doubleAddress = 0
                         labelExists = 0
                         invalidAddress = 0
                     }
                 }
+            }
 
-                Text {
-                    text: "CONFIRM"
-                    font.family: xciteMobile.name
-                    font.pointSize: 14
-                    color: "#F2F2F2"
-                    font.bold: true
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                }
+            Text {
+                text: "CONFIRM"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                color: "#4BBE2E"
+                font.bold: true
+                anchors.horizontalCenter: confirmationDeleteButton.horizontalCenter
+                anchors.verticalCenter: confirmationDeleteButton.verticalCenter
+            }
+
+            Rectangle {
+                width: (doubbleButtonWidth - 10) / 2
+                height: 34
+                anchors.top: deleteAddressHash.bottom
+                anchors.topMargin: 50
+                anchors.right: parent.horizontalCenter
+                anchors.rightMargin: 5
+                color: "transparent"
+                border.color: "#4BBE2E"
+                border.width: 1
             }
 
             Rectangle {
                 id: cancelDeleteButton
                 width: (doubbleButtonWidth - 10) / 2
-                height: 33
-                radius: 5
-                color: "#E55541"
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
+                height: 34
+                anchors.top: deleteAddressHash.bottom
+                anchors.topMargin: 50
                 anchors.left: parent.horizontalCenter
                 anchors.leftMargin: 5
+                color: "#E55541"
+                opacity: 0.25
 
                 MouseArea {
                     anchors.fill: parent
 
-                    onPressed: { click01.play() }
+                    onPressed: {
+                        click01.play()
+                        parent.opacity = 0.5
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 0.25
+                    }
 
                     onReleased: {
+                        parent.opacity = 0.25
+                    }
+
+                    onClicked: {
                         deleteAddressTracker = 0
                     }
                 }
+            }
 
-                Text {
-                    text: "CANCEL"
-                    font.family: xciteMobile.name
-                    font.pointSize: 14
-                    font.bold: true
-                    color: "#F2F2F2"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                }
+            Text {
+                text: "CANCEL"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                font.bold: true
+                color: "#E55541"
+                anchors.horizontalCenter: cancelDeleteButton.horizontalCenter
+                anchors.verticalCenter: cancelDeleteButton.verticalCenter
+            }
+
+            Rectangle {
+                width: (doubbleButtonWidth - 10) / 2
+                height: 34
+                anchors.top: deleteAddressHash.bottom
+                anchors.topMargin: 50
+                anchors.left: parent.horizontalCenter
+                anchors.leftMargin: 5
+                color: "transparent"
+                border.color: "#E55541"
+                border.width: 1
             }
         }
 
         // Delete success state
+
+        Rectangle {
+            id: deleted
+            width: parent.width
+            height: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 60
+            color: "transparent"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -125
+            visible: deleteConfirmed == 1
+        }
 
         Image {
             id: deleteSuccess
@@ -851,8 +976,7 @@ Rectangle {
             height: 100
             width: 100
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -15
+            anchors.top: deleted.top
             visible: deleteConfirmed == 1
 
             ColorOverlay {
@@ -868,7 +992,7 @@ Rectangle {
             anchors.top: deleteSuccess.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: deleteSuccess.horizontalCenter
-            color: maincolor
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
             font.pixelSize: 14
             font.family: xciteMobile.name
             font.bold: true
@@ -877,14 +1001,12 @@ Rectangle {
 
         Rectangle {
             id: closeDelete
-            width: (parent.width - 45) / 2
-            height: 33
-            radius: 5
-            color: "transparent"
-            border.color: maincolor
-            border.width: 2
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: maincolor
+            opacity: 0.25
+            anchors.top: deleteSuccessLabel.bottom
+            anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: deleteConfirmed == 1
 
@@ -914,49 +1036,84 @@ Rectangle {
                 }
 
                 onPressed: {
-                    closeDelete.color = maincolor
+                    closeDelete.opacity = 0.5
                     click01.play()
                 }
 
                 onCanceled: {
-                    closeDelete.color = "transparent"
+                    closeDelete.opacity = 0.25
                 }
 
                 onReleased: {
-                   closeDelete.color = "transparent"
-                   addressTracker = 0;
-                   timerDelete.start()
+                    closeDelete.opacity = 0.25
+                }
+
+                onClicked: {
+                    addressTracker = 0;
+                    timerDelete.start()
                 }
             }
+        }
 
-            Text {
-                text: "OK"
-                font.family: xciteMobile.name
-                font.pointSize: 14
-                font.bold: true
-                color: "#F2F2F2"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+        Text {
+            text: "OK"
+            font.family: xciteMobile.name
+            font.pointSize: 14
+            font.bold: true
+            color: darktheme == true? "#F2F2F2" : maincolor
+            anchors.horizontalCenter: closeDelete.horizontalCenter
+            anchors.verticalCenter: closeDelete.verticalCenter
+            visible: deleteConfirmed == 1
+        }
+
+        Rectangle {
+            width: doubbleButtonWidth / 2
+            height: 34
+            anchors.bottom: closeDelete.bottom
+            anchors.horizontalCenter: closeDelete.horizontalCenter
+            color: "transparent"
+            border.color: maincolor
+            border.width: 1
+            opacity: 0.5
+            visible: deleteConfirmed == 1
+        }
+    }
+
+    Item {
+        z: 3
+        width: Screen.width
+        height: 125
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(x, y)
+            end: Qt.point(x, y + height)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
             }
         }
     }
+
     Label {
         id: closeAddressModal
         z: 10
-        text: "CLOSE"
-        anchors.top: addressBodyModal.bottom
-        anchors.topMargin: 20
-        anchors.horizontalCenter: addressBodyModal.horizontalCenter
+        text: "BACK"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
-        visible: editSaved == 0
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: editSaved == 0 && deleteAddressTracker == 0
 
         Rectangle{
             id: closeButton
             height: 34
-            width: darktheme == false? closeAddressModal.width : doubbleButtonWidth
-            radius: 4
+            width: doubbleButtonWidth / 2
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
@@ -989,12 +1146,10 @@ Rectangle {
             }
 
             onPressed: {
-                parent.anchors.topMargin = 14
                 click01.play()
             }
 
             onReleased: {
-                parent.anchors.topMargin = 10
                 addressTracker = 0;
                 timer.start()
             }

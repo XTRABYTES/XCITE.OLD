@@ -77,6 +77,7 @@ bool Settings::UserExists(QString username){
         return true;
     }
     db.close();
+    emit usernameAvailable();
     return false;
 }
 
@@ -158,7 +159,7 @@ QString Settings::LoadSettings(QString username, QString password){
 QSqlDatabase Settings::OpenDBConnection(){
     // Development database in use
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("<CHANGE TO YOUR ABSOLUTE PROJECT FOLDER>/dev-db/xtrabytes");
+    db.setDatabaseName("C:/Users/Joeri/Desktop/XCITE/XCITE_NEW/XCITE/dev-db/xtrabytes");
 
     // Release database to be used
     //QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");

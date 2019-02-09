@@ -20,28 +20,28 @@ import "qrc:/Controls" as Controls
 
 Item {
     id: calculatorModal
-    width: 325
-    height: 560
-    anchors.horizontalCenter: Screen.horizontalCenter
-    anchors.verticalCenter: Screen.verticalCenter
-
-    Rectangle {
-        id: background
-        width: Screen.width
-        height: Screen.height
-        color: "black"
-        opacity: 0.8
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-    }
+    width: Screen.width
+    height: Screen.height
 
     Rectangle {
         width: parent.width
         height: parent.height
-        radius: darktheme == false? 5 : 0
-        anchors.verticalCenter: parent.verticalCenter
+        color: darktheme == false? "#F7F7F7" : "#14161B"
+        anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-        color: darktheme == false? "#F7F7F7" : "#1B2934"
+
+        LinearGradient {
+                anchors.fill: parent
+                source: parent
+                start: Qt.point(0, 0)
+                end: Qt.point(0, parent.height)
+                opacity: darktheme == false? 0.05 : 0.2
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: darktheme == false?"#00072778" : "#FF162124" }
+                    GradientStop { position: 1.0; color: darktheme == false?"#FF072778" : "#00162124" }
+                }
+        }
+
     }
 
     property int xbyButton1State: 0
@@ -173,24 +173,23 @@ Item {
         id: calculatorModalLabel
         text: "CONVERTER"
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.top
-        anchors.verticalCenterOffset: 25
-        font.pixelSize: 18
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        font.pixelSize: 20
         font.family: xciteMobile.name
-        color: "#F2F2F2"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
     }
 
     Controls.TextInput {
         id: inputAmount
         height: 34
-        width: 205
         placeholder: "0"
-        anchors.left: parent.left
-        anchors.leftMargin: 25
+        anchors.left: confirmationSendButton.left
+        anchors.right: btcButton1.right
         anchors.top: calculatorModalLabel.bottom
         anchors.topMargin: 25
         color: "#0ED8D2"
-        textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+        textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
         font.pixelSize: 14
         font.bold: true
         horizontalAlignment: TextInput.AlignRight
@@ -201,14 +200,13 @@ Item {
 
     Label {
         id: inputAmountTicker
-        text: fromCurrency == "FIAT"? settings.defaultCurrency : fromCurrency
+        text: fromCurrency == "FIAT"? fiatCurrencies.get(userSettings.defaultCurrency).currency : fromCurrency
         rightPadding: 0
         font.family: xciteMobile.name
         font.pointSize: 20
         font.bold: true
         color: darktheme == false? "#2A2C31" : "#F2F2F2"
-        anchors.right: parent.right
-        anchors.rightMargin: 25
+        anchors.right: usdButton1.right
         anchors.verticalCenter: inputAmount.verticalCenter
         anchors.verticalCenterOffset: -1
     }
@@ -245,16 +243,14 @@ Item {
 
     Rectangle {
         id: xbyButton1
-        height: 33
-        width: 65
-        radius: 5
+        height: 34
+        width: (Screen.width - 71) / 4
         anchors.top: outputAmountTicker.bottom
         anchors.topMargin: 25
-        anchors.left: parent.left
-        anchors.leftMargin: 25
+        anchors.left: inputAmount.left
         color: xbyButton1State == 1 ? maincolor : "transparent"
         border.color: xbyButton1State == 0 ? maincolor : "transparent"
-        border.width: 2
+        border.width: 1
 
         Text {
             id: xbyButton1Label
@@ -283,15 +279,14 @@ Item {
 
     Rectangle {
         id: xfuelButton1
-        height: 33
-        width: 65
-        radius: 5
+        height: 34
+        width: (Screen.width - 71) / 4
         anchors.top: xbyButton1.top
         anchors.left: xbyButton1.right
         anchors.leftMargin: 5
         color: xfuelButton1State == 1 ? maincolor : "transparent"
         border.color: xfuelButton1State == 0 ? maincolor : "transparent"
-        border.width: 2
+        border.width: 1
 
         Text {
             id: xfuelButton1Label
@@ -320,15 +315,14 @@ Item {
 
     Rectangle {
         id: btcButton1
-        height: 33
-        width: 65
-        radius: 5
+        height: 34
+        width: (Screen.width - 71) / 4
         anchors.top: xbyButton1.top
         anchors.left: xfuelButton1.right
         anchors.leftMargin: 5
         color: btcButton1State == 1 ? maincolor : "transparent"
         border.color: btcButton1State == 0 ? maincolor : "transparent"
-        border.width: 2
+        border.width: 1
 
         Text {
             id: btcButton1Label
@@ -357,19 +351,18 @@ Item {
 
     Rectangle {
         id: usdButton1
-        height: 33
-        width: 65
-        radius: 5
+        height: 34
+        width: (Screen.width - 71) / 4
         anchors.top: xbyButton1.top
         anchors.left: btcButton1.right
         anchors.leftMargin: 5
         color: usdButton1State == 1 ? maincolor : "transparent"
         border.color: usdButton1State == 0 ? maincolor : "transparent"
-        border.width: 2
+        border.width: 1
 
         Text {
             id: usdButton1Label
-            text : settings.defaultCurrency
+            text : fiatCurrencies.get(userSettings.defaultCurrency).currency
             font.family: xciteMobile.name
             font.pointSize: 14
             font.bold: true
@@ -395,15 +388,13 @@ Item {
     Rectangle {
         id: button1
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: xbyButton1.bottom
         anchors.topMargin: 20
-        anchors.left: parent.left
-        anchors.leftMargin: 25
+        anchors.left: inputAmount.left
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button1Label
@@ -435,14 +426,13 @@ Item {
     Rectangle {
         id: button2
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button1.top
         anchors.left: button1.right
         anchors.leftMargin: 10
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button2Label
@@ -474,14 +464,13 @@ Item {
     Rectangle {
         id: button3
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button2.top
         anchors.left: button2.right
         anchors.leftMargin: 10
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button3Label
@@ -513,15 +502,13 @@ Item {
     Rectangle {
         id: button4
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button1.bottom
         anchors.topMargin: 10
-        anchors.left: parent.left
-        anchors.leftMargin: 25
+        anchors.left: inputAmount.left
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button4Label
@@ -553,14 +540,13 @@ Item {
     Rectangle {
         id: button5
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button4.top
         anchors.left: button4.right
         anchors.leftMargin: 10
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button5Label
@@ -592,14 +578,13 @@ Item {
     Rectangle {
         id: button6
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button5.top
         anchors.left: button5.right
         anchors.leftMargin: 10
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button6Label
@@ -631,15 +616,13 @@ Item {
     Rectangle {
         id: button7
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button4.bottom
         anchors.topMargin: 10
-        anchors.left: parent.left
-        anchors.leftMargin: 25
+        anchors.left: inputAmount.left
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button7Label
@@ -671,14 +654,13 @@ Item {
     Rectangle {
         id: button8
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button7.top
         anchors.left: button7.right
         anchors.leftMargin: 10
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button8Label
@@ -710,14 +692,13 @@ Item {
     Rectangle {
         id: button9
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button8.top
         anchors.left: button8.right
         anchors.leftMargin: 10
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button9Label
@@ -749,15 +730,13 @@ Item {
     Rectangle {
         id: buttonC
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button7.bottom
         anchors.topMargin: 10
-        anchors.left: parent.left
-        anchors.leftMargin: 25
+        anchors.left: inputAmount.left
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: buttonCLabel
@@ -793,14 +772,13 @@ Item {
     Rectangle {
         id: button0
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: buttonC.top
         anchors.left: buttonC.right
         anchors.leftMargin: 10
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: button0Label
@@ -834,19 +812,18 @@ Item {
     Rectangle {
         id: buttonDec
         height: 50
-        width: 85
-        radius: 5
+        width: (Screen.width - 76) / 3
         anchors.top: button0.top
         anchors.left: button0.right
         anchors.leftMargin: 10
         color: "transparent"
         border.color: maincolor
-        border.width: 2
+        border.width: 1
 
         Text {
             id: buttonDecLabel
             text : "."
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pointSize: 20
             font.bold: true
             color: maincolor
@@ -880,18 +857,26 @@ Item {
     Rectangle {
         id: confirmationSendButton
         width: (doubbleButtonWidth - 10) / 2
-        height: 33
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 20
+        height: 34
+        anchors.top: buttonDec.bottom
+        anchors.topMargin: 20
         anchors.right: parent.horizontalCenter
         anchors.rightMargin: 5
-        radius: 5
         color: "#4BBE2E"
+        opacity: darktheme == true? 0.25 : 0.5
 
         MouseArea {
             anchors.fill: confirmationSendButton
 
-            onPressed: { click01.play() }
+            onPressed: {
+                click01.play()
+            }
+
+            onCanceled: {
+            }
+
+            onReleased: {
+            }
 
             onClicked: {
                 calculatedAmount = Number.fromLocaleString(Qt.locale("en_US"),outputAmount.text)
@@ -899,48 +884,79 @@ Item {
                 inputAmount.text = ""
             }
         }
+    }
+    Text {
+        text: "CONFIRM"
+        font.family: xciteMobile.name
+        font.pointSize: 14
+        color: "#4BBE2E"
+        font.bold: true
+        opacity: darktheme == true? 0.5 : 0.75
+        anchors.horizontalCenter: confirmationSendButton.horizontalCenter
+        anchors.verticalCenter: confirmationSendButton.verticalCenter
+    }
 
-        Text {
-            text: "CONFIRM"
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.pointSize: 14
-            color: "#F2F2F2"
-            font.bold: true
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-        }
+    Rectangle {
+        width: (doubbleButtonWidth - 10) / 2
+        height: 34
+        anchors.bottom: confirmationSendButton.bottom
+        anchors.right: confirmationSendButton.right
+        color: "transparent"
+        border.color: "#4BBE2E"
+        border.width: 1
+        opacity: darktheme == true? 0.5 : 0.75
     }
 
     Rectangle {
         id: cancelSendButton
         width: (doubbleButtonWidth - 10) / 2
-        height: 33
-        radius: 5
-        color: "#E55541"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 20
+        height: 34
+        anchors.top: buttonDec.bottom
+        anchors.topMargin: 20
         anchors.left: parent.horizontalCenter
         anchors.leftMargin: 5
+        color: "#E55541"
+        opacity: darktheme == true? 0.25 : 0.5
 
         MouseArea {
             anchors.fill: cancelSendButton
 
-            onPressed: { click01.play() }
+            onPressed: {
+                click01.play()
+            }
+
+            onCanceled: {
+            }
+
+            onReleased: {
+            }
 
             onClicked: {
                 calculatorTracker = 0
                 inputAmount.text = ""
             }
         }
+    }
 
-        Text {
-            text: "CANCEL"
-            font.family: xciteMobile.name //"Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: "#F2F2F2"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-        }
+    Text {
+        text: "BACK"
+        font.family: xciteMobile.name
+        font.pointSize: 14
+        font.bold: true
+        color: "#E55541"
+        opacity: darktheme == true? 0.5 : 0.75
+        anchors.horizontalCenter: cancelSendButton.horizontalCenter
+        anchors.verticalCenter: cancelSendButton.verticalCenter
+    }
+
+    Rectangle {
+        width: (doubbleButtonWidth - 10) / 2
+        height: 34
+        anchors.horizontalCenter: cancelSendButton.horizontalCenter
+        anchors.verticalCenter: cancelSendButton.verticalCenter
+        color: "transparent"
+        border.color: "#E55541"
+        border.width: 1
+        opacity: darktheme == true? 0.5 : 0.75
     }
 }

@@ -122,7 +122,6 @@
         <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
         <file>Controls/LoadingBar.qml</file>
         <file>Controls/TransactionTable.qml</file>
-        <file>+mobile/Settings.qml</file>
         <file>+mobile/xchange.qml</file>
         <file>Controls/+mobile/TransferModal.qml</file>
         <file>Controls/+mobile/Sidebar.qml</file>
@@ -157,5 +156,9 @@
         <file>../resources/icons/XFUEL_card_logo_01.svg</file>
         <file>+mobile/InitialSetup.qml</file>
         <file>+mobile/CreateAccount.qml</file>
+        <file>Controls/+mobile/CardBody.qml</file>
+        <file>Controls/+mobile/CurrencyPicklist.qml</file>
+        <file>+mobile/WalletSettings.qml</file>
+        <file>Controls/+mobile/Pincode.qml</file>
     </qresource>
 </RCC>

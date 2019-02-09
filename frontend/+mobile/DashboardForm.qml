@@ -32,7 +32,45 @@ Item {
         z: 1
         width: Screen.width
         height: Screen.height
-        color: darktheme == false? "#F7F7F7" : "#14161B"
+        color: darktheme == true? "#14161B" : "#FDFDFD"
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(0, 0)
+            end: Qt.point(0, parent.height)
+            opacity: 0.05
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "#00162124"}
+                GradientStop { position: 1.0; color: "#FF162124"}
+            }
+        }
+    }
+
+    Rectangle {
+        id: homeView
+        z: 1
+        width: Screen.width
+        height: Screen.height
+        color: "transparent"
+        state: (walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1 || editContactTracker == 1) ? "dark" : ((appsTracker == 1)? "medium" : "clear")
+        clip: true
+
+        states: [
+            State {
+                name: "dark"
+                PropertyChanges { target: homeView; opacity: 0.5}
+            },
+            State {
+                name: "medium"
+                PropertyChanges { target: homeView; opacity: 0.75}
+            },
+            State {
+                name: "clear"
+                PropertyChanges { target: homeView; opacity: 1}
+            }
+        ]
+
+
 
         SwipeView {
             id: view
@@ -40,88 +78,42 @@ Item {
             currentIndex: 0
             anchors.fill: parent
             interactive: (appsTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addCoinTracker == 1) ? false : true
+            clip: true
 
             Item {
                 id: dashForm
 
-                Rectangle {
-                    id: balanceWindow
-                    z: 5
-                    height: 70
-                    anchors.bottom: homeHeader.bottom
-                    anchors.bottomMargin: 15
-                    anchors.right: parent.right
-                    anchors.rightMargin: 55/2
-                    radius: 4
-                    color: "#0B0B09"
-                    state: coinTracker == 0? "big" : "small"
-
-                    states: [
-                        State {
-                            name: "big"
-                            PropertyChanges { target: balanceWindow; width: (Screen.width - 55)}
-                        },
-                        State {
-                            name: "small"
-                            PropertyChanges { target: balanceWindow; width: (Screen.width - 140)}
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: "*"
-                            to: "*"
-                            NumberAnimation { target: balanceWindow; property: "width"; duration: 700; easing.type: Easing.InOutCubic}
-                        }
-                    ]
-                }
-
-                InnerShadow {
-                    z: 5
-                    anchors.fill: balanceWindow
-                    source: balanceWindow
-                    radius: 12
-                    samples: 17
-                    horizontalOffset: 0
-                    verticalOffset: 2
-                    color: "black"
-                }
-
-                DropShadow {
-                    id: bigLogoShadow
-                    z: 5
-                    anchors.fill: bigLogo
-                    source: bigLogo
-                    horizontalOffset: 0
-                    verticalOffset: 4
-                    radius: 12
-                    samples: 25
-                    spread: 0
-                    color:"black"
-                    opacity: 0.4
-                    transparentBorder: true
-                    visible: bigLogo.visible
-                }
-
                 Image {
                     id: bigLogo
                     z: 5
-                    source: getLogo(getName(coinIndex))
-                    height: 70
-                    width: 70
-                    anchors.verticalCenter: balanceWindow.verticalCenter
-                    anchors.right: balanceWindow.left
+                    source: getLogoBig(getName(coinIndex))
+                    height: 139
+                    width: 160
+                    fillMode: Image.PreserveAspectFit
+                    anchors.top: parent.top
+                    anchors.topMargin: 40
+                    anchors.left: parent.left
                     state: coinTracker == 0? "hidden" : "inView"
-                    visible: (x + 70) >= 0
+
+                    LinearGradient {
+                        width: parent.width
+                        height: 55
+                        start: Qt.point(x, y)
+                        end: Qt.point(x, y + 55)
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: darktheme == true? "#FF14161B" : "#FFFDFDFD" }
+                            GradientStop { position: 1.0; color: "transparent" }
+                        }
+                    }
 
                     states: [
                         State {
                             name: "hidden"
-                            PropertyChanges { target: bigLogo; anchors.rightMargin: 45}
+                            PropertyChanges { target: bigLogo; anchors.leftMargin: -160}
                         },
                         State {
                             name: "inView"
-                            PropertyChanges { target: bigLogo; anchors.rightMargin: 15}
+                            PropertyChanges { target: bigLogo; anchors.leftMargin: -40}
                         }
                     ]
 
@@ -129,7 +121,7 @@ Item {
                         Transition {
                             from: "*"
                             to: "*"
-                            NumberAnimation { target: bigLogo; property: "anchors.rightMargin"; duration: 700; easing.type: Easing.InOutCubic}
+                            NumberAnimation { target: bigLogo; property: "anchors.leftMargin"; duration: 700; easing.type: Easing.InOutCubic}
                         }
                     ]
                 }
@@ -139,19 +131,19 @@ Item {
                     z:5
                     width: valueTicker.implicitWidth + value1.implicitWidth + value2.implicitWidth
                     height: value1.implicitHeight
-                    anchors.verticalCenter: balanceWindow.verticalCenter
-                    anchors.horizontalCenter: balanceWindow.horizontalCenter
-                    visible: balanceWindow.width > Screen.width -110
-                    state: (coinTracker == 0 && (balanceWindow.width > Screen.width -110))? "up" : "down"
+                    anchors.verticalCenter: parent.top
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenterOffset: 95
+                    state: (coinTracker == 0)? "up" : "down"
 
                     states: [
                         State {
                             name: "up"
-                            PropertyChanges { target: totalWalletValue; opacity: 1}
+                            PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: 0}
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: totalWalletValue; opacity: 0}
+                            PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: Screen.width * 1.5}
                         }
                     ]
 
@@ -159,7 +151,7 @@ Item {
                         Transition {
                             from: "*"
                             to: "*"
-                            PropertyAnimation { target: totalWalletValue; property: "opacity"; duration: 700; easing.type: Easing.InOutCubic}
+                            PropertyAnimation { target: totalWalletValue; property: "anchors.horizontalCenterOffset"; duration: 700; easing.type: Easing.InOutCubic}
                         }
                     ]
 
@@ -168,10 +160,10 @@ Item {
                         z: 5
                         anchors.left: totalWalletValue.left
                         anchors.bottom: value1.bottom
-                        text: "$"
-                        font.pixelSize: 50
+                        text: fiatTicker
+                        font.pixelSize: 60
                         font.family: xciteMobile.name
-                        color: "white"
+                        color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
 
                     Label {
@@ -181,9 +173,9 @@ Item {
                         anchors.verticalCenter: totalWalletValue.verticalCenter
                         //anchors.verticalCenterOffset: 105
                         text: balanceArray[0]
-                        font.pixelSize: 50
+                        font.pixelSize: 60
                         font.family: xciteMobile.name
-                        color: "white"
+                        color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
 
                     Label {
@@ -193,30 +185,30 @@ Item {
                         anchors.bottom: value1.bottom
                         anchors.bottomMargin: 6
                         text: "." + balanceArray[1]
-                        font.pixelSize: 30
+                        font.pixelSize: 40
                         font.family: xciteMobile.name
-                        color: "white"
+                        color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
                 }
 
                 Item {
                     id: coinInfo1
                     z:5
-                    width: balanceWindow.width
-                    height: balanceWindow.height
-                    anchors.verticalCenter: balanceWindow.verticalCenter
-                    anchors.horizontalCenter: balanceWindow.horizontalCenter
-                    visible: balanceWindow.width < Screen.width -110
-                    state: (coinTracker == 0 && (balanceWindow.width < Screen.width -110))? "down" : "up"
+                    width: fullName.implicitWidth
+                    height: fullName.implicitHeight
+                    anchors.top: parent.top
+                    anchors.topMargin: 60
+                    anchors.right: parent.right
+                    state: (coinTracker == 0)? "down" : "up"
 
                     states: [
                         State {
                             name: "up"
-                            PropertyChanges { target: coinInfo1; opacity: 1}
+                            PropertyChanges { target: coinInfo1; anchors.rightMargin: 28}
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: coinInfo1; opacity: 0}
+                            PropertyChanges { target: coinInfo1; anchors.rightMargin: Screen.width +20}
                         }
                     ]
 
@@ -224,21 +216,39 @@ Item {
                         Transition {
                             from: "*"
                             to: "*"
-                            PropertyAnimation { target: coinInfo1; property: "opacity"; duration: 700; easing.type: Easing.InOutCubic}
+                            PropertyAnimation { target: coinInfo1; property: "anchors.rightMargin"; duration: 700; easing.type: Easing.InOutCubic}
                         }
                     ]
+
+                    Label {
+                        id: fullName
+                        z: 5
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        text: getFullName(coinIndex)
+                        font.pixelSize: 36
+                        font.family: xciteMobile.name
+                        font.letterSpacing: 2
+                        color: darktheme == true? "#F2F2F2" : "#14161B"
+                    }
+                }
+
+                Item {
+                    id: coinInfo2
+                    z:5
+                    height: totalCoins.implicitHeight
+                    anchors.top: coinInfo1.bottom
+                    anchors.right: coinInfo1.right
 
                     Label {
                         id: totalCoins
                         z: 5
                         anchors.right: parent.right
-                        anchors.rightMargin: 14
                         anchors.top: parent.top
-                        anchors.topMargin: 8
                         text: getName(coinIndex)
                         font.pixelSize: 20
                         font.family: xciteMobile.name
-                        color: "white"
+                        color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
 
                     Label {
@@ -254,7 +264,7 @@ Item {
                         text: "." + totalArray[1]
                         font.pixelSize: 16
                         font.family: xciteMobile.name
-                        color: "white"
+                        color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
 
                     Label {
@@ -268,91 +278,7 @@ Item {
                         text: totalArray[0]
                         font.pixelSize: 20
                         font.family: xciteMobile.name
-                        color: "white"
-                    }
-                }
-
-                Item {
-                    id: coinInfo2
-                    z:5
-                    width: balanceWindow.width
-                    height: balanceWindow.height
-                    anchors.verticalCenter: balanceWindow.verticalCenter
-                    anchors.horizontalCenter: balanceWindow.horizontalCenter
-                    visible: balanceWindow.width < Screen.width -110
-                    state: (coinTracker == 0 && (balanceWindow.width < Screen.width -110))? "down" : "up"
-
-                    states: [
-                        State {
-                            name: "up"
-                            PropertyChanges { target: coinInfo2; opacity: 1}
-                        },
-                        State {
-                            name: "down"
-                            PropertyChanges { target: coinInfo2; opacity: 0}
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: "*"
-                            to: "*"
-                            PropertyAnimation { target: coinInfo2; property: "opacity"; duration: 700; easing.type: Easing.InOutCubic}
-                        }
-                    ]
-
-                    Label {
-                        id: totalUnconfirmed
-                        z: 5
-                        anchors.right: parent.right
-                        anchors.rightMargin: 14
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 8
-                        text: getName(coinIndex)
-                        font.pixelSize: 12
-                        font.family: xciteMobile.name
-                        color: "white"
-                    }
-
-                    Label {
-                        property int decimals: totalUnconfirmedSum <= 1? 8 : (totalUnconfirmedSum <= 1000? 4 : 2)
-                        property real totalUnconfirmedSum: sumCoinUnconfirmed(totalUnconfirmed.text)
-                        property var totalArray: (totalUnconfirmedSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
-                        id: unconfirmed1
-                        z: 5
-                        anchors.right: totalUnconfirmed.left
-                        anchors.rightMargin: 3
-                        anchors.bottom: totalUnconfirmed.bottom
-                        text: "." + totalArray[1]
-                        font.pixelSize: 12
-                        font.family: xciteMobile.name
-                        color: "white"
-                    }
-
-                    Label {
-                        property int decimals: totalUnconfirmedSum <= 1? 8 : (totalUnconfirmedSum <= 1000? 4 : 2)
-                        property real totalUnconfirmedSum: sumCoinUnconfirmed(totalUnconfirmed.text)
-                        property var totalArray: (totalUnconfirmedSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
-                        id: unconfirmed2
-                        z: 5
-                        anchors.right: unconfirmed1.left
-                        anchors.bottom: totalUnconfirmed.bottom
-                        text: totalArray[0]
-                        font.pixelSize: 12
-                        font.family: xciteMobile.name
-                        color: "white"
-                    }
-
-                    Label {
-                        id: unconfirmedText
-                        z: 5
-                        anchors.right: parent.right
-                        anchors.rightMargin: 135
-                        anchors.bottom: totalUnconfirmed.bottom
-                        text: "Unconfirmed:"
-                        font.pixelSize: 12
-                        font.family: xciteMobile.name
-                        color: "white"
+                        color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
                 }
 
@@ -360,9 +286,7 @@ Item {
                     id:scrollAreaCoinList
                     z: 3
                     width: Screen.width
-                    height: Screen.height - 240
                     anchors.top: parent.top
-                    anchors.topMargin: 190
                     color: "transparent"
                     state: (coinTracker == 0 && scrollAreaWalletList.height == 0)? "down" : "up"
 
@@ -370,13 +294,13 @@ Item {
                         State {
                             name: "up"
                             PropertyChanges { target: scrollAreaCoinList; height: 0}
-                            PropertyChanges { target: scrollAreaCoinList; anchors.topMargin: 50}
-                            PropertyChanges { target: myCoinCards; cardSpacing: -88}
+                            PropertyChanges { target: scrollAreaCoinList; anchors.topMargin: 0}
+                            PropertyChanges { target: myCoinCards; cardSpacing: -100}
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaCoinList; height: Screen.height - 240}
-                            PropertyChanges { target: scrollAreaCoinList; anchors.topMargin: 190}
+                            PropertyChanges { target: scrollAreaCoinList; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaCoinList; anchors.topMargin: 180}
                             PropertyChanges { target: myCoinCards; cardSpacing: 0}
                         }
                     ]
@@ -392,8 +316,6 @@ Item {
 
                     Controls.CoinList {
                         id: myCoinCards
-                        cardSpacing: 0
-
                     }
 
                 }
@@ -402,9 +324,7 @@ Item {
                     id:scrollAreaWalletList
                     z: 3
                     width: Screen.width
-                    height: Screen.height - 240
                     anchors.top: parent.top
-                    anchors.topMargin: 190
                     color: "transparent"
                     state: (coinTracker == 1 && scrollAreaCoinList.height == 0)? "down" : "up"
 
@@ -412,13 +332,13 @@ Item {
                         State {
                             name: "up"
                             PropertyChanges { target: scrollAreaWalletList; height: 0}
-                            PropertyChanges { target: scrollAreaWalletList; anchors.topMargin: 50}
-                            PropertyChanges { target: myWalletCards; cardSpacing: -88}
+                            PropertyChanges { target: scrollAreaWalletList; anchors.topMargin: 0}
+                            PropertyChanges { target: myWalletCards; cardSpacing: -100}
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaWalletList; height: Screen.height - 240}
-                            PropertyChanges { target: scrollAreaWalletList; anchors.topMargin: 190}
+                            PropertyChanges { target: scrollAreaWalletList; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaWalletList; anchors.topMargin: 180}
                             PropertyChanges { target: myWalletCards; cardSpacing: 0}
                         }
                     ]
@@ -439,30 +359,34 @@ Item {
 
                 }
 
+                Item {
+                    z: 3
+                    width: Screen.width
+                    height: coinTracker == 0? 50 : 125
+                    anchors.bottom: parent.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    LinearGradient {
+                        anchors.fill: parent
+                        start: Qt.point(x, y)
+                        end: Qt.point(x, y + height)
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "transparent" }
+                            GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                            GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                        }
+                    }
+                }
+
                 Rectangle {
                     id: backButton1
                     z: 3
                     radius: 25
                     anchors.fill: backButton
-                    color: darktheme == false? "#2A2C31" : "#14161B"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
                     opacity: 0.1
                     visible: backButton.visible
 
-                }
-
-                DropShadow {
-                    z: 3
-                    anchors.fill: backButton
-                    source: backButton
-                    horizontalOffset: 0
-                    verticalOffset: 4
-                    radius: 12
-                    samples: 25
-                    spread: 0
-                    color: "black"
-                    opacity: 0.4
-                    transparentBorder: true
-                    visible: backButton.visible
                 }
 
                 Rectangle {
@@ -472,11 +396,10 @@ Item {
                     width: 50
                     radius: 25
                     anchors.right: parent.right
-                    anchors.rightMargin: -110
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
+                    border.color: maincolor
                     border.width: 2
                     visible: anchors.rightMargin > -110
                     state: coinTracker == 1 ? "inView" : "hidden"
@@ -510,7 +433,7 @@ Item {
                         ColorOverlay {
                             anchors.fill: parent
                             source: parent
-                            color: darktheme == false? "#42454F" : "#0ED8D2"
+                            color: maincolor
                         }
                     }
                     MouseArea {
@@ -518,12 +441,10 @@ Item {
 
                         onPressed: {
                             click01.play()
-                            backButton1.color = "#0ED8D2"
                             backButton1.opacity = 0.5
                         }
 
                         onReleased: {
-                            backButton1.color = darktheme == false? "#2A2C31" : "#14161B"
                             backButton1.opacity = 0.1
                         }
 
@@ -548,25 +469,11 @@ Item {
                     width: parent.width
                     height: 150
                     anchors.top: parent.top
-                    color: "#1B2934"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
 
                     MouseArea {
                         anchors.fill: parent
                     }
-                }
-
-                DropShadow {
-                    z: 6
-                    anchors.fill: iconBar3
-                    source: iconBar3
-                    horizontalOffset: 0
-                    verticalOffset: 4
-                    radius: 12
-                    samples: 25
-                    spread: 0
-                    color: "black"
-                    opacity: 0.4
-                    transparentBorder: true
                 }
 
                 Rectangle {
@@ -576,7 +483,7 @@ Item {
                     height: 30
                     anchors.verticalCenter: flipable.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
-                    color: darktheme == false? "#42454F" : "#2A2B31"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
                 }
 
                 Flipable {
@@ -597,7 +504,8 @@ Item {
                             height: 30
                             anchors.top: parent.top
                             anchors.horizontalCenter: parent.horizontalCenter
-                            color: darktheme == false? "#14161B" : "black"
+                            color: "black"
+
                             Label {
                                 id: transfer
                                 z: 6
@@ -732,10 +640,9 @@ Item {
                         Item {
 
                         transform: Rotation {
-                            //origin.x: flipable.width/2
                             origin.y: flipable.height/2
-                            axis.x: 1; axis.y: 0; axis.z: 0     // set axis.y to 1 to rotate around y-axis
-                            angle: 180    // the default angle
+                            axis.x: 1; axis.y: 0; axis.z: 0
+                            angle: 180
                         }
 
                         Rectangle {
@@ -745,7 +652,7 @@ Item {
                             height: 30
                             anchors.top: parent.top
                             anchors.horizontalCenter: parent.horizontalCenter
-                            color: darktheme == false? "#14161B" : "black"
+                            color: "black"
 
                             Label {
                                 id: btcValue
@@ -755,7 +662,7 @@ Item {
                                 font.family: xciteMobile.name
                                 color: "white"
                                 anchors.left: parent.left
-                                anchors.leftMargin: 42
+                                anchors.leftMargin: 28
                                 anchors.verticalCenter: iconBar2.verticalCenter
                                 anchors.verticalCenterOffset: 2
                             }
@@ -777,12 +684,12 @@ Item {
                             Label {
                                 id: coinPercentage
                                 z: 6
-                                text: getPercentage(getName(coinIndex)) >= 0? (getPercentage(getName(coinIndex)) + " %") : ("-" + getPercentage(getName(coinIndex)) + " %")
+                                text: getPercentage(getName(coinIndex)) >= 0? ("+" + getPercentage(getName(coinIndex)) + " %") : (getPercentage(getName(coinIndex)) + " %")
                                 font.pixelSize: 13
                                 font.family: xciteMobile.name
                                 color: getPercentage(getName(coinIndex)) <= 0 ? "#E55541" : "#4BBE2E"
                                 anchors.right: parent.right
-                                anchors.rightMargin: 42
+                                anchors.rightMargin: 28
                                 anchors.verticalCenter: iconBar2.verticalCenter
                                 anchors.verticalCenterOffset: 2
                                 font.bold: true
@@ -794,8 +701,8 @@ Item {
                         id: rotation
                         origin.x: flipable.width/2
                         origin.y: flipable.height/2
-                        axis.x: 1; axis.y: 0; axis.z: 0     // set axis.y to 1 to rotate around y-axis
-                        angle: 0    // the default angle
+                        axis.x: 1; axis.y: 0; axis.z: 0
+                        angle: 0
                     }
 
                     states: State {
@@ -821,7 +728,6 @@ Item {
                     anchors.verticalCenter: bigPhoto.verticalCenter
                     width: homeHeader2.width -140
                     anchors.left: parent.left
-                    anchors.leftMargin: homeHeader2.width + 25
                     state: contactTracker == 0? "hidden" : "inView"
                     visible: x < parent.width
 
@@ -852,7 +758,8 @@ Item {
                         text: contactTracker == 1? contactList.get(contactIndex).firstName : ""
                         font.pixelSize: 20
                         font.family:  xciteMobile.name
-                        color: "#E5E5E5"
+                        font.letterSpacing: 2
+                        color: darktheme == true? "#F2F2F2" : "#2A2C31"
                     }
 
                     Label {
@@ -863,9 +770,10 @@ Item {
                         anchors.bottom: parent.bottom
                         anchors.right: parent.right
                         text: contactTracker == 1? contactList.get(contactIndex).lastName : ""
-                        color: "#E5E5E5"
+                        color: darktheme == true? "#F2F2F2" : "#2A2C31"
                         font.pixelSize: 20
                         font.family:  xciteMobile.name
+                        font.letterSpacing: 2
                         font.capitalization: Font.AllUppercase
                         elide: Text.ElideRight
                     }
@@ -896,7 +804,6 @@ Item {
                     anchors.bottom: homeHeader2.bottom
                     anchors.bottomMargin: 15
                     anchors.left: parent.left
-                    anchors.leftMargin: -95
                     state: contactTracker == 0 ? "hidden" : "inView"
                     visible: (x + 70) >= 0
 
@@ -923,14 +830,11 @@ Item {
                 Controls.TextInput {
                     id: searchForAddress
                     z: 5
-                    height: 34
                     placeholder: "SEARCH ADDRESS BOOK"
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom: homeHeader2.bottom
-                    anchors.bottomMargin: 25
-                    width: Screen.width - 55
-                    color: searchForAddress.text != "" ? "#F2F2F2" : "#727272"
-                    textBackground: "#0B0B09"
+                    color: searchForAddress.text != "" ? "#2A2C31" : "#727272"
+                    textBackground: "#F2F2F2"
                     font.pixelSize: 14
                     font.capitalization: Font.AllUppercase
                     mobile: 1
@@ -949,7 +853,7 @@ Item {
                         State {
                             name: "inView"
                             PropertyChanges { target: searchForAddress; height: 34}
-                            PropertyChanges { target: searchForAddress; width: Screen.width - 55}
+                            PropertyChanges { target: searchForAddress; width: Screen.width - 56}
                             PropertyChanges { target: searchForAddress; anchors.bottomMargin: 25}
                         }
                     ]
@@ -967,9 +871,7 @@ Item {
                     id: scrollAreaContactList
                     z: 3
                     width: Screen.width
-                    height: Screen.height - 240
                     anchors.top: parent.top
-                    anchors.topMargin: 190
                     color: "transparent"
                     state: (contactTracker == 0 && scrollAreaAddressBook.height == 0)? "down" : "up"
 
@@ -977,13 +879,13 @@ Item {
                         State {
                             name: "up"
                             PropertyChanges { target: scrollAreaContactList; height: 0}
-                            PropertyChanges { target: scrollAreaContactList; anchors.topMargin: 50}
-                            PropertyChanges { target: myContacts; cardSpacing: -88}
+                            PropertyChanges { target: scrollAreaContactList; anchors.topMargin: 0}
+                            PropertyChanges { target: myContacts; cardSpacing: -100}
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaContactList; height: Screen.height - 240}
-                            PropertyChanges { target: scrollAreaContactList; anchors.topMargin: 190}
+                            PropertyChanges { target: scrollAreaContactList; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaContactList; anchors.topMargin: 180}
                             PropertyChanges { target: myContacts; cardSpacing: 0}
                         }
                     ]
@@ -1000,7 +902,6 @@ Item {
                     Controls.Contacts {
                         id: myContacts
                         searchFilter: searchCriteria
-                        cardSpacing: 0
                     }
                 }
 
@@ -1008,9 +909,7 @@ Item {
                     id:scrollAreaAddressBook
                     z: 3
                     width: Screen.width
-                    height: Screen.height - 240
                     anchors.top: parent.top
-                    anchors.topMargin: 190
                     color: "transparent"
                     state: (contactTracker == 1 && scrollAreaContactList.height == 0)? "down" : "up"
 
@@ -1018,13 +917,13 @@ Item {
                         State {
                             name: "up"
                             PropertyChanges { target: scrollAreaAddressBook; height: 0}
-                            PropertyChanges { target: scrollAreaAddressBook; anchors.topMargin: 50}
-                            PropertyChanges { target: myAddressCards; cardSpacing: -88}
+                            PropertyChanges { target: scrollAreaAddressBook; anchors.topMargin: 0}
+                            PropertyChanges { target: myAddressCards; cardSpacing: -100}
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaAddressBook; height: Screen.height - 240}
-                            PropertyChanges { target: scrollAreaAddressBook; anchors.topMargin: 190}
+                            PropertyChanges { target: scrollAreaAddressBook; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaAddressBook; anchors.topMargin: 180}
                             PropertyChanges { target: myAddressCards; cardSpacing: 0}
                         }
                     ]
@@ -1040,7 +939,25 @@ Item {
 
                     Controls.AddressBook {
                         id: myAddressCards
-                        cardSpacing: 0
+                    }
+                }
+
+                Item {
+                    z: 3
+                    width: Screen.width
+                    height: contactTracker == 0? 50 : 125
+                    anchors.bottom: parent.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    LinearGradient {
+                        anchors.fill: parent
+                        start: Qt.point(x, y)
+                        end: Qt.point(x, y + height)
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "transparent" }
+                            GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                            GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                        }
                     }
                 }
 
@@ -1049,25 +966,10 @@ Item {
                     z: 3.5
                     radius: 25
                     anchors.fill: backButton2
-                    color: darktheme == false? "#2A2C31" : "#14161B"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
                     opacity: 0.1
                     visible: backButton2.visible
 
-                }
-
-                DropShadow {
-                    z: 3.5
-                    anchors.fill: backButton2
-                    source: backButton2
-                    horizontalOffset: 0
-                    verticalOffset: 4
-                    radius: 12
-                    samples: 25
-                    spread: 0
-                    color: "black"
-                    opacity: 0.4
-                    transparentBorder: true
-                    visible: backButton2.visible
                 }
 
                 Rectangle {
@@ -1077,11 +979,10 @@ Item {
                     width: 50
                     radius: 25
                     anchors.right: parent.right
-                    anchors.rightMargin: -110
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
+                    border.color: maincolor
                     border.width: 2
                     visible: anchors.rightMargin > -110
                     state: contactTracker == 1 ? "inView" : "hidden"
@@ -1115,7 +1016,7 @@ Item {
                         ColorOverlay {
                             anchors.fill: parent
                             source: parent
-                            color: darktheme == false? "#42454F" : "#0ED8D2"
+                            color: maincolor
                         }
                     }
                     MouseArea {
@@ -1123,12 +1024,10 @@ Item {
 
                         onPressed: {
                             click01.play()
-                            backButton3.color = "#0ED8D2"
                             backButton3.opacity = 0.5
                         }
 
                         onReleased: {
-                            backButton3.color = darktheme == false? "#2A2C31" : "#14161B"
                             backButton3.opacity = 0.1
                         }
 
@@ -1151,25 +1050,10 @@ Item {
                     z: 3
                     radius: 25
                     anchors.fill: addButton2
-                    color: darktheme == false? "#2A2C31" : "#14161B"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
                     opacity: 0.1
                     visible: addButton2.visible
 
-                }
-
-                DropShadow {
-                    z: 3
-                    anchors.fill: addButton2
-                    source: addButton2
-                    horizontalOffset: 0
-                    verticalOffset: 4
-                    radius: 12
-                    samples: 25
-                    spread: 0
-                    color: "black"
-                    opacity: 0.4
-                    transparentBorder: true
-                    visible: addButton2.visible
                 }
 
                 Rectangle {
@@ -1179,13 +1063,12 @@ Item {
                     width: 50
                     radius: 25
                     anchors.left: parent.left
-                    anchors.leftMargin: -110
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: darktheme == false? "#42454F" : "#0ED8D2"
+                    border.color: maincolor
                     border.width: 2
-                    visible: anchors.leftMargin > -110
+                    visible: (anchors.leftMargin > -110) && contactIndex != 0
                     state: (contactTracker == 1 && addressQRTracker == 0)? "inView" : "hidden"
 
                     states: [
@@ -1217,7 +1100,7 @@ Item {
                         ColorOverlay {
                             anchors.fill: parent
                             source: parent
-                            color: darktheme == false? "#42454F" : "#0ED8D2"
+                            color: maincolor
                         }
                     }
                     MouseArea {
@@ -1225,12 +1108,10 @@ Item {
 
                         onPressed: {
                             click01.play()
-                            addButton3.color = "#0ED8D2"
                             addButton3.opacity = 0.5
                         }
 
                         onReleased: {
-                            addButton3.color = darktheme == false? "#2A2C31" : "#14161B"
                             addButton3.opacity = 0.1
                         }
 
@@ -1247,7 +1128,6 @@ Item {
                     height: Screen.height - 180
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: iconBar6.bottom
-                    anchors.topMargin: - (Screen.height - 180)
                     visible: anchors.topMargin > - (Screen.height - 180)
                     state: addressQRTracker == 1 ? "inView" : "hidden"
 
@@ -1279,24 +1159,11 @@ Item {
                     width: parent.width
                     height: 150
                     anchors.top: parent.top
-                    color: "#1B2934"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
+
                     MouseArea {
                         anchors.fill: parent
                     }
-                }
-
-                DropShadow {
-                    z: 6
-                    anchors.fill: iconBar6
-                    source: iconBar6
-                    horizontalOffset: 0
-                    verticalOffset: 4
-                    radius: 12
-                    samples: 25
-                    spread: 0
-                    color: "black"
-                    opacity: 0.4
-                    transparentBorder: true
                 }
 
                 Rectangle {
@@ -1306,7 +1173,7 @@ Item {
                     height: 30
                     anchors.verticalCenter: flipable2.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
-                    color: darktheme == false? "#42454F" : "#2A2B31"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
                 }
 
                 Flipable {
@@ -1327,7 +1194,7 @@ Item {
                             height: 30
                             anchors.top: parent.top
                             anchors.horizontalCenter: parent.horizontalCenter
-                            color: darktheme == false? "#14161B" : "black"
+                            color: "black"
                             Label {
                                 id: transfer3
                                 z: 6
@@ -1446,8 +1313,8 @@ Item {
 
                         transform: Rotation {
                             origin.y: flipable2.height/2
-                            axis.x: 1; axis.y: 0; axis.z: 0     // set axis.y to 1 to rotate around y-axis
-                            angle: 180    // the default angle
+                            axis.x: 1; axis.y: 0; axis.z: 0
+                            angle: 180
                         }
 
                         Rectangle {
@@ -1457,7 +1324,7 @@ Item {
                             height: 30
                             anchors.top: parent.top
                             anchors.horizontalCenter: parent.horizontalCenter
-                            color: darktheme == false? "#14161B" : "black"
+                            color: "black"
 
                             MouseArea {
                                 anchors.fill: parent
@@ -1633,9 +1500,6 @@ Item {
 
                 Rectangle {
                     id: callTextModal
-                    width: 140
-                    height: 50
-                    radius: 4
                     color: "#34363D"
                     anchors.verticalCenter: parent.top
                     anchors.verticalCenterOffset: 165
@@ -1762,7 +1626,7 @@ Item {
                     onPressed: { click01.play() }
 
                     onClicked: {
-                        if (transferTracker == 0 && coinTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0) {
+                        if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0) {
                             appsTracker = 1
                         }
                     }
@@ -1798,10 +1662,10 @@ Item {
 
                         onClicked: {
                             if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == true) {
-                                darktheme = false
+                                userSettings.theme = "light"
                             }
                             else if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == false) {
-                                darktheme = true
+                                userSettings.theme = "dark"
                             }
                         }
                     }
@@ -1813,16 +1677,6 @@ Item {
                 width: Screen.width
                 height: 50
                 color: "transparent"
-            }
-
-            Rectangle {
-                id: headingSquare
-                height: 30
-                width: 210
-                radius: 4
-                anchors.verticalCenter: topBar.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-                color: darktheme == false? "#14161B" : "black"
             }
 
             RowLayout {
@@ -1869,101 +1723,141 @@ Item {
                     }
                 }
             }
+        }
+    }
 
+    GaussianBlur {
+        id: blurOverlay
+        z:6
+        anchors.fill: homeView
+        source: homeView
+        state: (appsTracker == 1)? "medium" : "clear"
 
+        MouseArea {
+            anchors.fill: parent
+            visible: appsTracker == 1
         }
 
-        Rectangle {
-            id: darkOverlay
-            color: "black"
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            height: parent.height
-            width: parent.width
-            z: 6
-            state: (walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1 || editContactTracker == 1) ? "dark" : ((appsTracker == 1)? "medium" : "clear")
-
-            MouseArea {
-                anchors.fill: parent
-                visible: walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1 || editContactTracker == 1
+        states: [
+            State {
+                name: "medium"
+                PropertyChanges { target: blurOverlay; opacity: 1}
+                PropertyChanges { target: blurOverlay; radius: 8}
+                PropertyChanges { target: blurOverlay; samples: 16}
+                PropertyChanges { target: blurOverlay; deviation: 4}
+            },
+            State {
+                name: "clear"
+                PropertyChanges { target: blurOverlay; opacity: 0}
+                PropertyChanges { target: blurOverlay; radius: 0}
+                PropertyChanges { target: blurOverlay; samples: 0}
+                PropertyChanges { target: blurOverlay; deviation: 0}
             }
+        ]
+    }
 
-            states: [
-                State {
-                    name: "dark"
-                    PropertyChanges { target: darkOverlay; opacity: 0.95}
-                },
-                State {
-                    name: "medium"
-                    PropertyChanges { target: darkOverlay; opacity: 0.5}
-                },
-                State {
-                    name: "clear"
-                    PropertyChanges { target: darkOverlay; opacity: 0}
-                }
-            ]
+    Rectangle {
+        id: darkOverlay
+        color: darktheme == false? "#F7F7F7" : "#14161B"
+        anchors.fill: homeView
+        height: homeView.height
+        width: homeView.width
+        z: 6
+        state: (walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1 || editContactTracker == 1) ? "dark" : ((appsTracker == 1)? "medium" : "clear")
 
-            transitions: [
-                Transition {
-                    from: "*"
-                    to: "*"
-                    NumberAnimation { target: darkOverlay; property: "opacity"; duration: 300}
-                }
-            ]
+        MouseArea {
+            anchors.fill: parent
+            visible: walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1 || editContactTracker == 1
         }
 
-        Controls.HistoryModal {
-            id: historyModal
-            z: 10
+        LinearGradient {
+            anchors.fill: parent
+            source: parent
+            start: Qt.point(0, 0)
+            end: Qt.point(0, parent.height)
+            opacity: darktheme == false? 0.05 : 0.2
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: darktheme == false?"#00072778" : "#FF162124" }
+                GradientStop { position: 1.0; color: darktheme == false?"#FF072778" : "#00162124" }
+            }
         }
 
-        Controls.AddContact {
-            id: contactModal
-            z: 10
-            anchors.horizontalCenter: backgroundHome.horizontalCenter
-            anchors.top: backgroundHome.top
-        }
+        states: [
+            State {
+                name: "dark"
+                PropertyChanges { target: darkOverlay; opacity: 1}
+            },
+            State {
+                name: "medium"
+                PropertyChanges { target: darkOverlay; opacity: 0.5}
+            },
+            State {
+                name: "clear"
+                PropertyChanges { target: darkOverlay; opacity: 0}
+            }
+        ]
 
-        Controls.ContactModal {
-            id: editContactModal
-            z: 10
-            anchors.horizontalCenter: backgroundHome.horizontalCenter
-            anchors.top: backgroundHome.top
-        }
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: darkOverlay; property: "opacity"; duration: 300}
+            }
+        ]
+    }
 
-        Controls.TransferModal{
-            id: transferModal
-            z: 10
-            anchors.horizontalCenter: backgroundHome.horizontalCenter
-            anchors.top: backgroundHome.top
-        }
+    Controls.HistoryModal {
+        id: historyModal
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
 
-        Controls.AddressModal{
-            id: addressModal
-            z: 10
-            anchors.horizontalCenter: backgroundHome.horizontalCenter
-            anchors.top: backgroundHome.top
-        }
+    Controls.AddContact {
+        id: contactModal
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
 
-        Controls.AddAddressModal{
-            id: addAddressModal
-            z: 10
-            anchors.horizontalCenter: backgroundHome.horizontalCenter
-            anchors.top: backgroundHome.top
-        }
+    Controls.ContactModal {
+        id: editContactModal
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
 
-        Controls.QrScanner{
-            id: qrScanner
-            z: 10
-            anchors.horizontalCenter: backgroundHome.horizontalCenter
-            anchors.top: backgroundHome.top
-            anchors.topMargin: 50
-        }
+    Controls.TransferModal{
+        id: transferModal
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
 
-        Controls.Sidebar{
-            z: 100
-            anchors.left: parent.left
-            anchors.top: parent.top
-        }
+    Controls.AddressModal{
+        id: addressModal
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
+
+    Controls.AddAddressModal{
+        id: addAddressModal
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
+
+    Controls.QrScanner{
+        id: qrScanner
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
+
+    Controls.Sidebar{
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 }

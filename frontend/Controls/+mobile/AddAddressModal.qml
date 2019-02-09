@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addAddressModal
-    width: 325
+    width: Screen.width
     state: addAddressTracker == 1? "up" : "down"
-    height: (editSaved == 1)? 358 : 343
+    height: Screen.height
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -30,13 +30,11 @@ Rectangle {
     states: [
         State {
             name: "up"
-            PropertyChanges { target: addAddressModal; anchors.topMargin: 50}
-            //PropertyChanges { target: addAddressModal; visible: true}
+            PropertyChanges { target: addAddressModal; anchors.topMargin: 0}
         },
         State {
             name: "down"
             PropertyChanges { target: addAddressModal; anchors.topMargin: Screen.height}
-            //PropertyChanges { target: addAddressModal; visible: false}
         }
     ]
 
@@ -45,7 +43,6 @@ Rectangle {
             from: "*"
             to: "*"
             NumberAnimation { target: addAddressModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
-            //PropertyAnimation { target: addAddressModal; property: "visible"; duration: 300}
         }
     ]
 
@@ -60,7 +57,7 @@ Rectangle {
             if (newAddress.text != "") {
                 if (newCoinName.text == "XBY") {
                     if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false) {
-                    addressExists = 1
+                        addressExists = 1
                     }
                 }
                 else {
@@ -112,49 +109,47 @@ Rectangle {
         }
     }
 
-    Rectangle {
-        id: addressTitleBar
-        width: parent.width
-        height: 50
-        radius: 4
+    Text {
+        id: addAddressModalLabel
+        text: "ADD NEW ADDRESS"
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.left: parent.left
-        color: "transparent"
+        anchors.topMargin: 10
+        font.pixelSize: 20
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
         visible: editSaved == 0
-                 && scanQRTracker == 0
-
-        Text {
-            id: transferModalLabel
-            text: "ADD NEW ADDRESS"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.top
-            anchors.verticalCenterOffset: 27
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            color: "#F2F2F2"
-            font.letterSpacing: 2
-        }
     }
 
-    Rectangle {
-        id: addressBodyModal
+    Flickable {
+        id: scrollArea
+        height: parent.height
         width: parent.width
-        height: parent.height - 50
-        radius: 4
-        color: darktheme == false? "#F7F7F7" : "#1B2934"
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-        visible: scanQRTracker == 0
+        contentHeight: editSaved == 0? addAddressScrollArea.height + 125  : scrollArea.height + 125
+        anchors.left: parent.left
+        anchors.top: addAddressModalLabel.bottom
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        boundsBehavior: Flickable.StopAtBounds
+        clip: true
+
+        Rectangle {
+            id: addAddressScrollArea
+            width: parent.width
+            anchors.top: parent.top
+            anchors.bottom: saveButton.bottom
+            color: "transparent"
+        }
 
         Image {
             id: newIcon
             source: newCoinSelect == 1? coinList.get(newCoinPicklist).logo : coinList.get(0).logo
-            height: 25
-            width: 25
+            height: 30
+            width: 30
             anchors.left: newName.left
             anchors.top: parent.top
-            anchors.topMargin: 20
+            anchors.topMargin: 40
             visible: editSaved == 0
                      && coinListTracker == 0
                      && scanQRTracker == 0
@@ -166,10 +161,11 @@ Rectangle {
             anchors.left: newIcon.right
             anchors.leftMargin: 7
             anchors.verticalCenter: newIcon.verticalCenter
-            font.pixelSize: 18
+            font.pixelSize: 24
             font.family: "Brandon Grotesque"
-            font.weight: Font.Bold
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
+            font.letterSpacing: 2
+            font.bold: true
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: editSaved == 0
                      && coinListTracker == 0
                      && scanQRTracker == 0
@@ -228,11 +224,14 @@ Rectangle {
             height: 34
             placeholder: "ADDRESS LABEL"
             text: ""
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+            anchors.right: parent.right
+            anchors.rightMargin: 28
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
-            color: newName.text != "" ? "#F2F2F2" : "#727272"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            color: newName.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
@@ -264,13 +263,14 @@ Rectangle {
         Controls.TextInput {
             id: newAddress
             height: 34
+            width: newName.width
             placeholder: "PUBLIC KEY"
             text: ""
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
-            color: newAddress.text != "" ? "#F2F2F2" : "#727272"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+            color: newAddress.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
                      && scanQRTracker == 0
@@ -335,12 +335,11 @@ Rectangle {
         Rectangle {
             id: scanQrButton
             width: newAddress.width
-            height: 33
+            height: 34
             anchors.top: newAddress.bottom
             anchors.topMargin: 15
             anchors.left: newAddress.left
-            radius: 5
-            border.color: darktheme == false? "#42454F" : "#0ED8D2"
+            border.color: maincolor
             border.width: 2
             color: "transparent"
             visible: editSaved == 0
@@ -350,16 +349,23 @@ Rectangle {
                 anchors.fill: scanQrButton
 
                 onPressed: {
-                    parent.color = maincolor
-                    parent.border.color = "transparent"
-                    scanButtonText.color = "#F2F2F2"
+                    parent.border.color = themecolor
+                    scanButtonText.color = themecolor
                     click01.play()
                 }
 
                 onReleased: {
-                    parent.color = "transparent"
                     parent.border.color = maincolor
                     scanButtonText.color = maincolor
+                }
+
+                onCanceled: {
+                    parent.border.color = maincolor
+                    scanButtonText.color = maincolor
+                }
+
+                onClicked: {
+                    addressExists = 0
                     scanQRTracker = 1
                     scanning = "scanning..."
                 }
@@ -370,11 +376,11 @@ Rectangle {
                 text: "SCAN QR"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                color: darktheme == false? "#0ED8D2" : "#F2F2F2"
+                color: maincolor
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-            }
+             }
         }
 
         DropShadow {
@@ -443,14 +449,14 @@ Rectangle {
         Rectangle {
             id: saveButton
             width: newAddress.width
-            height: 33
-            radius: 5
+            height: 34
             color: (newName.text != ""
                     && newAddress.text !== ""
                     && invalidAddress == 0
                     && addressExists == 0 && labelExists == 0) ? maincolor : "#727272"
-            anchors.bottom: addressBodyModal.bottom
-            anchors.bottomMargin: 20
+            opacity: 0.25
+            anchors.top: scanQrButton.bottom
+            anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
                      && scanQRTracker == 0
@@ -458,9 +464,17 @@ Rectangle {
             MouseArea {
                 anchors.fill: saveButton
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    parent.opacity = 1
+                    click01.play()
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
 
                 onReleased: {
+                    parent.opacity = 0.25
                     if (newName.text != ""
                             && newAddress.text != ""
                             && invalidAddress == 0
@@ -472,19 +486,50 @@ Rectangle {
                     }
                 }
             }
+        }
 
-            Text {
-                text: "SAVE"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: (newName.text != ""
-                        && newAddress.text !== ""
-                        && invalidAddress == 0
-                        && addressExists == 0 && labelExists == 0) ? "#F2F2F2" : "#979797"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        Text {
+            text: "SAVE"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: (newName.text != ""
+                    && newAddress.text !== ""
+                    && invalidAddress == 0
+                    && addressExists == 0 && labelExists == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            visible: editSaved == 0
+                     && scanQRTracker == 0
+        }
+
+        Rectangle {
+            width: newAddress.width
+            height: 34
+            anchors.bottom: saveButton.bottom
+            anchors.left: saveButton.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: (newName.text != ""
+                           && newAddress.text !== ""
+                           && invalidAddress == 0
+                           && addressExists == 0 && labelExists == 0) ? maincolor : "#979797"
+            border.width: 1
+            visible: editSaved == 0
+                     && scanQRTracker == 0
+        }
+
+        // save success state
+
+        Rectangle {
+            id: saveConfirmed
+            width: parent.width
+            height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
+            color: "transparent"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -125
+            visible: editSaved == 1
         }
 
         Image {
@@ -493,8 +538,7 @@ Rectangle {
             height: 100
             width: 100
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -15
+            anchors.top: saveConfirmed.top
             visible: editSaved == 1
 
             ColorOverlay {
@@ -519,19 +563,30 @@ Rectangle {
 
         Rectangle {
             id: closeSave
-            width: (parent.width - 45) / 2
-            height: 33
-            radius: 5
+            width: doubbleButtonWidth / 2
+            height: 34
             color: maincolor
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
+            opacity: 0.25
+            anchors.top: saveSuccessLabel.bottom
+            anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 1
 
             MouseArea {
                 anchors.fill: closeSave
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    parent.opacity = 0.5
+                    click01.play()
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
+
+                onReleased: {
+                    parent.opacity = 0.25
+                }
 
                 onClicked: {
                     addAddressTracker = 0;
@@ -549,14 +604,46 @@ Rectangle {
                     scanning = "scanning..."
                 }
             }
-            Text {
-                text: "OK"
-                font.family: "Brandon Grotesque"
-                font.pointSize: 14
-                font.bold: true
-                color: "#F2F2F2"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+        }
+        Text {
+            text: "OK"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: darktheme == true? "#F2F2F2" : maincolor
+            anchors.horizontalCenter: closeSave.horizontalCenter
+            anchors.verticalCenter: closeSave.verticalCenter
+            visible: editSaved == 1
+        }
+
+        Rectangle {
+            width: closeSave.width
+            height: 34
+            anchors.bottom: closeSave.bottom
+            anchors.left: closeSave.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: maincolor
+            border.width: 1
+            visible: editSaved == 1
+        }
+    }
+
+    Item {
+        z: 3
+        width: Screen.width
+        height: 125
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(x, y)
+            end: Qt.point(x, y + height)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
             }
         }
     }
@@ -564,13 +651,13 @@ Rectangle {
     Label {
         id: closeAddressModal
         z: 10
-        text: "CLOSE"
-        anchors.top: addressBodyModal.bottom
-        anchors.topMargin: 20
-        anchors.horizontalCenter: addressBodyModal.horizontalCenter
+        text: "BACK"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
         visible: addAddressTracker == 1
                  && editSaved == 0
 
@@ -609,12 +696,10 @@ Rectangle {
             }
 
             onPressed: {
-                parent.anchors.topMargin = 14
                 click01.play()
             }
 
-            onClicked: {
-                parent.anchors.topMargin = 10
+            onReleased: {
                 if (addAddressTracker == 1) {
                     addAddressTracker = 0;
                     timer.start()

@@ -16,6 +16,8 @@ import QtQuick.Window 2.2
 import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
+import "qrc:/Controls" as Controls
+
 Rectangle {
     id: allWalletCards
     width: Screen.width
@@ -32,76 +34,58 @@ Rectangle {
             id: cardRow
             color: "transparent"
             width: Screen.width
-            height: 85
+            height: 100
             anchors.horizontalCenter: parent.horizontalCenter
 
             Rectangle {
                 id: square
-                width: parent.width - 55
-                height: 75
+                width: parent.width
+                height: parent.height
                 radius: 4
-                color: darktheme == false? "#F2F2F2" : "#1B2934"
-                border.width: 1
-                border.color: darktheme == false? "#42454F" : "transparent"
+                color: "transparent"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
+                clip: true
 
-                DropShadow {
-                    id: iconShadow
-                    anchors.fill: icon
-                    source: icon
-                    horizontalOffset: 0
-                    verticalOffset: 4
-                    radius: 12
-                    samples: 25
-                    spread: 0
-                    color:"black"
-                    opacity: 0.3
-                    transparentBorder: true
+                Controls.CardBody {
+
                 }
 
                 Image {
                     id: icon
                     source: photo
                     anchors.left: parent.left
-                    anchors.leftMargin: 14
+                    anchors.leftMargin: 28
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 50
-                    height: 50
+                    width: 70
+                    height: 70
                 }
 
                 Label {
-                    id: contactLastName
+                    id: contacttName
                     anchors.right: parent.right
-                    anchors.rightMargin: 14
+                    anchors.rightMargin: 28
+                    anchors.left: icon.right
+                    anchors.leftMargin: 10
                     anchors.top: parent.top
-                    anchors.topMargin: 12
-                    text: lastName
-                    font.pixelSize: 16
+                    anchors.topMargin: 17
+                    text: lastName != ""? (firstName + " " + lastName) : firstName
+                    font.pixelSize: 20
                     font.family: xciteMobile.name
-                    font.capitalization: Font.AllUppercase
-                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
-                }
-
-                Label {
-                    id: contactFirstName
-                    anchors.right: contactLastName.left
-                    anchors.rightMargin: 5
-                    anchors.verticalCenter: contactLastName.verticalCenter
-                    text: firstName
-                    font.pixelSize: 16
-                    font.family:  xciteMobile.name
+                    font.letterSpacing: 2
+                    horizontalAlignment: Text.AlignRight
+                    elide: Text.ElideRight
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Label {
                     id: addresses
                     anchors.right: parent.right
-                    anchors.rightMargin: 14
+                    anchors.rightMargin: 28
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 10
+                    anchors.bottomMargin: 20
                     text: addressesCount.text === 1? "address" : "addresses"
-                    font.pixelSize: 14
+                    font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
@@ -111,9 +95,9 @@ Rectangle {
                     anchors.right: addresses.left
                     anchors.rightMargin: 5
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 10
+                    anchors.bottomMargin: 20
                     text: countAddressesContact(contactNR)
-                    font.pixelSize: 14
+                    font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
@@ -122,6 +106,7 @@ Rectangle {
                     anchors.fill: parent
 
                     onClicked: {
+                        click01.play()
                         contactIndex = contactNR
                         contactTracker = 1
                     }
@@ -152,26 +137,6 @@ Rectangle {
                 }
                 RegExpFilter {
                     roleName: "lastName"
-                    pattern: searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "telNR"
-                    pattern: searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "cellNR"
-                    pattern: searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "mailAddress"
-                    pattern: searchFilter
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "chatID"
                     pattern: searchFilter
                     caseSensitivity: Qt.CaseInsensitive
                 }
