@@ -194,7 +194,7 @@ bool Settings::checkPincode(QString pincode){
 QSqlDatabase Settings::OpenDBConnection(){
     // Development database in use
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("/Users/tuukkapeltoniemi/Documents-NotCloud/Development/XtraBytes/xcite-tuukkapel/XCITE/dev-db/xtrabytes");
+    db.setDatabaseName("<CHANGE_TO_YOUR_PROJECT_FOLDER>/dev-db/xtrabytes");
 
     // Release database to be used
     //QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
