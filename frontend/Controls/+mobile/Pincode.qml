@@ -1,0 +1,790 @@
+/**
+ * Filename: AddAddressModal.qml
+ *
+ * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
+ * blockchain protocol to host decentralized applications
+ *
+ * Copyright (c) 2017-2018 Zoltan Szabo & XTRABYTES developers
+ *
+ * This file is part of an XTRABYTES Ltd. project.
+ *
+ */
+
+import QtQuick.Controls 2.3
+import QtQuick 2.7
+import QtGraphicalEffects 1.0
+import QtQuick.Window 2.2
+import QtMultimedia 5.8
+
+import "qrc:/Controls" as Controls
+
+Rectangle {
+    id: pincodeModal
+    width: Screen.width
+    state: pincodeTracker == 1? "up" : "down"
+    height: Screen.height
+    color: darktheme == false? "#F7F7F7" : "#14161B"
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+
+    LinearGradient {
+        anchors.fill: parent
+        source: parent
+        start: Qt.point(0, 0)
+        end: Qt.point(0, parent.height)
+        opacity: darktheme == false? 0.05 : 0.2
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: darktheme == false?"#00072778" : "#FF162124" }
+            GradientStop { position: 1.0; color: darktheme == false?"#FF072778" : "#00162124" }
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+    }
+
+    states: [
+        State {
+            name: "up"
+            PropertyChanges { target: pincodeModal; anchors.topMargin: 0}
+        },
+        State {
+            name: "down"
+            PropertyChanges { target: pincodeModal; anchors.topMargin: Screen.height}
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "*"
+            to: "*"
+            NumberAnimation { target: pincodeModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+        }
+    ]
+
+    Text {
+        id: pincodeModalLabel
+        text: createPin == 1? "CREATE NEW PINCODE" : (changePin == 1? "CHANGE PINCODE": "ENTER PINCODE")
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        font.pixelSize: 20
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
+        visible: editSaved == 0
+    }
+
+    property int editSaved: 0
+    //the variables needed to send coins
+    property string coin: ""
+    property string walletHash: ""
+    property real amount: 0
+    property string partnerHash: ""
+    property real fee: 0
+
+    property int passTry: 0
+    property int passError1: 0
+    property int passError2: 0
+    property int passError3: 0
+    property int passError4: 0
+
+    Flickable {
+        id: scrollArea
+        width: parent.width
+        contentHeight: pincodeScrollArea.height > scrollArea.height? pincodeScrollArea.height + 125 : scrollArea.height + 125
+        anchors.left: parent.left
+        anchors.top: pincodeModalLabel.bottom
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        boundsBehavior: Flickable.StopAtBounds
+        interactive: (pincodeScrollArea.y + pincodeScrollArea.height) >= bottomGradient.y
+        clip: true
+
+        Rectangle {
+            id: pincodeScrollArea
+            width: parent.width
+            height: createPin == 1? createPinModal.height : (changePin == 1? changePinModal.height: providePinModal.height)
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+        }
+
+        Item {
+            id: createPinModal
+            width: parent.width
+            height: createPinText1.height + newPin1.height + createPinText2.height + newPin2.height + noMatch.height + savePin.height + 96
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: createPin == 1
+                     && editSaved == 0
+
+            Label {
+                id: createPinText1
+                text: "Choose a 4-digit pincode"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Controls.AmountInput {
+                id: newPin1
+                height: 70
+                anchors.right: parent.right
+                anchors.rightMargin: 28
+                anchors.left: parent.left
+                anchors.leftMargin: 28
+                anchors.top: createPinText1.bottom
+                anchors.topMargin: 20
+                placeholder: ""
+                echoMode: TextInput.Password
+                horizontalAlignment: TextInput.AlignHCenter
+                color: themecolor
+                textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+                font.pixelSize: 28
+                font.letterSpacing: 4
+                readOnly: (pin.text).length >= 4
+                mobile: 1
+                calculator: 0
+            }
+
+            Label {
+                id: createPinText2
+                text: "Retype your 4-digit pincode"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: newPin1.bottom
+                anchors.topMargin: 30
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Controls.AmountInput {
+                id: newPin2
+                height: 70
+                anchors.right: parent.right
+                anchors.rightMargin: 28
+                anchors.left: parent.left
+                anchors.leftMargin: 28
+                anchors.top: createPinText2.bottom
+                anchors.topMargin: 20
+                placeholder: ""
+                echoMode: TextInput.Password
+                horizontalAlignment: TextInput.AlignHCenter
+                color: themecolor
+                textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+                font.pixelSize: 28
+                font.letterSpacing: 4
+                readOnly: (pin.text).length >= 4
+                mobile: 1
+                calculator: 0
+
+                onTextChanged: {
+                    if ((newPin2.text).length === 4){
+                        passError3 = 0
+                        if (newPin2.text !== newPin1.text) {
+                            passError3 = 1
+                            newPin2.text = ""
+                        }
+                    }
+                }
+            }
+
+            Label {
+                id: noMatch
+                text: "The pincodes you entered don't match!"
+                color: "#FD2E2E"
+                anchors.left: newPin2.left
+                anchors.leftMargin: 5
+                anchors.top: newPin2.bottom
+                anchors.topMargin: 1
+                font.pixelSize: 11
+                font.family: "Brandon Grotesque"
+                font.weight: Font.Normal
+                visible: passError3 == 1
+            }
+
+            Rectangle {
+                id: savePin
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? maincolor : "#727272"
+                opacity: 0.25
+                anchors.top: newPin2.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Timer {
+                    id: timer1
+                    interval: 2000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        pincodeTracker = 0
+                        createPin = 0
+                        editSaved = 0
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        parent.opacity = 0.5
+                        click01.play()
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 0.25
+                    }
+
+                    onReleased: {
+                        parent.opacity = 0.25
+                    }
+
+                    onClicked: {
+                        if (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0) {
+                            editSaved = 1
+                            userSettings.pincode = newPin1.text
+                            userSettings.pinlock = true
+                            newPin1.text = ""
+                            newPin2.text = ""
+                            timer1.start()
+                        }
+                    }
+                }
+            }
+            Text {
+                text: "SAVE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                anchors.horizontalCenter: savePin.horizontalCenter
+                anchors.verticalCenter: savePin.verticalCenter
+            }
+
+            Rectangle {
+                width: savePin.width
+                height: 34
+                anchors.bottom: savePin.bottom
+                anchors.left: savePin.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? maincolor : "#979797"
+                border.width: 1
+            }
+        }
+
+        Item {
+            id: changePinModal
+            width: parent.width
+            height: currentPinText.height + currentPin.height + newPinText1.height + changePin1.height + newPinText2.height + changePin2.height +noMatch2.height + editPin.height + 146
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: changePin == 1
+                     && editSaved == 0
+
+            Label {
+                id: currentPinText
+                text: "Enter your current pincode"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Controls.AmountInput {
+                id: currentPin
+                height: 70
+                anchors.right: parent.right
+                anchors.rightMargin: 28
+                anchors.left: parent.left
+                anchors.leftMargin: 28
+                anchors.top: currentPinText.bottom
+                anchors.topMargin: 20
+                placeholder: ""
+                echoMode: TextInput.Password
+                horizontalAlignment: TextInput.AlignHCenter
+                color: themecolor
+                textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+                font.pixelSize: 28
+                font.letterSpacing: 4
+                readOnly: (pin.text).length >= 4
+                mobile: 1
+                calculator: 0
+
+                onTextChanged: {
+                    if ((currentPin.text).length === 4){
+                        passError4 = 0
+                        if (currentPin.text !== userSettings.pincode) {
+                            passError4 = 1
+                            currentPin.text = ""
+                        }
+                    }
+                }
+            }
+
+            Label {
+                id: noMatch3
+                text: "The pincode you entered is not correct!"
+                color: "#FD2E2E"
+                anchors.left: currentPin.left
+                anchors.leftMargin: 5
+                anchors.top: currentPin.bottom
+                anchors.topMargin: 1
+                font.pixelSize: 11
+                font.family: "Brandon Grotesque"
+                font.weight: Font.Normal
+                visible: passError4 == 1
+            }
+
+            Label {
+                id: newPinText1
+                text: "Choose a new 4-digit pincode"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: currentPin.bottom
+                anchors.topMargin: 30
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Controls.AmountInput {
+                id: changePin1
+                height: 70
+                anchors.right: parent.right
+                anchors.rightMargin: 28
+                anchors.left: parent.left
+                anchors.leftMargin: 28
+                anchors.top: newPinText1.bottom
+                anchors.topMargin: 20
+                placeholder: ""
+                echoMode: TextInput.Password
+                horizontalAlignment: TextInput.AlignHCenter
+                color: themecolor
+                textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+                font.pixelSize: 28
+                font.letterSpacing: 4
+                readOnly: (pin.text).length >= 4
+                mobile: 1
+                calculator: 0
+            }
+
+            Label {
+                id: newPinText2
+                text: "Choose a new 4-digit pincode"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: changePin1.bottom
+                anchors.topMargin: 30
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Controls.AmountInput {
+                id: changePin2
+                height: 70
+                anchors.right: parent.right
+                anchors.rightMargin: 28
+                anchors.left: parent.left
+                anchors.leftMargin: 28
+                anchors.top: newPinText2.bottom
+                anchors.topMargin: 20
+                placeholder: ""
+                echoMode: TextInput.Password
+                horizontalAlignment: TextInput.AlignHCenter
+                color: themecolor
+                textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+                font.pixelSize: 28
+                font.letterSpacing: 4
+                readOnly: (pin.text).length >= 4
+                mobile: 1
+                calculator: 0
+
+                onTextChanged: {
+                    if ((changePin2.text).length === 4){
+                        passError3 = 0
+                        if (changePin2.text !== changePin1.text) {
+                            passError3 = 1
+                            changePin2.text = ""
+                        }
+                    }
+                }
+            }
+
+            Label {
+                id: noMatch2
+                text: "The new pincodes you entered don't match!"
+                color: "#FD2E2E"
+                anchors.left: changePin2.left
+                anchors.leftMargin: 5
+                anchors.top: changePin2.bottom
+                anchors.topMargin: 1
+                font.pixelSize: 11
+                font.family: "Brandon Grotesque"
+                font.weight: Font.Normal
+                visible: passError3 == 1
+            }
+
+            Rectangle {
+                id: editPin
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError4 == 0)? maincolor : "#727272"
+                opacity: 0.25
+                anchors.top: changePin2.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Timer {
+                    id: timer5
+                    interval: 2000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        pincodeTracker = 0
+                        changePin = 0
+                        editSaved = 0
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        parent.opacity = 0.5
+                        click01.play()
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 0.25
+                    }
+
+                    onReleased: {
+                        parent.opacity = 0.25
+                    }
+
+                    onClicked: {
+                        if (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError4 == 0) {
+                            editSaved = 1
+                            userSettings.pincode = newPin1.text
+                            currentPin.text = ""
+                            changePin1.text = ""
+                            changePin2.text = ""
+                            timer5.start()
+                        }
+                    }
+                }
+            }
+            Text {
+                text: "SAVE"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError4 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                anchors.horizontalCenter: editPin.horizontalCenter
+                anchors.verticalCenter: editPin.verticalCenter
+            }
+
+            Rectangle {
+                width: editPin.width
+                height: 34
+                anchors.bottom: editPin.bottom
+                anchors.left: editPin.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError4 == 0)? maincolor : "#979797"
+                border.width: 1
+            }
+        }
+
+        Item {
+            id: providePinModal
+            width: parent.width
+            height: providePinText.height + pin.height + 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: createPin == 0
+                     && changePin == 0
+                     && pinOK == 0
+                     && pinError == 0
+            Label {
+                id: providePinText
+                text: unlockPin == 1? "To unlock your wallet please enter your pincode" : "To continue please enter your pincode"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Controls.AmountInput {
+                id: pin
+                height: 70
+                anchors.right: parent.right
+                anchors.rightMargin: 28
+                anchors.left: parent.left
+                anchors.leftMargin: 28
+                anchors.top: providePinText.bottom
+                anchors.topMargin: 20
+                placeholder: ""
+                echoMode: TextInput.Password
+                horizontalAlignment: TextInput.AlignHCenter
+                color: themecolor
+                textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+                font.pixelSize: 28
+                font.letterSpacing: 4
+                readOnly: (pin.text).length >= 4
+                mobile: 1
+                deleteBtn: 0
+                calculator: 0
+
+                Timer {
+                    id: timer3
+                    interval: 1000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        pinOK = 0
+                        pincodeTracker = 0
+                        unlockPin == 0
+                    }
+                }
+
+                Timer {
+                    id: timer4
+                    interval: passError2 == 1 ? 5000 : 2000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        if (passError2 == 1) {
+                            passError2 = 0
+                            passTry = 0
+                            pincodeTracker = 0
+                            unlockPin = 0
+                            pinError = 0
+                            coinList.clear()
+                            walletList.clear()
+                            contactList.clear()
+                            addressList.clear()
+                            transactionList.clear()
+                            Qt.quit()
+                        }
+                        else {
+                            pinError = 0
+                        }
+                    }
+                }
+
+                onTextChanged: {
+                    if ((pin.text).length === 4){
+                        passError1 = 0
+                        passError2 = 0
+                        passTry = passTry + 1
+                        if (pin.text !== userSettings.pincode) {
+                            pinError = 1
+                            pin.text = ""
+                            if (passTry == 3) {
+                                passError2 = 1
+                                timer4.start()
+                            }
+                            else {
+                                passError1 = 1
+                                timer4.start()
+                            }
+                        }
+                        else {
+                            pinOK = 1
+                            pin.text = ""
+                            passTry = 0
+                            if (unlockPin == 1) {
+                                userSettings.pinlock = false
+                                userSettings.pincode = ""
+                                timer3.start()
+                            }
+                            else if (transferTracker == 1) {
+                                // whatever function needed to execute payment
+                                requestSend = 1
+                                timer3.start()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: pinSaved
+            width: parent.width
+            height: pinSavedText.height
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: createPin == 1
+                     && editSaved == 1
+
+            Label {
+                id: pinSavedText
+                text: "Pincode SET!"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+        }
+
+        Item {
+            id: pinChanged
+            width: parent.width
+            height: pinChangedText.height
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: changePin == 1
+                     && editSaved == 1
+
+            Label {
+                id: pinChangedText
+                text: "New pincode SET!"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+        }
+
+        Item {
+            id: pinCorrect
+            width: parent.width
+            height: pinSucces.height
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: createPin == 0
+                     && changePin == 0
+                     && pinOK == 1
+                     && pinError == 0
+
+            Label {
+                id: pinSucces
+                text: "Pincode CORRECT!"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+        }
+
+        Item {
+            id: pinFail
+            width: parent.width
+            height: wrongPin1.height + wrongPin2.height + 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: createPin == 0
+                     && changePin == 0
+                     && pinOK == 0
+                     && pinError == 1
+
+            Label {
+                id: wrongPin1
+                text: passError2 == 0? "The pincodes you entered is incorrect!" : "You had 3 failed attempts!"
+                color: themecolor
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+                font.weight: Font.Normal
+            }
+
+            Label {
+                id: wrongPin2
+                text: passError2 == 0? "You have " + (3 - passTry) + " attempts left before you are logged out automatically!" : "You will be logged out automatically in 5 seconds!"
+                color: themecolor
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: wrongPin1.bottom
+                anchors.topMargin: 5
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.weight: Font.Normal
+            }
+        }
+    }
+
+    Item {
+        id: bottomGradient
+        z: 3
+        width: Screen.width
+        height: 125
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(x, y)
+            end: Qt.point(x, y + height)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
+            }
+        }
+    }
+
+    Label {
+        id: closePincode
+        z: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: "BACK"
+        font.pixelSize: 14
+        font.family: xciteMobile.name
+        color: themecolor
+        visible: pinOK == 0
+                 && pinError == 0
+
+        Rectangle {
+            id: backbutton
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width
+            height: 34
+            color: "transparent"
+        }
+
+        MouseArea {
+            anchors.fill: backbutton
+            onClicked: {
+                pincodeTracker = 0
+                createPin = 0
+                changePin = 0
+                unlockPin = 0
+                passError1 = 0
+                passError2 = 0
+                passError3 = 0
+                pin.text = ""
+                newPin1.text = ""
+                newPin2.text = ""
+            }
+        }
+    }
+}

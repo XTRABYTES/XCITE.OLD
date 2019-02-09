@@ -24,6 +24,7 @@ Rectangle {
     width: parent.width
     height: parent.height
     color: "transparent"
+    clip: true
 
     property string searchFilter: ""
     property string selectedCoin: ""
@@ -37,8 +38,8 @@ Rectangle {
             width: parent.width
             height: 30
             color: "transparent"
-            visible: amount !== 0 && inView == true
-            property bool inView: y >= (completeHistory.contentY - 5) && y <= completeHistory.span
+            visible: amount !== 0
+            clip: true
 
             property int lineView: 0
 
@@ -60,9 +61,9 @@ Rectangle {
                 text: date
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 14
-                color: "#F2F2F2"
+                color: themecolor
                 visible: lineView == 0
             }
 
@@ -91,9 +92,9 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.rightMargin: 45
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: 14
-                color: "#F2F2F2"
+                color: themecolor
                 visible: lineView == 0
             }
 
@@ -109,7 +110,7 @@ Rectangle {
                 ColorOverlay {
                     anchors.fill: parent
                     source: parent
-                    color: "#F2F2F2"
+                    color: themecolor
                 }
 
                 Rectangle {
@@ -143,7 +144,7 @@ Rectangle {
                 ColorOverlay {
                     anchors.fill: parent
                     source: parent
-                    color: "#F2F2F2"
+                    color: themecolor
                 }
 
                 Rectangle{
@@ -186,9 +187,9 @@ Rectangle {
                 anchors.left: left2.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: xciteMobile.name //"Brandon Grotesque"
+                font.family: xciteMobile.name
                 font.pixelSize: txpartnerName !== "" ? 14 : 11
-                color: "#F2F2F2"
+                color: themecolor
                 visible: lineView == 1
             }
             Image {
@@ -203,7 +204,7 @@ Rectangle {
                 ColorOverlay {
                     anchors.fill: parent
                     source: parent
-                    color: "#F2F2F2"
+                    color: themecolor
                 }
 
                 Rectangle{
@@ -237,7 +238,7 @@ Rectangle {
                 ColorOverlay {
                     anchors.fill: parent
                     source: parent
-                    color: "#F2F2F2"
+                    color: themecolor
                 }
 
                 Rectangle{
@@ -267,7 +268,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 font.family: xciteMobile.name
                 font.pixelSize: 14
-                color: "#F2F2F2"
+                color: themecolor
                 visible: lineView == 2
             }
 
@@ -362,6 +363,6 @@ Rectangle {
         id: completeHistory
         model: filteredTX
         delegate: historyLine
-        property real span : contentY + height
+        contentHeight: parent.height + 125
     }
 }

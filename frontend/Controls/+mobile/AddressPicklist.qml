@@ -31,10 +31,8 @@ Rectangle {
             id: contactsRow
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
-            height: 45
+            height: 80
             color:"transparent"
-            visible: inView == true
-            property bool inView: y >= (picklist.contentY - 5) && y <= picklist.span
 
             Rectangle {
                 id: clickIndicator
@@ -55,9 +53,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onPressed: {
-                    if (currentAddress != address) {
-                        clickIndicator.visible = true
-                    }
+                    clickIndicator.visible = true
                 }
 
                 onReleased: {
@@ -66,7 +62,7 @@ Rectangle {
 
                 onClicked: {
                     clickIndicator.visible = false
-                    if (transferTracker == 1 && currentAddress != address) {
+                    if (transferTracker == 1) {
                         addressbookTracker = 0;
                         selectedAddress = address
                     }
@@ -74,26 +70,28 @@ Rectangle {
             }
 
             Rectangle {
+                width: parent.width - 56
                 height: 1
-                width: parent.width - 60
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                color: darktheme == false? "#727272" : maincolor
-                visible: index != 0
+                anchors.bottom: parent.bottom
+                color: themecolor
             }
 
             Label {
                 id: addressContactName
                 width: 130
-                text: contact == 0? ("My address (" + label + ")") : ((contactList.get(contact).firstName).substring(0,1) + ". " + (contactList.get(contact).lastName) + " (" + label + ")")
+                text: contactList.get(contact).firstName + " " + contactList.get(contact).lastName + " (" + label + ")"
                 anchors.left: parent.left
-                anchors.leftMargin: 30
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.leftMargin: 28
+                anchors.right: parent.right
+                anchors.rightMargin: 28
+                anchors.top: parent.top
+                anchors.topMargin: 10
                 font.family: xciteMobile.name
-                font.pixelSize: 16
+                font.pixelSize: 20
+                font.letterSpacing: 2
                 font.bold: true
-                color: "#F2F2F2"
-                clip: contentWidth > width
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
                 elide: Text.ElideRight
             }
 
@@ -101,22 +99,15 @@ Rectangle {
                 id: addressHash
                 text: address
                 anchors.left: parent.left
-                anchors.leftMargin: 170
+                anchors.leftMargin: 28
                 anchors.right: parent.right
-                anchors.rightMargin: 30
-                anchors.bottom: addressContactName.bottom
+                anchors.rightMargin: 28
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 10
                 font.family: xciteMobile.name
                 font.pixelSize: 14
-                color: "#F2F2F2"
-                clip: contentWidth > width
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
                 elide: Text.ElideRight
-            }
-
-            Rectangle {
-                anchors.fill: parent
-                color: "black"
-                opacity: 0.6
-                visible: currentAddress == address
             }
         }
     }
@@ -141,6 +132,6 @@ Rectangle {
         id: picklist
         model: filteredAddresses
         delegate: contactLine
-        property real span : contentY + height
+        clip: true
     }
 }
