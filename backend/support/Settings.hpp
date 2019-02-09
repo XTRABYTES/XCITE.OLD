@@ -29,16 +29,17 @@ public:
     Settings(QObject *parent = 0);
     Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent = 0);
     void setLocale(QString);
-    QJsonDocument Addresses;
 
 public slots:
     void onLocaleChange(QString);
     void onClearAllSettings();
     void login(QString username, QString password);
     bool SaveSettings();
-    QString LoadSettings(QString username, QString password);
+    void LoadSettings();
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
+    void SaveAddresses(QVariant addresslist);
+    void SavePincode(QString pincode);
 
 signals:
     void loginSucceededChanged();
@@ -52,6 +53,10 @@ private:
     QTranslator m_translator;
     QQmlApplicationEngine *m_engine;
     QSettings *m_settings;
+    QList<QString> m_addresses;
+    QString m_pincode;
+    QString m_username;
+    QString m_password;
 
 private slots:
     QSqlDatabase OpenDBConnection();

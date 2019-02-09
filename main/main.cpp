@@ -101,6 +101,8 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(userExists(QString)), &settings, SLOT(UserExists(QString)));
     QObject::connect(rootObject, SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
     QObject::connect(rootObject, SIGNAL(clearAllSettings()), &settings, SLOT(onClearAllSettings()));
+    QObject::connect(rootObject, SIGNAL(saveAddressBook(QVariant)), &settings, SLOT(SaveAddresses(QVariant)));
+    QObject::connect(rootObject, SIGNAL(savePincode(Qstring)), &settings, SLOT(SavePincode(QString)));
 
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findXBYValue(QString)));

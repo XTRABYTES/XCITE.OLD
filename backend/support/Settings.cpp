@@ -117,26 +117,45 @@ void Settings::login(QString username, QString password){
 
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     QByteArray decodedSettings = encryption.decode(result, (password + "xtrabytesxtrabytes").toLocal8Bit());
-    if(decodedSettings.startsWith("<xtrabytes>"))
+    if(decodedSettings.startsWith("<xtrabytes>")){
+        m_username = username;
+        m_password = password;
         emit loginSucceededChanged();
+    }
     else
         emit loginFailedChanged();
 }
 
-// User setting functions (Not yet in use)
-
+// User setting functions
 bool Settings::SaveSettings(){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    QString settings;
+    for(int i = 0; i < m_addresses.length(); i++){
+        settings += m_addresses[i] + ",";
+    }
+
+    QString enc_pincode = encryption.encode((QString("<xtrabytes>") + m_pincode).toLocal8Bit(), (m_password + "xtrabytesxtrabytes").toLocal8Bit());
+    settings += "\"pincode\": \"" + enc_pincode + "\",";
+
+    QByteArray encodedText = encryption.encode((QString("<xtrabytes>") + settings).toLocal8Bit(), (m_password + "xtrabytesxtrabytes").toLocal8Bit());
+
     QSqlDatabase db = OpenDBConnection();
+    QSqlQuery query;
+    query.prepare("UPDATE xciteSettings set settings = ? where username = ?");
+    query.addBindValue(m_username);
+    query.addBindValue(encodedText);
+    query.exec();
+    db.close();
 
     return true;
 }
 
-QString Settings::LoadSettings(QString username, QString password){
+void Settings::LoadSettings(){
     QByteArray result;
     QSqlDatabase db = OpenDBConnection();
     QSqlQuery query;
     query.prepare("SELECT settings from xciteSettings where username = ?");
-    query.addBindValue(username);
+    query.addBindValue(m_username);
     query.exec();
     while (query.next()) {
            result = query.value(0).toByteArray();
@@ -144,13 +163,20 @@ QString Settings::LoadSettings(QString username, QString password){
     db.close();
 
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-    QByteArray decodedSettings = encryption.decode(result, (password + "xtrabytesxtrabytes").toLocal8Bit());
+    QByteArray decodedSettings = encryption.decode(result, (m_password + "xtrabytesxtrabytes").toLocal8Bit());
     if(decodedSettings.startsWith("<xtrabytes>")){
        QString settings = decodedSettings.left(11);
-        return settings;
     }
+}
 
-    return "";
+void Settings::SaveAddresses(QVariant addresslist){
+    m_addresses = QVariant(addresslist).value<QList<QString> >();
+    SaveSettings();
+}
+
+void Settings::SavePincode(QString pincode){
+    m_pincode = pincode;
+    SaveSettings();
 }
 
 // General functions
@@ -158,7 +184,7 @@ QString Settings::LoadSettings(QString username, QString password){
 QSqlDatabase Settings::OpenDBConnection(){
     // Development database in use
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("<CHANGE TO YOUR ABSOLUTE PROJECT FOLDER>/dev-db/xtrabytes");
+    db.setDatabaseName("/Users/tuukkapeltoniemi/Documents-NotCloud/Development/XtraBytes/xcite-tuukkapel/XCITE/dev-db/xtrabytes");
 
     // Release database to be used
     //QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");

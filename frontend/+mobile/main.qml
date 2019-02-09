@@ -142,6 +142,8 @@ ApplicationWindow {
     signal createUser(string username, string password)
     signal userExists(string username)
     signal clearAllSettings
+    signal saveAddressBook(var addresses)
+    signal savePincode(string pincode)
 
     // Global functions
     function countWallets() {
