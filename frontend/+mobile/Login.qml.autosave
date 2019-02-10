@@ -194,6 +194,7 @@ Item {
                 target: UserSettings
                 onLoginSucceededChanged: {
                     username = userName.text
+                    // load accountCreation status
                     if (userSettings.accountCreationCompleted === true) {
                         mainRoot.pop()
                         mainRoot.push("../Home.qml")

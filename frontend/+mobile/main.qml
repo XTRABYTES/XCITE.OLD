@@ -55,21 +55,21 @@ ApplicationWindow {
 
     // BTC information
     property real btcValueBTC: 1
-    property real valueBTCUSD: 3353.20
-    property real valueBTCEUR: 2966.10
-    property real valueBTCGBP: 2597.53
+    property real valueBTCUSD: 3353.20 // replace by function to retrieve from CMC or equivalent
+    property real valueBTCEUR: 2966.10 // replace by function to retrieve from CMC or equivalent
+    property real valueBTCGBP: 2597.53 // replace by function to retrieve from CMC or equivalent
     property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : valueBTCGBP
 
     // Coin info, retrieved from server
     property string nameXBY: "XBY"
-    property real btcValueXBY: 0.00000445
+    property real btcValueXBY: 0.00000445 // replace by function to retrieve from server
     property real valueXBY: btcValueXBY * valueBTC
-    property real percentageXBY: 23.47
+    property real percentageXBY: 23.47 // replace by function to retrieve from server
 
     property string nameXFUEL: "XFUEL"
-    property real btcValueXFUEL: btcValueXBY
+    property real btcValueXFUEL: btcValueXBY // replace by function to retrieve from server
     property real valueXFUEL: btcValueXFUEL * valueBTC
-    property real percentageXFUEL: 23.47
+    property real percentageXFUEL: 23.47 // replace by function to retrieve from server
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
@@ -158,6 +158,7 @@ ApplicationWindow {
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
     signal userExists(string username)
+    //signal userAvailable()
     signal clearAllSettings
     signal saveAddressBook(var addresses)
     signal savePincode(string pincode)
@@ -612,6 +613,19 @@ ApplicationWindow {
         currencyID = currencyID + 1
         fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": currencyID});
         currencyID = currencyID + 1
+
+        coinList.setProperty(0, "name", nameXFUEL);
+        coinList.setProperty(0, "fullname", "XFUEL");
+        coinList.setProperty(0, "logo", 'qrc:/icons/XFUEL_card_logo_01.svg');
+        coinList.setProperty(0, "logoBig", 'qrc:/icons/XFUEL_logo_big.svg');
+        coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
+        coinList.setProperty(0, "percentage", percentageXFUEL);
+        coinList.setProperty(0, "totalBalance", 0);
+        coinList.setProperty(0, "active", true);
+        coinList.setProperty(0, "coinID", coinIndex);
+        coinIndex = coinIndex +1;
+        coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": coinIndex});
+        coinIndex = coinIndex +1;
     }
 
     // Global components
@@ -625,14 +639,13 @@ ApplicationWindow {
         property int defaultCurrency: 0
         property string theme: "dark"
         property bool pinlock: false
-        property string pincode: ""
+        property bool accountCreationCompleted: false
 
         //update settings
-        //onLocaleChanged:
-        //onDefaultCurrencyChanged:
-        //onThemeChanged:
-        //onPinlockChanged:
-        //onPincodeChanged:
+            //onLocaleChanged: ...
+            //onDefaultCurrencyChanged: ...
+            //onThemeChanged: ...
+            //onPinlockChanged: ...
     }
 
     // Global fonts

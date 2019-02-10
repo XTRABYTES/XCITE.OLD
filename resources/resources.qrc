@@ -182,5 +182,6 @@
         <file>icons/XBY_logo_big.svg</file>
         <file>icons/XFUEL_logo_big.svg</file>
         <file>gifs/loading_02.gif</file>
+        <file>gifs/loading_01.gif</file>
     </qresource>
 </RCC>

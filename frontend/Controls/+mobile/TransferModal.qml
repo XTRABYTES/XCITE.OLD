@@ -1300,9 +1300,9 @@ Rectangle {
 
         AnimatedImage {
             id: waitingDots
-            source: 'qrc:/gifs/loading_02.gif'
-            width: 128
-            height: 128
+            source: 'qrc:/gifs/loading_01.gif'
+            width: 75
+            height: 50
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -125
@@ -1325,6 +1325,7 @@ Rectangle {
             id: waitingText
             text: "Waiting for confirmation ..."
             anchors.bottom: waitingDots.top
+            anchors.bottomMargin: 70
             anchors.horizontalCenter: parent.horizontalCenter
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             font.pixelSize: 14
@@ -1705,20 +1706,21 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.top
         width: Screen.width
-        height: 100
         state: networkError == 0? "up" : "down"
         color: "black"
         opacity: 0.9
-
+        clip: true
 
         states: [
             State {
                 name: "up"
                 PropertyChanges { target: serverError; anchors.bottomMargin: 0}
+                PropertyChanges { target: serverError; height: 0}
             },
             State {
                 name: "down"
                 PropertyChanges { target: serverError; anchors.bottomMargin: -100}
+                PropertyChanges { target: serverError; height: 100}
             }
         ]
 
@@ -1743,12 +1745,11 @@ Rectangle {
 
         Rectangle {
             id: okButton
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
+            width: doubbleButtonWidth / 2
+            height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
-            radius: 5
             color: "#1B2934"
             opacity: 0.5
 
@@ -1786,11 +1787,10 @@ Rectangle {
         }
 
         Rectangle {
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
+            width: doubbleButtonWidth / 2
+            height: 34
             anchors.horizontalCenter: okButton.horizontalCenter
             anchors.bottom: okButton.bottom
-            radius: 5
             color: "transparent"
             opacity: 0.5
             border.width: 1
@@ -1802,7 +1802,7 @@ Rectangle {
             height: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            color: "black"
+            color: bgcolor
         }
     }
 

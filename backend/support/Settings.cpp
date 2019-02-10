@@ -77,7 +77,6 @@ bool Settings::UserExists(QString username){
         return true;
     }
     db.close();
-    emit usernameAvailable();
     return false;
 }
 
