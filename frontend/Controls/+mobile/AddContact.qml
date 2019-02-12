@@ -315,9 +315,10 @@ Rectangle {
 
         Image {
             id: saveSuccess
-            source: newPhoto.source
+            source: darktheme == true? 'qrc:/icons/mobile/add_contact-icon_01_light.svg' : 'qrc:/icons/mobile/add_contact-icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveConfirmed.top
             visible: editSaved == 1

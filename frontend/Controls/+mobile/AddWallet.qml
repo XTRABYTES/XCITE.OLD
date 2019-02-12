@@ -347,9 +347,10 @@ Rectangle {
 
             Image {
                 id: saveSuccess
-                source: 'qrc:/icons/icon-success.svg'
+                source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
                 height: 100
                 width: 100
+                fillMode: Image.PreserveAspectFit
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -436,9 +437,10 @@ Rectangle {
 
             Image {
                 id: saveError
-                source: 'qrc:/icons/icon-error_01.svg'
-                height: 27
-                width: 30
+                source: darktheme == true? 'failed-icon_01_light.svg' : 'failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
             }

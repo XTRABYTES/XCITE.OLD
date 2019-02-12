@@ -285,7 +285,7 @@ Rectangle {
 
         Image {
             id: picklistArrow1
-            source: 'qrc:/icons/dropdown_icon.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
             height: 20
             width: 20
             anchors.left: coinListTracker == 0 ? coinID.right : transferPicklist1.right
@@ -296,12 +296,6 @@ Rectangle {
                      && scanQRTracker == 0
                      && coinListTracker == 0
                      && calculatorTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
 
             Rectangle{
                 id: picklistButton1
@@ -383,7 +377,7 @@ Rectangle {
 
             Image {
                 id: picklistCloseArrow1
-                source: 'qrc:/icons/dropdown-arrow.svg'
+                source: 'qrc:/icons/mobile/close_picklist-icon_01.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 rotation: 180
@@ -399,7 +393,7 @@ Rectangle {
 
         Image {
             id: picklistArrow2
-            source: 'qrc:/icons/dropdown_icon.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
             height: 20
             width: 20
             anchors.right: sendAmount.right
@@ -409,12 +403,6 @@ Rectangle {
                      && scanQRTracker == 0
                      && walletListTracker == 0
                      && calculatorTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
 
             Rectangle{
                 id: picklistButton2
@@ -496,7 +484,7 @@ Rectangle {
 
             Image {
                 id: picklistCloseArrow2
-                source: 'qrc:/icons/dropdown-arrow.svg'
+                source: 'qrc:/icons/mobile/close_picklist-icon_01.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 rotation: 180
@@ -575,44 +563,6 @@ Rectangle {
                      && transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
-        }
-
-        Image {
-            id: copyIcon
-            source: 'qrc:/icons/paste_icon.svg'
-            width: 13
-            height: 13
-            anchors.left: pubKey.right
-            anchors.leftMargin: 15
-            anchors.verticalCenter: pubKey.verticalCenter
-            visible: transferSwitch.on == false
-                     && transactionSend == 0
-                     && addressbookTracker == 0
-                     && scanQRTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
-
-            Rectangle {
-                id: copyButton
-                anchors.fill: parent
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                color: "transparent"
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        click01.play()
-                        clipboard.setText(publicKey.text)
-                        console.log("public key: " + clipboard.text + " copied to clipboard")
-                    }
-                }
-            }
         }
 
         // Send state
@@ -1350,19 +1300,13 @@ Rectangle {
 
         Image {
             id: failedIcon
-            source: 'qrc:/icons/icon-delete-mobile.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
             width: 120
             height: 120
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: transferFailed.top
             visible: transactionSend == 1
                      && failedSend == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: confirmedIcon
-                color: maincolor
-            }
         }
 
         Label {
@@ -1460,19 +1404,13 @@ Rectangle {
 
         Image {
             id: confirmedIcon
-            source: 'qrc:/icons/icon-success.svg'
-            width: 120
+            source: darktheme == true? 'qrc:/icons/mobile/transaction_send-icon_01_light.svg' : 'qrc:/icons/mobile/transaction_send-icon_01_dark.svg'
             height: 120
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: transferConfirmed.top
             visible: transactionSend == 1
                      && confirmationSend == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: confirmedIcon
-                color: maincolor
-            }
         }
 
         Label {

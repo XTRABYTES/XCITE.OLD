@@ -51,7 +51,7 @@ Rectangle {
     property int passwordWarning1: 0
     property int passwordWarning2: 0
     property int availableUsername: 0
-    property int loginError: 0
+    property int signUpError: 0
 
     function validation(text){
         var regExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
@@ -381,7 +381,7 @@ Rectangle {
                             accountCreated = 1
                             availableUsername = 0
                             networkError = 0
-                            loginError = 0
+                            signUpError = 0
                             username = userName.text
                             console.log("username: " + username)
                             */
@@ -395,7 +395,7 @@ Rectangle {
                         accountCreated = 1
                         availableUsername = 0
                         networkError = 0
-                        loginError = 0
+                        signUpError = 0
                         username = userName.text
                     }
                     onUserAlreadyExists: {
@@ -406,7 +406,8 @@ Rectangle {
                     }
                     onUserCreationFailed: {
                         if (networkError == 0) {
-                            loginError = 1
+                            signUpError = 1
+                            userName.text = ""
                             passWord1.text = ""
                             passWord2.text = ""
                         }
@@ -440,39 +441,149 @@ Rectangle {
                 border.width: 1
                 border.color: (usernameWarning == 0 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#979797"
             }
+
+            Label {
+                id: closeButtonLabel
+                z:10
+                text: "BACK"
+                anchors.top: createAccountButton.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                color: "#F2F2F2"
+                visible: accountCreated == 0
+
+                Rectangle{
+                    id: closeButton
+                    height: 34
+                    width: darktheme == true? closeButtonLabel.width : doubbleButtonWidth
+                    radius: 4
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: "transparent"
+                }
+
+                MouseArea {
+                    anchors.fill: closeButton
+
+                    onClicked: {
+                        loginTracker = 1
+                        mainRoot.pop()
+                        mainRoot.push("../Onboarding.qml")
+                    }
+                }
+            }
         }
     }
 
-    Label {
-        id: closeButtonLabel
-        z:10
-        text: "BACK"
-        anchors.bottom: combinationMark.top
-        anchors.bottomMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
-        visible: accountCreated == 0
 
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: darktheme == true? closeButtonLabel.width : doubbleButtonWidth
-            radius: 4
+
+    // Account creation failed
+
+    Rectangle {
+        id: accountFailed
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        width: 325
+        height: failedIcon.height + creationFailedLabel.height + closeFail+ 130
+        state: signUpError == 1? "up" : "down"
+        color: "#14161B"
+
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: -100}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: Screen.height}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: accountSuccess; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            }
+        ]
+
+        Image {
+            id: failedIcon
+            source: 'qrc:/icons/mobile/failed-icon_01_light.svg'
+            height: 100
+            width: 100
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
+            anchors.top: parent.top
+            anchors.topMargin: 50
         }
 
-        MouseArea {
-            anchors.fill: closeButton
+        Label {
+            id: creationFailedLabel
+            text: "Account creation failed!"
+            anchors.top: failedIcon.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: failedIcon.horizontalCenter
+            color: maincolor
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+        }
 
-            onClicked: {
-                loginTracker = 1
-                mainRoot.pop()
-                mainRoot.push("../Onboarding.qml")
+        Rectangle {
+            id: closeFail
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: maincolor
+            opacity: 0.25
+            anchors.top: creationFailedLabel.bottom
+            anchors.topMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: editSaved == 1
+
+            MouseArea {
+                anchors.fill: closeFail
+
+                onPressed: {
+                    parent.opacity = 0.5
+                    click01.play()
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
+
+                onReleased: {
+                    parent.opacity = 0.25
+                }
+
+                onClicked: {
+                    signUpError = 0;
+
+                }
             }
+        }
+        Text {
+            text: "TRY AGAIN"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: darktheme == true? "#F2F2F2" : maincolor
+            anchors.horizontalCenter: closeFail.horizontalCenter
+            anchors.verticalCenter: closeFail.verticalCenter
+        }
+
+        Rectangle {
+            width: closeFail.width
+            height: 34
+            anchors.bottom: closeFail.bottom
+            anchors.left: closeFail.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: maincolor
+            border.width: 1
         }
     }
 

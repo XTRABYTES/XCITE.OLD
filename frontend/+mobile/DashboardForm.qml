@@ -399,8 +399,6 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: maincolor
-                    border.width: 2
                     visible: anchors.rightMargin > -110
                     state: coinTracker == 1 ? "inView" : "hidden"
 
@@ -426,16 +424,11 @@ Item {
                     Image {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/left-arrow2.svg'
-                        width: 28.5
-                        height: 20
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
+                        source: 'qrc:/icons/mobile/back-icon_01.svg'
+                        width: 50
+                        height: 50
                     }
+
                     MouseArea {
                         anchors.fill: parent
 
@@ -535,14 +528,9 @@ Item {
                                     anchors.verticalCenterOffset: -2
                                     anchors.left: parent.right
                                     anchors.leftMargin: 8
-                                    source: 'qrc:/icons/icon-transfer_01.svg'
-                                    width: 15
+                                    source: 'qrc:/icons/mobile/transfer-icon_01.svg'
+                                    fillMode: Image.PreserveAspectFit
                                     height: 18
-                                    ColorOverlay {
-                                        anchors.fill: transfer2
-                                        source: transfer2
-                                        color: maincolor
-                                    }
                                 }
 
                                 MouseArea {
@@ -570,15 +558,9 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.right: parent.right
                                 anchors.rightMargin: 28
-                                source: 'qrc:/icons/icon-coins_01.svg'
-                                width: 16
-                                height: 16
-
-                                ColorOverlay {
-                                    anchors.fill: coins
-                                    source: coins
-                                    color: maincolor
-                                }
+                                source: 'qrc:/icons/mobile/coin-icon_01.svg'
+                                fillMode: Image.PreserveAspectFit
+                                height: 18
 
                                 Label {
                                     id: addCoin
@@ -982,8 +964,6 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: maincolor
-                    border.width: 2
                     visible: anchors.rightMargin > -110
                     state: contactTracker == 1 ? "inView" : "hidden"
 
@@ -1009,16 +989,11 @@ Item {
                     Image {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/left-arrow2.svg'
-                        width: 28.5
-                        height: 20
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
+                        source: 'qrc:/icons/mobile/back-icon_01.svg'
+                        width: 50
+                        height: 50
                     }
+
                     MouseArea {
                         anchors.fill: parent
 
@@ -1066,8 +1041,6 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: maincolor
-                    border.width: 2
                     visible: (anchors.leftMargin > -110) && contactIndex != 0
                     state: (contactTracker == 1 && addressQRTracker == 0)? "inView" : "hidden"
 
@@ -1093,16 +1066,12 @@ Item {
                     Image {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/icon-plus_01.svg'
-                        width: 30
-                        height: 30
+                        source: 'qrc:/icons/mobile/add-icon_01.svg'
+                        width: 50
+                        height: 50
 
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
                     }
+
                     MouseArea {
                         anchors.fill: parent
 
@@ -1214,14 +1183,9 @@ Item {
                                     anchors.verticalCenterOffset: -2
                                     anchors.left: parent.right
                                     anchors.leftMargin: 8
-                                    source: 'qrc:/icons/icon-transfer_01.svg'
-                                    width: 15
+                                    source: 'qrc:/icons/mobile/transfer-icon_01.svg'
+                                    fillMode: Image.PreserveAspectFit
                                     height: 18
-                                    ColorOverlay {
-                                        anchors.fill: transfer4
-                                        source: transfer4
-                                        color: maincolor
-                                    }
                                 }
 
                                 Rectangle {
@@ -1255,9 +1219,9 @@ Item {
                                 anchors.verticalCenter: iconBar4.verticalCenter
                                 anchors.right: parent.right
                                 anchors.rightMargin: 28
-                                source: 'qrc:/icons/add_address.svg'
-                                width: 16
-                                height: 16
+                                source: 'qrc:/icons/mobile/contact-icon_01.svg'
+                                fillMode: Image.PreserveAspectFit
+                                height: 18
                                 visible: pageTracker == 1
 
                                 ColorOverlay {
@@ -1332,34 +1296,22 @@ Item {
 
                             Image {
                                 id: chatIcon
-                                source: "qrc:/icons/icon-chat_01.svg"
+                                source: contactList.get(contactIndex).chatID !== ""? 'qrc:/icons/mobile/chat-icon_01_dark.svg' : 'qrc:/icons/mobile/chat-icon_01_light.svg'
                                 width: 19
                                 height: 17
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.horizontalCenter: parent.right
                                 anchors.horizontalCenterOffset: -38
-
-                                ColorOverlay {
-                                    anchors.fill: parent
-                                    source: parent
-                                    color: contactList.get(contactIndex).chatID !== ""? maincolor : "#535353"
-                                }
                             }
 
                             Image {
                                 id: mailIcon
-                                source: "qrc:/icons/icon-mail_01.svg"
+                                source: contactList.get(contactIndex).mailAddress !== ""? 'qrc:/icons/mobile/mail-icon_01_dark.svg' : 'qrc:/icons/mobile/mail-icon_01_light.svg'
                                 width: 19
                                 height: 12
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.horizontalCenter: parent.right
                                 anchors.horizontalCenterOffset: -98
-
-                                ColorOverlay {
-                                    anchors.fill: parent
-                                    source: parent
-                                    color: contactList.get(contactIndex).mailAddress !== ""? maincolor : "#535353"
-                                }
 
                                 MouseArea {
                                     width: 30
@@ -1379,18 +1331,12 @@ Item {
 
                             Image {
                                 id: cellIcon
-                                source: "qrc:/icons/icon-cell_01.svg"
+                                source: contactList.get(contactIndex).cellNR !== ""? 'qrc:/icons/mobile/cell-icon_01_dark.svg' : 'qrc:/icons/mobile/cell-icon_01_light.svg'
                                 width: 12
                                 height: 20
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.horizontalCenter: parent.right
                                 anchors.horizontalCenterOffset: -158
-
-                                ColorOverlay {
-                                    anchors.fill: parent
-                                    source: parent
-                                    color: contactList.get(contactIndex).cellNR !== ""? maincolor : "#535353"
-                                }
 
                                 MouseArea {
                                     width: 30
@@ -1410,19 +1356,12 @@ Item {
 
                             Image {
                                 id: phoneIcon
-                                source: "qrc:/icons/icon-phone_02.svg"
+                                source: contactList.get(contactIndex).telNR !== ""? 'qrc:/icons/mobile/phone-icon_01_dark.svg' : 'qrc:/icons/mobile/phone-icon_01_light.svg'
                                 width: 20
                                 height: 16
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.horizontalCenter: parent.right
                                 anchors.horizontalCenterOffset: -218
-
-                                ColorOverlay {
-                                    anchors.fill: parent
-                                    source: parent
-                                    color: contactList.get(contactIndex).telNR !== ""? maincolor : "#535353"
-                                }
-
 
                                 MouseArea {
                                     width: 30
@@ -1530,21 +1469,15 @@ Item {
 
                     Image {
                         id: callIcon
-                        source: "qrc:/icons/icon-phone_01.svg"
+                        source: 'qrc:/icons/mobile/call-icon_01.svg'
                         width: 30
                         height: 30
+                        fillMode: Image.PreserveAspectFit
                         anchors.verticalCenter: parent.top
                         anchors.verticalCenterOffset: 25
                         anchors.horizontalCenter: parent.left
                         anchors.horizontalCenterOffset: 35
                         visible: callTextModal.height == 50
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
-
 
                         MouseArea {
                             width: 30
@@ -1563,21 +1496,15 @@ Item {
 
                     Image {
                         id: textIcon
-                        source: "qrc:/icons/icon-pen_01.svg"
+                        source: 'qrc:/icons/mobile/text-icon_01.svg'
                         width: 30
                         height: 30
+                        fillMode: Image.PreserveAspectFit
                         anchors.verticalCenter: parent.top
                         anchors.verticalCenterOffset: 25
                         anchors.horizontalCenter: parent.right
                         anchors.horizontalCenterOffset: -35
                         visible: callTextModal.height == 50
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
-
 
                         MouseArea {
                             width: 30
@@ -1638,15 +1565,9 @@ Item {
                 anchors.right: parent.right
                 anchors.rightMargin: 30
                 anchors.verticalCenter: headingLayout.verticalCenter
-                source: 'qrc:/icons/icon-darklight.svg'
+                source: darktheme == true? 'qrc:/icons/mobile/theme_switch-icon_01_off.svg' : 'qrc:/icons/mobile/theme_switch-icon_01_on.svg'
                 width: 25
                 height: 25
-
-                ColorOverlay {
-                    anchors.fill: darklight
-                    source: darklight
-                    color: darktheme == true? "#757575" : maincolor
-                }
 
                 Rectangle {
                     width: darklight.width

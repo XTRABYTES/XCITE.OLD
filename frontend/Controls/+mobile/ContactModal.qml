@@ -131,21 +131,15 @@ Rectangle {
 
         Image {
             id: deleteContact
-            source: 'qrc:/icons/trashcan_big.svg'
-            height: 26
-            width: 18
+            source: darktheme == true? 'qrc:/icons/mobile/trash-icon_01_light.svg' : 'qrc:/icons/mobile/trash-icon_01_dark.svg'
+            height: 25
+            width: 25
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveButton.bottom
             anchors.topMargin: 40
             visible: editSaved == 0
                      && deleteContactTracker == 0
                      && contactIndex != 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
 
             Rectangle {
                 id: deleteButton
@@ -421,9 +415,10 @@ Rectangle {
 
         Image {
             id: saveSuccess
-            source: newPhoto.source
+            source: darktheme == true? 'qrc:/icons/mobile/succes_icon_01_light.svg' : 'qrc:/icons/mobile/succes_icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveConfirmed.top
             visible: editSaved == 1
@@ -673,18 +668,13 @@ Rectangle {
 
         Image {
             id: deleteSuccess
-            source: 'qrc:/icons/icon-delete-mobile.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/delete_contact-icon_01_light.svg' : 'qrc:/icons/mobile/delete_contact-icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: deleted.top
             visible: deleteConfirmed == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: maincolor
-            }
         }
 
         Label {

@@ -47,16 +47,12 @@ Rectangle {
         anchors.bottom: sidebar.bottom
         anchors.bottomMargin: 65
         anchors.horizontalCenter: sidebar.horizontalCenter
-        source: '../icons/icon-settings.svg'
+        source: 'qrc:/icons/mobile/settings-icon_01.svg'
         width: 40
         height: 40
         z: 100
         visible: appsTracker == 1
-        ColorOverlay {
-            anchors.fill: settings
-            source: settings
-            color: maincolor
-        }
+
         Text {
             id: settingsText
             text: "SETTINGS"
@@ -90,7 +86,7 @@ Rectangle {
 
     Image {
         id: home
-        source: 'qrc:/icons/icon-home.svg'
+        source: 'qrc:/icons/mobile/home-icon_01.svg'
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: sidebar.horizontalCenter
@@ -98,11 +94,7 @@ Rectangle {
         height: 36
         z: 100
         visible: appsTracker == 1
-        ColorOverlay {
-            anchors.fill: home
-            source: home
-            color: maincolor // make image like it lays under grey glass
-        }
+
         Text {
             id: homeText
             text: "HOME"
@@ -113,6 +105,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
         }
+
         Rectangle {
             id: homeButtonArea
             width: home.width

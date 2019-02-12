@@ -180,7 +180,7 @@ Rectangle {
 
         Image {
             id: picklistArrow
-            source: 'qrc:/icons/dropdown_icon.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
             height: 20
             width: 20
             anchors.left: coinListTracker == 0 ? newCoinName.right : newPicklist.right
@@ -189,12 +189,6 @@ Rectangle {
             visible: editSaved == 0
                      && coinListTracker == 0
                      && scanQRTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            }
 
             Rectangle {
                 id: picklistButton
@@ -432,7 +426,7 @@ Rectangle {
 
             Image {
                 id: picklistCloseArrow
-                source: 'qrc:/icons/dropdown-arrow.svg'
+                source: 'qrc:/icons/mobile/close_picklist-icon_01.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 rotation: 180
@@ -535,18 +529,13 @@ Rectangle {
 
         Image {
             id: saveSuccess
-            source: 'qrc:/icons/icon-success.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveConfirmed.top
             visible: editSaved == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: maincolor
-            }
         }
 
         Label {
