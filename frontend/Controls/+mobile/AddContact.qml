@@ -267,7 +267,13 @@ Rectangle {
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
                         editSaved = 1
-                        saveAddressBook(contactList)
+
+                        var datamodel = []
+                        for (var i = 0; i < contactList.count; ++i)
+                            datamodel.push(contactList.get(i))
+
+                        var contactListJson = JSON.stringify(datamodel)
+                        saveAddressBook(contactListJson)
                     }
                 }
             }

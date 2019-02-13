@@ -178,14 +178,7 @@ Item {
 
                 onReleased: {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
-                        //userLogin(userName.text, passWord.text)
-                        username = userName.text
-                        mainRoot.pop()
-                        mainRoot.push("../Home.qml")
-                        passError = 0
-                        networkError = 0
-                        loginTracker = 0
-                        selectedPage = "home"
+                        userLogin(userName.text, passWord.text)
                     }
                 }
             }
