@@ -248,7 +248,7 @@ QString Settings::RestAPIGetCall(QString apiURL, QUrlQuery urlQuery){
 QSqlDatabase Settings::OpenDBConnection(){
     // Development database in use
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("/Users/tuukkapeltoniemi/Documents-NotCloud/Development/XtraBytes/xcite-tuukkapel/XCITE/dev-db/xtrabytes");
+    db.setDatabaseName("XCITE/dev-db/xtrabytes");
 
     // Release database to be used
     //QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
