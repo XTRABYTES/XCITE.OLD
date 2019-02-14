@@ -164,7 +164,7 @@ ApplicationWindow {
     signal userExists(string username)
     //signal userAvailable()
     signal clearAllSettings
-    signal saveAddressBook(var addresses)
+    signal saveAddressBook(string addresses)
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
 

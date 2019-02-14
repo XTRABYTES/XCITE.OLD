@@ -476,6 +476,7 @@ Rectangle {
                             && labelExists == 0) {
                         addressList.append({"contact": contactIndex, "address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
+                        console.log("Tuukka", addressList)
                         saveAddressBook(addressList)
                         editSaved = 1
                     }
