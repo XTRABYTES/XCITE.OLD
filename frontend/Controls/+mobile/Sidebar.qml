@@ -139,7 +139,7 @@ Rectangle {
                             appsTracker = 0
                             selectedPage = "settings"
                             mainRoot.pop("../DashboardForm.qml")
-                            mainRoot.push("../WalletBackup.qml")
+                            mainRoot.push("../WalletSettings.qml")
                         }
                     }
                 }
@@ -187,7 +187,7 @@ Rectangle {
                             if (userSettings.pinlock === false) {
                                 selectedPage = "backup"
                                 mainRoot.pop("../DashboardForm.qml")
-                                mainRoot.push("../WalletSettings.qml")
+                                mainRoot.push("../WalletBackup.qml")
                             }
                             else {
                                 pincodeTracker = 1
@@ -277,7 +277,7 @@ Rectangle {
 
         Image {
             id: logout
-            anchors.bottom: logout.top
+            anchors.bottom: logoutText.top
             anchors.bottomMargin: 5
             anchors.horizontalCenter: parent.horizontalCenter
             source: 'qrc:/icons/mobile/logout-icon_01.svg'
