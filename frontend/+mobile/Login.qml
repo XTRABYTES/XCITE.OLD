@@ -187,23 +187,12 @@ Item {
                 target: UserSettings
                 onLoginSucceededChanged: {
                     username = userName.text
-                    // load accountCreation status
-                    if (userSettings.accountCreationCompleted === true) {
-                        mainRoot.pop()
-                        mainRoot.push("../Home.qml")
-                        passError = 0
-                        networkError = 0
-                        loginTracker = 0
-                        selectedPage = "home"
-                    }
-                    else {
-                        mainRoot.pop()
-                        mainRoot.push("../InitialSetup.qml")
-                        passError = 0
-                        networkError = 0
-                        loginTracker = 0
-                        selectedPage = "setup"
-                    }
+                    mainRoot.pop()
+                    mainRoot.push("../Home.qml")
+                    passError = 0
+                    networkError = 0
+                    loginTracker = 0
+                    selectedPage = "home"
                 }
 
                 onLoginFailedChanged: {
@@ -277,7 +266,6 @@ Item {
                     onClicked: {
                         mainRoot.pop()
                         mainRoot.push("../CreateAccount.qml")
-                        selectedPage = "newAccount"
                         loginTracker = 0
                     }
                 }
@@ -297,7 +285,6 @@ Item {
 
     Rectangle {
         id: serverError
-        z: 10
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.top
         width: Screen.width
@@ -305,18 +292,16 @@ Item {
         state: networkError == 0? "up" : "down"
         color: "black"
         opacity: 0.9
-        clip: true
+
 
         states: [
             State {
                 name: "up"
                 PropertyChanges { target: serverError; anchors.bottomMargin: 0}
-                PropertyChanges { target: serverError; height: 0}
             },
             State {
                 name: "down"
                 PropertyChanges { target: serverError; anchors.bottomMargin: -100}
-                PropertyChanges { target: serverError; height: 100}
             }
         ]
 
@@ -341,11 +326,12 @@ Item {
 
         Rectangle {
             id: okButton
-            width: doubbleButtonWidth / 2
-            height: 34
+            width: (doubbleButtonWidth - 10) / 2
+            height: 33
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
+            radius: 5
             color: "#1B2934"
             opacity: 0.5
 
@@ -383,10 +369,11 @@ Item {
         }
 
         Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
+            width: (doubbleButtonWidth - 10) / 2
+            height: 33
             anchors.horizontalCenter: okButton.horizontalCenter
             anchors.bottom: okButton.bottom
+            radius: 5
             color: "transparent"
             opacity: 0.5
             border.width: 1
@@ -398,8 +385,7 @@ Item {
             height: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            color: bgcolor
+            color: "black"
         }
     }
 }
-
