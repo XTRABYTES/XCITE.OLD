@@ -42,93 +42,270 @@ Rectangle {
         }
     ]
 
-    Image {
-        id: settings
-        anchors.bottom: sidebar.bottom
-        anchors.bottomMargin: 65
-        anchors.horizontalCenter: sidebar.horizontalCenter
-        source: '../icons/icon-settings.svg'
-        width: 40
-        height: 40
-        z: 100
+    Flickable {
+        id: sections
+        width: sidebar.width
+        anchors.top: sidebar.top
+        anchors.bottom: logoutSection.top
+        contentHeight: homeSection.height + settingsSection.height + backupSection.height + appsSection.height + 100
+        boundsBehavior: Flickable.StopAtBounds
+        clip: true
         visible: appsTracker == 1
-        ColorOverlay {
-            anchors.fill: settings
-            source: settings
-            color: maincolor
-        }
-        Text {
-            id: settingsText
-            text: "SETTINGS"
-            anchors.top: parent.bottom
-            anchors.topMargin: 5
-            color: maincolor
-            font.family: xciteMobile.name
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.bold: true
-        }
-        Rectangle {
-            id: settingsButtonArea
-            width: settings.width
-            height: settings.height
-            anchors.left: settings.left
-            anchors.bottom: settings.bottom
-            color: "transparent"
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    if (selectedPage != "settings") {
+
+        Item {
+            id: homeSection
+            width: sidebar.width
+            height: homeText.height + 80
+            anchors.top: parent.top
+
+            Image {
+                id: home
+                source: 'qrc:/icons/mobile/home-icon_01.svg'
+                anchors.top: parent.top
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Text {
+                    id: homeText
+                    text: "HOME"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                id: homeButtonArea
+                anchors.fill:homeSection
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
                         appsTracker = 0
-                        selectedPage = "settings"
-                        mainRoot.pop("../DashboardForm.qml")
-                        mainRoot.push("../WalletSettings.qml")
+                        if (selectedPage != "home") {
+                            selectedPage = "home"
+                            // pop current page
+                            mainRoot.push("../DashboardForm.qml")
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: settingsSection
+            width: sidebar.width
+            height: settingsText.height + 80
+            anchors.top: homeSection.bottom
+
+            Image {
+                id: settings
+                anchors.top: parent.top
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: 'qrc:/icons/mobile/settings-icon_01.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Text {
+                    id: settingsText
+                    text: "SETTINGS"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                id: settingsButtonArea
+                anchors.fill: settingsSection
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        if (selectedPage != "settings") {
+                            appsTracker = 0
+                            selectedPage = "settings"
+                            mainRoot.pop("../DashboardForm.qml")
+                            mainRoot.push("../WalletSettings.qml")
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: backupSection
+            width: sidebar.width
+            height: backupText.height + 80
+            anchors.top: settingsSection.bottom
+
+            Image {
+                id: backup
+                anchors.top: parent.top
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: 'qrc:/icons/mobile/wallet-icon_01.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Text {
+                    id: backupText
+                    text: "BACK UP"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                id: backupButtonArea
+                anchors.fill: backupSection
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        if (selectedPage != "backup") {
+                            appsTracker = 0
+                            if (userSettings.pinlock === false) {
+                                selectedPage = "backup"
+                                mainRoot.pop("../DashboardForm.qml")
+                                mainRoot.push("../WalletBackup.qml")
+                            }
+                            else {
+                                pincodeTracker = 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: appsSection
+            width: sidebar.width
+            height: backupText.height + 80
+            anchors.top: backupSection.bottom
+
+            Image {
+                id: apps
+                anchors.top: parent.top
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: 'qrc:/icons/mobile/dapps-icon_01.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Text {
+                    id: appsText
+                    text: "APPS"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                id: appsButtonArea
+                anchors.fill: appsSection
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        if (selectedPage != "backup") {
+                            appsTracker = 0
+                            if (userSettings.pinlock === false) {
+                                selectedPage = "apps"
+                                mainRoot.pop("../DashboardForm.qml")
+                                mainRoot.push("../Applications.qml")
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    Image {
-        id: home
-        source: 'qrc:/icons/icon-home.svg'
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: sidebar.horizontalCenter
-        width: 40
-        height: 36
-        z: 100
-        visible: appsTracker == 1
-        ColorOverlay {
-            anchors.fill: home
-            source: home
-            color: maincolor // make image like it lays under grey glass
+    Rectangle {
+        id: fadeOut
+        width: sidebar.width
+        height: 100
+        anchors.bottom: sections.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: "transparent"
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(x, y)
+            end: Qt.point(x, y + height)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: "#2A2C31" }
+                GradientStop { position: 1.0; color: "#2A2C31" }
+            }
         }
+    }
+
+    Item {
+        id: logoutSection
+        width: sidebar.width
+        height: homeText.height + 105
+        anchors.bottom: parent.bottom
+        visible: appsTracker == 1
+
+        Image {
+            id: logout
+            anchors.bottom: logoutText.top
+            anchors.bottomMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            source: 'qrc:/icons/mobile/logout-icon_01.svg'
+            width: 40
+            height: 40
+            fillMode: Image.PreserveAspectFit
+            z: 100
+        }
+
         Text {
-            id: homeText
-            text: "HOME"
-            anchors.top: parent.bottom
-            anchors.topMargin: 5
+            id: logoutText
+            text: "LOG OUT"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 50
             color: maincolor
             font.family: xciteMobile.name
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
         }
+
         Rectangle {
-            id: homeButtonArea
-            width: home.width
-            height: home.height
-            anchors.left: home.left
-            anchors.bottom: home.bottom
+            id: logoutButtonArea
+            anchors.fill: logoutSection
             color: "transparent"
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    appsTracker = 0
-                    if (selectedPage != "home") {
-                        selectedPage = "home"
-                        // pop current page
-                        mainRoot.push("../DashboardForm.qml")
-                    }
+                    Qt.quit()
                 }
             }
         }

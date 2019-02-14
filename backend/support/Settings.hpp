@@ -19,6 +19,8 @@
 #include <QQmlApplicationEngine>
 #include <QSettings>
 #include <QtSql>
+#include <QDateTime>
+#include <QNetworkReply>
 #include "qaesencryption.h"
 
 class Settings : public QObject
@@ -38,9 +40,11 @@ public slots:
     void LoadSettings();
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
-    void SaveAddresses(QVariant addresslist);
+    void SaveAddresses(QString addresslist);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
+    bool RestAPIPostCall(QString apiURL, QByteArray payload);
+    QString RestAPIGetCall(QString apiURL, QUrlQuery urlQuery);
 
 signals:
     void loginSucceededChanged();
@@ -54,7 +58,7 @@ private:
     QTranslator m_translator;
     QQmlApplicationEngine *m_engine;
     QSettings *m_settings;
-    QList<QString> m_addresses;
+    QString m_addresses;
     QString m_pincode;
     QString m_username;
     QString m_password;

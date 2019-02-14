@@ -32,7 +32,11 @@ ApplicationWindow {
     title: qsTr("XCITE")
     color: "#14161B"
 
-
+    onClosing: {
+        if (mainRoot.depth > 1) {
+            close.accepted = false
+        }
+    }
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -160,7 +164,7 @@ ApplicationWindow {
     signal userExists(string username)
     //signal userAvailable()
     signal clearAllSettings
-    signal saveAddressBook(var addresses)
+    signal saveAddressBook(string addresses)
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
 
@@ -640,13 +644,7 @@ ApplicationWindow {
         property string theme: "dark"
         property bool pinlock: false
         property bool accountCreationCompleted: false
-
-        //update settings
-            //onLocaleChanged: ...
-            //onDefaultCurrencyChanged: ...
-            //onThemeChanged: ...
-            //onPinlockChanged: ...
-    }
+     }
 
     // Global fonts
     FontLoader {

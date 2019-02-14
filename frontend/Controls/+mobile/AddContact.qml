@@ -267,7 +267,13 @@ Rectangle {
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
                         editSaved = 1
-                        saveAddressBook(contactList)
+
+                        var datamodel = []
+                        for (var i = 0; i < contactList.count; ++i)
+                            datamodel.push(contactList.get(i))
+
+                        var contactListJson = JSON.stringify(datamodel)
+                        saveAddressBook(contactListJson)
                     }
                 }
             }
@@ -315,9 +321,10 @@ Rectangle {
 
         Image {
             id: saveSuccess
-            source: newPhoto.source
+            source: darktheme == true? 'qrc:/icons/mobile/add_contact-icon_01_light.svg' : 'qrc:/icons/mobile/add_contact-icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveConfirmed.top
             visible: editSaved == 1
