@@ -44,7 +44,7 @@ public slots:
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
     bool RestAPIPostCall(QString apiURL, QByteArray payload);
-    QString RestAPIGetCall(QString apiURL, QUrlQuery urlQuery);
+    QByteArray RestAPIGetCall(QString apiURL, QUrlQuery urlQuery);
 
 signals:
     void loginSucceededChanged();

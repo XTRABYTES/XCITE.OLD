@@ -68,8 +68,9 @@ void Settings::onClearAllSettings() {
 bool Settings::UserExists(QString username){
     QUrlQuery queryString;
     queryString.addQueryItem("userId", username);
+    QString test = "/v1/user/" + username;
 
-    QString userinfo = RestAPIGetCall("/v1/user", queryString);
+    QString userinfo = RestAPIGetCall(test, queryString);
     if (userinfo != ""){
         emit userAlreadyExists();
         return true;
@@ -85,16 +86,18 @@ void Settings::CreateUser(QString username, QString password){
     }
 
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-    QByteArray encodedText = encryption.encode(QString("<xtrabytes>").toUtf8(), (password + "xtrabytesxtrabytes").toUtf8());
+
+    QByteArray encodedText = encryption.encode(QString("<xtrabytes>").toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
+    QString DataAsString = QString::fromLatin1(encodedText);
 
     QVariantMap feed;
     feed.insert("dateCreated", QDateTime::currentDateTime());
     feed.insert("dateUpdated", QDateTime::currentDateTime());
-    feed.insert("settings", encodedText);
+    feed.insert("settings", DataAsString);
     feed.insert("username", username);
     feed.insert("id", "1");
-    QByteArray payload = QJsonDocument::fromVariant(feed).toJson();
-    qDebug() << QVariant(payload).toString();
+
+    QByteArray payload =  QJsonDocument::fromVariant(QVariant(feed)).toJson();
 
     bool success = RestAPIPostCall("/v1/user", payload);
 
@@ -108,11 +111,14 @@ void Settings::CreateUser(QString username, QString password){
 void Settings::login(QString username, QString password){
     QUrlQuery queryString;
     queryString.addQueryItem("userId", username);
+    QString test = "/v1/user/" + username;
 
-    QString result = RestAPIGetCall("/v1/user", queryString);
+    QByteArray result = RestAPIGetCall(test, queryString);
+    QByteArray settings = QJsonDocument::fromJson(result).array()[0].toString().toLatin1(); //JSON is returned as a one item array.  Item is the settings value
 
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-    QByteArray decodedSettings = encryption.decode(result, (password + "xtrabytesxtrabytes").toUtf8());
+    QByteArray decodedSettings = encryption.decode(settings, (password + "xtrabytesxtrabytes").toLatin1());
+
     if(decodedSettings.startsWith("<xtrabytes>")){
         m_username = username;
         m_password = password;
@@ -220,29 +226,45 @@ bool Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
     QNetworkAccessManager *restclient;
     restclient = new QNetworkAccessManager(this);
     QNetworkReply *reply = restclient->post(request, payload);
+
+    QEventLoop loop;
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
     qDebug() << reply->readAll();
+    qDebug() << payload;
 
     return true;
 }
 
-QString Settings::RestAPIGetCall(QString apiURL, QUrlQuery urlQuery){
+QByteArray Settings::RestAPIGetCall(QString apiURL, QUrlQuery urlQuery){
 
     QUrl Url;
     Url.setScheme("http");
     Url.setHost("localhost");
     Url.setPort(8080);
     Url.setPath(apiURL);
-    Url.setQuery(urlQuery);
 
     QNetworkRequest request;
     request.setUrl(Url);
 
     QNetworkAccessManager *restclient;
     restclient = new QNetworkAccessManager(this);
-    QNetworkReply *reply = restclient->get(request);
-    qDebug() << reply->readAll();
+    request.setRawHeader("Accept", "application/json");
 
-    return reply->readAll();
+    QNetworkReply *reply = restclient->get(request);
+    QByteArray bytes = reply->readAll();
+
+    qDebug() << bytes;
+
+     QEventLoop loop;
+     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+     loop.exec();
+
+     QByteArray bts = reply->readAll();
+
+    return bts;
 }
 
 QSqlDatabase Settings::OpenDBConnection(){
