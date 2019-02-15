@@ -68,9 +68,9 @@ void Settings::onClearAllSettings() {
 bool Settings::UserExists(QString username){
     QUrlQuery queryString;
     queryString.addQueryItem("userId", username);
-    QString test = "/v1/user/" + username;
+    QString url = "/v1/user/" + username;
 
-    QString userinfo = RestAPIGetCall(test, queryString);
+    QString userinfo = RestAPIGetCall(url, queryString);
     if (userinfo != ""){
         emit userAlreadyExists();
         return true;
@@ -111,9 +111,9 @@ void Settings::CreateUser(QString username, QString password){
 void Settings::login(QString username, QString password){
     QUrlQuery queryString;
     queryString.addQueryItem("userId", username);
-    QString test = "/v1/user/" + username;
+    QString url = "/v1/user/" + username;
 
-    QByteArray result = RestAPIGetCall(test, queryString);
+    QByteArray result = RestAPIGetCall(url, queryString);
     QByteArray settings = QJsonDocument::fromJson(result).array()[0].toString().toLatin1(); //JSON is returned as a one item array.  Item is the settings value
 
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
