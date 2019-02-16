@@ -37,14 +37,14 @@ public slots:
     void onClearAllSettings();
     void login(QString username, QString password);
     bool SaveSettings();
-    void LoadSettings();
+    void LoadSettings(QByteArray settings);
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
     void SaveAddresses(QString addresslist);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
     bool RestAPIPostCall(QString apiURL, QByteArray payload);
-    QString RestAPIGetCall(QString apiURL, QUrlQuery urlQuery);
+    QByteArray RestAPIGetCall(QString apiURL, QUrlQuery urlQuery);
 
 signals:
     void loginSucceededChanged();
@@ -52,6 +52,7 @@ signals:
     void userCreationSucceeded();
     void userCreationFailed();
     void userAlreadyExists();
+    void usernameAvailable();
     void settingsServerError();
 
 private:
