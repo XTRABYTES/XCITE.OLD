@@ -192,7 +192,7 @@ Item {
         id: closeButtonLabel
         text: "CLOSE"
         anchors.bottom: combinationMark.top
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: 25
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"

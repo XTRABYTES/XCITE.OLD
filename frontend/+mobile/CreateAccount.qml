@@ -486,7 +486,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         width: 325
-        height: failedIcon.height + creationFailedLabel.height + closeFail+ 130
+        height: failedIcon.height + creationFailedLabel.height + closeFail.height + 130
         state: signUpError == 1? "up" : "down"
         color: "#14161B"
 
@@ -494,11 +494,11 @@ Rectangle {
         states: [
             State {
                 name: "up"
-                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: -100}
+                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: 0}
             },
             State {
                 name: "down"
-                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: Screen.height}
+                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: 1.5 * Screen.height}
             }
         ]
 
@@ -506,7 +506,7 @@ Rectangle {
             Transition {
                 from: "*"
                 to: "*"
-                NumberAnimation { target: accountSuccess; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+                NumberAnimation { target: accountFailed; property: "anchors.verticalCenterOffset"; duration: 300; easing.type: Easing.OutCubic}
             }
         ]
 
@@ -515,9 +515,9 @@ Rectangle {
             source: 'qrc:/icons/mobile/failed-icon_01_light.svg'
             height: 100
             width: 100
-            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Label {
@@ -541,7 +541,6 @@ Rectangle {
             anchors.top: creationFailedLabel.bottom
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: editSaved == 1
 
             MouseArea {
                 anchors.fill: closeFail
@@ -590,7 +589,7 @@ Rectangle {
     Rectangle {
         id: accountSuccess
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
+        anchors.verticalCenter: parent.verticalCenter
         width: 325
         height: 270
         state: accountCreated == 1? "up" : "down"
@@ -600,11 +599,11 @@ Rectangle {
         states: [
             State {
                 name: "up"
-                PropertyChanges { target: accountSuccess; anchors.topMargin: (parent.height/2) - (accountSuccess.height/1.5)}
+                PropertyChanges { target: accountSuccess; anchors.verticalCenterOffset: 0}
             },
             State {
                 name: "down"
-                PropertyChanges { target: accountSuccess; anchors.topMargin: parent.height + 50}
+                PropertyChanges { target: accountSuccess; anchors.verticalCenterOffset: 1.5 * Screen.height}
             }
         ]
 
@@ -612,7 +611,7 @@ Rectangle {
             Transition {
                 from: "*"
                 to: "*"
-                NumberAnimation { target: accountSuccess; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+                NumberAnimation { target: accountSuccess; property: "anchors.verticalCenterOffset"; duration: 300; easing.type: Easing.OutCubic}
             }
         ]
 
