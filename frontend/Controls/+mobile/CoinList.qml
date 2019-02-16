@@ -211,8 +211,12 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                   onClicked: {
+                    onPressed: {
                         click01.play()
+                        detectInteraction()
+                    }
+
+                   onClicked: {
                         if (coinTracker == 0 && appsTracker == 0 && addCoinTracker == 0 && transferTracker == 0) {
                             coinIndex = coinID
                             countWallets()
@@ -246,5 +250,6 @@ Rectangle {
         anchors.fill: parent
         contentHeight: (filteredCoins.count * 85) + 75
         interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
+        onDraggingChanged: detectInteraction()
     }
 }

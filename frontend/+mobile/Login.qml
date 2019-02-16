@@ -23,7 +23,6 @@ Item {
     width: Screen.width
     height: Screen.height
 
-    property int nameError: 0
     property int passError: 0
 
     Rectangle {
@@ -115,20 +114,6 @@ Item {
             font.pixelSize: 14
         }
 
-        Text {
-            id: userNameError
-            text: "Username does not exist!"
-            color: "#FD2E2E"
-            anchors.left: userName.left
-            anchors.leftMargin: 5
-            anchors.top: userName.bottom
-            anchors.topMargin: 1
-            font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
-            visible: nameError == 1
-        }
-
         Controls.TextInput {
             id: passWord
             height: 34
@@ -178,7 +163,15 @@ Item {
 
                 onReleased: {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
-                        userLogin(userName.text, passWord.text)
+                        //userLogin(userName.text, passWord.text)
+                        username = userName.text
+                        mainRoot.pop()
+                        mainRoot.push("../Home.qml")
+                        passError = 0
+                        networkError = 0
+                        loginTracker = 0
+                        sessionStart = 1
+                        selectedPage = "home"
                     }
                 }
             }
@@ -389,4 +382,3 @@ Item {
         }
     }
 }
-

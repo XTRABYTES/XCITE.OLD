@@ -42,7 +42,7 @@ Item {
         height: parent.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        color: "transparent"
+        color: bgcolor
         clip: true
 
         Label {

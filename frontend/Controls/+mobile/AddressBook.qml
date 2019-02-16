@@ -84,9 +84,14 @@ Rectangle {
                     font.family: "Brandon Grotesque"
                     font.letterSpacing: 2
                     font.bold: true
+                    font.capitalization: Font.SmallCaps
                     anchors.bottom: addressCoinName.bottom
                     anchors.right: cardBackground.right
                     anchors.rightMargin: 28
+                    anchors.left: addressCoinName.right
+                    anchors.leftMargin: 30
+                    horizontalAlignment: Text.AlignRight
+                    elide: Text.ElideRight
                 }
 
                 Text {
@@ -156,6 +161,7 @@ Rectangle {
                     anchors.fill: parent
 
                     onPressed: {
+                        detectInteraction()
                     }
 
                     onPressAndHold: {
@@ -174,6 +180,10 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
+
+                        onPressed: {
+                            detectInteraction()
+                        }
 
                         onClicked: {
                             addressIndex = uniqueNR
@@ -206,6 +216,7 @@ Rectangle {
 
                         onPressed: {
                             click01.play()
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -265,6 +276,7 @@ Rectangle {
 
                         onPressed: {
                             click01.play()
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -339,5 +351,6 @@ Rectangle {
         spacing: 0
         contentHeight: (filteredAddress.count * 85) + 75
         interactive: appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0
+        onDraggingChanged: detectInteraction()
     }
 }

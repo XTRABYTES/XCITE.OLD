@@ -121,6 +121,7 @@ Rectangle {
         model: filteredCurrencies
         delegate: picklistEntry
         interactive: totalLines * 35 < 175
+        onDraggingChanged: detectInteraction()
     }
 }
 

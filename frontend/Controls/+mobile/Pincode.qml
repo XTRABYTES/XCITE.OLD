@@ -1,5 +1,5 @@
 /**
- * Filename: AddAddressModal.qml
+ * Filename: Pincode.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -26,6 +26,7 @@ Rectangle {
     color: darktheme == false? "#F7F7F7" : "#14161B"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+    onStateChanged: detectInteraction()
 
     LinearGradient {
         anchors.fill: parent
@@ -58,7 +59,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: pincodeModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: pincodeModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -87,7 +88,7 @@ Rectangle {
     property int passError1: 0
     property int passError2: 0
     property int passError3: 0
-    property int passError4: 0
+    property int failToSave: 0
 
     Flickable {
         id: scrollArea
@@ -104,7 +105,7 @@ Rectangle {
         Rectangle {
             id: pincodeScrollArea
             width: parent.width
-            height: createPin == 1? createPinModal.height : (changePin == 1? changePinModal.height: providePinModal.height)
+            height: createPin == 1? (editSaved == 1 ? pinSaved.height : (failToSave == 1? saveFailed.height : createPinModal.height)) : (changePin == 1? (editSaved == 1 ? pinChanged.height : (failToSave == 1? saveFailed.height : changePinModal.height)): pinOK == 1? pinCorrect.height : pinError == 1? pinFail.height : providePinModal.height)
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
@@ -149,6 +150,7 @@ Rectangle {
                 readOnly: (pin.text).length >= 4
                 mobile: 1
                 calculator: 0
+                onTextChanged: detectInteraction()
             }
 
             Label {
@@ -183,6 +185,7 @@ Rectangle {
                 calculator: 0
 
                 onTextChanged: {
+                    detectInteraction()
                     if ((newPin2.text).length === 4){
                         passError3 = 0
                         if (newPin2.text !== newPin1.text) {
@@ -236,6 +239,7 @@ Rectangle {
                     onPressed: {
                         parent.opacity = 0.5
                         click01.play()
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -248,14 +252,28 @@ Rectangle {
 
                     onClicked: {
                         if (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0) {
-                            editSaved = 1
-                            userSettings.pincode = newPin1.text
-                            userSettings.pinlock = true
-                            savePincode(newPin1.text)
-                            newPin1.text = ""
-                            newPin2.text = ""
-                            timer1.start()
+                            if (!savePincode(newPin1.text)) {
+                                newPin1.text = ""
+                                newPin2.text = ""
+                                if (networkError != 1) {
+                                    failToSave = 1
+                                }
+                            }
+                            else {
+                                editSaved = 1
+                                userSettings.pinlock = true
+                                newPin1.text = ""
+                                newPin2.text = ""
+                                timer1.start()
+                            }
                         }
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+                    onSettingsServerError: {
+                        networkError = 1
                     }
                 }
             }
@@ -321,29 +339,55 @@ Rectangle {
                 mobile: 1
                 calculator: 0
 
-                onTextChanged: {
-                    if ((currentPin.text).length === 4){
-                        passError4 = 0
-                        if (currentPin.text !== userSettings.pincode) {
-                            passError4 = 1
-                            currentPin.text = ""
+                Timer {
+                    id: timer6
+                    interval: passError2 == 1 ? 5000 : 2000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        if (passError2 == 1) {
+                            passError2 = 0
+                            passTry = 0
+                            pincodeTracker = 0
+                            changePin = 0
+                            pinError = 0
+                            coinList.clear()
+                            walletList.clear()
+                            contactList.clear()
+                            addressList.clear()
+                            transactionList.clear()
+                            Qt.quit()
+                        }
+                        else {
+                            pinError = 0
                         }
                     }
                 }
-            }
 
-            Label {
-                id: noMatch3
-                text: "The pincode you entered is not correct!"
-                color: "#FD2E2E"
-                anchors.left: currentPin.left
-                anchors.leftMargin: 5
-                anchors.top: currentPin.bottom
-                anchors.topMargin: 1
-                font.pixelSize: 11
-                font.family: "Brandon Grotesque"
-                font.weight: Font.Normal
-                visible: passError4 == 1
+                onTextChanged: {
+                    detectInteraction()
+                    if ((currentPin.text).length === 4){
+                        passError1 = 0
+                        passError2 = 0
+                        passTry = passTry + 1
+                        if (!checkPincode(pin.text)) {
+                            pinError = 1
+                            currentPin.text = ""
+                            if (passTry == 3) {
+                                passError2 = 1
+                                timer6.start()
+                            }
+                            else {
+                                passError1 = 1
+                                timer6.start()
+                            }
+                        }
+                        else {
+                            passTry = 0
+                        }
+                    }
+                }
             }
 
             Label {
@@ -376,6 +420,7 @@ Rectangle {
                 readOnly: (pin.text).length >= 4
                 mobile: 1
                 calculator: 0
+                onTextChanged: detectInteraction()
             }
 
             Label {
@@ -410,6 +455,7 @@ Rectangle {
                 calculator: 0
 
                 onTextChanged: {
+                    detectInteraction()
                     if ((changePin2.text).length === 4){
                         passError3 = 0
                         if (changePin2.text !== changePin1.text) {
@@ -438,7 +484,7 @@ Rectangle {
                 id: editPin
                 width: doubbleButtonWidth / 2
                 height: 34
-                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError4 == 0)? maincolor : "#727272"
+                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? maincolor : "#727272"
                 opacity: 0.25
                 anchors.top: changePin2.bottom
                 anchors.topMargin: 25
@@ -463,6 +509,7 @@ Rectangle {
                     onPressed: {
                         parent.opacity = 0.5
                         click01.play()
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -474,15 +521,31 @@ Rectangle {
                     }
 
                     onClicked: {
-                        if (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError4 == 0) {
-                            editSaved = 1
-                            userSettings.pincode = changePin1.text
-                            savePincode(changePin1.text)
-                            currentPin.text = ""
-                            changePin1.text = ""
-                            changePin2.text = ""
-                            timer5.start()
+                        if (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0) {
+                            if (!savePincode(changePin1.text)) {
+                                currentPin.text = ""
+                                changePin1.text = ""
+                                changePin2.text = ""
+                                if (networkError != 1) {
+                                    failToSave = 1
+                                }
+                            }
+                            else {
+                                editSaved = 1
+                                passTry = 0
+                                currentPin.text = ""
+                                changePin1.text = ""
+                                changePin2.text = ""
+                                timer5.start()
+                            }
                         }
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+                    onSettingsServerError: {
+                        networkError = 1
                     }
                 }
             }
@@ -491,7 +554,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError4 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
                 anchors.horizontalCenter: editPin.horizontalCenter
                 anchors.verticalCenter: editPin.verticalCenter
             }
@@ -503,7 +566,7 @@ Rectangle {
                 anchors.left: editPin.left
                 color: "transparent"
                 opacity: 0.5
-                border.color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError4 == 0)? maincolor : "#979797"
+                border.color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? maincolor : "#979797"
                 border.width: 1
             }
         }
@@ -590,6 +653,7 @@ Rectangle {
                 }
 
                 onTextChanged: {
+                    detectInteraction()
                     if ((pin.text).length === 4){
                         passError1 = 0
                         passError2 = 0
@@ -612,7 +676,7 @@ Rectangle {
                             passTry = 0
                             if (unlockPin == 1) {
                                 userSettings.pinlock = false
-                                userSettings.pincode = ""
+                                savePincode("0000")
                                 timer3.start()
                             }
                             else if (transferTracker == 1) {
@@ -623,6 +687,92 @@ Rectangle {
                         }
                     }
                 }
+            }
+        }
+
+        Item {
+            id: saveFailed
+            width: parent.width
+            height: saveFailedIcon.height + saveFailedLabel.height + closeFailed.height + 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: (createPin == 1 || changePin == 1)
+                     && failToSave == 1
+
+            Image {
+                id: saveFailedIcon
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: saveFailed.top
+            }
+
+            Label {
+                id: saveFailedLabel
+                text: createPin == 1? "Unable to set new pincode" : changePin == 1? "Unable to change your pincode" : ""
+                anchors.top: saveFailedIcon.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailedIcon.horizontalCenter
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.bold: true
+            }
+
+            Rectangle {
+                id: closeFailed
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                MouseArea {
+                    anchors.fill: closeFailed
+
+                    onPressed: {
+                        closeDelete.opacity = 0.5
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onCanceled: {
+                        closeDelete.opacity = 0.25
+                    }
+
+                    onReleased: {
+                        closeDelete.opacity = 0.25
+                    }
+
+                    onClicked: {
+                        failToSave = 0;
+                    }
+                }
+            }
+
+            Text {
+                text: "TRY AGAIN"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                font.bold: true
+                color: darktheme == true? "#F2F2F2" : maincolor
+                anchors.horizontalCenter: closeFailed.horizontalCenter
+                anchors.verticalCenter: closeFailed.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeFailed.bottom
+                anchors.horizontalCenter: closeFailed.horizontalCenter
+                color: "transparent"
+                border.color: maincolor
+                border.width: 1
+                opacity: 0.5
             }
         }
 
@@ -731,6 +881,116 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        id: serverError
+        z: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.top
+        width: Screen.width
+        state: networkError == 0? "up" : "down"
+        color: "black"
+        opacity: 0.9
+        clip: true
+        onStateChanged: detectInteraction()
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: serverError; anchors.bottomMargin: 0}
+                PropertyChanges { target: serverError; height: 0}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: serverError; anchors.bottomMargin: -100}
+                PropertyChanges { target: serverError; height: 100}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
+            }
+        ]
+
+        Label {
+            id: serverErrorText
+            text: "A network error occured, please try again later."
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            color: "#FD2E2E"
+            font.pixelSize: 18
+            font.family: xciteMobile.name
+        }
+
+        Rectangle {
+            id: okButton
+            width: doubbleButtonWidth / 2
+            height: 34
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            color: "#1B2934"
+            opacity: 0.5
+
+            LinearGradient {
+                anchors.fill: parent
+                source: parent
+                start: Qt.point(x, y)
+                end: Qt.point(x, parent.height)
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 1.0; color: "#0ED8D2" }
+                }
+            }
+
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressed: {
+                   detectInteraction()
+                }
+
+                onReleased: {
+                    networkError = 0
+                }
+            }
+        }
+
+        Text {
+            id: okButtonText
+            text: "OK"
+            font.family: xciteMobile.name
+            font.pointSize: 14
+            color: "#F2F2F2"
+            font.bold: true
+            anchors.horizontalCenter: okButton.horizontalCenter
+            anchors.verticalCenter: okButton.verticalCenter
+        }
+
+        Rectangle {
+            width: doubbleButtonWidth / 2
+            height: 34
+            anchors.horizontalCenter: okButton.horizontalCenter
+            anchors.bottom: okButton.bottom
+            color: "transparent"
+            opacity: 0.5
+            border.width: 1
+            border.color: "#0ED8D2"
+        }
+
+        Rectangle {
+            width: parent.width
+            height: 1
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            color: bgcolor
+        }
+    }
+
     Item {
         id: bottomGradient
         z: 3
@@ -775,6 +1035,11 @@ Rectangle {
 
         MouseArea {
             anchors.fill: backbutton
+
+            onPressed: {
+                detectInteraction()
+            }
+
             onClicked: {
                 pincodeTracker = 0
                 createPin = 0
