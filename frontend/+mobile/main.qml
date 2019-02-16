@@ -88,6 +88,7 @@ ApplicationWindow {
     property string selectedPage: ""
 
     // Trackers
+    property int interactionTracker: 0
     property int loginTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
@@ -116,6 +117,9 @@ ApplicationWindow {
     property int pincodeTracker: 0
 
     // Global variables
+    property int sessionStart: 0
+    property int sessionTime: 0
+    property int networkAvailable: 0
     property int networkError: 0
     property int photoSelect: 0
     property int newCoinPicklist: 0
@@ -123,6 +127,7 @@ ApplicationWindow {
     property int newWalletPicklist: 0
     property int newWalletSelect: 0
     property int switchState: 0
+    property int notification: 0
     property string scannedAddress: ""
     property string selectedAddress: ""
     property string currentAddress: ""
@@ -167,6 +172,29 @@ ApplicationWindow {
     signal saveAddressBook(string addresses)
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
+
+    // Automated functions
+
+    function updateBalance() {
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).coin === "XBY") {
+                if (getbalanceXBY(walletList.get(i).address) !== walletList.get(i).balance) {
+                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
+                    if (transferTracker == 0) {
+                        notification = 1
+                    }
+                }
+            }
+            else if (walletList.get(i).coin === "XFUEL") {
+                if (getbalanceXFUEL(walletList.get(i).address) !== walletList.get(i).balance) {
+                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
+                    if (transferTracker == 0) {
+                        notification = 1
+                    }
+                }
+            }
+        }
+    }
 
     // Global functions
     function countWallets() {
@@ -470,6 +498,12 @@ ApplicationWindow {
         // read transactionhistory from persistent data
     }
 
+    function detectInteraction() {
+        if (interactionTracker == 0) {
+            interactionTracker = 1
+        }
+    }
+
     function addWalletsToAddressList() {
         for(var i = 0; i < walletList.count; i++){
             if (walletList.get(i).remove === false) {
@@ -644,7 +678,7 @@ ApplicationWindow {
         property string theme: "dark"
         property bool pinlock: false
         property bool accountCreationCompleted: false
-     }
+    }
 
     // Global fonts
     FontLoader {
@@ -666,5 +700,46 @@ ApplicationWindow {
         id: click01
         source: "qrc:/sounds/click_02.wav"
         volume: 0.15
-   }
+    }
+
+    Timer {
+        id: loginTimer
+        interval: 30000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            if (interactionTracker == 1) {
+                sessionTime = 0
+                interactionTracker = 0
+                // reset timer on serverside
+            }
+            else {
+                sessionTime = sessionTime +1
+                console.log("Time until automatic log out: " +  (5 - (sessionTime / 2)) + " minute(s)")
+                if (sessionTime == 10){
+                    sessionTime = 0
+                    sessionStart = 0
+                    console.log("You are being logged out!")
+                    // show pop up that you will be logged out if you do not interact
+                    Qt.quit()
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: networkTimer
+        interval: 30000
+        repeat: true
+        running: loginTimer.running
+
+        onTriggered: {
+            console.log("checking for network connection")
+            //check if there is a connection to the accounts server
+            // if connection is available -> networkAvailable = 0 and check for log out request
+                    // if log out request is true show pop up with the log out request
+            // if connection is not available -> networkAvailable = networkAvailable + 1
+        }
+    }
 }

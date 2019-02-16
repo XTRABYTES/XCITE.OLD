@@ -46,7 +46,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addWalletModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: addWalletModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -169,6 +169,7 @@ Rectangle {
 
                     onPressed: {
                         click01.play()
+                        detectInteraction()
                     }
 
                     onReleased: {
@@ -333,6 +334,7 @@ Rectangle {
 
                     onPressed: {
                         click01.play()
+                        detectInteraction()
                     }
 
                     onReleased: {
@@ -377,17 +379,11 @@ Rectangle {
 
             Image {
                 id: saveSuccess
-                source: 'qrc:/icons/icon-success.svg'
+                source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
                 height: 100
                 width: 100
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-
-                ColorOverlay {
-                    anchors.fill: parent
-                    source: parent
-                    color: maincolor
-                }
             }
 
             Label {
@@ -415,7 +411,10 @@ Rectangle {
                 MouseArea {
                     anchors.fill: closeSave
 
-                    onPressed: { click01.play() }
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
 
                     onClicked: {
                         addWalletTracker = 0;
@@ -461,9 +460,9 @@ Rectangle {
 
             Image {
                 id: saveError
-                source: 'qrc:/icons/icon-error_01.svg'
-                height: 27
-                width: 30
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
             }
@@ -496,7 +495,10 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                    onPressed: { click01.play() }
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
 
                     onClicked: {
                         createWalletFailed = 0
@@ -594,6 +596,7 @@ Rectangle {
             onPressed: {
                 parent.anchors.topMargin = 14
                 click01.play()
+                detectInteraction()
             }
 
             onClicked: {

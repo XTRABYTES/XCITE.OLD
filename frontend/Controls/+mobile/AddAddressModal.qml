@@ -42,7 +42,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addAddressModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: addAddressModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -204,7 +204,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     coinListLines(false)
@@ -230,6 +233,7 @@ Rectangle {
             visible: editSaved == 0
             mobile: 1
             onTextChanged: {
+                detectInteraction()
                 if(newName.text != "") {
                     compareName();
                     compareTx()
@@ -271,6 +275,7 @@ Rectangle {
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
+                detectInteraction()
                 if(newAddress.text != ""){
                     checkAddress();
                     compareTx()
@@ -346,6 +351,7 @@ Rectangle {
                     parent.border.color = themecolor
                     scanButtonText.color = themecolor
                     click01.play()
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -398,7 +404,6 @@ Rectangle {
             id: newPicklist
             width: 100
             height: ((totalLines + 1) * 35)-10
-            radius: 4
             color: "#2A2C31"
             anchors.top: newIcon.top
             anchors.topMargin: -5
@@ -416,7 +421,6 @@ Rectangle {
             id: picklistClose
             width: 100
             height: 25
-            radius: 4
             color: "#2A2C31"
             anchors.bottom: newPicklist.bottom
             anchors.horizontalCenter: newPicklist.horizontalCenter
@@ -426,14 +430,20 @@ Rectangle {
 
             Image {
                 id: picklistCloseArrow
+                height: 12
+                fillMode: Image.PreserveAspectFit
                 source: 'qrc:/icons/mobile/close_picklist-icon_01.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                rotation: 180
             }
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
+
                 onClicked: {
                     coinListTracker = 0
                 }
@@ -461,6 +471,7 @@ Rectangle {
                 onPressed: {
                     parent.opacity = 1
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -569,6 +580,7 @@ Rectangle {
                 onPressed: {
                     parent.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -688,6 +700,7 @@ Rectangle {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onReleased: {

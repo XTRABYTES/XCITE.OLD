@@ -85,7 +85,10 @@ Rectangle {
         MouseArea {
             anchors.fill: picklistButton
 
-            onPressed: { click01.play() }
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
 
             onClicked: {
                 currencyTracker = 1
@@ -160,6 +163,11 @@ Rectangle {
 
         MouseArea {
             anchors.fill: parent
+
+            onPressed: {
+                detectInteraction()
+            }
+
             onClicked: {
                 currencyTracker = 0
             }
@@ -210,6 +218,10 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
 
+                onPressed: {
+                    detectInteraction()
+                }
+
                 onClicked: {
                     if (userSettings.pinlock === false) {
                         pincodeTracker = 1
@@ -252,6 +264,7 @@ Rectangle {
             onPressed: {
                 parent.opacity = 0.5
                 click01.play()
+                detectInteraction()
             }
 
             onCanceled: {
@@ -303,6 +316,7 @@ Rectangle {
         opacity: 0.9
         clip: true
         visible: pincodeTracker == 0
+        onStateChanged: detectInteraction()
 
         states: [
             State {
@@ -360,6 +374,8 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: detectInteraction()
 
                 onReleased: {
                     networkError = 0
@@ -444,11 +460,13 @@ Rectangle {
 
         MouseArea {
             anchors.fill: backbutton
+
+            onPressed: detectInteraction()
+
             onClicked: {
                 appsTracker = 0
                 selectedPage = "home"
                 mainRoot.pop("../WalletSettings.qml")
-                mainRoot.push("../DashboardForm.qml")
             }
         }
     }

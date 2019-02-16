@@ -227,6 +227,7 @@ Item {
               else {
                   convert()
               }
+        onTextChanged: detectInteraction()
     }
 
     Label {
@@ -870,6 +871,7 @@ Item {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onCanceled: {
@@ -923,6 +925,7 @@ Item {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onCanceled: {

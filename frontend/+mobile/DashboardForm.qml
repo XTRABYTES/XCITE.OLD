@@ -27,6 +27,8 @@ Item {
     property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
     property string searchCriteria:""
 
+    onPageTrackerChanged: detectInteraction()
+
     Rectangle {
         id: backgroundHome
         z: 1
@@ -135,6 +137,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenterOffset: 95
                     state: (coinTracker == 0)? "up" : "down"
+                    onStateChanged: detectInteraction()
 
                     states: [
                         State {
@@ -435,6 +438,7 @@ Item {
                         onPressed: {
                             click01.play()
                             backButton1.opacity = 0.5
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -536,7 +540,10 @@ Item {
                                 MouseArea {
                                     anchors.fill: transferButton
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onReleased: {
 
@@ -595,7 +602,10 @@ Item {
                                     MouseArea {
                                         anchors.fill: parent
 
-                                        onPressed: { click01.play() }
+                                        onPressed: {
+                                            click01.play()
+                                            detectInteraction()
+                                        }
 
                                         onReleased: {
 
@@ -712,6 +722,7 @@ Item {
                     anchors.left: parent.left
                     state: contactTracker == 0? "hidden" : "inView"
                     visible: x < parent.width
+                    onStateChanged: detectInteraction()
 
                     states: [
                         State {
@@ -738,9 +749,10 @@ Item {
                         anchors.left: parent.left
                         anchors.bottom: parent.bottom
                         text: contactTracker == 1? contactList.get(contactIndex).firstName : ""
-                        font.pixelSize: 20
+                        font.pixelSize: 30
                         font.family:  xciteMobile.name
                         font.letterSpacing: 2
+                        font.capitalization: Font.SmallCaps
                         color: darktheme == true? "#F2F2F2" : "#2A2C31"
                     }
 
@@ -753,7 +765,7 @@ Item {
                         anchors.right: parent.right
                         text: contactTracker == 1? contactList.get(contactIndex).lastName : ""
                         color: darktheme == true? "#F2F2F2" : "#2A2C31"
-                        font.pixelSize: 20
+                        font.pixelSize: 30
                         font.family:  xciteMobile.name
                         font.letterSpacing: 2
                         font.capitalization: Font.AllUppercase
@@ -821,7 +833,10 @@ Item {
                     font.capitalization: Font.AllUppercase
                     mobile: 1
                     addressBook: 1
-                    onTextChanged: searchCriteria = searchForAddress.text
+                    onTextChanged: {
+                        detectInteraction()
+                        searchCriteria = searchForAddress.text
+                    }
                     visible: width > 0
                     state: contactTracker == 1? "hidden" : "inView"
 
@@ -1000,6 +1015,7 @@ Item {
                         onPressed: {
                             click01.play()
                             backButton3.opacity = 0.5
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -1078,6 +1094,7 @@ Item {
                         onPressed: {
                             click01.play()
                             addButton3.opacity = 0.5
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -1201,7 +1218,10 @@ Item {
                                 MouseArea {
                                     anchors.fill: transferButton2
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onClicked: {
                                         if (transferTracker == 0 && addAddressTracker == 0) {
@@ -1254,7 +1274,10 @@ Item {
                                     MouseArea {
                                         anchors.fill: addContactButton
 
-                                        onPressed: { click01.play() }
+                                        onPressed: {
+                                            click01.play()
+                                            detectInteraction()
+                                        }
 
                                         onReleased: {
 
@@ -1319,7 +1342,10 @@ Item {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.verticalCenter: parent.verticalCenter
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onClicked: {
                                         if(contactList.get(contactIndex).mailAddress !== "") {
@@ -1344,7 +1370,10 @@ Item {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.verticalCenter: parent.verticalCenter
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onClicked: {
                                         if(contactList.get(contactIndex).cellNR !== "") {
@@ -1369,7 +1398,10 @@ Item {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.verticalCenter: parent.verticalCenter
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onClicked: {
                                         if(contactList.get(contactIndex).telNR !== "") {
@@ -1418,6 +1450,10 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
+
+                    onPressed: {
+                        detectInteraction()
+                    }
 
                     onClicked:{
                         cellTracker = 0
@@ -1485,7 +1521,10 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
 
-                            onPressed: { click01.play() }
+                            onPressed: {
+                                click01.play()
+                                detectInteraction()
+                            }
 
                             onClicked: {
                                 Qt.openUrlExternally('tel:' + contactList.get(contactIndex).cellNR)
@@ -1512,7 +1551,10 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
 
-                            onPressed: { click01.play() }
+                            onPressed: {
+                                click01.play()
+                                detectInteraction()
+                            }
 
                             onClicked: {
                                 Qt.openUrlExternally('sms:' + contactList.get(contactIndex).cellNR)
@@ -1541,6 +1583,24 @@ Item {
                 width: 22
                 height: 17
 
+                Rectangle {
+                    id: appsButton
+                    width: 25
+                    height: 25
+                    color: "transparent"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Rectangle {
+                    id: notifIndicator
+                    width: 8
+                    height: 8
+                    color: notification == 1? "#E55541" : "transparent"
+                    anchors.horizontalCenter: parent.right
+                    anchors.verticalCenter: parent.bottom
+                }
+
                 ColorOverlay {
                     anchors.fill: apps
                     source: apps
@@ -1548,9 +1608,12 @@ Item {
                 }
 
                 MouseArea {
-                    anchors.fill: parent
+                    anchors.fill: appsButton
 
-                    onPressed: { click01.play() }
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
 
                     onClicked: {
                         if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0) {
@@ -1579,7 +1642,10 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
-                        onPressed: { click01.play() }
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
 
                         onClicked: {
                             if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == true) {

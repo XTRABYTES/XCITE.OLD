@@ -45,7 +45,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addressModal; property: "anchors.topMargin"; duration: 400; easing.type: Easing.OutCubic}
+            NumberAnimation { target: addressModal; property: "anchors.topMargin"; duration: 400; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -404,7 +404,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton1
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     coinListLines(false)
@@ -441,6 +444,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onClicked: {
@@ -467,7 +471,10 @@ Rectangle {
             visible: editSaved == 0
                      && deleteAddressTracker == 0
             mobile: 1
-            onTextChanged: compareName()
+            onTextChanged: {
+                detectInteraction()
+                compareName()
+            }
         }
 
         Label {
@@ -505,6 +512,7 @@ Rectangle {
             onTextChanged: {
                 checkAddress()
                 compareTx()
+                detectInteraction()
             }
         }
 
@@ -572,6 +580,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     border.color = darktheme == true? "#F2F2F2" : "#2A2C31"
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -657,6 +666,11 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
+
                 onClicked: {
                     coinListTracker = 0
                 }
@@ -739,6 +753,7 @@ Rectangle {
                 onPressed: {
                     parent.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -843,6 +858,7 @@ Rectangle {
                     onPressed: {
                         parent.opacity = 0.5
                         click01.play()
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -902,6 +918,7 @@ Rectangle {
                     onPressed: {
                         click01.play()
                         parent.opacity = 0.5
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -1017,6 +1034,7 @@ Rectangle {
                 onPressed: {
                     closeDelete.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1126,6 +1144,7 @@ Rectangle {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onReleased: {

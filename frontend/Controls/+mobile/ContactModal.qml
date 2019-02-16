@@ -42,7 +42,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: editContactModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: editContactModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -155,6 +155,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onClicked: {
@@ -219,7 +220,10 @@ Rectangle {
             mobile: 1
             deleteBtn: contactIndex == 0? 0 : 1
             readOnly: contactIndex == 0
-            onTextChanged: compareName()
+            onTextChanged: {
+                detectInteraction()
+                compareName()
+            }
         }
 
         Controls.TextInput {
@@ -239,7 +243,10 @@ Rectangle {
             mobile: 1
             deleteBtn: contactIndex == 0? 0 : 1
             readOnly: contactIndex == 0
-            onTextChanged: compareName()
+            onTextChanged: {
+                detectInteraction()
+                compareName()
+            }
         }
 
         Label {
@@ -275,6 +282,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Controls.TextInput {
@@ -293,6 +301,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Controls.TextInput {
@@ -310,6 +319,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Controls.TextInput {
@@ -327,6 +337,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Rectangle {
@@ -347,6 +358,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     parent.opacity = 0.5
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -467,6 +479,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     parent.opacity = 0.5
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -561,6 +574,7 @@ Rectangle {
                     onPressed: {
                         parent.opacity = 0.5
                         click01.play()
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -616,6 +630,7 @@ Rectangle {
                     onPressed: {
                         click01.play()
                         parent.opacity = 0.5
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -720,6 +735,7 @@ Rectangle {
                 onPressed: {
                     closeDelete.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -807,6 +823,7 @@ Rectangle {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onClicked: {

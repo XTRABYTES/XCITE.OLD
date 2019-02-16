@@ -50,7 +50,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: transactionModal; properties: "anchors.topMargin, opacity"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: transactionModal; properties: "anchors.topMargin, opacity"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -162,6 +162,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+            onStateChanged: detectInteraction()
         }
 
         Text {
@@ -234,11 +235,15 @@ Rectangle {
             text: (newWalletSelect == 0 && coinTracker == 0) ? walletList.get(defaultWallet(coinID.text)).label : walletList.get(walletIndex).label
             anchors.right: picklistArrow2.left
             anchors.rightMargin: 7
-            anchors.verticalCenter: coinIcon.verticalCenter
-            anchors.verticalCenterOffset: 2
-            font.pixelSize: 20
+            anchors.left: picklistArrow1.right
+            anchors.leftMargin: 15
+            anchors.verticalCenter: coinID.verticalCenter
+            font.pixelSize: 24
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
+            horizontalAlignment: TextInput.AlignRight
+            elide: Text.ElideRight
             font.letterSpacing: 2
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: (transactionSend == 0
@@ -310,7 +315,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton1
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     coinListLines(true)
@@ -377,14 +385,20 @@ Rectangle {
 
             Image {
                 id: picklistCloseArrow1
+                height: 12
+                fillMode: Image.PreserveAspectFit
                 source: 'qrc:/icons/mobile/close_picklist-icon_01.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                rotation: 180
             }
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
+
                 onClicked: {
                     coinListTracker = 0
                 }
@@ -417,7 +431,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton2
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     coinWalletLines(coinID.text)
@@ -484,14 +501,20 @@ Rectangle {
 
             Image {
                 id: picklistCloseArrow2
+                height: 12
+                fillMode: Image.PreserveAspectFit
                 source: 'qrc:/icons/mobile/close_picklist-icon_01.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                rotation: 180
             }
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
+
                 onClicked: {
                     walletListTracker = 0
                 }
@@ -587,6 +610,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Text {
@@ -637,7 +661,10 @@ Rectangle {
                      && calculatorTracker == 0
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
-            onTextChanged: checkAddress()
+            onTextChanged: {
+                detectInteraction()
+                checkAddress()
+            }
         }
 
         Text {
@@ -693,6 +720,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     parent.border.color = themecolor
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -743,6 +771,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     parent.border.color = themecolor
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -788,6 +817,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Rectangle {
@@ -814,6 +844,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1118,6 +1149,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1204,6 +1236,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1340,6 +1373,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1444,6 +1478,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1603,6 +1638,7 @@ Rectangle {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onCanceled: {
@@ -1648,6 +1684,8 @@ Rectangle {
         color: "black"
         opacity: 0.9
         clip: true
+
+        onStateChanged: detectInteraction()
 
         states: [
             State {
@@ -1705,6 +1743,10 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
 
                 onReleased: {
                     networkError = 0
@@ -1836,6 +1878,7 @@ Rectangle {
             onPressed: {
                 closeTransferModal.anchors.topMargin = 12
                 click01.play()
+                detectInteraction()
             }
 
             onReleased: {

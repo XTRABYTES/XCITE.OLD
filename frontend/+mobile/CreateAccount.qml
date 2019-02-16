@@ -477,7 +477,18 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        width: Screen.width
+        height: Screen.height
+        color: bgcolor
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.verticalCenter
+        visible: signUpError == 1 || accountCreated == 1
 
+        MouseArea {
+            anchors.fill: parent
+        }
+    }
 
     // Account creation failed
 
@@ -506,7 +517,7 @@ Rectangle {
             Transition {
                 from: "*"
                 to: "*"
-                NumberAnimation { target: accountFailed; property: "anchors.verticalCenterOffset"; duration: 300; easing.type: Easing.OutCubic}
+                NumberAnimation { target: accountFailed; property: "anchors.verticalCenterOffset"; duration: 300; easing.type: Easing.InOutCubic}
             }
         ]
 
@@ -611,7 +622,7 @@ Rectangle {
             Transition {
                 from: "*"
                 to: "*"
-                NumberAnimation { target: accountSuccess; property: "anchors.verticalCenterOffset"; duration: 300; easing.type: Easing.OutCubic}
+                NumberAnimation { target: accountSuccess; property: "anchors.verticalCenterOffset"; duration: 300; easing.type: Easing.InOutCubic}
             }
         ]
 
@@ -753,7 +764,7 @@ Rectangle {
             Transition {
                 from: "*"
                 to: "*"
-                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
+                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.InOutCubic}
             }
         ]
 

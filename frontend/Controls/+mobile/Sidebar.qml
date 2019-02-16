@@ -23,6 +23,8 @@ Rectangle {
     anchors.left: parent.left
     z: 100
 
+    onStateChanged: detectInteraction()
+
     states: [
         State {
             name: "up"
@@ -38,7 +40,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: sidebar; property: "anchors.leftMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: sidebar; property: "anchors.leftMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -87,11 +89,16 @@ Rectangle {
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
+
+                    onPressed: {
+                        detectInteraction()
+                    }
+
                     onClicked: {
                         appsTracker = 0
                         if (selectedPage != "home") {
+                            //push of current page
                             selectedPage = "home"
-                            // pop current page
                             mainRoot.push("../DashboardForm.qml")
                         }
                     }
@@ -134,11 +141,15 @@ Rectangle {
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
+
+                    onPressed: {
+                        detectInteraction()
+                    }
+
                     onClicked: {
                         if (selectedPage != "settings") {
                             appsTracker = 0
                             selectedPage = "settings"
-                            mainRoot.pop("../DashboardForm.qml")
                             mainRoot.push("../WalletSettings.qml")
                         }
                     }
@@ -181,13 +192,17 @@ Rectangle {
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
+
+                    onPressed: {
+                        detectInteraction()
+                    }
+
                     onClicked: {
                         if (selectedPage != "backup") {
                             appsTracker = 0
                             if (userSettings.pinlock === false) {
-                                selectedPage = "backup"
-                                mainRoot.pop("../DashboardForm.qml")
-                                mainRoot.push("../WalletBackup.qml")
+                                //selectedPage = "backup"
+                                //mainRoot.push("../WalletBackup.qml")
                             }
                             else {
                                 pincodeTracker = 1
@@ -201,7 +216,7 @@ Rectangle {
         Item {
             id: appsSection
             width: sidebar.width
-            height: backupText.height + 80
+            height: appsText.height + 80
             anchors.top: backupSection.bottom
 
             Image {
@@ -233,14 +248,77 @@ Rectangle {
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
+
+                    onPressed: {
+                        detectInteraction()
+                    }
+
                     onClicked: {
-                        if (selectedPage != "backup") {
+                        if (selectedPage != "apps") {
                             appsTracker = 0
-                            if (userSettings.pinlock === false) {
-                                selectedPage = "apps"
-                                mainRoot.pop("../DashboardForm.qml")
-                                mainRoot.push("../Applications.qml")
-                            }
+                            //selectedPage = "apps"
+                            //mainRoot.push("../Applications.qml")
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: notifSection
+            width: sidebar.width
+            height: notifText.height + 80
+            anchors.top: appsSection.bottom
+
+            Image {
+                id: notif
+                anchors.top: parent.top
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: 'qrc:/icons/mobile/notification-icon_01.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Rectangle {
+                    id: notifIndicator
+                    width: 8
+                    height: 8
+                    color: notification == 1? "#E55541" : "transparent"
+                    anchors.horizontalCenter: parent.right
+                    anchors.verticalCenter: parent.top
+                }
+
+                Text {
+                    id: notifText
+                    text: "APPS"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                id: notifButtonArea
+                anchors.fill: notifSection
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        if (selectedPage != "notif") {
+                            appsTracker = 0
+                            //notification = 0
+                            //selectedPage = "notif"
+                            //mainRoot.push("../Notifications.qml")
                         }
                     }
                 }
@@ -305,6 +383,9 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
+                    sessionStart = 0
+                    sessionTime = 0
+                    console.log("You are being logged out!")
                     Qt.quit()
                 }
             }
@@ -323,6 +404,7 @@ Rectangle {
 
             onPressed: {
                 appsTracker = 0
+                detectInteraction()
             }
         }
     }

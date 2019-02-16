@@ -46,7 +46,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addWalletModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: addWalletModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -141,6 +141,7 @@ Rectangle {
                 mobile: 1
                 visible: scanQRTracker == 0
                 onTextChanged: {
+                    detectInteraction()
                     if(newName.text != "") {
                         compareName();
                         compareTx()
@@ -179,6 +180,7 @@ Rectangle {
                 mobile: 1
                 validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
                 onTextChanged: {
+                    detectInteraction()
                     if(newAddress.text != ""){
                         checkAddress();
                         compareTx()
@@ -249,6 +251,7 @@ Rectangle {
 
                     onPressed: {
                         click01.play()
+                        detectInteraction()
                     }
 
                     onReleased: {
@@ -288,6 +291,7 @@ Rectangle {
 
                     onPressed: {
                         click01.play()
+                        detectInteraction()
                     }
 
                     onReleased: {
@@ -386,7 +390,10 @@ Rectangle {
                 MouseArea {
                     anchors.fill: closeSave
 
-                    onPressed: { click01.play() }
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
 
                     onClicked: {
                         addWalletTracker = 0;
@@ -473,7 +480,10 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                    onPressed: { click01.play() }
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
 
                     onClicked: {
                         addWalletFailed = 0
@@ -574,6 +584,7 @@ Rectangle {
             onPressed: {
                 parent.anchors.topMargin = 14
                 click01.play()
+                detectInteraction()
             }
 
             onClicked: {

@@ -162,5 +162,6 @@
         <file>Controls/+mobile/Pincode.qml</file>
         <file>+mobile/WalletBackup.qml</file>
         <file>+mobile/Applications.qml</file>
+        <file>+mobile/Notifications.qml</file>
     </qresource>
 </RCC>

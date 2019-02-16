@@ -26,6 +26,7 @@ Rectangle {
     color: darktheme == false? "#F7F7F7" : "#14161B"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+    onStateChanged: detectInteraction()
 
     LinearGradient {
         anchors.fill: parent
@@ -58,7 +59,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: pincodeModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: pincodeModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -149,6 +150,7 @@ Rectangle {
                 readOnly: (pin.text).length >= 4
                 mobile: 1
                 calculator: 0
+                onTextChanged: detectInteraction()
             }
 
             Label {
@@ -183,6 +185,7 @@ Rectangle {
                 calculator: 0
 
                 onTextChanged: {
+                    detectInteraction()
                     if ((newPin2.text).length === 4){
                         passError3 = 0
                         if (newPin2.text !== newPin1.text) {
@@ -236,6 +239,7 @@ Rectangle {
                     onPressed: {
                         parent.opacity = 0.5
                         click01.play()
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -362,6 +366,7 @@ Rectangle {
                 }
 
                 onTextChanged: {
+                    detectInteraction()
                     if ((currentPin.text).length === 4){
                         passError1 = 0
                         passError2 = 0
@@ -415,6 +420,7 @@ Rectangle {
                 readOnly: (pin.text).length >= 4
                 mobile: 1
                 calculator: 0
+                onTextChanged: detectInteraction()
             }
 
             Label {
@@ -449,6 +455,7 @@ Rectangle {
                 calculator: 0
 
                 onTextChanged: {
+                    detectInteraction()
                     if ((changePin2.text).length === 4){
                         passError3 = 0
                         if (changePin2.text !== changePin1.text) {
@@ -502,6 +509,7 @@ Rectangle {
                     onPressed: {
                         parent.opacity = 0.5
                         click01.play()
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -645,6 +653,7 @@ Rectangle {
                 }
 
                 onTextChanged: {
+                    detectInteraction()
                     if ((pin.text).length === 4){
                         passError1 = 0
                         passError2 = 0
@@ -693,17 +702,11 @@ Rectangle {
 
             Image {
                 id: saveFailedIcon
-                source: 'qrc:/icons/icon-delete-mobile.svg'
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
                 height: 100
                 width: 100
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: saveFailed.top
-
-                ColorOverlay {
-                    anchors.fill: parent
-                    source: parent
-                    color: maincolor
-                }
             }
 
             Label {
@@ -734,6 +737,7 @@ Rectangle {
                     onPressed: {
                         closeDelete.opacity = 0.5
                         click01.play()
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -887,6 +891,7 @@ Rectangle {
         color: "black"
         opacity: 0.9
         clip: true
+        onStateChanged: detectInteraction()
 
         states: [
             State {
@@ -944,6 +949,10 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                   detectInteraction()
+                }
 
                 onReleased: {
                     networkError = 0
@@ -1026,6 +1035,11 @@ Rectangle {
 
         MouseArea {
             anchors.fill: backbutton
+
+            onPressed: {
+                detectInteraction()
+            }
+
             onClicked: {
                 pincodeTracker = 0
                 createPin = 0

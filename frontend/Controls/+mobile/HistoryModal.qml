@@ -42,7 +42,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: historyModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: historyModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -181,6 +181,7 @@ Rectangle {
             onPressed: {
                 parent.anchors.topMargin = 14
                 click01.play()
+                detectInteraction()
             }
 
             onClicked: {

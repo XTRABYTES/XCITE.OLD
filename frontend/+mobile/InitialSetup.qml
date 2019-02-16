@@ -282,6 +282,7 @@ Item {
                         onReleased: {
                             mainRoot.pop()
                             mainRoot.push("../Home.qml")
+                            sessionStart = 1
                             selectedPage = "home"
                         }
                     }
