@@ -37,7 +37,7 @@ public slots:
     void onClearAllSettings();
     void login(QString username, QString password);
     bool SaveSettings();
-    void LoadSettings();
+    void LoadSettings(QByteArray settings);
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
     void SaveAddresses(QString addresslist);

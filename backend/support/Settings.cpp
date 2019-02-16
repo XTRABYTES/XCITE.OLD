@@ -85,10 +85,13 @@ void Settings::CreateUser(QString username, QString password){
         return;
     }
 
+    QVariantMap settings;
+    settings.insert("app","xtrabytes");
+    QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
 
-    QByteArray encodedText = encryption.encode(QString("<xtrabytes>").toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
-    QString DataAsString = QString::fromLatin1(encodedText);
+    QByteArray encodedText = encryption.encode(settingsByte, (password + "xtrabytesxtrabytes").toLatin1());
+    QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
 
     QVariantMap feed;
     feed.insert("dateCreated", QDateTime::currentDateTime());
@@ -97,7 +100,12 @@ void Settings::CreateUser(QString username, QString password){
     feed.insert("username", username);
     feed.insert("id", "1");
 
-    QByteArray payload =  QJsonDocument::fromVariant(QVariant(feed)).toJson();
+    QByteArray payload =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
+    QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
+
+    QJsonDocument decodedJsonDoc = QJsonDocument::fromJson(decodedSettings);
+    QJsonObject jsonObj = decodedJsonDoc.object();
+    QJsonValue jsonVal = jsonObj.value("app");
 
     bool success = RestAPIPostCall("/v1/user", payload);
 
@@ -110,19 +118,25 @@ void Settings::CreateUser(QString username, QString password){
 
 void Settings::login(QString username, QString password){
     QUrlQuery queryString;
-    queryString.addQueryItem("userId", username);
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     QString url = "/v1/user/" + username;
 
     QByteArray result = RestAPIGetCall(url, queryString);
     QByteArray settings = QJsonDocument::fromJson(result).array()[0].toString().toLatin1(); //JSON is returned as a one item array.  Item is the settings value
+    QString DataAsString = QString::fromLatin1(settings, settings.length()); //adding settings.length or string is truncated
 
-    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-    QByteArray decodedSettings = encryption.decode(settings, (password + "xtrabytesxtrabytes").toLatin1());
 
-    if(decodedSettings.startsWith("<xtrabytes>")){
+    QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
+    int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
+    decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
+
+    QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
+
+    if(decodedJson.value("app").toString().startsWith("xtrabytes")){
         m_username = username;
         m_password = password;
-        LoadSettings();
+        LoadSettings(decodedSettings);
+        SaveSettings(); //added here for testing Saving - Don't need it later
         emit loginSucceededChanged();
     }
     else
@@ -132,55 +146,32 @@ void Settings::login(QString username, QString password){
 // User setting functions
 bool Settings::SaveSettings(){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-    QString settings;
+    QVariantMap settings;
 
-    //settings += m_addresses + ",";
-    settings += "pincode: " + m_pincode + " ";
+    foreach (const QString &key, m_settings->childKeys()) {//iterate through m_settings to add everything to settings file we write to DB
+        qDebug() << key << "and" << m_settings->value(key).toString();
+        settings.insert(key,m_settings->value(key).toString());
+    }
+    settings.insert("pincode", m_pincode); //may be able to remove this
 
-    qCritical() << settings;
+    QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
 
-    QByteArray encodedText = encryption.encode((QString("<xtrabytes>1") + settings).toUtf8(), (m_password + "xtrabytesxtrabytes").toUtf8());
+    QByteArray encodedText = encryption.encode(settingsByte, (m_password + "xtrabytesxtrabytes").toLatin1());
+    QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
 
-    QSqlDatabase db = OpenDBConnection();
-    QSqlQuery query;
-    query.prepare("UPDATE xciteSettings set settings = ? where username = ?");
-    query.addBindValue(m_username);
-    query.addBindValue(encodedText);
-    query.exec();
-    qCritical() << query.lastError();
-    db.close();
-
+    QVariantMap feed;
+    feed.insert("dateUpdated", QDateTime::currentDateTime());
+    feed.insert("settings", DataAsString); //only updating time and settings
+    // <TODO>
+    // Add POST method to update settings based on username
     return true;
 }
 
-void Settings::LoadSettings(){
-    QByteArray result;
-    QSqlDatabase db = OpenDBConnection();
-    QSqlQuery query;
-    query.prepare("SELECT settings from xciteSettings where username = ?");
-    query.addBindValue(m_username);
-    query.exec();
-    while (query.next()) {
-           result = query.value(0).toByteArray();
-    }
-    db.close();
-
-    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-    QByteArray decodedSettings = encryption.decode(result, (m_password + "xtrabytesxtrabytes").toUtf8());
-    qCritical() << decodedSettings;
-    if(decodedSettings.startsWith("<xtrabytes>")){
-        QString settings = QString::fromUtf8(decodedSettings);
-        qCritical() << decodedSettings;
-
-        QByteArray jsonBytes = settings.toUtf8();
-        auto json_doc = QJsonDocument::fromJson(jsonBytes);
-
-        if (json_doc.isNull())
-            qCritical() << "Failed to create JSON doc";
-        if (!json_doc.isObject())
-            qCritical() << "JSON is not an object";
-
-        QJsonObject json_obj = json_doc.object();
+void Settings::LoadSettings(QByteArray settings){
+    QJsonObject json = QJsonDocument::fromJson(settings).object();
+    foreach(const QString& key, json.keys()) {
+            QJsonValue value = json.value(key);
+            m_settings->setValue(key,value.toString());
     }
 }
 
