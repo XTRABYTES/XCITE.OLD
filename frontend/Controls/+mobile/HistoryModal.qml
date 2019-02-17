@@ -78,7 +78,7 @@ Rectangle {
         font.family: "Brandon Grotesque"
         font.weight: Font.Bold
         font.letterSpacing: 2
-        color: "#F2F2F2"
+        color: themecolor
     }
 
     Label {
@@ -90,7 +90,7 @@ Rectangle {
         font.pixelSize: 20
         font.family: "Brandon Grotesque"
         font.weight: Font.Bold
-        color: "#F2F2F2"
+        color: themecolor
     }
 
     Controls.TextInput {

@@ -231,5 +231,6 @@
         <file>icons/mobile/theme_switch-icon_01_off.svg</file>
         <file>icons/mobile/theme_switch-icon_01_on.svg</file>
         <file>icons/mobile/notification-icon_01.svg</file>
+        <file>icons/mobile/menu-icon_01.svg</file>
     </qresource>
 </RCC>

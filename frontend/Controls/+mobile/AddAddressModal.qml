@@ -26,6 +26,7 @@ Rectangle {
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+    onStateChanged: detectInteraction()
 
     states: [
         State {

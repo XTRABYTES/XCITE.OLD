@@ -75,7 +75,7 @@ Item {
             width: parent.width
             height: parent.height - 50
             color: "#1B2934"
-            opacity: 0.25
+            opacity: 0.05
 
             LinearGradient {
                 anchors.fill: parent
@@ -97,7 +97,7 @@ Item {
             color: "transparent"
             border.color: maincolor
             border.width: 1
-            opacity: 0.50
+            opacity: 0.25
         }
 
         Controls.TextInput {
@@ -163,15 +163,15 @@ Item {
 
                 onReleased: {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
-                        //userLogin(userName.text, passWord.text)
-                        username = userName.text
+                        userLogin(userName.text, passWord.text)
+                        /**username = userName.text
                         mainRoot.pop()
                         mainRoot.push("../Home.qml")
                         passError = 0
                         networkError = 0
                         loginTracker = 0
                         sessionStart = 1
-                        selectedPage = "home"
+                        selectedPage = "home"*/
                     }
                 }
             }
@@ -185,6 +185,7 @@ Item {
                     passError = 0
                     networkError = 0
                     loginTracker = 0
+                    sessionStart = 1
                     selectedPage = "home"
                 }
 

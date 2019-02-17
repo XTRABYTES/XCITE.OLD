@@ -32,6 +32,23 @@ ApplicationWindow {
     title: qsTr("XCITE")
     color: "#14161B"
 
+    Image {
+        id: xbyLogo
+        source: 'qrc:/icons/XBY_logo_big.svg'
+        width: 150
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -50
+    }
+
+    // Order of the pages
+    StackView {
+        id: mainRoot
+        initialItem: "../main.qml"
+        anchors.fill: parent
+    }
+
     onClosing: {
         if (mainRoot.depth > 1) {
             close.accepted = false
@@ -90,6 +107,7 @@ ApplicationWindow {
     // Trackers
     property int interactionTracker: 0
     property int loginTracker: 0
+    property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
     property int appsTracker: 0
@@ -119,6 +137,11 @@ ApplicationWindow {
     // Global variables
     property int sessionStart: 0
     property int sessionTime: 0
+    property int autoLogout: 0
+    property int manualLogout: 0
+    property int networkLogout: 0
+    property int requestedLogout: 0
+    property int goodbey: 0
     property int networkAvailable: 0
     property int networkError: 0
     property int photoSelect: 0
@@ -498,6 +521,12 @@ ApplicationWindow {
         // read transactionhistory from persistent data
     }
 
+    // loggin out
+    function logOut () {
+        Qt.quit()
+    }
+
+    // check for user interaction
     function detectInteraction() {
         if (interactionTracker == 0) {
             interactionTracker = 1
@@ -622,13 +651,6 @@ ApplicationWindow {
         }
     }
 
-    // Order of the pages
-    StackView {
-        id: mainRoot
-        initialItem: "../main.qml"
-        anchors.fill: parent
-    }
-
     Component.onCompleted: {
 
         mainRoot.push("../Onboarding.qml")
@@ -709,6 +731,7 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
+            console.log("checking if there was interaction")
             if (interactionTracker == 1) {
                 sessionTime = 0
                 interactionTracker = 0
@@ -722,7 +745,8 @@ ApplicationWindow {
                     sessionStart = 0
                     console.log("You are being logged out!")
                     // show pop up that you will be logged out if you do not interact
-                    Qt.quit()
+                    autoLogout = 1
+                    logoutTracker = 1
                 }
             }
         }
@@ -732,14 +756,30 @@ ApplicationWindow {
         id: networkTimer
         interval: 30000
         repeat: true
-        running: loginTimer.running
+        running: sessionStart == 1
 
         onTriggered: {
             console.log("checking for network connection")
             //check if there is a connection to the accounts server
-            // if connection is available -> networkAvailable = 0 and check for log out request
-                    // if log out request is true show pop up with the log out request
+            // if connection is available -> networkAvailable = 0
             // if connection is not available -> networkAvailable = networkAvailable + 1
+            // if networkAvailable == 4 -> networkLogout = 1 && logoutTracker = 1
+            console.log("checking for log out request")
+            if (requestedLogout == 1) {
+                logoutTracker = 1
+            }
+        }
+    }
+
+    Timer {
+        id: requestLogoutTimer
+        interval: 150000
+        repeat: false
+        running: sessionStart == 1
+
+        onTriggered: {
+            console.log("log out request sent!")
+            requestedLogout = 1
         }
     }
 }

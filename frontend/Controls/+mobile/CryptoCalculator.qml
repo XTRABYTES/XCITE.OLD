@@ -864,7 +864,7 @@ Item {
         anchors.right: parent.horizontalCenter
         anchors.rightMargin: 5
         color: "#4BBE2E"
-        opacity: darktheme == true? 0.25 : 0.5
+        opacity: 0.5
 
         MouseArea {
             anchors.fill: confirmationSendButton
@@ -893,7 +893,7 @@ Item {
         font.pointSize: 14
         color: "#4BBE2E"
         font.bold: true
-        opacity: darktheme == true? 0.5 : 0.75
+        opacity: 0.75
         anchors.horizontalCenter: confirmationSendButton.horizontalCenter
         anchors.verticalCenter: confirmationSendButton.verticalCenter
     }
@@ -906,7 +906,7 @@ Item {
         color: "transparent"
         border.color: "#4BBE2E"
         border.width: 1
-        opacity: darktheme == true? 0.5 : 0.75
+        opacity: 0.75
     }
 
     Rectangle {

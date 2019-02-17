@@ -13,6 +13,8 @@ Item {
     }
 
     Component.onCompleted: {
+        goodbey = 0
+
         // load settings
 
         // load wallets
