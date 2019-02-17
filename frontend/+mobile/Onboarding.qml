@@ -19,6 +19,13 @@ import QtQuick.Layouts 1.3
 import "qrc:/Controls" as Controls
 
 Item {
+    height: Screen.height
+    width: Screen.width
+    clip: true
+
+    Component.onCompleted: {
+        selectedPage = "login"
+    }
 
     Image {
         id: pictureBG
@@ -130,16 +137,15 @@ Item {
 
         Rectangle {
             id: startButton
-            width: (doubbleButtonWidth - 10) / 2
+            width: doubbleButtonWidth / 2
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            color: "#1B2934"
+            color: "transparent"
             opacity: 0.5
 
             LinearGradient {
                 anchors.fill: parent
-                source: parent
                 start: Qt.point(x, y)
                 end: Qt.point(x, parent.height)
                 gradient: Gradient {
@@ -167,10 +173,11 @@ Item {
             font.bold: true
             anchors.horizontalCenter: startButton.horizontalCenter
             anchors.verticalCenter: startButton.verticalCenter
+            anchors.verticalCenterOffset: 1
         }
 
         Rectangle {
-            width: (doubbleButtonWidth - 10) / 2
+            width: doubbleButtonWidth / 2
             height: 33
             anchors.horizontalCenter: startButton.horizontalCenter
             anchors.bottom: startButton.bottom
@@ -185,7 +192,7 @@ Item {
         id: closeButtonLabel
         text: "CLOSE"
         anchors.bottom: combinationMark.top
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: 25
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -203,7 +210,12 @@ Item {
         MouseArea {
             anchors.fill: closeButton
 
-            onClicked: Qt.quit()
+            onClicked: {
+                sessionStart = 0
+                sessionTime = 0
+                console.log("You are being logged out!")
+                Qt.quit()
+            }
         }
     }
 
@@ -214,7 +226,7 @@ Item {
         width: 150
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
         anchors.bottom: backgroundSplash.bottom
-        anchors.bottomMargin: 35
+        anchors.bottomMargin: 50
     }
 
     Login {

@@ -45,8 +45,7 @@ public slots:
     bool checkPincode(QString pincode);
     bool RestAPIPostCall(QString apiURL, QByteArray payload);
     bool RestAPIPutCall(QString apiURL, QByteArray payload);
-
-    QByteArray RestAPIGetCall(QString apiURL, QUrlQuery urlQuery);
+    QByteArray RestAPIGetCall(QString apiURL);
 
 signals:
     void loginSucceededChanged();
@@ -65,9 +64,6 @@ private:
     QString m_pincode;
     QString m_username;
     QString m_password;
-
-private slots:
-    QSqlDatabase OpenDBConnection();
 
 };
 

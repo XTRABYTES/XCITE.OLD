@@ -105,6 +105,10 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
+                    onPressed: {
+                        detectInteraction()
+                    }
+
                     onClicked: {
                         click01.play()
                         contactIndex = contactNR
@@ -157,5 +161,6 @@ Rectangle {
         anchors.fill: parent
         contentHeight: (filteredContacts.count * 85) + 75
         interactive: appsTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && transferTracker == 0
+        onDraggingChanged: detectInteraction()
     }
 }

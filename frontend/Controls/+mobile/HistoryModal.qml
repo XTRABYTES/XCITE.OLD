@@ -42,7 +42,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: historyModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: historyModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -78,7 +78,7 @@ Rectangle {
         font.family: "Brandon Grotesque"
         font.weight: Font.Bold
         font.letterSpacing: 2
-        color: "#F2F2F2"
+        color: themecolor
     }
 
     Label {
@@ -90,7 +90,7 @@ Rectangle {
         font.pixelSize: 20
         font.family: "Brandon Grotesque"
         font.weight: Font.Bold
-        color: "#F2F2F2"
+        color: themecolor
     }
 
     Controls.TextInput {
@@ -181,6 +181,7 @@ Rectangle {
             onPressed: {
                 parent.anchors.topMargin = 14
                 click01.play()
+                detectInteraction()
             }
 
             onClicked: {

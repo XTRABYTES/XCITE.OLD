@@ -79,6 +79,7 @@ Rectangle {
         orientation: ListView.Horizontal
         spacing: 0
         anchors.fill: parent
+        onDraggingChanged: detectInteraction()
     }
 }
 

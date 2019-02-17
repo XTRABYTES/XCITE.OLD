@@ -126,6 +126,10 @@ Rectangle {
                     id: right1Button
                     anchors.fill: button1
 
+                    onPressed: {
+                        detectInteraction()
+                    }
+
                     onClicked: {
                         lineView = 1
                     }
@@ -159,6 +163,10 @@ Rectangle {
                 MouseArea {
                     id: left2Button
                     anchors.fill: button2
+
+                    onPressed: {
+                        detectInteraction()
+                    }
 
                     onClicked: {
                         lineView = 0
@@ -220,6 +228,10 @@ Rectangle {
                     id: right2Button
                     anchors.fill: button3
 
+                    onPressed: {
+                        detectInteraction()
+                    }
+
                     onClicked: {
                         lineView = 2
                     }
@@ -254,6 +266,10 @@ Rectangle {
                     id: left3Button
                     anchors.fill: button4
 
+                    onPressed: {
+                        detectInteraction()
+                    }
+
                     onClicked: {
                         lineView = 1
                     }
@@ -282,6 +298,7 @@ Rectangle {
 
                 onPressed: {
                     clickIndicator.visible = true
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -364,5 +381,6 @@ Rectangle {
         model: filteredTX
         delegate: historyLine
         contentHeight: parent.height + 125
+        onDraggingChanged: detectInteraction()
     }
 }

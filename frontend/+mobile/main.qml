@@ -32,7 +32,28 @@ ApplicationWindow {
     title: qsTr("XCITE")
     color: "#14161B"
 
+    Image {
+        id: xbyLogo
+        source: 'qrc:/icons/XBY_logo_big.svg'
+        width: 150
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -50
+    }
 
+    // Order of the pages
+    StackView {
+        id: mainRoot
+        initialItem: "../main.qml"
+        anchors.fill: parent
+    }
+
+    onClosing: {
+        if (mainRoot.depth > 1) {
+            close.accepted = false
+        }
+    }
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -55,21 +76,21 @@ ApplicationWindow {
 
     // BTC information
     property real btcValueBTC: 1
-    property real valueBTCUSD: 3353.20
-    property real valueBTCEUR: 2966.10
-    property real valueBTCGBP: 2597.53
+    property real valueBTCUSD: 3353.20 // replace by function to retrieve from CMC or equivalent
+    property real valueBTCEUR: 2966.10 // replace by function to retrieve from CMC or equivalent
+    property real valueBTCGBP: 2597.53 // replace by function to retrieve from CMC or equivalent
     property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : valueBTCGBP
 
     // Coin info, retrieved from server
     property string nameXBY: "XBY"
-    property real btcValueXBY: 0.00000445
+    property real btcValueXBY: 0.00000445 // replace by function to retrieve from server
     property real valueXBY: btcValueXBY * valueBTC
-    property real percentageXBY: 23.47
+    property real percentageXBY: 23.47 // replace by function to retrieve from server
 
     property string nameXFUEL: "XFUEL"
-    property real btcValueXFUEL: btcValueXBY
+    property real btcValueXFUEL: btcValueXBY // replace by function to retrieve from server
     property real valueXFUEL: btcValueXFUEL * valueBTC
-    property real percentageXFUEL: 23.47
+    property real percentageXFUEL: 23.47 // replace by function to retrieve from server
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
@@ -84,7 +105,9 @@ ApplicationWindow {
     property string selectedPage: ""
 
     // Trackers
+    property int interactionTracker: 0
     property int loginTracker: 0
+    property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
     property int appsTracker: 0
@@ -112,6 +135,14 @@ ApplicationWindow {
     property int pincodeTracker: 0
 
     // Global variables
+    property int sessionStart: 0
+    property int sessionTime: 0
+    property int autoLogout: 0
+    property int manualLogout: 0
+    property int networkLogout: 0
+    property int requestedLogout: 0
+    property int goodbey: 0
+    property int networkAvailable: 0
     property int networkError: 0
     property int photoSelect: 0
     property int newCoinPicklist: 0
@@ -119,6 +150,7 @@ ApplicationWindow {
     property int newWalletPicklist: 0
     property int newWalletSelect: 0
     property int switchState: 0
+    property int notification: 0
     property string scannedAddress: ""
     property string selectedAddress: ""
     property string currentAddress: ""
@@ -158,10 +190,34 @@ ApplicationWindow {
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
     signal userExists(string username)
+    //signal userAvailable()
     signal clearAllSettings
     signal saveAddressBook(string addresses)
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
+
+    // Automated functions
+
+    function updateBalance() {
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).coin === "XBY") {
+                if (getbalanceXBY(walletList.get(i).address) !== walletList.get(i).balance) {
+                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
+                    if (transferTracker == 0) {
+                        notification = 1
+                    }
+                }
+            }
+            else if (walletList.get(i).coin === "XFUEL") {
+                if (getbalanceXFUEL(walletList.get(i).address) !== walletList.get(i).balance) {
+                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
+                    if (transferTracker == 0) {
+                        notification = 1
+                    }
+                }
+            }
+        }
+    }
 
     // Global functions
     function countWallets() {
@@ -465,6 +521,18 @@ ApplicationWindow {
         // read transactionhistory from persistent data
     }
 
+    // loggin out
+    function logOut () {
+        Qt.quit()
+    }
+
+    // check for user interaction
+    function detectInteraction() {
+        if (interactionTracker == 0) {
+            interactionTracker = 1
+        }
+    }
+
     function addWalletsToAddressList() {
         for(var i = 0; i < walletList.count; i++){
             if (walletList.get(i).remove === false) {
@@ -583,13 +651,6 @@ ApplicationWindow {
         }
     }
 
-    // Order of the pages
-    StackView {
-        id: mainRoot
-        initialItem: "../main.qml"
-        anchors.fill: parent
-    }
-
     Component.onCompleted: {
 
         mainRoot.push("../Onboarding.qml")
@@ -612,6 +673,19 @@ ApplicationWindow {
         currencyID = currencyID + 1
         fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": currencyID});
         currencyID = currencyID + 1
+
+        coinList.setProperty(0, "name", nameXFUEL);
+        coinList.setProperty(0, "fullname", "XFUEL");
+        coinList.setProperty(0, "logo", 'qrc:/icons/XFUEL_card_logo_01.svg');
+        coinList.setProperty(0, "logoBig", 'qrc:/icons/XFUEL_logo_big.svg');
+        coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
+        coinList.setProperty(0, "percentage", percentageXFUEL);
+        coinList.setProperty(0, "totalBalance", 0);
+        coinList.setProperty(0, "active", true);
+        coinList.setProperty(0, "coinID", coinIndex);
+        coinIndex = coinIndex +1;
+        coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": coinIndex});
+        coinIndex = coinIndex +1;
     }
 
     // Global components
@@ -625,14 +699,7 @@ ApplicationWindow {
         property int defaultCurrency: 0
         property string theme: "dark"
         property bool pinlock: false
-        property string pincode: ""
-
-        //update settings
-        //onLocaleChanged:
-        //onDefaultCurrencyChanged:
-        //onThemeChanged:
-        //onPinlockChanged:
-        //onPincodeChanged:
+        property bool accountCreationCompleted: false
     }
 
     // Global fonts
@@ -655,5 +722,64 @@ ApplicationWindow {
         id: click01
         source: "qrc:/sounds/click_02.wav"
         volume: 0.15
-   }
+    }
+
+    Timer {
+        id: loginTimer
+        interval: 30000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            console.log("checking if there was interaction")
+            if (interactionTracker == 1) {
+                sessionTime = 0
+                interactionTracker = 0
+                // reset timer on serverside
+            }
+            else {
+                sessionTime = sessionTime +1
+                console.log("Time until automatic log out: " +  (5 - (sessionTime / 2)) + " minute(s)")
+                if (sessionTime == 10){
+                    sessionTime = 0
+                    sessionStart = 0
+                    console.log("You are being logged out!")
+                    // show pop up that you will be logged out if you do not interact
+                    autoLogout = 1
+                    logoutTracker = 1
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: networkTimer
+        interval: 30000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            console.log("checking for network connection")
+            //check if there is a connection to the accounts server
+            // if connection is available -> networkAvailable = 0
+            // if connection is not available -> networkAvailable = networkAvailable + 1
+            // if networkAvailable == 4 -> networkLogout = 1 && logoutTracker = 1
+            console.log("checking for log out request")
+            if (requestedLogout == 1) {
+                logoutTracker = 1
+            }
+        }
+    }
+
+    Timer {
+        id: requestLogoutTimer
+        interval: 150000
+        repeat: false
+        running: sessionStart == 1
+
+        onTriggered: {
+            console.log("log out request sent!")
+            requestedLogout = 1
+        }
+    }
 }

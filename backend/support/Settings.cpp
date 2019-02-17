@@ -70,7 +70,7 @@ bool Settings::UserExists(QString username){
     queryString.addQueryItem("userId", username);
     QString url = "/v1/user/" + username;
 
-    QString userinfo = RestAPIGetCall(url, queryString);
+    QString userinfo = RestAPIGetCall(url);
     if (userinfo != ""){
         emit userAlreadyExists();
         return true;
@@ -104,7 +104,6 @@ void Settings::CreateUser(QString username, QString password){
     feed.insert("id", "1");
 
     QByteArray payload =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
-
     bool success = RestAPIPostCall("/v1/user", payload);
 
     if (UserExists(username)){
@@ -124,7 +123,7 @@ void Settings::login(QString username, QString password){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     QString url = "/v1/user/" + username;
 
-    QByteArray result = RestAPIGetCall(url, queryString);
+    QByteArray result = RestAPIGetCall(url);
     QByteArray settings = QJsonDocument::fromJson(result).array()[0].toString().toLatin1(); //JSON is returned as a one item array.  Item is the settings value
     QString DataAsString = QString::fromLatin1(settings, settings.length()); //adding settings.length or string is truncated
 
@@ -145,7 +144,6 @@ void Settings::login(QString username, QString password){
         emit loginFailedChanged();
 }
 
-// User setting functions
 bool Settings::SaveSettings(){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     QVariantMap settings;
@@ -183,6 +181,7 @@ void Settings::LoadSettings(QByteArray settings){
     doc.setArray(jsonArray);
     QString addresses(doc.toJson(QJsonDocument::Compact));
     m_addresses = addresses;
+    qDebug().noquote() << m_addresses;
 }
 
 void Settings::SaveAddresses(QString addresslist){
@@ -192,7 +191,7 @@ void Settings::SaveAddresses(QString addresslist){
 
 void Settings::onSavePincode(QString pincode){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-    m_pincode = "5000"; //encryption.encode((QString("<xtrabytes>") + pincode).toUtf8(), (m_password + "xtrabytesxtrabytes").toUtf8());
+    m_pincode = pincode; //encryption.encode((QString("<xtrabytes>") + pincode).toUtf8(), (m_password + "xtrabytesxtrabytes").toUtf8());
     SaveSettings();
 }
 
@@ -205,13 +204,11 @@ bool Settings::checkPincode(QString pincode){
         return false;
 }
 
-// General functions
-
 bool Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
 
     QUrl Url;
     Url.setScheme("http");
-    Url.setHost("localhost");
+    Url.setHost("37.59.57.212");
     Url.setPort(8080);
     Url.setPath(apiURL);
     qDebug() << Url.toString();
@@ -239,7 +236,7 @@ bool Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
 
     QUrl Url;
     Url.setScheme("http");
-    Url.setHost("localhost");
+    Url.setHost("37.59.57.212");
     Url.setPort(8080);
     Url.setPath(apiURL);
     qDebug() << Url.toString();
@@ -262,11 +259,12 @@ bool Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
     return true;
 }
 
-QByteArray Settings::RestAPIGetCall(QString apiURL, QUrlQuery urlQuery){
+
+QByteArray Settings::RestAPIGetCall(QString apiURL){
 
     QUrl Url;
     Url.setScheme("http");
-    Url.setHost("localhost");
+    Url.setHost("37.59.57.212");
     Url.setPort(8080);
     Url.setPath(apiURL);
 
@@ -282,29 +280,12 @@ QByteArray Settings::RestAPIGetCall(QString apiURL, QUrlQuery urlQuery){
 
     qDebug() << bytes;
 
-     QEventLoop loop;
-     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-     loop.exec();
+    QEventLoop loop;
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    loop.exec();
 
-     QByteArray bts = reply->readAll();
+    QByteArray bts = reply->readAll();
 
     return bts;
-}
-
-QSqlDatabase Settings::OpenDBConnection(){
-    // Development database in use
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("XCITE/dev-db/xtrabytes");
-
-    // Release database to be used
-    //QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-    //db.setHostName("xxx.xxx.xxx.xxx");
-    //db.setDatabaseName("xxx");
-    //db.setUserName("xxxx");
-    //db.setPassword("xxx");
-
-    if (!db.open())
-        emit settingsServerError();
-    return db;
 }

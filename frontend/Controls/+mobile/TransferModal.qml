@@ -50,7 +50,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: transactionModal; properties: "anchors.topMargin, opacity"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: transactionModal; properties: "anchors.topMargin, opacity"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -162,6 +162,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+            onStateChanged: detectInteraction()
         }
 
         Text {
@@ -234,11 +235,15 @@ Rectangle {
             text: (newWalletSelect == 0 && coinTracker == 0) ? walletList.get(defaultWallet(coinID.text)).label : walletList.get(walletIndex).label
             anchors.right: picklistArrow2.left
             anchors.rightMargin: 7
-            anchors.verticalCenter: coinIcon.verticalCenter
-            anchors.verticalCenterOffset: 2
-            font.pixelSize: 20
+            anchors.left: picklistArrow1.right
+            anchors.leftMargin: 15
+            anchors.verticalCenter: coinID.verticalCenter
+            font.pixelSize: 24
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
+            horizontalAlignment: TextInput.AlignRight
+            elide: Text.ElideRight
             font.letterSpacing: 2
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: (transactionSend == 0
@@ -285,7 +290,7 @@ Rectangle {
 
         Image {
             id: picklistArrow1
-            source: 'qrc:/icons/dropdown_icon.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
             height: 20
             width: 20
             anchors.left: coinListTracker == 0 ? coinID.right : transferPicklist1.right
@@ -296,12 +301,6 @@ Rectangle {
                      && scanQRTracker == 0
                      && coinListTracker == 0
                      && calculatorTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
 
             Rectangle{
                 id: picklistButton1
@@ -316,7 +315,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton1
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     coinListLines(true)
@@ -383,14 +385,20 @@ Rectangle {
 
             Image {
                 id: picklistCloseArrow1
-                source: 'qrc:/icons/dropdown-arrow.svg'
+                height: 12
+                fillMode: Image.PreserveAspectFit
+                source: 'qrc:/icons/mobile/close_picklist-icon_01.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                rotation: 180
             }
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
+
                 onClicked: {
                     coinListTracker = 0
                 }
@@ -399,7 +407,7 @@ Rectangle {
 
         Image {
             id: picklistArrow2
-            source: 'qrc:/icons/dropdown_icon.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
             height: 20
             width: 20
             anchors.right: sendAmount.right
@@ -409,12 +417,6 @@ Rectangle {
                      && scanQRTracker == 0
                      && walletListTracker == 0
                      && calculatorTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
 
             Rectangle{
                 id: picklistButton2
@@ -429,7 +431,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton2
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     coinWalletLines(coinID.text)
@@ -496,14 +501,20 @@ Rectangle {
 
             Image {
                 id: picklistCloseArrow2
-                source: 'qrc:/icons/dropdown-arrow.svg'
+                height: 12
+                fillMode: Image.PreserveAspectFit
+                source: 'qrc:/icons/mobile/close_picklist-icon_01.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                rotation: 180
             }
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
+
                 onClicked: {
                     walletListTracker = 0
                 }
@@ -577,44 +588,6 @@ Rectangle {
                      && scanQRTracker == 0
         }
 
-        Image {
-            id: copyIcon
-            source: 'qrc:/icons/paste_icon.svg'
-            width: 13
-            height: 13
-            anchors.left: pubKey.right
-            anchors.leftMargin: 15
-            anchors.verticalCenter: pubKey.verticalCenter
-            visible: transferSwitch.on == false
-                     && transactionSend == 0
-                     && addressbookTracker == 0
-                     && scanQRTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
-
-            Rectangle {
-                id: copyButton
-                anchors.fill: parent
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                color: "transparent"
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        click01.play()
-                        clipboard.setText(publicKey.text)
-                        console.log("public key: " + clipboard.text + " copied to clipboard")
-                    }
-                }
-            }
-        }
-
         // Send state
 
         Mobile.AmountInput {
@@ -637,6 +610,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Text {
@@ -687,7 +661,10 @@ Rectangle {
                      && calculatorTracker == 0
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
-            onTextChanged: checkAddress()
+            onTextChanged: {
+                detectInteraction()
+                checkAddress()
+            }
         }
 
         Text {
@@ -743,6 +720,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     parent.border.color = themecolor
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -793,6 +771,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     parent.border.color = themecolor
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -838,6 +817,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Rectangle {
@@ -864,6 +844,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1168,6 +1149,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1254,6 +1236,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1300,9 +1283,9 @@ Rectangle {
 
         AnimatedImage {
             id: waitingDots
-            source: 'qrc:/gifs/loading_02.gif'
-            width: 128
-            height: 128
+            source: 'qrc:/gifs/loading_01.gif'
+            width: 75
+            height: 50
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -125
@@ -1325,6 +1308,7 @@ Rectangle {
             id: waitingText
             text: "Waiting for confirmation ..."
             anchors.bottom: waitingDots.top
+            anchors.bottomMargin: 70
             anchors.horizontalCenter: parent.horizontalCenter
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             font.pixelSize: 14
@@ -1349,19 +1333,13 @@ Rectangle {
 
         Image {
             id: failedIcon
-            source: 'qrc:/icons/icon-delete-mobile.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
             width: 120
             height: 120
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: transferFailed.top
             visible: transactionSend == 1
                      && failedSend == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: confirmedIcon
-                color: maincolor
-            }
         }
 
         Label {
@@ -1395,6 +1373,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1459,19 +1438,13 @@ Rectangle {
 
         Image {
             id: confirmedIcon
-            source: 'qrc:/icons/icon-success.svg'
-            width: 120
+            source: darktheme == true? 'qrc:/icons/mobile/transaction_send-icon_01_light.svg' : 'qrc:/icons/mobile/transaction_send-icon_01_dark.svg'
             height: 120
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: transferConfirmed.top
             visible: transactionSend == 1
                      && confirmationSend == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: confirmedIcon
-                color: maincolor
-            }
         }
 
         Label {
@@ -1505,6 +1478,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1664,6 +1638,7 @@ Rectangle {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onCanceled: {
@@ -1705,20 +1680,23 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.top
         width: Screen.width
-        height: 100
         state: networkError == 0? "up" : "down"
         color: "black"
         opacity: 0.9
+        clip: true
 
+        onStateChanged: detectInteraction()
 
         states: [
             State {
                 name: "up"
                 PropertyChanges { target: serverError; anchors.bottomMargin: 0}
+                PropertyChanges { target: serverError; height: 0}
             },
             State {
                 name: "down"
                 PropertyChanges { target: serverError; anchors.bottomMargin: -100}
+                PropertyChanges { target: serverError; height: 100}
             }
         ]
 
@@ -1743,12 +1721,11 @@ Rectangle {
 
         Rectangle {
             id: okButton
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
+            width: doubbleButtonWidth / 2
+            height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
-            radius: 5
             color: "#1B2934"
             opacity: 0.5
 
@@ -1766,6 +1743,10 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
 
                 onReleased: {
                     networkError = 0
@@ -1786,11 +1767,10 @@ Rectangle {
         }
 
         Rectangle {
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
+            width: doubbleButtonWidth / 2
+            height: 34
             anchors.horizontalCenter: okButton.horizontalCenter
             anchors.bottom: okButton.bottom
-            radius: 5
             color: "transparent"
             opacity: 0.5
             border.width: 1
@@ -1802,7 +1782,7 @@ Rectangle {
             height: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            color: "black"
+            color: bgcolor
         }
     }
 
@@ -1898,6 +1878,7 @@ Rectangle {
             onPressed: {
                 closeTransferModal.anchors.topMargin = 12
                 click01.play()
+                detectInteraction()
             }
 
             onReleased: {

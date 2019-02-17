@@ -27,6 +27,8 @@ Item {
     property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
     property string searchCriteria:""
 
+    onPageTrackerChanged: detectInteraction()
+
     Rectangle {
         id: backgroundHome
         z: 1
@@ -135,6 +137,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenterOffset: 95
                     state: (coinTracker == 0)? "up" : "down"
+                    onStateChanged: detectInteraction()
 
                     states: [
                         State {
@@ -399,8 +402,6 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: maincolor
-                    border.width: 2
                     visible: anchors.rightMargin > -110
                     state: coinTracker == 1 ? "inView" : "hidden"
 
@@ -426,22 +427,18 @@ Item {
                     Image {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/left-arrow2.svg'
-                        width: 28.5
-                        height: 20
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
+                        source: 'qrc:/icons/mobile/back-icon_01.svg'
+                        width: 50
+                        height: 50
                     }
+
                     MouseArea {
                         anchors.fill: parent
 
                         onPressed: {
                             click01.play()
                             backButton1.opacity = 0.5
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -535,20 +532,18 @@ Item {
                                     anchors.verticalCenterOffset: -2
                                     anchors.left: parent.right
                                     anchors.leftMargin: 8
-                                    source: 'qrc:/icons/icon-transfer_01.svg'
-                                    width: 15
+                                    source: 'qrc:/icons/mobile/transfer-icon_01.svg'
+                                    fillMode: Image.PreserveAspectFit
                                     height: 18
-                                    ColorOverlay {
-                                        anchors.fill: transfer2
-                                        source: transfer2
-                                        color: maincolor
-                                    }
                                 }
 
                                 MouseArea {
                                     anchors.fill: transferButton
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onReleased: {
 
@@ -570,15 +565,9 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.right: parent.right
                                 anchors.rightMargin: 28
-                                source: 'qrc:/icons/icon-coins_01.svg'
-                                width: 16
-                                height: 16
-
-                                ColorOverlay {
-                                    anchors.fill: coins
-                                    source: coins
-                                    color: maincolor
-                                }
+                                source: 'qrc:/icons/mobile/coin-icon_01.svg'
+                                fillMode: Image.PreserveAspectFit
+                                height: 18
 
                                 Label {
                                     id: addCoin
@@ -613,7 +602,10 @@ Item {
                                     MouseArea {
                                         anchors.fill: parent
 
-                                        onPressed: { click01.play() }
+                                        onPressed: {
+                                            click01.play()
+                                            detectInteraction()
+                                        }
 
                                         onReleased: {
 
@@ -730,6 +722,7 @@ Item {
                     anchors.left: parent.left
                     state: contactTracker == 0? "hidden" : "inView"
                     visible: x < parent.width
+                    onStateChanged: detectInteraction()
 
                     states: [
                         State {
@@ -756,9 +749,10 @@ Item {
                         anchors.left: parent.left
                         anchors.bottom: parent.bottom
                         text: contactTracker == 1? contactList.get(contactIndex).firstName : ""
-                        font.pixelSize: 20
+                        font.pixelSize: 30
                         font.family:  xciteMobile.name
                         font.letterSpacing: 2
+                        font.capitalization: Font.SmallCaps
                         color: darktheme == true? "#F2F2F2" : "#2A2C31"
                     }
 
@@ -771,7 +765,7 @@ Item {
                         anchors.right: parent.right
                         text: contactTracker == 1? contactList.get(contactIndex).lastName : ""
                         color: darktheme == true? "#F2F2F2" : "#2A2C31"
-                        font.pixelSize: 20
+                        font.pixelSize: 30
                         font.family:  xciteMobile.name
                         font.letterSpacing: 2
                         font.capitalization: Font.AllUppercase
@@ -839,7 +833,10 @@ Item {
                     font.capitalization: Font.AllUppercase
                     mobile: 1
                     addressBook: 1
-                    onTextChanged: searchCriteria = searchForAddress.text
+                    onTextChanged: {
+                        detectInteraction()
+                        searchCriteria = searchForAddress.text
+                    }
                     visible: width > 0
                     state: contactTracker == 1? "hidden" : "inView"
 
@@ -982,8 +979,6 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: maincolor
-                    border.width: 2
                     visible: anchors.rightMargin > -110
                     state: contactTracker == 1 ? "inView" : "hidden"
 
@@ -1009,22 +1004,18 @@ Item {
                     Image {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/left-arrow2.svg'
-                        width: 28.5
-                        height: 20
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
+                        source: 'qrc:/icons/mobile/back-icon_01.svg'
+                        width: 50
+                        height: 50
                     }
+
                     MouseArea {
                         anchors.fill: parent
 
                         onPressed: {
                             click01.play()
                             backButton3.opacity = 0.5
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -1066,8 +1057,6 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
                     color: "transparent"
-                    border.color: maincolor
-                    border.width: 2
                     visible: (anchors.leftMargin > -110) && contactIndex != 0
                     state: (contactTracker == 1 && addressQRTracker == 0)? "inView" : "hidden"
 
@@ -1093,22 +1082,19 @@ Item {
                     Image {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/icon-plus_01.svg'
-                        width: 30
-                        height: 30
+                        source: 'qrc:/icons/mobile/add-icon_01.svg'
+                        width: 50
+                        height: 50
 
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
                     }
+
                     MouseArea {
                         anchors.fill: parent
 
                         onPressed: {
                             click01.play()
                             addButton3.opacity = 0.5
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -1214,14 +1200,9 @@ Item {
                                     anchors.verticalCenterOffset: -2
                                     anchors.left: parent.right
                                     anchors.leftMargin: 8
-                                    source: 'qrc:/icons/icon-transfer_01.svg'
-                                    width: 15
+                                    source: 'qrc:/icons/mobile/transfer-icon_01.svg'
+                                    fillMode: Image.PreserveAspectFit
                                     height: 18
-                                    ColorOverlay {
-                                        anchors.fill: transfer4
-                                        source: transfer4
-                                        color: maincolor
-                                    }
                                 }
 
                                 Rectangle {
@@ -1237,7 +1218,10 @@ Item {
                                 MouseArea {
                                     anchors.fill: transferButton2
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onClicked: {
                                         if (transferTracker == 0 && addAddressTracker == 0) {
@@ -1255,9 +1239,9 @@ Item {
                                 anchors.verticalCenter: iconBar4.verticalCenter
                                 anchors.right: parent.right
                                 anchors.rightMargin: 28
-                                source: 'qrc:/icons/add_address.svg'
-                                width: 16
-                                height: 16
+                                source: 'qrc:/icons/mobile/contact-icon_01.svg'
+                                fillMode: Image.PreserveAspectFit
+                                height: 18
                                 visible: pageTracker == 1
 
                                 ColorOverlay {
@@ -1290,7 +1274,10 @@ Item {
                                     MouseArea {
                                         anchors.fill: addContactButton
 
-                                        onPressed: { click01.play() }
+                                        onPressed: {
+                                            click01.play()
+                                            detectInteraction()
+                                        }
 
                                         onReleased: {
 
@@ -1332,34 +1319,22 @@ Item {
 
                             Image {
                                 id: chatIcon
-                                source: "qrc:/icons/icon-chat_01.svg"
+                                source: contactList.get(contactIndex).chatID !== ""? 'qrc:/icons/mobile/chat-icon_01_dark.svg' : 'qrc:/icons/mobile/chat-icon_01_light.svg'
                                 width: 19
                                 height: 17
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.horizontalCenter: parent.right
                                 anchors.horizontalCenterOffset: -38
-
-                                ColorOverlay {
-                                    anchors.fill: parent
-                                    source: parent
-                                    color: contactList.get(contactIndex).chatID !== ""? maincolor : "#535353"
-                                }
                             }
 
                             Image {
                                 id: mailIcon
-                                source: "qrc:/icons/icon-mail_01.svg"
+                                source: contactList.get(contactIndex).mailAddress !== ""? 'qrc:/icons/mobile/mail-icon_01_dark.svg' : 'qrc:/icons/mobile/mail-icon_01_light.svg'
                                 width: 19
                                 height: 12
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.horizontalCenter: parent.right
                                 anchors.horizontalCenterOffset: -98
-
-                                ColorOverlay {
-                                    anchors.fill: parent
-                                    source: parent
-                                    color: contactList.get(contactIndex).mailAddress !== ""? maincolor : "#535353"
-                                }
 
                                 MouseArea {
                                     width: 30
@@ -1367,7 +1342,10 @@ Item {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.verticalCenter: parent.verticalCenter
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onClicked: {
                                         if(contactList.get(contactIndex).mailAddress !== "") {
@@ -1379,18 +1357,12 @@ Item {
 
                             Image {
                                 id: cellIcon
-                                source: "qrc:/icons/icon-cell_01.svg"
+                                source: contactList.get(contactIndex).cellNR !== ""? 'qrc:/icons/mobile/cell-icon_01_dark.svg' : 'qrc:/icons/mobile/cell-icon_01_light.svg'
                                 width: 12
                                 height: 20
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.horizontalCenter: parent.right
                                 anchors.horizontalCenterOffset: -158
-
-                                ColorOverlay {
-                                    anchors.fill: parent
-                                    source: parent
-                                    color: contactList.get(contactIndex).cellNR !== ""? maincolor : "#535353"
-                                }
 
                                 MouseArea {
                                     width: 30
@@ -1398,7 +1370,10 @@ Item {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.verticalCenter: parent.verticalCenter
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onClicked: {
                                         if(contactList.get(contactIndex).cellNR !== "") {
@@ -1410,19 +1385,12 @@ Item {
 
                             Image {
                                 id: phoneIcon
-                                source: "qrc:/icons/icon-phone_02.svg"
+                                source: contactList.get(contactIndex).telNR !== ""? 'qrc:/icons/mobile/phone-icon_01_dark.svg' : 'qrc:/icons/mobile/phone-icon_01_light.svg'
                                 width: 20
                                 height: 16
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.horizontalCenter: parent.right
                                 anchors.horizontalCenterOffset: -218
-
-                                ColorOverlay {
-                                    anchors.fill: parent
-                                    source: parent
-                                    color: contactList.get(contactIndex).telNR !== ""? maincolor : "#535353"
-                                }
-
 
                                 MouseArea {
                                     width: 30
@@ -1430,7 +1398,10 @@ Item {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.verticalCenter: parent.verticalCenter
 
-                                    onPressed: { click01.play() }
+                                    onPressed: {
+                                        click01.play()
+                                        detectInteraction()
+                                    }
 
                                     onClicked: {
                                         if(contactList.get(contactIndex).telNR !== "") {
@@ -1479,6 +1450,10 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
+
+                    onPressed: {
+                        detectInteraction()
+                    }
 
                     onClicked:{
                         cellTracker = 0
@@ -1530,21 +1505,15 @@ Item {
 
                     Image {
                         id: callIcon
-                        source: "qrc:/icons/icon-phone_01.svg"
+                        source: 'qrc:/icons/mobile/call-icon_01.svg'
                         width: 30
                         height: 30
+                        fillMode: Image.PreserveAspectFit
                         anchors.verticalCenter: parent.top
                         anchors.verticalCenterOffset: 25
                         anchors.horizontalCenter: parent.left
                         anchors.horizontalCenterOffset: 35
                         visible: callTextModal.height == 50
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
-
 
                         MouseArea {
                             width: 30
@@ -1552,7 +1521,10 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
 
-                            onPressed: { click01.play() }
+                            onPressed: {
+                                click01.play()
+                                detectInteraction()
+                            }
 
                             onClicked: {
                                 Qt.openUrlExternally('tel:' + contactList.get(contactIndex).cellNR)
@@ -1563,21 +1535,15 @@ Item {
 
                     Image {
                         id: textIcon
-                        source: "qrc:/icons/icon-pen_01.svg"
+                        source: 'qrc:/icons/mobile/text-icon_01.svg'
                         width: 30
                         height: 30
+                        fillMode: Image.PreserveAspectFit
                         anchors.verticalCenter: parent.top
                         anchors.verticalCenterOffset: 25
                         anchors.horizontalCenter: parent.right
                         anchors.horizontalCenterOffset: -35
                         visible: callTextModal.height == 50
-
-                        ColorOverlay {
-                            anchors.fill: parent
-                            source: parent
-                            color: maincolor
-                        }
-
 
                         MouseArea {
                             width: 30
@@ -1585,7 +1551,10 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
 
-                            onPressed: { click01.play() }
+                            onPressed: {
+                                click01.play()
+                                detectInteraction()
+                            }
 
                             onClicked: {
                                 Qt.openUrlExternally('sms:' + contactList.get(contactIndex).cellNR)
@@ -1607,23 +1576,38 @@ Item {
 
             Image {
                 id: apps
-                source: '../icons/mobile-menu.svg'
+                source: 'qrc:/icons/mobile/menu-icon_01.svg'
                 anchors.left: parent.left
                 anchors.leftMargin: 30
                 anchors.verticalCenter: headingLayout.verticalCenter
                 width: 22
                 height: 17
 
-                ColorOverlay {
-                    anchors.fill: apps
-                    source: apps
-                    color: maincolor
+                Rectangle {
+                    id: appsButton
+                    width: 25
+                    height: 25
+                    color: "transparent"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Rectangle {
+                    id: notifIndicator
+                    width: 8
+                    height: 8
+                    color: notification == 1? "#E55541" : "transparent"
+                    anchors.horizontalCenter: parent.right
+                    anchors.verticalCenter: parent.bottom
                 }
 
                 MouseArea {
-                    anchors.fill: parent
+                    anchors.fill: appsButton
 
-                    onPressed: { click01.play() }
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
 
                     onClicked: {
                         if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0) {
@@ -1638,15 +1622,9 @@ Item {
                 anchors.right: parent.right
                 anchors.rightMargin: 30
                 anchors.verticalCenter: headingLayout.verticalCenter
-                source: 'qrc:/icons/icon-darklight.svg'
+                source: darktheme == true? 'qrc:/icons/mobile/theme_switch-icon_01_off.svg' : 'qrc:/icons/mobile/theme_switch-icon_01_on.svg'
                 width: 25
                 height: 25
-
-                ColorOverlay {
-                    anchors.fill: darklight
-                    source: darklight
-                    color: darktheme == true? "#757575" : maincolor
-                }
 
                 Rectangle {
                     width: darklight.width
@@ -1658,7 +1636,10 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
-                        onPressed: { click01.play() }
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
 
                         onClicked: {
                             if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == true) {
@@ -1856,6 +1837,18 @@ Item {
     }
 
     Controls.Sidebar{
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Controls.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Controls.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

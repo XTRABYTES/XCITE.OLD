@@ -64,6 +64,7 @@ Rectangle {
 
                 onPressed: {
                     clickIndicator.visible = true
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -98,5 +99,6 @@ Rectangle {
         model: fiatCurrencies
         delegate: picklistEntry
         contentHeight: fiatCurrencies.count * 35
+        onDraggingChanged: detectInteraction()
     }
 }

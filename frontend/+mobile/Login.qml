@@ -23,7 +23,6 @@ Item {
     width: Screen.width
     height: Screen.height
 
-    property int nameError: 0
     property int passError: 0
 
     Rectangle {
@@ -76,7 +75,7 @@ Item {
             width: parent.width
             height: parent.height - 50
             color: "#1B2934"
-            opacity: 0.25
+            opacity: 0.05
 
             LinearGradient {
                 anchors.fill: parent
@@ -98,7 +97,7 @@ Item {
             color: "transparent"
             border.color: maincolor
             border.width: 1
-            opacity: 0.50
+            opacity: 0.25
         }
 
         Controls.TextInput {
@@ -113,20 +112,7 @@ Item {
             textBackground: "#0B0B09"
             mobile: 1
             font.pixelSize: 14
-        }
-
-        Text {
-            id: userNameError
-            text: "Username does not exist!"
-            color: "#FD2E2E"
-            anchors.left: userName.left
-            anchors.leftMargin: 5
-            anchors.top: userName.bottom
-            anchors.topMargin: 1
-            font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
-            visible: nameError == 1
+            onTextChanged: passError = 0
         }
 
         Controls.TextInput {
@@ -143,6 +129,7 @@ Item {
             mobile: 1
             font.pixelSize: 14
             font.letterSpacing: 2
+            onTextChanged: passError = 0
         }
 
         Text {
@@ -179,6 +166,14 @@ Item {
                 onReleased: {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
                         userLogin(userName.text, passWord.text)
+                        /**username = userName.text
+                        mainRoot.pop()
+                        mainRoot.push("../Home.qml")
+                        passError = 0
+                        networkError = 0
+                        loginTracker = 0
+                        sessionStart = 1
+                        selectedPage = "home"*/
                     }
                 }
             }
@@ -192,6 +187,7 @@ Item {
                     passError = 0
                     networkError = 0
                     loginTracker = 0
+                    sessionStart = 1
                     selectedPage = "home"
                 }
 
@@ -389,4 +385,3 @@ Item {
         }
     }
 }
-

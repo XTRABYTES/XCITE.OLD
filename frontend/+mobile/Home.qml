@@ -13,27 +13,11 @@ Item {
     }
 
     Component.onCompleted: {
-        //load settings
-        // workaround until backend connection is provided
-        userSettings.locale = "en_us"
-        userSettings.defaultCurrency = 0
-        userSettings.theme = "dark"
-        userSettings.pincode = "1234"
-        userSettings.pinlock = true
+        goodbey = 0
 
-        coinList.setProperty(0, "name", nameXFUEL);
-        coinList.setProperty(0, "fullname", "XFUEL");
-        coinList.setProperty(0, "logo", 'qrc:/icons/XFUEL_card_logo_01.svg');
-        coinList.setProperty(0, "logoBig", 'qrc:/icons/XFUEL_logo_big.svg');
-        coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
-        coinList.setProperty(0, "percentage", percentageXFUEL);
-        coinList.setProperty(0, "totalBalance", 0);
-        coinList.setProperty(0, "active", true);
-        coinList.setProperty(0, "coinID", coinIndex);
-        coinIndex = coinIndex +1;
-        coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": coinIndex});
-        coinIndex = coinIndex +1;
+        // load settings
 
+        // load wallets
         loadWalletList()
 
         // workaround until backend connection is provided
@@ -54,13 +38,23 @@ Item {
 
         addOwnContact();
 
+        // load contacts from account
         loadContactList();
+
+
+        // load addresses from account
         loadAddressList();
 
+        // add own wallets to addresslist
         addWalletsToAddressList();
 
+        // load transaction history from account
+        loadHistoryList()
+
+        // calculate total balance for all wallets
         sumBalance()
 
+        // open wallet view
         mainRoot.push("../DashboardForm.qml")
         selectedPage = "home"
     }
