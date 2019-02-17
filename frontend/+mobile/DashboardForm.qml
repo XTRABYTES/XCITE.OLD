@@ -1576,7 +1576,7 @@ Item {
 
             Image {
                 id: apps
-                source: '../icons/mobile-menu.svg'
+                source: 'qrc:/icons/mobile/menu-icon_01.svg'
                 anchors.left: parent.left
                 anchors.leftMargin: 30
                 anchors.verticalCenter: headingLayout.verticalCenter
@@ -1599,12 +1599,6 @@ Item {
                     color: notification == 1? "#E55541" : "transparent"
                     anchors.horizontalCenter: parent.right
                     anchors.verticalCenter: parent.bottom
-                }
-
-                ColorOverlay {
-                    anchors.fill: apps
-                    source: apps
-                    color: maincolor
                 }
 
                 MouseArea {
@@ -1843,6 +1837,18 @@ Item {
     }
 
     Controls.Sidebar{
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Controls.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Controls.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

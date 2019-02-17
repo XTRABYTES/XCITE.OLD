@@ -163,5 +163,7 @@
         <file>+mobile/WalletBackup.qml</file>
         <file>+mobile/Applications.qml</file>
         <file>+mobile/Notifications.qml</file>
+        <file>Controls/+mobile/LogOut.qml</file>
+        <file>Controls/+mobile/Goodbey.qml</file>
     </qresource>
 </RCC>

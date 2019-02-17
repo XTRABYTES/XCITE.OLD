@@ -470,4 +470,16 @@ Rectangle {
             }
         }
     }
+
+    Controls.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Controls.LogOut {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
 }

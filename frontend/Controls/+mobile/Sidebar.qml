@@ -385,8 +385,8 @@ Rectangle {
                 onClicked: {
                     sessionStart = 0
                     sessionTime = 0
-                    console.log("You are being logged out!")
-                    Qt.quit()
+                    manualLogout = 1
+                    logoutTracker = 1
                 }
             }
         }
