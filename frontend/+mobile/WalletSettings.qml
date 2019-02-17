@@ -471,13 +471,13 @@ Rectangle {
         }
     }
 
-    Controls.LogOut {
+    Controls.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.Goodbey {
+    Controls.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

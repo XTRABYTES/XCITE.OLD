@@ -64,7 +64,7 @@ Rectangle {
             Transition {
                 from: "*"
                 to: "*"
-                NumberAnimation { target: goodbeyModalLabel; property: "opacity"; duration: 500; easing.type: Easing.InOutCubic}
+                NumberAnimation { target: goodbeyModalLabel; property: "opacity"; duration: 500; easing.type: Easing.InCubic}
             }
         ]
     }
