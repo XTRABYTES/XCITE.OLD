@@ -112,7 +112,11 @@ Item {
             textBackground: "#0B0B09"
             mobile: 1
             font.pixelSize: 14
-            onTextChanged: passError = 0
+            onTextChanged: {
+                if (userName.text != "") {
+                    passError = 0
+                }
+            }
         }
 
         Controls.TextInput {
@@ -129,7 +133,11 @@ Item {
             mobile: 1
             font.pixelSize: 14
             font.letterSpacing: 2
-            onTextChanged: passError = 0
+            onTextChanged: {
+                if (passWord.text != "") {
+                    passError = 0
+                }
+            }
         }
 
         Text {
@@ -166,14 +174,6 @@ Item {
                 onReleased: {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
                         userLogin(userName.text, passWord.text)
-                        /**username = userName.text
-                        mainRoot.pop()
-                        mainRoot.push("../Home.qml")
-                        passError = 0
-                        networkError = 0
-                        loginTracker = 0
-                        sessionStart = 1
-                        selectedPage = "home"*/
                     }
                 }
             }
