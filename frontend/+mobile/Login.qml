@@ -112,6 +112,7 @@ Item {
             textBackground: "#0B0B09"
             mobile: 1
             font.pixelSize: 14
+            onTextChanged: passError = 0
         }
 
         Controls.TextInput {
@@ -128,6 +129,7 @@ Item {
             mobile: 1
             font.pixelSize: 14
             font.letterSpacing: 2
+            onTextChanged: passError = 0
         }
 
         Text {

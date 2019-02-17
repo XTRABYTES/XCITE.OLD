@@ -373,7 +373,7 @@ Rectangle {
                         onPressed: {
                             parent.opacity = 1
                             click01.play()
-                            detectInteraction
+                            detectInteraction()
                         }
 
                         onCanceled: {
