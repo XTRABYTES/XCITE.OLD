@@ -81,12 +81,15 @@ bool Settings::UserExists(QString username){
 }
 
 void Settings::CreateUser(QString username, QString password){
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("Latin1"));
+
     if(UserExists(username)){
         return;
     }
 
     QVariantMap settings;
     settings.insert("app","xtrabytes");
+
     QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
 
@@ -101,18 +104,21 @@ void Settings::CreateUser(QString username, QString password){
     feed.insert("id", "1");
 
     QByteArray payload =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
-    QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
-
     bool success = RestAPIPostCall("/v1/user", payload);
 
-    if (UserExists(username))
+    if (UserExists(username)){
+        m_username = username;
+        m_password = password;
         emit userCreationSucceeded();
-    else
+   } else
         emit userCreationFailed();
 
 }
 
 void Settings::login(QString username, QString password){
+    if(!UserExists(username)){
+        return;
+    }
     QUrlQuery queryString;
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     QString url = "/v1/user/" + username;
@@ -132,7 +138,6 @@ void Settings::login(QString username, QString password){
         m_username = username;
         m_password = password;
         LoadSettings(decodedSettings);
-        SaveSettings(); //added here for testing Saving - Don't need it later
         emit loginSucceededChanged();
     }
     else
@@ -144,21 +149,24 @@ bool Settings::SaveSettings(){
     QVariantMap settings;
 
     foreach (const QString &key, m_settings->childKeys()) {//iterate through m_settings to add everything to settings file we write to DB
-        qDebug() << key << "and" << m_settings->value(key).toString();
         settings.insert(key,m_settings->value(key).toString());
     }
     settings.insert("pincode", m_pincode); //may be able to remove this
 
-    QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
+    QJsonArray addressesArray = QJsonDocument::fromJson(m_addresses.toLatin1()).array(); //save addresses saves array to m_addresses
+    settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
+    QByteArray settingsOutput =  QJsonDocument::fromVariant(QVariant(settings)).toJson(QJsonDocument::Compact); //Convert settings to byteArray/Json
 
-    QByteArray encodedText = encryption.encode(settingsByte, (m_password + "xtrabytesxtrabytes").toLatin1());
+    QByteArray encodedText = encryption.encode(settingsOutput, (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
     QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
 
     QVariantMap feed;
     feed.insert("dateUpdated", QDateTime::currentDateTime());
     feed.insert("settings", DataAsString); //only updating time and settings
-    // <TODO>
-    // Add POST method to update settings based on username
+    feed.insert("username",m_username);
+
+    QByteArray payload =  QJsonDocument::fromVariant(QVariant(feed)).toJson(QJsonDocument::Compact);
+    bool success = RestAPIPutCall("/v1/user", payload); //Calling PUT for update
     return true;
 }
 
@@ -168,13 +176,15 @@ void Settings::LoadSettings(QByteArray settings){
             QJsonValue value = json.value(key);
             m_settings->setValue(key,value.toString());
     }
+    QJsonArray jsonArray = json["addresses"].toArray(); //get contactList from settings from DB
+    QJsonDocument doc;
+    doc.setArray(jsonArray);
+    QString addresses(doc.toJson(QJsonDocument::Compact));
+    m_addresses = addresses;
+    qDebug().noquote() << m_addresses;
 }
 
 void Settings::SaveAddresses(QString addresslist){
-    addresslist.remove(0, 1);
-    addresslist.remove(addresslist.length()-1, addresslist.length());
-    addresslist.insert(0, "{ \"addresslist\": ");
-    addresslist.append("}");
     m_addresses = addresslist;
     SaveSettings();
 }
@@ -205,7 +215,7 @@ bool Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
 
     QNetworkRequest request;
     request.setUrl(Url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
 
     QNetworkAccessManager *restclient;
     restclient = new QNetworkAccessManager(this);
@@ -220,6 +230,35 @@ bool Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
 
     return true;
 }
+
+
+bool Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
+
+    QUrl Url;
+    Url.setScheme("http");
+    Url.setHost("37.59.57.212");
+    Url.setPort(8080);
+    Url.setPath(apiURL);
+    qDebug() << Url.toString();
+
+    QNetworkRequest request;
+    request.setUrl(Url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
+
+    QNetworkAccessManager *restclient;
+    restclient = new QNetworkAccessManager(this);
+    QNetworkReply *reply = restclient->put(request, payload);
+
+    QEventLoop loop;
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
+    qDebug() << reply->readAll();
+    qDebug() << payload;
+
+    return true;
+}
+
 
 QByteArray Settings::RestAPIGetCall(QString apiURL){
 
