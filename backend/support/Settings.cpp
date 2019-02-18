@@ -206,7 +206,7 @@ void Settings::LoadSettings(QByteArray settings){
     // Send contacts to front end
     emit contactsLoaded(m_contacts);
     emit addressesLoaded(m_addresses);
-
+    m_settings->sync();
 
 }
 

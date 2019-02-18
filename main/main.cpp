@@ -105,6 +105,8 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(checkPincode(QString)), &settings, SLOT(checkPincode(QString)));
     QObject::connect(rootObject, SIGNAL(saveAddressBook(QString)), &settings, SLOT(SaveAddresses(QString)));
     QObject::connect(rootObject, SIGNAL(saveContactList(QString)), &settings, SLOT(SaveContacts(QString)));
+    QObject::connect(rootObject, SIGNAL(saveAppSettings()), &settings, SLOT(saveSettings(QString)));
+
 
 
     // connect QML signals for market value

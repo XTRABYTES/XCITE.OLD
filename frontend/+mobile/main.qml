@@ -194,6 +194,7 @@ ApplicationWindow {
     signal clearAllSettings
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
+    signal saveAppSettings
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
