@@ -489,7 +489,13 @@ Rectangle {
                         addressList.append({"contact": contactIndex, "address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
                         console.log("Tuukka", addressList)
-                        saveAddressBook(addressList)
+                        var datamodel = []
+                        for (var i = 0; i < addressList.count; ++i)
+                            datamodel.push(addressList.get(i))
+
+                        var addressListJson = JSON.stringify(datamodel)
+
+                        saveAddressBook(addressListJson)
                         editSaved = 1
                     }
                 }

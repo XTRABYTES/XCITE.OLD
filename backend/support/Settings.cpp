@@ -137,8 +137,9 @@ void Settings::login(QString username, QString password){
     if(decodedJson.value("app").toString().startsWith("xtrabytes")){
         m_username = username;
         m_password = password;
-        LoadSettings(decodedSettings);
         emit loginSucceededChanged();
+        LoadSettings(decodedSettings);
+
     }
     else
         emit loginFailedChanged();
@@ -153,10 +154,18 @@ bool Settings::SaveSettings(){
     }
     settings.insert("pincode", m_pincode); //may be able to remove this
 
+    /*      Add contacts to DB       */
+    QJsonArray contactsArray = QJsonDocument::fromJson(m_contacts.toLatin1()).array();
+    settings.insert("contacts",contactsArray.toVariantList()); // add contacts array to our existing settings
+    qDebug().noquote() << contactsArray;
+
+
+    /*      Add addresses to DB       */
     QJsonArray addressesArray = QJsonDocument::fromJson(m_addresses.toLatin1()).array(); //save addresses saves array to m_addresses
     settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
-    QByteArray settingsOutput =  QJsonDocument::fromVariant(QVariant(settings)).toJson(QJsonDocument::Compact); //Convert settings to byteArray/Json
 
+    /*    Convert Settings Variant to QByteArray  and encode it   */
+    QByteArray settingsOutput =  QJsonDocument::fromVariant(QVariant(settings)).toJson(QJsonDocument::Compact); //Convert settings to byteArray/Json
     QByteArray encodedText = encryption.encode(settingsOutput, (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
     QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
 
@@ -165,6 +174,7 @@ bool Settings::SaveSettings(){
     feed.insert("settings", DataAsString); //only updating time and settings
     feed.insert("username",m_username);
 
+    // Build json to call API
     QByteArray payload =  QJsonDocument::fromVariant(QVariant(feed)).toJson(QJsonDocument::Compact);
     bool success = RestAPIPutCall("/v1/user", payload); //Calling PUT for update
     return true;
@@ -176,16 +186,37 @@ void Settings::LoadSettings(QByteArray settings){
             QJsonValue value = json.value(key);
             m_settings->setValue(key,value.toString());
     }
-    QJsonArray jsonArray = json["addresses"].toArray(); //get contactList from settings from DB
+
+    /* Load contacts from JSON from DB */
+    QJsonArray contactArray = json["contacts"].toArray(); //get contactList from settings from DB
+    QJsonDocument docContact;
+    docContact.setArray(contactArray);
+    QString contacts(docContact.toJson(QJsonDocument::Compact));
+    m_contacts.clear();
+    m_contacts = contacts;
+
+    /* Load addresses from JSON from DB */
+    QJsonArray addressArray = json["addresses"].toArray(); //get contactList from settings from DB
     QJsonDocument doc;
-    doc.setArray(jsonArray);
+    doc.setArray(addressArray);
     QString addresses(doc.toJson(QJsonDocument::Compact));
+    m_addresses.clear();
     m_addresses = addresses;
-    qDebug().noquote() << m_addresses;
+
+    // Send contacts to front end
+    emit contactsLoaded(m_contacts);
+    emit addressesLoaded(m_addresses);
+    m_settings->sync();
+
 }
 
 void Settings::SaveAddresses(QString addresslist){
     m_addresses = addresslist;
+    SaveSettings();
+}
+
+void Settings::SaveContacts(QString contactlist){
+    m_contacts = contactlist;
     SaveSettings();
 }
 

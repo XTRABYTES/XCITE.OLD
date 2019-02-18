@@ -193,6 +193,9 @@ ApplicationWindow {
     //signal userAvailable()
     signal clearAllSettings
     signal saveAddressBook(string addresses)
+    signal saveContactList(string contactList)
+    signal saveAppSettings
+
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
 
@@ -509,12 +512,28 @@ ApplicationWindow {
         // create walletList when XCITE starts up
     }
 
-    function loadContactList() {
-        // read contacts from persistent data
+    function loadContactList(contacts) {
+
+        if (typeof contacts !== "undefined") {
+            contactList.clear();
+            var obj = JSON.parse(contacts);
+            for (var i in obj){
+              var data = obj[i];
+              contactList.append(data);
+            }
+        }
+
     }
 
-    function loadAddressList() {
-        // read addresses from persistent data
+    function loadAddressList(addresses) {
+        if (typeof addresses !== "undefined") {
+            addressList.clear();
+            var obj = JSON.parse(addresses);
+            for (var i in obj){
+              var data = obj[i];
+              addressList.append(data);
+            }
+        }
     }
 
     function loadHistoryList() {
@@ -782,4 +801,5 @@ ApplicationWindow {
             requestedLogout = 1
         }
     }
+
 }

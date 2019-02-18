@@ -53,7 +53,7 @@ Rectangle {
 
                 Image {
                     id: icon
-                    source: photo
+                    source: profilePictures.get(0).photo
                     anchors.left: parent.left
                     anchors.leftMargin: 28
                     anchors.verticalCenter: parent.verticalCenter
@@ -162,5 +162,6 @@ Rectangle {
         contentHeight: (filteredContacts.count * 85) + 75
         interactive: appsTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && transferTracker == 0
         onDraggingChanged: detectInteraction()
+
     }
 }
