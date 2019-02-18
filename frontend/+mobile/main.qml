@@ -160,7 +160,7 @@ ApplicationWindow {
     property string addressbookHash: ""
     property int addressIndex: 0
     property int contactIndex: 0
-    property int walletIndex: 0
+    property int walletIndex: 1
     property int coinIndex: 0
     property int pictureIndex: 0
     property int totalLines: 4
@@ -170,7 +170,7 @@ ApplicationWindow {
     property real totalBalance: 0
     property int contactID: 0
     property int addressID: 1
-    property int walletID: 0
+    property int walletID: 1
     property int txID: 1
     property int selectAddressIndex: 0
     property int pictureID: 0
@@ -181,6 +181,7 @@ ApplicationWindow {
     property int pinOK: 0
     property int pinError: 0
     property int requestSend: 0
+    property bool newAccount: true
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -542,6 +543,46 @@ ApplicationWindow {
 
     // loggin out
     function logOut () {
+        interactionTracker = 0
+        loginTracker = 0
+        logoutTracker = 0
+        addWalletTracker = 0
+        createWalletTracker = 0
+        appsTracker = 0
+        coinTracker = 0
+        walletTracker = 0
+        transferTracker = 0
+        historyTracker = 0
+        addressTracker = 0
+        contactTracker = 0
+        addAddressTracker = 0
+        addCoinTracker = 0
+        addContactTracker = 0
+        editContactTracker = 0
+        coinListTracker = 0
+        walletListTracker = 0
+        addressbookTracker = 0
+        scanQRTracker = 0
+        tradingTracker = 0
+        balanceTracker = 0
+        calculatorTracker = 0
+        addressQRTracker = 0
+        pictureTracker = 0
+        cellTracker = 0
+        currencyTracker = 0
+        pincodeTracker = 0
+        contactID = 0
+        addressID = 1
+        walletID = 1
+        txID = 1
+        pictureID = 0
+        currencyID = 0
+        coinIndex = 0
+        walletIndex = 1
+        userSettings.locale = "en_us"
+        userSettings.defaultCurrency = 0
+        userSettings.theme = "dark"
+        userSettings.pinlock = false
         Qt.quit()
     }
 
@@ -672,7 +713,14 @@ ApplicationWindow {
 
     Component.onCompleted: {
 
-        mainRoot.push("../Onboarding.qml")
+        contactID = 0
+        addressID = 1
+        walletID = 1
+        txID = 1
+        pictureID = 0
+        currencyID = 0
+        coinIndex = 0
+        walletIndex = 1
 
         profilePictures.setProperty(0, "photo", 'qrc:/icons/icon-profile_01.svg');
         profilePictures.setProperty(0, "pictureNR", pictureID);
@@ -705,6 +753,8 @@ ApplicationWindow {
         coinIndex = coinIndex +1;
         coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": coinIndex});
         coinIndex = coinIndex +1;
+
+        mainRoot.push("../Onboarding.qml")
     }
 
     // Global components

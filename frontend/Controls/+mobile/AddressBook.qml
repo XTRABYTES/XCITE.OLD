@@ -169,7 +169,7 @@ Rectangle {
                         addressTracker = 1
                     }
                 }
-
+                /**
                 Rectangle {
                     id: favoriteButton
                     width: 28
@@ -198,7 +198,7 @@ Rectangle {
                         }
                     }
                 }
-
+                **/
                 Rectangle {
                     id: transfer
                     height: 34

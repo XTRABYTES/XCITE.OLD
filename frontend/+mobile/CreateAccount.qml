@@ -377,14 +377,14 @@ Rectangle {
                     onReleased: {
                         if (usernameWarning == 0 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
                             createUser(userName.text, passWord1.text)
-                            /**
-                            accountCreated = 1
-                            availableUsername = 0
-                            networkError = 0
-                            signUpError = 0
-                            username = userName.text
-                            console.log("username: " + username)
-                            */
+                            addOwnContact();
+
+                            var datamodel = []
+                            for (var i = 0; i < contactList.count; ++i)
+                                datamodel.push(contactList.get(i))
+
+                            var contactListJson = JSON.stringify(datamodel)
+                            saveContactList(contactListJson)
                         }
                     }
                 }
@@ -482,7 +482,7 @@ Rectangle {
         height: Screen.height
         color: bgcolor
         anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
         visible: signUpError == 1 || accountCreated == 1
 
         MouseArea {

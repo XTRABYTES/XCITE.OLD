@@ -300,8 +300,11 @@ Rectangle {
                                 && invalidAddress == 0
                                 && addressExists == 0
                                 && labelExists == 0) {
-                            // function to add address to the wallet
-                            //editSaved = 1 && userSettings.accountCreationCompleted = true
+                            // function to add address to the app and retrieve public key
+                            // editSaved = 1 && userSettings.accountCreationCompleted = true
+                            // walletList.append({"name": coin, "label": newName.Text, "address": "public key", "balance" : function to retrive balance from BC, "unconfirmedCoins": function to retrive balance from BC, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
+                            // walletID = walletID + 1
+                            // save it to the DB
                             // or
                             addWalletFailed = 1
                         }
@@ -444,7 +447,7 @@ Rectangle {
 
             Image {
                 id: saveError
-                source: darktheme == true? 'failed-icon_01_light.svg' : 'failed-icon_01_dark.svg'
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
                 height: 100
                 width: 100
                 fillMode: Image.PreserveAspectFit

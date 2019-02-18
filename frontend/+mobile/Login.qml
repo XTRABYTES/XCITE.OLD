@@ -178,8 +178,25 @@ Item {
             }
             Connections {
                 target: UserSettings
+                onContactsLoaded: {
+                    loadContactList(contacts)
+                }
+
+                onAddressesLoaded: {
+                    loadAddressList(addresses)
+                }
+
+                /** onTransactionsLoaded: {
+                        loadHistoryList()
+                    }**/
+
+                /** onWalletsLoaded: {
+                        loadWalletList();
+                    }**/
+
                 onLoginSucceededChanged: {
                     username = userName.text
+                    newAccount = false
                     mainRoot.pop()
                     mainRoot.push("../Home.qml")
                     passError = 0
@@ -189,12 +206,6 @@ Item {
                     selectedPage = "home"
                 }
 
-                onContactsLoaded: {
-                    loadContactList(contacts)
-                }
-                onAddressesLoaded: {
-                    loadAddressList(addresses)
-                }
                 onLoginFailedChanged: {
                     if(networkError == 0){
                         passError = 1

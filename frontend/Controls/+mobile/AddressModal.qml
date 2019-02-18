@@ -59,11 +59,20 @@ Rectangle {
     property int contact: addressList.get(addressIndex).contact
     property int deleteAddressTracker: 0
     property int editSaved: 0
+    property int editFailed: 0
     property int deleteConfirmed: 0
+    property int favoriteChanged: 0
     property int invalidAddress: 0
     property int doubleAddress: 0
     property int labelExists: 0
     property int myAddress: 0
+    property string oldCoinName
+    property url oldLogo
+    property string oldAddressHash
+    property string oldAddressName
+    property bool oldRemove
+    property int oldFavorite
+    property int newFavorite
 
     function checkMyAddress(){
         myAddress = 0
@@ -176,6 +185,15 @@ Rectangle {
         }
     }
 
+    Component.onCompleted: {
+        oldCoinName = addressList.get(addressIndex).coin
+        oldLogo = getLogo(oldCoinName)
+        oldAddressName = addressList.get(addressIndex).label
+        oldAddressHash = addressList.get(addressIndex).address
+        oldFavorite = addressList.get(addressIndex).favorite
+        oldRemove = addressList.get(addressIndex).remove
+    }
+
     Text {
         id: addressModalLabel
         text: "EDIT ADDRESS"
@@ -236,11 +254,14 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if (addressList.get(addressIndex).favorite === 1) {
-                        addressList.setProperty(addressIndex, "favorite", 0)
+                    favoriteChanged = 1
+                    if (addressList.get(addressIndex).favorite === 1 || newFavorite == 1) {
+                        newFavorite = 0
+                        //addressList.setProperty(addressIndex, "favorite", 0)
                     }
                     else {
-                        addressList.setProperty(addressIndex, "favorite", 1)
+                        newFavorite = 1
+                        //addressList.setProperty(addressIndex, "favorite", 1)
                     }
                 }
             }
@@ -338,8 +359,23 @@ Rectangle {
                         if (newAddress.text !== "") {
                             addressList.setProperty(addressIndex, "address", newAddress.text);
                         }
+                        if (favoriteChanged == 1) {
+                            addressList.setProperty(addressIndex, "favorite", newFavorite);
+                        }
+                        // function to save the edited address
+
+                        // onSaveSucceeded
                         editSaved = 1
                         coinListTracker = 0
+
+                        // onSaveFailed
+                        // editFailed = 1
+                        // coinListTracker = 0
+                        // addressList.setProperty(addressIndex, "logo", oldLogo);
+                        // addressList.setProperty(addressIndex, "coin", oldCoinName);
+                        // addressList.setProperty(addressIndex, "label", oldAddressName);
+                        // addressList.setProperty(addressIndex, "address", oldAddressHash);
+                        // addressList.setProperty(addressIndex, "favorite", oldFavorite);
                     }
                 }
             }
@@ -742,6 +778,8 @@ Rectangle {
                         newAddress.text = ""
                         invalidAddress = 0
                         editSaved = 0
+                        editFailed = 0
+                        favoriteChanged = 0
                         deleteAddressTracker = 0
                         deleteConfirmed = 0
                         scanQRTracker = 0
@@ -871,10 +909,20 @@ Rectangle {
 
                     onClicked: {
                         deleteConfirmed = 1
+
                         addressList.setProperty(addressIndex, "remove", true)
                         doubleAddress = 0
                         labelExists = 0
                         invalidAddress = 0
+
+                        // function to save the edited address
+
+                        // onDeleteSucceeded
+                        editSaved = 1
+
+                        // onDeleteFailed
+                        // editFailed = 1
+                        // addressList.setProperty(addressIndex, "remove", oldRemove);
                     }
                 }
             }

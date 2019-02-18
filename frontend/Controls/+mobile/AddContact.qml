@@ -47,6 +47,7 @@ Rectangle {
     ]
 
     property int editSaved: 0
+    property int editFailed: 0
     property int contactExists: 0
 
     function compareName() {
@@ -285,7 +286,6 @@ Rectangle {
                         contactID = contactList.count;
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
-                        editSaved = 1
 
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
@@ -293,6 +293,14 @@ Rectangle {
 
                         var contactListJson = JSON.stringify(datamodel)
                         saveContactList(contactListJson)
+
+                        // onsaveSucceeded
+                        editSaved = 1
+
+                        // onsaveFailed
+                        // contactID = contactID - 1
+                        // contactList.remove(contactID)
+                        // editFailed = 1
                     }
                 }
             }

@@ -215,7 +215,22 @@ Item {
                         anchors.fill: skipButton
 
                         onReleased: {
+                            // workaround until backend connection is provided
+                            walletList.append({"name": nameXFUEL1, "label": nameXFUEL1, "address": receivingAddressXFUEL1, "balance" : balanceXFUEL1, "unconfirmedCoins": unconfirmedXFUEL1, "active": true, "favorite": true, "walletNR": walletID, "remove": false});
+                            walletID = walletID +1;
+                            walletList.append({"name": nameXBY1, "label": labelXBY1, "address": receivingAddressXBY1, "balance" : balanceXBY1, "unconfirmedCoins": unconfirmedXBY1, "active": true, "favorite": true, "walletNR": walletID, "remove": false});
+                            walletID = walletID +1;
+                            walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
+                            walletID = walletID +1;
+                            addWalletsToAddressList()
                             userSettings.accountCreationCompleted = true
+                            var datamodel = []
+                            for (var i = 0; i < addressList.count; ++i)
+                                datamodel.push(addressList.get(i))
+
+                            var addressListJson = JSON.stringify(datamodel)
+
+                            saveAddressBook(addressListJson)
                         }
                     }
 
@@ -280,6 +295,7 @@ Item {
                         anchors.fill: completeButton
 
                         onReleased: {
+                            newAccount = true
                             mainRoot.pop()
                             mainRoot.push("../Home.qml")
                             sessionStart = 1

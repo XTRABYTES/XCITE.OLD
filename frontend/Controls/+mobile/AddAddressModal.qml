@@ -48,6 +48,7 @@ Rectangle {
     ]
 
     property int editSaved: 0
+    property int editFailed: 0
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
@@ -496,7 +497,14 @@ Rectangle {
                         var addressListJson = JSON.stringify(datamodel)
 
                         saveAddressBook(addressListJson)
+
+                        // onsaveSucceeded
                         editSaved = 1
+
+                        // onsaveFailed
+                        // addressID = addressID - 1
+                        // addressList.remove(addressID)
+                        // editFailed = 1
                     }
                 }
             }

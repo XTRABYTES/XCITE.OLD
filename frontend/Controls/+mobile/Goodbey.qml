@@ -71,7 +71,7 @@ Rectangle {
 
     Timer {
         id: logoutTimer
-        interval: 5000
+        interval: 2500
         repeat : false
         running: goodbey == 1
 
