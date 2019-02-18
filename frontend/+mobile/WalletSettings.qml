@@ -467,6 +467,7 @@ Rectangle {
                 appsTracker = 0
                 selectedPage = "home"
                 mainRoot.pop("../WalletSettings.qml")
+                saveAppSettings()
             }
         }
     }

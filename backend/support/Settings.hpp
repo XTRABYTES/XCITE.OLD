@@ -41,6 +41,7 @@ public slots:
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
     void SaveAddresses(QString addresslist);
+    void SaveContacts(QString contactlist);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
     bool RestAPIPostCall(QString apiURL, QByteArray payload);
@@ -55,12 +56,16 @@ signals:
     void userAlreadyExists();
     void usernameAvailable();
     void settingsServerError();
+    void contactsLoaded(const QString &contacts);
+    void addressesLoaded(const QString &addresses);
+
 
 private:
     QTranslator m_translator;
     QQmlApplicationEngine *m_engine;
     QSettings *m_settings;
     QString m_addresses;
+    QString m_contacts;
     QString m_pincode;
     QString m_username;
     QString m_password;

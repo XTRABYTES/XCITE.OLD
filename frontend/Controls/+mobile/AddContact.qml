@@ -282,6 +282,7 @@ Rectangle {
                 onClicked: {
                     if ((newFirstname.text !== "" || newLastname.text !== "")
                             && contactExists == 0) {
+                        contactID = contactList.count;
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
                         editSaved = 1
@@ -291,7 +292,7 @@ Rectangle {
                             datamodel.push(contactList.get(i))
 
                         var contactListJson = JSON.stringify(datamodel)
-                        saveAddressBook(contactListJson)
+                        saveContactList(contactListJson)
                     }
                 }
             }

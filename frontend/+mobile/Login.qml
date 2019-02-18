@@ -34,7 +34,6 @@ Item {
         state: loginTracker == 1? "up" : "down"
         color: "transparent"
 
-
         states: [
             State {
                 name: "up"
@@ -177,7 +176,6 @@ Item {
                     }
                 }
             }
-
             Connections {
                 target: UserSettings
                 onLoginSucceededChanged: {
@@ -191,6 +189,12 @@ Item {
                     selectedPage = "home"
                 }
 
+                onContactsLoaded: {
+                    loadContactList(contacts)
+                }
+                onAddressesLoaded: {
+                    loadAddressList(addresses)
+                }
                 onLoginFailedChanged: {
                     if(networkError == 0){
                         passError = 1
