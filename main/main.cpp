@@ -111,10 +111,14 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findXBYValue(QString)));
 
     // Set defaultCurrency
-    if(appSettings.contains("defaultCurrency"))
+    if(appSettings.contains("defaultCurrency")){
         marketValue.findXBYValue(appSettings.value("defaultCurrency").toString());
-    else
+        marketValue.findBTCValue(appSettings.value("defaultCurrency").toString());
+    }
+    else{
         marketValue.findXBYValue("USD");
+        marketValue.findBTCValue("USD");
+    }
 
     // Set last locale
     settings.setLocale(appSettings.value("locale").toString());
