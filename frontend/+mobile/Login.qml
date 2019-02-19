@@ -191,10 +191,15 @@ Item {
                     }**/
 
                 /** onWalletsLoaded: {
-                        loadWalletList();
+                        if (userSettings.localKeys === false) {
+                            loadWalletList();
+                        }
                     }**/
 
                 onLoginSucceededChanged: {
+                    if (userSettings.localKeys === true) {
+                        loadLocalWallets();
+                    }
                     username = userName.text
                     newAccount = false
                     mainRoot.pop()
@@ -275,6 +280,7 @@ Item {
                     anchors.fill: createAccountButton
 
                     onClicked: {
+                        userSettings.accountCreationCompleted = false
                         mainRoot.pop()
                         mainRoot.push("../CreateAccount.qml")
                         loginTracker = 0

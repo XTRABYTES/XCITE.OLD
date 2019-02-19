@@ -131,7 +131,7 @@ Rectangle {
             color: newFirstname.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
+            validator: RegExpValidator { regExp: /[0-9A-Za-z]+ / }
             visible: editSaved == 0
             mobile: 1
             onTextChanged: {

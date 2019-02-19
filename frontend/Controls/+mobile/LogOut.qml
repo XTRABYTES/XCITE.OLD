@@ -52,15 +52,13 @@ Rectangle {
         id: logoutTimer
         interval: 1000
         repeat: true
-        running: (autoLogout == 1 || requestedLogout == 1) && logoutTracker == 1
+        running: (autoLogout == 1 || requestedLogout == 1  || sessionClosed == 1) && logoutTracker == 1 && manualLogout == 0
 
         onTriggered: {
             logoutTimeout = logoutTimeout + 1
             if (logoutTimeout == 15) {
                 goodbey = 1
                 logoutTimeout = 0
-                autoLogout = 0
-                requestedLogout = 0
                 logoutTracker = 0
             }
         }
@@ -70,11 +68,10 @@ Rectangle {
         id: networkLogoutTimer
         interval: 10000
         repeat : false
-        running: networkLogout == 1 && logoutTracker == 1
+        running: (networkLogout == 1) && logoutTracker == 1 && manualLogout == 0
 
         onTriggered: {
             goodbey = 1
-            networkLogout = 0
             logoutTracker = 0
         }
     }
@@ -93,7 +90,7 @@ Rectangle {
 
     Item {
         width: parent.width
-        height: logoutLabel.height + 84
+        height: (requestedLogout == 1 && autoLogout == 0 && sessionClosed == 0 && networkLogout == 0 && manualLogout == 0)? (logoutLabel.height + logoutLabel2.height + 104) : (logoutLabel.height + 84)
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
@@ -101,12 +98,14 @@ Rectangle {
         Label {
             id: logoutLabel
             width: parent.width - 56
-            text: autoLogout == 1? ("You have not interacted for 5 minutes. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s)") :
-                                   (manualLogout == 1? ("Are you sure you want to log out?"):
-                                                       (networkLogout == 1? ("You have lost connection to the network for more than 2 minutes. You will be logged out automatically.") :
-                                                                             (requestedLogout == 1? ("Someone requested you to log out. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s) if you don't react."):"")))
+            text: manualLogout == 1? ("Are you sure you want to log out?") :
+                                     (networkLogout == 1? ("You have lost connection to the network for more than 2 minutes. You will be logged out automatically.") :
+                                                          (sessionClosed == 1? ("Your session was closed by the server. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s). Do you wish to reconnect?") :
+                                                                               (autoLogout == 1? ("You have not interacted for 5 minutes. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s)") :
+                                                                                                 (requestedLogout == 1? ("Someone requested you to log out.") : ""))))
             maximumLineCount: 3
             horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
@@ -115,19 +114,35 @@ Rectangle {
             font.family: xciteMobile.name
         }
 
+        Label {
+            id: logoutLabel2
+            width: parent.width - 56
+            text:"You will be logged out automatically after " + (15 - logoutTimeout) + " second(s) if you don't react."
+            maximumLineCount: 3
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            anchors.top: buttons.bottom
+            anchors.topMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: themecolor
+            font.pixelSize: 18
+            font.family: xciteMobile.name
+            visible: requestedLogout == 1 && autoLogout == 0 && sessionClosed == 0 && networkLogout == 0 && manualLogout == 0
+        }
+
         Item {
             id: buttons
             width: parent.width - 56
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: logoutLabel.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 30
 
             Item {
                 id: cancelAutoLogout
                 width: parent.width
                 height: parent.height
-                visible: autoLogout == 1
+                visible: autoLogout == 1 && manualLogout == 0
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
 
@@ -188,7 +203,7 @@ Rectangle {
                 id: manualLogoutButtons
                 width: parent.width
                 height: parent.height
-                visible: manualLogout == 1
+                visible: manualLogout == 1? true : ((sessionClosed == 1 && networkLogout == 0)? true : false)
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
 
@@ -215,9 +230,17 @@ Rectangle {
 
                         onReleased: {
                             parent.opacity = 0.5
-                            goodbey = 1
-                            manualLogout = 0
-                            logoutTracker = 0
+                            if (manualLogout == 1) {
+                                goodbey = 1
+                                manualLogout = 0
+                                logoutTracker = 0
+                            }
+                            else if (sessionClosed == 1) {
+                                // function to start new session on server
+                                sessionClosed = 0
+                                sessionStart = 1
+                                logoutTracker = 0
+                            }
                         }
                     }
                 }
@@ -269,8 +292,15 @@ Rectangle {
 
                         onReleased: {
                             parent.opacity = 0.5
-                            manualLogout = 0
-                            logoutTracker = 0
+                            if (manualLogout == 1) {
+                                manualLogout = 0
+                                logoutTracker = 0
+                            }
+                            else if (sessionClosed == 1) {
+                                goodbey = 1
+                                sessionClosed = 0
+                                logoutTracker = 0
+                            }
                         }
                     }
                 }
@@ -302,7 +332,7 @@ Rectangle {
                 id: requestedLogoutButtons
                 width: parent.width
                 height: parent.height
-                visible: requestedLogout == 1
+                visible: requestedLogout == 1 && manualLogout == 0 && networkLogout == 0 && sessionClosed == 0 && autoLogout == 0
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
 

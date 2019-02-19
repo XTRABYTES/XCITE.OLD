@@ -1,3 +1,4 @@
+
 /**
  * Filename: InitialSetup.qml
  *
@@ -295,7 +296,6 @@ Item {
                         anchors.fill: completeButton
 
                         onReleased: {
-                            newAccount = true
                             mainRoot.pop()
                             mainRoot.push("../Home.qml")
                             sessionStart = 1

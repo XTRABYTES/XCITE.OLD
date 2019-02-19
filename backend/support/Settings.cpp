@@ -85,33 +85,35 @@ void Settings::CreateUser(QString username, QString password){
 
     if(UserExists(username)){
         return;
+    } else {
+
+        QVariantMap settings;
+        settings.insert("app","xtrabytes");
+
+        QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
+        QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+
+        QByteArray encodedText = encryption.encode(settingsByte, (password + "xtrabytesxtrabytes").toLatin1());
+        QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
+
+        QVariantMap feed;
+        feed.insert("dateCreated", QDateTime::currentDateTime());
+        feed.insert("dateUpdated", QDateTime::currentDateTime());
+        feed.insert("settings", DataAsString);
+        feed.insert("username", username);
+        feed.insert("id", "1");
+
+        QByteArray payload =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
+        bool success = RestAPIPostCall("/v1/user", payload);
+
+        if (UserExists(username)){
+            m_username = username;
+            m_password = password;
+            emit userCreationSucceeded();
+        } else {
+            emit userCreationFailed();
+        }
     }
-
-    QVariantMap settings;
-    settings.insert("app","xtrabytes");
-
-    QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
-    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-
-    QByteArray encodedText = encryption.encode(settingsByte, (password + "xtrabytesxtrabytes").toLatin1());
-    QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
-
-    QVariantMap feed;
-    feed.insert("dateCreated", QDateTime::currentDateTime());
-    feed.insert("dateUpdated", QDateTime::currentDateTime());
-    feed.insert("settings", DataAsString);
-    feed.insert("username", username);
-    feed.insert("id", "1");
-
-    QByteArray payload =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
-    bool success = RestAPIPostCall("/v1/user", payload);
-
-    if (UserExists(username)){
-        m_username = username;
-        m_password = password;
-        emit userCreationSucceeded();
-   } else
-        emit userCreationFailed();
 
 }
 
@@ -183,8 +185,8 @@ bool Settings::SaveSettings(){
 void Settings::LoadSettings(QByteArray settings){
     QJsonObject json = QJsonDocument::fromJson(settings).object();
     foreach(const QString& key, json.keys()) {
-            QJsonValue value = json.value(key);
-            m_settings->setValue(key,value.toString());
+        QJsonValue value = json.value(key);
+        m_settings->setValue(key,value.toString());
     }
 
     /* Load contacts from JSON from DB */

@@ -28,7 +28,7 @@ Item {
 
         // workaround until backend connection is provided
         else {
-            walletList.append({"name": nameXFUEL1, "label": nameXFUEL1, "address": receivingAddressXFUEL1, "balance" : balanceXFUEL1, "unconfirmedCoins": unconfirmedXFUEL1, "active": true, "favorite": true, "walletNR": walletID, "remove": false});
+            walletList.append({"name": nameXFUEL1, "label": labelXFUEL1, "address": receivingAddressXFUEL1, "balance" : balanceXFUEL1, "unconfirmedCoins": unconfirmedXFUEL1, "active": true, "favorite": true, "walletNR": walletID, "remove": false});
             walletID = walletID +1;
             walletList.append({"name": nameXBY1, "label": labelXBY1, "address": receivingAddressXBY1, "balance" : balanceXBY1, "unconfirmedCoins": unconfirmedXBY1, "active": true, "favorite": true, "walletNR": walletID, "remove": false});
             walletID = walletID +1;
@@ -39,16 +39,13 @@ Item {
         sumBalance()
 
         // open wallet view
-        mainRoot.push("../DashboardForm.qml")
-        selectedPage = "home"
-    }
-
-    Timer {
-        id: timer
-        interval: 3000
-        repeat: true
-        running: true
-
-        onTriggered: sumBalance()
+        if (userSettings.accountCreationCompleted === false) {
+            mainRoot.pop()
+            mainRoot.push("../InitialSetup.qml")
+        }
+        else {
+            mainRoot.push("../DashboardForm.qml")
+            selectedPage = "home"
+        }
     }
 }

@@ -292,7 +292,7 @@ Rectangle {
 
                 Text {
                     id: notifText
-                    text: "APPS"
+                    text: "ALERTS"
                     anchors.top: parent.bottom
                     anchors.topMargin: 5
                     color: maincolor

@@ -137,6 +137,7 @@ ApplicationWindow {
     // Global variables
     property int sessionStart: 0
     property int sessionTime: 0
+    property int sessionClosed: 0
     property int autoLogout: 0
     property int manualLogout: 0
     property int networkLogout: 0
@@ -509,7 +510,7 @@ ApplicationWindow {
         marketValueChangedSignal(currency)
     }
 
-    function loadWalletList() {
+    function loadLocalWallets() {
         // create walletList when XCITE starts up
     }
 
@@ -769,6 +770,7 @@ ApplicationWindow {
         property string theme: "dark"
         property bool pinlock: false
         property bool accountCreationCompleted: false
+        property bool localKeys: false
     }
 
     // Global fonts
@@ -800,7 +802,6 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            console.log("checking if there was interaction")
             if (interactionTracker == 1) {
                 sessionTime = 0
                 interactionTracker = 0
@@ -809,10 +810,9 @@ ApplicationWindow {
             else {
                 sessionTime = sessionTime +1
                 console.log("Time until automatic log out: " +  (5 - (sessionTime / 2)) + " minute(s)")
-                if (sessionTime == 10){
+                if (sessionTime >= 10){
                     sessionTime = 0
                     sessionStart = 0
-                    console.log("You are being logged out!")
                     // show pop up that you will be logged out if you do not interact
                     autoLogout = 1
                     logoutTracker = 1
@@ -828,18 +828,33 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            console.log("checking for network connection")
-            //check if there is a connection to the accounts server
+            // check if there is a connection to the accounts server and if the session is still open
+
             // if connection is available -> networkAvailable = 0
             // if connection is not available -> networkAvailable = networkAvailable + 1
-            // if networkAvailable == 4 -> networkLogout = 1 && logoutTracker = 1
-            console.log("checking for log out request")
-            if (requestedLogout == 1) {
+            // if networkAvailable >= 4 -> networkLogout = 1 && logoutTracker = 1
+            if (sessionClosed == 1) {
+                sessionStart = 0
+                sessionClosed = 1
                 logoutTracker = 1
             }
         }
     }
 
+    Timer {
+        id: requestTimer
+        interval: 5000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            if (requestedLogout == 1 && transferTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && addressTracker == 0 && editContactTracker == 0 && appsTracker == 0) {
+                logoutTracker = 1
+            }
+        }
+    }
+
+    // simulated logout request
     Timer {
         id: requestLogoutTimer
         interval: 150000
@@ -849,6 +864,32 @@ ApplicationWindow {
         onTriggered: {
             console.log("log out request sent!")
             requestedLogout = 1
+        }
+    }
+
+    // simulated session closed by server
+    Timer {
+        id: sessionClosedTimer
+        interval: 300000
+        repeat: false
+        running: sessionStart == 1
+
+        onTriggered: {
+            console.log("Session closed by server")
+            sessionClosed = 1
+        }
+    }
+
+    Timer {
+        id: timer
+        interval: 15000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            // retrieve balance from blockexplorer
+            // retrieve coinvalue from CMC
+            sumBalance()
         }
     }
 

@@ -76,7 +76,11 @@ Rectangle {
         running: goodbey == 1
 
         onTriggered: {
-         logOut()
+            autoLogout = 0
+            requestedLogout = 0
+            networkLogout = 0
+            sessionClosed = 0
+            logOut()
         }
     }
 }
