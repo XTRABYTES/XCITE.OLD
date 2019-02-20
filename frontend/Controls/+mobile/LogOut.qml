@@ -121,8 +121,7 @@ Rectangle {
             maximumLineCount: 3
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
-            anchors.top: buttons.bottom
-            anchors.topMargin: 20
+            anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             color: themecolor
             font.pixelSize: 18

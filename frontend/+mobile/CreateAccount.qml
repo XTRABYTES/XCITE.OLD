@@ -380,7 +380,6 @@ Rectangle {
                     anchors.fill: parent
 
                     onPressed: {
-                        userSettings.accountCreationCompleted = false
                         click01.play()
                     }
 
@@ -394,6 +393,11 @@ Rectangle {
                 Connections {
                     target: UserSettings
                     onUserCreationSucceeded: {
+                        userSettings.locale = "en_us"
+                        userSettings.defaultCurrency = 0
+                        userSettings.theme = "dark"
+                        userSettings.pinlock = false
+                        saveAppSettings()
                         addOwnContact();
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
@@ -704,7 +708,6 @@ Rectangle {
                 anchors.fill: parent
 
                 onPressed: {
-                    userSettings.accountCreationCompleted = false
                     click01.play()
                 }
 
@@ -861,7 +864,6 @@ Rectangle {
                     anchors.fill: parent
 
                     onPressed: {
-                        userSettings.accountCreationCompleted = false
                         click01.play()
                     }
 

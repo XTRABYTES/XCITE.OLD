@@ -182,7 +182,7 @@ ApplicationWindow {
     property int pinOK: 0
     property int pinError: 0
     property int requestSend: 0
-    property bool newAccount: true
+    property bool newAccount
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -640,7 +640,7 @@ ApplicationWindow {
             lastName: ""
             photo: 'qrc:/icons/icon-profile_01.svg'
             telNR: ""
-            cellNr: ""
+            cellNR: ""
             mailAddress: ""
             chatID: ""
             favorite: false
@@ -765,12 +765,12 @@ ApplicationWindow {
 
     Settings {
         id: userSettings
-        property string locale: "en_us"
-        property int defaultCurrency: 0
-        property string theme: "dark"
-        property bool pinlock: false
-        property bool accountCreationCompleted: false
-        property bool localKeys: false
+        property string locale
+        property int defaultCurrency
+        property string theme
+        property bool pinlock
+        property bool accountCreationCompleted
+        property bool localKeys
     }
 
     // Global fonts

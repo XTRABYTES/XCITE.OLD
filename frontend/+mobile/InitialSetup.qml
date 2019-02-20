@@ -232,7 +232,8 @@ Item {
                             var addressListJson = JSON.stringify(datamodel)
 
                             saveAddressBook(addressListJson)
-                        }
+                            saveAppSettings()
+                         }
                     }
 
                     Text {

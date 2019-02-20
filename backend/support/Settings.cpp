@@ -153,6 +153,7 @@ bool Settings::SaveSettings(){
 
     foreach (const QString &key, m_settings->childKeys()) {//iterate through m_settings to add everything to settings file we write to DB
         settings.insert(key,m_settings->value(key).toString());
+        qDebug().noquote() << settings;
     }
     settings.insert("pincode", m_pincode); //may be able to remove this
 
@@ -187,6 +188,7 @@ void Settings::LoadSettings(QByteArray settings){
     foreach(const QString& key, json.keys()) {
         QJsonValue value = json.value(key);
         m_settings->setValue(key,value.toString());
+        qDebug().noquote() << settings;
     }
 
     /* Load contacts from JSON from DB */

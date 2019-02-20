@@ -113,11 +113,12 @@ Rectangle {
                         click01.play()
                         contactIndex = contactNR
                         contactTracker = 1
-                        console.log("contact index = " + contactIndex)
                     }
 
                     onPressAndHold: {
                         contactIndex = contactNR
+                        console.log("contact index = " + contactIndex)
+                        console.log("contactname: " + contactList.get(contactIndex).firstName)
                         editContactTracker = 1
                     }
                 }

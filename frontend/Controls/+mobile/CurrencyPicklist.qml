@@ -79,6 +79,7 @@ Rectangle {
                     clickIndicator.visible = false
                     userSettings.defaultCurrency = currencyNR;
                     currencyTracker = 0
+                    saveAppSettings()
                 }
             }
 
