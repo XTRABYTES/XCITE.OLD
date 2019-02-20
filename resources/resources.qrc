@@ -233,5 +233,7 @@
         <file>icons/mobile/notification-icon_01.svg</file>
         <file>icons/mobile/menu-icon_01.svg</file>
         <file>backgrounds/launchScreen-logo_01.png</file>
+        <file>icons/mobile/debug-icon_01_dark.svg</file>
+        <file>icons/mobile/debug-icon_01_light.svg</file>
     </qresource>
 </RCC>

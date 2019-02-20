@@ -90,7 +90,7 @@ Rectangle {
 
     Item {
         width: parent.width
-        height: (requestedLogout == 1 && autoLogout == 0 && sessionClosed == 0 && networkLogout == 0 && manualLogout == 0)? (logoutLabel.height + logoutLabel2.height + 104) : (logoutLabel.height + 84)
+        height: (requestedLogout == 1 && autoLogout == 0 && sessionClosed == 0 && networkLogout == 0 && manualLogout == 0)? (logoutLabel.height + logoutLabel2.height + 124) : (logoutLabel.height + 84)
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
