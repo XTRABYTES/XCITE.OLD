@@ -165,5 +165,6 @@
         <file>+mobile/Notifications.qml</file>
         <file>Controls/+mobile/LogOut.qml</file>
         <file>Controls/+mobile/Goodbey.qml</file>
+        <file>Controls/+mobile/DebugConsole.qml</file>
     </qresource>
 </RCC>

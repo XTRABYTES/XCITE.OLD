@@ -484,7 +484,7 @@ Rectangle {
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
-                opacity: 0,25
+                opacity: 0.25
                 anchors.top: errorLabel.bottom
                 anchors.bottomMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter

@@ -40,7 +40,7 @@ Rectangle {
 
     Label {
         id:goodbeyModalLabel
-        text: "GOODBEY"
+        text: "GOODBYE"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         font.pixelSize: 20

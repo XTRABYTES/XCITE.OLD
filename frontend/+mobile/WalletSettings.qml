@@ -38,6 +38,22 @@ Rectangle {
         font.family: xciteMobile.name
         font.bold: true
         font.letterSpacing: 2
+
+        Rectangle {
+            width: parent.width
+            height: parent.height
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onDoubleClicked: {
+                    debugTracker = 1
+                }
+            }
+        }
     }
 
     Label {
@@ -469,6 +485,12 @@ Rectangle {
                 mainRoot.pop("../WalletSettings.qml")
             }
         }
+    }
+
+    Controls.DebugConsole {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 
     Controls.LogOut {

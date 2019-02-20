@@ -32,14 +32,15 @@ ApplicationWindow {
     title: qsTr("XCITE")
     color: "#14161B"
 
-    Image {
-        id: xbyLogo
-        source: 'qrc:/icons/XBY_logo_big.svg'
-        width: 150
-        fillMode: Image.PreserveAspectFit
+    Label {
+        id:helloModalLabel
+        text: "HELLO"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        font.pixelSize: 20
+        font.family: "Brandon Grotesque"
+        color: "#F2F2F2"
+        font.letterSpacing: 2
     }
 
     // Order of the pages
@@ -133,6 +134,7 @@ ApplicationWindow {
     property int cellTracker: 0
     property int currencyTracker: 0
     property int pincodeTracker: 0
+    property int debugTracker: 0
 
     // Global variables
     property int sessionStart: 0
@@ -572,6 +574,7 @@ ApplicationWindow {
         cellTracker = 0
         currencyTracker = 0
         pincodeTracker = 0
+        debugTracker = 0
         contactID = 0
         addressID = 1
         walletID = 1
