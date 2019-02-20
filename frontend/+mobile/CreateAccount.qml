@@ -371,7 +371,7 @@ Rectangle {
                     end: Qt.point(x, parent.height)
                     gradient: Gradient {
                         GradientStop { position: 0.0; color: "transparent" }
-                        GradientStop { position: 1.0; color: (availableUsername == 1 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#727272" }
+                        GradientStop { position: 1.0; color: ((usernameWarning == 0 || usernameWarning == 2) && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#727272" }
                     }
                 }
 
@@ -384,7 +384,7 @@ Rectangle {
                     }
 
                     onReleased: {
-                        if (availableUsername == 1  && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
+                        if ((usernameWarning == 0 || usernameWarning == 2)  && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
                             createUser(userName.text, passWord1.text)
                         }
                     }
@@ -397,7 +397,7 @@ Rectangle {
                         userSettings.defaultCurrency = 0
                         userSettings.theme = "dark"
                         userSettings.pinlock = false
-                        saveAppSettings()
+                        saveAppSettings();
                         addOwnContact();
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
@@ -440,7 +440,7 @@ Rectangle {
                 text: "CREATE ACCOUNT"
                 font.family: xciteMobile.name
                 font.pointSize: 14
-                color: (availableUsername == 1 && passwordWarning1 == 0 && passwordWarning2 == 0)? "#F2F2F2" : "#979797"
+                color: ((usernameWarning == 0 || usernameWarning == 2) && passwordWarning1 == 0 && passwordWarning2 == 0)? "#F2F2F2" : "#979797"
                 font.bold: true
                 anchors.horizontalCenter: createAccountButton.horizontalCenter
                 anchors.verticalCenter: createAccountButton.verticalCenter
@@ -454,7 +454,7 @@ Rectangle {
                 color: "transparent"
                 opacity: 0.5
                 border.width: 1
-                border.color: (availableUsername == 1 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#979797"
+                border.color: ((usernameWarning == 0 || usernameWarning == 2) && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#979797"
             }
 
             Label {
