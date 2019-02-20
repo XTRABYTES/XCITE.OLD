@@ -107,20 +107,11 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(saveContactList(QString)), &settings, SLOT(SaveContacts(QString)));
     QObject::connect(rootObject, SIGNAL(saveAppSettings()), &settings, SLOT(SaveSettings()));
 
-
-
     // connect QML signals for market value
-    QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findXBYValue(QString)));
+    QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
 
-    // Set defaultCurrency
-    if(appSettings.contains("defaultCurrency")){
-        marketValue.findXBYValue(appSettings.value("defaultCurrency").toString());
-        marketValue.findBTCValue(appSettings.value("defaultCurrency").toString());
-    }
-    else{
-        marketValue.findXBYValue("USD");
-        marketValue.findBTCValue("USD");
-    }
+    // Fetch currency values
+    marketValue.findAllCurrencyValues();
 
     // Set last locale
     settings.setLocale(appSettings.value("locale").toString());
