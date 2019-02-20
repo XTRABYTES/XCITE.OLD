@@ -223,8 +223,8 @@ Item {
                             walletID = walletID +1;
                             walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
                             walletID = walletID +1;
-                            addWalletsToAddressList()
                             userSettings.accountCreationCompleted = true
+                            addWalletsToAddressList()
                             var datamodel = []
                             for (var i = 0; i < addressList.count; ++i)
                                 datamodel.push(addressList.get(i))
@@ -232,7 +232,6 @@ Item {
                             var addressListJson = JSON.stringify(datamodel)
 
                             saveAddressBook(addressListJson)
-                            saveAppSettings()
                          }
                     }
 

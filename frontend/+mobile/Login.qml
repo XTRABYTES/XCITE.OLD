@@ -184,6 +184,12 @@ Item {
 
                 onAddressesLoaded: {
                     loadAddressList(addresses)
+                    console.log(contactList.get(0).firstName + " " + contactList.get(0).lastName)
+                }
+
+                onSettingsLoaded: {
+                    loadSettings(settings);
+                    console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                 }
                 onSettingsLoaded: {
                     loadSettings(settings)
@@ -210,7 +216,6 @@ Item {
                         walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
                         walletID = walletID +1;
                     }
-                    console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                     username = userName.text
                     passError = 0
                     networkError = 0
@@ -417,5 +422,8 @@ Item {
             anchors.bottom: parent.bottom
             color: "black"
         }
+    }
+    Component.onDestruction: {
+        console.log("popping off login from the stack")
     }
 }

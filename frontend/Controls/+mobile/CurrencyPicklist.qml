@@ -78,6 +78,7 @@ Rectangle {
                 onClicked: {
                     clickIndicator.visible = false
                     userSettings.defaultCurrency = currencyNR;
+                    console.log("defaultCurrency: " + currencyNR)
                     currencyTracker = 0
                     saveAppSettings()
                 }
