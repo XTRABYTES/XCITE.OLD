@@ -43,17 +43,43 @@ ApplicationWindow {
         font.letterSpacing: 2
     }
 
-    // Order of the pages
-    StackView {
-        id: mainRoot
-        initialItem: "../main.qml"
-        anchors.fill: parent
-    }
+    Component.onCompleted: {
 
-    onClosing: {
-        if (mainRoot.depth > 1) {
-            close.accepted = false
-        }
+        contactID = 0
+        addressID = 1
+        walletID = 1
+        txID = 1
+        pictureID = 0
+        walletIndex = 1
+
+        profilePictures.setProperty(0, "photo", 'qrc:/icons/icon-profile_01.svg');
+        profilePictures.setProperty(0, "pictureNR", pictureID);
+        pictureID = pictureID +1;
+        profilePictures.append({"photo": 'qrc:/icons/icon-profile_02.svg', "pictureNR": pictureID});
+        pictureID = pictureID +1;
+        profilePictures.append({"photo": 'qrc:/icons/icon-profile_03.svg', "pictureNR": pictureID});
+        pictureID = pictureID +1;
+        profilePictures.append({"photo": 'qrc:/icons/icon-profile_04.svg', "pictureNR": pictureID});
+        pictureID = pictureID +1;
+
+        fiatCurrencies.setProperty(0, "currency", "USD");
+        fiatCurrencies.setProperty(0, "ticker", "$");
+        fiatCurrencies.setProperty(0, "currencyNR", 0);
+        fiatCurrencies.append({"currency": "EUR", "ticker": "€", "currencyNR": 1});
+        fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": 2});
+
+        coinList.setProperty(0, "name", nameXFUEL);
+        coinList.setProperty(0, "fullname", "XFUEL");
+        coinList.setProperty(0, "logo", 'qrc:/icons/XFUEL_card_logo_01.svg');
+        coinList.setProperty(0, "logoBig", 'qrc:/icons/XFUEL_logo_big.svg');
+        coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
+        coinList.setProperty(0, "percentage", percentageXFUEL);
+        coinList.setProperty(0, "totalBalance", 0);
+        coinList.setProperty(0, "active", true);
+        coinList.setProperty(0, "coinID", 0);
+        coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": 1});
+
+        mainRoot.push("../Onboarding.qml")
     }
 
     // Place holder values for wallets
@@ -144,6 +170,7 @@ ApplicationWindow {
     property int manualLogout: 0
     property int networkLogout: 0
     property int requestedLogout: 0
+    property int pinLogout: 0
     property int goodbey: 0
     property int networkAvailable: 0
     property int networkError: 0
@@ -198,7 +225,7 @@ ApplicationWindow {
     signal clearAllSettings
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
-    signal saveAppSettings
+    signal saveAppSettings()
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
@@ -506,14 +533,30 @@ ApplicationWindow {
             }
         }
     }
+    Connections {
+        target: marketValue
 
+        onMarketValueChanged: {
+            setMarketValue(currency)
+        }
+    }
     // Start up functions
-    function onMarketValueChanged(currency) {
-        marketValueChangedSignal(currency)
+    function setMarketValue(currency) {
+        test
     }
 
     function loadLocalWallets() {
         // create walletList when XCITE starts up
+    }
+
+    function loadSettings(settingsLoaded) {
+        if (typeof settingsLoaded !== "undefined") {
+            userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
+            userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
+            userSettings.locale = settingsLoaded.locale;
+            userSettings.pinlock = settingsLoaded.pinlock;
+            userSettings.theme = settingsLoaded.theme;
+        }
     }
 
     function loadContactList(contacts) {
@@ -522,8 +565,8 @@ ApplicationWindow {
             contactList.clear();
             var obj = JSON.parse(contacts);
             for (var i in obj){
-              var data = obj[i];
-              contactList.append(data);
+                var data = obj[i];
+                contactList.append(data);
             }
         }
 
@@ -534,11 +577,21 @@ ApplicationWindow {
             addressList.clear();
             var obj = JSON.parse(addresses);
             for (var i in obj){
-              var data = obj[i];
-              addressList.append(data);
+                var data = obj[i];
+                addressList.append(data);
             }
         }
     }
+
+    function loadSettings(settingsLoaded) {
+            if (typeof settingsLoaded !== "undefined") {
+                userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
+                userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
+                userSettings.locale = settingsLoaded.locale;
+                userSettings.pinlock = settingsLoaded.pinlock;
+                userSettings.theme = settingsLoaded.theme;
+            }
+        }
 
     function loadHistoryList() {
         // read transactionhistory from persistent data
@@ -583,10 +636,9 @@ ApplicationWindow {
         currencyID = 0
         coinIndex = 0
         walletIndex = 1
-        userSettings.locale = "en_us"
-        userSettings.defaultCurrency = 0
-        userSettings.theme = "dark"
-        userSettings.pinlock = false
+        addressList.clear()
+        contactList.clear()
+        walletList.clear()
         Qt.quit()
     }
 
@@ -713,52 +765,6 @@ ApplicationWindow {
             ticker: ""
             currencyNR: 0
         }
-    }
-
-    Component.onCompleted: {
-
-        contactID = 0
-        addressID = 1
-        walletID = 1
-        txID = 1
-        pictureID = 0
-        currencyID = 0
-        coinIndex = 0
-        walletIndex = 1
-
-        profilePictures.setProperty(0, "photo", 'qrc:/icons/icon-profile_01.svg');
-        profilePictures.setProperty(0, "pictureNR", pictureID);
-        pictureID = pictureID +1;
-        profilePictures.append({"photo": 'qrc:/icons/icon-profile_02.svg', "pictureNR": pictureID});
-        pictureID = pictureID +1;
-        profilePictures.append({"photo": 'qrc:/icons/icon-profile_03.svg', "pictureNR": pictureID});
-        pictureID = pictureID +1;
-        profilePictures.append({"photo": 'qrc:/icons/icon-profile_04.svg', "pictureNR": pictureID});
-        pictureID = pictureID +1;
-
-        fiatCurrencies.setProperty(0, "currency", "USD");
-        fiatCurrencies.setProperty(0, "ticker", "$");
-        fiatCurrencies.setProperty(0, "currencyNR", currencyID);
-        currencyID = currencyID + 1
-        fiatCurrencies.append({"currency": "EUR", "ticker": "€", "currencyNR": currencyID});
-        currencyID = currencyID + 1
-        fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": currencyID});
-        currencyID = currencyID + 1
-
-        coinList.setProperty(0, "name", nameXFUEL);
-        coinList.setProperty(0, "fullname", "XFUEL");
-        coinList.setProperty(0, "logo", 'qrc:/icons/XFUEL_card_logo_01.svg');
-        coinList.setProperty(0, "logoBig", 'qrc:/icons/XFUEL_logo_big.svg');
-        coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
-        coinList.setProperty(0, "percentage", percentageXFUEL);
-        coinList.setProperty(0, "totalBalance", 0);
-        coinList.setProperty(0, "active", true);
-        coinList.setProperty(0, "coinID", coinIndex);
-        coinIndex = coinIndex +1;
-        coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": coinIndex});
-        coinIndex = coinIndex +1;
-
-        mainRoot.push("../Onboarding.qml")
     }
 
     // Global components
@@ -895,5 +901,16 @@ ApplicationWindow {
             sumBalance()
         }
     }
+    // Order of the pages
+    StackView {
+        id: mainRoot
+        initialItem: "../main.qml"
+        anchors.fill: parent
+    }
 
+    onClosing: {
+        if (mainRoot.depth > 1) {
+            close.accepted = false
+        }
+    }
 }

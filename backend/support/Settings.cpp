@@ -103,6 +103,7 @@ void Settings::CreateUser(QString username, QString password){
         feed.insert("username", username);
         feed.insert("id", "1");
 
+
         QByteArray payload =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
         QString response = RestAPIPostCall("/v1/user", payload);
 

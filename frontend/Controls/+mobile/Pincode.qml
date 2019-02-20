@@ -253,7 +253,7 @@ Rectangle {
 
                     onClicked: {
                         if (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0) {
-                            if (!savePincode(newPin1.text)) {
+                            if (savePincode(newPin1.text) === false) {
                                 newPin1.text = ""
                                 newPin2.text = ""
                                 failToSave = 1
@@ -371,7 +371,7 @@ Rectangle {
                         passError1 = 0
                         passError2 = 0
                         passTry = passTry + 1
-                        if (!checkPincode(pin.text)) {
+                        if (checkPincode(pin.text) === false) {
                             pinError = 1
                             currentPin.text = ""
                             if (passTry == 3) {
@@ -522,7 +522,7 @@ Rectangle {
 
                     onClicked: {
                         if (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0) {
-                            if (!savePincode(changePin1.text)) {
+                            if (savePincode(changePin1.text) === false) {
                                 currentPin.text = ""
                                 changePin1.text = ""
                                 changePin2.text = ""
@@ -642,7 +642,8 @@ Rectangle {
                             contactList.clear()
                             addressList.clear()
                             transactionList.clear()
-                            Qt.quit()
+                            pinLogout = 1
+                            logOutTracker = 1
                         }
                         else {
                             pinError = 0
@@ -656,7 +657,7 @@ Rectangle {
                         passError1 = 0
                         passError2 = 0
                         passTry = passTry + 1
-                        if (!checkPincode(pin.text)) {
+                        if (checkPincode(pin.text) === false) {
                             pinError = 1
                             pin.text = ""
                             if (passTry == 3) {
@@ -674,6 +675,7 @@ Rectangle {
                             passTry = 0
                             if (unlockPin == 1) {
                                 userSettings.pinlock = false
+                                saveAppSettings();
                                 savePincode("0000")
                                 timer3.start()
                             }
