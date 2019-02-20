@@ -104,17 +104,17 @@ void Settings::CreateUser(QString username, QString password){
         feed.insert("id", "1");
 
         QByteArray payload =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
-        bool success = RestAPIPostCall("/v1/user", payload);
+        QString response = RestAPIPostCall("/v1/user", payload);
 
         if (UserExists(username)){
             m_username = username;
             m_password = password;
             emit userCreationSucceeded();
+
         } else {
             emit userCreationFailed();
         }
     }
-
 }
 
 void Settings::login(QString username, QString password){
@@ -133,7 +133,7 @@ void Settings::login(QString username, QString password){
     QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
     int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
     decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
-
+    qDebug().noquote() << decodedSettings;
     QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
 
     if(decodedJson.value("app").toString().startsWith("xtrabytes")){
@@ -179,17 +179,20 @@ bool Settings::SaveSettings(){
 
     // Build json to call API
     QByteArray payload =  QJsonDocument::fromVariant(QVariant(feed)).toJson(QJsonDocument::Compact);
-    bool success = RestAPIPutCall("/v1/user", payload); //Calling PUT for update
+    QString response = RestAPIPutCall("/v1/user", payload); //Calling PUT for update
     return true;
 }
 
 void Settings::LoadSettings(QByteArray settings){
     QJsonObject json = QJsonDocument::fromJson(settings).object();
+    QVariantMap settingsMap;
     foreach(const QString& key, json.keys()) {
-        QJsonValue value = json.value(key);
-        m_settings->setValue(key,value.toString());
-        qDebug().noquote() << settings;
+            QJsonValue value = json.value(key);
+            settingsMap.insert(key,value.toString());
+            m_settings->setValue(key,value.toString());
+            m_settings->sync();
     }
+    emit settingsLoaded(settingsMap);
 
     /* Load contacts from JSON from DB */
     QJsonArray contactArray = json["contacts"].toArray(); //get contactList from settings from DB
@@ -198,6 +201,7 @@ void Settings::LoadSettings(QByteArray settings){
     QString contacts(docContact.toJson(QJsonDocument::Compact));
     m_contacts.clear();
     m_contacts = contacts;
+    emit contactsLoaded(m_contacts);
 
     /* Load addresses from JSON from DB */
     QJsonArray addressArray = json["addresses"].toArray(); //get contactList from settings from DB
@@ -206,12 +210,7 @@ void Settings::LoadSettings(QByteArray settings){
     QString addresses(doc.toJson(QJsonDocument::Compact));
     m_addresses.clear();
     m_addresses = addresses;
-
-    // Send contacts to front end
-    emit contactsLoaded(m_contacts);
     emit addressesLoaded(m_addresses);
-    m_settings->sync();
-
 }
 
 void Settings::SaveAddresses(QString addresslist){
@@ -239,8 +238,8 @@ bool Settings::checkPincode(QString pincode){
         return false;
 }
 
-bool Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
-
+QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
+    QString returnVal = "";
     QUrl Url;
     Url.setScheme("http");
     Url.setHost("37.59.57.212");
@@ -260,15 +259,14 @@ bool Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
     loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
-    qDebug() << reply->readAll();
-    qDebug() << payload;
+    returnVal = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
 
-    return true;
+    return returnVal;
 }
 
 
-bool Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
-
+QString Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
+    QString returnVal = "";
     QUrl Url;
     Url.setScheme("http");
     Url.setHost("37.59.57.212");
@@ -288,10 +286,10 @@ bool Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
     loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
-    qDebug() << reply->readAll();
-    qDebug() << payload;
+    returnVal = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
 
-    return true;
+
+    return returnVal;
 }
 
 
@@ -323,4 +321,20 @@ QByteArray Settings::RestAPIGetCall(QString apiURL){
     QByteArray bts = reply->readAll();
 
     return bts;
+}
+
+QString Settings::CheckStatusCode(QString statusCode){
+    QString returnVal;
+    if (statusCode.startsWith("2")){
+        returnVal = "Success";
+    }else if (statusCode.startsWith("3")) {
+        returnVal = "API Connection Error";
+    }else if (statusCode.startsWith("4")) {
+        returnVal = "Input Error";
+    }else if (statusCode.startsWith("5")) {
+        returnVal = "DB Error";
+    }else{
+        returnVal = "Unknown Error";
+    }
+    return returnVal;
 }
