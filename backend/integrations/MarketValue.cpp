@@ -43,7 +43,7 @@ void MarketValue::findCurrencyValue(QString currency)
 
     QString currencyValue = QString::fromStdString(reply->readAll().toStdString());
     currencyValue.remove(0, 1).chop(2);
-    setMarketValue(currency + ":" + currencyValue);
+    setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
     qDebug() << currency + ":" + currencyValue;
 }
 
@@ -53,4 +53,11 @@ void MarketValue::findAllCurrencyValues(){
     findCurrencyValue("btcgbp");
     findCurrencyValue("xbybtc");
     findCurrencyValue("xbycha");
+}
+
+void MarketValue::setMarketValue(const QString &check, const QString &currency, const QString &currencyValue) {
+    if (check != m_marketValue) {
+        m_marketValue = check;
+        emit marketValueChanged(currency, currencyValue);
+    }
 }
