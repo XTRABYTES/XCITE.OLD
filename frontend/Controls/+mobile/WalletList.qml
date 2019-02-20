@@ -54,6 +54,7 @@ Rectangle {
                     anchors.fill: parent
 
                     onPressed: {
+                        detectInteraction()
                     }
 
                     onReleased: {
@@ -111,7 +112,7 @@ Rectangle {
                         }
                     ]
                 }
-
+                /**
                 Rectangle {
                     id: favoriteButton
                     width: 30
@@ -125,6 +126,7 @@ Rectangle {
 
                         onPressed: {
                             click01.play()
+                            detectInteraction()
                         }
 
                         onClicked: {
@@ -138,7 +140,7 @@ Rectangle {
                         }
                     }
                 }
-
+                **/
                 Text {
                     id: walletName
                     anchors.left: parent.left
@@ -254,6 +256,7 @@ Rectangle {
 
                         onPressed: {
                             click01.play()
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -311,6 +314,7 @@ Rectangle {
 
                         onPressed: {
                             click01.play()
+                            detectInteraction()
                         }
 
                         onReleased: {
@@ -378,6 +382,7 @@ Rectangle {
         anchors.fill: parent
         contentHeight: (filteredWallets.count  * 140) + 75
         interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
+        onDraggingChanged: detectInteraction()
     }
 }
 

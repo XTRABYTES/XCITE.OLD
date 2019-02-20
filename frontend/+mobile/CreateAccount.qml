@@ -25,14 +25,14 @@ Rectangle {
     color: "#14161B"
 
     LinearGradient {
-            anchors.fill: parent
-            start: Qt.point(0, 0)
-            end: Qt.point(0, parent.height)
-            opacity: 0.05
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: maincolor }
-            }
+        anchors.fill: parent
+        start: Qt.point(0, 0)
+        end: Qt.point(0, parent.height)
+        opacity: 0.05
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "transparent" }
+            GradientStop { position: 1.0; color: maincolor }
+        }
     }
 
     Image {
@@ -51,7 +51,10 @@ Rectangle {
     property int passwordWarning1: 0
     property int passwordWarning2: 0
     property int availableUsername: 0
-    property int loginError: 0
+    property int signUpError: 0
+    property int selectStorage: 0
+    property int storageSwitchState: 0
+    property int checkUsername : 0
 
     function validation(text){
         var regExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
@@ -82,7 +85,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.top: parent.top
         boundsBehavior: Flickable.StopAtBounds
-        state: accountCreated == 0? "inView" : "hidden"
+        state: (accountCreated == 0  || signUpError == 0)? "inView" : "hidden"
 
 
         states: [
@@ -145,6 +148,7 @@ Rectangle {
                 color: "#F2F2F2"
                 font.pixelSize: 18
                 font.family: xciteMobile.name
+                visible: accountCreated == 0 && signUpError == 0
             }
 
             Controls.TextInput {
@@ -166,6 +170,7 @@ Rectangle {
                 onTextChanged: {
                     usernameLength(userName.text)
                     availableUsername = 0
+                    checkUsername = 0
                 }
 
                 Image {
@@ -176,7 +181,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 10
-                    visible: networkError == 0 ? (availableUsername == 0? true : false) : true
+                    visible: checkUsername == 0
 
                     Rectangle {
                         height: 34
@@ -189,8 +194,24 @@ Rectangle {
                             anchors.fill: parent
 
                             onClicked: {
-                                //function to check is username is available
+                                checkUsername = 1
                                 userExists(userName.text)
+                            }
+                        }
+
+                        Connections {
+                            target: UserSettings
+                            onUserAlreadyExists: {
+                                usernameWarning = 1
+                            }
+
+                            onUsernameAvailable: {
+                                availableUsername = 1
+                                usernameWarning = 2
+                            }
+
+                            onSettingsServerError: {
+                                networkError = 1
                             }
                         }
                     }
@@ -201,17 +222,18 @@ Rectangle {
                     source: 'qrc:/icons/icon-ok_01.svg'
                     height: 20
                     width: 20
+                    rotation: availableUsername == 1? 0 : 180
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 7
-                    visible: availableUsername == 1 && networkError == 0
+                    visible: checkUsername == 1
                 }
             }
 
             Label {
                 id: usernameWarningText1
                 text: userName.text != ""? (usernameWarning == 0? "" : (usernameWarning == 1? "This Username already exists!" : (usernameWarning == 2? "Username unknown!": (usernameWarning == 3? "Username too short!" : (usernameWarning == 4? "Username too long" : ""))))) : ""
-                color: "#FD2E2E"
+                color: usernameWarning == 2 ? "#4BBE2E" : "#FD2E2E"
                 anchors.left: userName.left
                 anchors.leftMargin: 5
                 anchors.top: userName.bottom
@@ -250,6 +272,7 @@ Rectangle {
                 color: passWord1.text != "" ? "#F2F2F2" : "#727272"
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
+                deleteBtn: passwordWarning1 == 0? 0 : 1
 
                 onTextChanged: {
                     //check if password has valid format
@@ -295,6 +318,7 @@ Rectangle {
                 color: passWord2.text != "" ? "#F2F2F2" : "#727272"
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
+                deleteBtn: passwordWarning2 == 0? 0 : 1
 
                 onTextChanged: {
                     //check if passwords match
@@ -338,17 +362,16 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: passWord2.bottom
                 anchors.topMargin: 30
-                color: (usernameWarning == 0 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? "#1B2934" : "#727272"
+                color: "transparent"
                 opacity: 0.5
 
                 LinearGradient {
                     anchors.fill: parent
-                    source: parent
                     start: Qt.point(x, y)
                     end: Qt.point(x, parent.height)
                     gradient: Gradient {
                         GradientStop { position: 0.0; color: "transparent" }
-                        GradientStop { position: 1.0; color: (usernameWarning == 0 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#727272" }
+                        GradientStop { position: 1.0; color: (availableUsername == 1 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#727272" }
                     }
                 }
 
@@ -361,9 +384,7 @@ Rectangle {
                     }
 
                     onReleased: {
-                        if (usernameWarning == 0 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
-                            // create account
-                            console.log("attempting to create account")
+                        if (availableUsername == 1  && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
                             createUser(userName.text, passWord1.text)
                         }
                     }
@@ -372,30 +393,44 @@ Rectangle {
                 Connections {
                     target: UserSettings
                     onUserCreationSucceeded: {
-                        accountCreated = 1
+                        userSettings.locale = "en_us"
+                        userSettings.defaultCurrency = 0
+                        userSettings.theme = "dark"
+                        userSettings.pinlock = false
+                        saveAppSettings()
+                        addOwnContact();
+                        var datamodel = []
+                        for (var i = 0; i < contactList.count; ++i)
+                            datamodel.push(contactList.get(i))
+
+                        var contactListJson = JSON.stringify(datamodel)
+                        saveContactList(contactListJson)
                         availableUsername = 0
-                        networError = 0
-                        loginError = 0
+                        networkError = 0
+                        signUpError = 0
                         username = userName.text
+                        newAccount = true
+                        accountCreated = 1
+
                     }
                     onUserAlreadyExists: {
                         usernameWarning = 1
                         availableUsername = 0
-                    }
-                    onUserCreationFailed: {
-                        loginError = 1
                         passWord1.text = ""
                         passWord2.text = ""
+                    }
+                    onUserCreationFailed: {
+                        if (networkError == 0) {
+                            signUpError = 1
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                        }
                     }
                     onSettingsServerError: {
                         networkError = 1
                         passWord1.text = ""
                         passWord2.text = ""
-                    }
-                    onUsernameAvailable: {
-                        if (networkError == 0) {
-                            availableUsername = 1
-                        }
                     }
                 }
             }
@@ -405,7 +440,7 @@ Rectangle {
                 text: "CREATE ACCOUNT"
                 font.family: xciteMobile.name
                 font.pointSize: 14
-                color: (usernameWarning == 0 && passwordWarning1 == 0 && passwordWarning2 == 0)? "#F2F2F2" : "#979797"
+                color: (availableUsername == 1 && passwordWarning1 == 0 && passwordWarning2 == 0)? "#F2F2F2" : "#979797"
                 font.bold: true
                 anchors.horizontalCenter: createAccountButton.horizontalCenter
                 anchors.verticalCenter: createAccountButton.verticalCenter
@@ -419,19 +454,20 @@ Rectangle {
                 color: "transparent"
                 opacity: 0.5
                 border.width: 1
-                border.color: (usernameWarning == 0 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#979797"
+                border.color: (availableUsername == 1 && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#979797"
             }
 
             Label {
                 id: closeButtonLabel
                 z:10
                 text: "BACK"
-                anchors.bottom: combinationMark.top
-                anchors.bottomMargin: 50
+                anchors.top: createAccountButton.bottom
+                anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pixelSize: 14
                 font.family: "Brandon Grotesque"
                 color: "#F2F2F2"
+                visible: accountCreated == 0
 
                 Rectangle{
                     id: closeButton
@@ -453,17 +489,426 @@ Rectangle {
                     }
                 }
             }
+        }
+    }
 
-            Image {
-                id: combinationMark
-                source: 'qrc:/icons/xby_logo_TM.svg'
-                height: 23.4
-                width: 150
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: setupScrollArea.bottom
-                anchors.bottomMargin: 90
+    Rectangle {
+        width: Screen.width
+        height: Screen.height
+        color: bgcolor
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: signUpError == 1 || accountCreated == 1
+
+        MouseArea {
+            anchors.fill: parent
+        }
+    }
+
+    // Account creation failed
+
+    Rectangle {
+        id: accountFailed
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        width: 325
+        height: failedIcon.height + creationFailedLabel.height + closeFail.height + 130
+        state: signUpError == 1? "up" : "down"
+        color: "#14161B"
+
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: 0}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: 1.5 * Screen.height}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: accountFailed; property: "anchors.verticalCenterOffset"; duration: 300; easing.type: Easing.InOutCubic}
+            }
+        ]
+
+        Image {
+            id: failedIcon
+            source: 'qrc:/icons/mobile/failed-icon_01_light.svg'
+            height: 100
+            width: 100
+            anchors.top: parent.top
+            anchors.topMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        Label {
+            id: creationFailedLabel
+            text: "Account creation failed!"
+            anchors.top: failedIcon.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: failedIcon.horizontalCenter
+            color: maincolor
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+        }
+
+        Rectangle {
+            id: closeFail
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: maincolor
+            opacity: 0.25
+            anchors.top: creationFailedLabel.bottom
+            anchors.topMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            MouseArea {
+                anchors.fill: closeFail
+
+                onPressed: {
+                    parent.opacity = 0.5
+                    click01.play()
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
+
+                onReleased: {
+                    parent.opacity = 0.25
+                }
+
+                onClicked: {
+                    signUpError = 0;
+
+                }
             }
         }
+        Text {
+            text: "TRY AGAIN"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: darktheme == true? "#F2F2F2" : maincolor
+            anchors.horizontalCenter: closeFail.horizontalCenter
+            anchors.verticalCenter: closeFail.verticalCenter
+        }
+
+        Rectangle {
+            width: closeFail.width
+            height: 34
+            anchors.bottom: closeFail.bottom
+            anchors.left: closeFail.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: maincolor
+            border.width: 1
+        }
+    }
+
+    Rectangle {
+        id: accountSuccess
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        width: 325
+        height: 270
+        state: accountCreated == 1? "up" : "down"
+        color: "#14161B"
+
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: accountSuccess; anchors.verticalCenterOffset: 0}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: accountSuccess; anchors.verticalCenterOffset: 1.5 * Screen.height}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: accountSuccess; property: "anchors.verticalCenterOffset"; duration: 300; easing.type: Easing.InOutCubic}
+            }
+        ]
+
+        Label {
+            id: welcomeUser
+            text: "WELCOME " + username
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 20
+            color: maincolor
+            font.pixelSize: 24
+            font.family: xciteMobile.name
+            font.bold: true
+            visible: selectStorage == 0
+        }
+
+        Label {
+            id: confirmCreation
+            text: "Your account has been created."
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: welcomeUser.bottom
+            anchors.topMargin: 10
+            color: "#F2F2F2"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            visible: selectStorage == 0
+        }
+
+        Text {
+            id: passwordWarning
+            width: doubbleButtonWidth
+            maximumLineCount: 4
+            anchors.left: confirmAccountButton.left
+            horizontalAlignment: Text.AlignJustify
+            wrapMode: Text.WordWrap
+            text: "<b>WARNING</b>: Do not forget to backup your password, THERE IS NO PASSWORD RECOVERY, without your password you cannot access your account!"
+            anchors.bottom: confirmAccountButton.top
+            anchors.bottomMargin: 15
+            color: "#F2F2F2"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            visible: selectStorage == 0
+        }
+
+        Rectangle {
+            id: confirmAccountButton
+            width: doubbleButtonWidth
+            height: 34
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            color: "transparent"
+            opacity: 0.5
+            visible: selectStorage == 0
+
+            LinearGradient {
+                anchors.fill: parent
+                start: Qt.point(x, y)
+                end: Qt.point(x, parent.height)
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 1.0; color: "#0ED8D2" }
+                }
+            }
+
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressed: {
+                    click01.play()
+                }
+
+                onReleased: {
+                    // save account status to server
+                    selectStorage = 1
+                    storageSwitchState = 0
+                }
+            }
+        }
+
+        Text {
+            id: confirmButtonText
+            text: "UNDERSTOOD"
+            font.family: xciteMobile.name
+            font.pointSize: 14
+            color: "#F2F2F2"
+            font.bold: true
+            anchors.horizontalCenter: confirmAccountButton.horizontalCenter
+            anchors.verticalCenter: confirmAccountButton.verticalCenter
+            visible: selectStorage == 0
+        }
+
+        Rectangle {
+            width: doubbleButtonWidth
+            height: 34
+            anchors.horizontalCenter: confirmAccountButton.horizontalCenter
+            anchors.bottom: confirmAccountButton.bottom
+            color: "transparent"
+            opacity: 0.5
+            border.width: 1
+            border.color: "#0ED8D2"
+            visible: selectStorage == 0
+        }
+
+        Item {
+            id: addWalletText
+            width: parent.width
+            height : addWalletText1.height + addWalletText2.height + addWalletText3.height + storageSwitch.height + continueButton.height + 90
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+            visible: selectStorage = 1
+
+            Label {
+                id: addWalletText1
+                width: doubbleButtonWidth
+                maximumLineCount: 3
+                anchors.left: continueButton.left
+                horizontalAlignment: Text.AlignJustify
+                wrapMode: Text.WordWrap
+                text: "You can now add a wallet. You can choose to store your wallet keys on your device or in your account."
+                anchors.top: parent.top
+                color: themecolor
+                font.pixelSize: 16
+                font.family: xciteMobile.name
+                font.bold: true
+            }
+
+            Label {
+                id: addWalletText2
+                width: doubbleButtonWidth
+                maximumLineCount: 3
+                anchors.left: continueButton.left
+                horizontalAlignment: Text.AlignJustify
+                wrapMode: Text.WordWrap
+                text: "Storing your keys on your device will require you to import your keys in all the devices you wish to access your wallet from."
+                anchors.top: addWalletText1.bottom
+                anchors.topMargin: 20
+                color: themecolor
+                font.pixelSize: 16
+                font.family: xciteMobile.name
+                font.bold: true
+            }
+
+            Label {
+                id: addWalletText3
+                width: doubbleButtonWidth
+                maximumLineCount: 3
+                anchors.left: continueButton.left
+                horizontalAlignment: Text.AlignJustify
+                wrapMode: Text.WordWrap
+                text: "Storing your keys in your account will alow you to access your wallet from any device running XCITE Mobile."
+                anchors.top: addWalletText2.bottom
+                anchors.topMargin: 20
+                color: themecolor
+                font.pixelSize: 16
+                font.family: xciteMobile.name
+                font.bold: true
+            }
+
+            Controls.Switch_mobile {
+                id: storageSwitch
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: addWalletText3.bottom
+                anchors.topMargin: 20
+                state: storageSwitchState == 0 ? "off" : "on"
+
+
+                onStateChanged: {
+                    if (storageSwitch.state == "off") {
+                        userSettings.localKeys = false
+                    }
+                    else {
+                        userSettings.localKeys = true
+                    }
+                }
+            }
+
+            Text {
+                id: receiveText
+                text: "ACCOUNT"
+                anchors.right: storageSwitch.left
+                anchors.rightMargin: 7
+                anchors.verticalCenter: storageSwitch.verticalCenter
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                color: storageSwitch.on ? "#757575" : maincolor
+            }
+
+            Text {
+                id: sendText
+                text: "DEVICE"
+                anchors.left: storageSwitch.right
+                anchors.leftMargin: 7
+                anchors.verticalCenter: storageSwitch.verticalCenter
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                color: storageSwitch.on ? maincolor : "#757575"
+            }
+
+            Rectangle {
+                id: continueButton
+                width: doubbleButtonWidth
+                height: 34
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: storageSwitch.bottom
+                anchors.topMargin: 30
+                color: "transparent"
+                opacity: 0.5
+
+                LinearGradient {
+                    anchors.fill: parent
+                    start: Qt.point(x, y)
+                    end: Qt.point(x, parent.height)
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: "transparent" }
+                        GradientStop { position: 1.0; color: "#0ED8D2" }
+                    }
+                }
+
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                    }
+
+                    onReleased: {
+                        saveAppSettings()
+                        mainRoot.pop()
+                        mainRoot.push("../InitialSetup.qml")
+                        accountCreated = 0
+                        selectStorage = 0
+                    }
+                }
+            }
+
+            Text {
+                id: continueButtonText
+                text: "CONTINUE"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                color: "#F2F2F2"
+                font.bold: true
+                anchors.horizontalCenter: continueButton.horizontalCenter
+                anchors.verticalCenter: continueButton.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth
+                height: 34
+                anchors.horizontalCenter: continueButton.horizontalCenter
+                anchors.bottom: continueButton.bottom
+                color: "transparent"
+                opacity: 0.5
+                border.width: 1
+                border.color: "#0ED8D2"
+            }
+        }
+    }
+
+    Image {
+        id: combinationMark
+        source: 'qrc:/icons/xby_logo_TM.svg'
+        height: 23.4
+        width: 150
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 50
     }
 
     Rectangle {
@@ -475,16 +920,19 @@ Rectangle {
         state: networkError == 0? "up" : "down"
         color: "black"
         opacity: 0.9
+        clip: true
 
 
         states: [
             State {
                 name: "up"
                 PropertyChanges { target: serverError; anchors.bottomMargin: 0}
+                PropertyChanges { target: serverError; height: 0}
             },
             State {
                 name: "down"
                 PropertyChanges { target: serverError; anchors.bottomMargin: -100}
+                PropertyChanges { target: serverError; height: 100}
             }
         ]
 
@@ -492,7 +940,7 @@ Rectangle {
             Transition {
                 from: "*"
                 to: "*"
-                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
+                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.InOutCubic}
             }
         ]
 
@@ -509,7 +957,7 @@ Rectangle {
 
         Rectangle {
             id: okButton
-            width: (doubbleButtonWidth - 10) / 2
+            width: doubbleButtonWidth / 2
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
@@ -550,7 +998,7 @@ Rectangle {
         }
 
         Rectangle {
-            width: (doubbleButtonWidth - 10) / 2
+            width: doubbleButtonWidth / 2
             height: 34
             anchors.horizontalCenter: okButton.horizontalCenter
             anchors.bottom: okButton.bottom
@@ -565,135 +1013,7 @@ Rectangle {
             height: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            color: "black"
-        }
-    }
-
-    Rectangle {
-        id: accountSuccess
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        width: 325
-        height: 270
-        radius: 5
-        state: accountCreated == 1? "up" : "down"
-        color: "#1B2934"
-
-
-        states: [
-            State {
-                name: "up"
-                PropertyChanges { target: accountSuccess; anchors.topMargin: (parent.height/2) - (accountSuccess.height/1.5)}
-            },
-            State {
-                name: "down"
-                PropertyChanges { target: accountSuccess; anchors.topMargin: parent.height + 50}
-            }
-        ]
-
-        transitions: [
-            Transition {
-                from: "*"
-                to: "*"
-                NumberAnimation { target: accountSuccess; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
-            }
-        ]
-
-        Label {
-            id: welcomeUser
-            text: "WELCOME " + username
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 20
-            color: maincolor
-            font.pixelSize: 24
-            font.family: xciteMobile.name
-            font.bold: true
-        }
-
-        Label {
-            id: confirmCreation
-            text: "Your account has been created."
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: welcomeUser.bottom
-            anchors.topMargin: 10
-            color: "#F2F2F2"
-            font.pixelSize: 16
-            font.family: xciteMobile.name
-        }
-
-        Text {
-            id: passwordWarning
-            width: doubbleButtonWidth
-            maximumLineCount: 4
-            anchors.left: confirmAccountButton.left
-            horizontalAlignment: Text.AlignJustify
-            wrapMode: Text.WordWrap
-            text: "<b>WARNING</b>: Do not forget to backup your password, THERE IS NO PASSWORD RECOVERY, without your password you cannot access your account!"
-            anchors.bottom: confirmAccountButton.top
-            anchors.bottomMargin: 15
-            color: "#F2F2F2"
-            font.pixelSize: 16
-            font.family: xciteMobile.name
-        }
-
-        Rectangle {
-            id: confirmAccountButton
-            width: doubbleButtonWidth
-            height: 34
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            color: maincolor
-            opacity: 0.5
-
-            LinearGradient {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(x, y)
-                end: Qt.point(x, parent.height)
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 1.0; color: "#0ED8D2" }
-                }
-            }
-
-
-            MouseArea {
-                anchors.fill: parent
-
-                onPressed: {
-                    click01.play()
-                }
-
-                onReleased: {
-                    mainRoot.pop()
-                    mainRoot.push("../InitialSetup.qml")
-                    accountCreated = 0
-                }
-            }
-        }
-
-        Text {
-            id: confirmButtonText
-            text: "UNDERSTOOD"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            color: "#F2F2F2"
-            font.bold: true
-            anchors.horizontalCenter: confirmAccountButton.horizontalCenter
-            anchors.verticalCenter: confirmAccountButton.verticalCenter
-        }
-
-        Rectangle {
-            width: doubbleButtonWidth
-            height: 34
-            anchors.horizontalCenter: confirmAccountButton.horizontalCenter
-            anchors.bottom: confirmAccountButton.bottom
-            color: "transparent"
-            opacity: 0.5
-            border.width: 1
-            border.color: "#0ED8D2"
+            color: bgcolor
         }
     }
 }

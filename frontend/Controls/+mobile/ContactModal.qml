@@ -1,4 +1,4 @@
-/**
+ /**
  * Filename: ContactModal.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -42,7 +42,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: editContactModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: editContactModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -131,21 +131,15 @@ Rectangle {
 
         Image {
             id: deleteContact
-            source: 'qrc:/icons/trashcan_big.svg'
-            height: 26
-            width: 18
+            source: darktheme == true? 'qrc:/icons/mobile/trash-icon_01_light.svg' : 'qrc:/icons/mobile/trash-icon_01_dark.svg'
+            height: 25
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveButton.bottom
             anchors.topMargin: 40
             visible: editSaved == 0
                      && deleteContactTracker == 0
                      && contactIndex != 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
 
             Rectangle {
                 id: deleteButton
@@ -161,6 +155,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onClicked: {
@@ -225,7 +220,10 @@ Rectangle {
             mobile: 1
             deleteBtn: contactIndex == 0? 0 : 1
             readOnly: contactIndex == 0
-            onTextChanged: compareName()
+            onTextChanged: {
+                detectInteraction()
+                compareName()
+            }
         }
 
         Controls.TextInput {
@@ -245,7 +243,10 @@ Rectangle {
             mobile: 1
             deleteBtn: contactIndex == 0? 0 : 1
             readOnly: contactIndex == 0
-            onTextChanged: compareName()
+            onTextChanged: {
+                detectInteraction()
+                compareName()
+            }
         }
 
         Label {
@@ -281,6 +282,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Controls.TextInput {
@@ -299,6 +301,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Controls.TextInput {
@@ -316,6 +319,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Controls.TextInput {
@@ -333,6 +337,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
+            onTextChanged: detectInteraction()
         }
 
         Rectangle {
@@ -353,6 +358,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     parent.opacity = 0.5
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -421,9 +427,10 @@ Rectangle {
 
         Image {
             id: saveSuccess
-            source: newPhoto.source
+            source: darktheme == true? 'qrc:/icons/mobile/succes_icon_01_light.svg' : 'qrc:/icons/mobile/succes_icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveConfirmed.top
             visible: editSaved == 1
@@ -472,6 +479,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     parent.opacity = 0.5
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -566,6 +574,7 @@ Rectangle {
                     onPressed: {
                         parent.opacity = 0.5
                         click01.play()
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -621,6 +630,7 @@ Rectangle {
                     onPressed: {
                         click01.play()
                         parent.opacity = 0.5
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -673,18 +683,13 @@ Rectangle {
 
         Image {
             id: deleteSuccess
-            source: 'qrc:/icons/icon-delete-mobile.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/delete_contact-icon_01_light.svg' : 'qrc:/icons/mobile/delete_contact-icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: deleted.top
             visible: deleteConfirmed == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: maincolor
-            }
         }
 
         Label {
@@ -730,6 +735,7 @@ Rectangle {
                 onPressed: {
                     closeDelete.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -817,6 +823,7 @@ Rectangle {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onClicked: {

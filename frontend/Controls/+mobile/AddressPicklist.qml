@@ -54,6 +54,7 @@ Rectangle {
 
                 onPressed: {
                     clickIndicator.visible = true
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -89,6 +90,7 @@ Rectangle {
                 anchors.topMargin: 10
                 font.family: xciteMobile.name
                 font.pixelSize: 20
+                font.capitalization: Font.SmallCaps
                 font.letterSpacing: 2
                 font.bold: true
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -120,8 +122,8 @@ Rectangle {
                  pattern: searchFilter
             },
             ValueFilter {
-                 roleName: "active"
-                 value: true
+                 roleName: "remove"
+                 value: false
             }
         ]
     }
@@ -133,5 +135,6 @@ Rectangle {
         model: filteredAddresses
         delegate: contactLine
         clip: true
+        onDraggingChanged: detectInteraction()
     }
 }

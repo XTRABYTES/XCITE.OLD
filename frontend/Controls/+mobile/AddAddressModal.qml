@@ -26,6 +26,7 @@ Rectangle {
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+    onStateChanged: detectInteraction()
 
     states: [
         State {
@@ -42,11 +43,12 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addAddressModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: addAddressModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
     property int editSaved: 0
+    property int editFailed: 0
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
@@ -180,7 +182,7 @@ Rectangle {
 
         Image {
             id: picklistArrow
-            source: 'qrc:/icons/dropdown_icon.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
             height: 20
             width: 20
             anchors.left: coinListTracker == 0 ? newCoinName.right : newPicklist.right
@@ -189,12 +191,6 @@ Rectangle {
             visible: editSaved == 0
                      && coinListTracker == 0
                      && scanQRTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            }
 
             Rectangle {
                 id: picklistButton
@@ -210,7 +206,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     coinListLines(false)
@@ -236,6 +235,7 @@ Rectangle {
             visible: editSaved == 0
             mobile: 1
             onTextChanged: {
+                detectInteraction()
                 if(newName.text != "") {
                     compareName();
                     compareTx()
@@ -277,6 +277,7 @@ Rectangle {
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
+                detectInteraction()
                 if(newAddress.text != ""){
                     checkAddress();
                     compareTx()
@@ -352,6 +353,7 @@ Rectangle {
                     parent.border.color = themecolor
                     scanButtonText.color = themecolor
                     click01.play()
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -404,7 +406,6 @@ Rectangle {
             id: newPicklist
             width: 100
             height: ((totalLines + 1) * 35)-10
-            radius: 4
             color: "#2A2C31"
             anchors.top: newIcon.top
             anchors.topMargin: -5
@@ -422,7 +423,6 @@ Rectangle {
             id: picklistClose
             width: 100
             height: 25
-            radius: 4
             color: "#2A2C31"
             anchors.bottom: newPicklist.bottom
             anchors.horizontalCenter: newPicklist.horizontalCenter
@@ -432,14 +432,20 @@ Rectangle {
 
             Image {
                 id: picklistCloseArrow
-                source: 'qrc:/icons/dropdown-arrow.svg'
+                height: 12
+                fillMode: Image.PreserveAspectFit
+                source: 'qrc:/icons/mobile/close_picklist-icon_01.svg'
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                rotation: 180
             }
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
+
                 onClicked: {
                     coinListTracker = 0
                 }
@@ -467,6 +473,7 @@ Rectangle {
                 onPressed: {
                     parent.opacity = 1
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -482,9 +489,21 @@ Rectangle {
                             && labelExists == 0) {
                         addressList.append({"contact": contactIndex, "address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
-                        console.log("Tuukka", addressList)
-                        saveAddressBook(addressList)
+                        var datamodel = []
+                        for (var i = 0; i < addressList.count; ++i)
+                            datamodel.push(addressList.get(i))
+
+                        var addressListJson = JSON.stringify(datamodel)
+
+                        saveAddressBook(addressListJson)
+
+                        // onsaveSucceeded
                         editSaved = 1
+
+                        // onsaveFailed
+                        // addressID = addressID - 1
+                        // addressList.remove(addressID)
+                        // editFailed = 1
                     }
                 }
             }
@@ -536,18 +555,13 @@ Rectangle {
 
         Image {
             id: saveSuccess
-            source: 'qrc:/icons/icon-success.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveConfirmed.top
             visible: editSaved == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: maincolor
-            }
         }
 
         Label {
@@ -580,6 +594,7 @@ Rectangle {
                 onPressed: {
                     parent.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -699,6 +714,7 @@ Rectangle {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onReleased: {

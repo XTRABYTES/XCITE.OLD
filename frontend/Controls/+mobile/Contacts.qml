@@ -53,7 +53,7 @@ Rectangle {
 
                 Image {
                     id: icon
-                    source: photo
+                    source: profilePictures.get(0).photo
                     anchors.left: parent.left
                     anchors.leftMargin: 28
                     anchors.verticalCenter: parent.verticalCenter
@@ -105,6 +105,10 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
+                    onPressed: {
+                        detectInteraction()
+                    }
+
                     onClicked: {
                         click01.play()
                         contactIndex = contactNR
@@ -113,6 +117,8 @@ Rectangle {
 
                     onPressAndHold: {
                         contactIndex = contactNR
+                        console.log("contact index = " + contactIndex)
+                        console.log("contactname: " + contactList.get(contactIndex).firstName)
                         editContactTracker = 1
                     }
                 }
@@ -157,5 +163,7 @@ Rectangle {
         anchors.fill: parent
         contentHeight: (filteredContacts.count * 85) + 75
         interactive: appsTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && transferTracker == 0
+        onDraggingChanged: detectInteraction()
+
     }
 }

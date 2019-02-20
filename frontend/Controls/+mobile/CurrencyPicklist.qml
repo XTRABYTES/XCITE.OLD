@@ -64,6 +64,7 @@ Rectangle {
 
                 onPressed: {
                     clickIndicator.visible = true
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -78,6 +79,7 @@ Rectangle {
                     clickIndicator.visible = false
                     userSettings.defaultCurrency = currencyNR;
                     currencyTracker = 0
+                    saveAppSettings()
                 }
             }
 
@@ -98,5 +100,6 @@ Rectangle {
         model: fiatCurrencies
         delegate: picklistEntry
         contentHeight: fiatCurrencies.count * 35
+        onDraggingChanged: detectInteraction()
     }
 }

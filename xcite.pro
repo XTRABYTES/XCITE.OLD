@@ -123,7 +123,7 @@ mac {
         QT += multimedia
         xcode_product_bundle_identifier_setting.value = "global.xtrabytes.xcite"
         QMAKE_INFO_PLIST = resources/ios/Info.plist
-        app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchscreen-logo.png
+        app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchScreen-logo_01.png
         QMAKE_BUNDLE_DATA += app_launch_images
     }
 }

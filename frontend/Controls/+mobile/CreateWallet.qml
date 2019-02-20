@@ -19,24 +19,28 @@ import QtMultimedia 5.8
 import "qrc:/Controls" as Controls
 
 Rectangle {
-    id: createWalletModal
-    width: 325
+    id: addWalletModal
+    width: Screen.width
     state: createWalletTracker == 1? "up" : "down"
-    height: (editSaved == 1)? 358 : ((createWallet == 1) ? 480 : 270)
+    height: Screen.height
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
+    Component.onCompleted: darktheme = true
+
+    MouseArea {
+        anchors.fill: parent
+    }
+
     states: [
         State {
             name: "up"
-            PropertyChanges { target: createWalletModal; anchors.topMargin: 50}
-            //PropertyChanges { target: addAddressModal; visible: true}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: 0}
         },
         State {
             name: "down"
-            PropertyChanges { target: createWalletModal; anchors.topMargin: Screen.height}
-            //PropertyChanges { target: addAddressModal; visible: false}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: Screen.height}
         }
     ]
 
@@ -44,150 +48,152 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: createWalletModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
-            //PropertyAnimation { target: addAddressModal; property: "visible"; duration: 300}
+            NumberAnimation { target: addWalletModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
     property int editSaved: 0
-    property int createWallet: 0
+    property int newWallet: 0
     property int createWalletFailed: 0
     property int labelExists: 0
-    property string walletError: error1
-    property string error1: " network not available at the moment"
-    property alias coin: coinName.text
-    property alias logo: coinLogo.source
+    property string walletError: "We were unable to create a wallet for you."
+    property string coin: "XFUEL"
+    property url logo: getLogo(coin)
 
     function compareName() {
 
     }
 
-    Rectangle {
-        id: walletTitleBar
-        width: parent.width
-        height: 50
-        radius: 4
+    Text {
+        id: addWalletLabel
+        text: "CREATE NEW WALLET"
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.left: parent.left
-        color: "transparent"
-        visible: createWallet == 0
-
-        Text {
-            id: createWalletLabel
-            text: "CREATE NEW WALLET"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.top
-            anchors.verticalCenterOffset: 27
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            font.letterSpacing: 2
-        }
+        anchors.topMargin: 10
+        font.pixelSize: 20
+        font.family: xciteMobile.name
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
+        visible: editSaved == 0
     }
 
-    Rectangle {
-        id: createWalletBodyModal
+    Flickable {
+        id: scrollArea
         width: parent.width
-        height: parent.height - 50
-        radius: 4
-        color: darktheme == false? "#F7F7F7" : "#14161B"
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
+        contentHeight: addWalletScrollArea.height > scrollArea.height? addWalletScrollArea.height + 125 : scrollArea.height + 125
+        anchors.left: parent.left
+        anchors.top: addWalletLabel.bottom
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        boundsBehavior: Flickable.StopAtBounds
+        clip: true
 
-        LinearGradient {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(0, 0)
-                end: Qt.point(0, parent.height)
-                opacity: darktheme == false? 0.05 : 0.2
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: darktheme == false?"#00072778" : "#FF162124" }
-                    GradientStop { position: 1.0; color: darktheme == false?"#FF072778" : "#00162124" }
-                }
-        }
-
-
-        Text {
-            id: createWalletText
-            width: newName.implicitWidth
-            maximumLineCount: 2
-            anchors.left: newName.left
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.WordWrap
-            text: "A NEW <b>XFUEL</b> WALLET WILL BE CREATED FOR YOU"
-            anchors.top: parent.top
-            anchors.topMargin: 25
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 16
-            font.family: xciteMobile.name
-            visible: createWallet == 0
-                     && createWalletFailed == 0
-        }
-
-        Controls.TextInput {
-            id: newName
-            height: 34
-            placeholder: "WALLET LABEL"
-            text: ""
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: createWalletText.bottom
-            anchors.topMargin: 25
-            color: newName.text != "" ? "#F2F2F2" : "#727272"
-            textBackground: darktheme == false? "#484A4D" : "#0B0B09"
-            font.pixelSize: 14
-            visible: createWallet == 0
-                     && createWalletFailed == 0
-            mobile: 1
-            onTextChanged: {
-                if(newName.text != "") {
-                    compareName();
-                }
-            }
-        }
-
-        Label {
-            id: nameWarning
-            text: "Already an address with this label!"
-            color: "#FD2E2E"
-            anchors.left: newName.left
-            anchors.leftMargin: 5
-            anchors.top: newName.bottom
-            anchors.topMargin: 1
-            font.pixelSize: 11
-            font.family: "Brandon Grotesque"
-            font.weight: Font.Normal
-            visible: createWallet == 0
-                     && newName.text != ""
-                     && labelExists == 1
-                     && createWalletFailed == 0
-        }
 
         Rectangle {
-            id: createWalletButton
-            width: newName.width
-            height: 33
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            anchors.left: newName.left
-            radius: 5
-            color: (newName.text != "" && labelExists == 0) ? maincolor : "#727272"
-            visible: createWallet == 0
-                     && createWalletFailed == 0
+            id: addWalletScrollArea
+            width: parent.width
+            height: newWallet == 1? walletInfo.height : (editSaved == 1? createWalletSucces.height : (createWalletFailed == 1? createWalletError.height : createWallet.height))
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+        }
 
-            MouseArea {
-                anchors.fill: parent
+        Item {
+            id: createWallet
+            width: parent.width
+            height: createWalletText.height + newName.height + createWalletButton.height + 75
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: newWallet == 0 && editSaved == 0 && createWalletFailed == 0
 
-                onPressed: {
-                    click01.play()
+            Text {
+                id: createWalletText
+                width: doubbleButtonWidth
+                maximumLineCount: 2
+                anchors.left: newName.left
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                text: "A NEW <b>" + coin + "</b> WALLET WILL BE CREATED FOR YOU"
+                anchors.top: parent.top
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 16
+                font.family: xciteMobile.name
+            }
+
+            Controls.TextInput {
+                id: newName
+                height: 34
+                width: doubbleButtonWidth
+                placeholder: "WALLET LABEL"
+                text: ""
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: createWalletText.bottom
+                anchors.topMargin: 25
+                color: newName.text != "" ? "#F2F2F2" : "#727272"
+                textBackground: darktheme == false? "#484A4D" : "#0B0B09"
+                font.pixelSize: 14
+                mobile: 1
+                onTextChanged: {
+                    if(newName.text != "") {
+                        compareName();
+                    }
                 }
+            }
 
-                onReleased: {
-                    if (newName.text != "" && labelExists == 0) {
-                        // function to add address to the wallet
-                        createWallet = 1 // publicKey.text = "" && privateKey.text = ""
-                        // or
-                        //createWalletFailed = 1 //&& walletError = ..., depending on the outcome
+            Label {
+                id: nameWarning
+                text: "Already an address with this label!"
+                color: "#FD2E2E"
+                anchors.left: newName.left
+                anchors.leftMargin: 5
+                anchors.top: newName.bottom
+                anchors.topMargin: 1
+                font.pixelSize: 11
+                font.family: "Brandon Grotesque"
+                font.weight: Font.Normal
+                visible: newName.text != ""
+                         && labelExists == 1
+            }
+
+            Rectangle {
+                id: createWalletButton
+                width: doubbleButtonWidth
+                height: 34
+                anchors.top: newName.bottom
+                anchors.topMargin: 30
+                anchors.left: newName.left
+                color: (newName.text != "" && labelExists == 0) ? maincolor : "#727272"
+                opacity: 0.25
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onReleased: {
+                        if (newName.text != "" && labelExists == 0) {
+                            // function to create new address and add to the app and retrieve public key
+                            // walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : function to retrive balance from BC, "unconfirmedCoins": function to retrive balance from BC, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
+                            // walletID = walletID + 1
+                            // addressList.apped({"contact": 0, "address": publicKey.text, "label": newName.text, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
+                            // addressID = addressID + 1
+                            // var datamodel = []
+                            // for (var i = 0; i < addressList.count; ++i)
+                            //     datamodel.push(addressList.get(i))
+                            // var addressListJson = JSON.stringify(datamodel)
+                            // saveAddressBook(addressListJson)
+                            // publicKey.text = "" && privateKey.text = ""
+                            // if (userSettings.accountCreationCompleted === false) {
+                            //      userSettings.accountCreationCompleted = true
+                            // }
+                            newWallet = 1
+                            // or
+                            createWalletFailed = 1 //&& walletError = ..., depending on the outcome
+                        }
                     }
                 }
             }
@@ -199,151 +205,157 @@ Rectangle {
                 font.pointSize: 14
                 color: (newName.text != "" && labelExists == 0) ? "#F2F2F2" : "#979797"
                 font.bold: true
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: createWalletButton.horizontalCenter
+                anchors.verticalCenter: createWalletButton.verticalCenter
             }
-        }
 
-        Text {
-            id: walletCreatedText
-            width: newName.implicitWidth
-            maximumLineCount: 2
-            anchors.left: newName.left
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.WordWrap
-            text: "A NEW <b>XFUEL</b> WALLET HAS BEEN CREATED FOR YOU"
-            anchors.top: parent.top
-            anchors.topMargin: 25
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 16
-            font.family: xciteMobile.name
-            visible: createWallet == 1
-                     && editSaved == 0
+            Rectangle {
+                width: createWalletButton.width
+                height: 34
+                anchors.bottom: createWalletButton.bottom
+                anchors.left: createWalletButton.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: (newName.text != "" && labelExists == 0) ? maincolor : "#979797"
+                border.width: 1
+            }
         }
 
         Item {
-            id: coinID
-            width: coinLogo.width + coinName.width + 7
-            height: coinLogo.height
+            id: walletInfo
+            width: parent.width
+            height: walletCreatedText.height + coinID.height + pubKey.height + publicKey.height + privKey.height + privateKey.height + warningPrivateKey.height + addWalletButton.height + 100
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: walletCreatedText.bottom
-            anchors.topMargin: 20
-            visible: createWallet == 1
-                     && editSaved == 0
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: newWallet == 1 && editSaved == 0
 
-            Image {
-                id: coinLogo
-                source: 'qrc:/icons/XFUEL_card_logo_01.svg'
-                width: 30
-                height: 30
-                anchors.left: coinID.left
-                anchors.verticalCenter: parent.verticalCenter
+            Text {
+                id: walletCreatedText
+                width: doubbleButtonWidth
+                maximumLineCount: 2
+                anchors.horizontalCenter: parent.horizontalCenter
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                text: "A NEW <b>" + coin + "</b> WALLET HAS BEEN CREATED FOR YOU"
+                anchors.top: parent.top
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 16
+                font.family: xciteMobile.name
+            }
+
+            Item {
+                id: coinID
+                width: coinLogo.width + coinName.width + 7
+                height: coinLogo.height
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: walletCreatedText.bottom
+                anchors.topMargin: 20
+
+                Image {
+                    id: coinLogo
+                    source: 'qrc:/icons/XFUEL_card_logo_01.svg'
+                    width: 30
+                    height: 30
+                    anchors.left: coinID.left
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Label {
+                    id: coinName
+                    text: coin
+                    anchors.right: coinID.right
+                    anchors.verticalCenter: coinLogo.verticalCenter
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                    font.pixelSize: 18
+                    font.family: xciteMobile.name
+                    font.bold: true
+                }
             }
 
             Label {
-                id: coinName
-                text: "XFUEL"
-                anchors.right: coinID.right
-                anchors.verticalCenter: coinLogo.verticalCenter
+                id: pubKey
+                anchors.left: walletCreatedText. left
+                anchors.top: coinID.bottom
+                anchors.topMargin: 10
+                text: "Public Key:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
                 font.family: xciteMobile.name
                 font.bold: true
             }
-        }
 
-        Label {
-            id: pubKey
-            anchors.left: walletCreatedText. left
-            anchors.top: coinID.bottom
-            anchors.topMargin: 10
-            text: "Public Key:"
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-            font.bold: true
-            visible: createWallet == 1
-                     && editSaved == 0
-        }
+            Label {
+                id: publicKey
+                anchors.left: pubKey. left
+                anchors.top: pubKey.bottom
+                anchors.topMargin: 5
+                text: "Here you will find your public key"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+            }
 
-        Label {
-            id: publicKey
-            anchors.left: pubKey. left
-            anchors.top: pubKey.bottom
-            anchors.topMargin: 5
-            text: "Here you will find your public key"
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-            visible: createWallet == 1
-                     && editSaved == 0
-        }
+            Label {
+                id: privKey
+                anchors.left: publicKey. left
+                anchors.top: publicKey.bottom
+                anchors.topMargin: 10
+                text: "Private Key:"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+                font.bold: true
+            }
 
-        Label {
-            id: privKey
-            anchors.left: publicKey. left
-            anchors.top: publicKey.bottom
-            anchors.topMargin: 10
-            text: "Private Key:"
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-            font.bold: true
-            visible: createWallet == 1
-                     && editSaved == 0
-        }
+            Label {
+                id: privateKey
+                anchors.left: privKey. left
+                anchors.top: privKey.bottom
+                anchors.topMargin: 5
+                text: "Here you will find your private key"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+            }
 
-        Label {
-            id: privateKey
-            anchors.left: privKey. left
-            anchors.top: privKey.bottom
-            anchors.topMargin: 5
-            text: "Here you will find your private key"
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-            visible: createWallet == 1
-                     && editSaved == 0
-        }
+            Text {
+                id: warningPrivateKey
+                width: doubbleButtonWidth
+                maximumLineCount: 3
+                anchors.left: privKey.left
+                horizontalAlignment: Text.AlignJustify
+                wrapMode: Text.WordWrap
+                text: "<b>WARNING</b>: Do not forget to backup your private key, you will not be able to restore your wallet without it!"
+                anchors.top: privateKey.bottom
+                anchors.topMargin: 25
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 16
+                font.family: xciteMobile.name
+            }
 
-        Text {
-            id: warningPrivateKey
-            width: newName.implicitWidth
-            maximumLineCount: 3
-            anchors.left: privKey.left
-            horizontalAlignment: Text.AlignJustify
-            wrapMode: Text.WordWrap
-            text: "<b>WARNING</b>: Do not forget to backup your private key, you will not be able to restore your wallet without it!"
-            anchors.bottom: addWalletButton.top
-            anchors.bottomMargin: 15
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 16
-            font.family: xciteMobile.name
-            visible: createWallet == 1
-                     && editSaved == 0
-        }
+            Rectangle {
+                id: addWalletButton
+                width: doubbleButtonWidth
+                height: 34
+                anchors.top: warningPrivateKey.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: maincolor
+                opacity: 0.25
 
-        Rectangle {
-            id: addWalletButton
-            width: newName.width
-            height: 33
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            anchors.left: newName.left
-            radius: 5
-            color: maincolor
-            visible: createWallet == 1
-                     && editSaved == 0
+                MouseArea {
+                    anchors.fill: parent
 
-            MouseArea {
-                anchors.fill: parent
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
 
-                onPressed: {
-                    click01.play()
-                }
-
-                onReleased: {
-                    editSaved = 1
+                    onReleased: {
+                        editSaved = 1
+                        userSettings.accountCreationCompleted = true
+                    }
                 }
             }
 
@@ -354,135 +366,199 @@ Rectangle {
                 font.pointSize: 14
                 color: "#F2F2F2"
                 font.bold: true
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: addWalletButton.horizontalCenter
+                anchors.verticalCenter: addWalletButton.verticalCenter
+            }
+
+
+            Rectangle {
+                width: doubbleButtonWidth
+                height: 34
+                anchors.bottom: addWalletButton.bottom
+                anchors.left: addWalletButton.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
             }
         }
 
-        Image {
-            id: saveSuccess
-            source: 'qrc:/icons/icon-success.svg'
-            height: 100
-            width: 100
+        Item {
+            id: createWalletSucces
+            width: parent.width
+            height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -15
+            anchors.verticalCenterOffset: -100
             visible: editSaved == 1
 
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: maincolor
+            Image {
+                id: saveSuccess
+                source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
             }
-        }
 
-        Label {
-            id: saveSuccessLabel
-            text: "Wallet added!"
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: maincolor
-            font.pixelSize: 14
-            font.family: "Brandon Grotesque"
-            font.bold: true
-            visible: editSaved == 1
-        }
+            Label {
+                id: saveSuccessLabel
+                text: "Wallet added!"
+                anchors.top: saveSuccess.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveSuccess.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
 
-        Rectangle {
-            id: closeSave
-            width: (parent.width - 45) / 2
-            height: 33
-            radius: 5
-            color: maincolor
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            anchors.horizontalCenter: parent.horizontalCenter
-            visible: editSaved == 1
+            Rectangle {
+                id: closeSave
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveSuccessLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
 
-            MouseArea {
-                anchors.fill: closeSave
+                MouseArea {
+                    anchors.fill: closeSave
 
-                onPressed: { click01.play() }
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
 
-                onClicked: {
-                    addWalletTracker = 0;
-                    editSaved = 0;
-                    createWallet = 0
-                    labelExists = 0
-                    newName.text = ""
-                    mainRoot.pop()
-                    mainRoot.push("../Home.qml")
+                    onClicked: {
+                        addWalletTracker = 0;
+                        editSaved = 0;
+                        newWallet = 0
+                        labelExists = 0
+                        newName.text = ""
+                        createWalletTracker = 0
+                    }
                 }
             }
+
             Text {
                 text: "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
                 color: "#F2F2F2"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: closeSave.horizontalCenter
+                anchors.verticalCenter: closeSave.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeSave.bottom
+                anchors.left: closeSave.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
             }
         }
 
-        Image {
-            id: saveError
-            source: 'qrc:/icons/icon-error_01.svg'
-            height: 27
-            width: 30
+        Item {
+            id: createWalletError
+            width: parent.width
+            height: saveError.height + errorLabel.height + closeError.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 25
-            visible: createWalletFailed == 1
-        }
-
-        Text {
-            id: errorLabel
-            width: doubbleButtonWidth
-            text: "<b>ERROR</b>:" + walletError
-            anchors.top: saveError.bottom
-            anchors.topMargin: 20
-            maximumLineCount: 3
-            anchors.left: closeError.left
-            horizontalAlignment: Text.AlignJustify
-            wrapMode: Text.WordWrap
-            color: "#E55541"
-            font.pixelSize: 16
-            font.family: "Brandon Grotesque"
-            visible: createWalletFailed == 1
-        }
-
-        Rectangle {
-            id: closeError
-            width: doubbleButtonWidth
-            height: 33
-            radius: 5
-            color: "transparent"
-            border.color: darktheme == false? "#42454F" : "#0ED8D2"
-            border.width: 2
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
             visible: createWalletFailed == 1
 
-            MouseArea {
-                anchors.fill: parent
+            Image {
+                id: saveError
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+            }
 
-                onPressed: { click01.play() }
+            Text {
+                id: errorLabel
+                width: doubbleButtonWidth
+                text: "<b>ERROR</b>:" + walletError
+                anchors.top: saveError.bottom
+                anchors.topMargin: 10
+                maximumLineCount: 3
+                anchors.left: closeError.left
+                horizontalAlignment: Text.AlignJustify
+                wrapMode: Text.WordWrap
+                color: "#E55541"
+                font.pixelSize: 16
+                font.family: "Brandon Grotesque"
+            }
 
-                onClicked: {
-                    createWalletFailed = 0
+            Rectangle {
+                id: closeError
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: errorLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        createWalletFailed = 0
+                    }
                 }
             }
+
             Text {
                 text: "TRY AGAIN"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: darktheme == false? "#0ED8D2" : "#F2F2F2"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                color: themecolor
+                anchors.horizontalCenter: closeError.horizontalCenter
+                anchors.verticalCenter: closeError.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeError.bottom
+                anchors.left: closeError.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+            }
+        }
+    }
+
+    Item {
+        z: 3
+        width: Screen.width
+        height: 125
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(x, y)
+            end: Qt.point(x, y + height)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
             }
         }
     }
@@ -491,14 +567,14 @@ Rectangle {
         id: closeWalletModal
         z: 10
         text: "BACK"
-        anchors.top: createWalletBodyModal.bottom
-        anchors.topMargin: 20
-        anchors.horizontalCenter: createWalletBodyModal.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         visible: editSaved == 0
-                 && createWallet == 0
+                 && newWallet == 0
                  && scanQRTracker == 0
                  && createWalletFailed == 0
 
@@ -535,6 +611,7 @@ Rectangle {
             onPressed: {
                 parent.anchors.topMargin = 14
                 click01.play()
+                detectInteraction()
             }
 
             onClicked: {

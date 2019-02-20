@@ -45,7 +45,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addressModal; property: "anchors.topMargin"; duration: 400; easing.type: Easing.OutCubic}
+            NumberAnimation { target: addressModal; property: "anchors.topMargin"; duration: 400; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -59,11 +59,20 @@ Rectangle {
     property int contact: addressList.get(addressIndex).contact
     property int deleteAddressTracker: 0
     property int editSaved: 0
+    property int editFailed: 0
     property int deleteConfirmed: 0
+    property int favoriteChanged: 0
     property int invalidAddress: 0
     property int doubleAddress: 0
     property int labelExists: 0
     property int myAddress: 0
+    property string oldCoinName
+    property url oldLogo
+    property string oldAddressHash
+    property string oldAddressName
+    property bool oldRemove
+    property int oldFavorite
+    property int newFavorite
 
     function checkMyAddress(){
         myAddress = 0
@@ -176,6 +185,15 @@ Rectangle {
         }
     }
 
+    Component.onCompleted: {
+        oldCoinName = addressList.get(addressIndex).coin
+        oldLogo = getLogo(oldCoinName)
+        oldAddressName = addressList.get(addressIndex).label
+        oldAddressHash = addressList.get(addressIndex).address
+        oldFavorite = addressList.get(addressIndex).favorite
+        oldRemove = addressList.get(addressIndex).remove
+    }
+
     Text {
         id: addressModalLabel
         text: "EDIT ADDRESS"
@@ -236,11 +254,14 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if (addressList.get(addressIndex).favorite === 1) {
-                        addressList.setProperty(addressIndex, "favorite", 0)
+                    favoriteChanged = 1
+                    if (addressList.get(addressIndex).favorite === 1 || newFavorite == 1) {
+                        newFavorite = 0
+                        //addressList.setProperty(addressIndex, "favorite", 0)
                     }
                     else {
-                        addressList.setProperty(addressIndex, "favorite", 1)
+                        newFavorite = 1
+                        //addressList.setProperty(addressIndex, "favorite", 1)
                     }
                 }
             }
@@ -338,8 +359,23 @@ Rectangle {
                         if (newAddress.text !== "") {
                             addressList.setProperty(addressIndex, "address", newAddress.text);
                         }
+                        if (favoriteChanged == 1) {
+                            addressList.setProperty(addressIndex, "favorite", newFavorite);
+                        }
+                        // function to save the edited address
+
+                        // onSaveSucceeded
                         editSaved = 1
                         coinListTracker = 0
+
+                        // onSaveFailed
+                        // editFailed = 1
+                        // coinListTracker = 0
+                        // addressList.setProperty(addressIndex, "logo", oldLogo);
+                        // addressList.setProperty(addressIndex, "coin", oldCoinName);
+                        // addressList.setProperty(addressIndex, "label", oldAddressName);
+                        // addressList.setProperty(addressIndex, "address", oldAddressHash);
+                        // addressList.setProperty(addressIndex, "favorite", oldFavorite);
                     }
                 }
             }
@@ -379,7 +415,7 @@ Rectangle {
 
         Image {
             id: picklistArrow1
-            source: 'qrc:/icons/dropdown_icon.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
             height: 20
             width: 20
             anchors.left: coinListTracker == 0 ? newCoinName.right : newPicklist1.right
@@ -390,12 +426,6 @@ Rectangle {
                      && deleteAddressTracker == 0
                      && myAddress == 0
                      && contact != 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
 
             Rectangle {
                 id: picklistButton1
@@ -410,7 +440,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: picklistButton1
 
-                onPressed: { click01.play() }
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     coinListLines(false)
@@ -421,9 +454,10 @@ Rectangle {
 
         Image {
             id: deleteAddress
-            source: 'qrc:/icons/trashcan_big.svg'
-            height: 26
-            width: 18
+            source: darktheme == true? 'qrc:/icons/mobile/trash-icon_01_light.svg' : 'qrc:/icons/mobile/trash-icon_01_dark.svg'
+            height: 25
+            width: 25
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveEditButton.bottom
             anchors.topMargin: 40
@@ -431,12 +465,6 @@ Rectangle {
                      && deleteAddressTracker == 0
                      && myAddress == 0
                      && contact != 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            }
 
             Rectangle {
                 id: deleteButton
@@ -452,6 +480,7 @@ Rectangle {
 
                 onPressed: {
                     click01.play()
+                    detectInteraction()
                 }
 
                 onClicked: {
@@ -478,7 +507,10 @@ Rectangle {
             visible: editSaved == 0
                      && deleteAddressTracker == 0
             mobile: 1
-            onTextChanged: compareName()
+            onTextChanged: {
+                detectInteraction()
+                compareName()
+            }
         }
 
         Label {
@@ -516,6 +548,7 @@ Rectangle {
             onTextChanged: {
                 checkAddress()
                 compareTx()
+                detectInteraction()
             }
         }
 
@@ -583,6 +616,7 @@ Rectangle {
                 onPressed: {
                     click01.play()
                     border.color = darktheme == true? "#F2F2F2" : "#2A2C31"
+                    detectInteraction()
                 }
 
                 onReleased: {
@@ -668,6 +702,11 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    detectInteraction()
+                }
+
                 onClicked: {
                     coinListTracker = 0
                 }
@@ -689,18 +728,13 @@ Rectangle {
 
         Image {
             id: saveSuccess
-            source: 'qrc:/icons/icon-success.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/succes_icon_01_light.svg' : 'qrc:/icons/mobile/succes_icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveConfirmed.top
             visible: editSaved == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: maincolor
-            }
         }
 
         Label {
@@ -744,6 +778,8 @@ Rectangle {
                         newAddress.text = ""
                         invalidAddress = 0
                         editSaved = 0
+                        editFailed = 0
+                        favoriteChanged = 0
                         deleteAddressTracker = 0
                         deleteConfirmed = 0
                         scanQRTracker = 0
@@ -755,6 +791,7 @@ Rectangle {
                 onPressed: {
                     parent.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -859,6 +896,7 @@ Rectangle {
                     onPressed: {
                         parent.opacity = 0.5
                         click01.play()
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -871,10 +909,20 @@ Rectangle {
 
                     onClicked: {
                         deleteConfirmed = 1
+
                         addressList.setProperty(addressIndex, "remove", true)
                         doubleAddress = 0
                         labelExists = 0
                         invalidAddress = 0
+
+                        // function to save the edited address
+
+                        // onDeleteSucceeded
+                        editSaved = 1
+
+                        // onDeleteFailed
+                        // editFailed = 1
+                        // addressList.setProperty(addressIndex, "remove", oldRemove);
                     }
                 }
             }
@@ -918,6 +966,7 @@ Rectangle {
                     onPressed: {
                         click01.play()
                         parent.opacity = 0.5
+                        detectInteraction()
                     }
 
                     onCanceled: {
@@ -972,18 +1021,13 @@ Rectangle {
 
         Image {
             id: deleteSuccess
-            source: 'qrc:/icons/icon-delete-mobile.svg'
+            source: darktheme == true? 'qrc:/icons/mobile/delete_address-icon_01_light.svg' : 'qrc:/icons/mobile/delete_address-icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: deleted.top
             visible: deleteConfirmed == 1
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: maincolor
-            }
         }
 
         Label {
@@ -1038,6 +1082,7 @@ Rectangle {
                 onPressed: {
                     closeDelete.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -1147,6 +1192,7 @@ Rectangle {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onReleased: {

@@ -42,11 +42,12 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: addContactModal; property: "anchors.topMargin"; duration: 400; easing.type: Easing.OutCubic}
+            NumberAnimation { target: addContactModal; property: "anchors.topMargin"; duration: 400; easing.type: Easing.InOutCubic}
         }
     ]
 
     property int editSaved: 0
+    property int editFailed: 0
     property int contactExists: 0
 
     function compareName() {
@@ -130,10 +131,13 @@ Rectangle {
             color: newFirstname.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
+            validator: RegExpValidator { regExp: /[0-9A-Za-z]+ / }
             visible: editSaved == 0
             mobile: 1
-            onTextChanged: compareName()
+            onTextChanged: {
+                detectInteraction()
+                compareName()
+            }
         }
 
         Controls.TextInput {
@@ -150,7 +154,10 @@ Rectangle {
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             visible: editSaved == 0
             mobile: 1
-            onTextChanged: compareName()
+            onTextChanged: {
+                detectInteraction()
+                compareName()
+            }
         }
 
         Label {
@@ -183,6 +190,9 @@ Rectangle {
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
             mobile: 1
+            onTextChanged: {
+                detectInteraction()
+            }
         }
 
         Controls.TextInput {
@@ -199,6 +209,9 @@ Rectangle {
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
             mobile: 1
+            onTextChanged: {
+                detectInteraction()
+            }
         }
 
         Controls.TextInput {
@@ -214,6 +227,9 @@ Rectangle {
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
+            onTextChanged: {
+                detectInteraction()
+            }
         }
 
         Controls.TextInput {
@@ -229,14 +245,17 @@ Rectangle {
             font.pixelSize: 14
             visible: editSaved == 0
             mobile: 1
+            onTextChanged: {
+                detectInteraction()
+            }
         }
 
         Rectangle {
             id: saveButton
             width: parent.width - 56
             height: 34
-            color: (newFirstname.text !== ""
-                    && newLastname.text !== ""
+            color: ((newFirstname.text !== ""
+                    || newLastname.text !== "")
                     && contactExists == 0) ? maincolor : "#727272"
             opacity: 0.25
             anchors.top: newChat.bottom
@@ -250,6 +269,7 @@ Rectangle {
                 onPressed: {
                     parent.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -261,19 +281,26 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (newFirstname.text !== ""
-                            && newLastname.text !== ""
+                    if ((newFirstname.text !== "" || newLastname.text !== "")
                             && contactExists == 0) {
+                        contactID = contactList.count;
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
-                        editSaved = 1
 
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
                             datamodel.push(contactList.get(i))
 
                         var contactListJson = JSON.stringify(datamodel)
-                        saveAddressBook(contactListJson)
+                        saveContactList(contactListJson)
+
+                        // onsaveSucceeded
+                        editSaved = 1
+
+                        // onsaveFailed
+                        // contactID = contactID - 1
+                        // contactList.remove(contactID)
+                        // editFailed = 1
                     }
                 }
             }
@@ -284,8 +311,8 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: (newFirstname.text !== ""
-                    && newLastname.text !== ""
+            color: ((newFirstname.text !== ""
+                    || newLastname.text !== "")
                     && contactExists == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
@@ -321,9 +348,10 @@ Rectangle {
 
         Image {
             id: saveSuccess
-            source: newPhoto.source
+            source: darktheme == true? 'qrc:/icons/mobile/add_contact-icon_01_light.svg' : 'qrc:/icons/mobile/add_contact-icon_01_dark.svg'
             height: 100
             width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveConfirmed.top
             visible: editSaved == 1
@@ -372,6 +400,7 @@ Rectangle {
                 onPressed: {
                     parent.opacity = 0.5
                     click01.play()
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -466,6 +495,7 @@ Rectangle {
 
             onPressed: {
                 click01.play()
+                detectInteraction()
             }
 
             onClicked: {

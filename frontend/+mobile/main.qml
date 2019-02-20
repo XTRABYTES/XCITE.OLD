@@ -32,7 +32,29 @@ ApplicationWindow {
     title: qsTr("XCITE")
     color: "#14161B"
 
+    Label {
+        id:helloModalLabel
+        text: "HELLO"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        font.pixelSize: 20
+        font.family: "Brandon Grotesque"
+        color: "#F2F2F2"
+        font.letterSpacing: 2
+    }
 
+    // Order of the pages
+    StackView {
+        id: mainRoot
+        initialItem: "../main.qml"
+        anchors.fill: parent
+    }
+
+    onClosing: {
+        if (mainRoot.depth > 1) {
+            close.accepted = false
+        }
+    }
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -55,21 +77,21 @@ ApplicationWindow {
 
     // BTC information
     property real btcValueBTC: 1
-    property real valueBTCUSD: 3353.20
-    property real valueBTCEUR: 2966.10
-    property real valueBTCGBP: 2597.53
+    property real valueBTCUSD: 3353.20 // replace by function to retrieve from CMC or equivalent
+    property real valueBTCEUR: 2966.10 // replace by function to retrieve from CMC or equivalent
+    property real valueBTCGBP: 2597.53 // replace by function to retrieve from CMC or equivalent
     property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : valueBTCGBP
 
     // Coin info, retrieved from server
     property string nameXBY: "XBY"
-    property real btcValueXBY: 0.00000445
+    property real btcValueXBY: 0.00000445 // replace by function to retrieve from server
     property real valueXBY: btcValueXBY * valueBTC
-    property real percentageXBY: 23.47
+    property real percentageXBY: 23.47 // replace by function to retrieve from server
 
     property string nameXFUEL: "XFUEL"
-    property real btcValueXFUEL: btcValueXBY
+    property real btcValueXFUEL: btcValueXBY // replace by function to retrieve from server
     property real valueXFUEL: btcValueXFUEL * valueBTC
-    property real percentageXFUEL: 23.47
+    property real percentageXFUEL: 23.47 // replace by function to retrieve from server
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
@@ -84,7 +106,9 @@ ApplicationWindow {
     property string selectedPage: ""
 
     // Trackers
+    property int interactionTracker: 0
     property int loginTracker: 0
+    property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
     property int appsTracker: 0
@@ -110,8 +134,18 @@ ApplicationWindow {
     property int cellTracker: 0
     property int currencyTracker: 0
     property int pincodeTracker: 0
+    property int debugTracker: 0
 
     // Global variables
+    property int sessionStart: 0
+    property int sessionTime: 0
+    property int sessionClosed: 0
+    property int autoLogout: 0
+    property int manualLogout: 0
+    property int networkLogout: 0
+    property int requestedLogout: 0
+    property int goodbey: 0
+    property int networkAvailable: 0
     property int networkError: 0
     property int photoSelect: 0
     property int newCoinPicklist: 0
@@ -119,6 +153,7 @@ ApplicationWindow {
     property int newWalletPicklist: 0
     property int newWalletSelect: 0
     property int switchState: 0
+    property int notification: 0
     property string scannedAddress: ""
     property string selectedAddress: ""
     property string currentAddress: ""
@@ -128,7 +163,7 @@ ApplicationWindow {
     property string addressbookHash: ""
     property int addressIndex: 0
     property int contactIndex: 0
-    property int walletIndex: 0
+    property int walletIndex: 1
     property int coinIndex: 0
     property int pictureIndex: 0
     property int totalLines: 4
@@ -138,7 +173,7 @@ ApplicationWindow {
     property real totalBalance: 0
     property int contactID: 0
     property int addressID: 1
-    property int walletID: 0
+    property int walletID: 1
     property int txID: 1
     property int selectAddressIndex: 0
     property int pictureID: 0
@@ -149,6 +184,7 @@ ApplicationWindow {
     property int pinOK: 0
     property int pinError: 0
     property int requestSend: 0
+    property bool newAccount
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -158,10 +194,37 @@ ApplicationWindow {
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
     signal userExists(string username)
+    //signal userAvailable()
     signal clearAllSettings
     signal saveAddressBook(string addresses)
+    signal saveContactList(string contactList)
+    signal saveAppSettings
+
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
+
+    // Automated functions
+
+    function updateBalance() {
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).coin === "XBY") {
+                if (getbalanceXBY(walletList.get(i).address) !== walletList.get(i).balance) {
+                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
+                    if (transferTracker == 0) {
+                        notification = 1
+                    }
+                }
+            }
+            else if (walletList.get(i).coin === "XFUEL") {
+                if (getbalanceXFUEL(walletList.get(i).address) !== walletList.get(i).balance) {
+                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
+                    if (transferTracker == 0) {
+                        notification = 1
+                    }
+                }
+            }
+        }
+    }
 
     // Global functions
     function countWallets() {
@@ -449,20 +512,99 @@ ApplicationWindow {
         marketValueChangedSignal(currency)
     }
 
-    function loadWalletList() {
+    function loadLocalWallets() {
         // create walletList when XCITE starts up
     }
 
-    function loadContactList() {
-        // read contacts from persistent data
+    function loadContactList(contacts) {
+
+        if (typeof contacts !== "undefined") {
+            contactList.clear();
+            var obj = JSON.parse(contacts);
+            for (var i in obj){
+              var data = obj[i];
+              contactList.append(data);
+            }
+        }
+
     }
 
-    function loadAddressList() {
-        // read addresses from persistent data
+    function loadAddressList(addresses) {
+        if (typeof addresses !== "undefined") {
+            addressList.clear();
+            var obj = JSON.parse(addresses);
+            for (var i in obj){
+              var data = obj[i];
+              addressList.append(data);
+            }
+        }
     }
+
+    function loadSettings(settingsLoaded) {
+            if (typeof settingsLoaded !== "undefined") {
+                userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
+                userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
+                userSettings.locale = settingsLoaded.locale;
+                userSettings.pinlock = settingsLoaded.pinlock;
+                userSettings.theme = settingsLoaded.theme;
+            }
+        }
 
     function loadHistoryList() {
         // read transactionhistory from persistent data
+    }
+
+    // loggin out
+    function logOut () {
+        interactionTracker = 0
+        loginTracker = 0
+        logoutTracker = 0
+        addWalletTracker = 0
+        createWalletTracker = 0
+        appsTracker = 0
+        coinTracker = 0
+        walletTracker = 0
+        transferTracker = 0
+        historyTracker = 0
+        addressTracker = 0
+        contactTracker = 0
+        addAddressTracker = 0
+        addCoinTracker = 0
+        addContactTracker = 0
+        editContactTracker = 0
+        coinListTracker = 0
+        walletListTracker = 0
+        addressbookTracker = 0
+        scanQRTracker = 0
+        tradingTracker = 0
+        balanceTracker = 0
+        calculatorTracker = 0
+        addressQRTracker = 0
+        pictureTracker = 0
+        cellTracker = 0
+        currencyTracker = 0
+        pincodeTracker = 0
+        debugTracker = 0
+        contactID = 0
+        addressID = 1
+        walletID = 1
+        txID = 1
+        pictureID = 0
+        currencyID = 0
+        coinIndex = 0
+        walletIndex = 1
+        userSettings.locale = "en_us"
+        userSettings.defaultCurrency = 0
+        userSettings.theme = "dark"
+        userSettings.pinlock = false
+        Qt.quit()
+    }
+
+    // check for user interaction
+    function detectInteraction() {
+        if (interactionTracker == 0) {
+            interactionTracker = 1
+        }
     }
 
     function addWalletsToAddressList() {
@@ -511,7 +653,7 @@ ApplicationWindow {
             lastName: ""
             photo: 'qrc:/icons/icon-profile_01.svg'
             telNR: ""
-            cellNr: ""
+            cellNR: ""
             mailAddress: ""
             chatID: ""
             favorite: false
@@ -583,16 +725,16 @@ ApplicationWindow {
         }
     }
 
-    // Order of the pages
-    StackView {
-        id: mainRoot
-        initialItem: "../main.qml"
-        anchors.fill: parent
-    }
-
     Component.onCompleted: {
 
-        mainRoot.push("../Onboarding.qml")
+        contactID = 0
+        addressID = 1
+        walletID = 1
+        txID = 1
+        pictureID = 0
+        currencyID = 0
+        coinIndex = 0
+        walletIndex = 1
 
         profilePictures.setProperty(0, "photo", 'qrc:/icons/icon-profile_01.svg');
         profilePictures.setProperty(0, "pictureNR", pictureID);
@@ -612,6 +754,21 @@ ApplicationWindow {
         currencyID = currencyID + 1
         fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": currencyID});
         currencyID = currencyID + 1
+
+        coinList.setProperty(0, "name", nameXFUEL);
+        coinList.setProperty(0, "fullname", "XFUEL");
+        coinList.setProperty(0, "logo", 'qrc:/icons/XFUEL_card_logo_01.svg');
+        coinList.setProperty(0, "logoBig", 'qrc:/icons/XFUEL_logo_big.svg');
+        coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
+        coinList.setProperty(0, "percentage", percentageXFUEL);
+        coinList.setProperty(0, "totalBalance", 0);
+        coinList.setProperty(0, "active", true);
+        coinList.setProperty(0, "coinID", coinIndex);
+        coinIndex = coinIndex +1;
+        coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": coinIndex});
+        coinIndex = coinIndex +1;
+
+        mainRoot.push("../Onboarding.qml")
     }
 
     // Global components
@@ -621,18 +778,12 @@ ApplicationWindow {
 
     Settings {
         id: userSettings
-        property string locale: "en_us"
-        property int defaultCurrency: 0
-        property string theme: "dark"
-        property bool pinlock: false
-        property string pincode: ""
-
-        //update settings
-        //onLocaleChanged:
-        //onDefaultCurrencyChanged:
-        //onThemeChanged:
-        //onPinlockChanged:
-        //onPincodeChanged:
+        property string locale
+        property int defaultCurrency
+        property string theme
+        property bool pinlock
+        property bool accountCreationCompleted
+        property bool localKeys
     }
 
     // Global fonts
@@ -655,5 +806,104 @@ ApplicationWindow {
         id: click01
         source: "qrc:/sounds/click_02.wav"
         volume: 0.15
-   }
+    }
+
+    Timer {
+        id: loginTimer
+        interval: 30000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            if (interactionTracker == 1) {
+                sessionTime = 0
+                interactionTracker = 0
+                // reset timer on serverside
+            }
+            else {
+                sessionTime = sessionTime +1
+                console.log("Time until automatic log out: " +  (5 - (sessionTime / 2)) + " minute(s)")
+                if (sessionTime >= 10){
+                    sessionTime = 0
+                    sessionStart = 0
+                    // show pop up that you will be logged out if you do not interact
+                    autoLogout = 1
+                    logoutTracker = 1
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: networkTimer
+        interval: 30000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            // check if there is a connection to the accounts server and if the session is still open
+
+            // if connection is available -> networkAvailable = 0
+            // if connection is not available -> networkAvailable = networkAvailable + 1
+            // if networkAvailable >= 4 -> networkLogout = 1 && logoutTracker = 1
+            if (sessionClosed == 1) {
+                sessionStart = 0
+                sessionClosed = 1
+                logoutTracker = 1
+            }
+        }
+    }
+
+    Timer {
+        id: requestTimer
+        interval: 5000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            if (requestedLogout == 1 && transferTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && addressTracker == 0 && editContactTracker == 0 && appsTracker == 0) {
+                logoutTracker = 1
+            }
+        }
+    }
+
+    // simulated logout request
+    Timer {
+        id: requestLogoutTimer
+        interval: 150000
+        repeat: false
+        running: sessionStart == 1
+
+        onTriggered: {
+            console.log("log out request sent!")
+            requestedLogout = 1
+        }
+    }
+
+    // simulated session closed by server
+    Timer {
+        id: sessionClosedTimer
+        interval: 300000
+        repeat: false
+        running: sessionStart == 1
+
+        onTriggered: {
+            console.log("Session closed by server")
+            sessionClosed = 1
+        }
+    }
+
+    Timer {
+        id: timer
+        interval: 15000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            // retrieve balance from blockexplorer
+            // retrieve coinvalue from CMC
+            sumBalance()
+        }
+    }
+
 }

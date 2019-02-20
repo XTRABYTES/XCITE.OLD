@@ -81,38 +81,47 @@ bool Settings::UserExists(QString username){
 }
 
 void Settings::CreateUser(QString username, QString password){
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("Latin1"));
+
     if(UserExists(username)){
         return;
+    } else {
+
+        QVariantMap settings;
+        settings.insert("app","xtrabytes");
+
+        QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
+        QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+
+        QByteArray encodedText = encryption.encode(settingsByte, (password + "xtrabytesxtrabytes").toLatin1());
+        QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
+
+        QVariantMap feed;
+        feed.insert("dateCreated", QDateTime::currentDateTime());
+        feed.insert("dateUpdated", QDateTime::currentDateTime());
+        feed.insert("settings", DataAsString);
+        feed.insert("username", username);
+        feed.insert("id", "1");
+
+
+        QByteArray payload =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
+        QString response = RestAPIPostCall("/v1/user", payload);
+
+        if (UserExists(username)){
+            m_username = username;
+            m_password = password;
+            emit userCreationSucceeded();
+
+        } else {
+            emit userCreationFailed();
+        }
     }
-
-    QVariantMap settings;
-    settings.insert("app","xtrabytes");
-    QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
-    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-
-    QByteArray encodedText = encryption.encode(settingsByte, (password + "xtrabytesxtrabytes").toLatin1());
-    QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
-
-    QVariantMap feed;
-    feed.insert("dateCreated", QDateTime::currentDateTime());
-    feed.insert("dateUpdated", QDateTime::currentDateTime());
-    feed.insert("settings", DataAsString);
-    feed.insert("username", username);
-    feed.insert("id", "1");
-
-    QByteArray payload =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
-    QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
-
-    bool success = RestAPIPostCall("/v1/user", payload);
-
-    if (UserExists(username))
-        emit userCreationSucceeded();
-    else
-        emit userCreationFailed();
-
 }
 
 void Settings::login(QString username, QString password){
+    if(!UserExists(username)){
+        return;
+    }
     QUrlQuery queryString;
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     QString url = "/v1/user/" + username;
@@ -125,15 +134,15 @@ void Settings::login(QString username, QString password){
     QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
     int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
     decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
-
+    qDebug().noquote() << decodedSettings;
     QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
 
     if(decodedJson.value("app").toString().startsWith("xtrabytes")){
         m_username = username;
         m_password = password;
-        LoadSettings(decodedSettings);
-        SaveSettings(); //added here for testing Saving - Don't need it later
         emit loginSucceededChanged();
+        LoadSettings(decodedSettings);
+
     }
     else
         emit loginFailedChanged();
@@ -144,38 +153,74 @@ bool Settings::SaveSettings(){
     QVariantMap settings;
 
     foreach (const QString &key, m_settings->childKeys()) {//iterate through m_settings to add everything to settings file we write to DB
-        qDebug() << key << "and" << m_settings->value(key).toString();
         settings.insert(key,m_settings->value(key).toString());
+        qDebug().noquote() << settings;
     }
     settings.insert("pincode", m_pincode); //may be able to remove this
 
-    QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
+    /*      Add contacts to DB       */
+    QJsonArray contactsArray = QJsonDocument::fromJson(m_contacts.toLatin1()).array();
+    settings.insert("contacts",contactsArray.toVariantList()); // add contacts array to our existing settings
+    qDebug().noquote() << contactsArray;
 
-    QByteArray encodedText = encryption.encode(settingsByte, (m_password + "xtrabytesxtrabytes").toLatin1());
+
+    /*      Add addresses to DB       */
+    QJsonArray addressesArray = QJsonDocument::fromJson(m_addresses.toLatin1()).array(); //save addresses saves array to m_addresses
+    settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
+
+    /*    Convert Settings Variant to QByteArray  and encode it   */
+    QByteArray settingsOutput =  QJsonDocument::fromVariant(QVariant(settings)).toJson(QJsonDocument::Compact); //Convert settings to byteArray/Json
+    QByteArray encodedText = encryption.encode(settingsOutput, (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
     QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
 
     QVariantMap feed;
     feed.insert("dateUpdated", QDateTime::currentDateTime());
     feed.insert("settings", DataAsString); //only updating time and settings
-    // <TODO>
-    // Add POST method to update settings based on username
+    feed.insert("username",m_username);
+
+    // Build json to call API
+    QByteArray payload =  QJsonDocument::fromVariant(QVariant(feed)).toJson(QJsonDocument::Compact);
+    QString response = RestAPIPutCall("/v1/user", payload); //Calling PUT for update
     return true;
 }
 
 void Settings::LoadSettings(QByteArray settings){
     QJsonObject json = QJsonDocument::fromJson(settings).object();
+    QVariantMap settingsMap;
     foreach(const QString& key, json.keys()) {
             QJsonValue value = json.value(key);
+            settingsMap.insert(key,value.toString());
             m_settings->setValue(key,value.toString());
+            m_settings->sync();
     }
+    emit settingsLoaded(settingsMap);
+
+    /* Load contacts from JSON from DB */
+    QJsonArray contactArray = json["contacts"].toArray(); //get contactList from settings from DB
+    QJsonDocument docContact;
+    docContact.setArray(contactArray);
+    QString contacts(docContact.toJson(QJsonDocument::Compact));
+    m_contacts.clear();
+    m_contacts = contacts;
+    emit contactsLoaded(m_contacts);
+
+    /* Load addresses from JSON from DB */
+    QJsonArray addressArray = json["addresses"].toArray(); //get contactList from settings from DB
+    QJsonDocument doc;
+    doc.setArray(addressArray);
+    QString addresses(doc.toJson(QJsonDocument::Compact));
+    m_addresses.clear();
+    m_addresses = addresses;
+    emit addressesLoaded(m_addresses);
 }
 
 void Settings::SaveAddresses(QString addresslist){
-    addresslist.remove(0, 1);
-    addresslist.remove(addresslist.length()-1, addresslist.length());
-    addresslist.insert(0, "{ \"addresslist\": ");
-    addresslist.append("}");
     m_addresses = addresslist;
+    SaveSettings();
+}
+
+void Settings::SaveContacts(QString contactlist){
+    m_contacts = contactlist;
     SaveSettings();
 }
 
@@ -194,8 +239,8 @@ bool Settings::checkPincode(QString pincode){
         return false;
 }
 
-bool Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
-
+QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
+    QString returnVal = "";
     QUrl Url;
     Url.setScheme("http");
     Url.setHost("37.59.57.212");
@@ -205,7 +250,7 @@ bool Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
 
     QNetworkRequest request;
     request.setUrl(Url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
 
     QNetworkAccessManager *restclient;
     restclient = new QNetworkAccessManager(this);
@@ -215,11 +260,39 @@ bool Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
     loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
-    qDebug() << reply->readAll();
-    qDebug() << payload;
+    returnVal = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
 
-    return true;
+    return returnVal;
 }
+
+
+QString Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
+    QString returnVal = "";
+    QUrl Url;
+    Url.setScheme("http");
+    Url.setHost("37.59.57.212");
+    Url.setPort(8080);
+    Url.setPath(apiURL);
+    qDebug() << Url.toString();
+
+    QNetworkRequest request;
+    request.setUrl(Url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
+
+    QNetworkAccessManager *restclient;
+    restclient = new QNetworkAccessManager(this);
+    QNetworkReply *reply = restclient->put(request, payload);
+
+    QEventLoop loop;
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
+    returnVal = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
+
+
+    return returnVal;
+}
+
 
 QByteArray Settings::RestAPIGetCall(QString apiURL){
 
@@ -249,4 +322,20 @@ QByteArray Settings::RestAPIGetCall(QString apiURL){
     QByteArray bts = reply->readAll();
 
     return bts;
+}
+
+QString Settings::CheckStatusCode(QString statusCode){
+    QString returnVal;
+    if (statusCode.startsWith("2")){
+        returnVal = "Success";
+    }else if (statusCode.startsWith("3")) {
+        returnVal = "API Connection Error";
+    }else if (statusCode.startsWith("4")) {
+        returnVal = "Input Error";
+    }else if (statusCode.startsWith("5")) {
+        returnVal = "DB Error";
+    }else{
+        returnVal = "Unknown Error";
+    }
+    return returnVal;
 }

@@ -160,5 +160,11 @@
         <file>Controls/+mobile/CurrencyPicklist.qml</file>
         <file>+mobile/WalletSettings.qml</file>
         <file>Controls/+mobile/Pincode.qml</file>
+        <file>+mobile/WalletBackup.qml</file>
+        <file>+mobile/Applications.qml</file>
+        <file>+mobile/Notifications.qml</file>
+        <file>Controls/+mobile/LogOut.qml</file>
+        <file>Controls/+mobile/Goodbey.qml</file>
+        <file>Controls/+mobile/DebugConsole.qml</file>
     </qresource>
 </RCC>

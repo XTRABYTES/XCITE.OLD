@@ -182,5 +182,58 @@
         <file>icons/XBY_logo_big.svg</file>
         <file>icons/XFUEL_logo_big.svg</file>
         <file>gifs/loading_02.gif</file>
+        <file>gifs/loading_01.gif</file>
+        <file>icons/mobile/add_address-icon_01_dark.svg</file>
+        <file>icons/mobile/add_address-icon_01_light.svg</file>
+        <file>icons/mobile/add_contact-icon_01_dark.svg</file>
+        <file>icons/mobile/add_contact-icon_01_light.svg</file>
+        <file>icons/mobile/add-icon_01.svg</file>
+        <file>icons/mobile/back-icon_01.svg</file>
+        <file>icons/mobile/call-icon_01.svg</file>
+        <file>icons/mobile/cell-icon_01_dark.svg</file>
+        <file>icons/mobile/cell-icon_01_light.svg</file>
+        <file>icons/mobile/chat-icon_01_light.svg</file>
+        <file>icons/mobile/close_picklist-icon_01.svg</file>
+        <file>icons/mobile/coin-icon_01.svg</file>
+        <file>icons/mobile/contact-icon_01.svg</file>
+        <file>icons/mobile/conversion-icon_01_dark.svg</file>
+        <file>icons/mobile/conversion-icon_01_light.svg</file>
+        <file>icons/mobile/dapps-icon_01.svg</file>
+        <file>icons/mobile/delete_address-icon_01_dark.svg</file>
+        <file>icons/mobile/delete_address-icon_01_light.svg</file>
+        <file>icons/mobile/delete_contact-icon_01_dark.svg</file>
+        <file>icons/mobile/delete_contact-icon_01_light.svg</file>
+        <file>icons/mobile/delete-icon_01_dark.svg</file>
+        <file>icons/mobile/delete-icon_01_light.svg</file>
+        <file>icons/mobile/dropdown-icon_01_dark.svg</file>
+        <file>icons/mobile/dropdown-icon_01_light.svg</file>
+        <file>icons/mobile/failed-icon_01_dark.svg</file>
+        <file>icons/mobile/failed-icon_01_light.svg</file>
+        <file>icons/mobile/home-icon_01.svg</file>
+        <file>icons/mobile/logout-icon_01.svg</file>
+        <file>icons/mobile/mail-icon_01_dark.svg</file>
+        <file>icons/mobile/mail-icon_01_light.svg</file>
+        <file>icons/mobile/phone-icon_01_dark.svg</file>
+        <file>icons/mobile/phone-icon_01_light.svg</file>
+        <file>icons/mobile/settings-icon_01.svg</file>
+        <file>icons/mobile/succes_icon_01_dark.svg</file>
+        <file>icons/mobile/succes_icon_01_light.svg</file>
+        <file>icons/mobile/sync-icon_01_dark.svg</file>
+        <file>icons/mobile/sync-icon_01_light.svg</file>
+        <file>icons/mobile/text-icon_01.svg</file>
+        <file>icons/mobile/transaction_send-icon_01_dark.svg</file>
+        <file>icons/mobile/transaction_send-icon_01_light.svg</file>
+        <file>icons/mobile/transfer-icon_01.svg</file>
+        <file>icons/mobile/trash-icon_01_dark.svg</file>
+        <file>icons/mobile/trash-icon_01_light.svg</file>
+        <file>icons/mobile/wallet-icon_01.svg</file>
+        <file>icons/mobile/chat-icon_01_dark.svg</file>
+        <file>icons/mobile/theme_switch-icon_01_off.svg</file>
+        <file>icons/mobile/theme_switch-icon_01_on.svg</file>
+        <file>icons/mobile/notification-icon_01.svg</file>
+        <file>icons/mobile/menu-icon_01.svg</file>
+        <file>backgrounds/launchScreen-logo_01.png</file>
+        <file>icons/mobile/debug-icon_01_dark.svg</file>
+        <file>icons/mobile/debug-icon_01_light.svg</file>
     </qresource>
 </RCC>

@@ -58,6 +58,7 @@ Rectangle {
 
                 onPressed: {
                     clickIndicator.visible = true
+                    detectInteraction()
                 }
 
                 onCanceled: {
@@ -114,6 +115,7 @@ Rectangle {
         model: filteredWallets
         delegate: picklistEntry
         interactive: totalCoinWallets * 35 < 175
+        onDraggingChanged: detectInteraction()
     }
 }
 

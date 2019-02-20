@@ -71,19 +71,13 @@ TextField {
 
     Image {
         id: deleteInput
-        source: 'qrc:/icons/CloseIcon.svg'
+        source: darktheme == true? 'qrc:/icons/mobile/delete-icon_01_light.svg' : 'qrc:/icons/mobile/delete-icon_01_dark.svg'
         height: 12
         width: 12
         anchors.right: textInputComponent.right
         anchors.rightMargin: 11
         anchors.verticalCenter: textInputComponent.verticalCenter
         visible: textInputComponent.text != ""
-
-        ColorOverlay {
-            anchors.fill: parent
-            source: parent
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        }
 
         MouseArea {
             width: textboxHeight
@@ -98,19 +92,13 @@ TextField {
 
     Image {
         id: amountCalculator
-        source: 'qrc:/icons/icon-converter.svg'
+        source: darktheme == true? 'qrc:/icons/mobile/conversion-icon_01_light.svg' : 'qrc:/icons/mobile/conversion-icon_01_dark.svg'
         height: 16
         width: 20
         anchors.left: textInputComponent.left
         anchors.leftMargin: 11
         anchors.verticalCenter: textInputComponent.verticalCenter
         visible: calculator == 1
-
-        ColorOverlay {
-            anchors.fill: parent
-            source: parent
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        }
 
         MouseArea {
             width: textboxHeight
