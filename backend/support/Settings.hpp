@@ -31,6 +31,8 @@ public:
     Settings(QObject *parent = 0);
     Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent = 0);
     void setLocale(QString);
+    QString CheckStatusCode(QString);
+
 
 public slots:
     void onLocaleChange(QString);
@@ -44,9 +46,10 @@ public slots:
     void SaveContacts(QString contactlist);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
-    bool RestAPIPostCall(QString apiURL, QByteArray payload);
-    bool RestAPIPutCall(QString apiURL, QByteArray payload);
+    QString RestAPIPostCall(QString apiURL, QByteArray payload);
+    QString RestAPIPutCall(QString apiURL, QByteArray payload);
     QByteArray RestAPIGetCall(QString apiURL);
+
 
 signals:
     void loginSucceededChanged();
@@ -58,6 +61,8 @@ signals:
     void settingsServerError();
     void contactsLoaded(const QString &contacts);
     void addressesLoaded(const QString &addresses);
+    void settingsLoaded(const QVariantMap &settings);
+
 
 
 private:

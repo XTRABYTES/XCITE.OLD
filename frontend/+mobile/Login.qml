@@ -185,7 +185,9 @@ Item {
                 onAddressesLoaded: {
                     loadAddressList(addresses)
                 }
-
+                onSettingsLoaded: {
+                    loadSettings(settings)
+                }
                 /** onTransactionsLoaded: {
                         loadHistoryList()
                     }**/
