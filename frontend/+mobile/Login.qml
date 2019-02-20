@@ -191,7 +191,9 @@ Item {
                     loadSettings(settings);
                     console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                 }
-
+                onSettingsLoaded: {
+                    loadSettings(settings)
+                }
                 /** onTransactionsLoaded: {
                         loadHistoryList()
                     }**/

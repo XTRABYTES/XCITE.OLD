@@ -577,6 +577,16 @@ ApplicationWindow {
         }
     }
 
+    function loadSettings(settingsLoaded) {
+            if (typeof settingsLoaded !== "undefined") {
+                userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
+                userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
+                userSettings.locale = settingsLoaded.locale;
+                userSettings.pinlock = settingsLoaded.pinlock;
+                userSettings.theme = settingsLoaded.theme;
+            }
+        }
+
     function loadHistoryList() {
         // read transactionhistory from persistent data
     }
