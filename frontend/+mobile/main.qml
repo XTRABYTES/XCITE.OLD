@@ -506,10 +506,16 @@ ApplicationWindow {
             }
         }
     }
+    Connections {
+        target: marketValue
 
+        onMarketValueChanged: {
+            setMarketValue(currency)
+        }
+    }
     // Start up functions
-    function onMarketValueChanged(currency) {
-        marketValueChangedSignal(currency)
+    function setMarketValue(currency) {
+        test
     }
 
     function loadLocalWallets() {

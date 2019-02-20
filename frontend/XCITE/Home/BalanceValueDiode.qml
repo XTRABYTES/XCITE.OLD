@@ -43,6 +43,7 @@ Controls.Diode {
             onActivated: onMarketValueChanged(currentText)
             Component.onCompleted: currentIndex = currencySelection.find(
                                        settings.defaultCurrency)
+            onMarketValueChanged: onMarketValueChanged(currency)
         }
     }
 
