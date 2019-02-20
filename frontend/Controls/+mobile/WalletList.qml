@@ -112,7 +112,7 @@ Rectangle {
                         }
                     ]
                 }
-
+                /**
                 Rectangle {
                     id: favoriteButton
                     width: 30
@@ -140,7 +140,7 @@ Rectangle {
                         }
                     }
                 }
-
+                **/
                 Text {
                     id: walletName
                     anchors.left: parent.left

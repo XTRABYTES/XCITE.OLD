@@ -71,12 +71,16 @@ Rectangle {
 
     Timer {
         id: logoutTimer
-        interval: 5000
+        interval: 2500
         repeat : false
         running: goodbey == 1
 
         onTriggered: {
-         logOut()
+            autoLogout = 0
+            requestedLogout = 0
+            networkLogout = 0
+            sessionClosed = 0
+            logOut()
         }
     }
 }

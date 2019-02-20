@@ -1,4 +1,4 @@
-/**
+ /**
  * Filename: ContactModal.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -133,7 +133,7 @@ Rectangle {
             id: deleteContact
             source: darktheme == true? 'qrc:/icons/mobile/trash-icon_01_light.svg' : 'qrc:/icons/mobile/trash-icon_01_dark.svg'
             height: 25
-            width: 25
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: saveButton.bottom
             anchors.topMargin: 40

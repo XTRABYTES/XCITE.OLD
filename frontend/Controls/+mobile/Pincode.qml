@@ -120,6 +120,7 @@ Rectangle {
             anchors.verticalCenterOffset: -100
             visible: createPin == 1
                      && editSaved == 0
+                     && failToSave == 0
 
             Label {
                 id: createPinText1
@@ -255,9 +256,7 @@ Rectangle {
                             if (!savePincode(newPin1.text)) {
                                 newPin1.text = ""
                                 newPin2.text = ""
-                                if (networkError != 1) {
-                                    failToSave = 1
-                                }
+                                failToSave = 1
                             }
                             else {
                                 editSaved = 1
@@ -308,6 +307,7 @@ Rectangle {
             anchors.verticalCenterOffset: -100
             visible: changePin == 1
                      && editSaved == 0
+                     && failToSave == 0
 
             Label {
                 id: currentPinText
@@ -526,9 +526,7 @@ Rectangle {
                                 currentPin.text = ""
                                 changePin1.text = ""
                                 changePin2.text = ""
-                                if (networkError != 1) {
-                                    failToSave = 1
-                                }
+                                failToSave = 1
                             }
                             else {
                                 editSaved = 1

@@ -47,6 +47,7 @@ Rectangle {
     ]
 
     property int editSaved: 0
+    property int editFailed: 0
     property int contactExists: 0
 
     function compareName() {
@@ -130,7 +131,7 @@ Rectangle {
             color: newFirstname.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
+            validator: RegExpValidator { regExp: /[0-9A-Za-z]+ / }
             visible: editSaved == 0
             mobile: 1
             onTextChanged: {
@@ -285,7 +286,6 @@ Rectangle {
                         contactID = contactList.count;
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
-                        editSaved = 1
 
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
@@ -293,6 +293,14 @@ Rectangle {
 
                         var contactListJson = JSON.stringify(datamodel)
                         saveContactList(contactListJson)
+
+                        // onsaveSucceeded
+                        editSaved = 1
+
+                        // onsaveFailed
+                        // contactID = contactID - 1
+                        // contactList.remove(contactID)
+                        // editFailed = 1
                     }
                 }
             }

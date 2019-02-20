@@ -27,6 +27,8 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
+    Component.onCompleted: darktheme = true
+
     MouseArea {
         anchors.fill: parent
     }
@@ -174,10 +176,23 @@ Rectangle {
 
                     onReleased: {
                         if (newName.text != "" && labelExists == 0) {
-                            // function to add address to the wallet
-                            newWallet = 1 // publicKey.text = "" && privateKey.text = "" && userSettings.onboardingCompleted = true
+                            // function to create new address and add to the app and retrieve public key
+                            // walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : function to retrive balance from BC, "unconfirmedCoins": function to retrive balance from BC, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
+                            // walletID = walletID + 1
+                            // addressList.apped({"contact": 0, "address": publicKey.text, "label": newName.text, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
+                            // addressID = addressID + 1
+                            // var datamodel = []
+                            // for (var i = 0; i < addressList.count; ++i)
+                            //     datamodel.push(addressList.get(i))
+                            // var addressListJson = JSON.stringify(datamodel)
+                            // saveAddressBook(addressListJson)
+                            // publicKey.text = "" && privateKey.text = ""
+                            // if (userSettings.accountCreationCompleted === false) {
+                            //      userSettings.accountCreationCompleted = true
+                            // }
+                            newWallet = 1
                             // or
-                            //createWalletFailed = 1 //&& walletError = ..., depending on the outcome
+                            createWalletFailed = 1 //&& walletError = ..., depending on the outcome
                         }
                     }
                 }

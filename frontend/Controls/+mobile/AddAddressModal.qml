@@ -48,6 +48,7 @@ Rectangle {
     ]
 
     property int editSaved: 0
+    property int editFailed: 0
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
@@ -488,7 +489,6 @@ Rectangle {
                             && labelExists == 0) {
                         addressList.append({"contact": contactIndex, "address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
-                        console.log("Tuukka", addressList)
                         var datamodel = []
                         for (var i = 0; i < addressList.count; ++i)
                             datamodel.push(addressList.get(i))
@@ -496,7 +496,14 @@ Rectangle {
                         var addressListJson = JSON.stringify(datamodel)
 
                         saveAddressBook(addressListJson)
+
+                        // onsaveSucceeded
                         editSaved = 1
+
+                        // onsaveFailed
+                        // addressID = addressID - 1
+                        // addressList.remove(addressID)
+                        // editFailed = 1
                     }
                 }
             }

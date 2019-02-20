@@ -150,7 +150,7 @@ Item {
             font.pixelSize: 11
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
-            visible: passError == 1 && networkError == 0
+            visible: passError == 1
         }
 
         Rectangle {
@@ -178,28 +178,55 @@ Item {
             }
             Connections {
                 target: UserSettings
+                onContactsLoaded: {
+                    loadContactList(contacts)
+                }
+
+                onAddressesLoaded: {
+                    loadAddressList(addresses)
+                }
+
+                /** onTransactionsLoaded: {
+                        loadHistoryList()
+                    }**/
+
+                /** onWalletsLoaded: {
+                        if (userSettings.localKeys === false) {
+                            loadWalletList();
+                        }
+                    }**/
+
                 onLoginSucceededChanged: {
+                    if (userSettings.localKeys === true) {
+                        loadLocalWallets();
+                    }
+                    else {
+                        walletList.append({"name": nameXFUEL1, "label": labelXFUEL1, "address": receivingAddressXFUEL1, "balance" : balanceXFUEL1, "unconfirmedCoins": unconfirmedXFUEL1, "active": true, "favorite": true, "walletNR": walletID, "remove": false});
+                        walletID = walletID +1;
+                        walletList.append({"name": nameXBY1, "label": labelXBY1, "address": receivingAddressXBY1, "balance" : balanceXBY1, "unconfirmedCoins": unconfirmedXBY1, "active": true, "favorite": true, "walletNR": walletID, "remove": false});
+                        walletID = walletID +1;
+                        walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
+                        walletID = walletID +1;
+                    }
+                    console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                     username = userName.text
-                    mainRoot.pop()
-                    mainRoot.push("../Home.qml")
                     passError = 0
                     networkError = 0
                     loginTracker = 0
                     sessionStart = 1
                     selectedPage = "home"
+                    mainRoot.pop()
+                    mainRoot.push("../Home.qml")
                 }
 
-                onContactsLoaded: {
-                    loadContactList(contacts)
-                }
-                onAddressesLoaded: {
-                    loadAddressList(addresses)
-                }
                 onLoginFailedChanged: {
-                    if(networkError == 0){
-                        passError = 1
-                        passWord.text = ""
-                    }
+                    passError = 1
+                    passWord.text = ""
+                }
+
+                onUsernameAvailable: {
+                    passError = 1
+                    passWord.text = ""
                 }
 
                 onSettingsServerError: {
@@ -264,6 +291,7 @@ Item {
                     anchors.fill: createAccountButton
 
                     onClicked: {
+                        userSettings.accountCreationCompleted = false
                         mainRoot.pop()
                         mainRoot.push("../CreateAccount.qml")
                         loginTracker = 0

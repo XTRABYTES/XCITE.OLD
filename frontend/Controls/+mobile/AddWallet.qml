@@ -300,8 +300,20 @@ Rectangle {
                                 && invalidAddress == 0
                                 && addressExists == 0
                                 && labelExists == 0) {
-                            // function to add address to the wallet
-                            //editSaved = 1 && userSettings.accountCreationCompleted = true
+                            // function to create new address and add to the app and retrieve public key
+                            // walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : function to retrive balance from BC, "unconfirmedCoins": function to retrive balance from BC, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
+                            // walletID = walletID + 1
+                            // addressList.apped({"contact": 0, "address": publicKey.text, "label": newName.text, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
+                            // addressID = addressID + 1
+                            // var datamodel = []
+                            // for (var i = 0; i < addressList.count; ++i)
+                            //     datamodel.push(addressList.get(i))
+                            // var addressListJson = JSON.stringify(datamodel)
+                            // saveAddressBook(addressListJson)
+                            // if (userSettings.accountCreationCompleted === false) {
+                            //      userSettings.accountCreationCompleted = true
+                            // }
+                            // publicKey.text = "" && privateKey.text = ""
                             // or
                             addWalletFailed = 1
                         }
@@ -444,7 +456,7 @@ Rectangle {
 
             Image {
                 id: saveError
-                source: darktheme == true? 'failed-icon_01_light.svg' : 'failed-icon_01_dark.svg'
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
                 height: 100
                 width: 100
                 fillMode: Image.PreserveAspectFit

@@ -137,6 +137,7 @@ ApplicationWindow {
     // Global variables
     property int sessionStart: 0
     property int sessionTime: 0
+    property int sessionClosed: 0
     property int autoLogout: 0
     property int manualLogout: 0
     property int networkLogout: 0
@@ -160,7 +161,7 @@ ApplicationWindow {
     property string addressbookHash: ""
     property int addressIndex: 0
     property int contactIndex: 0
-    property int walletIndex: 0
+    property int walletIndex: 1
     property int coinIndex: 0
     property int pictureIndex: 0
     property int totalLines: 4
@@ -170,7 +171,7 @@ ApplicationWindow {
     property real totalBalance: 0
     property int contactID: 0
     property int addressID: 1
-    property int walletID: 0
+    property int walletID: 1
     property int txID: 1
     property int selectAddressIndex: 0
     property int pictureID: 0
@@ -181,6 +182,7 @@ ApplicationWindow {
     property int pinOK: 0
     property int pinError: 0
     property int requestSend: 0
+    property bool newAccount
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -508,7 +510,7 @@ ApplicationWindow {
         marketValueChangedSignal(currency)
     }
 
-    function loadWalletList() {
+    function loadLocalWallets() {
         // create walletList when XCITE starts up
     }
 
@@ -542,6 +544,46 @@ ApplicationWindow {
 
     // loggin out
     function logOut () {
+        interactionTracker = 0
+        loginTracker = 0
+        logoutTracker = 0
+        addWalletTracker = 0
+        createWalletTracker = 0
+        appsTracker = 0
+        coinTracker = 0
+        walletTracker = 0
+        transferTracker = 0
+        historyTracker = 0
+        addressTracker = 0
+        contactTracker = 0
+        addAddressTracker = 0
+        addCoinTracker = 0
+        addContactTracker = 0
+        editContactTracker = 0
+        coinListTracker = 0
+        walletListTracker = 0
+        addressbookTracker = 0
+        scanQRTracker = 0
+        tradingTracker = 0
+        balanceTracker = 0
+        calculatorTracker = 0
+        addressQRTracker = 0
+        pictureTracker = 0
+        cellTracker = 0
+        currencyTracker = 0
+        pincodeTracker = 0
+        contactID = 0
+        addressID = 1
+        walletID = 1
+        txID = 1
+        pictureID = 0
+        currencyID = 0
+        coinIndex = 0
+        walletIndex = 1
+        userSettings.locale = "en_us"
+        userSettings.defaultCurrency = 0
+        userSettings.theme = "dark"
+        userSettings.pinlock = false
         Qt.quit()
     }
 
@@ -598,7 +640,7 @@ ApplicationWindow {
             lastName: ""
             photo: 'qrc:/icons/icon-profile_01.svg'
             telNR: ""
-            cellNr: ""
+            cellNR: ""
             mailAddress: ""
             chatID: ""
             favorite: false
@@ -672,7 +714,14 @@ ApplicationWindow {
 
     Component.onCompleted: {
 
-        mainRoot.push("../Onboarding.qml")
+        contactID = 0
+        addressID = 1
+        walletID = 1
+        txID = 1
+        pictureID = 0
+        currencyID = 0
+        coinIndex = 0
+        walletIndex = 1
 
         profilePictures.setProperty(0, "photo", 'qrc:/icons/icon-profile_01.svg');
         profilePictures.setProperty(0, "pictureNR", pictureID);
@@ -705,6 +754,8 @@ ApplicationWindow {
         coinIndex = coinIndex +1;
         coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": coinIndex});
         coinIndex = coinIndex +1;
+
+        mainRoot.push("../Onboarding.qml")
     }
 
     // Global components
@@ -714,11 +765,12 @@ ApplicationWindow {
 
     Settings {
         id: userSettings
-        property string locale: "en_us"
-        property int defaultCurrency: 0
-        property string theme: "dark"
-        property bool pinlock: false
-        property bool accountCreationCompleted: false
+        property string locale
+        property int defaultCurrency
+        property string theme
+        property bool pinlock
+        property bool accountCreationCompleted
+        property bool localKeys
     }
 
     // Global fonts
@@ -750,7 +802,6 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            console.log("checking if there was interaction")
             if (interactionTracker == 1) {
                 sessionTime = 0
                 interactionTracker = 0
@@ -759,10 +810,9 @@ ApplicationWindow {
             else {
                 sessionTime = sessionTime +1
                 console.log("Time until automatic log out: " +  (5 - (sessionTime / 2)) + " minute(s)")
-                if (sessionTime == 10){
+                if (sessionTime >= 10){
                     sessionTime = 0
                     sessionStart = 0
-                    console.log("You are being logged out!")
                     // show pop up that you will be logged out if you do not interact
                     autoLogout = 1
                     logoutTracker = 1
@@ -778,18 +828,33 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            console.log("checking for network connection")
-            //check if there is a connection to the accounts server
+            // check if there is a connection to the accounts server and if the session is still open
+
             // if connection is available -> networkAvailable = 0
             // if connection is not available -> networkAvailable = networkAvailable + 1
-            // if networkAvailable == 4 -> networkLogout = 1 && logoutTracker = 1
-            console.log("checking for log out request")
-            if (requestedLogout == 1) {
+            // if networkAvailable >= 4 -> networkLogout = 1 && logoutTracker = 1
+            if (sessionClosed == 1) {
+                sessionStart = 0
+                sessionClosed = 1
                 logoutTracker = 1
             }
         }
     }
 
+    Timer {
+        id: requestTimer
+        interval: 5000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            if (requestedLogout == 1 && transferTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && addressTracker == 0 && editContactTracker == 0 && appsTracker == 0) {
+                logoutTracker = 1
+            }
+        }
+    }
+
+    // simulated logout request
     Timer {
         id: requestLogoutTimer
         interval: 150000
@@ -799,6 +864,32 @@ ApplicationWindow {
         onTriggered: {
             console.log("log out request sent!")
             requestedLogout = 1
+        }
+    }
+
+    // simulated session closed by server
+    Timer {
+        id: sessionClosedTimer
+        interval: 300000
+        repeat: false
+        running: sessionStart == 1
+
+        onTriggered: {
+            console.log("Session closed by server")
+            sessionClosed = 1
+        }
+    }
+
+    Timer {
+        id: timer
+        interval: 15000
+        repeat: true
+        running: sessionStart == 1
+
+        onTriggered: {
+            // retrieve balance from blockexplorer
+            // retrieve coinvalue from CMC
+            sumBalance()
         }
     }
 

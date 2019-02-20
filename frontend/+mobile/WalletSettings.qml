@@ -467,18 +467,17 @@ Rectangle {
                 appsTracker = 0
                 selectedPage = "home"
                 mainRoot.pop("../WalletSettings.qml")
-                saveAppSettings()
             }
         }
     }
 
-    Controls.Goodbey {
+    Controls.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.LogOut {
+    Controls.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
