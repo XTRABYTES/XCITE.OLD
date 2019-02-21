@@ -73,11 +73,10 @@ Rectangle {
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
-        visible: editSaved == 0
+        visible: newPinSaved == 0
     }
 
-    property int editSaved: 0
-    //the variables needed to send coins
+    property int newPinSaved: 0
     property string coin: ""
     property string walletHash: ""
     property real amount: 0
@@ -105,7 +104,7 @@ Rectangle {
         Rectangle {
             id: pincodeScrollArea
             width: parent.width
-            height: createPin == 1? (editSaved == 1 ? pinSaved.height : (failToSave == 1? saveFailed.height : createPinModal.height)) : (changePin == 1? (editSaved == 1 ? pinChanged.height : (failToSave == 1? saveFailed.height : changePinModal.height)): pinOK == 1? pinCorrect.height : pinError == 1? pinFail.height : providePinModal.height)
+            height: createPin == 1? (newPinSaved == 1 ? pinSaved.height : (failToSave == 1? saveFailed.height : createPinModal.height)) : (changePin == 1? (newPinSaved == 1 ? pinChanged.height : (failToSave == 1? saveFailed.height : changePinModal.height)): pinOK == 1? pinCorrect.height : pinError == 1? pinFail.height : providePinModal.height)
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
@@ -119,7 +118,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -100
             visible: createPin == 1
-                     && editSaved == 0
+                     && newPinSaved == 0
                      && failToSave == 0
 
             Label {
@@ -230,7 +229,7 @@ Rectangle {
                     onTriggered: {
                         pincodeTracker = 0
                         createPin = 0
-                        editSaved = 0
+                        newPinSaved = 0
                     }
                 }
 
@@ -253,24 +252,42 @@ Rectangle {
 
                     onClicked: {
                         if (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0) {
-                            if (savePincode(newPin1.text) === false) {
-                                newPin1.text = ""
-                                newPin2.text = ""
-                                failToSave = 1
-                            }
-                            else {
-                                editSaved = 1
-                                userSettings.pinlock = true
-                                newPin1.text = ""
-                                newPin2.text = ""
-                                timer1.start()
-                            }
+                            console.log("attempting to save pincode");
+                            newPinSaved = 0;
+                            userSettings.pinlock = true;
+                            savePincode(newPin1.text);
                         }
                     }
                 }
 
                 Connections {
                     target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (pincodeTracker == 1) {
+                            if (createPin == 1){
+                                console.log("save succeeded");
+                                console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
+                                newPin1.text = "";
+                                newPin2.text = "";
+                                newPinSaved = 1
+                                timer1.start();
+                            }
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (pincodeTracker == 1) {
+                            if (createPin == 1) {
+                                console.log("save failed");
+                                userSettings.pinlock = true;
+                                newPin1.text = "";
+                                newPin2.text = "";
+                                failToSave = 1;
+                            }
+                        }
+                    }
+
                     onSettingsServerError: {
                         networkError = 1
                     }
@@ -306,7 +323,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -100
             visible: changePin == 1
-                     && editSaved == 0
+                     && newPinSaved == 0
                      && failToSave == 0
 
             Label {
@@ -371,20 +388,27 @@ Rectangle {
                         passError1 = 0
                         passError2 = 0
                         passTry = passTry + 1
-                        if (checkPincode(pin.text) === false) {
-                            pinError = 1
-                            currentPin.text = ""
-                            if (passTry == 3) {
-                                passError2 = 1
-                                timer6.start()
-                            }
-                            else {
-                                passError1 = 1
-                                timer6.start()
-                            }
+                        checkPincode(pin.text)
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+
+                    onPincodeCorrect: {
+                        passTry = 0
+                    }
+
+                    onPincodeFalse: {
+                        pinError = 1
+                        currentPin.text = ""
+                        if (passTry == 3) {
+                            passError2 = 1
+                            timer6.start()
                         }
                         else {
-                            passTry = 0
+                            passError1 = 1
+                            timer6.start()
                         }
                     }
                 }
@@ -499,7 +523,7 @@ Rectangle {
                     onTriggered: {
                         pincodeTracker = 0
                         changePin = 0
-                        editSaved = 0
+                        newPinSaved = 0
                     }
                 }
 
@@ -522,26 +546,40 @@ Rectangle {
 
                     onClicked: {
                         if (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0) {
-                            if (savePincode(changePin1.text) === false) {
-                                currentPin.text = ""
-                                changePin1.text = ""
-                                changePin2.text = ""
-                                failToSave = 1
-                            }
-                            else {
-                                editSaved = 1
-                                passTry = 0
-                                currentPin.text = ""
-                                changePin1.text = ""
-                                changePin2.text = ""
-                                timer5.start()
-                            }
+                            savePincode(changePin1.text)
                         }
                     }
                 }
 
                 Connections {
                     target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (pincodeTracker == 1){
+                            if (changePin == 1) {
+                                if (newPinSaved == 0) {
+                                    newPinSaved = 1
+                                    passTry = 0
+                                    currentPin.text = ""
+                                    changePin1.text = ""
+                                    changePin2.text = ""
+                                    timer5.start()
+                                }
+                            }
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (pincodeTracker == 1) {
+                            if (changePin == 1){
+                                currentPin.text = ""
+                                changePin1.text = ""
+                                changePin2.text = ""
+                                failToSave = 1
+                            }
+                        }
+                    }
+
                     onSettingsServerError: {
                         networkError = 1
                     }
@@ -620,7 +658,8 @@ Rectangle {
                     onTriggered: {
                         pinOK = 0
                         pincodeTracker = 0
-                        unlockPin == 0
+                        unlockPin = 0
+                        clearAll = 0
                     }
                 }
 
@@ -632,18 +671,18 @@ Rectangle {
 
                     onTriggered: {
                         if (passError2 == 1) {
+                            pincodeTracker = 0
                             passError2 = 0
                             passTry = 0
-                            pincodeTracker = 0
                             unlockPin = 0
+                            clearAll = 0
                             pinError = 0
                             coinList.clear()
                             walletList.clear()
                             contactList.clear()
                             addressList.clear()
                             transactionList.clear()
-                            pinLogout = 1
-                            logOutTracker = 1
+                            goodbey = 1
                         }
                         else {
                             pinError = 0
@@ -657,33 +696,48 @@ Rectangle {
                         passError1 = 0
                         passError2 = 0
                         passTry = passTry + 1
-                        if (checkPincode(pin.text) === false) {
-                            pinError = 1
-                            pin.text = ""
-                            if (passTry == 3) {
-                                passError2 = 1
-                                timer4.start()
-                            }
-                            else {
-                                passError1 = 1
-                                timer4.start()
-                            }
+                        checkPincode(pin.text)
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+
+                    onPincodeCorrect: {
+                        pinOK = 1
+                        pin.text = ""
+                        passTry = 0
+                        if (unlockPin == 1) {
+                            userSettings.pinlock = false
+                            saveAppSettings();
+                            savePincode("0000")
+                            timer3.start()
+                        }
+                        else if (transferTracker == 1) {
+                            requestSend = 1
+                            timer3.start()
+                        }
+                        else if (clearAll == 1) {
+                            clearAllSettings()
+                            userSettings.locale = "en_us"
+                            userSettings.defaultCurrency = 0
+                            userSettings.theme = "dark"
+                            userSettings.pinlock = false
+                            savePincode("0000")
+                            timer3.start()
+                        }
+                    }
+
+                    onPincodeFalse: {
+                        pinError = 1
+                        pin.text = ""
+                        if (passTry == 3) {
+                            passError2 = 1
+                            timer4.start()
                         }
                         else {
-                            pinOK = 1
-                            pin.text = ""
-                            passTry = 0
-                            if (unlockPin == 1) {
-                                userSettings.pinlock = false
-                                saveAppSettings();
-                                savePincode("0000")
-                                timer3.start()
-                            }
-                            else if (transferTracker == 1) {
-                                // whatever function needed to execute payment
-                                requestSend = 1
-                                timer3.start()
-                            }
+                            passError1 = 1
+                            timer4.start()
                         }
                     }
                 }
@@ -784,7 +838,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -100
             visible: createPin == 1
-                     && editSaved == 1
+                     && newPinSaved == 1
 
             Label {
                 id: pinSavedText
@@ -806,7 +860,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -100
             visible: changePin == 1
-                     && editSaved == 1
+                     && newPinSaved == 1
 
             Label {
                 id: pinChangedText
@@ -951,7 +1005,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onPressed: {
-                   detectInteraction()
+                    detectInteraction()
                 }
 
                 onReleased: {

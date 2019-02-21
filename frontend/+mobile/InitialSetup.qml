@@ -60,7 +60,7 @@ Item {
             font.pixelSize: 20
             font.family: xciteMobile.name
             font.bold: true
-            visible: addWalletTracker == 0 && createWalletTracker == 0
+            visible: importKeyTracker == 0 && createWalletTracker == 0
         }
 
 
@@ -187,7 +187,7 @@ Item {
                         }
 
                         onReleased: {
-                            addWalletTracker = 1
+                            importKeyTracker = 1
                         }
                     }
 
@@ -365,7 +365,7 @@ Item {
             width: Screen.width
             height: Screen.height
             color: "#14161B"
-            opacity: (addWalletTracker == 1 || createWalletTracker == 1)? 1 : 0
+            opacity: (importKeyTracker == 1 || createWalletTracker == 1)? 1 : 0
 
             LinearGradient {
                 anchors.fill: parent
@@ -379,7 +379,7 @@ Item {
             }
         }
 
-        Controls.AddWallet {
+        Controls.ImportKey {
             id: addWalletModal
             z: 3
         }

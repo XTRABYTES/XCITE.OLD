@@ -21,7 +21,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: logoutModal
     width: Screen.width
-    state: logoutTracker == 1? "up" : "down"
+    state: (logoutTracker == 1 && goodbey == 0)? "up" : "down"
     height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
@@ -52,7 +52,7 @@ Rectangle {
         id: logoutTimer
         interval: 1000
         repeat: true
-        running: (autoLogout == 1 || requestedLogout == 1  || sessionClosed == 1) && logoutTracker == 1 && manualLogout == 0
+        running: (autoLogout == 1 || requestedLogout == 1  || sessionClosed == 1) && logoutTracker == 1 && manualLogout == 0 && goodbey == 0
 
         onTriggered: {
             logoutTimeout = logoutTimeout + 1
@@ -68,7 +68,7 @@ Rectangle {
         id: networkLogoutTimer
         interval: 10000
         repeat : false
-        running: (networkLogout == 1) && logoutTracker == 1 && manualLogout == 0
+        running: (networkLogout == 1) && logoutTracker == 1 && manualLogout == 0 && goodbey == 0
 
         onTriggered: {
             goodbey = 1
