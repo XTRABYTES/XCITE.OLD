@@ -187,9 +187,14 @@ Item {
                     console.log(contactList.get(0).firstName + " " + contactList.get(0).lastName)
                 }
 
+                onClearSettings:{
+                    clearSettings();
+                    console.log("Settings cleared: locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
+                }
+
                 onSettingsLoaded: {
                     loadSettings(settings);
-                    console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
+                    console.log("Loading settings from DB: locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                 }
                 /** onTransactionsLoaded: {
                         loadHistoryList()
