@@ -542,21 +542,21 @@ ApplicationWindow {
     }
     // Start up functions
     function setMarketValue(currency, currencyValue) {
-        var curencyVal = currencyValue;
+        var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
         if (currency === "btcusd"){
-            xcite.valueBTCUSD = curencyVal;
+            valueBTCUSD = currencyVal;
         }else if(currency === "btceur"){
-            xcite.valueBTCEUR = curencyVal;
+            valueBTCEUR = currencyVal;
         }else if(currency === "btcgbp"){
-           xcite. valueBTCGBP = curencyVal;
+           valueBTCGBP = currencyVal;
         }else if(currency === "xbybtc"){
-            xcite.valueXBY = curencyVal;
+            btcValueXBY = currencyVal;
         }else if(currency === "xbycha"){
-            xcite.percentageXBY = curencyVal;
-            xcite.percentageXFUEL = curencyVal;
+            percentageXBY = currencyVal;
+            percentageXFUEL = currencyVal;
         }
 
-        console.log("Currency: " + currency + " And value is: " + curencyVal);
+        console.log("Currency: " + currency + " And value is: " + currencyVal);
     }
 
     function loadLocalWallets() {
@@ -816,7 +816,11 @@ ApplicationWindow {
         onTriggered:  {
             console.log("callingMarketValue");
          marketValueChangedSignal("btcusd")
+         marketValueChangedSignal("btceur")
+         marketValueChangedSignal("btcgbp")
+         marketValueChangedSignal("xbybtc")
          marketValueChangedSignal("xbycha")
+
         }
     }
 
