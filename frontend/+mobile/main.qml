@@ -537,26 +537,30 @@ ApplicationWindow {
         target: marketValue
 
         onMarketValueChanged: {
-            setMarketValue(currency)
+            setMarketValue(currency, currencyValue)
         }
     }
     // Start up functions
-    function setMarketValue(currency) {
-        test
+    function setMarketValue(currency, currencyValue) {
+        var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
+        if (currency === "btcusd"){
+            valueBTCUSD = currencyVal;
+        }else if(currency === "btceur"){
+            valueBTCEUR = currencyVal;
+        }else if(currency === "btcgbp"){
+           valueBTCGBP = currencyVal;
+        }else if(currency === "xbybtc"){
+            btcValueXBY = currencyVal;
+        }else if(currency === "xbycha"){
+            percentageXBY = currencyVal;
+            percentageXFUEL = currencyVal;
+        }
+
+        console.log("Currency: " + currency + " And value is: " + currencyVal);
     }
 
     function loadLocalWallets() {
         // create walletList when XCITE starts up
-    }
-
-    function loadSettings(settingsLoaded) {
-        if (typeof settingsLoaded !== "undefined") {
-            userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
-            userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
-            userSettings.locale = settingsLoaded.locale;
-            userSettings.pinlock = settingsLoaded.pinlock;
-            userSettings.theme = settingsLoaded.theme;
-        }
     }
 
     function loadContactList(contacts) {
@@ -588,7 +592,8 @@ ApplicationWindow {
                 userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
                 userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
                 userSettings.locale = settingsLoaded.locale;
-                userSettings.pinlock = settingsLoaded.pinlock;
+                var pinlock = settingsLoaded.pinlock; //have to set pinlock to var or it doesn't actually save the value for some reason
+                userSettings.pinlock = pinlock;
                 userSettings.theme = settingsLoaded.theme;
             }
         }
@@ -802,6 +807,21 @@ ApplicationWindow {
         id: click01
         source: "qrc:/sounds/click_02.wav"
         volume: 0.15
+    }
+    Timer {
+        id: marketValueTimer
+        interval: 60000
+        repeat: true
+        running: sessionStart == 1
+        onTriggered:  {
+            console.log("callingMarketValue");
+         marketValueChangedSignal("btcusd")
+         marketValueChangedSignal("btceur")
+         marketValueChangedSignal("btcgbp")
+         marketValueChangedSignal("xbybtc")
+         marketValueChangedSignal("xbycha")
+
+        }
     }
 
     Timer {
