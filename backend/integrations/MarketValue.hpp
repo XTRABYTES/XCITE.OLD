@@ -23,42 +23,23 @@
 class MarketValue : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString marketValue READ marketValue WRITE setMarketValue NOTIFY marketValueChanged)
-    Q_PROPERTY(QString marketValueBTC READ marketValueBTC WRITE setMarketValueBTC NOTIFY marketValueBTCChanged)
+//    Q_PROPERTY(QString marketValue READ marketValue WRITE setMarketValue NOTIFY marketValueChanged)
 public:
     explicit MarketValue(QObject *parent = nullptr);
+    void setMarketValue(const QString &check, const QString &currency, const QString &currencyValue);
 
-    void setMarketValue(const QString &value) {
-        if (value != m_marketValue) {
-            m_marketValue = value;
-            emit marketValueChanged();
-        }
-    }
     QString marketValue() const {
         return m_marketValue;
     }
 
-    void setMarketValueBTC(const QString &value) {
-        if (value != m_marketValue) {
-            m_marketValueBTC = value;
-            emit marketValueBTCChanged();
-        }
-    }
-    QString marketValueBTC() const {
-        return m_marketValueBTC;
-    }
-
 signals:
-    void marketValueChanged();
-    void marketValueBTCChanged();
+    void marketValueChanged(QString currency, QString currencyValue);
 public slots:
-    void findXBYValue(QString currency);
-    void findBTCValue(QString currency);
-    void onFinished(QNetworkReply* reply);
-    void onBTCFinished(QNetworkReply* reply);
+    void findAllCurrencyValues();
+    void findCurrencyValue(QString currency);
+
 private:
     QString m_marketValue;
-    QString m_marketValueBTC;
 };
 
 #endif // MARKETVALUE_HPP
