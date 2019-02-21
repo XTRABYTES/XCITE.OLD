@@ -590,6 +590,24 @@ Rectangle {
 
         // Send state
 
+        Label {
+            id:viewOnlyLabel
+            text: "VIEW ONLY WALLET"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: walletBalance.bottom
+            anchors.topMargin: 40
+            font.pixelSize: 20
+            font.family: "Brandon Grotesque"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            font.letterSpacing: 2
+            visible: transferSwitch.on == true
+                     && transactionSend == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+                     && walletList.get(selectedWallet).viewOnly === true
+        }
+
         Mobile.AmountInput {
             id: sendAmount
             height: 34
@@ -609,6 +627,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && walletList.get(selectedWallet).viewOnly === false
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -640,6 +659,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && inputAmount > (walletList.get(selectedWallet).balance)
+                     && walletList.get(selectedWallet).viewOnly === false
         }
 
         Controls.TextInput {
@@ -659,6 +679,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && walletList.get(selectedWallet).viewOnly === false
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
@@ -713,6 +734,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && walletList.get(selectedWallet).viewOnly === false
 
             MouseArea {
                 anchors.fill: scanQrButton
@@ -764,6 +786,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && walletList.get(selectedWallet).viewOnly === false
 
             MouseArea {
                 anchors.fill: addressBookButton
@@ -816,6 +839,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && walletList.get(selectedWallet).viewOnly === false
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -838,6 +862,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && walletList.get(selectedWallet).viewOnly === false
 
             MouseArea {
                 anchors.fill: sendButton
