@@ -44,7 +44,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-
         clearAllSettings()
         console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
 
@@ -253,7 +252,7 @@ ApplicationWindow {
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
     signal userExists(string username)
-    signal clearAllSettings
+    signal clearAllSettings()
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
     signal saveAppSettings()
@@ -630,6 +629,14 @@ ApplicationWindow {
                 userSettings.theme = settingsLoaded.theme;
             }
         }
+    function clearSettings(){
+            userSettings.accountCreationCompleted = false;
+            userSettings.defaultCurrency = 0;
+            userSettings.theme = "dark";
+            userSettings.pinlock = false;
+            userSettings.locale = "en_us"
+            userSettings.localKeys = false;
+    }
 
     function loadHistoryList() {
         // read transactionhistory from persistent data
@@ -675,10 +682,11 @@ ApplicationWindow {
         coinIndex = 0
         walletIndex = 1
         saveAppSettings()
-        clearAllSettings()
         addressList.clear()
         contactList.clear()
         walletList.clear()
+        clearAllSettings()
+
         Qt.quit()
     }
 

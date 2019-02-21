@@ -62,6 +62,7 @@ signals:
     void contactsLoaded(const QString &contacts);
     void addressesLoaded(const QString &addresses);
     void settingsLoaded(const QVariantMap &settings);
+    void clearSettings();
     void pincodeCorrect();
     void pincodeFalse();
     void saveSucceeded();

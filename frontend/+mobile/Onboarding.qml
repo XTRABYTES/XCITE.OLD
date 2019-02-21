@@ -160,6 +160,9 @@ Item {
 
                 onReleased: {
                     loginTracker = 1
+                    clearAllSettings();
+                    console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
+
                 }
             }
         }

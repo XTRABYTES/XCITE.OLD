@@ -388,7 +388,7 @@ Rectangle {
                         passError1 = 0
                         passError2 = 0
                         passTry = passTry + 1
-                        checkPincode(pin.text)
+                        checkPincode(currentPin.text)
                     }
                 }
 
