@@ -27,6 +27,16 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
+    onStateChanged: {
+        contactName.text = contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName
+        newFirstname.text = contactList.get(contactIndex).firstName
+        newLastname.text = contactList.get(contactIndex).lastName
+        newTel.text = contactList.get(contactIndex).telNR
+        newCell.text = contactList.get(contactIndex).cellNR
+        newMail.text = contactList.get(contactIndex).mailAddress
+        newChat.text = contactList.get(contactIndex).chatID
+    }
+
     states: [
         State {
             name: "up"
@@ -114,7 +124,7 @@ Rectangle {
 
         Label {
             id: contactName
-            text: contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName
+            text: ""
             anchors.left: parent.left
             anchors.leftMargin: 28
             anchors.top: parent.top
@@ -203,7 +213,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newFirstname
-            text: contactList.get(contactIndex).firstName
+            text: ""
             height: 34
             placeholder: "FIRST NAME"
             anchors.bottom: newPhoto.verticalCenter
@@ -228,7 +238,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newLastname
-            text: contactList.get(contactIndex).lastName
+            text: ""
             height: 34
             placeholder: "LAST NAME"
             anchors.left: newFirstname.left
@@ -268,7 +278,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newTel
-            text: contactList.get(contactIndex).telNR
+            text: ""
             height: 34
             placeholder: "TELEPHONE NUMBER"
             anchors.left: newPhoto.left
@@ -287,7 +297,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newCell
-            text: contactList.get(contactIndex).cellNR
+            text: ""
             height: 34
             placeholder: "CELLPHONE NUMBER"
             anchors.left: newTel.left
@@ -306,7 +316,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newMail
-            text: contactList.get(contactIndex).mailAddress
+            text: ""
             height: 34
             placeholder: "EMAIL ADDRESS"
             anchors.left: newCell.left
@@ -324,7 +334,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newChat
-            text: contactList.get(contactIndex).chatID
+            text: ""
             height: 34
             placeholder: "X-CHAT ID"
             anchors.left: newMail.left

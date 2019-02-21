@@ -19,7 +19,6 @@ Item {
         contactID = contactList.count
         addressID = addressList.count
         txID = transactionList.count
-        console.log("walletID: " + walletID + ", contactID: " + contactID + ", addressID: " + addressID + ", txID: " + txID)
 
         // finish account setup
         if (userSettings.accountCreationCompleted === false) {
