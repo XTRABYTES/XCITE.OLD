@@ -499,7 +499,7 @@ ApplicationWindow {
                         favorite = true
                     }
                     else {
-                        if (walletList.get(i).balance > balance){
+                        if (walletList.get(i).balance > balance && walletList.get(i).viewOnly === false){
                             balance = walletList.get(i).balance
                             wallet = walletList.get(i).walletNR
                         }
@@ -755,6 +755,7 @@ ApplicationWindow {
             // whatever other walletrelated info needed to make payments
             active: false
             favorite: false
+            viewOnly: false
             walletNR: 0
             remove: true
         }

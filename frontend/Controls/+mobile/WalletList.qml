@@ -112,7 +112,7 @@ Rectangle {
                         }
                     ]
                 }
-                /**
+
                 Rectangle {
                     id: favoriteButton
                     width: 30
@@ -130,17 +130,19 @@ Rectangle {
                         }
 
                         onClicked: {
-                            if (favorite == true) {
-                                walletList.setProperty(walletNR, "favorite", false)
-                            }
-                            else {
-                                resetFavorites(name)
-                                walletList.setProperty(walletNR, "favorite", true)
+                            if (viewOnly == false) {
+                                if (favorite == true) {
+                                    walletList.setProperty(walletNR, "favorite", false)
+                                }
+                                else {
+                                    resetFavorites(name)
+                                    walletList.setProperty(walletNR, "favorite", true)
+                                }
                             }
                         }
                     }
                 }
-                **/
+
                 Text {
                     id: walletName
                     anchors.left: parent.left
@@ -266,6 +268,7 @@ Rectangle {
                         }
 
                         onClicked: {
+
                             walletIndex = walletNR
                             switchState = 0
                             transferTracker = 1
@@ -274,7 +277,7 @@ Rectangle {
                 }
 
                 Label {
-                    text: "TRANSFER"
+                    text: viewOnly == false? "TRANSFER" : "RECEIVE"
                     font.family: xciteMobile.name
                     font.pointSize: 14
                     font.bold: true
