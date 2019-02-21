@@ -45,6 +45,9 @@ ApplicationWindow {
 
     Component.onCompleted: {
 
+        clearAllSettings()
+        console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
+
         contactID = 0
         addressID = 1
         walletID = 1
@@ -79,8 +82,35 @@ ApplicationWindow {
         coinList.setProperty(0, "coinID", 0);
         coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": 1});
 
+        marketValueChangedSignal("btcusd");
+        marketValueChangedSignal("btceur");
+        marketValueChangedSignal("btcgbp");
+        marketValueChangedSignal("xbybtc");
+        marketValueChangedSignal("xbycha");
+
         mainRoot.push("../Onboarding.qml")
     }
+
+
+
+    onBtcValueXBYChanged: {
+        coinList.setProperty(1, "coinValueBTC", btcValueXBY);
+        coinList.setProperty(1, "fiatValue", btcValueXBY * valueBTC);
+    }
+
+    onPercentageXBYChanged: {
+        coinList.setProperty(1, "percentage", percentageXBY);
+    }
+
+    onBtcValueXFUELChanged: {
+        coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
+        coinList.setProperty(0, "fiatValue", btcValueXFUEL * valueBTC);
+    }
+
+    onPercentageXFUELChanged: {
+        coinList.setProperty(0, "percentage", percentageXFUEL);
+    }
+
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -103,21 +133,21 @@ ApplicationWindow {
 
     // BTC information
     property real btcValueBTC: 1
-    property real valueBTCUSD: 3353.20 // replace by function to retrieve from CMC or equivalent
-    property real valueBTCEUR: 2966.10 // replace by function to retrieve from CMC or equivalent
-    property real valueBTCGBP: 2597.53 // replace by function to retrieve from CMC or equivalent
+    property real valueBTCUSD
+    property real valueBTCEUR
+    property real valueBTCGBP
     property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : valueBTCGBP
 
     // Coin info, retrieved from server
     property string nameXBY: "XBY"
-    property real btcValueXBY: 0.00000445 // replace by function to retrieve from server
+    property real btcValueXBY
     property real valueXBY: btcValueXBY * valueBTC
-    property real percentageXBY: 23.47 // replace by function to retrieve from server
+    property real percentageXBY
 
     property string nameXFUEL: "XFUEL"
-    property real btcValueXFUEL: btcValueXBY // replace by function to retrieve from server
+    property real btcValueXFUEL
     property real valueXFUEL: btcValueXFUEL * valueBTC
-    property real percentageXFUEL: 23.47 // replace by function to retrieve from server
+    property real percentageXFUEL
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
@@ -137,6 +167,7 @@ ApplicationWindow {
     property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
+    property int importKeyTracker: 0
     property int appsTracker: 0
     property int coinTracker: 0
     property int walletTracker: 0
@@ -208,6 +239,7 @@ ApplicationWindow {
     property int createPin: 0
     property int changePin: 0
     property int unlockPin: 0
+    property int clearAll: 0
     property int pinOK: 0
     property int pinError: 0
     property int requestSend: 0
@@ -221,7 +253,6 @@ ApplicationWindow {
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
     signal userExists(string username)
-    //signal userAvailable()
     signal clearAllSettings
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
@@ -533,6 +564,7 @@ ApplicationWindow {
             }
         }
     }
+
     Connections {
         target: marketValue
 
@@ -551,6 +583,7 @@ ApplicationWindow {
            valueBTCGBP = currencyVal;
         }else if(currency === "xbybtc"){
             btcValueXBY = currencyVal;
+            btcValueXFUEL = currencyVal
         }else if(currency === "xbycha"){
             percentageXBY = currencyVal;
             percentageXFUEL = currencyVal;
@@ -641,6 +674,8 @@ ApplicationWindow {
         currencyID = 0
         coinIndex = 0
         walletIndex = 1
+        saveAppSettings()
+        clearAllSettings()
         addressList.clear()
         contactList.clear()
         walletList.clear()

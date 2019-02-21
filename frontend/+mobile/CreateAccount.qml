@@ -241,6 +241,7 @@ Rectangle {
                 font.pixelSize: 11
                 font.family: "Brandon Grotesque"
                 font.weight: Font.Normal
+                visible: accountCreated == 0
             }
 
             Text {
@@ -397,7 +398,7 @@ Rectangle {
                         userSettings.defaultCurrency = 0
                         userSettings.theme = "dark"
                         userSettings.pinlock = false
-                        saveAppSettings();
+                        savePincode("0000");
                         addOwnContact();
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)

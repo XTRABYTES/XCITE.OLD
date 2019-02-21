@@ -53,11 +53,13 @@ void Settings::onClearAllSettings() {
     m_settings->remove("xchat");
     m_settings->remove("width");
     m_settings->remove("height");
-    m_settings->remove("locale");
     m_settings->remove("x");
     m_settings->remove("y");
     m_settings->remove("onboardingCompleted");
     m_settings->remove("defaultCurrency");
+    m_settings->remove("locale");
+    m_settings->remove("pinlock");
+    m_settings->remove("theme");
     m_settings->sync();
 
     m_settings->setFallbacksEnabled(fallbacks);
@@ -181,6 +183,7 @@ bool Settings::SaveSettings(){
     // Build json to call API
     QByteArray payload =  QJsonDocument::fromVariant(QVariant(feed)).toJson(QJsonDocument::Compact);
     QString response = RestAPIPutCall("/v1/user", payload); //Calling PUT for update
+
     return true;
 }
 
@@ -233,10 +236,13 @@ void Settings::onSavePincode(QString pincode){
 bool Settings::checkPincode(QString pincode){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     QString enc_pincode = encryption.encode((QString("<xtrabytes>") + pincode).toUtf8(), (m_password + "xtrabytesxtrabytes").toUtf8());
-    if (enc_pincode == m_pincode)
+    if (enc_pincode == m_pincode){
+        emit pincodeCorrect();
         return true;
-    else
+    }else{
+        emit pincodeFalse();
         return false;
+    }
 }
 
 QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
@@ -289,7 +295,6 @@ QString Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
     loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
     returnVal = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
 
-
     return returnVal;
 }
 
@@ -328,14 +333,19 @@ QString Settings::CheckStatusCode(QString statusCode){
     QString returnVal;
     if (statusCode.startsWith("2")){
         returnVal = "Success";
+        emit saveSucceeded();
     }else if (statusCode.startsWith("3")) {
         returnVal = "API Connection Error";
+        emit saveFailed();
     }else if (statusCode.startsWith("4")) {
         returnVal = "Input Error";
+        emit saveFailed();
     }else if (statusCode.startsWith("5")) {
         returnVal = "DB Error";
+        emit saveFailed();
     }else{
         returnVal = "Unknown Error";
+        emit saveFailed();
     }
     return returnVal;
 }

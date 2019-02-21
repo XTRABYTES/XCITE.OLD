@@ -165,12 +165,12 @@ Rectangle {
                 Text {
                     id: percentChangeLabel
                     anchors.left: price2.right
-                    anchors.leftMargin: 5
+                    anchors.leftMargin: 10
                     anchors.bottom: price1.bottom
-                    text:(percentage >= 0? "+" + getPercentage(coinName.text) + "%" : getPercentage(coinName.text) + "%")
+                    text:"(24h: " + (percentage >= 0? "+" + getPercentage(coinName.text) + "%" : getPercentage(coinName.text) + "%") + ")"
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
-                    color: getPercentage(coinName.text) <= 0 ? "#E55541" : "#4BBE2E"
+                    color: getPercentage(coinName.text) < 0 ? "#E55541" : "#4BBE2E"
                     font.bold: true
                 }
 
