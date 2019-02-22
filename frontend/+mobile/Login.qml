@@ -179,12 +179,15 @@ Item {
             Connections {
                 target: UserSettings
                 onContactsLoaded: {
+                    console.log("contacts loaded")
                     loadContactList(contacts)
+                    console.log("first contact in contactlist: " + contactList.get(0).firstName + " " + contactList.get(0).lastName)
                 }
 
                 onAddressesLoaded: {
+                    console.log("addressbook loaded")
                     loadAddressList(addresses)
-                    console.log(contactList.get(0).firstName + " " + contactList.get(0).lastName)
+                    console.log("number of addresses: " + addressList.count)
                 }
 
                 onClearSettings:{
@@ -193,20 +196,22 @@ Item {
                 }
 
                 onSettingsLoaded: {
+                    console.log("settings loaded")
                     loadSettings(settings);
                     console.log("Loading settings from DB: locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                 }
                 /** onTransactionsLoaded: {
-                        loadHistoryList()
+                        loadHistoryList(history)
                     }**/
 
                 /** onWalletsLoaded: {
                         if (userSettings.localKeys === false) {
-                            loadWalletList();
+                            loadWalletList(wallets);
                         }
                     }**/
 
                 onLoginSucceededChanged: {
+                    console.log("log in succeeded");
                     if (userSettings.localKeys === true) {
                         loadLocalWallets();
                     }
@@ -426,6 +431,5 @@ Item {
         }
     }
     Component.onDestruction: {
-        console.log("popping off login from the stack")
     }
 }

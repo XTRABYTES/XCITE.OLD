@@ -43,6 +43,51 @@ ApplicationWindow {
         font.letterSpacing: 2
     }
 
+    Component.onDestruction: {
+        interactionTracker = 0
+        loginTracker = 0
+        logoutTracker = 0
+        addWalletTracker = 0
+        createWalletTracker = 0
+        appsTracker = 0
+        coinTracker = 0
+        walletTracker = 0
+        transferTracker = 0
+        historyTracker = 0
+        addressTracker = 0
+        contactTracker = 0
+        addAddressTracker = 0
+        addCoinTracker = 0
+        addContactTracker = 0
+        editContactTracker = 0
+        coinListTracker = 0
+        walletListTracker = 0
+        addressbookTracker = 0
+        scanQRTracker = 0
+        tradingTracker = 0
+        balanceTracker = 0
+        calculatorTracker = 0
+        addressQRTracker = 0
+        pictureTracker = 0
+        cellTracker = 0
+        currencyTracker = 0
+        pincodeTracker = 0
+        debugTracker = 0
+        contactID = 0
+        addressID = 1
+        walletID = 1
+        txID = 1
+        pictureID = 0
+        currencyID = 0
+        coinIndex = 0
+        walletIndex = 1
+        saveAppSettings()
+        addressList.clear()
+        contactList.clear()
+        walletList.clear()
+        clearAllSettings()
+    }
+
     Component.onCompleted: {
         clearAllSettings()
         console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
@@ -243,6 +288,8 @@ ApplicationWindow {
     property int pinError: 0
     property int requestSend: 0
     property bool newAccount
+    property real changeBalance: 0
+    property string notificationDate: ""
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -263,21 +310,30 @@ ApplicationWindow {
     // Automated functions
 
     function updateBalance() {
+        var newBalance
+        var balanceAlert
+        var difference
+        changeBalance = 0
         for(var i = 0; i < walletList.count; i++) {
             if (walletList.get(i).coin === "XBY") {
-                if (getbalanceXBY(walletList.get(i).address) !== walletList.get(i).balance) {
-                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
-                    if (transferTracker == 0) {
-                        notification = 1
-                    }
-                }
+                newBalance = Number.fromLocaleString(Qt.locale("en_US"),(getbalanceXBY(walletList.get(i).address)))
             }
             else if (walletList.get(i).coin === "XFUEL") {
-                if (getbalanceXFUEL(walletList.get(i).address) !== walletList.get(i).balance) {
-                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
-                    if (transferTracker == 0) {
-                        notification = 1
-                    }
+                newBalance = Number.fromLocaleString(Qt.locale("en_US"),(getbalanceXBY(walletList.get(i).address)))
+            }
+            if (newBalance !== walletList.get(i).balance) {
+                changeBalance = newBalance - walletList.get(i).balance
+                if (changeBalance > 0) {
+                    difference = "increased"
+                }
+                else {
+                    difference = "decreased"
+                }
+                walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
+                if (transferTracker == 0) {
+                    notification = 1
+                    balanceAlert = "Your <b>" + walletList.get(i).coin + "</b> wallet <b>" + walletList.get(i).label + "</b> has " + difference + " with: <b>" + changeBalance + "</b>"
+                    notificationList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"dd MMM yy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HHmmsszzz"), "message" : balanceAlert, "origin" : "wallet"})
                 }
             }
         }
@@ -579,7 +635,7 @@ ApplicationWindow {
         }else if(currency === "btceur"){
             valueBTCEUR = currencyVal;
         }else if(currency === "btcgbp"){
-           valueBTCGBP = currencyVal;
+            valueBTCGBP = currencyVal;
         }else if(currency === "xbybtc"){
             btcValueXBY = currencyVal;
             btcValueXFUEL = currencyVal
@@ -592,11 +648,14 @@ ApplicationWindow {
     }
 
     function loadLocalWallets() {
-        // create walletList when XCITE starts up
+        // create walletList from local storage when XCITE starts up
+    }
+
+    function loadWalletList(wallets) {
+        // create walletList from account storage when XCITE starts up
     }
 
     function loadContactList(contacts) {
-
         if (typeof contacts !== "undefined") {
             contactList.clear();
             var obj = JSON.parse(contacts);
@@ -605,7 +664,9 @@ ApplicationWindow {
                 contactList.append(data);
             }
         }
-
+        else {
+            console.log("no contacts saved in account")
+        }
     }
 
     function loadAddressList(addresses) {
@@ -617,25 +678,32 @@ ApplicationWindow {
                 addressList.append(data);
             }
         }
+        else {
+            console.log("no addresses saved in account")
+        }
     }
 
     function loadSettings(settingsLoaded) {
-            if (typeof settingsLoaded !== "undefined") {
-                userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
-                userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
-                userSettings.locale = settingsLoaded.locale;
-                var pinlock = settingsLoaded.pinlock; //have to set pinlock to var or it doesn't actually save the value for some reason
-                userSettings.pinlock = pinlock;
-                userSettings.theme = settingsLoaded.theme;
-            }
+        if (typeof settingsLoaded !== "undefined") {
+            userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
+            userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
+            userSettings.locale = settingsLoaded.locale;
+            var pinlock = settingsLoaded.pinlock; //have to set pinlock to var or it doesn't actually save the value for some reason
+            userSettings.pinlock = pinlock;
+            userSettings.theme = settingsLoaded.theme;
         }
+        else {
+            console.log("no settings saved in account")
+        }
+    }
+
     function clearSettings(){
-            userSettings.accountCreationCompleted = false;
-            userSettings.defaultCurrency = 0;
-            userSettings.theme = "dark";
-            userSettings.pinlock = false;
-            userSettings.locale = "en_us"
-            userSettings.localKeys = false;
+        userSettings.accountCreationCompleted = false;
+        userSettings.defaultCurrency = 0;
+        userSettings.theme = "dark";
+        userSettings.pinlock = false;
+        userSettings.locale = "en_us"
+        userSettings.localKeys = false;
     }
 
     function loadHistoryList() {
@@ -816,6 +884,15 @@ ApplicationWindow {
         }
     }
 
+    ListModel {
+        id: notificationList
+        ListElement {
+            date: ""
+            message: ""
+            origin: ""
+        }
+    }
+
     // Global components
     Clipboard {
         id: clipboard
@@ -829,6 +906,10 @@ ApplicationWindow {
         property bool pinlock
         property bool accountCreationCompleted
         property bool localKeys
+
+        onThemeChanged: {
+            darktheme = userSettings.theme == "dark"? true : false
+        }
     }
 
     // Global fonts
@@ -859,11 +940,11 @@ ApplicationWindow {
         running: sessionStart == 1
         onTriggered:  {
             console.log("callingMarketValue");
-         marketValueChangedSignal("btcusd")
-         marketValueChangedSignal("btceur")
-         marketValueChangedSignal("btcgbp")
-         marketValueChangedSignal("xbybtc")
-         marketValueChangedSignal("xbycha")
+            marketValueChangedSignal("btcusd")
+            marketValueChangedSignal("btceur")
+            marketValueChangedSignal("btcgbp")
+            marketValueChangedSignal("xbybtc")
+            marketValueChangedSignal("xbycha")
 
         }
     }
