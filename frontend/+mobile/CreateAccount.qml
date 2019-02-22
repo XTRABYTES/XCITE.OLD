@@ -398,6 +398,7 @@ Rectangle {
                         userSettings.defaultCurrency = 0
                         userSettings.theme = "dark"
                         userSettings.pinlock = false
+                        userSettings.accountCreationCompleted = false
                         savePincode("0000");
                         addOwnContact();
                         var datamodel = []
