@@ -688,7 +688,7 @@ ApplicationWindow {
 
     function loadSettings(settingsLoaded) {
         if (typeof settingsLoaded !== "undefined") {
-            userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
+            userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
             userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
             userSettings.locale = settingsLoaded.locale;
             userSettings.pinlock = settingsLoaded.pinlock === "true";
