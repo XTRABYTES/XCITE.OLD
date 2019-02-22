@@ -324,6 +324,8 @@ Rectangle {
         border.width: 1
     }
 
+
+
     Rectangle {
         id: clearButton
         width: doubbleButtonWidth / 2

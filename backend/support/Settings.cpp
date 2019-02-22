@@ -144,9 +144,7 @@ void Settings::login(QString username, QString password){
     if(decodedJson.value("app").toString().startsWith("xtrabytes")){
         m_username = username;
         m_password = password;
-        emit loginSucceededChanged();
         LoadSettings(decodedSettings);
-
     }
     else
         emit loginFailedChanged();
@@ -195,11 +193,14 @@ void Settings::LoadSettings(QByteArray settings){
 
     QJsonObject json = QJsonDocument::fromJson(settings).object();
     QVariantMap settingsMap;
+    m_settings->clear();
+    qDebug() << m_settings;
     foreach(const QString& key, json.keys()) {
             QJsonValue value = json.value(key);
             settingsMap.insert(key,value.toString());
             m_settings->setValue(key,value.toString());
             m_settings->sync();
+            qDebug() << m_settings;
     }
     emit settingsLoaded(settingsMap);
 
@@ -224,6 +225,8 @@ void Settings::LoadSettings(QByteArray settings){
     QString pincode = json.value("pincode").toString().toLatin1();
     QByteArray enc_pincode = encryption.encode( pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
     m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length()); //encryption.encode((QString("<xtrabytes>") + pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+
+    emit loginSucceededChanged();
 }
 
 void Settings::SaveAddresses(QString addresslist){

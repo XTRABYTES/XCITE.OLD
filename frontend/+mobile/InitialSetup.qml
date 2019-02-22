@@ -93,7 +93,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.verticalCenterOffset: -100
-                visible: userSettings.accountCreationCompleted !== true
+                visible: userSettings.accountCreationCompleted === false
 
                 Label {
                     id: addWalletText
