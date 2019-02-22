@@ -43,7 +43,54 @@ ApplicationWindow {
         font.letterSpacing: 2
     }
 
+    Component.onDestruction: {
+        interactionTracker = 0
+        loginTracker = 0
+        logoutTracker = 0
+        addWalletTracker = 0
+        createWalletTracker = 0
+        appsTracker = 0
+        coinTracker = 0
+        walletTracker = 0
+        transferTracker = 0
+        historyTracker = 0
+        addressTracker = 0
+        contactTracker = 0
+        addAddressTracker = 0
+        addCoinTracker = 0
+        addContactTracker = 0
+        editContactTracker = 0
+        coinListTracker = 0
+        walletListTracker = 0
+        addressbookTracker = 0
+        scanQRTracker = 0
+        tradingTracker = 0
+        balanceTracker = 0
+        calculatorTracker = 0
+        addressQRTracker = 0
+        pictureTracker = 0
+        cellTracker = 0
+        currencyTracker = 0
+        pincodeTracker = 0
+        debugTracker = 0
+        contactID = 0
+        addressID = 1
+        walletID = 1
+        txID = 1
+        pictureID = 0
+        currencyID = 0
+        coinIndex = 0
+        walletIndex = 1
+        saveAppSettings()
+        addressList.clear()
+        contactList.clear()
+        walletList.clear()
+        clearAllSettings()
+    }
+
     Component.onCompleted: {
+        clearAllSettings()
+        console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
 
         contactID = 0
         addressID = 1
@@ -79,8 +126,35 @@ ApplicationWindow {
         coinList.setProperty(0, "coinID", 0);
         coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": 1});
 
+        marketValueChangedSignal("btcusd");
+        marketValueChangedSignal("btceur");
+        marketValueChangedSignal("btcgbp");
+        marketValueChangedSignal("xbybtc");
+        marketValueChangedSignal("xbycha");
+
         mainRoot.push("../Onboarding.qml")
     }
+
+
+
+    onBtcValueXBYChanged: {
+        coinList.setProperty(1, "coinValueBTC", btcValueXBY);
+        coinList.setProperty(1, "fiatValue", btcValueXBY * valueBTC);
+    }
+
+    onPercentageXBYChanged: {
+        coinList.setProperty(1, "percentage", percentageXBY);
+    }
+
+    onBtcValueXFUELChanged: {
+        coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
+        coinList.setProperty(0, "fiatValue", btcValueXFUEL * valueBTC);
+    }
+
+    onPercentageXFUELChanged: {
+        coinList.setProperty(0, "percentage", percentageXFUEL);
+    }
+
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -103,21 +177,21 @@ ApplicationWindow {
 
     // BTC information
     property real btcValueBTC: 1
-    property real valueBTCUSD: 3353.20 // replace by function to retrieve from CMC or equivalent
-    property real valueBTCEUR: 2966.10 // replace by function to retrieve from CMC or equivalent
-    property real valueBTCGBP: 2597.53 // replace by function to retrieve from CMC or equivalent
+    property real valueBTCUSD
+    property real valueBTCEUR
+    property real valueBTCGBP
     property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : valueBTCGBP
 
     // Coin info, retrieved from server
     property string nameXBY: "XBY"
-    property real btcValueXBY: 0.00000445 // replace by function to retrieve from server
+    property real btcValueXBY
     property real valueXBY: btcValueXBY * valueBTC
-    property real percentageXBY: 23.47 // replace by function to retrieve from server
+    property real percentageXBY
 
     property string nameXFUEL: "XFUEL"
-    property real btcValueXFUEL: btcValueXBY // replace by function to retrieve from server
+    property real btcValueXFUEL
     property real valueXFUEL: btcValueXFUEL * valueBTC
-    property real percentageXFUEL: 23.47 // replace by function to retrieve from server
+    property real percentageXFUEL
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
@@ -137,6 +211,8 @@ ApplicationWindow {
     property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
+    property int viewOnlyTracker: 0
+    property int importKeyTracker: 0
     property int appsTracker: 0
     property int coinTracker: 0
     property int walletTracker: 0
@@ -185,6 +261,7 @@ ApplicationWindow {
     property string selectedAddress: ""
     property string currentAddress: ""
     property var calculatedAmount: ""
+    property string scanningKey: ""
     property string scanning: "scanning..."
     property string addressbookName: ""
     property string addressbookHash: ""
@@ -208,10 +285,14 @@ ApplicationWindow {
     property int createPin: 0
     property int changePin: 0
     property int unlockPin: 0
+    property int clearAll: 0
     property int pinOK: 0
     property int pinError: 0
     property int requestSend: 0
     property bool newAccount
+    property real changeBalance: 0
+    property string notificationDate: ""
+    property bool walletAdded: false
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -221,8 +302,7 @@ ApplicationWindow {
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
     signal userExists(string username)
-    //signal userAvailable()
-    signal clearAllSettings
+    signal clearAllSettings()
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
     signal saveAppSettings()
@@ -233,21 +313,30 @@ ApplicationWindow {
     // Automated functions
 
     function updateBalance() {
+        var newBalance
+        var balanceAlert
+        var difference
+        changeBalance = 0
         for(var i = 0; i < walletList.count; i++) {
             if (walletList.get(i).coin === "XBY") {
-                if (getbalanceXBY(walletList.get(i).address) !== walletList.get(i).balance) {
-                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
-                    if (transferTracker == 0) {
-                        notification = 1
-                    }
-                }
+                newBalance = Number.fromLocaleString(Qt.locale("en_US"),(getbalanceXBY(walletList.get(i).address)))
             }
             else if (walletList.get(i).coin === "XFUEL") {
-                if (getbalanceXFUEL(walletList.get(i).address) !== walletList.get(i).balance) {
-                    walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
-                    if (transferTracker == 0) {
-                        notification = 1
-                    }
+                newBalance = Number.fromLocaleString(Qt.locale("en_US"),(getbalanceXBY(walletList.get(i).address)))
+            }
+            if (newBalance !== walletList.get(i).balance) {
+                changeBalance = newBalance - walletList.get(i).balance
+                if (changeBalance > 0) {
+                    difference = "increased"
+                }
+                else {
+                    difference = "decreased"
+                }
+                walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
+                if (transferTracker == 0) {
+                    notification = 1
+                    balanceAlert = "Your <b>" + walletList.get(i).coin + "</b> wallet <b>" + walletList.get(i).label + "</b> has " + difference + " with: <b>" + changeBalance + "</b>"
+                    notificationList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"dd MMM yy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HHmmsszzz"), "message" : balanceAlert, "origin" : "wallet"})
                 }
             }
         }
@@ -468,7 +557,7 @@ ApplicationWindow {
                         favorite = true
                     }
                     else {
-                        if (walletList.get(i).balance > balance){
+                        if (walletList.get(i).balance > balance && walletList.get(i).viewOnly === false){
                             balance = walletList.get(i).balance
                             wallet = walletList.get(i).walletNR
                         }
@@ -533,6 +622,7 @@ ApplicationWindow {
             }
         }
     }
+
     Connections {
         target: marketValue
 
@@ -548,9 +638,10 @@ ApplicationWindow {
         }else if(currency === "btceur"){
             valueBTCEUR = currencyVal;
         }else if(currency === "btcgbp"){
-           valueBTCGBP = currencyVal;
+            valueBTCGBP = currencyVal;
         }else if(currency === "xbybtc"){
             btcValueXBY = currencyVal;
+            btcValueXFUEL = currencyVal
         }else if(currency === "xbycha"){
             percentageXBY = currencyVal;
             percentageXFUEL = currencyVal;
@@ -560,11 +651,14 @@ ApplicationWindow {
     }
 
     function loadLocalWallets() {
-        // create walletList when XCITE starts up
+        // create walletList from local storage when XCITE starts up
+    }
+
+    function loadWalletList(wallets) {
+        // create walletList from account storage when XCITE starts up
     }
 
     function loadContactList(contacts) {
-
         if (typeof contacts !== "undefined") {
             contactList.clear();
             var obj = JSON.parse(contacts);
@@ -573,7 +667,9 @@ ApplicationWindow {
                 contactList.append(data);
             }
         }
-
+        else {
+            console.log("no contacts saved in account")
+        }
     }
 
     function loadAddressList(addresses) {
@@ -585,18 +681,32 @@ ApplicationWindow {
                 addressList.append(data);
             }
         }
+        else {
+            console.log("no addresses saved in account")
+        }
     }
 
     function loadSettings(settingsLoaded) {
-            if (typeof settingsLoaded !== "undefined") {
-                userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
-                userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
-                userSettings.locale = settingsLoaded.locale;
-                var pinlock = settingsLoaded.pinlock; //have to set pinlock to var or it doesn't actually save the value for some reason
-                userSettings.pinlock = pinlock;
-                userSettings.theme = settingsLoaded.theme;
-            }
+        if (typeof settingsLoaded !== "undefined") {
+            userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
+            userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
+            userSettings.locale = settingsLoaded.locale;
+            userSettings.pinlock = settingsLoaded.pinlock === "true";
+            userSettings.theme = settingsLoaded.theme;
         }
+        else {
+            console.log("no settings saved in account")
+        }
+    }
+
+    function clearSettings(){
+        userSettings.accountCreationCompleted = false;
+        userSettings.defaultCurrency = 0;
+        userSettings.theme = "dark";
+        userSettings.pinlock = false;
+        userSettings.locale = "en_us"
+        userSettings.localKeys = false;
+    }
 
     function loadHistoryList() {
         // read transactionhistory from persistent data
@@ -641,9 +751,12 @@ ApplicationWindow {
         currencyID = 0
         coinIndex = 0
         walletIndex = 1
+        saveAppSettings()
         addressList.clear()
         contactList.clear()
         walletList.clear()
+        clearAllSettings()
+
         Qt.quit()
     }
 
@@ -652,29 +765,6 @@ ApplicationWindow {
         if (interactionTracker == 0) {
             interactionTracker = 1
         }
-    }
-
-    function addWalletsToAddressList() {
-        for(var i = 0; i < walletList.count; i++){
-            if (walletList.get(i).remove === false) {
-                addressList.append({"contact": 0, "label": getLabelAddress(walletList.get(i).name, walletList.get(i).address), "address": walletList.get(i).address, "logo": getLogo(walletList.get(i).name), "coin": walletList.get(i).name, "favorite": 1, "active": walletList.get(i).active, "uniqueNR": addressID, "remove": false});
-                addressID = addressID + 1
-            }
-        }
-    }
-
-    function addOwnContact() {
-        contactList.setProperty(0, "firstName", "My addresses");
-        contactList.setProperty(0, "lastName", "");
-        contactList.setProperty(0, "photo", profilePictures.get(0).photo);
-        contactList.setProperty(0, "telNR", "");
-        contactList.setProperty(0, "cellNR", "");
-        contactList.setProperty(0, "mailAddress", "");
-        contactList.setProperty(0, "chatID", "");
-        contactList.setProperty(0, "favorite", true);
-        contactList.setProperty(0, "contactNR", contactID);
-        contactList.setProperty(0, "remove", false);
-        contactID = contactID + 1
     }
 
     // Listmodels
@@ -720,6 +810,7 @@ ApplicationWindow {
             // whatever other walletrelated info needed to make payments
             active: false
             favorite: false
+            viewOnly: false
             walletNR: 0
             remove: true
         }
@@ -772,6 +863,15 @@ ApplicationWindow {
         }
     }
 
+    ListModel {
+        id: notificationList
+        ListElement {
+            date: ""
+            message: ""
+            origin: ""
+        }
+    }
+
     // Global components
     Clipboard {
         id: clipboard
@@ -785,6 +885,10 @@ ApplicationWindow {
         property bool pinlock
         property bool accountCreationCompleted
         property bool localKeys
+
+        onThemeChanged: {
+            darktheme = userSettings.theme == "dark"? true : false
+        }
     }
 
     // Global fonts
@@ -815,11 +919,11 @@ ApplicationWindow {
         running: sessionStart == 1
         onTriggered:  {
             console.log("callingMarketValue");
-         marketValueChangedSignal("btcusd")
-         marketValueChangedSignal("btceur")
-         marketValueChangedSignal("btcgbp")
-         marketValueChangedSignal("xbybtc")
-         marketValueChangedSignal("xbycha")
+            marketValueChangedSignal("btcusd")
+            marketValueChangedSignal("btceur")
+            marketValueChangedSignal("btcgbp")
+            marketValueChangedSignal("xbybtc")
+            marketValueChangedSignal("xbycha")
 
         }
     }

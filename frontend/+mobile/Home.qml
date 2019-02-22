@@ -13,6 +13,7 @@ Item {
     }
 
     Component.onCompleted: {
+        console.log("account complete: " + userSettings.accountCreationCompleted)
         goodbey = 0
 
         walletID = walletList.count

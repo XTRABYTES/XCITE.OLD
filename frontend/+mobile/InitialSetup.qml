@@ -60,7 +60,7 @@ Item {
             font.pixelSize: 20
             font.family: xciteMobile.name
             font.bold: true
-            visible: addWalletTracker == 0 && createWalletTracker == 0
+            visible: importKeyTracker == 0 && createWalletTracker == 0
         }
 
 
@@ -92,8 +92,8 @@ Item {
                 height: addWalletText.height + createAddressText.height + createAddressButton.height + importAddressText.height + importAddressButton.height + skipButton.height + 115
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -100
-                visible: userSettings.accountCreationCompleted !== true
+                anchors.verticalCenterOffset: -50
+                visible: userSettings.accountCreationCompleted === false
 
                 Label {
                     id: addWalletText
@@ -187,7 +187,7 @@ Item {
                         }
 
                         onReleased: {
-                            addWalletTracker = 1
+                            importKeyTracker = 1
                         }
                     }
 
@@ -217,22 +217,14 @@ Item {
 
                         onReleased: {
                             // workaround until backend connection is provided
-                            walletList.append({"name": nameXFUEL1, "label": nameXFUEL1, "address": receivingAddressXFUEL1, "balance" : balanceXFUEL1, "unconfirmedCoins": unconfirmedXFUEL1, "active": true, "favorite": true, "walletNR": walletID, "remove": false});
+                            walletList.append({"name": nameXFUEL1, "label": labelXFUEL1, "address": receivingAddressXFUEL1, "balance" : balanceXFUEL1, "unconfirmedCoins": unconfirmedXFUEL1, "active": true, "favorite": true, "viewOnly": false, "walletNR": walletID, "remove": false});
                             walletID = walletID +1;
-                            walletList.append({"name": nameXBY1, "label": labelXBY1, "address": receivingAddressXBY1, "balance" : balanceXBY1, "unconfirmedCoins": unconfirmedXBY1, "active": true, "favorite": true, "walletNR": walletID, "remove": false});
+                            walletList.append({"name": nameXBY1, "label": labelXBY1, "address": receivingAddressXBY1, "balance" : balanceXBY1, "unconfirmedCoins": unconfirmedXBY1, "active": true, "favorite": true, "viewOnly": false, "walletNR": walletID, "remove": false});
                             walletID = walletID +1;
-                            walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
+                            walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "viewOnly": true, "walletNR": walletID, "remove": false});
                             walletID = walletID +1;
                             userSettings.accountCreationCompleted = true
-                            addWalletsToAddressList()
-                            var datamodel = []
-                            for (var i = 0; i < addressList.count; ++i)
-                                datamodel.push(addressList.get(i))
-
-                            var addressListJson = JSON.stringify(datamodel)
-
-                            saveAddressBook(addressListJson)
-                         }
+                        }
                     }
 
                     Text {
@@ -254,7 +246,7 @@ Item {
                 height: onboardCompleteText.height + completeButton.height + 50
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -100
+                anchors.verticalCenterOffset: -50
                 visible: userSettings.accountCreationCompleted === true
 
                 Text {
@@ -365,7 +357,7 @@ Item {
             width: Screen.width
             height: Screen.height
             color: "#14161B"
-            opacity: (addWalletTracker == 1 || createWalletTracker == 1)? 1 : 0
+            opacity: (importKeyTracker == 1 || createWalletTracker == 1)? 1 : 0
 
             LinearGradient {
                 anchors.fill: parent
@@ -379,7 +371,7 @@ Item {
             }
         }
 
-        Controls.AddWallet {
+        Controls.ImportKey {
             id: addWalletModal
             z: 3
         }

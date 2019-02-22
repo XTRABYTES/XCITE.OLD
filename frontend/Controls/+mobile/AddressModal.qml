@@ -50,7 +50,12 @@ Rectangle {
     ]
 
     onStateChanged: {
-        checkMyAddress()
+        oldCoinName = addressList.get(addressIndex).coin
+        oldLogo = getLogo(oldCoinName)
+        oldAddressName = addressList.get(addressIndex).label
+        oldAddressHash = addressList.get(addressIndex).address
+        oldFavorite = addressList.get(addressIndex).favorite
+        oldRemove = addressList.get(addressIndex).remove
     }
 
     property string coinName: addressList.get(addressIndex).coin
@@ -65,7 +70,6 @@ Rectangle {
     property int invalidAddress: 0
     property int doubleAddress: 0
     property int labelExists: 0
-    property int myAddress: 0
     property string oldCoinName
     property url oldLogo
     property string oldAddressHash
@@ -73,15 +77,6 @@ Rectangle {
     property bool oldRemove
     property int oldFavorite
     property int newFavorite
-
-    function checkMyAddress(){
-        myAddress = 0
-        for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === coinName && walletList.get(i).address === addressHash) {
-                myAddress = 1
-            }
-        }
-    }
 
     function compareTx(){
         doubleAddress = 0
@@ -185,15 +180,6 @@ Rectangle {
         }
     }
 
-    Component.onCompleted: {
-        oldCoinName = addressList.get(addressIndex).coin
-        oldLogo = getLogo(oldCoinName)
-        oldAddressName = addressList.get(addressIndex).label
-        oldAddressHash = addressList.get(addressIndex).address
-        oldFavorite = addressList.get(addressIndex).favorite
-        oldRemove = addressList.get(addressIndex).remove
-    }
-
     Text {
         id: addressModalLabel
         text: "EDIT ADDRESS"
@@ -231,8 +217,6 @@ Rectangle {
             font.letterSpacing: 2
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             elide: Text.ElideRight
-
-            onTextChanged: {checkMyAddress()}
         }
 
         Image {
@@ -257,11 +241,9 @@ Rectangle {
                     favoriteChanged = 1
                     if (addressList.get(addressIndex).favorite === 1 || newFavorite == 1) {
                         newFavorite = 0
-                        //addressList.setProperty(addressIndex, "favorite", 0)
                     }
                     else {
                         newFavorite = 1
-                        //addressList.setProperty(addressIndex, "favorite", 1)
                     }
                 }
             }
@@ -319,8 +301,7 @@ Rectangle {
             height: 34
             color: (doubleAddress == 0
                     && labelExists == 0
-                    && invalidAddress == 0
-                    && myAddress == 0) ? maincolor : "#727272"
+                    && invalidAddress == 0) ? maincolor : "#727272"
             opacity: 0.25
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 50
@@ -347,8 +328,7 @@ Rectangle {
                 onClicked: {
                     if (doubleAddress == 0
                             && labelExists == 0
-                            && invalidAddress == 0
-                            && myAddress == 0) {
+                            && invalidAddress == 0) {
                         if (newCoinSelect == 1) {
                             addressList.setProperty(addressIndex, "logo", coinList.get(newCoinPicklist).logo);
                             addressList.setProperty(addressIndex, "coin", coinList.get(newCoinPicklist).name);
@@ -362,20 +342,42 @@ Rectangle {
                         if (favoriteChanged == 1) {
                             addressList.setProperty(addressIndex, "favorite", newFavorite);
                         }
-                        // function to save the edited address
 
-                        // onSaveSucceeded
+                        var datamodel = []
+                        for (var i = 0; i < addressList.count; ++i)
+                            datamodel.push(addressList.get(i))
+
+                        var addressListJson = JSON.stringify(datamodel)
+
+                        saveAddressBook(addressListJson)
+
+
+
+
+                    }
+                }
+            }
+
+            Connections {
+                target: UserSettings
+
+                onSaveSucceeded: {
+                    if (addressTracker == 1) {
                         editSaved = 1
                         coinListTracker = 0
+                    }
+                }
 
-                        // onSaveFailed
-                        // editFailed = 1
-                        // coinListTracker = 0
-                        // addressList.setProperty(addressIndex, "logo", oldLogo);
-                        // addressList.setProperty(addressIndex, "coin", oldCoinName);
-                        // addressList.setProperty(addressIndex, "label", oldAddressName);
-                        // addressList.setProperty(addressIndex, "address", oldAddressHash);
-                        // addressList.setProperty(addressIndex, "favorite", oldFavorite);
+                onSaveFailed: {
+                    if (addressTracker == 1) {
+
+                        addressList.setProperty(addressIndex, "logo", oldLogo);
+                        addressList.setProperty(addressIndex, "coin", oldCoinName);
+                        addressList.setProperty(addressIndex, "label", oldAddressName);
+                        addressList.setProperty(addressIndex, "address", oldAddressHash);
+                        addressList.setProperty(addressIndex, "favorite", oldFavorite);
+                        editFailed = 1
+                        coinListTracker = 0
                     }
                 }
             }
@@ -388,8 +390,7 @@ Rectangle {
             font.bold: true
             color: (doubleAddress == 0
                     && labelExists == 0
-                    && invalidAddress == 0
-                    && myAddress == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                    && invalidAddress == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: saveEditButton.horizontalCenter
             anchors.verticalCenter: saveEditButton.verticalCenter
             visible: editSaved == 0
@@ -402,8 +403,7 @@ Rectangle {
             color: "transparent"
             border.color: (doubleAddress == 0
                            && labelExists == 0
-                           && invalidAddress == 0
-                           && myAddress == 0) ? maincolor : "#727272"
+                           && invalidAddress == 0) ? maincolor : "#727272"
             border.width: 1
             opacity: 0.25
             anchors.top: scanQrButton.bottom
@@ -424,7 +424,6 @@ Rectangle {
             visible: editSaved == 0
                      && coinListTracker == 0
                      && deleteAddressTracker == 0
-                     && myAddress == 0
                      && contact != 0
 
             Rectangle {
@@ -463,7 +462,6 @@ Rectangle {
             anchors.topMargin: 40
             visible: editSaved == 0
                      && deleteAddressTracker == 0
-                     && myAddress == 0
                      && contact != 0
 
             Rectangle {
@@ -608,7 +606,6 @@ Rectangle {
             color: "transparent"
             visible: editSaved == 0
                      && deleteAddressTracker == 0
-                     && myAddress == 0
 
             MouseArea {
                 anchors.fill: scanQrButton
@@ -712,6 +709,8 @@ Rectangle {
                 }
             }
         }
+
+        // Edit failed state
 
         // Edit saved state
 
@@ -915,14 +914,36 @@ Rectangle {
                         labelExists = 0
                         invalidAddress = 0
 
-                        // function to save the edited address
 
-                        // onDeleteSucceeded
-                        editSaved = 1
-
-                        // onDeleteFailed
                         // editFailed = 1
-                        // addressList.setProperty(addressIndex, "remove", oldRemove);
+                        //
+                        var datamodel = []
+                        for (var i = 0; i < addressList.count; ++i)
+                            datamodel.push(addressList.get(i))
+
+                        var addressListJson = JSON.stringify(datamodel)
+
+                        saveAddressBook(addressListJson)
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (addressTracker == 1) {
+                            editSaved = 1
+                            coinListTracker = 0
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (addressTracker == 1) {
+
+                            addressList.setProperty(addressIndex, "remove", oldRemove);
+                            editFailed = 1
+                            coinListTracker = 0
+                        }
                     }
                 }
             }
@@ -1005,6 +1026,8 @@ Rectangle {
                 border.width: 1
             }
         }
+
+        // Delete failed state
 
         // Delete success state
 
@@ -1185,7 +1208,6 @@ Rectangle {
                     deleteConfirmed = 0
                     scanQRTracker = 0
                     selectedAddress = ""
-                    myAddress = 0
                     scanning = "scanning..."
                 }
             }

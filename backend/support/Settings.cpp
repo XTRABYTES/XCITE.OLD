@@ -48,19 +48,23 @@ void Settings::onLocaleChange(QString locale) {
 void Settings::onClearAllSettings() {
     bool fallbacks = m_settings->fallbacksEnabled();
     m_settings->setFallbacksEnabled(false);
-
+    m_settings->remove("accountCreationCompleted");
     m_settings->remove("developer");
     m_settings->remove("xchat");
     m_settings->remove("width");
     m_settings->remove("height");
-    m_settings->remove("locale");
     m_settings->remove("x");
     m_settings->remove("y");
     m_settings->remove("onboardingCompleted");
     m_settings->remove("defaultCurrency");
+    m_settings->remove("locale");
+    m_settings->remove("pinlock");
+    m_settings->remove("theme");
     m_settings->sync();
 
     m_settings->setFallbacksEnabled(fallbacks);
+
+    emit clearSettings();
 }
 
 // Onboarding and login functions
@@ -89,6 +93,7 @@ void Settings::CreateUser(QString username, QString password){
 
         QVariantMap settings;
         settings.insert("app","xtrabytes");
+        m_settings->setValue("app","xtrabytes");
 
         QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
@@ -140,9 +145,7 @@ void Settings::login(QString username, QString password){
     if(decodedJson.value("app").toString().startsWith("xtrabytes")){
         m_username = username;
         m_password = password;
-        emit loginSucceededChanged();
         LoadSettings(decodedSettings);
-
     }
     else
         emit loginFailedChanged();
@@ -156,7 +159,8 @@ bool Settings::SaveSettings(){
         settings.insert(key,m_settings->value(key).toString());
         qDebug().noquote() << settings;
     }
-    settings.insert("pincode", m_pincode); //may be able to remove this
+    QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+    settings.insert("pincode", dec_pincode); //may be able to remove this
 
     /*      Add contacts to DB       */
     QJsonArray contactsArray = QJsonDocument::fromJson(m_contacts.toLatin1()).array();
@@ -181,17 +185,23 @@ bool Settings::SaveSettings(){
     // Build json to call API
     QByteArray payload =  QJsonDocument::fromVariant(QVariant(feed)).toJson(QJsonDocument::Compact);
     QString response = RestAPIPutCall("/v1/user", payload); //Calling PUT for update
+
     return true;
 }
 
 void Settings::LoadSettings(QByteArray settings){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+
     QJsonObject json = QJsonDocument::fromJson(settings).object();
     QVariantMap settingsMap;
+    m_settings->clear();
+    qDebug() << m_settings;
     foreach(const QString& key, json.keys()) {
             QJsonValue value = json.value(key);
             settingsMap.insert(key,value.toString());
             m_settings->setValue(key,value.toString());
             m_settings->sync();
+            qDebug() << m_settings;
     }
     emit settingsLoaded(settingsMap);
 
@@ -212,6 +222,12 @@ void Settings::LoadSettings(QByteArray settings){
     m_addresses.clear();
     m_addresses = addresses;
     emit addressesLoaded(m_addresses);
+
+    QString pincode = json.value("pincode").toString().toLatin1();
+    QByteArray enc_pincode = encryption.encode( pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+    m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length()); //encryption.encode((QString("<xtrabytes>") + pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+
+    emit loginSucceededChanged();
 }
 
 void Settings::SaveAddresses(QString addresslist){
@@ -226,17 +242,25 @@ void Settings::SaveContacts(QString contactlist){
 
 void Settings::onSavePincode(QString pincode){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-    m_pincode = pincode; //encryption.encode((QString("<xtrabytes>") + pincode).toUtf8(), (m_password + "xtrabytesxtrabytes").toUtf8());
+    QByteArray enc_pincode = encryption.encode((QString("<xtrabytes>") + pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+    m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length()); //encryption.encode((QString("<xtrabytes>") + pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
     SaveSettings();
 }
 
 bool Settings::checkPincode(QString pincode){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-    QString enc_pincode = encryption.encode((QString("<xtrabytes>") + pincode).toUtf8(), (m_password + "xtrabytesxtrabytes").toUtf8());
-    if (enc_pincode == m_pincode)
+    QString pincodeKey = QString("<xtrabytes>") + pincode;
+
+    QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+    dec_pincode.chop(1);
+
+    if (pincodeKey == dec_pincode){
+        emit pincodeCorrect();
         return true;
-    else
+    }else{
+        emit pincodeFalse();
         return false;
+    }
 }
 
 QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
@@ -289,7 +313,6 @@ QString Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
     loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
     returnVal = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
 
-
     return returnVal;
 }
 
@@ -328,14 +351,19 @@ QString Settings::CheckStatusCode(QString statusCode){
     QString returnVal;
     if (statusCode.startsWith("2")){
         returnVal = "Success";
+        emit saveSucceeded();
     }else if (statusCode.startsWith("3")) {
         returnVal = "API Connection Error";
+        emit saveFailed();
     }else if (statusCode.startsWith("4")) {
         returnVal = "Input Error";
+        emit saveFailed();
     }else if (statusCode.startsWith("5")) {
         returnVal = "DB Error";
+        emit saveFailed();
     }else{
         returnVal = "Unknown Error";
+        emit saveFailed();
     }
     return returnVal;
 }

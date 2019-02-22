@@ -26,6 +26,10 @@ Rectangle {
     height: Screen.height
     color: darktheme == true? "#14161B" : "#FDFDFD"
 
+    MouseArea {
+        anchors.fill: parent
+    }
+
     Label {
         id: welcomeText
         z: 1
@@ -59,7 +63,7 @@ Rectangle {
     Label {
         id: currencyLabel
         z: 1
-        text: "Default wallet currency:"
+        text: "WALLET CURRENCY:"
         font.pixelSize: 16
         font.family: xciteMobile.name
         font.bold: true
@@ -193,7 +197,7 @@ Rectangle {
     Label {
         id: pincodeLabel
         z: 1
-        text: "Pinlock active:"
+        text: "PINLOCK ACTIVE:"
         font.pixelSize: 16
         font.family: xciteMobile.name
         font.bold: true
@@ -317,6 +321,73 @@ Rectangle {
         color: "transparent"
         opacity: 0.5
         border.color: userSettings.pinlock === true? maincolor : "#979797"
+        border.width: 1
+    }
+
+
+
+    Rectangle {
+        id: clearButton
+        width: doubbleButtonWidth / 2
+        height: 34
+        color: maincolor
+        opacity: 0.25
+        anchors.bottom: closeSettings.top
+        anchors.bottomMargin: 35
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        MouseArea {
+            anchors.fill: clearButton
+
+            onPressed: {
+                parent.opacity = 0.5
+                click01.play()
+                detectInteraction()
+            }
+
+            onCanceled: {
+                parent.opacity = 0.25
+            }
+
+            onReleased: {
+                parent.opacity = 0.25
+            }
+
+            onClicked: {
+                if(userSettings.pinlock === true) {
+                    pincodeTracker = 1
+                    clearAll = 1
+                }
+                else {
+                    clearAllSettings()
+                    userSettings.locale = "en_us"
+                    userSettings.defaultCurrency = 0
+                    userSettings.theme = "dark"
+                    userSettings.pinlock = false
+                    userSettings.accountCreationComplete = true
+                    savePincode("0000")
+                }
+            }
+        }
+    }
+    Text {
+        text: "RESET"
+        font.family: "Brandon Grotesque"
+        font.pointSize: 14
+        font.bold: true
+        color: maincolor
+        anchors.horizontalCenter: clearButton.horizontalCenter
+        anchors.verticalCenter: clearButton.verticalCenter
+    }
+
+    Rectangle {
+        width: clearButton.width
+        height: 34
+        anchors.bottom: clearButton.bottom
+        anchors.left: clearButton.left
+        color: "transparent"
+        opacity: 0.5
+        border.color: maincolor
         border.width: 1
     }
 
