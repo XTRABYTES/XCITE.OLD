@@ -30,10 +30,14 @@ Item {
     Camera {
         id: camera
         position: Camera.BackFace
-        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addWalletTracker) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
+        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addWalletTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
         focus {
             focusMode: Camera.FocusContinuous
             focusPointMode: CameraFocus.FocusPointAuto
+        }
+
+        onCameraStateChanged: {
+            console.log("camera status: " + camera.cameraStatus)
         }
     }
 
@@ -83,7 +87,7 @@ Item {
                 anchors.fill: scanWindow
                 source: scanWindow
                 color: darktheme == false? "white" : "black"
-                opacity: 0.99
+                opacity: 0.9
             }
         }
 

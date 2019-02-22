@@ -92,7 +92,7 @@ Item {
                 height: addWalletText.height + createAddressText.height + createAddressButton.height + importAddressText.height + importAddressButton.height + skipButton.height + 115
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -100
+                anchors.verticalCenterOffset: -50
                 visible: userSettings.accountCreationCompleted === false
 
                 Label {
@@ -224,15 +224,7 @@ Item {
                             walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "viewOnly": true, "walletNR": walletID, "remove": false});
                             walletID = walletID +1;
                             userSettings.accountCreationCompleted = true
-                            addWalletsToAddressList()
-                            var datamodel = []
-                            for (var i = 0; i < addressList.count; ++i)
-                                datamodel.push(addressList.get(i))
-
-                            var addressListJson = JSON.stringify(datamodel)
-
-                            saveAddressBook(addressListJson)
-                         }
+                        }
                     }
 
                     Text {
@@ -254,7 +246,7 @@ Item {
                 height: onboardCompleteText.height + completeButton.height + 50
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -100
+                anchors.verticalCenterOffset: -50
                 visible: userSettings.accountCreationCompleted === true
 
                 Text {

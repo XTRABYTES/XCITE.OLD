@@ -55,6 +55,7 @@ Rectangle {
     property int contact: contactIndex
 
     function compareTx() {
+        addressExists = 0
         for(var i = 0; i < addressList.count; i++) {
             if (newAddress.text != "") {
                 if (newCoinName.text == "XBY") {
@@ -382,7 +383,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-             }
+            }
         }
 
         DropShadow {
@@ -496,14 +497,26 @@ Rectangle {
                         var addressListJson = JSON.stringify(datamodel)
 
                         saveAddressBook(addressListJson)
+                    }
+                }
+            }
 
-                        // onsaveSucceeded
+            Connections {
+                target: UserSettings
+
+                onSaveSucceeded: {
+                    if (addAddressTracker == 1) {
                         editSaved = 1
+                        coinListTracker = 0
+                    }
+                }
 
-                        // onsaveFailed
-                        // addressID = addressID - 1
-                        // addressList.remove(addressID)
-                        // editFailed = 1
+                onSaveFailed: {
+                    if (addAddressTracker == 1) {
+                        addressID = addressID - 1
+                        addressList.remove(addressID)
+                        editFailed = 1
+                        coinListTracker = 0
                     }
                 }
             }
@@ -539,6 +552,8 @@ Rectangle {
             visible: editSaved == 0
                      && scanQRTracker == 0
         }
+
+        // save failed state
 
         // save success state
 
@@ -622,6 +637,7 @@ Rectangle {
                 }
             }
         }
+
         Text {
             text: "OK"
             font.family: "Brandon Grotesque"

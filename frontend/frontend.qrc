@@ -167,5 +167,6 @@
         <file>Controls/+mobile/Goodbey.qml</file>
         <file>Controls/+mobile/DebugConsole.qml</file>
         <file>Controls/+mobile/ImportKey.qml</file>
+        <file>Controls/+mobile/AddViewOnlyWallet.qml</file>
     </qresource>
 </RCC>

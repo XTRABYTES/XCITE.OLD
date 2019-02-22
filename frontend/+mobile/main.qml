@@ -211,6 +211,7 @@ ApplicationWindow {
     property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
+    property int viewOnlyTracker: 0
     property int importKeyTracker: 0
     property int appsTracker: 0
     property int coinTracker: 0
@@ -260,6 +261,7 @@ ApplicationWindow {
     property string selectedAddress: ""
     property string currentAddress: ""
     property var calculatedAmount: ""
+    property string scanningKey: ""
     property string scanning: "scanning..."
     property string addressbookName: ""
     property string addressbookHash: ""
@@ -290,6 +292,7 @@ ApplicationWindow {
     property bool newAccount
     property real changeBalance: 0
     property string notificationDate: ""
+    property bool walletAdded: false
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -688,8 +691,7 @@ ApplicationWindow {
             userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
             userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
             userSettings.locale = settingsLoaded.locale;
-            userSettings.pinlock =  settingsLoaded.pinlock === "true";
-
+            userSettings.pinlock = settingsLoaded.pinlock === "true";
             userSettings.theme = settingsLoaded.theme;
         }
         else {
@@ -763,29 +765,6 @@ ApplicationWindow {
         if (interactionTracker == 0) {
             interactionTracker = 1
         }
-    }
-
-    function addWalletsToAddressList() {
-        for(var i = 0; i < walletList.count; i++){
-            if (walletList.get(i).remove === false) {
-                addressList.append({"contact": 0, "label": getLabelAddress(walletList.get(i).name, walletList.get(i).address), "address": walletList.get(i).address, "logo": getLogo(walletList.get(i).name), "coin": walletList.get(i).name, "favorite": 1, "active": walletList.get(i).active, "uniqueNR": addressID, "remove": false});
-                addressID = addressID + 1
-            }
-        }
-    }
-
-    function addOwnContact() {
-        contactList.setProperty(0, "firstName", "My addresses");
-        contactList.setProperty(0, "lastName", "");
-        contactList.setProperty(0, "photo", profilePictures.get(0).photo);
-        contactList.setProperty(0, "telNR", "");
-        contactList.setProperty(0, "cellNR", "");
-        contactList.setProperty(0, "mailAddress", "");
-        contactList.setProperty(0, "chatID", "");
-        contactList.setProperty(0, "favorite", true);
-        contactList.setProperty(0, "contactNR", contactID);
-        contactList.setProperty(0, "remove", false);
-        contactID = contactID + 1
     }
 
     // Listmodels

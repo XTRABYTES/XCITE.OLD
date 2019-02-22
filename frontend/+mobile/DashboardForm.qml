@@ -454,6 +454,80 @@ Item {
                     }
                 }
 
+                Rectangle {
+                    id: addButton5
+                    z: 3
+                    radius: 25
+                    anchors.fill: addButton4
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
+                    opacity: 0.1
+                    visible: addButton4.visible
+
+                }
+
+                Rectangle {
+                    id: addButton4
+                    z: 3
+                    height: 50
+                    width: 50
+                    radius: 25
+                    anchors.left: parent.left
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 50
+                    color: "transparent"
+                    visible: anchors.leftMargin > -110
+                    state: coinTracker == 1 ? "inView" : "hidden"
+
+                    states: [
+                        State {
+                            name: "inView"
+                            PropertyChanges { target: addButton4; anchors.leftMargin: 15}
+                        },
+                        State {
+                            name: "hidden"
+                            PropertyChanges { target: addButton4; anchors.leftMargin: -110}
+                        }
+                    ]
+
+                    transitions: [
+                        Transition {
+                            from: "*"
+                            to: "*"
+                            NumberAnimation { target: addButton4; properties: "anchors.leftMargin"; duration: 300; easing.type: Easing.InOutCubic}
+                        }
+                    ]
+
+                    Image {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        source: 'qrc:/icons/mobile/add-icon_01.svg'
+                        width: 50
+                        height: 50
+
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            addButton5.opacity = 0.5
+                            detectInteraction()
+                        }
+
+                        onReleased: {
+                            addButton5.opacity = 0.1
+                        }
+
+                        onClicked: {
+                            addWalletTracker = 1
+                            walletAdded = false
+                            selectedPage = "wallet"
+                            mainRoot.push("qrc:/Controls/+mobile/AddWallet.qml")
+                        }
+                    }
+                }
+
                 Controls.AddCoinModal{
                     z: 3
                     id: addCoinModal
@@ -1835,6 +1909,7 @@ Item {
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
+        visible: selectedPage == "home" && scanQRTracker == 1
     }
 
     Controls.Sidebar{

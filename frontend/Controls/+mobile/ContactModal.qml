@@ -1,4 +1,4 @@
- /**
+/**
  * Filename: ContactModal.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -28,13 +28,15 @@ Rectangle {
     anchors.top: parent.top
 
     onStateChanged: {
-        contactName.text = contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName
-        newFirstname.text = contactList.get(contactIndex).firstName
-        newLastname.text = contactList.get(contactIndex).lastName
-        newTel.text = contactList.get(contactIndex).telNR
-        newCell.text = contactList.get(contactIndex).cellNR
-        newMail.text = contactList.get(contactIndex).mailAddress
-        newChat.text = contactList.get(contactIndex).chatID
+        contactName.text = contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName;
+        oldFirstName = contactList.get(contactIndex).firstName;
+        oldLastName = contactList.get(contactIndex).lastName;
+        oldTel = contactList.get(contactIndex).telNR;
+        oldText = contactList.get(contactIndex).cellNR;
+        oldMail = contactList.get(contactIndex).mailAddress;
+        oldChat = contactList.get(contactIndex).chatID;
+
+        contactExists = 0
     }
 
     states: [
@@ -60,6 +62,12 @@ Rectangle {
     property int contactExists: 0
     property int deleteContactTracker: 0
     property int deleteConfirmed: 0
+    property string oldFirstName
+    property string oldLastName
+    property string oldTel
+    property string oldText
+    property string oldMail
+    property string oldChat
 
     function compareName() {
         contactExists = 0
@@ -149,7 +157,6 @@ Rectangle {
             anchors.topMargin: 40
             visible: editSaved == 0
                      && deleteContactTracker == 0
-                     && contactIndex != 0
 
             Rectangle {
                 id: deleteButton
@@ -213,7 +220,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newFirstname
-            text: ""
+            text: oldFirstName
             height: 34
             placeholder: "FIRST NAME"
             anchors.bottom: newPhoto.verticalCenter
@@ -228,8 +235,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
-            deleteBtn: contactIndex == 0? 0 : 1
-            readOnly: contactIndex == 0
+            deleteBtn: 1
             onTextChanged: {
                 detectInteraction()
                 compareName()
@@ -238,7 +244,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newLastname
-            text: ""
+            text: oldLastName
             height: 34
             placeholder: "LAST NAME"
             anchors.left: newFirstname.left
@@ -251,8 +257,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
             mobile: 1
-            deleteBtn: contactIndex == 0? 0 : 1
-            readOnly: contactIndex == 0
+            deleteBtn: 1
             onTextChanged: {
                 detectInteraction()
                 compareName()
@@ -278,7 +283,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newTel
-            text: ""
+            text: oldTel
             height: 34
             placeholder: "TELEPHONE NUMBER"
             anchors.left: newPhoto.left
@@ -297,7 +302,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newCell
-            text: ""
+            text: oldText
             height: 34
             placeholder: "CELLPHONE NUMBER"
             anchors.left: newTel.left
@@ -316,7 +321,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newMail
-            text: ""
+            text: oldMail
             height: 34
             placeholder: "EMAIL ADDRESS"
             anchors.left: newCell.left
@@ -334,7 +339,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newChat
-            text: ""
+            text: oldChat
             height: 34
             placeholder: "X-CHAT ID"
             anchors.left: newMail.left
@@ -391,7 +396,36 @@ Rectangle {
                         contactList.setProperty(contactIndex, "cellNR", newCell.text);
                         contactList.setProperty(contactIndex, "mailAddress", newMail.text);
                         contactList.setProperty(contactIndex, "chatID", newChat.text);
+
+                        var datamodel = []
+                        for (var i = 0; i < contactList.count; ++i)
+                            datamodel.push(contactList.get(i))
+
+                        var contactListJson = JSON.stringify(datamodel)
+                        saveContactList(contactListJson)
+                    }
+                }
+            }
+
+            Connections {
+                target: UserSettings
+
+                onSaveSucceeded: {
+                    if (editContactTracker == 1) {
                         editSaved = 1
+                    }
+                }
+
+                onSaveFailed: {
+                    if (editContactTracker == 1) {
+
+                        contactList.setProperty(contactIndex, "firstName", oldFirstName);
+                        contactList.setProperty(contactIndex, "lastName", oldLastName);
+                        contactList.setProperty(contactIndex, "telNR", oldTel);
+                        contactList.setProperty(contactIndex, "cellNR", oldText);
+                        contactList.setProperty(contactIndex, "mailAddress", oldMail);
+                        contactList.setProperty(contactIndex, "chatID", oldChat);
+                        //editFailed = 1
                     }
                 }
             }
@@ -596,9 +630,34 @@ Rectangle {
                     }
 
                     onClicked: {
-                        deleteConfirmed = 1
+
                         contactList.setProperty(contactIndex, "remove", true)
-                        contactExists = 0
+
+                        var datamodel = []
+                        for (var i = 0; i < contactList.count; ++i)
+                            datamodel.push(contactList.get(i))
+
+                        var contactListJson = JSON.stringify(datamodel)
+                        saveContactList(contactListJson)
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (editContactTracker == 1) {
+                            deleteConfirmed = 1
+                            contactExists = 0
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (editContactTracker == 1) {
+
+                            contactList.setProperty(contactIndex, "remove", false);
+                            //deleteFailed = 1
+                        }
                     }
                 }
             }
@@ -677,6 +736,8 @@ Rectangle {
                 border.width: 1
             }
         }
+
+        // Delete failed state
 
         // Delete success state
 

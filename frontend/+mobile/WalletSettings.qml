@@ -63,7 +63,7 @@ Rectangle {
     Label {
         id: currencyLabel
         z: 1
-        text: "Default wallet currency:"
+        text: "WALLET CURRENCY:"
         font.pixelSize: 16
         font.family: xciteMobile.name
         font.bold: true
@@ -197,7 +197,7 @@ Rectangle {
     Label {
         id: pincodeLabel
         z: 1
-        text: "Pinlock active:"
+        text: "PINLOCK ACTIVE:"
         font.pixelSize: 16
         font.family: xciteMobile.name
         font.bold: true
