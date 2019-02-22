@@ -255,7 +255,7 @@ Rectangle {
             width: parent.width - 56
             height: 34
             color: ((newFirstname.text !== ""
-                    || newLastname.text !== "")
+                     || newLastname.text !== "")
                     && contactExists == 0) ? maincolor : "#727272"
             opacity: 0.25
             anchors.top: newChat.bottom
@@ -293,14 +293,24 @@ Rectangle {
 
                         var contactListJson = JSON.stringify(datamodel)
                         saveContactList(contactListJson)
+                    }
+                }
+            }
 
-                        // onsaveSucceeded
+            Connections {
+                target: UserSettings
+
+                onSaveSucceeded: {
+                    if (addContactTracker == 1) {
                         editSaved = 1
+                    }
+                }
 
-                        // onsaveFailed
-                        // contactID = contactID - 1
-                        // contactList.remove(contactID)
-                        // editFailed = 1
+                onSaveFailed: {
+                    if (addContactTracker == 1) {
+                        contactID = contactID - 1
+                        contactList.remove(contactID)
+                        editFailed = 1
                     }
                 }
             }
@@ -312,7 +322,7 @@ Rectangle {
             font.pointSize: 14
             font.bold: true
             color: ((newFirstname.text !== ""
-                    || newLastname.text !== "")
+                     || newLastname.text !== "")
                     && contactExists == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
@@ -333,7 +343,9 @@ Rectangle {
             visible: editSaved == 0
         }
 
-        // save state
+        // save failed state
+
+        // save success state
 
         Rectangle {
             id: saveConfirmed

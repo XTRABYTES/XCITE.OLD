@@ -23,7 +23,7 @@ Rectangle {
     width: Screen.width
     state: createWalletTracker == 1? "up" : "down"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
@@ -57,11 +57,18 @@ Rectangle {
     property int createWalletFailed: 0
     property int labelExists: 0
     property string walletError: "We were unable to create a wallet for you."
-    property string coin: "XFUEL"
+    property string coin: coinList.get(coinIndex).name
     property url logo: getLogo(coin)
 
     function compareName() {
-
+        labelExists = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if(walletList.get(i).name === coinList.get(coinIndex).name){
+                if (walletList.get(i).label === newName.text && walletList.get(i).remove === false) {
+                    labelExists = 1
+                }
+            }
+        }
     }
 
     Text {
@@ -176,7 +183,7 @@ Rectangle {
 
                     onReleased: {
                         if (newName.text != "" && labelExists == 0) {
-                            // function to create new address and add to the app and retrieve public key
+                            // function to create new address and retrieve public key
 
                             // publicKey.text = "" && privateKey.text = ""
 
@@ -343,6 +350,7 @@ Rectangle {
                     }
 
                     onReleased: {
+                        // function to add wallet to the account
                         // walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : function to retrive balance from BC, "unconfirmedCoins": function to retrive balance from BC, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
                         // walletID = walletID + 1
                         // addressList.apped({"contact": 0, "address": publicKey.text, "label": newName.text, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
@@ -433,6 +441,7 @@ Rectangle {
                     }
 
                     onClicked: {
+                        walletAdded = true
                         addWalletTracker = 0;
                         editSaved = 0;
                         newWallet = 0

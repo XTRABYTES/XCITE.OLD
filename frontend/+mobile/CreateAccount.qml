@@ -400,7 +400,6 @@ Rectangle {
                         userSettings.pinlock = false
                         userSettings.accountCreationCompleted = false
                         savePincode("0000");
-                        addOwnContact();
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
                             datamodel.push(contactList.get(i))

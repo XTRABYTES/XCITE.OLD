@@ -1,5 +1,5 @@
 /**
- * Filename: Import.qml
+ * Filename: ImportKey.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -23,7 +23,7 @@ Rectangle {
     width: Screen.width
     state: importKeyTracker == 1? "up" : "down"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
@@ -56,19 +56,27 @@ Rectangle {
     property int addressExists: 0
     property int labelExists: 0
     property string walletError: " there is no wallet associated with the private key you provided. Please try again with a different key"
-    property string coin: "XFUEL"
+    property string coin: coinList.get(coinIndex).name
 
     function compareTx() {
-
+        // check if provide key is not already linked to the account
     }
 
     function compareName() {
-
+        labelExists = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if(walletList.get(i).name === coinList.get(coinIndex).name){
+                if (walletList.get(i).label === newName.text && walletList.get(i).remove === false) {
+                    labelExists = 1
+                }
+            }
+        }
     }
 
     function checkAddress() {
-
+        // check if provided private key has the correct format
     }
+
     Text {
         id: addWalletLabel
         text: "ADD EXISTING WALLET"
@@ -190,7 +198,7 @@ Rectangle {
 
             Label {
                 id: addressWarning1
-                text: "Already a contact for this address!"
+                text: "This address is already in your account!"
                 color: "#FD2E2E"
                 anchors.left: newAddress.left
                 anchors.leftMargin: 5
@@ -300,7 +308,7 @@ Rectangle {
                                 && invalidAddress == 0
                                 && addressExists == 0
                                 && labelExists == 0) {
-                            // function to create new address and add to the app and retrieve public key
+                            // function to create new address and retrieve public key
                             // walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : function to retrive balance from BC, "unconfirmedCoins": function to retrive balance from BC, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
                             // walletID = walletID + 1
                             // addressList.apped({"contact": 0, "address": publicKey.text, "label": newName.text, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
@@ -379,7 +387,8 @@ Rectangle {
 
             Label {
                 id: saveSuccessLabel
-                text: "Wallet added!"
+                text: "Wallet added!<br><br> DON'T FORGET TO BACK UP YOU PRIVATE KEY!"
+                maximumLineCount: 3
                 anchors.top: saveSuccess.bottom
                 anchors.topMargin: 10
                 anchors.horizontalCenter: saveSuccess.horizontalCenter
@@ -408,6 +417,7 @@ Rectangle {
                     }
 
                     onClicked: {
+                        walletAdded = true
                         importKeyTracker = 0;
                         editSaved = 0;
                         addressExists = 0
@@ -613,5 +623,6 @@ Rectangle {
         id: scanPrivateKey
         z: 10
         key: "PRIVATE KEY"
+        visible: importKeyTracker == 1 && scanQRTracker == 1
     }
 }
