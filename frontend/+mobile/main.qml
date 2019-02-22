@@ -685,11 +685,11 @@ ApplicationWindow {
 
     function loadSettings(settingsLoaded) {
         if (typeof settingsLoaded !== "undefined") {
-            userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted;
+            userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
             userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
             userSettings.locale = settingsLoaded.locale;
-            var pinlock = settingsLoaded.pinlock; //have to set pinlock to var or it doesn't actually save the value for some reason
-            userSettings.pinlock = pinlock;
+            userSettings.pinlock =  settingsLoaded.pinlock === "true";
+
             userSettings.theme = settingsLoaded.theme;
         }
         else {

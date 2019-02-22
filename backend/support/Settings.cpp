@@ -93,6 +93,7 @@ void Settings::CreateUser(QString username, QString password){
 
         QVariantMap settings;
         settings.insert("app","xtrabytes");
+        m_settings->setValue("app","xtrabytes");
 
         QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
