@@ -74,7 +74,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
-        visible: selectWallet == 0 && walletAdded == false
+        visible: selectWallet == 0
 
         Label {
             id: addWalletText1
@@ -416,7 +416,7 @@ Rectangle {
     Item {
         id: addWalletComplete
         width: parent.width
-        height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
+        height: saveSuccess.height + saveSuccessLabel.height + moreWallets.height + 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
@@ -445,17 +445,18 @@ Rectangle {
         }
 
         Rectangle {
-            id: closeSave
+            id: moreWallets
             width: doubbleButtonWidth
             height: 34
-            color: maincolor
-            opacity: 0.25
+            color: "transparent"
+            border.color: maincolor
+            border.width: 1
             anchors.top: saveSuccessLabel.bottom
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
 
             MouseArea {
-                anchors.fill: closeSave
+                anchors.fill: parent
 
                 onPressed: {
                     parent.opacity = 0.5
@@ -483,8 +484,8 @@ Rectangle {
             font.pointSize: 14
             font.bold: true
             color: darktheme == true? "#F2F2F2" : maincolor
-            anchors.horizontalCenter: closeSave.horizontalCenter
-            anchors.verticalCenter: closeSave.verticalCenter
+            anchors.horizontalCenter: moreWallets.horizontalCenter
+            anchors.verticalCenter: moreWallets.verticalCenter
         }
     }
 

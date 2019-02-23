@@ -81,7 +81,7 @@ Rectangle {
                     console.log("defaultCurrency: " + currencyNR)
                     currencyTracker = 0
                     saveAppSettings()
-                    sumBalance()
+                    updateBalance()
                 }
             }
 

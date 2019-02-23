@@ -1,5 +1,5 @@
 /**
- * Filename: AddAddressModal.qml
+ * Filename: Notifications.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -23,8 +23,6 @@ Rectangle {
     width: Screen.width
     height: Screen.height
     color: bgcolor
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.top: parent.top
 
     Text {
         id: notificationModalLabel
@@ -64,6 +62,7 @@ Rectangle {
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
+        visible: alertList.count > 1
 
         Image {
             id: clearIcon
