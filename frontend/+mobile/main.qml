@@ -624,7 +624,7 @@ ApplicationWindow {
     }
 
     function checkNotifications() {
-        if (noticationList.count > 0) {
+        if (notificationList.count > 0) {
             alert = true
         }
     }

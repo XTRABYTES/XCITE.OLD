@@ -239,7 +239,8 @@ void Settings::LoadSettings(QByteArray settings){
         QString walletFile = LoadFile(m_username.toLower() + "wallet");
         QByteArray decodedWallet = encryption.decode(walletFile.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
         qDebug().noquote() << "Decoded Wallet " + decodedWallet;
-        /* >>>>>>> This is where it fails <<<<<<<< */
+        int pos = decodedWallet.lastIndexOf(QChar(']')); // find last bracket to mark the end of the json
+        decodedWallet = decodedWallet.left(pos+1); //remove everything after the valid json
         walletArray = QJsonDocument::fromJson(decodedWallet).array();
         qDebug().noquote() << walletArray;
     }else{
