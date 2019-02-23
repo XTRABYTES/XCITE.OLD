@@ -1670,9 +1670,26 @@ Item {
                     id: notifIndicator
                     width: 8
                     height: 8
-                    color: notification == 1? "#E55541" : "transparent"
+                    radius: 4
+                    color: alert == true? "#E55541" : "transparent"
                     anchors.horizontalCenter: parent.right
                     anchors.verticalCenter: parent.bottom
+
+                    Timer {
+                        id: alertTimer
+                        interval: 1000
+                        repeat: true
+                        running: sessionStart == 1
+
+                        onTriggered: {
+                            if (alert == true) {
+                                notifIndicator.color = "#E55541"
+                            }
+                            else {
+                                notifIndicator.color = "transparent"
+                            }
+                        }
+                    }
                 }
 
                 MouseArea {

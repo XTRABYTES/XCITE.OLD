@@ -12,7 +12,10 @@
 
 import QtQuick 2.7
 import QtQuick.Controls 2.3
-import SortFilterProxyModel 0.2
+import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
+import QtMultimedia 5.8
+import QtQuick.Window 2.2
 
 import "qrc:/Controls" as Controls
 
@@ -28,41 +31,12 @@ Rectangle {
             id: notificationRow
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
-            height: 80
+            height: date == "null"? 0 : 110
             color:"transparent"
+            clip: true
 
             Controls.CardBody {
 
-            }
-
-            Image {
-                id: deleteNotification
-                width: 25
-                fillMode: Image.PreserveAspectFit
-                source: darktheme == true? "qrc:/icons/mobile/debug-icon_01_light.svg" : "qrc:/icons/mobile/debug-icon_01_dark.svg"
-                anchors.top: parent.top
-                anchors.topMargin: 14
-                anchors.right: parent.right
-                anchors.rightMargin: 28
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: "transparent"
-
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onPressed: {
-                            click01.play()
-                            detectInteraction()
-                        }
-
-                        onClicked: {
-                            ListView.currentIndex
-                            notifificationList.remove(ListView.currentIndex)
-                        }
-                    }
-                }
             }
 
             Label {
@@ -73,7 +47,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 14
                 font.family: xciteMobile.name
-                font.pixelSize: 14
+                font.pixelSize: 12
                 font.capitalization: Font.SmallCaps
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
@@ -83,8 +57,8 @@ Rectangle {
                 text: origin
                 anchors.left: parent.left
                 anchors.leftMargin: 28
-                anchors.right: deleteNotification.left
-                anchors.rightMargin: 10
+                anchors.right: parent.right
+                anchors.rightMargin: 28
                 anchors.top: notificationDate.bottom
                 anchors.topMargin: 1
                 font.family: xciteMobile.name
@@ -100,7 +74,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: 28
                 anchors.top: notificationOrigin.bottom
-                anchors.topMargin: 15
+                anchors.topMargin: 10
                 anchors.right: parent.right
                 anchors.rightMargin: 28
                 font.family: xciteMobile.name
@@ -114,8 +88,8 @@ Rectangle {
 
     ListView {
         anchors.fill: parent
-        id: picklist
-        model: notificationList
+        id: notificationlist
+        model: alertList
         delegate: notificationLine
         onDraggingChanged: detectInteraction()
     }

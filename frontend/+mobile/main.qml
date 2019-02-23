@@ -126,6 +126,11 @@ ApplicationWindow {
         coinList.setProperty(0, "coinID", 0);
         coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": 1});
 
+        alertList.append({"date": "February 20 2019  14:28", "origin": "XFUEL Test", "message": "test 1"});
+        alertList.append({"date": "February 20 2019  14:32", "origin": "XFUEL Main", "message": "test 2"});
+        alertList.append({"date": "February 20 2019  14:41", "origin": "XBY Main", "message": "test 3"});
+        alertList.append({"date": "February 20 2019  15:02", "origin": "XFUEL Test", "message": "test 4"});
+
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
         marketValueChangedSignal("btcgbp");
@@ -256,7 +261,6 @@ ApplicationWindow {
     property int newWalletPicklist: 0
     property int newWalletSelect: 0
     property int switchState: 0
-    property int notification: 0
     property string scannedAddress: ""
     property string selectedAddress: ""
     property string currentAddress: ""
@@ -331,11 +335,9 @@ ApplicationWindow {
                             difference = "decreased"
                         }
                         walletList.setProperty(i, "balance", balance)
-                        if (transferTracker == 0) {
-                            notification = 1
-                            balanceAlert = "Your balance has " + difference + " with: <b>" + changeBalance + "</b>"
-                            notificationList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).coin + " " + walletList.get(i).label)})
-                        }
+                        balanceAlert = "Your balance has " + difference + " with: <b>" + changeBalance + "</b>"
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).coin + " " + walletList.get(i).label)})
+                        alert = true
                     }
                 }
             }
@@ -624,8 +626,11 @@ ApplicationWindow {
     }
 
     function checkNotifications() {
-        if (notificationList.count > 0) {
+        if (alertList.count > 1) {
             alert = true
+        }
+        else {
+            alert = false
         }
     }
 
@@ -882,11 +887,11 @@ ApplicationWindow {
     }
 
     ListModel {
-        id: notificationList
+        id: alertList
         ListElement {
-            date: ""
-            message: ""
-            origin: ""
+            date: "null"
+            message: "null"
+            origin: "null"
         }
     }
 

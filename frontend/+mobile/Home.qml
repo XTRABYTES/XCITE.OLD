@@ -30,6 +30,7 @@ Item {
         else {
             sumBalance()
             checkNotifications()
+            console.log("notifications: " + alertList)
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"
         }
