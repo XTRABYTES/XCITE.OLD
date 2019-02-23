@@ -90,7 +90,6 @@ ApplicationWindow {
 
     Component.onCompleted: {
         clearAllSettings()
-        console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
 
         contactID = 0
         addressID = 1
@@ -338,6 +337,7 @@ ApplicationWindow {
                         balanceAlert = "Your balance has " + difference + " with: <b>" + changeBalance + "</b>"
                         alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).coin + " " + walletList.get(i).label)})
                         alert = true
+                        sumbalance()
                     }
                 }
             }
@@ -657,8 +657,6 @@ ApplicationWindow {
             percentageXBY = currencyVal;
             percentageXFUEL = currencyVal;
         }
-
-        console.log("Currency: " + currency + " And value is: " + currencyVal);
     }
 
     function loadContactList(contacts) {
@@ -941,7 +939,6 @@ ApplicationWindow {
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
-            console.log("callingMarketValue");
             marketValueChangedSignal("btcusd")
             marketValueChangedSignal("btceur")
             marketValueChangedSignal("btcgbp")
@@ -965,7 +962,6 @@ ApplicationWindow {
             }
             else {
                 sessionTime = sessionTime +1
-                console.log("Time until automatic log out: " +  (5 - (sessionTime / 2)) + " minute(s)")
                 if (sessionTime >= 10){
                     sessionTime = 0
                     sessionStart = 0
@@ -1019,7 +1015,6 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            console.log("log out request sent!")
             requestedLogout = 1
         }
     }
@@ -1032,7 +1027,6 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            console.log("Session closed by server")
             sessionClosed = 1
         }
     }

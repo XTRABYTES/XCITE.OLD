@@ -52,7 +52,7 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed : 0
-    property int addWalletFailed: 0
+    property int importWalletFailed: 0
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
@@ -106,7 +106,7 @@ Rectangle {
         Rectangle {
             id: addWalletScrollArea
             width: parent.width
-            height: editSaved == 1? addSucces.height : (addWalletFailed == 1? addError.height : addWallet.height)
+            height: (editSaved == 1 || editFailed == 1)? addSucces.height : (importWalletFailed == 1? addError.height : addWallet.height)
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
@@ -119,7 +119,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -100
-            visible: editSaved == 0 && addWalletFailed == 0
+            visible: editSaved == 0 && importWalletFailed == 0 && editFailed == 0
 
             Text {
                 id: addWalletText
@@ -365,7 +365,7 @@ Rectangle {
 
                     /**
                     onExtractionFailed: {
-                        addWalletFailed = 1
+                        importWalletFailed = 1
                     }*/
                 }
             }
@@ -403,6 +403,82 @@ Rectangle {
 
         // Save failed state
 
+        Item {
+            id: addWalletFailed
+            width: parent.width
+            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+            visible: editFailed == 1
+
+            Image {
+                id: saveFailed
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+            }
+
+            Label {
+                id: saveFailedLabel
+                text: "Failed to save your wallet!"
+                anchors.top: saveFailed.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
+            Rectangle {
+                id: closeFail
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        editFailed = 0
+                    }
+                }
+            }
+
+            Text {
+                text: "TRY AGAIN"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeFail.horizontalCenter
+                anchors.verticalCenter: closeFail.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeFail.bottom
+                anchors.left: closeFail.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+            }
+        }
+
         // Save success state
         Item {
             id: addSucces
@@ -410,7 +486,7 @@ Rectangle {
             height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+            anchors.verticalCenterOffset: -50
             visible: editSaved == 1
 
             Image {
@@ -506,8 +582,8 @@ Rectangle {
             height: saveError.height + errorLabel.height + closeError.height + 40
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
-            visible: addWalletFailed == 1
+            anchors.verticalCenterOffset: -50
+            visible: importWalletFailed == 1
 
             Image {
                 id: saveError
@@ -553,7 +629,7 @@ Rectangle {
                     }
 
                     onClicked: {
-                        addWalletFailed = 0
+                        importWalletFailed = 0
                         selectedAddress = ""
                         scanning = "scanning..."
                     }
@@ -614,8 +690,9 @@ Rectangle {
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         visible: importKeyTracker == 1
                  && editSaved == 0
+                 && editFailed == 0
                  && scanQRTracker == 0
-                 && addWalletFailed == 0
+                 && importWalletFailed == 0
 
         Rectangle{
             id: closeButton

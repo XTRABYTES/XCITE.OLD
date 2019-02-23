@@ -256,8 +256,8 @@ Rectangle {
                     onClicked: {
                         if (selectedPage != "apps") {
                             appsTracker = 0
-                            //selectedPage = "apps"
-                            //mainRoot.push("../Applications.qml")
+                            selectedPage = "apps"
+                            mainRoot.push("../Applications.qml")
                         }
                     }
                 }
@@ -286,25 +286,10 @@ Rectangle {
                     width: 8
                     height: 8
                     radius: 4
-                    color: alert == true? "#E55541" : "transparent"
+                    color: "#E55541"
                     anchors.horizontalCenter: parent.right
                     anchors.verticalCenter: parent.top
-
-                    Timer {
-                        id: alertTimer
-                        interval: 1000
-                        repeat: true
-                        running: sessionStart == 1
-
-                        onTriggered: {
-                            if (alert == true) {
-                                notifIndicator.color = "#E55541"
-                            }
-                            else {
-                                notifIndicator.color = "transparent"
-                            }
-                        }
-                    }
+                    visible: alertList.count > 1
                 }
 
                 Text {

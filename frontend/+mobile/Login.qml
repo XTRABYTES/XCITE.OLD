@@ -181,36 +181,30 @@ Item {
                 onContactsLoaded: {
                     console.log("contacts loaded")
                     loadContactList(contacts)
-                    console.log("first contact in contactlist: " + contactList.get(0).firstName + " " + contactList.get(0).lastName)
                 }
 
                 onAddressesLoaded: {
                     console.log("addressbook loaded")
                     loadAddressList(addresses)
-                    console.log("number of addresses: " + addressList.count)
                 }
                 onWalletLoaded: {
                     console.log("wallet loaded")
                     loadWalletList(wallets)
-                    console.log("number of wallets: " + walletList.count)
                 }
 
                 onClearSettings:{
                     clearSettings();
-                    console.log("Settings cleared: locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                 }
 
                 onSettingsLoaded: {
                     console.log("settings loaded")
                     loadSettings(settings);
-                    console.log("Loading settings from DB: locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                 }
                 /** onTransactionsLoaded: {
                         loadHistoryList(history)
                     }**/
 
                 onLoginSucceededChanged: {
-                    console.log("log in succeeded");
                     username = userName.text
                     passError = 0
                     networkError = 0

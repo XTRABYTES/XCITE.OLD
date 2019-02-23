@@ -139,6 +139,18 @@ Item {
                     state: (coinTracker == 0)? "up" : "down"
                     onStateChanged: detectInteraction()
 
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            sumBalance()
+                        }
+                    }
+
                     states: [
                         State {
                             name: "up"
@@ -174,7 +186,6 @@ Item {
                         z: 5
                         anchors.left: valueTicker.right
                         anchors.verticalCenter: totalWalletValue.verticalCenter
-                        //anchors.verticalCenterOffset: 105
                         text: balanceArray[0]
                         font.pixelSize: 60
                         font.family: xciteMobile.name
@@ -1671,25 +1682,10 @@ Item {
                     width: 8
                     height: 8
                     radius: 4
-                    color: alert == true? "#E55541" : "transparent"
+                    color: "#E55541"
                     anchors.horizontalCenter: parent.right
-                    anchors.verticalCenter: parent.bottom
-
-                    Timer {
-                        id: alertTimer
-                        interval: 1000
-                        repeat: true
-                        running: sessionStart == 1
-
-                        onTriggered: {
-                            if (alert == true) {
-                                notifIndicator.color = "#E55541"
-                            }
-                            else {
-                                notifIndicator.color = "transparent"
-                            }
-                        }
-                    }
+                    anchors.verticalCenter: parent.top
+                    visible: alertList.count > 1
                 }
 
                 MouseArea {
