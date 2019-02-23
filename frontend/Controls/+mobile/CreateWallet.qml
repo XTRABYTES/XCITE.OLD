@@ -53,8 +53,9 @@ Rectangle {
     ]
 
     property int editSaved: 0
+    property int editFailed: 0
     property int newWallet: 0
-    property int createWalletFailed: 0
+    property int createFailed: 0
     property int labelExists: 0
     property string walletError: "We were unable to create a wallet for you."
     property string coin: coinList.get(coinIndex).name
@@ -99,7 +100,7 @@ Rectangle {
         Rectangle {
             id: addWalletScrollArea
             width: parent.width
-            height: newWallet == 1? walletInfo.height : (editSaved == 1? createWalletSucces.height : (createWalletFailed == 1? createWalletError.height : createWallet.height))
+            height: newWallet == 1? walletInfo.height : ((editSaved == 1 || editFailed == 1)? createWalletSucces.height : (createFailed == 1? createWalletError.height : createWallet.height))
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
@@ -111,8 +112,8 @@ Rectangle {
             height: createWalletText.height + newName.height + createWalletButton.height + 75
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
-            visible: newWallet == 0 && editSaved == 0 && createWalletFailed == 0
+            anchors.verticalCenterOffset: -50
+            visible: newWallet == 0 && editSaved == 0 && createFailed == 0
 
             Text {
                 id: createWalletText
@@ -189,7 +190,7 @@ Rectangle {
 
                             //newWallet = 1
                             // or
-                            createWalletFailed = 1 //&& walletError = ..., depending on the outcome
+                            createFailed = 1 //&& walletError = ..., depending on the outcome
                         }
                     }
                 }
@@ -224,7 +225,7 @@ Rectangle {
             height: walletCreatedText.height + coinID.height + pubKey.height + publicKey.height + privKey.height + privateKey.height + warningPrivateKey.height + addWalletButton.height + 100
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+            anchors.verticalCenterOffset: -50
             visible: newWallet == 1 && editSaved == 0
 
             Text {
@@ -350,20 +351,50 @@ Rectangle {
                     }
 
                     onReleased: {
-                        // function to add wallet to the account
-                        // walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : function to retrive balance from BC, "unconfirmedCoins": function to retrive balance from BC, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
-                        // walletID = walletID + 1
-                        // addressList.apped({"contact": 0, "address": publicKey.text, "label": newName.text, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
-                        // addressID = addressID + 1
-                        // var datamodel = []
-                        // for (var i = 0; i < addressList.count; ++i)
-                        //     datamodel.push(addressList.get(i))
-                        // var addressListJson = JSON.stringify(datamodel)
-                        // if (userSettings.accountCreationCompleted === false) {
-                        //      userSettings.accountCreationCompleted = true
-                        // }
-                        // saveAddressBook(addressListJson)
-                        editSaved = 1
+                        walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
+                        walletID = walletID + 1
+                        var dataModelWallet = []
+                        for (var i = 0; i < walletList.count; ++i){
+                            dataModelWallet.push(walletList.get(i))
+                        }
+                        var walletListJson = JSON.stringify(dataModelWallet)
+                        saveWalletList(walletListJson)
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (createWalletTracker == 1 && userSettings.localKeys === false) {
+                            editSaved = 1
+                            labelExists = 0
+                            newName.text = ""
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (createWalletTracker == 1 && userSettings.localKeys === false) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            editFailed = 1
+                        }
+                    }
+
+                    onSaveFileSucceeded: {
+                        if (createWalletTracker == 1 && userSettings.localKeys === true) {
+                            editSaved = 1
+                            labelExists = 0
+                            newName.text = ""
+                        }
+                    }
+
+                    onSaveFileFailed: {
+                        if (createWalletTracker == 1 && userSettings.localKeys === true) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            editFailed = 1
+                        }
                     }
                 }
             }
@@ -392,13 +423,91 @@ Rectangle {
             }
         }
 
+        // Save failed state
+        Item {
+            id: createWalletFailed
+            width: parent.width
+            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+            visible: editFailed == 1
+
+            Image {
+                id: saveFailed
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+            }
+
+            Label {
+                id: saveFailedLabel
+                text: "Failed to save your wallet!"
+                anchors.top: saveFailed.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
+            Rectangle {
+                id: closeFail
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        editFailed = 0
+                    }
+                }
+            }
+
+            Text {
+                text: "TRY AGAIN"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeFail.horizontalCenter
+                anchors.verticalCenter: closeFail.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeFail.bottom
+                anchors.left: closeFail.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+            }
+        }
+
+        // Save succes state
         Item {
             id: createWalletSucces
             width: parent.width
             height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+            anchors.verticalCenterOffset: -50
             visible: editSaved == 1
 
             Image {
@@ -445,8 +554,6 @@ Rectangle {
                         addWalletTracker = 0;
                         editSaved = 0;
                         newWallet = 0
-                        labelExists = 0
-                        newName.text = ""
                         createWalletTracker = 0
                     }
                 }
@@ -474,14 +581,15 @@ Rectangle {
             }
         }
 
+        // Create wallet failed
         Item {
             id: createWalletError
             width: parent.width
             height: saveError.height + errorLabel.height + closeError.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
-            visible: createWalletFailed == 1
+            anchors.verticalCenterOffset: -50
+            visible: createFailed == 1
 
             Image {
                 id: saveError
@@ -526,7 +634,7 @@ Rectangle {
                     }
 
                     onClicked: {
-                        createWalletFailed = 0
+                        createFailed = 0
                     }
                 }
             }
@@ -586,7 +694,7 @@ Rectangle {
         visible: editSaved == 0
                  && newWallet == 0
                  && scanQRTracker == 0
-                 && createWalletFailed == 0
+                 && createFailed == 0
 
         Rectangle{
             id: closeButton

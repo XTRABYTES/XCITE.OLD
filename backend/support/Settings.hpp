@@ -32,6 +32,10 @@ public:
     Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent = 0);
     void setLocale(QString);
     QString CheckStatusCode(QString);
+    void SaveFile(QString, QString);
+    QString LoadFile(QString);
+
+
 
 
 public slots:
@@ -44,6 +48,8 @@ public slots:
     void CreateUser(QString username, QString password);
     void SaveAddresses(QString addresslist);
     void SaveContacts(QString contactlist);
+    void SaveWallet(QString walletlist);
+
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
     QString RestAPIPostCall(QString apiURL, QByteArray payload);
@@ -62,11 +68,14 @@ signals:
     void contactsLoaded(const QString &contacts);
     void addressesLoaded(const QString &addresses);
     void settingsLoaded(const QVariantMap &settings);
+    void walletLoaded(const QString &wallets);
     void clearSettings();
     void pincodeCorrect();
     void pincodeFalse();
     void saveSucceeded();
     void saveFailed();
+    void saveFileSucceeded();
+    void saveFileFailed();
 
 
 
@@ -76,6 +85,7 @@ private:
     QSettings *m_settings;
     QString m_addresses;
     QString m_contacts;
+    QString m_wallet;
     QString m_pincode;
     QString m_username;
     QString m_password;

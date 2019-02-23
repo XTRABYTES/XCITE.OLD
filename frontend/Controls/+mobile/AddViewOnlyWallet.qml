@@ -52,11 +52,17 @@ Rectangle {
         }
     ]
 
+    onStateChanged: {
+        coin = coinIndex
+    }
+
     property int addressExists: 0
     property int labelExists: 0
     property int invalidAddress: 0
     property int coin: 0
     property int scanQR: 0
+    property int editFailed: 0
+    property int editSaved: 0
 
     function compareTx() {
         addressExists = 0
@@ -123,7 +129,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
-        visible: addViewOnly == 1 && walletAdded == false
+        visible: addViewOnly == 1 && editFailed == 0 && editSaved == 0
 
         Label {
             id: addWalletText
@@ -372,23 +378,25 @@ Rectangle {
                             && labelExists == 0) {
                         walletList.append({"name": coinList.get(coin).name, "label": newName.text, "address": newAddress.text, "balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "viewOnly": true, "walletNR": walletID, "remove": false});
                         walletID = walletID +1;
-                        addressList.append({"contact": 0, "address": newAddress.text, "label": newName.text, "logo": getLogo(coinList.get(coin).name), "coin": coinList.get(coin).name, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
-                        addressID = addressID +1;
-                        var datamodel = []
-                        for (var i = 0; i < addressList.count; ++i)
-                            datamodel.push(addressList.get(i))
 
-                        var addressListJson = JSON.stringify(datamodel)
+                        var dataModelWallet = []
+                        for (var i = 0; i < walletList.count; ++i){
+                            dataModelWallet.push(walletList.get(i))
+                        }
+                        var walletListJson = JSON.stringify(dataModelWallet)
+                        saveWalletList(walletListJson)
+                    }
+                }
+            }
 
-                        saveAddressBook(addressListJson)
-                        // function to add wallet to account
-                        // onsaveSucceeded
+            Connections {
+                target: UserSettings
+
+                onSaveSucceeded: {
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === false) {
                         walletAdded = true
+                        editSaved = 1
                         viewOnlyTracker = 0
-                        // onsaveFailed
-                        // addressID = addressID - 1
-                        // addressList.remove(addressID)
-                        // editFailed = 1
                         newName.text = ""
                         newAddress.text = ""
                         addressExists = 0
@@ -397,6 +405,32 @@ Rectangle {
                         scanQR = 0
                         selectedAddress = ""
                         scanning = "scanning..."
+                    }
+                }
+
+                onSaveFailed: {
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === false) {
+                        console.log("save failed")
+                        walletID = walletID - 1
+                        walletList.remove(walletID)
+                        //editFailed = 1
+                    }
+                }
+
+                onSaveFileSucceeded: {
+                    if (viewOnlyTracker == 1) {
+                        console.log("save succeeded" && userSettings.localKeys === true)
+                        editSaved = 1
+
+                    }
+                }
+
+                onSaveFileFailed: {
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === true) {
+                        console.log("save failed")
+                        walletID = walletID - 1
+                        walletList.remove(walletID)
+                        editFailed = 1
                     }
                 }
             }
@@ -429,6 +463,170 @@ Rectangle {
                            && addressExists == 0 && labelExists == 0) ? maincolor : "#979797"
             border.width: 1
             visible: scanQR == 0
+        }
+    }
+
+    // Save failed state
+    Item {
+        id: addWalletFailed
+        width: parent.width
+        height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -50
+        visible: editFailed == 1
+
+        Image {
+            id: saveFailed
+            source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+            height: 100
+            width: 100
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+        }
+
+        Label {
+            id: saveFailedLabel
+            text: "Failed to save your wallet!"
+            anchors.top: saveFailed.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: saveFailed.horizontalCenter
+            color: maincolor
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+        }
+
+        Rectangle {
+            id: closeFail
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: maincolor
+            opacity: 0.25
+            anchors.top: saveFailedLabel.bottom
+            anchors.topMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    editFailed = 0
+                }
+            }
+        }
+
+        Text {
+            text: "TRY AGAIN"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#F2F2F2"
+            anchors.horizontalCenter: closeFail.horizontalCenter
+            anchors.verticalCenter: closeFail.verticalCenter
+        }
+
+        Rectangle {
+            width: doubbleButtonWidth / 2
+            height: 34
+            anchors.bottom: closeFail.bottom
+            anchors.left: closeFail.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: maincolor
+            border.width: 1
+        }
+    }
+
+    // Save succes state
+    Item {
+        id: addWalletSucces
+        width: parent.width
+        height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -50
+        visible: editSaved == 1
+
+        Image {
+            id: saveSuccess
+            source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
+            height: 100
+            width: 100
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+        }
+
+        Label {
+            id: saveSuccessLabel
+            text: "Wallet added!"
+            anchors.top: saveSuccess.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: saveSuccess.horizontalCenter
+            color: maincolor
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+        }
+
+        Rectangle {
+            id: closeSave
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: maincolor
+            opacity: 0.25
+            anchors.top: saveSuccessLabel.bottom
+            anchors.topMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            MouseArea {
+                anchors.fill: closeSave
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    walletAdded = true
+                    editSaved = 0
+                    viewOnlyTracker = 0
+                    newName.text = ""
+                    newAddress.text = ""
+                    addressExists = 0
+                    labelExists = 0
+                    invalidAddress = 0
+                    scanQR = 0
+                    selectedAddress = ""
+                    scanning = "scanning..."
+                }
+            }
+        }
+
+        Text {
+            text: "OK"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#F2F2F2"
+            anchors.horizontalCenter: closeSave.horizontalCenter
+            anchors.verticalCenter: closeSave.verticalCenter
+        }
+
+        Rectangle {
+            width: doubbleButtonWidth / 2
+            height: 34
+            anchors.bottom: closeSave.bottom
+            anchors.left: closeSave.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: maincolor
+            border.width: 1
         }
     }
 

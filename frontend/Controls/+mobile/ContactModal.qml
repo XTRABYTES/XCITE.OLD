@@ -59,9 +59,11 @@ Rectangle {
     ]
 
     property int editSaved: 0
+    property int editFailed: 0
     property int contactExists: 0
     property int deleteContactTracker: 0
     property int deleteConfirmed: 0
+    property int deleteFailed: 0
     property string oldFirstName
     property string oldLastName
     property string oldTel
@@ -122,7 +124,7 @@ Rectangle {
     Flickable {
         id: scrollArea
         width: parent.width
-        contentHeight: (editSaved == 0 && deleteContactTracker == 0)? contactScrollArea.height + 125 : scrollArea.height + 125
+        contentHeight: (editSaved == 0 && deleteContactTracker == 0 && editFailed == 0)? contactScrollArea.height + 125 : scrollArea.height + 125
         anchors.left: parent.left
         anchors.top: contactModalLabel.bottom
         anchors.topMargin: 10
@@ -144,6 +146,7 @@ Rectangle {
             font.letterSpacing: 2
             elide: Text.ElideRight
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteContactTracker == 0
         }
 
@@ -156,6 +159,7 @@ Rectangle {
             anchors.top: saveButton.bottom
             anchors.topMargin: 40
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteContactTracker == 0
 
             Rectangle {
@@ -202,6 +206,7 @@ Rectangle {
             opacity: 0.3
             transparentBorder: true
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteContactTracker == 0
         }
 
@@ -215,6 +220,7 @@ Rectangle {
             anchors.top: parent.top
             anchors.topMargin: 40
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteContactTracker == 0
         }
 
@@ -233,6 +239,7 @@ Rectangle {
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteContactTracker == 0
             mobile: 1
             deleteBtn: 1
@@ -255,6 +262,7 @@ Rectangle {
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteContactTracker == 0
             mobile: 1
             deleteBtn: 1
@@ -275,6 +283,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteContactTracker == 0
                      && newFirstname.text != ""
                      && newLastname.text != ""
@@ -296,6 +305,7 @@ Rectangle {
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
                      && deleteContactTracker == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -315,6 +325,7 @@ Rectangle {
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
                      && deleteContactTracker == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -333,6 +344,7 @@ Rectangle {
             font.pixelSize: 14
             visible: editSaved == 0
                      && deleteContactTracker == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -351,6 +363,7 @@ Rectangle {
             font.pixelSize: 14
             visible: editSaved == 0
                      && deleteContactTracker == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -366,6 +379,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
                      && deleteContactTracker == 0
+                     && editFailed == 0
 
             MouseArea {
                 anchors.fill: saveButton
@@ -425,7 +439,7 @@ Rectangle {
                         contactList.setProperty(contactIndex, "cellNR", oldText);
                         contactList.setProperty(contactIndex, "mailAddress", oldMail);
                         contactList.setProperty(contactIndex, "chatID", oldChat);
-                        //editFailed = 1
+                        editFailed = 1
                     }
                 }
             }
@@ -440,6 +454,7 @@ Rectangle {
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteContactTracker == 0
         }
 
@@ -453,10 +468,88 @@ Rectangle {
             border.color: (contactExists == 0)? maincolor : "#979797"
             border.width: 1
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteContactTracker == 0
         }
 
-        // save state
+        // save failed state
+        Item {
+            id: editAddressFailed
+            width: parent.width
+            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+            visible: editFailed == 1
+
+            Image {
+                id: saveFailed
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+            }
+
+            Label {
+                id: saveFailedLabel
+                text: "Failed to edit your address!"
+                anchors.top: saveFailed.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
+            Rectangle {
+                id: closeFail
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        editFailed = 0
+                    }
+                }
+            }
+
+            Text {
+                text: "TRY AGAIN"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeFail.horizontalCenter
+                anchors.verticalCenter: closeFail.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeFail.bottom
+                anchors.left: closeFail.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+            }
+        }
+
+        // save succes state
 
         Rectangle {
             id: saveConfirmed
@@ -578,6 +671,7 @@ Rectangle {
             color: "transparent"
             visible: deleteContactTracker == 1
                      && deleteConfirmed == 0
+                     && deleteFailed == 0
 
             Text {
                 id: deleteText
@@ -656,7 +750,7 @@ Rectangle {
                         if (editContactTracker == 1) {
 
                             contactList.setProperty(contactIndex, "remove", false);
-                            //deleteFailed = 1
+                            deleteFailed = 1
                         }
                     }
                 }
@@ -738,6 +832,82 @@ Rectangle {
         }
 
         // Delete failed state
+        Item {
+            id: deleteContactFailed
+            width: parent.width
+            height: saveFailed.height + deleteFailedLabel.height + closeDeleteFail.height + 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+            visible: deleteFailed == 1
+
+            Image {
+                id: failedIcon
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+            }
+
+            Label {
+                id: deleteFailedLabel
+                text: "Failed to delete your contact!"
+                anchors.top: failedIcon.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: failedIcon.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
+            Rectangle {
+                id: closeDeleteFail
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: deleteFailedLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        deleteContactTracker = 0
+                        deleteFailed = 0
+                    }
+                }
+            }
+
+            Text {
+                text: "TRY AGAIN"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeDeleteFail.horizontalCenter
+                anchors.verticalCenter: closeDeleteFail.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeDeleteFail.bottom
+                anchors.left: closeDeleteFail.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+            }
+        }
 
         // Delete success state
 
@@ -797,7 +967,6 @@ Rectangle {
                     running: false
 
                     onTriggered: {
-                        editSaved = 0
                         deleteContactTracker = 0
                         deleteConfirmed = 0
                     }

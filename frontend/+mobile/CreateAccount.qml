@@ -809,7 +809,7 @@ Rectangle {
 
 
                 onStateChanged: {
-                    if (storageSwitch.state == "off") {
+                    if (storageSwitch.state === "off") {
                         userSettings.localKeys = false
                     }
                     else {

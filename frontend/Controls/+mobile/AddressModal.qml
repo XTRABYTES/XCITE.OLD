@@ -66,6 +66,7 @@ Rectangle {
     property int editSaved: 0
     property int editFailed: 0
     property int deleteConfirmed: 0
+    property int deleteFailed: 0
     property int favoriteChanged: 0
     property int invalidAddress: 0
     property int doubleAddress: 0
@@ -196,7 +197,7 @@ Rectangle {
     Flickable {
         id: scrollArea
         width: parent.width
-        contentHeight: (editSaved == 0 && deleteAddressTracker == 0)? addressScrollArea.height + 125 : scrollArea.height + 125
+        contentHeight: (editSaved == 0 && deleteAddressTracker == 0 && editFailed == 0)? addressScrollArea.height + 125 : scrollArea.height + 125
         anchors.left: parent.left
         anchors.top: addressModalLabel.bottom
         anchors.topMargin: 10
@@ -217,6 +218,9 @@ Rectangle {
             font.letterSpacing: 2
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             elide: Text.ElideRight
+            visible: editSaved == 0
+                     && editFailed == 0
+                     && deleteAddressTracker == 0
         }
 
         Image {
@@ -228,6 +232,8 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin: 28
             visible: editSaved == 0
+                     && editFailed == 0
+                     && deleteAddressTracker == 0
 
             ColorOverlay {
                 anchors.fill: parent
@@ -268,6 +274,7 @@ Rectangle {
             anchors.topMargin: 50
             visible: coinListTracker == 0
                      && editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
         }
 
@@ -284,6 +291,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: coinListTracker == 0
                      && editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
 
             onTextChanged: {
@@ -308,6 +316,8 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
                      && deleteAddressTracker == 0
+                     && editFailed == 0
+                     && editFailed == 0
 
             MouseArea {
                 anchors.fill: saveEditButton
@@ -394,6 +404,7 @@ Rectangle {
             anchors.horizontalCenter: saveEditButton.horizontalCenter
             anchors.verticalCenter: saveEditButton.verticalCenter
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
         }
 
@@ -410,6 +421,7 @@ Rectangle {
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
         }
 
@@ -422,6 +434,7 @@ Rectangle {
             anchors.leftMargin: 10
             anchors.verticalCenter: newCoinName.verticalCenter
             visible: editSaved == 0
+                     && editFailed == 0
                      && coinListTracker == 0
                      && deleteAddressTracker == 0
                      && contact != 0
@@ -461,6 +474,7 @@ Rectangle {
             anchors.top: saveEditButton.bottom
             anchors.topMargin: 40
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
                      && contact != 0
 
@@ -503,6 +517,7 @@ Rectangle {
             font.pixelSize: 14
             readOnly: contact == 0
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
             mobile: 1
             onTextChanged: {
@@ -522,6 +537,7 @@ Rectangle {
             font.pixelSize: 11
             font.family: xciteMobile.name
             visible: editSaved == 0
+                     && editFailed == 0
                      && labelExists == 1
                      && deleteAddressTracker == 0
         }
@@ -540,6 +556,7 @@ Rectangle {
             font.pixelSize: 14
             readOnly: contact == 0
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
@@ -561,6 +578,7 @@ Rectangle {
             font.pixelSize: 11
             font.family: xciteMobile.name
             visible: editSaved == 0
+                     && editFailed == 0
                      && doubleAddress == 1
                      && deleteAddressTracker == 0
         }
@@ -576,6 +594,7 @@ Rectangle {
             font.pixelSize: 11
             font.family: xciteMobile.name
             visible: editSaved == 0
+                     && editFailed == 0
                      && invalidAddress == 1
                      && deleteAddressTracker == 0
         }
@@ -605,6 +624,7 @@ Rectangle {
             border.width: 1
             color: "transparent"
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
 
             MouseArea {
@@ -656,6 +676,7 @@ Rectangle {
             transparentBorder: true
             visible: coinListTracker == 1
                      && editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
         }
 
@@ -670,6 +691,7 @@ Rectangle {
             anchors.left: newIcon.left
             visible: coinListTracker == 1
                      && editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
 
             Controls.CoinPicklist {
@@ -687,6 +709,7 @@ Rectangle {
             anchors.horizontalCenter: newPicklist1.horizontalCenter
             visible: coinListTracker == 1
                      && editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
 
             Image {
@@ -711,6 +734,81 @@ Rectangle {
         }
 
         // Edit failed state
+        Item {
+            id: editAddressFailed
+            width: parent.width
+            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+            visible: editFailed == 1
+
+            Image {
+                id: saveFailed
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+            }
+
+            Label {
+                id: saveFailedLabel
+                text: "Failed to edit your address!"
+                anchors.top: saveFailed.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
+            Rectangle {
+                id: closeFail
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        editFailed = 0
+                    }
+                }
+            }
+
+            Text {
+                text: "TRY AGAIN"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeFail.horizontalCenter
+                anchors.verticalCenter: closeFail.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeFail.bottom
+                anchors.left: closeFail.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+            }
+        }
 
         // Edit saved state
 
@@ -844,6 +942,7 @@ Rectangle {
             color: "transparent"
             visible: deleteAddressTracker == 1
                      && deleteConfirmed == 0
+                     && deleteFailed == 0
 
             Text {
                 id: deleteText
@@ -914,9 +1013,6 @@ Rectangle {
                         labelExists = 0
                         invalidAddress = 0
 
-
-                        // editFailed = 1
-                        //
                         var datamodel = []
                         for (var i = 0; i < addressList.count; ++i)
                             datamodel.push(addressList.get(i))
@@ -932,7 +1028,7 @@ Rectangle {
 
                     onSaveSucceeded: {
                         if (addressTracker == 1) {
-                            editSaved = 1
+                            deleteConfirmed = 1
                             coinListTracker = 0
                         }
                     }
@@ -941,7 +1037,7 @@ Rectangle {
                         if (addressTracker == 1) {
 
                             addressList.setProperty(addressIndex, "remove", oldRemove);
-                            editFailed = 1
+                            deleteFailed = 1
                             coinListTracker = 0
                         }
                     }
@@ -1028,6 +1124,82 @@ Rectangle {
         }
 
         // Delete failed state
+        Item {
+            id: deleteAddresFailed
+            width: parent.width
+            height: saveFailed.height + deleteFailedLabel.height + closeDeleteFail.height + 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+            visible: deleteFailed == 1
+
+            Image {
+                id: failedIcon
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+            }
+
+            Label {
+                id: deleteFailedLabel
+                text: "Failed to delete your address!"
+                anchors.top: failedIcon.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: failedIcon.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
+            Rectangle {
+                id: closeDeleteFail
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: deleteFailedLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        deleteAddressTracker = 0
+                        deleteFailed = 0
+                    }
+                }
+            }
+
+            Text {
+                text: "TRY AGAIN"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeDeleteFail.horizontalCenter
+                anchors.verticalCenter: closeDeleteFail.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeDeleteFail.bottom
+                anchors.left: closeDeleteFail.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+            }
+        }
 
         // Delete success state
 

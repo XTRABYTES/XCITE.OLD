@@ -139,6 +139,18 @@ Item {
                     state: (coinTracker == 0)? "up" : "down"
                     onStateChanged: detectInteraction()
 
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            sumBalance()
+                        }
+                    }
+
                     states: [
                         State {
                             name: "up"
@@ -174,7 +186,6 @@ Item {
                         z: 5
                         anchors.left: valueTicker.right
                         anchors.verticalCenter: totalWalletValue.verticalCenter
-                        //anchors.verticalCenterOffset: 105
                         text: balanceArray[0]
                         font.pixelSize: 60
                         font.family: xciteMobile.name
@@ -1670,9 +1681,11 @@ Item {
                     id: notifIndicator
                     width: 8
                     height: 8
-                    color: notification == 1? "#E55541" : "transparent"
+                    radius: 4
+                    color: "#E55541"
                     anchors.horizontalCenter: parent.right
-                    anchors.verticalCenter: parent.bottom
+                    anchors.verticalCenter: parent.top
+                    visible: alertList.count > 1
                 }
 
                 MouseArea {

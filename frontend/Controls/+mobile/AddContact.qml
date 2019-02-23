@@ -75,7 +75,7 @@ Rectangle {
     Flickable {
         id: scrollArea
         width: parent.width
-        contentHeight: editSaved == 0? addContactScrollArea.height + 125 : scrollArea.height + 125
+        contentHeight: (editSaved == 0 || editFailed == 0)? addContactScrollArea.height + 125 : scrollArea.height + 125
         anchors.left: parent.left
         anchors.top: addContactModalLabel.bottom
         anchors.topMargin: 10
@@ -104,6 +104,7 @@ Rectangle {
             opacity: 0.3
             transparentBorder: true
             visible: editSaved == 0
+                     && editFailed == 0
         }
 
         Image {
@@ -116,6 +117,7 @@ Rectangle {
             anchors.top: parent.top
             anchors.topMargin: 30
             visible: editSaved == 0
+                     && editFailed == 0
         }
 
         Controls.TextInput {
@@ -133,6 +135,7 @@ Rectangle {
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+ / }
             visible: editSaved == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: {
                 detectInteraction()
@@ -153,6 +156,7 @@ Rectangle {
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             visible: editSaved == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: {
                 detectInteraction()
@@ -171,6 +175,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.weight: Font.Normal
             visible: editSaved == 0
+                     && editFailed == 0
                      && newFirstname.text != ""
                      && newLastname.text != ""
                      && contactExists == 1
@@ -189,6 +194,7 @@ Rectangle {
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: {
                 detectInteraction()
@@ -208,6 +214,7 @@ Rectangle {
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
             visible: editSaved == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: {
                 detectInteraction()
@@ -226,6 +233,7 @@ Rectangle {
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: {
                 detectInteraction()
@@ -244,6 +252,7 @@ Rectangle {
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
+                     && editFailed == 0
             mobile: 1
             onTextChanged: {
                 detectInteraction()
@@ -261,7 +270,7 @@ Rectangle {
             anchors.top: newChat.bottom
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: editSaved == 0
+            visible: editSaved == 0 && editFailed == 0
 
             MouseArea {
                 anchors.fill: saveButton
@@ -327,6 +336,7 @@ Rectangle {
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             visible: editSaved == 0
+                     && editFailed == 0
         }
 
         Rectangle {
@@ -341,9 +351,85 @@ Rectangle {
                            && contactExists == 0) ? maincolor : "#979797"
             border.width: 1
             visible: editSaved == 0
+                     && editFailed == 0
         }
 
         // save failed state
+        Item {
+            id: addContactFailed
+            width: parent.width
+            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+            visible: editFailed == 1
+
+            Image {
+                id: saveFailed
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                height: 100
+                width: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+            }
+
+            Label {
+                id: saveFailedLabel
+                text: "Failed to save your contact!"
+                anchors.top: saveFailed.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
+            Rectangle {
+                id: closeFail
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        editFailed = 0
+                    }
+                }
+            }
+
+            Text {
+                text: "TRY AGAIN"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeFail.horizontalCenter
+                anchors.verticalCenter: closeFail.verticalCenter
+            }
+
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeFail.bottom
+                anchors.left: closeFail.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+            }
+        }
 
         // save success state
 

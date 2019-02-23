@@ -256,8 +256,8 @@ Rectangle {
                     onClicked: {
                         if (selectedPage != "apps") {
                             appsTracker = 0
-                            //selectedPage = "apps"
-                            //mainRoot.push("../Applications.qml")
+                            selectedPage = "apps"
+                            mainRoot.push("../Applications.qml")
                         }
                     }
                 }
@@ -285,9 +285,11 @@ Rectangle {
                     id: notifIndicator
                     width: 8
                     height: 8
-                    color: notification == 1? "#E55541" : "transparent"
+                    radius: 4
+                    color: "#E55541"
                     anchors.horizontalCenter: parent.right
                     anchors.verticalCenter: parent.top
+                    visible: alertList.count > 1
                 }
 
                 Text {
@@ -316,9 +318,8 @@ Rectangle {
                     onClicked: {
                         if (selectedPage != "notif") {
                             appsTracker = 0
-                            //notification = 0
-                            //selectedPage = "notif"
-                            //mainRoot.push("../Notifications.qml")
+                            selectedPage = "notif"
+                            mainRoot.push("../Notifications.qml")
                         }
                     }
                 }

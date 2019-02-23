@@ -90,7 +90,6 @@ ApplicationWindow {
 
     Component.onCompleted: {
         clearAllSettings()
-        console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
 
         contactID = 0
         addressID = 1
@@ -125,6 +124,11 @@ ApplicationWindow {
         coinList.setProperty(0, "active", true);
         coinList.setProperty(0, "coinID", 0);
         coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": 1});
+
+        alertList.append({"date": "February 20 2019  14:28", "origin": "XFUEL Test", "message": "test 1"});
+        alertList.append({"date": "February 20 2019  14:32", "origin": "XFUEL Main", "message": "test 2"});
+        alertList.append({"date": "February 20 2019  14:41", "origin": "XBY Main", "message": "test 3"});
+        alertList.append({"date": "February 20 2019  15:02", "origin": "XFUEL Test", "message": "test 4"});
 
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
@@ -256,7 +260,6 @@ ApplicationWindow {
     property int newWalletPicklist: 0
     property int newWalletSelect: 0
     property int switchState: 0
-    property int notification: 0
     property string scannedAddress: ""
     property string selectedAddress: ""
     property string currentAddress: ""
@@ -275,7 +278,7 @@ ApplicationWindow {
     property int totalWallets: countWallets()
     property int totalCoinWallets: 0
     property real totalBalance: 0
-    property int contactID: 0
+    property int contactID: 1
     property int addressID: 1
     property int walletID: 1
     property int txID: 1
@@ -293,6 +296,7 @@ ApplicationWindow {
     property real changeBalance: 0
     property string notificationDate: ""
     property bool walletAdded: false
+    property bool alert: false
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -306,37 +310,35 @@ ApplicationWindow {
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
     signal saveAppSettings()
+    signal saveWalletList(string walletList)
+
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
 
     // Automated functions
 
-    function updateBalance() {
-        var newBalance
+    function updateBalance(coin, address, balance) {
         var balanceAlert
         var difference
         changeBalance = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).coin === "XBY") {
-                newBalance = Number.fromLocaleString(Qt.locale("en_US"),(getbalanceXBY(walletList.get(i).address)))
-            }
-            else if (walletList.get(i).coin === "XFUEL") {
-                newBalance = Number.fromLocaleString(Qt.locale("en_US"),(getbalanceXBY(walletList.get(i).address)))
-            }
-            if (newBalance !== walletList.get(i).balance) {
-                changeBalance = newBalance - walletList.get(i).balance
-                if (changeBalance > 0) {
-                    difference = "increased"
-                }
-                else {
-                    difference = "decreased"
-                }
-                walletList.setProperty(i, "balance", getbalanceXBY(walletList.get(i).address))
-                if (transferTracker == 0) {
-                    notification = 1
-                    balanceAlert = "Your <b>" + walletList.get(i).coin + "</b> wallet <b>" + walletList.get(i).label + "</b> has " + difference + " with: <b>" + changeBalance + "</b>"
-                    notificationList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"dd MMM yy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HHmmsszzz"), "message" : balanceAlert, "origin" : "wallet"})
+            if (wallet.get(i).coin === coin) {
+                if (wallet.get(i).address === address) {
+                    if (balance !== walletList.get(i).balance) {
+                        changeBalance = balance - walletList.get(i).balance
+                        if (changeBalance > 0) {
+                            difference = "increased"
+                        }
+                        else {
+                            difference = "decreased"
+                        }
+                        walletList.setProperty(i, "balance", balance)
+                        balanceAlert = "Your balance has " + difference + " with: <b>" + changeBalance + "</b>"
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).coin + " " + walletList.get(i).label)})
+                        alert = true
+                        sumbalance()
+                    }
                 }
             }
         }
@@ -623,6 +625,15 @@ ApplicationWindow {
         }
     }
 
+    function checkNotifications() {
+        if (alertList.count > 1) {
+            alert = true
+        }
+        else {
+            alert = false
+        }
+    }
+
     Connections {
         target: marketValue
 
@@ -646,16 +657,6 @@ ApplicationWindow {
             percentageXBY = currencyVal;
             percentageXFUEL = currencyVal;
         }
-
-        console.log("Currency: " + currency + " And value is: " + currencyVal);
-    }
-
-    function loadLocalWallets() {
-        // create walletList from local storage when XCITE starts up
-    }
-
-    function loadWalletList(wallets) {
-        // create walletList from account storage when XCITE starts up
     }
 
     function loadContactList(contacts) {
@@ -686,6 +687,24 @@ ApplicationWindow {
         }
     }
 
+    function loadWalletList(wallet) {
+        if (typeof wallet !== "undefined") {
+            console.log("json wallet list: " + wallet)
+            walletList.clear();
+            var obj = JSON.parse(wallet);
+            console.log("raw wallet list: " + obj)
+            for (var i in obj){
+                var data = obj[i];
+                walletList.append(data);
+            }
+            console.log("walletList Count: " + walletList.count);
+
+        }
+        else {
+            console.log("no wallets saved in account")
+        }
+    }
+
     function loadSettings(settingsLoaded) {
         if (typeof settingsLoaded !== "undefined") {
             userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
@@ -693,6 +712,8 @@ ApplicationWindow {
             userSettings.locale = settingsLoaded.locale;
             userSettings.pinlock = settingsLoaded.pinlock === "true";
             userSettings.theme = settingsLoaded.theme;
+            userSettings.localKeys = settingsLoaded.localKeys === "true";
+
         }
         else {
             console.log("no settings saved in account")
@@ -772,10 +793,10 @@ ApplicationWindow {
         id: addressList
         ListElement {
             contact: 0
-            label: ""
-            address: ""
+            label: "0"
+            address: "0"
             logo: ''
-            coin: ""
+            coin: "0"
             active: false
             favorite: 0
             uniqueNR: 0
@@ -786,13 +807,13 @@ ApplicationWindow {
     ListModel {
         id: contactList
         ListElement {
-            firstName: ""
-            lastName: ""
+            firstName: "0"
+            lastName: "0"
             photo: 'qrc:/icons/icon-profile_01.svg'
-            telNR: ""
-            cellNR: ""
-            mailAddress: ""
-            chatID: ""
+            telNR: "0"
+            cellNR: "0"
+            mailAddress: "0"
+            chatID: "0"
             favorite: false
             contactNR: 0
             remove: true
@@ -864,11 +885,11 @@ ApplicationWindow {
     }
 
     ListModel {
-        id: notificationList
+        id: alertList
         ListElement {
-            date: ""
-            message: ""
-            origin: ""
+            date: "null"
+            message: "null"
+            origin: "null"
         }
     }
 
@@ -918,7 +939,6 @@ ApplicationWindow {
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
-            console.log("callingMarketValue");
             marketValueChangedSignal("btcusd")
             marketValueChangedSignal("btceur")
             marketValueChangedSignal("btcgbp")
@@ -942,7 +962,6 @@ ApplicationWindow {
             }
             else {
                 sessionTime = sessionTime +1
-                console.log("Time until automatic log out: " +  (5 - (sessionTime / 2)) + " minute(s)")
                 if (sessionTime >= 10){
                     sessionTime = 0
                     sessionStart = 0
@@ -981,6 +1000,7 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
+            checkNotifications()
             if (requestedLogout == 1 && transferTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && addressTracker == 0 && editContactTracker == 0 && appsTracker == 0) {
                 logoutTracker = 1
             }
@@ -995,7 +1015,6 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            console.log("log out request sent!")
             requestedLogout = 1
         }
     }
@@ -1008,7 +1027,6 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            console.log("Session closed by server")
             sessionClosed = 1
         }
     }
@@ -1021,7 +1039,6 @@ ApplicationWindow {
 
         onTriggered: {
             // retrieve balance from blockexplorer
-            // retrieve coinvalue from CMC
             sumBalance()
         }
     }

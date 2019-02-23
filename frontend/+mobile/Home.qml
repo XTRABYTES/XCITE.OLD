@@ -13,7 +13,6 @@ Item {
     }
 
     Component.onCompleted: {
-        console.log("account complete: " + userSettings.accountCreationCompleted)
         goodbey = 0
 
         walletID = walletList.count
@@ -29,6 +28,7 @@ Item {
         // continue to wallet
         else {
             sumBalance()
+            checkNotifications()
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"
         }
