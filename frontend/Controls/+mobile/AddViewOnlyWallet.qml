@@ -374,14 +374,20 @@ Rectangle {
                         walletID = walletID +1;
                         addressList.append({"contact": 0, "address": newAddress.text, "label": newName.text, "logo": getLogo(coinList.get(coin).name), "coin": coinList.get(coin).name, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
-                        var datamodel = []
-                        for (var i = 0; i < addressList.count; ++i)
-                            datamodel.push(addressList.get(i))
-
-                        var addressListJson = JSON.stringify(datamodel)
-
+                        var datamodelAddress = []
+                        for (var i = 0; i < addressList.count; ++i){
+                            datamodelAddress.push(addressList.get(i))
+                        }
+                        var addressListJson = JSON.stringify(datamodelAddress)
                         saveAddressBook(addressListJson)
                         // function to add wallet to account
+
+                        var dataModelWallet = []
+                        for (var i = 0; i < walletList.count; ++i){
+                            dataModelWallet.push(walletList.get(i))
+                        }
+                        var walletListJson = JSON.stringify(dataModelWallet)
+                        saveWalletList(walletListJson)
                         // onsaveSucceeded
                         walletAdded = true
                         viewOnlyTracker = 0

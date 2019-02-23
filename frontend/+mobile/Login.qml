@@ -189,6 +189,11 @@ Item {
                     loadAddressList(addresses)
                     console.log("number of addresses: " + addressList.count)
                 }
+                onWalletLoaded: {
+                    console.log("wallet loaded")
+                    loadWalletList(wallets)
+                    console.log("number of wallets: " + walletList.count)
+                }
 
                 onClearSettings:{
                     clearSettings();
