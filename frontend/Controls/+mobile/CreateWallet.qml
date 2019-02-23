@@ -53,6 +53,7 @@ Rectangle {
     ]
 
     property int editSaved: 0
+    property int editFailed: 0
     property int newWallet: 0
     property int createWalletFailed: 0
     property int labelExists: 0
@@ -350,20 +351,50 @@ Rectangle {
                     }
 
                     onReleased: {
-                        // function to add wallet to the account
-                        // walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : function to retrive balance from BC, "unconfirmedCoins": function to retrive balance from BC, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
-                        // walletID = walletID + 1
-                        // addressList.apped({"contact": 0, "address": publicKey.text, "label": newName.text, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
-                        // addressID = addressID + 1
-                        // var datamodel = []
-                        // for (var i = 0; i < addressList.count; ++i)
-                        //     datamodel.push(addressList.get(i))
-                        // var addressListJson = JSON.stringify(datamodel)
-                        // if (userSettings.accountCreationCompleted === false) {
-                        //      userSettings.accountCreationCompleted = true
-                        // }
-                        // saveAddressBook(addressListJson)
-                        editSaved = 1
+                        walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
+                        walletID = walletID + 1
+                        var dataModelWallet = []
+                        for (var i = 0; i < walletList.count; ++i){
+                            dataModelWallet.push(walletList.get(i))
+                        }
+                        var walletListJson = JSON.stringify(dataModelWallet)
+                        saveWalletList(walletListJson)
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (createWalletTracker == 1 && userSettings.localKeys === false) {
+                            editSaved = 1
+                            labelExists = 0
+                            newName.text = ""
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (createWalletTracker == 1 && userSettings.localKeys === false) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            editFailed = 1
+                        }
+                    }
+
+                    onSaveFileSucceeded: {
+                        if (createWalletTracker == 1 && userSettings.localKeys === true) {
+                            editSaved = 1
+                            labelExists = 0
+                            newName.text = ""
+                        }
+                    }
+
+                    onSaveFileFailed: {
+                        if (createWalletTracker == 1 && userSettings.localKeys === true) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            editFailed = 1
+                        }
                     }
                 }
             }
@@ -392,6 +423,9 @@ Rectangle {
             }
         }
 
+        // Save failed state
+
+        // Save succes state
         Item {
             id: createWalletSucces
             width: parent.width
@@ -445,8 +479,6 @@ Rectangle {
                         addWalletTracker = 0;
                         editSaved = 0;
                         newWallet = 0
-                        labelExists = 0
-                        newName.text = ""
                         createWalletTracker = 0
                     }
                 }
@@ -474,6 +506,7 @@ Rectangle {
             }
         }
 
+        // Create wallet failed
         Item {
             id: createWalletError
             width: parent.width

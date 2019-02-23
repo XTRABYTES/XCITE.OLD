@@ -209,25 +209,8 @@ Item {
                         loadHistoryList(history)
                     }**/
 
-                /** onWalletsLoaded: {
-                        if (userSettings.localKeys === false) {
-                            loadWalletList(wallets);
-                        }
-                    }**/
-
                 onLoginSucceededChanged: {
                     console.log("log in succeeded");
-                    if (userSettings.localKeys === true) {
-                        loadLocalWallets();
-                    }
-                    else {
-                        walletList.append({"name": nameXFUEL1, "label": labelXFUEL1, "address": receivingAddressXFUEL1, "balance" : balanceXFUEL1, "unconfirmedCoins": unconfirmedXFUEL1, "active": true, "favorite": true, "viewOnly": false, "walletNR": walletID, "remove": false});
-                        walletID = walletID +1;
-                        walletList.append({"name": nameXBY1, "label": labelXBY1, "address": receivingAddressXBY1, "balance" : balanceXBY1, "unconfirmedCoins": unconfirmedXBY1, "active": true, "favorite": true, "viewOnly": false, "walletNR": walletID, "remove": false});
-                        walletID = walletID +1;
-                        walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "viewOnly": false, "walletNR": walletID, "remove": false});
-                        walletID = walletID +1;
-                    }
                     username = userName.text
                     passError = 0
                     networkError = 0

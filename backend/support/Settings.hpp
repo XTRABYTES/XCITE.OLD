@@ -74,6 +74,8 @@ signals:
     void pincodeFalse();
     void saveSucceeded();
     void saveFailed();
+    void saveFileSucceeded();
+    void saveFileFailed();
 
 
 
