@@ -95,7 +95,14 @@ DISTFILES += \
     packages/global.xtrabytes.xcite/meta/license.txt \
     config/banner.png \
     config/logo.png \
-    dev-db/xtrabytes
+    dev-db/xtrabytes \
+    android/AndroidManifest.xml \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradlew \
+    android/res/values/libs.xml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew.bat
 
 RC_ICONS = xcite.ico
 CONFIG(debug, debug|release) {
@@ -137,3 +144,8 @@ android {
 
 FORMS += \
     packages/global.xtrabytes.xcite/meta/feedbackpage.ui
+
+contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+    ANDROID_PACKAGE_SOURCE_DIR = \
+        $$PWD/android
+}
