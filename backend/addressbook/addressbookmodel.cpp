@@ -36,8 +36,6 @@ int AddressBookModel::append(QString name, QString address)
     items.append(addr);
     endInsertRows();
 
-    save();
-
     return idx;
 }
 
@@ -51,8 +49,6 @@ int AddressBookModel::remove(int idx)
         free(addr);
     }
 
-    save();
-
     return (idx > 0 ? idx : 0);
 }
 
@@ -65,8 +61,6 @@ void AddressBookModel::update(int idx, QString name, QString address)
 
     addr->m_name = name;
     addr->m_address = address;
-
-    save();
 
     emit dataChanged(index(idx), index(idx));
 }
@@ -137,40 +131,4 @@ QVariant AddressBookModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-bool AddressBookModel::save()
-{
-    QJsonArray addresses;
-    for (int i = 0; i < items.size(); i++) {
-        QJsonObject entry;
-        entry["name"] = items[i]->m_name;
-        entry["address"] = items[i]->m_address;
-        addresses.append(entry);
-    }
-
-    QJsonDocument doc(addresses);
-    QString strJson(doc.toJson(QJsonDocument::Compact));
-
-    // SAVE TO DB
-    Settings settings;
-    settings.SaveAddresses(strJson);
-    return true;
-}
-
-bool AddressBookModel::load()
-{
-    // LOAD FROM DB
-    //QJsonDocument json(QJsonDocument::fromJson());
-    //if (!json.isArray()) {
-    //    qWarning("Load addressbook failed, expected array in addresses.json");
-    //    return false;
-    //}
-
-    //QJsonArray entries = json.array();
-    //for (int i = 0; i < entries.size(); i++) {
-    //    QJsonObject entry = entries[i].toObject();
-    //    append(entry["name"].toString(), entry["address"].toString());
-    //}
-
-    return true;
-}
 
