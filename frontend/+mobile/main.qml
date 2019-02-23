@@ -306,6 +306,8 @@ ApplicationWindow {
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
     signal saveAppSettings()
+    signal saveWalletList(string walletList)
+
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
@@ -654,10 +656,6 @@ ApplicationWindow {
         // create walletList from local storage when XCITE starts up
     }
 
-    function loadWalletList(wallets) {
-        // create walletList from account storage when XCITE starts up
-    }
-
     function loadContactList(contacts) {
         if (typeof contacts !== "undefined") {
             contactList.clear();
@@ -686,6 +684,22 @@ ApplicationWindow {
         }
     }
 
+    function loadWalletList(wallet) {
+        if (typeof wallet !== "undefined") {
+            walletList.clear();
+            var obj = JSON.parse(wallet);
+            for (var i in obj){
+                var data = obj[i];
+                walletList.append(data);
+            }
+            console.log("walletList Count: " + walletList.count);
+
+        }
+        else {
+            console.log("no wallets saved in account")
+        }
+    }
+
     function loadSettings(settingsLoaded) {
         if (typeof settingsLoaded !== "undefined") {
             userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
@@ -693,6 +707,8 @@ ApplicationWindow {
             userSettings.locale = settingsLoaded.locale;
             userSettings.pinlock = settingsLoaded.pinlock === "true";
             userSettings.theme = settingsLoaded.theme;
+            userSettings.localKeys = settingsLoaded.localKeys === "true";
+
         }
         else {
             console.log("no settings saved in account")

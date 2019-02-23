@@ -172,6 +172,13 @@ bool Settings::SaveSettings(){
     QJsonArray addressesArray = QJsonDocument::fromJson(m_addresses.toLatin1()).array(); //save addresses saves array to m_addresses
     settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
 
+    /*      Add wallets to DB       */
+    bool localKeys = m_settings->value("localKeys").toBool();
+    if (!localKeys){
+        QJsonArray walletArray = QJsonDocument::fromJson(m_wallet.toLatin1()).array(); //savewallet saves array to m_wallet
+        settings.insert("walletList",walletArray.toVariantList()); // add wallet array to our existing settings
+    }
+
     /*    Convert Settings Variant to QByteArray  and encode it   */
     QByteArray settingsOutput =  QJsonDocument::fromVariant(QVariant(settings)).toJson(QJsonDocument::Compact); //Convert settings to byteArray/Json
     QByteArray encodedText = encryption.encode(settingsOutput, (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
@@ -223,6 +230,26 @@ void Settings::LoadSettings(QByteArray settings){
     m_addresses = addresses;
     emit addressesLoaded(m_addresses);
 
+    /* Load wallets from JSON from Local or DB */
+    bool localKeys = m_settings->value("localKeys").toBool();
+    QJsonArray walletArray;
+    m_wallet.clear();
+    if (localKeys){
+        qDebug().noquote() << "local wallet";
+        QString walletFile = LoadFile(m_username.toLower() + "wallet");
+        QByteArray decodedWallet = encryption.decode(walletFile.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+        qDebug().noquote() << "Decoded Wallet " + decodedWallet;
+        walletArray = QJsonDocument::fromJson(decodedWallet).array();
+    }else{
+        qDebug().noquote() << "DB wallet";
+        walletArray = json["walletList"].toArray(); //get walletList from settings from DB
+    }
+    QJsonDocument docWallet;
+    docWallet.setArray(walletArray);
+    QString wallet(docWallet.toJson(QJsonDocument::Compact));
+    m_wallet = wallet;
+    emit walletLoaded(m_wallet);
+
     QString pincode = json.value("pincode").toString().toLatin1();
     QByteArray enc_pincode = encryption.encode( pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
     m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length()); //encryption.encode((QString("<xtrabytes>") + pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
@@ -238,6 +265,21 @@ void Settings::SaveAddresses(QString addresslist){
 void Settings::SaveContacts(QString contactlist){
     m_contacts = contactlist;
     SaveSettings();
+}
+
+void Settings::SaveWallet(QString walletlist){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    bool localKeys = m_settings->value("localKeys").toBool();
+    m_wallet = walletlist;
+
+    if (localKeys){
+        QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
+        QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
+        SaveFile(m_username.toLower() + "wallet", encodedWalletString);
+    }else{
+        SaveSettings();
+    }
+
 }
 
 void Settings::onSavePincode(QString pincode){
@@ -366,4 +408,36 @@ QString Settings::CheckStatusCode(QString statusCode){
         emit saveFailed();
     }
     return returnVal;
+}
+
+void Settings::SaveFile(QString fileName, QString encryptedData){
+    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0]; //May need to change this location
+    qDebug() << " Writing to " + currentDir + "/" + fileName;
+    QFile file(currentDir + "/" + fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        file.errorString(); //We can build this out to emit an error message
+        return;
+    }
+    QDataStream out(&file);
+    out.setVersion(QDataStream::Qt_5_11);
+    out << encryptedData;
+
+}
+
+QString Settings::LoadFile(QString fileName){
+    QString returnFile;
+    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0]; //May need to change this location
+
+    qDebug() << "Reading from " + currentDir + "/" + fileName;
+
+    QFile file(currentDir + "/" + fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        file.errorString(); //We can build this out to emit an error message
+        return "ERROR";
+    }
+
+    QDataStream in(&file);
+    in.setVersion(QDataStream::Qt_5_11);
+    in >> returnFile;
+    return returnFile;
 }
