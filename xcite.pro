@@ -17,6 +17,7 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
 QT	+= core gui xml quick svg charts sql
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
+CONFIG += resources_big
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
