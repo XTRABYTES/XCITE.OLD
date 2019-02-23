@@ -219,6 +219,7 @@ Rectangle {
                    onClicked: {
                         if (coinTracker == 0 && appsTracker == 0 && addCoinTracker == 0 && transferTracker == 0) {
                             coinIndex = coinID
+                            console.log("coinIndex: " + coinIndex)
                             countWallets()
                             coinTracker = 1
                         }

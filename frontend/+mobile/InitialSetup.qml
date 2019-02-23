@@ -223,7 +223,42 @@ Item {
                             walletID = walletID +1;
                             walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "viewOnly": true, "walletNR": walletID, "remove": false});
                             walletID = walletID +1;
-                            userSettings.accountCreationCompleted = true
+                            var dataModelWallet = []
+                            for (var i = 0; i < walletList.count; ++i){
+                                dataModelWallet.push(walletList.get(i))
+                            }
+                            var walletListJson = JSON.stringify(dataModelWallet)
+                            saveWalletList(walletListJson)
+                        }
+                    }
+
+                    Connections {
+                        target: UserSettings
+
+                        onSaveSucceeded: {
+                            if (userSettings.accountCreationCompleted === false && userSettings.localKeys === false) {
+                                userSettings.accountCreationCompleted = true
+                            }
+                        }
+
+                        onSaveFailed: {
+                            if (userSettings.accountCreationCompleted === false && userSettings.localKeys === false) {
+                                walletList.clear()
+                                walletID = 1
+                            }
+                        }
+
+                        onSaveFileSucceeded: {
+                            if (userSettings.accountCreationCompleted === false && userSettings.localKeys === true) {
+                                userSettings.accountCreationCompleted = true
+                            }
+                        }
+
+                        onSaveFileFailed: {
+                            if (userSettings.accountCreationCompleted === false && userSettings.localKeys === true) {
+                                walletList.clear()
+                                walletID = 1
+                            }
                         }
                     }
 

@@ -29,6 +29,7 @@ Item {
         // continue to wallet
         else {
             sumBalance()
+            checkNotifications()
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"
         }

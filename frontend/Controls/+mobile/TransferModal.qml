@@ -251,7 +251,7 @@ Rectangle {
                       && scanQRTracker == 0
                       && calculatorTracker == 0
                       && walletListTracker == 0)
-                     || (transferSwitch.state == "off"
+                     || (transferSwitch.state === "off"
                          && walletListTracker == 0)
         }
 

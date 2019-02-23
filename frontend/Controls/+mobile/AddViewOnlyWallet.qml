@@ -52,6 +52,10 @@ Rectangle {
         }
     ]
 
+    onStateChanged: {
+        coin = coinIndex
+    }
+
     property int addressExists: 0
     property int labelExists: 0
     property int invalidAddress: 0
@@ -372,15 +376,6 @@ Rectangle {
                             && labelExists == 0) {
                         walletList.append({"name": coinList.get(coin).name, "label": newName.text, "address": newAddress.text, "balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "viewOnly": true, "walletNR": walletID, "remove": false});
                         walletID = walletID +1;
-                        addressList.append({"contact": 0, "address": newAddress.text, "label": newName.text, "logo": getLogo(coinList.get(coin).name), "coin": coinList.get(coin).name, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
-                        addressID = addressID +1;
-                        var datamodelAddress = []
-                        for (var i = 0; i < addressList.count; ++i){
-                            datamodelAddress.push(addressList.get(i))
-                        }
-                        var addressListJson = JSON.stringify(datamodelAddress)
-                        saveAddressBook(addressListJson)
-                        // function to add wallet to account
 
                         var dataModelWallet = []
                         for (var i = 0; i < walletList.count; ++i){
@@ -388,13 +383,18 @@ Rectangle {
                         }
                         var walletListJson = JSON.stringify(dataModelWallet)
                         saveWalletList(walletListJson)
-                        // onsaveSucceeded
+                    }
+                }
+            }
+
+            Connections {
+                target: UserSettings
+
+                onSaveSucceeded: {
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === false) {
                         walletAdded = true
+                        //editSaved = 1
                         viewOnlyTracker = 0
-                        // onsaveFailed
-                        // addressID = addressID - 1
-                        // addressList.remove(addressID)
-                        // editFailed = 1
                         newName.text = ""
                         newAddress.text = ""
                         addressExists = 0
@@ -403,6 +403,41 @@ Rectangle {
                         scanQR = 0
                         selectedAddress = ""
                         scanning = "scanning..."
+                    }
+                }
+
+                onSaveFailed: {
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === false) {
+                        console.log("save failed")
+                        walletID = walletID - 1
+                        walletList.remove(walletID)
+                        //editFailed = 1
+                    }
+                }
+
+                onSaveFileSucceeded: {
+                    if (viewOnlyTracker == 1) {
+                        console.log("save succeeded" && userSettings.localKeys === true)
+                        walletAdded = true
+                        //editSaved = 1
+                        viewOnlyTracker = 0
+                        newName.text = ""
+                        newAddress.text = ""
+                        addressExists = 0
+                        labelExists = 0
+                        invalidAddress = 0
+                        scanQR = 0
+                        selectedAddress = ""
+                        scanning = "scanning..."
+                    }
+                }
+
+                onSaveFileFailed: {
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === true) {
+                        console.log("save failed")
+                        walletID = walletID - 1
+                        walletList.remove(walletID)
+                        //editFailed = 1
                     }
                 }
             }
@@ -437,6 +472,10 @@ Rectangle {
             visible: scanQR == 0
         }
     }
+
+    // Save failed state
+
+    // Save succes state
 
     Item {
         z: 3

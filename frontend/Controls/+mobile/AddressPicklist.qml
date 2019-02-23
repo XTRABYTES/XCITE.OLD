@@ -14,7 +14,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import SortFilterProxyModel 0.2
 
-
+import "qrc:/Controls" as Controls
 
 Rectangle {
     width: parent.width
@@ -33,6 +33,10 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             height: 80
             color:"transparent"
+
+            Controls.CardBody {
+
+            }
 
             Rectangle {
                 id: clickIndicator
@@ -68,14 +72,6 @@ Rectangle {
                         selectedAddress = address
                     }
                 }
-            }
-
-            Rectangle {
-                width: parent.width - 56
-                height: 1
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                color: themecolor
             }
 
             Label {

@@ -239,10 +239,13 @@ void Settings::LoadSettings(QByteArray settings){
         QString walletFile = LoadFile(m_username.toLower() + "wallet");
         QByteArray decodedWallet = encryption.decode(walletFile.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
         qDebug().noquote() << "Decoded Wallet " + decodedWallet;
+        /* >>>>>>> This is where it fails <<<<<<<< */
         walletArray = QJsonDocument::fromJson(decodedWallet).array();
+        qDebug().noquote() << walletArray;
     }else{
         qDebug().noquote() << "DB wallet";
         walletArray = json["walletList"].toArray(); //get walletList from settings from DB
+        qDebug().noquote() << walletArray;
     }
     QJsonDocument docWallet;
     docWallet.setArray(walletArray);
@@ -411,12 +414,16 @@ QString Settings::CheckStatusCode(QString statusCode){
 }
 
 void Settings::SaveFile(QString fileName, QString encryptedData){
-    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0]; //May need to change this location
+    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0];
     qDebug() << " Writing to " + currentDir + "/" + fileName;
     QFile file(currentDir + "/" + fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         file.errorString(); //We can build this out to emit an error message
+        emit saveFileFailed();
         return;
+    }
+    else {
+        emit saveFileSucceeded();
     }
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_5_11);
@@ -426,7 +433,7 @@ void Settings::SaveFile(QString fileName, QString encryptedData){
 
 QString Settings::LoadFile(QString fileName){
     QString returnFile;
-    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0]; //May need to change this location
+    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0];
 
     qDebug() << "Reading from " + currentDir + "/" + fileName;
 
