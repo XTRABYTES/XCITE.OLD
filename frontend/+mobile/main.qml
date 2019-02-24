@@ -311,6 +311,8 @@ ApplicationWindow {
     signal saveContactList(string contactList)
     signal saveAppSettings()
     signal saveWalletList(string walletList)
+    signal updateBalanceSignal(string walletList)
+
 
 
     signal savePincode(string pincode)
@@ -321,27 +323,40 @@ ApplicationWindow {
     function updateBalance(coin, address, balance) {
         var balanceAlert
         var difference
+        var newBalance
         changeBalance = 0
+
         for(var i = 0; i < walletList.count; i++) {
-            if (wallet.get(i).coin === coin) {
-                if (wallet.get(i).address === address) {
-                    if (balance !== walletList.get(i).balance) {
-                        changeBalance = balance - walletList.get(i).balance
-                        if (changeBalance > 0) {
-                            difference = "increased"
+            if (walletList.get(i).name === coin) {
+                if (walletList.get(i).address === address) {
+                    newBalance = parseFloat(balance);
+                    if (!isNaN(newBalance)){
+                        if (newBalance !== walletList.get(i).balance) {
+
+                            changeBalance = newBalance - walletList.get(i).balance
+                            if (changeBalance > 0) {
+                                difference = "increased"
+                            }
+                            else {
+                                difference = "decreased"
+                            }
+
+                            walletList.setProperty(i, "balance", newBalance)
+                            balanceAlert = "Your balance has " + difference + " with: <b>" + changeBalance + "</b>"
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).coin + " " + walletList.get(i).label)})
+                            alert = true
+                            sumBalance()
                         }
-                        else {
-                            difference = "decreased"
-                        }
-                        walletList.setProperty(i, "balance", balance)
-                        balanceAlert = "Your balance has " + difference + " with: <b>" + changeBalance + "</b>"
-                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).coin + " " + walletList.get(i).label)})
-                        alert = true
-                        sumbalance()
                     }
                 }
             }
         }
+        var datamodel = []
+        for (var i = 0; i < walletList.count; ++i)
+            datamodel.push(walletList.get(i))
+
+        var walletListJson = JSON.stringify(datamodel)
+        saveWalletList(walletListJson);
     }
 
     // Global functions
@@ -639,6 +654,14 @@ ApplicationWindow {
 
         onMarketValueChanged: {
             setMarketValue(currency, currencyValue)
+        }
+    }
+
+    Connections {
+        target: explorer
+
+        onUpdateBalance: {
+            updateBalance(coin, address, balance)
         }
     }
     // Start up functions
@@ -947,6 +970,24 @@ ApplicationWindow {
 
         }
     }
+
+    Timer {
+        id: explorerTimer
+        interval: 60000
+        repeat: true
+        running: sessionStart == 1
+        onTriggered:  {
+            var datamodel = []
+            for (var i = 0; i < walletList.count; ++i)
+                datamodel.push(walletList.get(i))
+
+            var walletListJson = JSON.stringify(datamodel)
+            updateBalanceSignal(walletListJson);
+
+        }
+    }
+
+
 
     Timer {
         id: loginTimer
