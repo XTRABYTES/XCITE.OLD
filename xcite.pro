@@ -62,6 +62,7 @@ SOURCES += main/main.cpp \
             backend/support/globaleventfilter.cpp \
             backend/testnet/xchattestnetclient.cpp \
             backend/integrations/MarketValue.cpp \
+            backend/integrations/Explorer.cpp \
             backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
             backend/support/Settings.cpp \
@@ -86,6 +87,7 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/support/FileDownloader.hpp \
     backend/support/Settings.hpp \
     backend/integrations/MarketValue.hpp \
+    backend/integrations/Explorer.hpp \
     backend/support/qaesencryption.h
 
 DISTFILES += \
