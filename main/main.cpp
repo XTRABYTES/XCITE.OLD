@@ -30,6 +30,7 @@
 #include "../backend/support/Settings.hpp"
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
+#include "../backend/integrations/Explorer.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -74,6 +75,10 @@ int main(int argc, char *argv[])
     MarketValue marketValue;
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
 
+    // wire-up Explorer
+    Explorer explorer;
+    engine.rootContext()->setContextProperty("explorer", &explorer);
+
 	// set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
@@ -111,6 +116,10 @@ int main(int argc, char *argv[])
 
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
+
+    // connect QML signals for Explorer
+    QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString)), &explorer, SLOT(getBalanceEntireWallet(QString)));
+
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();
