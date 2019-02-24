@@ -1,0 +1,57 @@
+#   Filename: makefile-tests.linux
+#  
+#   Copyright (c) 2017-2019 Zoltan Szabo & XtraBYtes developers
+#  
+#   This file is part of xtrabytes project.
+   
+ 
+
+LINK:=$(CXX)
+
+DEFS=-DBOOST_SPIRIT_THREADSAFE -D_FILE_OFFSET_BITS=64
+DEFS +=-std=c++11
+DEFS += $(addprefix -I,$(CURDIR) $(CURDIR)/build $(BOOST_INCLUDE_PATH))
+LIBS = $(addprefix -L,$(BOOST_LIB_PATH))
+
+LIBS += \
+ -ldl \
+ -Wl,-Bdynamic \
+   -l boost_system$(BOOST_LIB_SUFFIX) \
+   -l boost_filesystem$(BOOST_LIB_SUFFIX) \
+   -l boost_program_options$(BOOST_LIB_SUFFIX) \
+   -l boost_thread$(BOOST_LIB_SUFFIX) \
+   -l ssl \
+   -l crypto 
+
+
+
+## debug
+CXXFLAGS=-pthread -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter -g $(DEFS)
+
+OBJS= \
+    build/ctools.o \
+    build/tests.o
+
+all: tests
+
+# auto-generated dependencies:
+-include build/*.P
+
+DEFS += -DHAVE_BUILD_INFO
+
+build/%.o: %.cpp
+	$(CXX) -c $(CXXFLAGS) -MMD -MF $(@:%.o=%.d) -o $@ $<
+	@cp $(@:%.o=%.d) $(@:%.o=%.P); \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
+	  rm -f $(@:%.o=%.d)
+
+tests: $(OBJS:build/%=build/%)
+	$(LINK) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) -g $(LIBS)
+
+clean:
+	-rm -f tests
+	-rm -f build/*.o
+	-rm -f build/*.P
+
+FORCE:

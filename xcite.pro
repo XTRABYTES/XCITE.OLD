@@ -52,6 +52,9 @@ include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
+	    backend/staticnet/staticnet.cpp \
+	    backend/xutility/xutility.cpp \
+	    backend/xutility/crypto/ctools.cpp \
             backend/p2p/p2p.cpp \
             backend/xchat/xchatconversationmodel.cpp \
             backend/XCITE/nodes/nodetransaction.cpp \
@@ -73,9 +76,14 @@ RESOURCES += frontend/frontend.qrc
 
 HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xchat/xchataiml.hpp \
+	    backend/xutility/crypto/allocators.h \
+	    backend/xutility/crypto/ctools.h \
+	    backend/xutility/crypto/numbers.h \
             backend/p2p/p2p.hpp \
             backend/xchat/xchatconversationmodel.hpp \
             backend/XCITE/nodes/nodetransaction.h \
+	    backend/staticnet/staticnet.hpp \
+	    backend/xutility/xutility.hpp \
             backend/testnet/testnet.hpp \
             backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
@@ -139,10 +147,16 @@ mac {
 }
 
 linux:!android {
+  LIBS += -lssl -lcrypto
+  LIBS += -lboost_system
 }
 
 android {
     QT += multimedia
+    INCLUDEPATH += ./dependencies/android/armeabi-v7a/openssl/include
+    INCLUDEPATH += ./dependencies/android/armeabi-v7a/boost/include
+    LIBS += -L./dependencies/android/armeabi-v7a/boost/lib -lboost_system
+    LIBS += -L./dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
 }
 
 FORMS += \
