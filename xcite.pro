@@ -158,7 +158,7 @@ android {
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
     #LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib -lboost_system
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-s-1_60
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
 
