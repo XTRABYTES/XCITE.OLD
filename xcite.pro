@@ -18,6 +18,7 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 QT	+= core gui xml quick svg charts sql
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 CONFIG += resources_big
+CONFIG += static
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
@@ -152,17 +153,25 @@ linux:!android {
 }
 
 android {
+    CONFIG += static
     QT += multimedia
-    INCLUDEPATH += ./dependencies/android/armeabi-v7a/openssl/include
-    INCLUDEPATH += ./dependencies/android/armeabi-v7a/boost/include
-    LIBS += -L./dependencies/android/armeabi-v7a/boost/lib -lboost_system
-    LIBS += -L./dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+    #LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib -lboost_system
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-s-1_60
+
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
+
+    #ANDROID_EXTRA_LIBS = \
+     #   $$PWD/dependencies/android/armeabi-v7a/boost/lib/libboost_system.so
 }
+
 
 FORMS += \
     packages/global.xtrabytes.xcite/meta/feedbackpage.ui
 
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+
     ANDROID_PACKAGE_SOURCE_DIR = \
         $$PWD/android
 }
