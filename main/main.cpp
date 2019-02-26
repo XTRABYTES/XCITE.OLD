@@ -22,6 +22,8 @@
 #include <QZXing.h>
 #include "../backend/xchat/xchat.hpp"
 #include "../backend/xchat/xchatconversationmodel.hpp"
+#include "../backend/staticnet/staticnet.hpp"
+#include "../backend/xutility/xutility.hpp"
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
@@ -62,10 +64,15 @@ int main(int argc, char *argv[])
     QQmlFileSelector *selector = new QQmlFileSelector(&engine);
     selector->setExtraSelectors(QStringList() << "mobile");
 #endif
-
-    XchatObject xchatRobot;
+        
     xchatRobot.Initialize();
     engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
+        
+    staticNet.Initialize();
+    engine.rootContext()->setContextProperty("StaticNet", &staticNet);    
+
+    xUtility.Initialize();
+    engine.rootContext()->setContextProperty("Utility", &xUtility);    
 
     // wire-up testnet wallet
     Testnet wallet;
