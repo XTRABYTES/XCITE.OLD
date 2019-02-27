@@ -16,6 +16,8 @@
 #include "../testnet/xchattestnetclient.hpp"
 
 XchatObject xchatRobot;
+Xutility xUtility;
+
 
 Xchat::Xchat(QObject *parent) :
     QObject(parent)
@@ -48,49 +50,50 @@ void XchatObject::Initialize() {
 
 void XchatObject::SubmitMsgCall(const QString &msg) {
     QString message;
+    xUtility.Initialize();
 
     if (!((staticNet.CheckUserInputForKeyWord(msg)) || (xUtility.CheckUserInputForKeyWord(msg)))) {
     
-	    bool keyWordUsedUserInput = this->CheckUserInputForKeyWord(msg);
-	    bool keyWordUsedAIInput = this->CheckAIInputForKeyWord(m_pXchatAiml->getResponse(msg));
+        bool keyWordUsedUserInput = this->CheckUserInputForKeyWord(msg);
+        bool keyWordUsedAIInput = this->CheckAIInputForKeyWord(m_pXchatAiml->getResponse(msg));
 	
-	    if (keyWordUsedUserInput || keyWordUsedAIInput)
-	    {
-	        QString harmonizedMessage = this->HarmonizeKeyWords(m_pXchatAiml->getResponse(msg));
-	        if (keyWordUsedUserInput)
-	            harmonizedMessage = this->HarmonizeKeyWords(msg);
+        if (keyWordUsedUserInput || keyWordUsedAIInput)
+        {
+            QString harmonizedMessage = this->HarmonizeKeyWords(m_pXchatAiml->getResponse(msg));
+            if (keyWordUsedUserInput)
+                harmonizedMessage = this->HarmonizeKeyWords(msg);
 	
-	        m_lastUserMessage = harmonizedMessage;
+            m_lastUserMessage = harmonizedMessage;
 	
-	        XchatTestnetClient client;
-	        if (harmonizedMessage.contains("$_WALLET_BALANCE_XBY$"))
-	        {
-	            m_BalanceRequested = true;
-	            client.WriteBalance(QString(""));
-	        }
-	        else if (harmonizedMessage.contains("$_WALLET_DUMPPRIVKEY$"))
-	        {
-	            QStringList stringList = harmonizedMessage.split(" ");
-	            int getBlockIndex = stringList.indexOf("$_WALLET_DUMPPRIVKEY$");
-	            if (stringList.length()-1 > getBlockIndex)
-	                client.WriteDumpprivkey(QString(stringList[getBlockIndex+1]));
-	            else
-	                emit xchatResponseSignal(m_pXchatAiml->getResponse("PARAMETER MISSING"));
-	        }
-	        else if (harmonizedMessage.contains("$_WALLET_GETBLOCK$"))
-	        {
-	            QStringList stringList = harmonizedMessage.split(" ");
-	            int getBlockIndex = stringList.indexOf("$_WALLET_GETBLOCK$");
-	            if (stringList.length()-1 > getBlockIndex)
-	                client.WriteGetBlock(QString(stringList[getBlockIndex+1]));
-	            else
-	                emit xchatResponseSignal(m_pXchatAiml->getResponse("PARAMETER MISSING"));
-	        }
-	    }
-	    else
-	    {
-	        emit xchatResponseSignal(m_pXchatAiml->getResponse(msg));
-	    }
+            XchatTestnetClient client;
+            if (harmonizedMessage.contains("$_WALLET_BALANCE_XBY$"))
+            {
+                m_BalanceRequested = true;
+                client.WriteBalance(QString(""));
+            }
+            else if (harmonizedMessage.contains("$_WALLET_DUMPPRIVKEY$"))
+            {
+                QStringList stringList = harmonizedMessage.split(" ");
+                int getBlockIndex = stringList.indexOf("$_WALLET_DUMPPRIVKEY$");
+                if (stringList.length()-1 > getBlockIndex)
+                    client.WriteDumpprivkey(QString(stringList[getBlockIndex+1]));
+                else
+                    emit xchatResponseSignal(m_pXchatAiml->getResponse("PARAMETER MISSING"));
+            }
+            else if (harmonizedMessage.contains("$_WALLET_GETBLOCK$"))
+            {
+                QStringList stringList = harmonizedMessage.split(" ");
+                int getBlockIndex = stringList.indexOf("$_WALLET_GETBLOCK$");
+                if (stringList.length()-1 > getBlockIndex)
+                    client.WriteGetBlock(QString(stringList[getBlockIndex+1]));
+                else
+                    emit xchatResponseSignal(m_pXchatAiml->getResponse("PARAMETER MISSING"));
+            }
+        }
+        else
+        {
+            emit xchatResponseSignal(m_pXchatAiml->getResponse(msg));
+        }
     }
 }
 

@@ -71,8 +71,12 @@ int main(int argc, char *argv[])
     staticNet.Initialize();
     engine.rootContext()->setContextProperty("StaticNet", &staticNet);    
 
-    xUtility.Initialize();
-    engine.rootContext()->setContextProperty("Utility", &xUtility);    
+//    xUtility.Initialize();
+//    engine.rootContext()->setContextProperty("Utility", &xUtility);
+
+    Xutility xUtil;
+    xUtil.Initialize();
+    engine.rootContext()->setContextProperty("xUtil", &xUtil);
 
     // wire-up testnet wallet
     Testnet wallet;
@@ -127,6 +131,8 @@ int main(int argc, char *argv[])
     // connect QML signals for Explorer
     QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString)), &explorer, SLOT(getBalanceEntireWallet(QString)));
 
+    // connect QML signals for xUtility
+    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeyPairEntry(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();
