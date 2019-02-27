@@ -65,6 +65,8 @@ Rectangle {
     property int deleteAddressTracker: 0
     property int editSaved: 0
     property int editFailed: 0
+    property bool editingAddress: false
+    property bool deletingAddress: false
     property int deleteConfirmed: 0
     property int deleteFailed: 0
     property int favoriteChanged: 0
@@ -352,6 +354,7 @@ Rectangle {
                         if (favoriteChanged == 1) {
                             addressList.setProperty(addressIndex, "favorite", newFavorite);
                         }
+                        editingAddress = true
 
                         var datamodel = []
                         for (var i = 0; i < addressList.count; ++i)
@@ -372,14 +375,15 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (addressTracker == 1) {
+                    if (addressTracker == 1 && editingAddress == true) {
                         editSaved = 1
                         coinListTracker = 0
+                        editingAddress = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (addressTracker == 1) {
+                    if (addressTracker == 1 && editingAddress == true) {
 
                         addressList.setProperty(addressIndex, "logo", oldLogo);
                         addressList.setProperty(addressIndex, "coin", oldCoinName);
@@ -388,6 +392,7 @@ Rectangle {
                         addressList.setProperty(addressIndex, "favorite", oldFavorite);
                         editFailed = 1
                         coinListTracker = 0
+                        editingAddress = false
                     }
                 }
             }
@@ -740,7 +745,7 @@ Rectangle {
             height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: editFailed == 1
 
             Image {
@@ -819,7 +824,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -100
             visible: editSaved == 1
         }
 
@@ -937,7 +942,7 @@ Rectangle {
             width: parent.width
             height: deleteText.height + deleteAddressName.height + deleteAddressHash.height + confirmationDeleteButton.height + 64
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -100
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: deleteAddressTracker == 1
@@ -1012,6 +1017,7 @@ Rectangle {
                         doubleAddress = 0
                         labelExists = 0
                         invalidAddress = 0
+                        deletingAddress = true
 
                         var datamodel = []
                         for (var i = 0; i < addressList.count; ++i)
@@ -1027,18 +1033,20 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (addressTracker == 1) {
+                        if (addressTracker == 1 && deletingAddress == true) {
                             deleteConfirmed = 1
                             coinListTracker = 0
+                            deletingAddress = false
                         }
                     }
 
                     onSaveFailed: {
-                        if (addressTracker == 1) {
+                        if (addressTracker == 1 && deletingAddress == true) {
 
                             addressList.setProperty(addressIndex, "remove", oldRemove);
                             deleteFailed = 1
                             coinListTracker = 0
+                            deletingAddress = false
                         }
                     }
                 }
@@ -1130,7 +1138,7 @@ Rectangle {
             height: saveFailed.height + deleteFailedLabel.height + closeDeleteFail.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: deleteFailed == 1
 
             Image {
@@ -1210,7 +1218,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -100
             visible: deleteConfirmed == 1
         }
 

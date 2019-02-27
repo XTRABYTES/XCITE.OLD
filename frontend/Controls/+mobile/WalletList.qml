@@ -147,6 +147,8 @@ Rectangle {
                     id: walletName
                     anchors.left: parent.left
                     anchors.leftMargin: 54
+                    anchors.right: amountSizeLabel2.left
+                    anchors.rightMargin: 10
                     anchors.verticalCenter: amountSizeLabel.verticalCenter
                     text: label
                     font.pixelSize: 20
@@ -154,6 +156,7 @@ Rectangle {
                     font.letterSpacing: 2
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.bold: true
+                    elide: Text.ElideRight
                 }
 
                 Text {
@@ -169,7 +172,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
+                    property int decimals: balance == 0? 2 : (balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2))
                     property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel1
                     anchors.right: amountSizeLabel.left
@@ -183,7 +186,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
+                    property int decimals: balance == 0? 2 : (balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2))
                     property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel2
                     anchors.right: amountSizeLabel1.left
@@ -206,7 +209,7 @@ Rectangle {
                 }
 
                 Label {
-                    property int decimals: unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2)
+                    property int decimals: unconfirmedCoins == 0? 2 : (unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2))
                     property var unconfirmedArray: (unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: unconfirmedTotal1
                     text: "." + unconfirmedArray[1]
@@ -219,7 +222,7 @@ Rectangle {
                 }
 
                 Label {
-                    property int decimals: unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2)
+                    property int decimals: unconfirmedCoins == 0? 2 : (unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2))
                     property var unconfirmedArray: (unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: unconfirmedTotal2
                     text: unconfirmedArray[0]

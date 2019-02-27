@@ -73,7 +73,7 @@ ApplicationWindow {
         currencyTracker = 0
         pincodeTracker = 0
         debugTracker = 0
-        contactID = 0
+        contactID = 1
         addressID = 1
         walletID = 1
         txID = 1
@@ -91,7 +91,7 @@ ApplicationWindow {
     Component.onCompleted: {
         clearAllSettings()
 
-        contactID = 0
+        contactID = 1
         addressID = 1
         walletID = 1
         txID = 1
@@ -115,20 +115,18 @@ ApplicationWindow {
         fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": 2});
 
         coinList.setProperty(0, "name", nameXFUEL);
-        coinList.setProperty(0, "fullname", "XFUEL");
+        coinList.setProperty(0, "fullname", "xfuel");
         coinList.setProperty(0, "logo", 'qrc:/icons/XFUEL_card_logo_01.svg');
         coinList.setProperty(0, "logoBig", 'qrc:/icons/XFUEL_logo_big.svg');
         coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
         coinList.setProperty(0, "percentage", percentageXFUEL);
         coinList.setProperty(0, "totalBalance", 0);
         coinList.setProperty(0, "active", true);
+        coinList.setProperty(0, "testnet", false );
         coinList.setProperty(0, "coinID", 0);
-        coinList.append({"name": nameXBY, "fullname": "XTRABYTES", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "coinID": 1});
-
-        alertList.append({"date": "February 20 2019  14:28", "origin": "XFUEL Test", "message": "test 1"});
-        alertList.append({"date": "February 20 2019  14:32", "origin": "XFUEL Main", "message": "test 2"});
-        alertList.append({"date": "February 20 2019  14:41", "origin": "XBY Main", "message": "test 3"});
-        alertList.append({"date": "February 20 2019  15:02", "origin": "XFUEL Test", "message": "test 4"});
+        coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "testnet" : false, "coinID": 1});
+        coinList.append({"name": "XFUEL-TEST", "fullname": "xfuel", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "coinID": 2});
+        coinList.append({"name": "XBY-TEST", "fullname": "xtrabytes", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "coinID": 3});
 
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
@@ -297,6 +295,7 @@ ApplicationWindow {
     property string notificationDate: ""
     property bool walletAdded: false
     property bool alert: false
+    property bool testNet: false
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -344,7 +343,7 @@ ApplicationWindow {
                             }
 
                             walletList.setProperty(i, "balance", newBalance)
-                            balanceAlert = "Your balance has " + difference + " with: <b>" + changeBalance + "</b>"
+                            balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
                             alert = true
                             sumBalance()
@@ -354,8 +353,8 @@ ApplicationWindow {
             }
         }
         var datamodel = []
-        for (var i = 0; i < walletList.count; ++i)
-            datamodel.push(walletList.get(i))
+        for (var e = 0; e < walletList.count; ++e)
+            datamodel.push(walletList.get(e))
 
         var walletListJson = JSON.stringify(datamodel)
         saveWalletList(walletListJson);
@@ -434,7 +433,7 @@ ApplicationWindow {
                 }
             }
         }
-        return (totalBalance * valueBTC)
+        return totalBalance
     }
 
     function sumCoinTotal(coin) {
@@ -475,6 +474,16 @@ ApplicationWindow {
             }
         }
         return logo
+    }
+
+    function getTestnet(coin) {
+        testNet = false
+        for(var i = 0; i < coinList.count; i++) {
+            if (coinList.get(i).name === coin) {
+                testNet = coinList.get(i).testnet
+            }
+        }
+        return testNet
     }
 
     function getLogoBig(coin) {
@@ -756,6 +765,31 @@ ApplicationWindow {
         }
     }
 
+    function loadHistoryList() {
+        // read transactionhistory from persistent data
+    }
+
+    function addWalletToList(coin, label, addr, pubkey, privkey, view){
+        walletList.append({"name": coin, "label": label, "address": addr, "privatekey" : privkey, "publickey" : pubkey ,"balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "viewOnly" : view, "walletNR": walletID, "remove": false});
+        walletID = walletID + 1
+
+        var dataModelWallet = []
+        for (var i = 0; i < walletList.count; ++i){
+            dataModelWallet.push(walletList.get(i))
+        }
+        var walletListJson = JSON.stringify(dataModelWallet)
+
+        addressList.append({"contact": 0, "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
+        addressID = addressID +1;
+        var datamodel = []
+        for (var e = 0; e < addressList.count; ++e)
+            datamodel.push(addressList.get(e))
+
+        var addressListJson = JSON.stringify(datamodel)
+
+        saveWalletList(walletListJson)
+    }
+
     function clearSettings(){
         userSettings.accountCreationCompleted = false;
         userSettings.defaultCurrency = 0;
@@ -765,9 +799,18 @@ ApplicationWindow {
         userSettings.localKeys = false;
     }
 
-    function loadHistoryList() {
-        // read transactionhistory from persistent data
+    function clearStack() {
+        mainRoot.pop("../main.qml")
+        mainRoot.push("../Onboarding.qml")
     }
+
+    function initialiseLists() {
+        addressList.append({"contact": 0, "address": "", "label": "", "logo": '', "coin": "", "favorite": 0, "active": false, "uniqueNR": 0, "remove": true})
+
+        contactList.append({"firstName": "", "lastName": "", "photo": '', "telNR": "", "cellNR": "", "mailAddress": "", "chatID": "", "favorite": false, "active": false, "contactNR": 0, "remove": true})
+
+        walletList.append({"name": "", "label": "", "address": "", "privatekey" : "", "publickey" : "" ,"balance" : 0, "unconfirmedCoins": 0, "active": false, "favorite": false, "viewOnly" : false, "walletNR": 0, "remove": true})
+     }
 
     // loggin out
     function logOut () {
@@ -800,7 +843,7 @@ ApplicationWindow {
         currencyTracker = 0
         pincodeTracker = 0
         debugTracker = 0
-        contactID = 0
+        contactID = 1
         addressID = 1
         walletID = 1
         txID = 1
@@ -812,9 +855,10 @@ ApplicationWindow {
         addressList.clear()
         contactList.clear()
         walletList.clear()
+        alertList.clear()
+        initialiseLists()
         clearAllSettings()
-
-        Qt.quit()
+        clearStack()
     }
 
     // check for user interaction
@@ -829,10 +873,10 @@ ApplicationWindow {
         id: addressList
         ListElement {
             contact: 0
-            label: "0"
-            address: "0"
+            label: ""
+            address: ""
             logo: ''
-            coin: "0"
+            coin: ""
             active: false
             favorite: 0
             uniqueNR: 0
@@ -843,13 +887,13 @@ ApplicationWindow {
     ListModel {
         id: contactList
         ListElement {
-            firstName: "0"
-            lastName: "0"
+            firstName: ""
+            lastName: ""
             photo: 'qrc:/icons/icon-profile_01.svg'
-            telNR: "0"
-            cellNR: "0"
-            mailAddress: "0"
-            chatID: "0"
+            telNR: ""
+            cellNR: ""
+            mailAddress: ""
+            chatID: ""
             favorite: false
             contactNR: 0
             remove: true
@@ -862,9 +906,10 @@ ApplicationWindow {
             name: ""
             label: ""
             address: ""
+            privatekey: ""
+            publickey: ""
             balance: 0
             unconfirmedCoins: 0
-            // whatever other walletrelated info needed to make payments
             active: false
             favorite: false
             viewOnly: false
@@ -885,6 +930,7 @@ ApplicationWindow {
             percentage: 0
             totalBalance: 0
             active: false
+            testnet: false
             coinID: 0
         }
     }
@@ -1068,30 +1114,6 @@ ApplicationWindow {
             if (requestedLogout == 1 && transferTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && addressTracker == 0 && editContactTracker == 0 && appsTracker == 0) {
                 logoutTracker = 1
             }
-        }
-    }
-
-    // simulated logout request
-    Timer {
-        id: requestLogoutTimer
-        interval: 150000
-        repeat: false
-        running: sessionStart == 1
-
-        onTriggered: {
-            requestedLogout = 1
-        }
-    }
-
-    // simulated session closed by server
-    Timer {
-        id: sessionClosedTimer
-        interval: 300000
-        repeat: false
-        running: sessionStart == 1
-
-        onTriggered: {
-            sessionClosed = 1
         }
     }
 

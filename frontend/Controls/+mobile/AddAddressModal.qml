@@ -49,6 +49,7 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
+    property bool addingAddress: false
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
@@ -504,6 +505,7 @@ Rectangle {
                             && labelExists == 0) {
                         addressList.append({"contact": contactIndex, "address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
+                        addingAddress = true
                         var datamodel = []
                         for (var i = 0; i < addressList.count; ++i)
                             datamodel.push(addressList.get(i))
@@ -519,18 +521,20 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (addAddressTracker == 1) {
+                    if (addAddressTracker == 1 && addingAddress == true) {
                         editSaved = 1
                         coinListTracker = 0
+                        addingAddress = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (addAddressTracker == 1) {
+                    if (addAddressTracker == 1 && addingAddress == true) {
                         addressID = addressID - 1
                         addressList.remove(addressID)
                         editFailed = 1
                         coinListTracker = 0
+                        addingAddress = false
                     }
                 }
             }
@@ -576,7 +580,7 @@ Rectangle {
             height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: editFailed == 1
 
             Image {
@@ -655,7 +659,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -100
             visible: editSaved == 1
         }
 

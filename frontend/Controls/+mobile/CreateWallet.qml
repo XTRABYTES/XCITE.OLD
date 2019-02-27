@@ -55,6 +55,7 @@ Rectangle {
     property int editSaved: 0
     property int editFailed: 0
     property int newWallet: 0
+    property bool addingWallet: false
     property int createFailed: 0
     property int labelExists: 0
     property string walletError: "We were unable to create a wallet for you."
@@ -82,7 +83,7 @@ Rectangle {
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
-        visible: editSaved == 0
+        visible: editSaved == 0 && newWallet == 0 && editFailed == 0 && createFailed == 0
     }
 
     Flickable {
@@ -112,7 +113,7 @@ Rectangle {
             height: createWalletText.height + newName.height + createWalletButton.height + 75
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: newWallet == 0 && editSaved == 0 && createFailed == 0
 
             Text {
@@ -184,13 +185,26 @@ Rectangle {
 
                     onReleased: {
                         if (newName.text != "" && labelExists == 0) {
-                            // function to create new address and retrieve public key
+                            if (coinList.get(coinIndex).name === "XFUEL") {
+                                createKeyPair(coinList.get(coinIndex).fullname);
+                            }
+                            else {
+                                createFailed = 1
+                            }
+                        }
+                    }
 
-                            // publicKey.text = "" && privateKey.text = ""
+                    Connections {
+                        target: xUtil
 
-                            //newWallet = 1
-                            // or
-                            createFailed = 1 //&& walletError = ..., depending on the outcome
+                        onKeyPairCreated: {
+                            console.log("Address is: " + address)
+                            console.log("PubKey is: " + pubKey)
+                            console.log("PrivKey is: " + privKey)
+                            privateKey.text = privKey
+                            publicKey.text = pubKey
+                            addressHash.text = address
+                            newWallet = 1
                         }
                     }
                 }
@@ -222,10 +236,10 @@ Rectangle {
         Item {
             id: walletInfo
             width: parent.width
-            height: walletCreatedText.height + coinID.height + pubKey.height + publicKey.height + privKey.height + privateKey.height + warningPrivateKey.height + addWalletButton.height + 100
+            height: walletCreatedText.height + coinID.height + publicKeyLabel.height + publicKey.height + privateKeyLabel.height + privateKey.height + addressLabel.height + addressHash.height + warningPrivateKey.height + addWalletButton.height + 115
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.top: parent.top
+            anchors.topMargin: 10
             visible: newWallet == 1 && editSaved == 0
 
             Text {
@@ -261,7 +275,7 @@ Rectangle {
 
                 Label {
                     id: coinName
-                    text: coin
+                    text: coin + " " + newName.text
                     anchors.right: coinID.right
                     anchors.verticalCenter: coinLogo.verticalCenter
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
@@ -272,7 +286,7 @@ Rectangle {
             }
 
             Label {
-                id: pubKey
+                id: publicKeyLabel
                 anchors.left: walletCreatedText. left
                 anchors.top: coinID.bottom
                 anchors.topMargin: 10
@@ -285,8 +299,12 @@ Rectangle {
 
             Label {
                 id: publicKey
-                anchors.left: pubKey. left
-                anchors.top: pubKey.bottom
+                width: doubbleButtonWidth
+                maximumLineCount: 3
+                horizontalAlignment: Text.AlignLeft
+                wrapMode: Text.WrapAnywhere
+                anchors.left: publicKeyLabel. left
+                anchors.top: publicKeyLabel.bottom
                 anchors.topMargin: 5
                 text: "Here you will find your public key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
@@ -295,7 +313,7 @@ Rectangle {
             }
 
             Label {
-                id: privKey
+                id: privateKeyLabel
                 anchors.left: publicKey. left
                 anchors.top: publicKey.bottom
                 anchors.topMargin: 10
@@ -308,8 +326,39 @@ Rectangle {
 
             Label {
                 id: privateKey
-                anchors.left: privKey. left
-                anchors.top: privKey.bottom
+                width: doubbleButtonWidth
+                maximumLineCount: 3
+                horizontalAlignment: Text.AlignLeft
+                wrapMode: Text.WrapAnywhere
+                anchors.left: privateKeyLabel. left
+                anchors.top: privateKeyLabel.bottom
+                anchors.topMargin: 5
+                text: "Here you will find your private key"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+            }
+
+            Label {
+                id: addressLabel
+                width: doubbleButtonWidth
+                maximumLineCount: 2
+                horizontalAlignment: Text.AlignLeft
+                wrapMode: Text.WrapAnywhere
+                anchors.left: privateKey. left
+                anchors.top: privateKey.bottom
+                anchors.topMargin: 10
+                text: "Address:"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+                font.bold: true
+            }
+
+            Label {
+                id: addressHash
+                anchors.left: addressLabel. left
+                anchors.top: addressLabel.bottom
                 anchors.topMargin: 5
                 text: "Here you will find your private key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
@@ -321,11 +370,11 @@ Rectangle {
                 id: warningPrivateKey
                 width: doubbleButtonWidth
                 maximumLineCount: 3
-                anchors.left: privKey.left
+                anchors.left: addressHash.left
                 horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
                 text: "<b>WARNING</b>: Do not forget to backup your private key, you will not be able to restore your wallet without it!"
-                anchors.top: privateKey.bottom
+                anchors.top: addressHash.bottom
                 anchors.topMargin: 25
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
@@ -351,14 +400,8 @@ Rectangle {
                     }
 
                     onReleased: {
-                        walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
-                        walletID = walletID + 1
-                        var dataModelWallet = []
-                        for (var i = 0; i < walletList.count; ++i){
-                            dataModelWallet.push(walletList.get(i))
-                        }
-                        var walletListJson = JSON.stringify(dataModelWallet)
-                        saveWalletList(walletListJson)
+                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                        addingWallet = true
                     }
                 }
 
@@ -366,34 +409,48 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (createWalletTracker == 1 && userSettings.localKeys === false) {
+                        if (createWalletTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
                             editSaved = 1
                             labelExists = 0
                             newName.text = ""
+                            addressHash.text = ""
+                            publicKey.text = ""
+                            privateKey.text = ""
+                            addingWallet = false
                         }
                     }
 
                     onSaveFailed: {
-                        if (createWalletTracker == 1 && userSettings.localKeys === false) {
+                        if (createWalletTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
                             walletID = walletID - 1
                             walletList.remove(walletID)
+                            addressID = addressID -1
+                            addressList.remove(addressID)
                             editFailed = 1
+                            addingWallet = false
                         }
                     }
 
                     onSaveFileSucceeded: {
-                        if (createWalletTracker == 1 && userSettings.localKeys === true) {
+                        if (createWalletTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
                             editSaved = 1
                             labelExists = 0
                             newName.text = ""
+                            addressHash.text = ""
+                            publicKey.text = ""
+                            privateKey.text = ""
+                            addingWallet = false
                         }
                     }
 
                     onSaveFileFailed: {
-                        if (createWalletTracker == 1 && userSettings.localKeys === true) {
+                        if (createWalletTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
                             walletID = walletID - 1
                             walletList.remove(walletID)
+                            addressID = addressID -1
+                            addressList.remove(addressID)
                             editFailed = 1
+                            addingWallet = false
                         }
                     }
                 }
@@ -430,7 +487,7 @@ Rectangle {
             height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: editFailed == 1
 
             Image {
@@ -507,7 +564,7 @@ Rectangle {
             height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: editSaved == 1
 
             Image {
@@ -588,7 +645,7 @@ Rectangle {
             height: saveError.height + errorLabel.height + closeError.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: createFailed == 1
 
             Image {
@@ -608,7 +665,7 @@ Rectangle {
                 anchors.topMargin: 10
                 maximumLineCount: 3
                 anchors.horizontalCenter: parent.horizontalCenter
-                horizontalAlignment: Text.AlignJustify
+                horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WordWrap
                 color: "#E55541"
                 font.pixelSize: 16

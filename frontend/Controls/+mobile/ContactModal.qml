@@ -60,6 +60,8 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
+    property bool editingContact: false
+    property bool deletingContact: false
     property int contactExists: 0
     property int deleteContactTracker: 0
     property int deleteConfirmed: 0
@@ -410,6 +412,7 @@ Rectangle {
                         contactList.setProperty(contactIndex, "cellNR", newCell.text);
                         contactList.setProperty(contactIndex, "mailAddress", newMail.text);
                         contactList.setProperty(contactIndex, "chatID", newChat.text);
+                        editingContact = true
 
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
@@ -425,13 +428,14 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (editContactTracker == 1) {
+                    if (editContactTracker == 1 && editingContact == true) {
                         editSaved = 1
+                        editingContact = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (editContactTracker == 1) {
+                    if (editContactTracker == 1 && editingContact == true) {
 
                         contactList.setProperty(contactIndex, "firstName", oldFirstName);
                         contactList.setProperty(contactIndex, "lastName", oldLastName);
@@ -440,6 +444,7 @@ Rectangle {
                         contactList.setProperty(contactIndex, "mailAddress", oldMail);
                         contactList.setProperty(contactIndex, "chatID", oldChat);
                         editFailed = 1
+                        editingContact = false
                     }
                 }
             }
@@ -726,6 +731,7 @@ Rectangle {
                     onClicked: {
 
                         contactList.setProperty(contactIndex, "remove", true)
+                        deletingContact = true
 
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
@@ -740,17 +746,19 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (editContactTracker == 1) {
+                        if (editContactTracker == 1 && deletingContact == true) {
                             deleteConfirmed = 1
                             contactExists = 0
+                            deletingContact = false
                         }
                     }
 
                     onSaveFailed: {
-                        if (editContactTracker == 1) {
+                        if (editContactTracker == 1 && deletingContact == true) {
 
                             contactList.setProperty(contactIndex, "remove", false);
                             deleteFailed = 1
+                            deletingContact = false
                         }
                     }
                 }

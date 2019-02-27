@@ -62,6 +62,9 @@ Rectangle {
                 anchors.verticalCenter: picklistCoinLogo.verticalCenter
                 anchors.left: picklistCoinLogo.right
                 anchors.leftMargin: 7
+                anchors.right: parent.right
+                anchors.rightMargin: 10
+                elide: Text.ElideRight
             }
 
             MouseArea {

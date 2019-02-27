@@ -31,15 +31,18 @@ Item {
 
         Text {
             id: qrID
+            width: doubbleButtonWidth
             text:  addressList.get(addressIndex).coin + " (" + addressList.get(addressIndex).label + ")"
             anchors.top: qrModal.top
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             color: darktheme == false? "#2A2C31" : "#F2F2F2"
+            horizontalAlignment: Text.AlignHCenter
             font.family: xciteMobile.name
             font.bold: true
             font.pixelSize: 20
             font.letterSpacing: 1
+            elide: Text.ElideRight
         }
 
         Rectangle {

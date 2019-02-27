@@ -48,6 +48,7 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
+    property bool addingContact: false
     property int contactExists: 0
 
     function compareName() {
@@ -295,6 +296,7 @@ Rectangle {
                         contactID = contactList.count;
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
+                        addingContact = true
 
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
@@ -310,16 +312,18 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (addContactTracker == 1) {
+                    if (addContactTracker == 1 && addingContact == true) {
                         editSaved = 1
+                        addingContact = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (addContactTracker == 1) {
+                    if (addContactTracker == 1 && addingContact == true) {
                         contactID = contactID - 1
                         contactList.remove(contactID)
                         editFailed = 1
+                        addingContact = false
                     }
                 }
             }

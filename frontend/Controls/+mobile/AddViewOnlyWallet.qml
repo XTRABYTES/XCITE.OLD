@@ -63,6 +63,7 @@ Rectangle {
     property int scanQR: 0
     property int editFailed: 0
     property int editSaved: 0
+    property bool addingWallet: false
 
     function compareTx() {
         addressExists = 0
@@ -120,6 +121,7 @@ Rectangle {
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
+        visible: editFailed == 0 && editSaved == 0
     }
 
     Item {
@@ -128,7 +130,7 @@ Rectangle {
         height: addWalletText.height + newIcon.height + newName.height + newAddress.height + scanQrButton.height + saveButton.height + 135
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: addViewOnly == 1 && editFailed == 0 && editSaved == 0
 
         Label {
@@ -376,15 +378,8 @@ Rectangle {
                             && invalidAddress == 0
                             && addressExists == 0
                             && labelExists == 0) {
-                        walletList.append({"name": coinList.get(coin).name, "label": newName.text, "address": newAddress.text, "balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "viewOnly": true, "walletNR": walletID, "remove": false});
-                        walletID = walletID +1;
-
-                        var dataModelWallet = []
-                        for (var i = 0; i < walletList.count; ++i){
-                            dataModelWallet.push(walletList.get(i))
-                        }
-                        var walletListJson = JSON.stringify(dataModelWallet)
-                        saveWalletList(walletListJson)
+                        addWalletToList(coinList.get(coin).name, newName.text, newAddress.text, "", "", true)
+                        addingWallet == true
                     }
                 }
             }
@@ -393,7 +388,7 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (viewOnlyTracker == 1 && userSettings.localKeys === false) {
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
                         walletAdded = true
                         editSaved = 1
                         viewOnlyTracker = 0
@@ -405,32 +400,47 @@ Rectangle {
                         scanQR = 0
                         selectedAddress = ""
                         scanning = "scanning..."
+                        addingWallet = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (viewOnlyTracker == 1 && userSettings.localKeys === false) {
-                        console.log("save failed")
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
                         walletID = walletID - 1
                         walletList.remove(walletID)
-                        //editFailed = 1
+                        addressID = addressID -1
+                        addressList.remove(addressID)
+                        editFailed = 1
+                        addingWallet = false
                     }
                 }
 
                 onSaveFileSucceeded: {
                     if (viewOnlyTracker == 1) {
-                        console.log("save succeeded" && userSettings.localKeys === true)
+                        walletAdded = true
                         editSaved = 1
+                        viewOnlyTracker = 0
+                        newName.text = ""
+                        newAddress.text = ""
+                        addressExists = 0
+                        labelExists = 0
+                        invalidAddress = 0
+                        scanQR = 0
+                        selectedAddress = ""
+                        scanning = "scanning..."
+                        addingWallet = false
 
                     }
                 }
 
                 onSaveFileFailed: {
-                    if (viewOnlyTracker == 1 && userSettings.localKeys === true) {
-                        console.log("save failed")
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
                         walletID = walletID - 1
                         walletList.remove(walletID)
+                        addressID = addressID -1
+                        addressList.remove(addressID)
                         editFailed = 1
+                        addingWallet = false
                     }
                 }
             }
@@ -473,7 +483,7 @@ Rectangle {
         height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: editFailed == 1
 
         Image {
@@ -550,7 +560,7 @@ Rectangle {
         height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: editSaved == 1
 
         Image {

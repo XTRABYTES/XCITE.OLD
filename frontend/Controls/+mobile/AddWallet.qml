@@ -230,7 +230,7 @@ Rectangle {
         height: addWalletText4.height + createAddressText.height + createAddressButton.height + importAddressText.height + importAddressButton.height + 90
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: selectWallet == 1 && addActive == 1 && walletAdded == false
 
         Label {
@@ -348,7 +348,7 @@ Rectangle {
         height: addViewOnlyTextText1.height + addViewOnlyTextText2.height + addViewOnlyButton.height + 45
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: selectWallet == 1 && addViewOnly == 1 && walletAdded == false
 
         Text {
@@ -419,7 +419,7 @@ Rectangle {
         height: saveSuccess.height + saveSuccessLabel.height + moreWallets.height + 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: selectWallet == 1 && walletAdded == true
 
         Image {
