@@ -16,11 +16,15 @@
 #include "../xchat/xchat.hpp"
 #include "./crypto/ctools.h"
 	
-Xutility xUtility;
+//Xutility xUtility;
+
+Xutility::Xutility(QObject *parent) : QObject(parent)
+{
+}
 
 void Xutility::Initialize() {
 		
-	  networks.push_back("nothing");
+     networks.push_back("nothing");
      networks.push_back("xfuel");
      networks.push_back("xtrabytes");
      networks.push_back("testnet");
@@ -71,8 +75,21 @@ void Xutility::help() {
    xchatRobot.SubmitMsg("!!xutil createkeypair");
 }
 
+void Xutility::createKeyPairEntry(QString network) {
+
+   QString setNetwork = "!!xutil network " + network;
+   QString createKeys = "!!xutil createkeypair";
+
+   this->Initialize();
+   this->CheckUserInputForKeyWord(setNetwork);
+   this->CheckUserInputForKeyWord(createKeys);
+
+}
+
 void Xutility::createkeypair(const QJsonArray *params) {
 	
+    qDebug()<< "New keypaird for ["+QString::fromStdString(*network)+"] network:";
+
      xchatRobot.SubmitMsg("New keypaird for ["+QString::fromStdString(*network)+"] network:");
      CKey key;
      CPubKey pubkey;
@@ -84,6 +101,15 @@ void Xutility::createkeypair(const QJsonArray *params) {
       std::vector<unsigned char> pubkeyBin = ParseHexcstr(pubkeyHex.c_str());
       std::string pubkeyBase58 = EncodeBase58(pubkeyBin);
       
+      QString address = QString::fromStdString(CXCiteAddress(keyID).ToString());
+      QString pubKey = QString::fromStdString(pubkeyBase58);
+      QString privKey = QString::fromStdString(CXCiteSecret(key).ToString());
+      qDebug()<< "Private key: "+ privKey;
+      qDebug()<< "Public key: "+ pubKey;
+      qDebug()<< "Address: "+ address;
+
+      emit keyPairCreated(address, pubKey, privKey);
+
       xchatRobot.SubmitMsg("Private key: "+QString::fromStdString(CXCiteSecret(key).ToString()));
       xchatRobot.SubmitMsg("Public key: "+QString::fromStdString(pubkeyBase58));
       xchatRobot.SubmitMsg("Address: "+QString::fromStdString(CXCiteAddress(keyID).ToString()));

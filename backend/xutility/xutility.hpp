@@ -24,15 +24,26 @@
 class Xutility : public QObject {
     Q_OBJECT
 
-	public:
-    	Xutility(QObject *parent = 0) : QObject(parent) {}
-    	~Xutility() {}
+public:
+   //   Xutility(QObject *parent = nullptr);
+      explicit Xutility(QObject *parent = nullptr);
+
+   //      Xutility(QObject *parent = 0) : QObject(parent) {}
+ //   	~Xutility() {}
     	void Initialize();   
     	void CmdParser(const QJsonArray *params);
     	bool CheckUserInputForKeyWord(const QString msg);
     	void set_network(const QJsonArray *params);
     	void help();
-    	void createkeypair(const QJsonArray *params);
+        void createkeypair(const QJsonArray *params);
+signals:
+        void keyPairCreated(const QString &address, const QString &pubKey, const QString &privKey);
+
+public slots:
+   //     void createkeypair(const QJsonArray *params);
+        void createKeyPairEntry(QString network);
+
+
     	
    private:
      std::vector<std::string> networks;

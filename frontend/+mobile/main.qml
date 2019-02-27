@@ -312,6 +312,8 @@ ApplicationWindow {
     signal saveAppSettings()
     signal saveWalletList(string walletList)
     signal updateBalanceSignal(string walletList)
+    signal createKeyPair(string params)
+
 
 
 
@@ -664,6 +666,17 @@ ApplicationWindow {
             updateBalance(coin, address, balance)
         }
     }
+
+    Connections {
+        target: xUtil
+
+        onKeyPairCreated: {
+            console.log("Address is: " + address)
+            console.log("PubKey is: " + pubKey)
+            console.log("PrivKey is: " + privKey)
+        }
+    }
+
     // Start up functions
     function setMarketValue(currency, currencyValue) {
         var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
@@ -987,6 +1000,16 @@ ApplicationWindow {
         }
     }
 
+//    Timer {
+//        id: xutilityTimer
+//        interval: 10000
+//        repeat: false
+//        running: sessionStart == 1
+//        onTriggered:  {
+//          createKeyPair("xfuel");
+//          createKeyPair("xtrabytes");
+//        }
+//    }
 
 
     Timer {
