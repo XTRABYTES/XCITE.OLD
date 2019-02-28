@@ -208,8 +208,8 @@ Item {
                 Item {
                     id: coinInfo1
                     z:5
-                    width: fullName.implicitWidth
-                    height: fullName.implicitHeight
+                    width: Screen.width - 56
+                    height: fullName.height
                     anchors.top: parent.top
                     anchors.topMargin: 60
                     anchors.right: parent.right
@@ -238,18 +238,36 @@ Item {
                         id: fullName
                         z: 5
                         anchors.right: parent.right
-                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.bottom: parent.bottom
                         text: getFullName(coinIndex)
+                        horizontalAlignment: Text.AlignRight
                         font.pixelSize: 36
                         font.family: xciteMobile.name
                         font.letterSpacing: 2
+                        font.capitalization: Font.AllUppercase
                         color: darktheme == true? "#F2F2F2" : "#14161B"
+                        elide: Text.ElideRight
                     }
+                }
+
+                Label {
+                    id: testnetLabel
+                    z: 5
+                    text: "TESTNET"
+                    anchors.horizontalCenter: coinInfo1.horizontalCenter
+                    anchors.top: parent.top
+                    anchors.topMargin: 40
+                    font.pixelSize: 16
+                    font.family: "Brandon Grotesque"
+                    color: "#E55541"
+                    font.letterSpacing: 2
+                    visible: coinList.get(coinIndex).testnet
                 }
 
                 Item {
                     id: coinInfo2
-                    z:5
+                    z: 5
                     height: totalCoins.implicitHeight
                     anchors.top: coinInfo1.bottom
                     anchors.right: coinInfo1.right
@@ -266,7 +284,7 @@ Item {
                     }
 
                     Label {
-                        property int decimals: totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2)
+                        property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
                         property real totalCoinsSum: sumCoinTotal(totalCoins.text)
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total1
@@ -282,7 +300,7 @@ Item {
                     }
 
                     Label {
-                        property int decimals: totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2)
+                        property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
                         property real totalCoinsSum: sumCoinTotal(totalCoins.text)
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total2
@@ -764,7 +782,7 @@ Item {
                                 text: getPercentage(getName(coinIndex)) >= 0? ("+" + getPercentage(getName(coinIndex)) + " %") : (getPercentage(getName(coinIndex)) + " %")
                                 font.pixelSize: 13
                                 font.family: xciteMobile.name
-                                color: getPercentage(getName(coinIndex)) <= 0 ? "#E55541" : "#4BBE2E"
+                                color: getPercentage(getName(coinIndex)) < 0 ? "#E55541" : "#4BBE2E"
                                 anchors.right: parent.right
                                 anchors.rightMargin: 28
                                 anchors.verticalCenter: iconBar2.verticalCenter

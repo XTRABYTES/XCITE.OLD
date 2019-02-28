@@ -37,6 +37,17 @@ Rectangle {
                 visible: false
             }
 
+            AnimatedImage  {
+                id: waitingDots
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                playing: saveCurrency == true
+                visible: saveCurrency == true? (userSettings.defaultCurrency === currencyNR? true : false) : false
+            }
+
             Label {
                 id: currencyName
                 text: currency
@@ -46,6 +57,7 @@ Rectangle {
                 anchors.verticalCenter: picklistRow.verticalCenter
                 anchors.left: picklistRow.left
                 anchors.leftMargin: 7
+                visible: saveCurrency == true? (userSettings.defaultCurrency === currencyNR? false : true) : true
             }
 
             Label {
@@ -57,6 +69,7 @@ Rectangle {
                 anchors.verticalCenter: picklistRow.verticalCenter
                 anchors.right: picklistRow.right
                 anchors.rightMargin: 7
+                visible: saveCurrency == true? (userSettings.defaultCurrency === currencyNR? false : true) : true
             }
 
             MouseArea {
@@ -76,12 +89,33 @@ Rectangle {
                 }
 
                 onClicked: {
-                    clickIndicator.visible = false
-                    userSettings.defaultCurrency = currencyNR;
-                    console.log("defaultCurrency: " + currencyNR)
-                    currencyTracker = 0
-                    saveAppSettings()
-                    updateBalance()
+                    if (saveCurrency == false) {
+                        clickIndicator.visible = false
+                        oldCurrency = userSettings.defaultCurrency
+                        userSettings.defaultCurrency = currencyNR;
+                        saveCurrency = true
+                        saveAppSettings()
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (currencyTracker === 1) {
+                            currencyTracker = 0
+                            sumBalance()
+                            saveCurrency =false
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (currencyTracker === 1) {
+                            userSettings.defaultCurrency = oldCurrency
+                            currencyChangeFailed = 1
+                            saveCurrency = false
+                        }
+                    }
                 }
             }
 

@@ -202,7 +202,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                     }
                 }
-
+                /**
                 Rectangle {
                     id: skipButton
                     width: skipButtonText.implicitWidth
@@ -272,7 +272,7 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                     }
-                }
+                }*/
             }
 
             Item {

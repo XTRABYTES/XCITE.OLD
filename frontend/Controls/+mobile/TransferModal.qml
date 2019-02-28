@@ -125,11 +125,24 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
-        font.pixelSize: 18
+        font.pixelSize: 20
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
         visible: addressbookTracker == 0
+    }
+
+    Label {
+        id: testnetLabel
+        text: "TESTNET"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 40
+        font.pixelSize: 18
+        font.family: "Brandon Grotesque"
+        color: "#E55541"
+        font.letterSpacing: 2
+        visible: getTestnet(coinID.text)
     }
 
     Flickable {
@@ -211,11 +224,11 @@ Rectangle {
 
         Label {
             id: coinID
-            text: newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : walletList.get(walletIndex).name
+            text: coinTracker == 1? (newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : walletList.get(walletIndex).name) : (newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : coinList.get(0).name)
             anchors.left: coinIcon.right
             anchors.leftMargin: 7
             anchors.verticalCenter: coinIcon.verticalCenter
-            font.pixelSize: 24
+            font.pixelSize: (coinID.text).length <= 6? 24 : 18
             font.family: xciteMobile.name
             font.bold: true
             font.letterSpacing: 2
@@ -237,8 +250,8 @@ Rectangle {
             anchors.rightMargin: 7
             anchors.left: picklistArrow1.right
             anchors.leftMargin: 15
-            anchors.verticalCenter: coinID.verticalCenter
-            font.pixelSize: 24
+            anchors.verticalCenter: coinIcon.verticalCenter
+            font.pixelSize: (walletLabel.text).length <= 6? 24 : 18
             font.family: xciteMobile.name
             font.bold: true
             font.capitalization: Font.SmallCaps
@@ -250,7 +263,8 @@ Rectangle {
                       && addressbookTracker == 0
                       && scanQRTracker == 0
                       && calculatorTracker == 0
-                      && walletListTracker == 0)
+                      && walletListTracker == 0
+                      && publicKey.text != "")
                      || (transferSwitch.state === "off"
                          && walletListTracker == 0)
         }
@@ -269,6 +283,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletListTracker == 0
+                     && publicKey.text != ""
         }
 
         Text {
@@ -286,6 +301,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletListTracker == 0
+                     && publicKey.text != ""
         }
 
         Image {
@@ -295,7 +311,7 @@ Rectangle {
             width: 20
             anchors.left: coinListTracker == 0 ? coinID.right : transferPicklist1.right
             anchors.leftMargin: 10
-            anchors.verticalCenter: coinID.verticalCenter
+            anchors.verticalCenter: coinIcon.verticalCenter
             visible: transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -411,12 +427,13 @@ Rectangle {
             height: 20
             width: 20
             anchors.right: sendAmount.right
-            anchors.verticalCenter: walletLabel.verticalCenter
+            anchors.verticalCenter: coinIcon.verticalCenter
             visible: transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && walletListTracker == 0
                      && calculatorTracker == 0
+                     && publicKey.text != ""
 
             Rectangle{
                 id: picklistButton2
@@ -461,6 +478,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && publicKey.text != ""
         }
 
         Rectangle {
@@ -477,6 +495,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && publicKey.text != ""
             clip: true
 
             Controls.WalletPicklist {
@@ -498,6 +517,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && publicKey.text != ""
 
             Image {
                 id: picklistCloseArrow2
@@ -521,6 +541,23 @@ Rectangle {
             }
         }
 
+        Label {
+            id:noWalletLabel
+            text: "NO WALLETS"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: walletBalance.bottom
+            anchors.topMargin: 40
+            font.pixelSize: 20
+            font.family: "Brandon Grotesque"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            font.letterSpacing: 2
+            visible: transactionSend == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+                     && publicKey.text == ""
+        }
+
         // Receive state
 
         Rectangle {
@@ -536,6 +573,7 @@ Rectangle {
                      && transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && publicKey.text != ""
         }
 
         Item {
@@ -554,6 +592,7 @@ Rectangle {
                      && transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && publicKey.text != ""
         }
 
         Text {
@@ -571,6 +610,7 @@ Rectangle {
                      && transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && publicKey.text != ""
         }
 
         Text {
@@ -586,6 +626,7 @@ Rectangle {
                      && transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && publicKey.text != ""
         }
 
         // Send state
@@ -606,6 +647,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === true
+                     && publicKey.text != ""
         }
 
         Mobile.AmountInput {
@@ -628,7 +670,9 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
             mobile: 1
+            calculator: getTestnet(coinID.text) === true? 0 : 1
             onTextChanged: detectInteraction()
         }
 
@@ -660,6 +704,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && inputAmount > (walletList.get(selectedWallet).balance)
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
         }
 
         Controls.TextInput {
@@ -680,6 +725,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
@@ -717,6 +763,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && keyInput.text != ""
                      && invalidAddress == 1
+                     && publicKey.text != ""
         }
 
         Rectangle {
@@ -735,6 +782,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
 
             MouseArea {
                 anchors.fill: scanQrButton
@@ -787,6 +835,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
 
             MouseArea {
                 anchors.fill: addressBookButton
@@ -840,6 +889,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -863,6 +913,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
 
             MouseArea {
                 anchors.fill: sendButton
@@ -1308,7 +1359,7 @@ Rectangle {
 
         AnimatedImage {
             id: waitingDots
-            source: 'qrc:/gifs/loading_01.gif'
+            source: 'qrc:/gifs/loading-gif_01.gif'
             width: 75
             height: 50
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1331,7 +1382,7 @@ Rectangle {
 
         Label {
             id: waitingText
-            text: "Waiting for confirmation ..."
+            text: "Waiting for Network to confirm transaction"
             anchors.bottom: waitingDots.top
             anchors.bottomMargin: 70
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1583,7 +1634,7 @@ Rectangle {
         height: 25
         width: 25
         anchors.top: addressbookTitle.bottom
-        anchors.topMargin: 20
+        anchors.topMargin: 30
         anchors.left: parent.left
         anchors.leftMargin: 30
         visible: transferSwitch.on == true

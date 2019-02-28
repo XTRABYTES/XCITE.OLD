@@ -161,7 +161,7 @@ Rectangle {
         delegate: contactCard
         spacing: 0
         anchors.fill: parent
-        contentHeight: (filteredContacts.count * 85) + 75
+        contentHeight: (filteredContacts.count * 100) + 125
         interactive: appsTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && transferTracker == 0
         onDraggingChanged: detectInteraction()
 

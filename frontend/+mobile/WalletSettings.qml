@@ -26,6 +26,9 @@ Rectangle {
     height: Screen.height
     color: darktheme == true? "#14161B" : "#FDFDFD"
 
+    property int clearFailed: 0
+    property bool clearAllInitiated: false
+
     MouseArea {
         anchors.fill: parent
     }
@@ -335,6 +338,7 @@ Rectangle {
         anchors.bottom: closeSettings.top
         anchors.bottomMargin: 35
         anchors.horizontalCenter: parent.horizontalCenter
+        visible: clearAllInitiated == false
 
         MouseArea {
             anchors.fill: clearButton
@@ -359,13 +363,43 @@ Rectangle {
                     clearAll = 1
                 }
                 else {
+                    clearAllInitiated = true
+                    oldDefaultCurrency = userSettings.defaultCurrency
+                    oldLocale = userSettings.locale
+                    oldPinlock = userSettings.pinlock
+                    oldTheme = userSettings.theme
+                    oldLocalKeys= userSettings.localKeys
                     clearAllSettings()
                     userSettings.locale = "en_us"
                     userSettings.defaultCurrency = 0
                     userSettings.theme = "dark"
                     userSettings.pinlock = false
-                    userSettings.accountCreationComplete = true
-                    savePincode("0000")
+                    userSettings.accountCreationCompleted = true
+                    userSettings.localKeys = oldLocalKeys
+                    saveAppSettings()
+                }
+            }
+
+            Connections {
+                target: UserSettings
+
+                onSaveSucceeded: {
+                    if (clearAllInitiated == true || pinClearInitiated == true) {
+                        clearAllInitiated = false
+                        pinClearInitiated = false
+                    }
+                }
+
+                onSaveFailed: {
+                    if (clearAllInitiated == true || pinClearInitiated == true) {
+                        userSettings.locale = oldLocale
+                        userSettings.defaultCurrency = oldDefaultCurrency
+                        userSettings.theme = oldTheme
+                        userSettings.pinlock = oldPinlock
+                        clearAllInitiated = false
+                        pinClearInitiated = false
+                        clearFailed = 1
+                    }
                 }
             }
         }
@@ -378,6 +412,7 @@ Rectangle {
         color: maincolor
         anchors.horizontalCenter: clearButton.horizontalCenter
         anchors.verticalCenter: clearButton.verticalCenter
+        visible: clearAllInitiated == false
     }
 
     Rectangle {
@@ -389,6 +424,94 @@ Rectangle {
         opacity: 0.5
         border.color: maincolor
         border.width: 1
+        visible: clearAllInitiated == false
+    }
+
+    AnimatedImage {
+        id: waitingDots2
+        source: 'qrc:/gifs/loading-gif_01.gif'
+        width: 90
+        height: 60
+        anchors.horizontalCenter: clearButton.horizontalCenter
+        anchors.verticalCenter: clearButton.verticalCenter
+        playing: clearAllInitiated == true
+        visible: clearAllInitiated == true
+    }
+
+    Item {
+        z: 12
+        width: popupClearAll.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: clearFailed == 1
+
+        Rectangle {
+            id: popupClearAll
+            height: 50
+            width: popupClearText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupClearText
+            text: "FAILED to reset your settings!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: clearFailed == 1
+            interval: 2000
+
+            onTriggered: clearFailed = 0
+        }
+    }
+
+    Item {
+        z: 12
+        width: popupCurrencyFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: currencyChangeFailed == 1
+
+        Rectangle {
+            id: popupCurrencyFail
+            height: 50
+            width: popupCurrencyText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupCurrencyText
+            text: "FAILED to change your currency!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: currencyChangeFailed == 1
+            interval: 2000
+
+            onTriggered: currencyChangeFailed = 0
+        }
     }
 
     // Network error

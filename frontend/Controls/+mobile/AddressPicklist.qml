@@ -130,6 +130,7 @@ Rectangle {
         id: picklist
         model: filteredAddresses
         delegate: contactLine
+        contentHeight: (filteredAddresses.count * 80) + 125
         clip: true
         onDraggingChanged: detectInteraction()
     }

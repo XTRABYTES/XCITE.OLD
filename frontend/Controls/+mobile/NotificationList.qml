@@ -31,12 +31,40 @@ Rectangle {
             id: notificationRow
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
-            height: date == "null"? 0 : 110
+            height: date == "null"? 0 : 130
             color:"transparent"
             clip: true
 
             Controls.CardBody {
 
+            }
+
+            Image {
+                id: clearIcon
+                source: darktheme == true? 'qrc:/icons/mobile/delete-icon_01_light.svg' : 'qrc:/icons/mobile/delete-icon_01_dark.svg'
+                height: 12
+                fillMode: Image.PreserveAspectFit
+                anchors.top: parent.top
+                anchors.topMargin: 14
+                anchors.left: parent.right
+                anchors.leftMargin: 8
+
+                MouseArea {
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        alertList.remove(index);
+                        checkNotifications()
+                    }
+                }
             }
 
             Label {
@@ -70,6 +98,7 @@ Rectangle {
 
             Label {
                 id: notificationMessage
+                maximumLineCount: 2
                 text: message
                 anchors.left: parent.left
                 anchors.leftMargin: 28
@@ -91,6 +120,7 @@ Rectangle {
         id: notificationlist
         model: alertList
         delegate: notificationLine
+        contentHeight: ((alertList.count - 1) * 130) + 125
         onDraggingChanged: detectInteraction()
     }
 }

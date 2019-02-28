@@ -49,10 +49,12 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
+    property bool addingAddress: false
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
     property int contact: contactIndex
+    property bool saveInitiated: false
 
     function compareTx() {
         addressExists = 0
@@ -481,6 +483,7 @@ Rectangle {
             visible: editSaved == 0
                      && scanQRTracker == 0
                      && editFailed == 0
+                     && saveInitiated == false
 
             MouseArea {
                 anchors.fill: saveButton
@@ -502,8 +505,10 @@ Rectangle {
                             && invalidAddress == 0
                             && addressExists == 0
                             && labelExists == 0) {
+                        saveInitiated = true
                         addressList.append({"contact": contactIndex, "address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
+                        addingAddress = true
                         var datamodel = []
                         for (var i = 0; i < addressList.count; ++i)
                             datamodel.push(addressList.get(i))
@@ -519,18 +524,22 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (addAddressTracker == 1) {
+                    if (addAddressTracker == 1 && addingAddress == true) {
                         editSaved = 1
                         coinListTracker = 0
+                        addingAddress = false
+                        saveInitiated = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (addAddressTracker == 1) {
+                    if (addAddressTracker == 1 && addingAddress == true) {
                         addressID = addressID - 1
                         addressList.remove(addressID)
                         editFailed = 1
                         coinListTracker = 0
+                        addingAddress = false
+                        saveInitiated = false
                     }
                 }
             }
@@ -550,6 +559,7 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && scanQRTracker == 0
+                     && saveInitiated == false
         }
 
         Rectangle {
@@ -567,6 +577,21 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && scanQRTracker == 0
+                     && saveInitiated == false
+        }
+
+        AnimatedImage {
+            id: waitingDots2
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            playing: saveInitiated == true
+            visible: editSaved == 0
+                     && scanQRTracker == 0
+                     && editFailed == 0
+                     && saveInitiated == true
         }
 
         // save failed state
@@ -576,7 +601,7 @@ Rectangle {
             height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: editFailed == 1
 
             Image {
@@ -655,7 +680,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -100
             visible: editSaved == 1
         }
 

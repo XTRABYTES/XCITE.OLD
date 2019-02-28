@@ -52,11 +52,15 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed : 0
+    property int newWallet: 0
+    property bool addingWallet: false
     property int importWalletFailed: 0
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
-    property string walletError: " there is no wallet associated with the private key you provided. Please try again with a different key"
+    property string walletError:""
+    property string error1: "there is no wallet associated with the private key you provided. Please try again with a different key."
+    property string error2: " we are unable to import your private key at the moment."
     property string coin: coinList.get(coinIndex).name
 
     function compareTx() {
@@ -88,7 +92,7 @@ Rectangle {
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
-        visible: editSaved == 0
+        visible: editSaved == 0 && newWallet == 0 && editFailed == 0 && importWalletFailed == 0
     }
 
     Flickable {
@@ -119,7 +123,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -100
-            visible: editSaved == 0 && importWalletFailed == 0 && editFailed == 0
+            visible: editSaved == 0 && newWallet == 0 && importWalletFailed == 0 && editFailed == 0
 
             Text {
                 id: addWalletText
@@ -282,7 +286,7 @@ Rectangle {
             }
 
             Rectangle {
-                id: addWalletButton
+                id: importWalletButton
                 width: newAddress.width
                 height: 34
                 anchors.top: scanQrButton.bottom
@@ -296,7 +300,7 @@ Rectangle {
                 visible: scanQRTracker == 0
 
                 MouseArea {
-                    anchors.fill: addWalletButton
+                    anchors.fill: parent
 
                     onPressed: {
                         click01.play()
@@ -310,69 +314,35 @@ Rectangle {
                                 && addressExists == 0
                                 && labelExists == 0) {
                             // function to extract public key from private key
-                            walletList.append({"name": coin, "label": newName.Text, "address": publicKey.text, "balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "walletNR": walletID, "remove": false});
-                            walletID = walletID + 1
-                            var dataModelWallet = []
-                            for (var i = 0; i < walletList.count; ++i){
-                                dataModelWallet.push(walletList.get(i))
-                            }
-                            var walletListJson = JSON.stringify(dataModelWallet)
-                            saveWalletList(walletListJson)
+
+                            // for now
+                            importWalletFailed = 1
+                            walletError = error2
                         }
                     }
                 }
+                /**
+                    Connections {
+                        target: xUtil
 
-                Connections {
-                    target: UserSettings
-
-                    onSaveSucceeded: {
-                        if (importKeyTracker == 1 && userSettings.localKeys === false) {
-                            editSaved = 1
-                            labelExists = 0
-                            addressExists = 0
-                            invalidAddress = 0
-                            newName.text = ""
-                            newAddress.text = ""
+                        onImportSucceeded: {
+                            console.log("Address is: " + address)
+                            console.log("PubKey is: " + pubKey)
+                            console.log("PrivKey is: " + privKey)
+                            privateKey.text = privKey
+                            publicKey.text = pubKey
+                            addressHash.text = address
+                            newWallet = 1
                         }
-                    }
 
-                    onSaveFailed: {
-                        if (importKeyTracker == 1 && userSettings.localKeys === false) {
-                            walletID = walletID - 1
-                            walletList.remove(walletID)
-                            editFailed = 1
-                        }
-                    }
-
-                    onSaveFileSucceeded: {
-                        if (importKeyTracker == 1 && userSettings.localKeys === true) {
-                            editSaved = 1
-                            labelExists = 0
-                            addressExists = 0
-                            invalidAddress = 0
-                            newName.text = ""
-                            newAddress.text = ""
-                        }
-                    }
-
-                    onSaveFileFailed: {
-                        if (importKeyTracker == 1 && userSettings.localKeys === true) {
-                            walletID = walletID - 1
-                            walletList.remove(walletID)
-                            editFailed = 1
-                        }
-                    }
-
-                    /**
-                    onExtractionFailed: {
-                        importWalletFailed = 1
+                        onImportFailed :{
+                            importWalletFailed = 1
                     }*/
-                }
             }
 
             Text {
-                id: addWalletButtonText
-                text: "ADD WALLET"
+                id: importWalletButtonText
+                text: "IMPORT WALLET"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 color: (newName.text != ""
@@ -380,16 +350,16 @@ Rectangle {
                         && invalidAddress == 0
                         && addressExists == 0 && labelExists == 0) ? "#F2F2F2" : "#979797"
                 font.bold: true
-                anchors.horizontalCenter: addWalletButton.horizontalCenter
-                anchors.verticalCenter: addWalletButton.verticalCenter
+                anchors.horizontalCenter: importWalletButton.horizontalCenter
+                anchors.verticalCenter: importWalletButton.verticalCenter
                 visible: scanQRTracker == 0
             }
 
             Rectangle {
-                width: addWalletButton.width
+                width: importWalletButton.width
                 height: 34
-                anchors.bottom: addWalletButton.bottom
-                anchors.left: addWalletButton.left
+                anchors.bottom: importWalletButton.bottom
+                anchors.left: importWalletButton.left
                 color: "transparent"
                 opacity: 0.5
                 border.color: (newName.text != ""
@@ -401,6 +371,255 @@ Rectangle {
             }
         }
 
+        Item {
+            id: walletInfo
+            width: parent.width
+            height: walletCreatedText.height + coinID.height + publicKeyLabel.height + publicKey.height + privateKeyLabel.height + privateKey.height + addressLabel.height + addressHash.height + warningPrivateKey.height + addWalletButton.height + 115
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            visible: newWallet == 1 && editSaved == 0
+
+            Text {
+                id: walletCreatedText
+                width: doubbleButtonWidth
+                maximumLineCount: 2
+                anchors.horizontalCenter: parent.horizontalCenter
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                text: "A NEW <b>" + coin + "</b> WALLET HAS BEEN CREATED FOR YOU"
+                anchors.top: parent.top
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 16
+                font.family: xciteMobile.name
+            }
+
+            Item {
+                id: coinID
+                width: coinLogo.width + coinName.width + 7
+                height: coinLogo.height
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: walletCreatedText.bottom
+                anchors.topMargin: 20
+
+                Image {
+                    id: coinLogo
+                    source: 'qrc:/icons/XFUEL_card_logo_01.svg'
+                    width: 30
+                    height: 30
+                    anchors.left: coinID.left
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Label {
+                    id: coinName
+                    text: coin + " " + newName.text
+                    anchors.right: coinID.right
+                    anchors.verticalCenter: coinLogo.verticalCenter
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                    font.pixelSize: 18
+                    font.family: xciteMobile.name
+                    font.bold: true
+                }
+            }
+
+            Label {
+                id: publicKeyLabel
+                anchors.left: walletCreatedText. left
+                anchors.top: coinID.bottom
+                anchors.topMargin: 10
+                text: "Public Key:"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+                font.bold: true
+            }
+
+            Label {
+                id: publicKey
+                width: doubbleButtonWidth
+                maximumLineCount: 3
+                horizontalAlignment: Text.AlignLeft
+                wrapMode: Text.WrapAnywhere
+                anchors.left: publicKeyLabel. left
+                anchors.top: publicKeyLabel.bottom
+                anchors.topMargin: 5
+                text: "Here you will find your public key"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+            }
+
+            Label {
+                id: privateKeyLabel
+                anchors.left: publicKey. left
+                anchors.top: publicKey.bottom
+                anchors.topMargin: 10
+                text: "Private Key:"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+                font.bold: true
+            }
+
+            Label {
+                id: privateKey
+                width: doubbleButtonWidth
+                maximumLineCount: 3
+                horizontalAlignment: Text.AlignLeft
+                wrapMode: Text.WrapAnywhere
+                anchors.left: privateKeyLabel. left
+                anchors.top: privateKeyLabel.bottom
+                anchors.topMargin: 5
+                text: "Here you will find your private key"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+            }
+
+            Label {
+                id: addressLabel
+                anchors.left: privateKey. left
+                anchors.top: privateKey.bottom
+                anchors.topMargin: 10
+                text: "Address:"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+                font.bold: true
+            }
+
+            Label {
+                id: addressHash
+                anchors.left: addressLabel. left
+                anchors.top: addressLabel.bottom
+                anchors.topMargin: 5
+                text: "Here you will find your private key"
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: xciteMobile.name
+            }
+
+            Text {
+                id: warningPrivateKey
+                width: doubbleButtonWidth
+                maximumLineCount: 3
+                anchors.left: addressHash.left
+                horizontalAlignment: Text.AlignJustify
+                wrapMode: Text.WordWrap
+                text: "<b>WARNING</b>: Do not forget to backup your private key, you will not be able to restore your wallet without it!"
+                anchors.top: addressHash.bottom
+                anchors.topMargin: 25
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 16
+                font.family: xciteMobile.name
+            }
+
+            Rectangle {
+                id: addWalletButton
+                width: doubbleButtonWidth
+                height: 34
+                anchors.top: warningPrivateKey.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: maincolor
+                opacity: 0.25
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onReleased: {
+                        addingWallet = true
+                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (importKeyTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
+                            editSaved = 1
+                            labelExists = 0
+                            addressExists = 0
+                            invalidAddress = 0
+                            newName.text = ""
+                            newAddress.text = ""
+                            addressHash.text = ""
+                            publicKey.text = ""
+                            privateKey.text = ""
+                            addingWallet = false
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (importKeyTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            editFailed = 1
+                            addingWallet = false
+                        }
+                    }
+
+                    onSaveFileSucceeded: {
+                        if (importKeyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
+                            editSaved = 1
+                            labelExists = 0
+                            addressExists = 0
+                            invalidAddress = 0
+                            newName.text = ""
+                            newAddress.text = ""
+                            addressHash.text = ""
+                            publicKey.text = ""
+                            privateKey.text = ""
+                            addingWallet = false
+                        }
+                    }
+
+                    onSaveFileFailed: {
+                        if (importKeyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            editFailed = 1
+                            addingWallet = false
+                        }
+                    }
+                }
+            }
+
+            Text {
+                id: addWalletButtonText
+                text: "ADD WALLET"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                color: "#F2F2F2"
+                font.bold: true
+                anchors.horizontalCenter: addWalletButton.horizontalCenter
+                anchors.verticalCenter: addWalletButton.verticalCenter
+            }
+
+
+            Rectangle {
+                width: doubbleButtonWidth
+                height: 34
+                anchors.bottom: addWalletButton.bottom
+                anchors.left: addWalletButton.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+            }
+        }
+
         // Save failed state
 
         Item {
@@ -409,7 +628,7 @@ Rectangle {
             height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: editFailed == 1
 
             Image {
@@ -486,7 +705,7 @@ Rectangle {
             height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: editSaved == 1
 
             Image {
@@ -582,7 +801,7 @@ Rectangle {
             height: saveError.height + errorLabel.height + closeError.height + 40
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: importWalletFailed == 1
 
             Image {
@@ -602,7 +821,7 @@ Rectangle {
                 anchors.top: saveError.bottom
                 anchors.topMargin: 20
                 maximumLineCount: 3
-                anchors.left: closeError.left
+                anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
                 color: "#E55541"

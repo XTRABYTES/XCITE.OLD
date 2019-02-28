@@ -60,117 +60,125 @@ Rectangle {
         ]
 
         Component {
-                id: walletCard
+            id: walletCard
+
+            Rectangle {
+                id: currencyRow
+                color: "transparent"
+                width: Screen.width
+                height: 50
+
+                Image {
+                    id: icon
+                    source: logo
+                    anchors.left: parent.left
+                    anchors.leftMargin: 14
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 25
+                    height: 25
+                }
+
+                Text {
+                    id: coinName
+                    anchors.left: icon.right
+                    anchors.leftMargin: 7
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
+                    elide: Text.ElideRight
+                    anchors.verticalCenter: icon.verticalCenter
+                    text: name
+                    font.pixelSize: 18
+                    font.family: xciteMobile.name
+                    color: "#E5E5E5"
+                    font.bold: true
+                }
 
                 Rectangle {
-                    id: currencyRow
-                    color: "transparent"
-                    width: Screen.width
-                    height: 50
+                    id: filterActiveCoin
+                    height: parent.height
+                    width: parent.width
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: "black"
+                    opacity: .25
+                    visible: active == false
+                }
 
-                    Image {
-                            id: icon
-                            source: logo
-                            anchors.left: parent.left
-                            anchors.leftMargin: 14
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: 25
-                            height: 25
-                        }
+                Rectangle {
+                    id: divider1
+                    height: 1
+                    width: parent.width
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    color: "#2a2c31"
+                    opacity: 0.5
+                }
 
-                        Text {
-                            id: coinName
-                            anchors.left: icon.right
-                            anchors.leftMargin: 7
-                            anchors.verticalCenter: icon.verticalCenter
-                            text: name
-                            font.pixelSize: 18
-                            font.family: xciteMobile.name
-                            color: "#E5E5E5"
-                            font.bold: true
-                        }
+                Rectangle {
+                    id: divider2
+                    height: 1
+                    width: parent.width
+                    anchors.bottom: divider1.top
+                    anchors.left: parent.left
+                    color: "#979797"
+                }
 
-                        Rectangle {
-                            id: filterActiveCoin
-                            height: parent.height
-                            width: parent.width
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: "black"
-                            opacity: .25
-                            visible: active == false
-                        }
+                MouseArea {
+                    anchors.fill: parent
 
-                        Rectangle {
-                            id: divider1
-                            height: 1
-                            width: parent.width
-                            anchors.bottom: parent.bottom
-                            anchors.left: parent.left
-                            color: "#2a2c31"
-                            opacity: 0.5
-                        }
-
-                        Rectangle {
-                            id: divider2
-                            height: 1
-                            width: parent.width
-                            anchors.bottom: divider1.top
-                            anchors.left: parent.left
-                            color: "#979797"
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-
-                            function compareCoin() {
-                                for(var i = 0; i < coinList.count; i++) {
-                                    if (coinList.get(i).name === name) {
-                                        if (active == false) {
-                                            coinList.setProperty(i, "active", true)
-                                            for (var e = 0; e < addressList.count; e++) {
-                                                if (addressList.get(e).coin === name) {
-                                                    addressList.setProperty(e, "active", true)
-                                                }
-                                            }
-                                            for (var y = 0; y < walletList.count; y++) {
-                                                if (walletList.get(y).name === name) {
-                                                    walletList.setProperty(y, "active", true)
-                                                }
-                                            }
+                    function compareCoin() {
+                        for(var i = 0; i < coinList.count; i++) {
+                            if (coinList.get(i).name === name) {
+                                if (active == false) {
+                                    coinList.setProperty(i, "active", true)
+                                    for (var e = 0; e < addressList.count; e++) {
+                                        if (addressList.get(e).coin === name) {
+                                            addressList.setProperty(e, "active", true)
                                         }
-                                        else {
-                                            coinList.setProperty(i, "active", false)
-                                            for (var a = 0; a < addressList.count; a++) {
-                                                if (addressList.get(a).coin === name) {
-                                                    addressList.setProperty(a, "active", false)
-                                                }
-                                            }
-                                            for (var o = 0; o < walletList.count; o++) {
-                                                if (walletList.get(o).name === name) {
-                                                    walletList.setProperty(o, "active", false)
-                                                }
-                                            }
+                                    }
+                                    for (var y = 0; y < walletList.count; y++) {
+                                        if (walletList.get(y).name === name) {
+                                            walletList.setProperty(y, "active", true)
+                                        }
+                                    }
+                                }
+                                else {
+                                    coinList.setProperty(i, "active", false)
+                                    for (var a = 0; a < addressList.count; a++) {
+                                        if (addressList.get(a).coin === name) {
+                                            addressList.setProperty(a, "active", false)
+                                        }
+                                    }
+                                    for (var o = 0; o < walletList.count; o++) {
+                                        if (walletList.get(o).name === name) {
+                                            walletList.setProperty(o, "active", false)
                                         }
                                     }
                                 }
                             }
-
-                            onClicked: {
-                                compareCoin()
-                                filterActiveCoin.visible = active == false
-                                sumBalance()
-                            }
                         }
                     }
-            }
 
-            ListView {
-                anchors.fill: parent
-                id: allWallets
-                model: coinList
-                delegate: walletCard
-          }
+                    onClicked: {
+                        compareCoin()
+                        //filterActiveCoin.visible = active == false
+                        sumBalance()
+                        var datamodel = []
+                        for (var e = 0; e < walletList.count; ++e)
+                            datamodel.push(walletList.get(e))
+
+                        var walletListJson = JSON.stringify(datamodel)
+                    }
+                }
+            }
+        }
+
+        ListView {
+            anchors.fill: parent
+            id: allWallets
+            model: coinList
+            delegate: walletCard
+        }
 
         Rectangle {
             id: clickArea

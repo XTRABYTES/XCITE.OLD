@@ -64,12 +64,12 @@ int main(int argc, char *argv[])
     QQmlFileSelector *selector = new QQmlFileSelector(&engine);
     selector->setExtraSelectors(QStringList() << "mobile");
 #endif
-        
+
     xchatRobot.Initialize();
     engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
-        
+
     staticNet.Initialize();
-    engine.rootContext()->setContextProperty("StaticNet", &staticNet);    
+    engine.rootContext()->setContextProperty("StaticNet", &staticNet);
 
     Xutility xUtil;
     engine.rootContext()->setContextProperty("xUtil", &xUtil);
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     Explorer explorer;
     engine.rootContext()->setContextProperty("explorer", &explorer);
 
-	// set app version
+    // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
 
