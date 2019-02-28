@@ -161,8 +161,13 @@ Rectangle {
 
                     onClicked: {
                         compareCoin()
-                        filterActiveCoin.visible = active == false
+                        //filterActiveCoin.visible = active == false
                         sumBalance()
+                        var datamodel = []
+                        for (var e = 0; e < walletList.count; ++e)
+                            datamodel.push(walletList.get(e))
+
+                        var walletListJson = JSON.stringify(datamodel)
                     }
                 }
             }

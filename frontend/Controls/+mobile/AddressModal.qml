@@ -317,9 +317,9 @@ Rectangle {
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
-                     && editFailed == 0
-                     && editFailed == 0
+                     && editingAddress == false
 
             MouseArea {
                 anchors.fill: saveEditButton
@@ -411,6 +411,7 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteAddressTracker == 0
+                     && editingAddress == false
         }
 
         Rectangle {
@@ -428,6 +429,21 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteAddressTracker == 0
+                     && editingAddress == false
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveEditButton.horizontalCenter
+            anchors.verticalCenter: saveEditButton.verticalCenter
+            playing: editingAddress == true
+            visible: editSaved == 0
+                     && editFailed == 0
+                     && deleteAddressTracker == 0
+                     && editingAddress == true
         }
 
         Image {
@@ -992,6 +1008,7 @@ Rectangle {
                 anchors.rightMargin: 5
                 color: "#4BBE2E"
                 opacity: 0.25
+                visible: deletingAddress == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -1060,6 +1077,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: confirmationDeleteButton.horizontalCenter
                 anchors.verticalCenter: confirmationDeleteButton.verticalCenter
+                visible: deletingAddress == false
             }
 
             Rectangle {
@@ -1072,6 +1090,7 @@ Rectangle {
                 color: "transparent"
                 border.color: "#4BBE2E"
                 border.width: 1
+                visible: deletingAddress == false
             }
 
             Rectangle {
@@ -1084,6 +1103,7 @@ Rectangle {
                 anchors.leftMargin: 5
                 color: "#E55541"
                 opacity: 0.25
+                visible: deletingAddress == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -1116,6 +1136,7 @@ Rectangle {
                 color: "#E55541"
                 anchors.horizontalCenter: cancelDeleteButton.horizontalCenter
                 anchors.verticalCenter: cancelDeleteButton.verticalCenter
+                visible: deletingAddress == false
             }
 
             Rectangle {
@@ -1128,6 +1149,18 @@ Rectangle {
                 color: "transparent"
                 border.color: "#E55541"
                 border.width: 1
+                visible: deletingAddress == false
+            }
+
+            AnimatedImage  {
+                id: waitingDots2
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: confirmationDeleteButton.verticalCenter
+                playing: deletingAddress == true
+                visible: deletingAddress == true
             }
         }
 

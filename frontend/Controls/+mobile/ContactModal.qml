@@ -382,6 +382,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
                      && editFailed == 0
+                     && editingContact == false
 
             MouseArea {
                 anchors.fill: saveButton
@@ -459,8 +460,9 @@ Rectangle {
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             visible: editSaved == 0
-                     && editFailed == 0
                      && deleteContactTracker == 0
+                     && editFailed == 0
+                     && editingContact == false
         }
 
         Rectangle {
@@ -473,8 +475,23 @@ Rectangle {
             border.color: (contactExists == 0)? maincolor : "#979797"
             border.width: 1
             visible: editSaved == 0
-                     && editFailed == 0
                      && deleteContactTracker == 0
+                     && editFailed == 0
+                     && editingContact == false
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            playing: editingContact == true
+            visible: editSaved == 0
+                     && deleteContactTracker == 0
+                     && editFailed == 0
+                     && editingContact == true
         }
 
         // save failed state
@@ -710,6 +727,7 @@ Rectangle {
                 anchors.rightMargin: 5
                 color: "#4BBE2E"
                 opacity: 0.25
+                visible: deletingContact == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -772,6 +790,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: confirmationDeleteButton.horizontalCenter
                 anchors.verticalCenter: confirmationDeleteButton.verticalCenter
+                visible: deletingContact == false
             }
 
             Rectangle {
@@ -782,6 +801,7 @@ Rectangle {
                 color: "transparent"
                 border.color: "#4BBE2E"
                 border.width: 1
+                visible: deletingContact == false
             }
 
             Rectangle {
@@ -794,6 +814,7 @@ Rectangle {
                 anchors.leftMargin: 5
                 color: "#E55541"
                 opacity: 0.25
+                visible: deletingContact == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -826,6 +847,7 @@ Rectangle {
                 color: "#E55541"
                 anchors.horizontalCenter: cancelDeleteButton.horizontalCenter
                 anchors.verticalCenter: cancelDeleteButton.verticalCenter
+                visible: deletingContact == false
             }
 
             Rectangle {
@@ -836,6 +858,18 @@ Rectangle {
                 color: "transparent"
                 border.color: "#E55541"
                 border.width: 1
+                visible: deletingContact == false
+            }
+
+            AnimatedImage  {
+                id: waitingDots2
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: confirmationDeleteButton.verticalCenter
+                playing: deletingContact == true
+                visible: deletingContact == true
             }
         }
 

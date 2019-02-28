@@ -286,16 +286,25 @@ ApplicationWindow {
     property int createPin: 0
     property int changePin: 0
     property int unlockPin: 0
+    property bool pinClearInitiated: false
     property int clearAll: 0
     property int pinOK: 0
     property int pinError: 0
     property int requestSend: 0
-    property bool newAccount
+    property bool newAccount: false
     property real changeBalance: 0
     property string notificationDate: ""
     property bool walletAdded: false
     property bool alert: false
     property bool testNet: false
+    property bool saveCurrency: false
+    property int oldCurrency: 0
+    property int currencyChangeFailed: 0
+    property string oldLocale: ""
+    property int oldDefaultCurrency: 0
+    property string oldTheme: ""
+    property bool oldPinlock: false
+    property bool oldLocalKeys: false
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -357,7 +366,6 @@ ApplicationWindow {
             datamodel.push(walletList.get(e))
 
         var walletListJson = JSON.stringify(datamodel)
-        saveWalletList(walletListJson);
     }
 
     // Global functions
@@ -688,19 +696,22 @@ ApplicationWindow {
 
     // Start up functions
     function setMarketValue(currency, currencyValue) {
-        var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
-        if (currency === "btcusd"){
-            valueBTCUSD = currencyVal;
-        }else if(currency === "btceur"){
-            valueBTCEUR = currencyVal;
-        }else if(currency === "btcgbp"){
-            valueBTCGBP = currencyVal;
-        }else if(currency === "xbybtc"){
-            btcValueXBY = currencyVal;
-            btcValueXFUEL = currencyVal
-        }else if(currency === "xbycha"){
-            percentageXBY = currencyVal;
-            percentageXFUEL = currencyVal;
+        if (currencyValue !== "") {
+            var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
+            if (currency === "btcusd"){
+                valueBTCUSD = currencyVal;
+            }else if(currency === "btceur"){
+                valueBTCEUR = currencyVal;
+            }else if(currency === "btcgbp"){
+                valueBTCGBP = currencyVal;
+            }else if(currency === "xbybtc"){
+                btcValueXBY = currencyVal;
+                btcValueXFUEL = currencyVal
+            }else if(currency === "xbycha"){
+                percentageXBY = currencyVal;
+                percentageXFUEL = currencyVal;
+            }
+            sumBalance()
         }
     }
 
@@ -810,7 +821,7 @@ ApplicationWindow {
         contactList.append({"firstName": "", "lastName": "", "photo": '', "telNR": "", "cellNR": "", "mailAddress": "", "chatID": "", "favorite": false, "active": false, "contactNR": 0, "remove": true})
 
         walletList.append({"name": "", "label": "", "address": "", "privatekey" : "", "publickey" : "" ,"balance" : 0, "unconfirmedCoins": 0, "active": false, "favorite": false, "viewOnly" : false, "walletNR": 0, "remove": true})
-     }
+    }
 
     // loggin out
     function logOut () {
@@ -1046,16 +1057,16 @@ ApplicationWindow {
         }
     }
 
-//    Timer {
-//        id: xutilityTimer
-//        interval: 10000
-//        repeat: false
-//        running: sessionStart == 1
-//        onTriggered:  {
-//          createKeyPair("xfuel");
-//          createKeyPair("xtrabytes");
-//        }
-//    }
+    //    Timer {
+    //        id: xutilityTimer
+    //        interval: 10000
+    //        repeat: false
+    //        running: sessionStart == 1
+    //        onTriggered:  {
+    //          createKeyPair("xfuel");
+    //          createKeyPair("xtrabytes");
+    //        }
+    //    }
 
 
     Timer {
@@ -1124,7 +1135,6 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            // retrieve balance from blockexplorer
             sumBalance()
         }
     }

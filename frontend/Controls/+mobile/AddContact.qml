@@ -271,7 +271,9 @@ Rectangle {
             anchors.top: newChat.bottom
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: editSaved == 0 && editFailed == 0
+            visible: editSaved == 0
+                     && editFailed == 0
+                     && addingContact == false
 
             MouseArea {
                 anchors.fill: saveButton
@@ -341,6 +343,7 @@ Rectangle {
             anchors.verticalCenter: saveButton.verticalCenter
             visible: editSaved == 0
                      && editFailed == 0
+                     && addingContact == false
         }
 
         Rectangle {
@@ -356,6 +359,20 @@ Rectangle {
             border.width: 1
             visible: editSaved == 0
                      && editFailed == 0
+                     && addingContact == false
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            playing: addingContact == true
+            visible: editSaved == 0
+                     && editFailed == 0
+                     && addingContact == true
         }
 
         // save failed state

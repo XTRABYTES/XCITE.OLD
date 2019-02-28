@@ -120,6 +120,7 @@ Rectangle {
         id: notificationlist
         model: alertList
         delegate: notificationLine
+        contentHeight: ((alertList.count - 1) * 130) + 125
         onDraggingChanged: detectInteraction()
     }
 }

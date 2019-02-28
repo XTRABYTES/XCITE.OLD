@@ -386,7 +386,7 @@ Rectangle {
         delegate: walletCard
         spacing: 0
         anchors.fill: parent
-        contentHeight: (filteredWallets.count  * 140) + 75
+        contentHeight: (filteredWallets.count  * 140) + 125
         interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
         onDraggingChanged: detectInteraction()
     }

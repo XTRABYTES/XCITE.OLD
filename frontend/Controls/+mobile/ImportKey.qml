@@ -534,8 +534,8 @@ Rectangle {
                     }
 
                     onReleased: {
-                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
                         addingWallet = true
+                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
                     }
                 }
 

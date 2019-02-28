@@ -357,6 +357,7 @@ Rectangle {
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: scanQR == 0
+                     && addingWallet == false
 
             MouseArea {
                 anchors.fill: saveButton
@@ -378,8 +379,8 @@ Rectangle {
                             && invalidAddress == 0
                             && addressExists == 0
                             && labelExists == 0) {
-                        addWalletToList(coinList.get(coin).name, newName.text, newAddress.text, "", "", true)
                         addingWallet == true
+                        addWalletToList(coinList.get(coin).name, newName.text, newAddress.text, "", "", true)
                     }
                 }
             }
@@ -458,6 +459,7 @@ Rectangle {
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             visible: scanQR == 0
+                     && addingWallet == false
         }
 
         Rectangle {
@@ -473,6 +475,19 @@ Rectangle {
                            && addressExists == 0 && labelExists == 0) ? maincolor : "#979797"
             border.width: 1
             visible: scanQR == 0
+                     && addingWallet == false
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            playing: addingWallet == true
+            visible: scanQR == 00
+                     && addingWallet == true
         }
     }
 

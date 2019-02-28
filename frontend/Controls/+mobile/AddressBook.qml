@@ -349,7 +349,7 @@ Rectangle {
         model: filteredAddress
         delegate: addressCard
         spacing: 0
-        contentHeight: (filteredAddress.count * 85) + 75
+        contentHeight: (filteredAddress.count * 85) + 125
         interactive: appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0
         onDraggingChanged: detectInteraction()
     }

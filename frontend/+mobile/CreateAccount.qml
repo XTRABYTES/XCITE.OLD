@@ -55,6 +55,9 @@ Rectangle {
     property int selectStorage: 0
     property int storageSwitchState: 0
     property int checkUsername : 0
+    property bool createAccountInitiated: false
+    property bool saveInitiated: false
+    property int saveFailed: 0
 
     function validation(text){
         var regExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
@@ -365,6 +368,7 @@ Rectangle {
                 anchors.topMargin: 30
                 color: "transparent"
                 opacity: 0.5
+                visible: createAccountInitiated == false
 
                 LinearGradient {
                     anchors.fill: parent
@@ -386,6 +390,7 @@ Rectangle {
 
                     onReleased: {
                         if ((usernameWarning == 0 || usernameWarning == 2)  && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
+                            createAccountInitiated = true
                             createUser(userName.text, passWord1.text)
                         }
                     }
@@ -413,6 +418,7 @@ Rectangle {
                         username = userName.text
                         newAccount = true
                         accountCreated = 1
+                        createAccountInitiated = false
 
                     }
                     onUserAlreadyExists: {
@@ -420,6 +426,7 @@ Rectangle {
                         availableUsername = 0
                         passWord1.text = ""
                         passWord2.text = ""
+                        createAccountInitiated = false
                     }
                     onUserCreationFailed: {
                         if (networkError == 0) {
@@ -427,12 +434,14 @@ Rectangle {
                             userName.text = ""
                             passWord1.text = ""
                             passWord2.text = ""
+                            createAccountInitiated = false
                         }
                     }
                     onSettingsServerError: {
                         networkError = 1
                         passWord1.text = ""
                         passWord2.text = ""
+                        createAccountInitiated = false
                     }
                 }
             }
@@ -446,6 +455,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: createAccountButton.horizontalCenter
                 anchors.verticalCenter: createAccountButton.verticalCenter
+                visible: createAccountInitiated == false
             }
 
             Rectangle {
@@ -457,6 +467,18 @@ Rectangle {
                 opacity: 0.5
                 border.width: 1
                 border.color: ((usernameWarning == 0 || usernameWarning == 2) && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "")? maincolor : "#979797"
+                visible: createAccountInitiated == false
+            }
+
+            AnimatedImage {
+                id: waitingDots
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: createAccountButton.horizontalCenter
+                anchors.verticalCenter: createAccountButton.verticalCenter
+                playing: createAccountInitiated == true
+                visible: createAccountInitiated == true
             }
 
             Label {
@@ -850,6 +872,7 @@ Rectangle {
                 anchors.topMargin: 30
                 color: "transparent"
                 opacity: 0.5
+                visible: saveInitiated == false
 
                 LinearGradient {
                     anchors.fill: parent
@@ -870,24 +893,43 @@ Rectangle {
                     }
 
                     onReleased: {
+                        saveInitiated = true
                         saveAppSettings()
-                        mainRoot.pop()
-                        mainRoot.push("../InitialSetup.qml")
-                        accountCreated = 0
-                        selectStorage = 0
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (addAddressTracker == 1 && addingAddress == true) {
+                            mainRoot.pop()
+                            mainRoot.push("../InitialSetup.qml")
+                            accountCreated = 0
+                            selectStorage = 0
+                            saveInitiated = false
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (addAddressTracker == 1 && addingAddress == true) {
+                            saveFailed = 1
+                            saveInitiated = false
+                        }
                     }
                 }
             }
 
             Text {
                 id: continueButtonText
-                text: "CONTINUE"
+                text: saveFailed == 0? "CONTINUE" : "TRY AGAIN"
                 font.family: xciteMobile.name
                 font.pointSize: 14
                 color: "#F2F2F2"
                 font.bold: true
                 anchors.horizontalCenter: continueButton.horizontalCenter
                 anchors.verticalCenter: continueButton.verticalCenter
+                visible: saveInitiated == false
             }
 
             Rectangle {
@@ -899,6 +941,18 @@ Rectangle {
                 opacity: 0.5
                 border.width: 1
                 border.color: "#0ED8D2"
+                visible: saveInitiated == false
+            }
+
+            AnimatedImage {
+                id: waitingDots2
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: continueButton.horizontalCenter
+                anchors.verticalCenter: continueButton.verticalCenter
+                playing: saveInitiated == true
+                visible: saveInitiated == true
             }
         }
     }

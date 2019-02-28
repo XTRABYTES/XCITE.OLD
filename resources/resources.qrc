@@ -181,8 +181,6 @@
         <file>scan-window_02.svg</file>
         <file>icons/XBY_logo_big.svg</file>
         <file>icons/XFUEL_logo_big.svg</file>
-        <file>gifs/loading_02.gif</file>
-        <file>gifs/loading_01.gif</file>
         <file>icons/mobile/add_address-icon_01_dark.svg</file>
         <file>icons/mobile/add_address-icon_01_light.svg</file>
         <file>icons/mobile/add_contact-icon_01_dark.svg</file>
@@ -238,5 +236,6 @@
         <file>icons/TESTNET_card_logo_colored_01.svg</file>
         <file>icons/TESTNET_logo_big.svg</file>
         <file>icons/TESTNET_card_logo_01.svg</file>
+        <file>gifs/loading-gif_01.gif</file>
     </qresource>
 </RCC>

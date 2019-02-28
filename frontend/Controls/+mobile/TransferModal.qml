@@ -1359,7 +1359,7 @@ Rectangle {
 
         AnimatedImage {
             id: waitingDots
-            source: 'qrc:/gifs/loading_01.gif'
+            source: 'qrc:/gifs/loading-gif_01.gif'
             width: 75
             height: 50
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1382,7 +1382,7 @@ Rectangle {
 
         Label {
             id: waitingText
-            text: "Waiting for confirmation ..."
+            text: "Waiting for Network to confirm transaction"
             anchors.bottom: waitingDots.top
             anchors.bottomMargin: 70
             anchors.horizontalCenter: parent.horizontalCenter

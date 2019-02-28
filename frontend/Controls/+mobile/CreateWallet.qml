@@ -239,7 +239,7 @@ Rectangle {
             height: walletCreatedText.height + coinID.height + publicKeyLabel.height + publicKey.height + privateKeyLabel.height + privateKey.height + addressLabel.height + addressHash.height + warningPrivateKey.height + addWalletButton.height + 115
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: 10
+            anchors.topMargin: -20
             visible: newWallet == 1 && editSaved == 0
 
             Text {
@@ -341,10 +341,6 @@ Rectangle {
 
             Label {
                 id: addressLabel
-                width: doubbleButtonWidth
-                maximumLineCount: 2
-                horizontalAlignment: Text.AlignLeft
-                wrapMode: Text.WrapAnywhere
                 anchors.left: privateKey. left
                 anchors.top: privateKey.bottom
                 anchors.topMargin: 10
@@ -357,10 +353,14 @@ Rectangle {
 
             Label {
                 id: addressHash
+                width: doubbleButtonWidth
+                maximumLineCount: 2
+                horizontalAlignment: Text.AlignLeft
+                wrapMode: Text.WrapAnywhere
                 anchors.left: addressLabel. left
                 anchors.top: addressLabel.bottom
                 anchors.topMargin: 5
-                text: "Here you will find your private key"
+                text: "Here you will find your address"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
                 font.family: xciteMobile.name
@@ -390,6 +390,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: maincolor
                 opacity: 0.25
+                visible: addingWallet == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -400,8 +401,8 @@ Rectangle {
                     }
 
                     onReleased: {
-                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
                         addingWallet = true
+                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
                     }
                 }
 
@@ -465,6 +466,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: addWalletButton.horizontalCenter
                 anchors.verticalCenter: addWalletButton.verticalCenter
+                visible: addingWallet == false
             }
 
 
@@ -477,6 +479,18 @@ Rectangle {
                 opacity: 0.5
                 border.color: maincolor
                 border.width: 1
+                visible: addingWallet == false
+            }
+
+            AnimatedImage  {
+                id: waitingDots
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: addWalletButton.horizontalCenter
+                anchors.verticalCenter: addWalletButton.verticalCenter
+                playing: addingWallet == true
+                visible: addingWallet == true
             }
         }
 

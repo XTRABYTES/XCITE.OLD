@@ -475,6 +475,7 @@ Rectangle {
                 onClicked: {
                     walletAdded = false
                     selectWallet = 0
+                    walletAdded = false
                 }
             }
         }
@@ -495,7 +496,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
-        text: selectWallet == 1? "BACK" : "CLOSE"
+        text: selectWallet == 1? (walletAdded == true? "CLOSE" : "BACK") : "CLOSE"
         font.pixelSize: 14
         font.family: xciteMobile.name
         color: themecolor
@@ -518,7 +519,16 @@ Rectangle {
 
             onClicked: {
                 if (selectWallet == 1) {
-                    selectWallet = 0
+                    if (walletAdded == true) {
+                        selectedPage = "home"
+                        mainRoot.pop();
+                        selectWallet = 0
+                        walletAdded = false
+                    }
+                    else {
+                        selectWallet = 0
+                        walletAdded = false
+                    }
                 }
                 else {
                     addWalletTracker = 0
