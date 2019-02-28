@@ -71,11 +71,7 @@ int main(int argc, char *argv[])
     staticNet.Initialize();
     engine.rootContext()->setContextProperty("StaticNet", &staticNet);    
 
-//    xUtility.Initialize();
-//    engine.rootContext()->setContextProperty("Utility", &xUtility);
-
     Xutility xUtil;
-    xUtil.Initialize();
     engine.rootContext()->setContextProperty("xUtil", &xUtil);
 
     // wire-up testnet wallet

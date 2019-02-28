@@ -8,7 +8,6 @@
 
 #include "ctools.h"
 
-bool fTestNet;
 LockedPageManager LockedPageManager::instance;
 
 // anonymous namespace with local implementation code (OpenSSL interaction)
