@@ -45,8 +45,6 @@
 #include "allocators.h"
 #include "numbers.h"
 
-extern bool fTestNet;
-
 template<typename T1>
 inline uint256 Hash(const T1 pbegin, const T1 pend)
 {
@@ -89,12 +87,12 @@ public:
 };
 
 /** A reference to a CScript: the Hash160 of its serialization (see script.h) */
-class CScriptID : public uint160
+/*class CScriptID : public uint160
 {
 public:
     CScriptID() : uint160(0) { }
     CScriptID(const uint160 &in) : uint160(in) { }
-};
+};*/
 
 /** An encapsulated public key. */
 class CPubKey {
@@ -162,29 +160,6 @@ public:
         return a.vch[0] < b.vch[0] ||
                (a.vch[0] == b.vch[0] && memcmp(a.vch, b.vch, a.size()) < 0);
     }
-/*
-    // Implement serialization, as if this was a byte vector.
-    unsigned int GetSerializeSize(int nType, int nVersion) const {
-        return size() + 1;
-    }
-    template<typename Stream> void Serialize(Stream &s, int nType, int nVersion) const {
-        unsigned int len = size();
-        ::WriteCompactSize(s, len);
-        s.write((char*)vch, len);
-    }
-    template<typename Stream> void Unserialize(Stream &s, int nType, int nVersion) {
-        unsigned int len = ::ReadCompactSize(s);
-        if (len <= 65) {
-            s.read((char*)vch, len);
-        } else {
-            // invalid pubkey, skip available data
-            char dummy;
-            while (len--)
-                s.read(&dummy, 1);
-            Invalidate();
-        }
-    }
-*/
     // Get the KeyID of this public key (hash of its serialization)
     CKeyID GetID() const {
         return CKeyID(Hash160(vch, vch+size()));
@@ -326,7 +301,8 @@ public:
  *  * CScriptID: TX_SCRIPTHASH destination
  *  A CTxDestination is the internal data type encoded in a CXCiteAddress
  */
-typedef boost::variant<CNoDestination, CKeyID, CScriptID> CTxDestination;
+
+typedef boost::variant<CNoDestination, CKeyID> CTxDestination;
 
 
 static const char* pszBase58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -475,9 +451,6 @@ inline bool DecodeBase58Check(const std::string& str, std::vector<unsigned char>
 }
 
 
-
-
-
 /** Base class for all base58-encoded data */
 class CBase58Data
 {
@@ -569,28 +542,24 @@ private:
 public:
     CXCiteAddressVisitor(CXCiteAddress *addrIn) : addr(addrIn) { }
     bool operator()(const CKeyID &id) const;
-    bool operator()(const CScriptID &id) const;
     bool operator()(const CNoDestination &no) const;
 };
 
 class CXCiteAddress : public CBase58Data
 {
+private:
+     unsigned char AddressNetwork = 0;	
 public:
-    enum
-    {
-        PUBKEY_ADDRESS = 35,
-        SCRIPT_ADDRESS = 95,
-        PUBKEY_ADDRESS_TEST = 38,
-        SCRIPT_ADDRESS_TEST = 97,
-    };
-
-    bool Set(const CKeyID &id) {
-        SetData(fTestNet ? PUBKEY_ADDRESS_TEST : PUBKEY_ADDRESS, &id, 20);
-        return true;
+    void SetAddressNetwork( const unsigned char AddressNetworkID ) {
+    	  AddressNetwork = AddressNetworkID;
+    }
+    
+    unsigned char GetAddressNetwork() const {
+       return AddressNetwork;    
     }
 
-    bool Set(const CScriptID &id) {
-        SetData(fTestNet ? SCRIPT_ADDRESS_TEST : SCRIPT_ADDRESS, &id, 20);
+    bool Set(const CKeyID &id) {
+        SetData(GetAddressNetwork(), &id, 20);
         return true;
     }
 
@@ -599,121 +568,73 @@ public:
         return boost::apply_visitor(CXCiteAddressVisitor(this), dest);
     }
 
+  
     bool IsValid() const
     {
         unsigned int nExpectedSize = 20;
-        bool fExpectTestNet = false;
-        switch(nVersion)
-        {
-            case PUBKEY_ADDRESS:
-                nExpectedSize = 20; // Hash of public key
-                fExpectTestNet = false;
-                break;
-            case SCRIPT_ADDRESS:
-                nExpectedSize = 20; // Hash of CScript
-                fExpectTestNet = false;
-                break;
-
-            case PUBKEY_ADDRESS_TEST:
-                nExpectedSize = 20;
-                fExpectTestNet = true;
-                break;
-            case SCRIPT_ADDRESS_TEST:
-                nExpectedSize = 20;
-                fExpectTestNet = true;
-                break;
-
-            default:
-                return false;
-        }
-        return fExpectTestNet == fTestNet && vchData.size() == nExpectedSize;
+        return ( ( nVersion == GetAddressNetwork()) && (vchData.size() == nExpectedSize) );
     }
+
 
     CXCiteAddress()
     {
     }
 
-    CXCiteAddress(const CTxDestination &dest)
+    CXCiteAddress(const CTxDestination &dest, const unsigned char AddressNetworkID)    
     {
+    	  SetAddressNetwork( AddressNetworkID );
         Set(dest);
     }
 
-    CXCiteAddress(const std::string& strAddress)
+    CXCiteAddress(const std::string& strAddress, const unsigned char AddressNetworkID)
     {
+    	  SetAddressNetwork( AddressNetworkID );
         SetString(strAddress);
     }
 
-    CXCiteAddress(const char* pszAddress)
+    CXCiteAddress(const char* pszAddress, const unsigned char AddressNetworkID)
     {
+    	  SetAddressNetwork( AddressNetworkID );
         SetString(pszAddress);
     }
 
-    CTxDestination Get() const {
-        if (!IsValid())
-            return CNoDestination();
-        switch (nVersion) {
-        case PUBKEY_ADDRESS:
-        case PUBKEY_ADDRESS_TEST: {
-            uint160 id;
-            memcpy(&id, &vchData[0], 20);
-            return CKeyID(id);
-        }
-        case SCRIPT_ADDRESS:
-        case SCRIPT_ADDRESS_TEST: {
-            uint160 id;
-            memcpy(&id, &vchData[0], 20);
-            return CScriptID(id);
-        }
-        }
-        return CNoDestination();
-    }
 
     bool GetKeyID(CKeyID &keyID) const {
         if (!IsValid())
             return false;
-        switch (nVersion) {
-        case PUBKEY_ADDRESS:
-        case PUBKEY_ADDRESS_TEST: {
+        if (nVersion != GetAddressNetwork()) return false;
+            
             uint160 id;
             memcpy(&id, &vchData[0], 20);
             keyID = CKeyID(id);
             return true;
-        }
-        default: return false;
-        }
+        
     }
 
-    bool IsScript() const {
-        if (!IsValid())
-            return false;
-        switch (nVersion) {
-        case SCRIPT_ADDRESS:
-        case SCRIPT_ADDRESS_TEST: {
-            return true;
-        }
-        default: return false;
-        }
-    }
 };
 
 bool inline CXCiteAddressVisitor::operator()(const CKeyID &id) const         { return addr->Set(id); }
-bool inline CXCiteAddressVisitor::operator()(const CScriptID &id) const      { return addr->Set(id); }
 bool inline CXCiteAddressVisitor::operator()(const CNoDestination &id) const { return false; }
 
 /** A base58-encoded secret key */
 class CXCiteSecret : public CBase58Data
 {
-public:
-    enum
+  private:
+     unsigned char AddressNetwork = 0;	
+  public:
+    void SetAddressNetwork( const unsigned char AddressNetworkID ) {
+    	  AddressNetwork = AddressNetworkID;
+    }
+    
+    unsigned char GetAddressNetwork() const {
+       return AddressNetwork;    
+    }
+	
+    void SetKey(const CKey& vchSecret,const unsigned char AddressNetworkID)
     {
-        PRIVKEY_ADDRESS = CXCiteAddress::PUBKEY_ADDRESS + 128,
-        PRIVKEY_ADDRESS_TEST = CXCiteAddress::PUBKEY_ADDRESS_TEST + 128,
-    };
-
-    void SetKey(const CKey& vchSecret)
-    {
+    	  SetAddressNetwork( AddressNetworkID );
         assert(vchSecret.IsValid());
-        SetData(fTestNet ? PRIVKEY_ADDRESS_TEST : PRIVKEY_ADDRESS, vchSecret.begin(), vchSecret.size());
+        SetData(GetAddressNetwork() + 128, vchSecret.begin(), vchSecret.size());
         if (vchSecret.IsCompressed())
             vchData.push_back(1);
     }
@@ -727,35 +648,24 @@ public:
 
     bool IsValid() const
     {
-        bool fExpectTestNet = false;
-        switch(nVersion)
-        {
-            case PRIVKEY_ADDRESS:
-                break;
-
-            case PRIVKEY_ADDRESS_TEST:
-                fExpectTestNet = true;
-                break;
-
-            default:
-                return false;
-        }
-        return fExpectTestNet == fTestNet && (vchData.size() == 32 || (vchData.size() == 33 && vchData[32] == 1));
+        if ((GetAddressNetwork() + 128) != nVersion) return false;
+        return  (vchData.size() == 32 || (vchData.size() == 33 && vchData[32] == 1));
     }
 
-    bool SetString(const char* pszSecret)
+    bool SetString(const char* pszSecret,const unsigned char AddressNetworkID)    
     {
+    	  SetAddressNetwork( AddressNetworkID );
         return CBase58Data::SetString(pszSecret) && IsValid();
     }
 
-    bool SetString(const std::string& strSecret)
+    bool SetString(const std::string& strSecret,const unsigned char AddressNetworkID)
     {
-        return SetString(strSecret.c_str());
+        return SetString(strSecret.c_str(),AddressNetworkID);
     }
 
-    CXCiteSecret(const CKey& vchSecret)
+    CXCiteSecret(const CKey& vchSecret, const unsigned char AddressNetworkID)
     {
-        SetKey(vchSecret);
+        SetKey(vchSecret,AddressNetworkID);
     }
 
     CXCiteSecret()
