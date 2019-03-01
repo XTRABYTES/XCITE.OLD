@@ -37,7 +37,7 @@ void Xutility::Initialize() {
 unsigned char Xutility::getNetworkid(std::vector<std::string>::iterator network_iterator ) const {
 	std::string selected_network = *network_iterator;
 	if ( selected_network.compare("xfuel") == 0 ) return 35;
-	if ( selected_network.compare("xtrabytes") == 0 ) return 55;
+	if ( selected_network.compare("xtrabytes") == 0 ) return 25;
 	if ( selected_network.compare("testnet") == 0 ) return 38;
    return 0;
 }
