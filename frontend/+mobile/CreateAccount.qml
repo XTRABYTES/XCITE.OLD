@@ -244,7 +244,7 @@ Rectangle {
                 font.pixelSize: 11
                 font.family: "Brandon Grotesque"
                 font.weight: Font.Normal
-                visible: accountCreated == 0
+                visible: accountCreated == 0 && createAccountInitiated == false
             }
 
             Text {
@@ -380,6 +380,20 @@ Rectangle {
                     }
                 }
 
+                Timer {
+                    id: accountCreationTimer
+                    interval: 1000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        usernameWarning = 1
+                        availableUsername = 0
+                        passWord1.text = ""
+                        passWord2.text = ""
+                        createAccountInitiated = false
+                    }
+                }
 
                 MouseArea {
                     anchors.fill: parent
@@ -412,21 +426,16 @@ Rectangle {
 
                         var contactListJson = JSON.stringify(datamodel)
                         saveContactList(contactListJson)
-                        availableUsername = 0
-                        networkError = 0
-                        signUpError = 0
                         username = userName.text
                         newAccount = true
                         accountCreated = 1
+                        availableUsername = 0
+                        networkError = 0
+                        signUpError = 0
                         createAccountInitiated = false
-
                     }
                     onUserAlreadyExists: {
-                        usernameWarning = 1
-                        availableUsername = 0
-                        passWord1.text = ""
-                        passWord2.text = ""
-                        createAccountInitiated = false
+                        accountCreationTimer.start()
                     }
                     onUserCreationFailed: {
                         if (networkError == 0) {
@@ -902,7 +911,7 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (addAddressTracker == 1 && addingAddress == true) {
+                        if (saveInitiated == true) {
                             mainRoot.pop()
                             mainRoot.push("../InitialSetup.qml")
                             accountCreated = 0
@@ -912,7 +921,7 @@ Rectangle {
                     }
 
                     onSaveFailed: {
-                        if (addAddressTracker == 1 && addingAddress == true) {
+                        if (saveInitiated == true) {
                             saveFailed = 1
                             saveInitiated = false
                         }

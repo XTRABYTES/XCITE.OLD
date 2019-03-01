@@ -87,6 +87,7 @@ Rectangle {
                     newCoinPicklist = coinID;
                     newCoinSelect = 1
                     coinListTracker = 0
+                    coinIndex = coinID
                 }
             }
 

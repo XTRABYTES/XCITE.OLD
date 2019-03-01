@@ -20,9 +20,7 @@ Rectangle {
     width: parent.width
     height: parent.height
     color: "transparent"
-
-    property int selectedWallet: 0
-    property string searchFilter:  (selectedWallet == 0 ? "XBY" : "XFUEL")
+    clip :true
 
     Component {
         id: contactLine
@@ -33,6 +31,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             height: 80
             color:"transparent"
+            clip: true
 
             Controls.CardBody {
 
@@ -115,7 +114,7 @@ Rectangle {
         filters: [
             RegExpFilter {
                  roleName: "coin"
-                 pattern: searchFilter
+                 pattern: "^" + selectedCoin + "$"
             },
             ValueFilter {
                  roleName: "remove"
@@ -130,8 +129,7 @@ Rectangle {
         id: picklist
         model: filteredAddresses
         delegate: contactLine
-        contentHeight: (filteredAddresses.count * 80) + 125
-        clip: true
+        contentHeight: (filteredAddresses.count * 80) + 50
         onDraggingChanged: detectInteraction()
     }
 }

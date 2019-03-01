@@ -239,6 +239,8 @@ ApplicationWindow {
     property int currencyTracker: 0
     property int pincodeTracker: 0
     property int debugTracker: 0
+    property int backupTracker: 0
+    property int screenshotTracker: 0
 
     // Global variables
     property int sessionStart: 0
@@ -305,6 +307,7 @@ ApplicationWindow {
     property string oldTheme: ""
     property bool oldPinlock: false
     property bool oldLocalKeys: false
+    property string selectedCoin: "XFUEL"
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -318,12 +321,10 @@ ApplicationWindow {
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
     signal saveAppSettings()
-    signal saveWalletList(string walletList)
+    signal saveWalletList(string walletList, string addresses)
     signal updateBalanceSignal(string walletList)
-    signal createKeyPair(string params)
-
-
-
+    signal createKeyPair(string network)
+    signal importPrivateKey(string network, string privKey)
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
@@ -580,6 +581,15 @@ ApplicationWindow {
         return label
     }
 
+    function getCoinNR(coin) {
+        selectedCoin = 0
+        for (var i = 0; coinList.count; i++) {
+            if (coinList.get(i).name === coin) {
+                selectedCoin= coinList.get(i).coinID
+            }
+        }
+    }
+
     function defaultWallet(coin) {
         var balance = 0
         var wallet = 0
@@ -783,22 +793,23 @@ ApplicationWindow {
     function addWalletToList(coin, label, addr, pubkey, privkey, view){
         walletList.append({"name": coin, "label": label, "address": addr, "privatekey" : privkey, "publickey" : pubkey ,"balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "viewOnly" : view, "walletNR": walletID, "remove": false});
         walletID = walletID + 1
+        addressList.append({"contact": 0, "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
+        addressID = addressID +1;
 
         var dataModelWallet = []
+        var datamodel = []
+
         for (var i = 0; i < walletList.count; ++i){
             dataModelWallet.push(walletList.get(i))
         }
-        var walletListJson = JSON.stringify(dataModelWallet)
-
-        addressList.append({"contact": 0, "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
-        addressID = addressID +1;
-        var datamodel = []
-        for (var e = 0; e < addressList.count; ++e)
+        for (var e = 0; e < addressList.count; ++e){
             datamodel.push(addressList.get(e))
+        }
 
+        var walletListJson = JSON.stringify(dataModelWallet)
         var addressListJson = JSON.stringify(datamodel)
 
-        saveWalletList(walletListJson)
+        saveWalletList(walletListJson, addressListJson)
     }
 
     function clearSettings(){
@@ -862,6 +873,7 @@ ApplicationWindow {
         currencyID = 0
         coinIndex = 0
         walletIndex = 1
+
         saveAppSettings()
         addressList.clear()
         contactList.clear()

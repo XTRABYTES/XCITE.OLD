@@ -33,6 +33,7 @@ Rectangle {
             width: 100
             height: 35
             color: "transparent"
+            clip: true
 
             Rectangle {
                 id: clickIndicator
@@ -102,7 +103,7 @@ Rectangle {
             },
             RegExpFilter {
                 roleName: "name"
-                pattern: coin
+                pattern: "^" + coin + "$"
             }
 
         ]
@@ -118,7 +119,6 @@ Rectangle {
         id: pickList
         model: filteredWallets
         delegate: picklistEntry
-        interactive: totalCoinWallets * 35 < 175
         onDraggingChanged: detectInteraction()
     }
 }

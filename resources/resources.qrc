@@ -237,5 +237,6 @@
         <file>icons/TESTNET_logo_big.svg</file>
         <file>icons/TESTNET_card_logo_01.svg</file>
         <file>gifs/loading-gif_01.gif</file>
+        <file>icons/mobile/warning-icon_01.svg</file>
     </qresource>
 </RCC>

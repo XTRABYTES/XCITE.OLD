@@ -64,6 +64,8 @@ Rectangle {
     property int editFailed: 0
     property int editSaved: 0
     property bool addingWallet: false
+    property bool walletSaved: false
+    property int saveError: 0
 
     function compareTx() {
         addressExists = 0
@@ -93,7 +95,7 @@ Rectangle {
         invalidAddress = 0
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY") {
-                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "B" && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && (newAddress.text.substring(0,1) == "B" || newAddress.text.substring(0,1) == "P") && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -102,6 +104,14 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL") {
                 if (newAddress.length == 34 && newAddress.text.substring(0,1) == "F" && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "XFUEL-TEST") {
+                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "G" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -379,7 +389,9 @@ Rectangle {
                             && invalidAddress == 0
                             && addressExists == 0
                             && labelExists == 0) {
-                        addingWallet == true
+                        addingWallet = true
+                        walletSaved = false
+                        saveError = 0
                         addWalletToList(coinList.get(coin).name, newName.text, newAddress.text, "", "", true)
                     }
                 }
@@ -389,7 +401,7 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (viewOnlyTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
                         walletAdded = true
                         editSaved = 1
                         viewOnlyTracker = 0
@@ -406,30 +418,29 @@ Rectangle {
                 }
 
                 onSaveFailed: {
-                    if (viewOnlyTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
-                        walletID = walletID - 1
-                        walletList.remove(walletID)
-                        addressID = addressID -1
-                        addressList.remove(addressID)
-                        editFailed = 1
-                        addingWallet = false
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
+                        if (userSettings.localKeys === false) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            editFailed = 1
+                            addingWallet = false
+                        }
+                        else if (userSettings.localKeys === true && walletSaved == true) {
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            saveError = 1
+                            editFailed = 1
+                            addingWallet = false
+                            walletSaved = false
+                        }
                     }
                 }
 
                 onSaveFileSucceeded: {
-                    if (viewOnlyTracker == 1) {
-                        walletAdded = true
-                        editSaved = 1
-                        viewOnlyTracker = 0
-                        newName.text = ""
-                        newAddress.text = ""
-                        addressExists = 0
-                        labelExists = 0
-                        invalidAddress = 0
-                        scanQR = 0
-                        selectedAddress = ""
-                        scanning = "scanning..."
-                        addingWallet = false
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
+                        walletSaved = true
 
                     }
                 }
@@ -503,16 +514,20 @@ Rectangle {
 
         Image {
             id: saveFailed
-            source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+            source: saveError === 0? (darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg') : ('qrc:/icons/mobile/warning-icon_01.svg')
             height: 100
-            width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
         }
 
         Label {
             id: saveFailedLabel
-            text: "Failed to save your wallet!"
+            width: doubbleButtonWidth
+            maximumLineCount: saveError === 0? 1 : 4
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            text: saveError === 0? "Failed to save your wallet!" : "Your wallet was added but we could not add the wallet address to your addressbook. You will need to add this wallet to your addressbook manually."
             anchors.top: saveFailed.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveFailed.horizontalCenter
@@ -541,6 +556,18 @@ Rectangle {
                 }
 
                 onClicked: {
+                    if (saveError == 1) {
+                        saveError = 0
+                        viewOnlyTracker = 0
+                        newName.text = ""
+                        newAddress.text = ""
+                        addressExists = 0
+                        labelExists = 0
+                        invalidAddress = 0
+                        scanQR = 0
+                        selectedAddress = ""
+                        scanning = "scanning..."
+                    }
                     editFailed = 0
                 }
             }

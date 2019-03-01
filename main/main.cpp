@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(saveAddressBook(QString)), &settings, SLOT(SaveAddresses(QString)));
     QObject::connect(rootObject, SIGNAL(saveContactList(QString)), &settings, SLOT(SaveContacts(QString)));
     QObject::connect(rootObject, SIGNAL(saveAppSettings()), &settings, SLOT(SaveSettings()));
-    QObject::connect(rootObject, SIGNAL(saveWalletList(QString)), &settings, SLOT(SaveWallet(QString)));
+    QObject::connect(rootObject, SIGNAL(saveWalletList(QString, QString)), &settings, SLOT(SaveWallet(QString, QString)));
 
 
     // connect QML signals for market value
@@ -129,6 +129,7 @@ int main(int argc, char *argv[])
 
     // connect QML signals for xUtility
     QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeyPairEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

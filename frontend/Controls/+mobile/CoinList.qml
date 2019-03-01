@@ -21,7 +21,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: allWalletCards
     width: Screen.width
-    height: parent.height
+    height: parent.height - 75
     color: "transparent"
 
     property alias cardSpacing: allCoins.spacing
@@ -238,7 +238,7 @@ Rectangle {
         delegate: walletCard
         spacing: 0
         anchors.fill: parent
-        contentHeight: (filteredCoins.count * 100) + 125
+        contentHeight: (filteredCoins.count * 100)
         interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
         onDraggingChanged: detectInteraction()
     }
