@@ -222,7 +222,7 @@ Rectangle {
     Label {
         id: closeScreenshotModal
         z: 10
-        text: "CLOSE"
+        text: "BACK"
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter

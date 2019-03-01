@@ -88,7 +88,7 @@ Rectangle {
         if (coinID.text == "XBY") {
             if (keyInput.length === 34
                     && keyInput.text !== ""
-                    && (keyInput.text.substring(0,1) == "B" || keyInput.text.substring(0,1) == "P")
+                    && (keyInput.text.substring(0,1) == "B")
                     && keyInput.acceptableInput == true) {
                 invalidAddress = 0
             }
@@ -998,7 +998,7 @@ Rectangle {
             width: parent.width
             height: sendingLabel.height + to.height + confirmationAddressName.height + reference.height + feeLabel.height + cancelSendButton.height + 70
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: transactionSend == 1
@@ -1380,7 +1380,7 @@ Rectangle {
             height: 50
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             playing: requestSend == 1
             visible: requestSend == 1
 
@@ -1418,7 +1418,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: transactionSend == 1
                      && failedSend == 1
         }
@@ -1523,7 +1523,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: transactionSend == 1
                      && confirmationSend == 1
         }

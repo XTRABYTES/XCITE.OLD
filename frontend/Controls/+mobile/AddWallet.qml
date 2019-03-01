@@ -246,11 +246,10 @@ Rectangle {
         Text {
             id: createAddressText
             width: doubbleButtonWidth
-            maximumLineCount: 1
+            maximumLineCount: 2
             anchors.left: createAddressButton.left
             horizontalAlignment: Text.AlignJustify
-            wrapMode: Text.WordWrap
-            text: "You can create a new <b>" + coinList.get(coinIndex).name + "</b> address."
+            text: "You can create a new <b><br>" + coinList.get(coinIndex).name + "</b> address."
             anchors.top: addWalletText4.bottom
             anchors.topMargin: 30
             color: themecolor
@@ -298,7 +297,8 @@ Rectangle {
             width: doubbleButtonWidth
             anchors.left: importAddressButton.left
             horizontalAlignment: Text.AlignJustify
-            text: "You can import an existing <b>" + coinList.get(coinIndex).name + "</b> wallet."
+            maximumLineCount: 2
+            text: "You can import an existing <b><br>" + coinList.get(coinIndex).name + "</b> wallet."
             anchors.top: createAddressButton.bottom
             anchors.topMargin: 30
             color: themecolor

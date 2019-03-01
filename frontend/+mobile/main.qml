@@ -325,6 +325,8 @@ ApplicationWindow {
     signal updateBalanceSignal(string walletList)
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
+    signal helpMe(string help)
+    signal checkNetwork(string network)
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)

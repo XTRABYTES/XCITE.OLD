@@ -95,7 +95,7 @@ Rectangle {
         invalidAddress = 0
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY") {
-                if (newAddress.length == 34 && (newAddress.text.substring(0,1) == "B" || newAddress.text.substring(0,1) == "P") && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && (newAddress.text.substring(0,1) == "B") && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
