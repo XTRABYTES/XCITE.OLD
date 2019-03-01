@@ -165,6 +165,21 @@ Item {
             opacity: 0.50
             visible: loginInitiated == false
 
+            Timer {
+                id: loginSuccesTimer
+                interval: 2000
+                repeat: false
+                running: false
+
+                onTriggered: {
+                    passError = 0
+                    networkError = 0
+                    loginTracker = 0
+                    sessionStart = 1
+                    loginInitiated  = false
+                }
+            }
+
             MouseArea {
                 anchors.fill: parent
 
@@ -212,11 +227,7 @@ Item {
                     mainRoot.pop()
                     mainRoot.push("../Home.qml")
                     username = userName.text
-                    passError = 0
-                    networkError = 0
-                    loginTracker = 0
-                    sessionStart = 1
-                    loginInitiated  = false
+                    loginSuccesTimer.start()
                 }
 
                 onLoginFailedChanged: {

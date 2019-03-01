@@ -96,7 +96,7 @@ Rectangle {
         invalidAddress = 0
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY") {
-                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "B" && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && (newAddress.text.substring(0,1) == "B" || newAddress.text.substring(0,1) == "P") && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -105,6 +105,14 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL") {
                 if (newAddress.length == 34 && newAddress.text.substring(0,1) == "F" && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "XFUEL-TEST") {
+                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "G" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {

@@ -88,7 +88,7 @@ Rectangle {
         if (coinID.text == "XBY") {
             if (keyInput.length === 34
                     && keyInput.text !== ""
-                    && keyInput.text.substring(0,1) == "B"
+                    && (keyInput.text.substring(0,1) == "B" || keyInput.text.substring(0,1) == "P")
                     && keyInput.acceptableInput == true) {
                 invalidAddress = 0
             }
@@ -100,6 +100,17 @@ Rectangle {
             if (keyInput.length === 34
                     && keyInput.text !== ""
                     && keyInput.text.substring(0,1) == "F"
+                    && keyInput.acceptableInput == true) {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
+        else if (coinID.text == "XFUEL-TEST") {
+            if (keyInput.length === 34
+                    && keyInput.text !== ""
+                    && keyInput.text.substring(0,1) == "G"
                     && keyInput.acceptableInput == true) {
                 invalidAddress = 0
             }
@@ -238,9 +249,11 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && coinListTracker == 0
-            onTextChanged: if (keyInput.text != "") {
-                               checkAddress()
-                           }
+            onTextChanged: {
+                if (keyInput.text != "") {
+                    checkAddress()
+                }
+            }
         }
 
         Label {
@@ -367,7 +380,7 @@ Rectangle {
             id: transferPicklist1
             z: 11
             width: 100
-            height: ((totalLines + 1) * 35)-10
+            height: totalLines * 35
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5
@@ -391,7 +404,7 @@ Rectangle {
             width: 100
             height: 25
             color: "#2A2C31"
-            anchors.bottom: transferPicklist1.bottom
+            anchors.top: transferPicklist1.bottom
             anchors.horizontalCenter: transferPicklist1.horizontalCenter
             visible: coinListTracker == 1
                      && transactionSend == 0
@@ -485,7 +498,7 @@ Rectangle {
             id: transferPicklist2
             z: 11
             width: 100
-            height: ((totalCoinWallets + 1) * 35)-10
+            height: (totalCoinWallets * 35) < 175 ? (totalCoinWallets * 35) : 175
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5
@@ -510,7 +523,7 @@ Rectangle {
             width: 100
             height: 25
             color: "#2A2C31"
-            anchors.bottom: transferPicklist2.bottom
+            anchors.top: transferPicklist2.bottom
             anchors.horizontalCenter: transferPicklist2.horizontalCenter
             visible: walletListTracker == 1
                      && transactionSend == 0
@@ -742,7 +755,9 @@ Rectangle {
             anchors.topMargin: 3
             visible: false
             onTextChanged: {
-                keyInput.text = sendAddress.text
+                if (sendAddress.text != "" && transferTracker == 1) {
+                    keyInput.text = sendAddress.text
+                }
             }
         }
 
@@ -857,6 +872,7 @@ Rectangle {
                 onClicked: {
                     addressbookTracker = 1
                     currentAddress = getAddress(coinID.text, walletLabel.text)
+                    selectedCoin = coinID.text
                 }
             }
 
@@ -1663,16 +1679,14 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: addressbookCoinLogo.bottom
         anchors.topMargin: 20
-        anchors.bottom: parent.bottom
+        anchors.bottom: cancelAddressButton.top
         color: "transparent"
         visible: transferSwitch.on == true
                  && transactionSend == 0
                  && addressbookTracker == 1
-        clip: true
-
         Mobile.AddressPicklist {
             id: myAddressPicklist
-            selectedWallet: (coinID.text === "XBY" ? 0 : 1)
+
         }
     }
 
@@ -1700,7 +1714,7 @@ Rectangle {
     Rectangle {
         id: cancelAddressButton
         width: doubbleButtonWidth / 2
-        height: 33
+        height: 34
         color: "transparent"
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 50
@@ -1939,6 +1953,7 @@ Rectangle {
                     newWalletPicklist = 0
                     newWalletSelect = 0
                     selectedAddress = ""
+                    selectedCoin = "XFUEL"
                     sendAmount.text = ""
                     keyInput.text = sendAddress.text
                     referenceInput.text = ""
@@ -1968,6 +1983,7 @@ Rectangle {
     Controls.Pincode {
         id: myPincode
         z: 10
+        visible: transferTracker == 1
 
         coin: coinID.text
         walletHash: getAddress(coinID.text, walletLabel.text)

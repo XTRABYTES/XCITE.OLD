@@ -14,6 +14,8 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 
+import "qrc:/Controls" as Controls
+
 Rectangle {
     id: sidebar
     height: Screen.height
@@ -199,10 +201,11 @@ Rectangle {
 
                     onClicked: {
                         if (selectedPage != "backup") {
+                            backupTracker = 1
                             appsTracker = 0
                             if (userSettings.pinlock === false) {
-                                //selectedPage = "backup"
-                                //mainRoot.push("../WalletBackup.qml")
+                                selectedPage = "backup"
+                                mainRoot.push("../WalletBackup.qml")
                             }
                             else {
                                 pincodeTracker = 1
@@ -408,5 +411,10 @@ Rectangle {
                 detectInteraction()
             }
         }
+    }
+
+    Controls.Pincode {
+        id: myPincode
+        z: 10
     }
 }

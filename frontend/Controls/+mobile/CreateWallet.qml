@@ -19,6 +19,7 @@ import QtMultimedia 5.8
 import "qrc:/Controls" as Controls
 
 Rectangle {
+    z: 1
     id: addWalletModal
     width: Screen.width
     state: createWalletTracker == 1? "up" : "down"
@@ -61,6 +62,9 @@ Rectangle {
     property string walletError: "We were unable to create a wallet for you."
     property string coin: coinList.get(coinIndex).name
     property url logo: getLogo(coin)
+    property bool walletSaved: false
+    property int saveErrorNR: 0
+    property bool createInitiated: false
 
     function compareName() {
         labelExists = 0
@@ -73,7 +77,18 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        z: 2
+        width: Screen.width
+        height: 50
+        color: bgcolor
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        visible: editSaved == 0 && newWallet == 0 && editFailed == 0 && createFailed == 0
+    }
+
     Text {
+        z: 2
         id: addWalletLabel
         text: "CREATE NEW WALLET"
         anchors.horizontalCenter: parent.horizontalCenter
@@ -86,13 +101,13 @@ Rectangle {
         visible: editSaved == 0 && newWallet == 0 && editFailed == 0 && createFailed == 0
     }
 
-    Flickable {
+     Flickable {
+        z: 1
         id: scrollArea
         width: parent.width
         contentHeight: addWalletScrollArea.height > scrollArea.height? addWalletScrollArea.height + 125 : scrollArea.height + 125
         anchors.left: parent.left
-        anchors.top: addWalletLabel.bottom
-        anchors.topMargin: 10
+        anchors.top: parent.top
         anchors.bottom: parent.bottom
         boundsBehavior: Flickable.StopAtBounds
         clip: true
@@ -110,11 +125,41 @@ Rectangle {
         Item {
             id: createWallet
             width: parent.width
-            height: createWalletText.height + newName.height + createWalletButton.height + 75
+            height: createWalletText.height + newName.height + createWalletButton.height + selectedCoin.height + 95
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -100
             visible: newWallet == 0 && editSaved == 0 && createFailed == 0
+
+            Item {
+                id: selectedCoin
+                width: newIcon.width + newCoinName.width + 7
+                height: newIcon.height
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Image {
+                    id: newIcon
+                    source: coinList.get(coinIndex).logo
+                    height: 30
+                    width: 30
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                }
+
+                Label {
+                    id: newCoinName
+                    text: coinList.get(coinIndex).name
+                    anchors.left: newIcon.right
+                    anchors.leftMargin: 7
+                    anchors.verticalCenter: newIcon.verticalCenter
+                    font.pixelSize: 24
+                    font.family: "Brandon Grotesque"
+                    font.letterSpacing: 2
+                    font.bold: true
+                    color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                }
+            }
 
             Text {
                 id: createWalletText
@@ -124,7 +169,8 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
                 text: "A NEW <b>" + coin + "</b> WALLET WILL BE CREATED FOR YOU"
-                anchors.top: parent.top
+                anchors.top: selectedCoin.bottom
+                anchors.topMargin: 20
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
                 font.family: xciteMobile.name
@@ -174,6 +220,7 @@ Rectangle {
                 anchors.left: newName.left
                 color: (newName.text != "" && labelExists == 0) ? maincolor : "#727272"
                 opacity: 0.25
+                visible: createInitiated == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -185,9 +232,15 @@ Rectangle {
 
                     onReleased: {
                         if (newName.text != "" && labelExists == 0) {
-                            if (coinList.get(coinIndex).name === "XFUEL") {
-                                createKeyPair(coinList.get(coinIndex).fullname);
+                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY") {
+                                createInitiated = true
+                                createKeyPair(coinList.get(coinIndex).fullname)
                             }
+                            else if (coinList.get(coinIndex).name === "XFUEL-TEST") {
+                                createInitiated = true
+                                createKeyPair("testnet")
+                            }
+
                             else {
                                 createFailed = 1
                             }
@@ -198,13 +251,20 @@ Rectangle {
                         target: xUtil
 
                         onKeyPairCreated: {
-                            console.log("Address is: " + address)
-                            console.log("PubKey is: " + pubKey)
-                            console.log("PrivKey is: " + privKey)
-                            privateKey.text = privKey
-                            publicKey.text = pubKey
-                            addressHash.text = address
-                            newWallet = 1
+                            if (createWalletTracker == 1 && createInitiated == true) {
+                                console.log("Address is: " + address)
+                                console.log("PubKey is: " + pubKey)
+                                console.log("PrivKey is: " + privKey)
+                                privateKey.text = privKey
+                                publicKey.text = pubKey
+                                addressHash.text = address
+                                newWallet = 1
+                                createInitiated = false
+                            }
+                        }
+
+                        onCreateKeypairFailed: {
+                            createFailed = 1
                         }
                     }
                 }
@@ -219,6 +279,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: createWalletButton.horizontalCenter
                 anchors.verticalCenter: createWalletButton.verticalCenter
+                visible: createInitiated == false
             }
 
             Rectangle {
@@ -230,6 +291,18 @@ Rectangle {
                 opacity: 0.5
                 border.color: (newName.text != "" && labelExists == 0) ? maincolor : "#979797"
                 border.width: 1
+                visible: createInitiated == false
+            }
+
+            AnimatedImage {
+                id: waitingDots2
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: createWalletButton.horizontalCenter
+                anchors.verticalCenter: createWalletButton.verticalCenter
+                playing: createInitiated == true
+                visible: createInitiated == true
             }
         }
 
@@ -239,7 +312,7 @@ Rectangle {
             height: walletCreatedText.height + coinID.height + publicKeyLabel.height + publicKey.height + privateKeyLabel.height + privateKey.height + addressLabel.height + addressHash.height + warningPrivateKey.height + addWalletButton.height + 115
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: -20
+            anchors.topMargin: 10
             visible: newWallet == 1 && editSaved == 0
 
             Text {
@@ -309,7 +382,6 @@ Rectangle {
                 text: "Here you will find your public key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
             }
 
             Label {
@@ -336,7 +408,6 @@ Rectangle {
                 text: "Here you will find your private key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
             }
 
             Label {
@@ -363,7 +434,6 @@ Rectangle {
                 text: "Here you will find your address"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
             }
 
             Text {
@@ -402,6 +472,8 @@ Rectangle {
 
                     onReleased: {
                         addingWallet = true
+                        walletSaved = false
+                        saveErrorNR = 0
                         addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
                     }
                 }
@@ -410,7 +482,7 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (createWalletTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
+                        if (createWalletTracker == 1 && addingWallet == true) {
                             editSaved = 1
                             labelExists = 0
                             newName.text = ""
@@ -422,25 +494,34 @@ Rectangle {
                     }
 
                     onSaveFailed: {
-                        if (createWalletTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
-                            walletID = walletID - 1
-                            walletList.remove(walletID)
-                            addressID = addressID -1
-                            addressList.remove(addressID)
-                            editFailed = 1
-                            addingWallet = false
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            if (userSettings.localKeys === false) {
+                                walletID = walletID - 1
+                                walletList.remove(walletID)
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                editFailed = 1
+                                addingWallet = false
+                            }
+                            else if (userSettings.localKeys === true && walletSaved == true) {
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                labelExists = 0
+                                newName.text = ""
+                                addressHash.text = ""
+                                publicKey.text = ""
+                                privateKey.text = ""
+                                editFailed = 1
+                                saveErrorNR = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
                         }
                     }
 
                     onSaveFileSucceeded: {
                         if (createWalletTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
-                            editSaved = 1
-                            labelExists = 0
-                            newName.text = ""
-                            addressHash.text = ""
-                            publicKey.text = ""
-                            privateKey.text = ""
-                            addingWallet = false
+                            walletSaved = true
                         }
                     }
 
@@ -506,7 +587,7 @@ Rectangle {
 
             Image {
                 id: saveFailed
-                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                source: saveErrorNR == 0? (darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg') : ('qrc:/icons/mobile/warning-icon_01.svg')
                 height: 100
                 width: 100
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -515,7 +596,11 @@ Rectangle {
 
             Label {
                 id: saveFailedLabel
-                text: "Failed to save your wallet!"
+                width: doubbleButtonWidth
+                maximumLineCount: saveErrorNR == 0? 1 : 4
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                text: saveErrorNR == 0? "Failed to save your wallet!" : "Your wallet was added but we could not add the wallet address to your addressbook. You will need to add this wallet to your addressbook manually."
                 anchors.top: saveFailed.bottom
                 anchors.topMargin: 10
                 anchors.horizontalCenter: saveFailed.horizontalCenter
@@ -544,6 +629,14 @@ Rectangle {
                     }
 
                     onClicked: {
+                        if (saveErrorNR == 1) {
+                            saveErrorNR = 0
+                            walletAdded = true
+                            addWalletTracker = 0;
+                            editSaved = 0;
+                            newWallet = 0
+                            createWalletTracker = 0
+                        }
                         editFailed = 0
                     }
                 }
@@ -621,6 +714,9 @@ Rectangle {
                     }
 
                     onClicked: {
+                        if (userSettings.accountCreationCompleted === false) {
+                            userSettings.accountCreationCompleted = true
+                        }
                         walletAdded = true
                         addWalletTracker = 0;
                         editSaved = 0;

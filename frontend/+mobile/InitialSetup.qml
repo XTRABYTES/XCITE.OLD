@@ -89,10 +89,10 @@ Item {
             Item {
                 id: addWallet
                 width: parent.width
-                height: addWalletText.height + createAddressText.height + createAddressButton.height + importAddressText.height + importAddressButton.height + skipButton.height + 115
+                height: addWalletText.height + createAddressText.height + createAddressButton.height + importAddressText.height + importAddressButton.height + selectedCoin.height + 120
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -50
+                anchors.top: parent.top
+                anchors.topMargin: 90
                 visible: userSettings.accountCreationCompleted === false
 
                 Label {
@@ -105,6 +105,37 @@ Item {
                     font.family: xciteMobile.name
                 }
 
+                Item {
+                    id: selectedCoin
+                    width: newIcon.width + newCoinName.width + 7
+                    height: newIcon.height
+                    anchors.top: addWalletText.bottom
+                    anchors.topMargin: 30
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Image {
+                        id: newIcon
+                        source: coinList.get(0).logo
+                        height: 30
+                        width: 30
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                    }
+
+                    Label {
+                        id: newCoinName
+                        text: coinList.get(0).name
+                        anchors.left: newIcon.right
+                        anchors.leftMargin: 7
+                        anchors.verticalCenter: newIcon.verticalCenter
+                        font.pixelSize: 24
+                        font.family: "Brandon Grotesque"
+                        font.letterSpacing: 2
+                        font.bold: true
+                        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                    }
+                }
+
                 Text {
                     id: createAddressText
                     width: doubbleButtonWidth
@@ -113,7 +144,7 @@ Item {
                     horizontalAlignment: Text.AlignJustify
                     wrapMode: Text.WordWrap
                     text: "If you don’t have an <b>XFUEL</b> wallet or you wish to create a new one."
-                    anchors.top: addWalletText.bottom
+                    anchors.top: selectedCoin.bottom
                     anchors.topMargin: 30
                     color: "#F2F2F2"
                     font.pixelSize: 18
@@ -202,77 +233,6 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                     }
                 }
-                /**
-                Rectangle {
-                    id: skipButton
-                    width: skipButtonText.implicitWidth
-                    height: 40
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.top: importAddressButton.bottom
-                    anchors.topMargin: 25
-                    color: "transparent"
-
-                    MouseArea {
-                        anchors.fill: skipButton
-
-                        onReleased: {
-                            // workaround until backend connection is provided
-                            walletList.append({"name": nameXFUEL1, "label": labelXFUEL1, "address": receivingAddressXFUEL1, "balance" : balanceXFUEL1, "unconfirmedCoins": unconfirmedXFUEL1, "active": true, "favorite": true, "viewOnly": false, "walletNR": walletID, "remove": false});
-                            walletID = walletID +1;
-                            walletList.append({"name": nameXBY1, "label": labelXBY1, "address": receivingAddressXBY1, "balance" : balanceXBY1, "unconfirmedCoins": unconfirmedXBY1, "active": true, "favorite": true, "viewOnly": false, "walletNR": walletID, "remove": false});
-                            walletID = walletID +1;
-                            walletList.append({"name": nameXFUEL2, "label": labelXFUEL2, "address": receivingAddressXFUEL2, "balance" : balanceXFUEL2, "unconfirmedCoins": unconfirmedXFUEL2, "active": true, "favorite": false, "viewOnly": true, "walletNR": walletID, "remove": false});
-                            walletID = walletID +1;
-                            var dataModelWallet = []
-                            for (var i = 0; i < walletList.count; ++i){
-                                dataModelWallet.push(walletList.get(i))
-                            }
-                            var walletListJson = JSON.stringify(dataModelWallet)
-                            saveWalletList(walletListJson)
-                        }
-                    }
-
-                    Connections {
-                        target: UserSettings
-
-                        onSaveSucceeded: {
-                            if (userSettings.accountCreationCompleted === false && userSettings.localKeys === false) {
-                                userSettings.accountCreationCompleted = true
-                            }
-                        }
-
-                        onSaveFailed: {
-                            if (userSettings.accountCreationCompleted === false && userSettings.localKeys === false) {
-                                walletList.clear()
-                                walletID = 1
-                            }
-                        }
-
-                        onSaveFileSucceeded: {
-                            if (userSettings.accountCreationCompleted === false && userSettings.localKeys === true) {
-                                userSettings.accountCreationCompleted = true
-                            }
-                        }
-
-                        onSaveFileFailed: {
-                            if (userSettings.accountCreationCompleted === false && userSettings.localKeys === true) {
-                                walletList.clear()
-                                walletID = 1
-                            }
-                        }
-                    }
-
-                    Text {
-                        id: skipButtonText
-                        text: "Skip"
-                        font.family: xciteMobile.name
-                        font.pointSize: 18
-                        color: "#F2F2F2"
-                        font.bold: true
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                }*/
             }
 
             Item {

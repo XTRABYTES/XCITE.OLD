@@ -22,7 +22,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: allAddressCards
     width: Screen.width
-    height: parent.height
+    height: parent.height - 75
     color: "transparent"
 
     property alias cardSpacing: allAddresses.spacing
@@ -349,7 +349,7 @@ Rectangle {
         model: filteredAddress
         delegate: addressCard
         spacing: 0
-        contentHeight: (filteredAddress.count * 85) + 125
+        contentHeight: (filteredAddress.count * 85)
         interactive: appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0
         onDraggingChanged: detectInteraction()
     }

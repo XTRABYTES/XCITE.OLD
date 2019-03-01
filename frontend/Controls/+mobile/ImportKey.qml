@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import QZXing 2.3
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
@@ -62,9 +63,26 @@ Rectangle {
     property string error1: "there is no wallet associated with the private key you provided. Please try again with a different key."
     property string error2: " we are unable to import your private key at the moment."
     property string coin: coinList.get(coinIndex).name
+    property bool walletSaved: false
+    property int saveErrorNR: 0
+    property bool importInitiated: false
 
     function compareTx() {
-        // check if provide key is not already linked to the account
+        addressExists = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if (newAddress.text != "") {
+                if (newName.text == "XBY") {
+                    if (walletList.get(i).name === "XBY" && walletList.get(i).privatekey === newAddress.text && walletList.get(i).remove === false) {
+                        addressExists = 1
+                    }
+                }
+                else {
+                    if (walletList.get(i).name === newName.text && walletList.get(i).privatekey === newAddress.text && walletList.get(i).remove === false) {
+                        addressExists = 1
+                    }
+                }
+            }
+        }
     }
 
     function compareName() {
@@ -82,7 +100,18 @@ Rectangle {
         // check if provided private key has the correct format
     }
 
+    Rectangle {
+        z: 2
+        width: Screen.width
+        height: 50
+        color: bgcolor
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        visible: editSaved == 0 && newWallet == 0 && editFailed == 0 && importWalletFailed == 0
+    }
+
     Text {
+        z: 2
         id: addWalletLabel
         text: "ADD EXISTING WALLET"
         anchors.horizontalCenter: parent.horizontalCenter
@@ -100,8 +129,7 @@ Rectangle {
         width: parent.width
         contentHeight: addWalletScrollArea.height > scrollArea.height? addWalletScrollArea.height + 125 : scrollArea.height + 125
         anchors.left: parent.left
-        anchors.top: addWalletLabel.bottom
-        anchors.topMargin: 10
+        anchors.top: parent.top
         anchors.bottom: parent.bottom
         boundsBehavior: Flickable.StopAtBounds
         clip: true
@@ -119,11 +147,41 @@ Rectangle {
         Item {
             id: addWallet
             width: parent.width
-            height: addWalletText.height + newName.height + newAddress.height + scanQrButton.height + addWalletButton.height + 85
+            height: addWalletText.height + newName.height + newAddress.height + scanQrButton.height + addWalletButton.height + selectedCoin.height + 105
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -100
             visible: editSaved == 0 && newWallet == 0 && importWalletFailed == 0 && editFailed == 0
+
+            Item {
+                id: selectedCoin
+                width: newIcon.width + newCoinName.width + 7
+                height: newIcon.height
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Image {
+                    id: newIcon
+                    source: coinList.get(coinIndex).logo
+                    height: 30
+                    width: 30
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                }
+
+                Label {
+                    id: newCoinName
+                    text: coinList.get(coinIndex).name
+                    anchors.left: newIcon.right
+                    anchors.leftMargin: 7
+                    anchors.verticalCenter: newIcon.verticalCenter
+                    font.pixelSize: 24
+                    font.family: "Brandon Grotesque"
+                    font.letterSpacing: 2
+                    font.bold: true
+                    color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                }
+            }
 
             Text {
                 id: addWalletText
@@ -133,7 +191,8 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
                 text: "YOU CAN ADD AN EXISTING <b>" + coin + "</b> WALLET BY IMPORTING YOUR PRIVATE KEY."
-                anchors.top: parent.top
+                anchors.top: selectedCoin.bottom
+                anchors.topMargin: 20
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
                 font.family: xciteMobile.name
@@ -157,7 +216,6 @@ Rectangle {
                     detectInteraction()
                     if(newName.text != "") {
                         compareName();
-                        compareTx()
                     }
                 }
             }
@@ -197,6 +255,21 @@ Rectangle {
                     if(newAddress.text != ""){
                         checkAddress();
                         compareTx()
+                    }
+                }
+            }
+
+            Text {
+                id: scannedAddress
+                text: selectedAddress
+                anchors.left: newAddress.left
+                anchors.top: newAddress.bottom
+                anchors.topMargin: 5
+                visible: false
+
+                onTextChanged: {
+                    if (scannedAddress.text != "" & importKeyTracker == 1){
+                        newAddress.text = scannedAddress.text
                     }
                 }
             }
@@ -297,7 +370,7 @@ Rectangle {
                         && invalidAddress == 0
                         && addressExists == 0 && labelExists == 0) ? maincolor : "#727272"
                 opacity: 0.25
-                visible: scanQRTracker == 0
+                visible: scanQRTracker == 0 && importInitiated == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -313,31 +386,47 @@ Rectangle {
                                 && invalidAddress == 0
                                 && addressExists == 0
                                 && labelExists == 0) {
-                            // function to extract public key from private key
+                            selectedAddress = ""
+                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY") {
+                                importInitiated = true
+                                importPrivateKey((coinList.get(coinIndex).fullname), newAddress.text)
+                            }
+                            else if (coinList.get(coinIndex).name === "XFUEL-TEST") {
+                                importInitiated = true
+                                importPrivateKey("testnet", newAddress.text)
+                            }
 
-                            // for now
-                            importWalletFailed = 1
-                            walletError = error2
+                            else {
+                                importWalletFailed = 1
+                                walletError = error2
+                            }
                         }
                     }
-                }
-                /**
+
                     Connections {
                         target: xUtil
 
-                        onImportSucceeded: {
-                            console.log("Address is: " + address)
-                            console.log("PubKey is: " + pubKey)
-                            console.log("PrivKey is: " + privKey)
-                            privateKey.text = privKey
-                            publicKey.text = pubKey
-                            addressHash.text = address
-                            newWallet = 1
+                        onAddressExtracted: {
+                            if (importKeyTracker == 1 && importInitiated == true) {
+                                console.log("Address is: " + addressID)
+                                console.log("PubKey is: " + publicKey)
+                                privateKey.text = newAddress.text
+                                publicKey.text = pubKey
+                                addressHash.text = addressID
+                                newWallet = 1
+                                importInitiated = false
+                            }
                         }
 
-                        onImportFailed :{
-                            importWalletFailed = 1
-                    }*/
+                        onBadKey: {
+                            if (importKeyTracker == 1 && importInitiated == true) {
+                                importWalletFailed = 1
+                                walletError = error1
+                                importInitiated = false
+                            }
+                        }
+                    }
+                }
             }
 
             Text {
@@ -352,7 +441,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: importWalletButton.horizontalCenter
                 anchors.verticalCenter: importWalletButton.verticalCenter
-                visible: scanQRTracker == 0
+                visible: scanQRTracker == 0 && importInitiated == false
             }
 
             Rectangle {
@@ -367,7 +456,18 @@ Rectangle {
                                && invalidAddress == 0
                                && addressExists == 0 && labelExists == 0) ? maincolor : "#979797"
                 border.width: 1
-                visible: scanQRTracker == 0
+                visible: scanQRTracker == 0 && importInitiated == false
+            }
+
+            AnimatedImage {
+                id: waitingDots2
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: importWalletButton.horizontalCenter
+                anchors.verticalCenter: importWalletButton.verticalCenter
+                playing: importInitiated == true
+                visible: scanQRTracker == 0 && importInitiated == true
             }
         }
 
@@ -447,7 +547,6 @@ Rectangle {
                 text: "Here you will find your public key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
             }
 
             Label {
@@ -474,7 +573,6 @@ Rectangle {
                 text: "Here you will find your private key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
             }
 
             Label {
@@ -497,7 +595,6 @@ Rectangle {
                 text: "Here you will find your private key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
             }
 
             Text {
@@ -535,6 +632,7 @@ Rectangle {
 
                     onReleased: {
                         addingWallet = true
+                        saveErrorNR = 0
                         addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
                     }
                 }
@@ -543,7 +641,7 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (importKeyTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
+                        if (importKeyTracker == 1 && addingWallet == true) {
                             editSaved = 1
                             labelExists = 0
                             addressExists = 0
@@ -553,33 +651,44 @@ Rectangle {
                             addressHash.text = ""
                             publicKey.text = ""
                             privateKey.text = ""
+                            scanning = "scanning..."
                             addingWallet = false
                         }
                     }
 
                     onSaveFailed: {
-                        if (importKeyTracker == 1 && userSettings.localKeys === false && addingWallet == true) {
-                            walletID = walletID - 1
-                            walletList.remove(walletID)
-                            addressID = addressID -1
-                            addressList.remove(addressID)
-                            editFailed = 1
-                            addingWallet = false
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            if (userSettings.localKeys === false) {
+                                walletID = walletID - 1
+                                walletList.remove(walletID)
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                editFailed = 1
+                                addingWallet = false
+                            }
+                            else if (userSettings.localKeys === true && walletSaved ==true) {
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                labelExists = 0
+                                addressExists = 0
+                                invalidAddress = 0
+                                newName.text = ""
+                                newAddress.text = ""
+                                addressHash.text = ""
+                                publicKey.text = ""
+                                privateKey.text = ""
+                                scanning = "scanning..."
+                                editFailed = 1
+                                saveErrorNR = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
                         }
                     }
 
                     onSaveFileSucceeded: {
                         if (importKeyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
-                            editSaved = 1
-                            labelExists = 0
-                            addressExists = 0
-                            invalidAddress = 0
-                            newName.text = ""
-                            newAddress.text = ""
-                            addressHash.text = ""
-                            publicKey.text = ""
-                            privateKey.text = ""
-                            addingWallet = false
+                            walletSaved = true
                         }
                     }
 
@@ -633,7 +742,7 @@ Rectangle {
 
             Image {
                 id: saveFailed
-                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                source: saveErrorNR == 0? (darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg') : ('qrc:/icons/mobile/warning-icon_01.svg')
                 height: 100
                 width: 100
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -642,7 +751,11 @@ Rectangle {
 
             Label {
                 id: saveFailedLabel
-                text: "Failed to save your wallet!"
+                width: doubbleButtonWidth
+                maximumLineCount: saveErrorNR == 0? 1 : 4
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                text: saveErrorNR == 0? "Failed to save your wallet!" : "Your wallet was added but we could not add the wallet address to your addressbook. You will need to add this wallet to your addressbook manually."
                 anchors.top: saveFailed.bottom
                 anchors.topMargin: 10
                 anchors.horizontalCenter: saveFailed.horizontalCenter
@@ -671,6 +784,12 @@ Rectangle {
                     }
 
                     onClicked: {
+                        if(saveErrorNR == 1) {
+                            saveErrorNR = 0
+                            walletAdded = true
+                            importKeyTracker = 0
+                        }
+
                         editFailed = 0
                     }
                 }
@@ -726,8 +845,7 @@ Rectangle {
 
             Label {
                 id: saveSuccessLabel
-                text: "Wallet added!<br><br> DON'T FORGET TO BACK UP YOU PRIVATE KEY!"
-                maximumLineCount: 3
+                text: "Wallet added!"
                 anchors.top: saveSuccess.bottom
                 anchors.topMargin: 10
                 anchors.horizontalCenter: saveSuccess.horizontalCenter
@@ -756,6 +874,9 @@ Rectangle {
                     }
 
                     onClicked: {
+                        if (userSettings.accountCreationCompleted === false) {
+                            userSettings.accountCreationCompleted = true
+                        }
                         walletAdded = true
                         importKeyTracker = 0;
                         editSaved = 0;
@@ -960,10 +1081,9 @@ Rectangle {
         }
     }
 
-    Controls.QrScanner {
-        id: scanPrivateKey
+    Controls.QrScanner{
+        id: qrScanner
         z: 10
-        key: "PRIVATE KEY"
         visible: importKeyTracker == 1 && scanQRTracker == 1
     }
 }

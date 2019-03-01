@@ -25,26 +25,30 @@ class Xutility : public QObject {
     Q_OBJECT
 
 public:
-      explicit Xutility(QObject *parent = nullptr);
+    explicit Xutility(QObject *parent = nullptr);
 
-    	void Initialize();   
-    	void CmdParser(const QJsonArray *params);
-    	bool CheckUserInputForKeyWord(const QString msg);
-    	void set_network(const QJsonArray *params);
-    	void help();
-      void createkeypair(const QJsonArray *params);
-      void privkey2address(const QJsonArray *params);
+    void Initialize();
+    void CmdParser(const QJsonArray *params);
+    bool CheckUserInputForKeyWord(const QString msg);
+    void set_network(const QJsonArray *params);
+    void help();
+    void createkeypair(const QJsonArray *params);
+    void privkey2address(const QJsonArray *params);
 signals:
-      void keyPairCreated(const QString &address, const QString &pubKey, const QString &privKey);
+    void keyPairCreated(const QString &address, const QString &pubKey, const QString &privKey);
+    void addressExtracted(const QString &pubKey, const QString &addressID);
+    void createKeypairFailed();
+    void badKey();
 
 public slots:
-      void createKeyPairEntry(QString network);
-      unsigned char getNetworkid(std::vector<std::string>::iterator network_iterator ) const; 
-    	
-   private:
-      bool xutility_initialised = false;
-      std::vector<std::string> networks;
-      std::vector<std::string>::iterator network; 	
+    void createKeyPairEntry(QString network);
+    void importPrivateKeyEntry(QString network, QString privKey);
+    unsigned char getNetworkid(std::vector<std::string>::iterator network_iterator ) const;
+
+private:
+    bool xutility_initialised = false;
+    std::vector<std::string> networks;
+    std::vector<std::string>::iterator network;
 
 };
 

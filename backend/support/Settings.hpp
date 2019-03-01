@@ -48,7 +48,7 @@ public slots:
     void CreateUser(QString username, QString password);
     void SaveAddresses(QString addresslist);
     void SaveContacts(QString contactlist);
-    void SaveWallet(QString walletlist);
+    void SaveWallet(QString walletlist, QString addresslist);
 
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);

@@ -21,7 +21,8 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: allWalletCards
     width: Screen.width
-    height: parent.height
+    height: parent.height - 75
+
     color: "transparent"
 
     property alias cardSpacing: allWallets.spacing
@@ -244,6 +245,20 @@ Rectangle {
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
+                Label {
+                    id: viewOnlyLabel
+                    text: " VIEW ONLY"
+                    anchors.left: transfer.left
+                    anchors.bottom:  unconfirmedLabel.bottom
+                    anchors.bottomMargin: -5
+                    font.pixelSize: 14
+                    font.family: xciteMobile.name
+                    font.letterSpacing: 2
+                    font.bold: true
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                    visible: viewOnly
+                }
+
                 Rectangle {
                     id: transfer
                     height: 34
@@ -271,7 +286,6 @@ Rectangle {
                         }
 
                         onClicked: {
-
                             walletIndex = walletNR
                             switchState = 0
                             transferTracker = 1
@@ -280,7 +294,7 @@ Rectangle {
                 }
 
                 Label {
-                    text: viewOnly == false? "TRANSFER" : "RECEIVE"
+                    text: "TRANSFER"
                     font.family: xciteMobile.name
                     font.pointSize: 14
                     font.bold: true
@@ -369,7 +383,7 @@ Rectangle {
         filters: [
             RegExpFilter {
                 roleName: "name"
-                pattern: getName(coinIndex)
+                pattern: "^" + getName(coinIndex) + "$"
             },
             ValueFilter {
                 roleName: "remove"
@@ -386,7 +400,7 @@ Rectangle {
         delegate: walletCard
         spacing: 0
         anchors.fill: parent
-        contentHeight: (filteredWallets.count  * 140) + 125
+        contentHeight: (filteredWallets.count  * 140)
         interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
         onDraggingChanged: detectInteraction()
     }
