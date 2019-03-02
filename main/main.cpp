@@ -130,6 +130,8 @@ int main(int argc, char *argv[])
     // connect QML signals for xUtility
     QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeyPairEntry(QString)));
     QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(helpMe(QString)), &xUtil, SLOT(helpEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(checkNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

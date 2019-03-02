@@ -580,7 +580,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: editSaved == 1
         }
 
@@ -688,7 +688,7 @@ Rectangle {
             width: parent.width
             height: deleteText.height + deleteContactName.height + confirmationDeleteButton.height + 57
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: deleteContactTracker == 1
@@ -960,7 +960,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: deleteConfirmed == 1
         }
 
