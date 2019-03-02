@@ -144,9 +144,6 @@
         <file>icons/icon-coins.svg</file>
         <file>scan-window.svg</file>
         <file>fonts/Brandon_reg.otf</file>
-        <file>fonts/CandelaBook.otf</file>
-        <file>fonts/merge_light.otf</file>
-        <file>fonts/Orkney-Regular.otf</file>
         <file>scan-window_01.svg</file>
         <file>icons/add_address.svg</file>
         <file>icons/icon-coins_01.svg</file>
@@ -238,5 +235,6 @@
         <file>icons/TESTNET_card_logo_01.svg</file>
         <file>gifs/loading-gif_01.gif</file>
         <file>icons/mobile/warning-icon_01.svg</file>
+        <file>fonts/Xolonium-Regular.ttf</file>
     </qresource>
 </RCC>

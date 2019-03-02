@@ -770,12 +770,12 @@ Rectangle {
             Text {
                 id: errorLabel
                 width: doubbleButtonWidth
-                text: "<b>ERROR</b>:" + walletError
+                text: "<b>ERROR</b>:<br>" + walletError
                 anchors.top: saveError.bottom
                 anchors.topMargin: 10
                 maximumLineCount: 3
                 anchors.horizontalCenter: parent.horizontalCenter
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
                 color: "#E55541"
                 font.pixelSize: 16

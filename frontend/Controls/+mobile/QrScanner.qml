@@ -116,7 +116,7 @@ Item {
 
         Label {
             id: pubKey
-            text: "PUBLIC KEY"
+            text: "ADDRESS"
             anchors.top: scanFrame.bottom
             anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter

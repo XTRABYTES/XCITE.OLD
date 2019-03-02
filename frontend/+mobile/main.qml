@@ -113,6 +113,7 @@ ApplicationWindow {
         fiatCurrencies.setProperty(0, "currencyNR", 0);
         fiatCurrencies.append({"currency": "EUR", "ticker": "€", "currencyNR": 1});
         fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": 2});
+        //fiatCurrencies.append({"currency": "BTC", "ticker": "₿", "currencyNR": 3});
 
         coinList.setProperty(0, "name", nameXFUEL);
         coinList.setProperty(0, "fullname", "xfuel");
@@ -182,7 +183,7 @@ ApplicationWindow {
     property real valueBTCUSD
     property real valueBTCEUR
     property real valueBTCGBP
-    property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : valueBTCGBP
+    property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : userSettings.defaultCurrency == 2? valueBTCGBP : btcValueBTC
 
     // Coin info, retrieved from server
     property string nameXBY: "XBY"
@@ -660,6 +661,14 @@ ApplicationWindow {
         }
     }
 
+    function replaceName(id, first, last) {
+        for(var i = 0; i < addressList.count; i ++) {
+            if (addressList.get(i).contact === id) {
+                contactsList.setProperty(id, "fullname", last+first)
+            }
+        }
+    }
+
     function getWalletIndex(id) {
         for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).walletNR === id) {
@@ -830,7 +839,7 @@ ApplicationWindow {
         }
         walletList.append({"name": coin, "label": label, "address": addr, "privatekey" : privkey, "publickey" : pubkey ,"balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": favorite, "viewOnly" : view, "walletNR": walletID, "remove": false});
         walletID = walletID + 1
-        addressList.append({"contact": 0, "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
+        addressList.append({"contact": 0, "fullname": "My addresses", "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
         addressID = addressID +1;
 
         var dataModelWallet = []
@@ -933,6 +942,7 @@ ApplicationWindow {
         id: addressList
         ListElement {
             contact: 0
+            fullName: ""
             label: ""
             address: ""
             logo: ''

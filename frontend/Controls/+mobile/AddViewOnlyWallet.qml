@@ -237,7 +237,7 @@ Rectangle {
             id: newAddress
             height: 34
             width: newName.width
-            placeholder: "PUBLIC KEY"
+            placeholder: "ADDRESS"
             text: ""
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom

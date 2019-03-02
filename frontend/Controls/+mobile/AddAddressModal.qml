@@ -281,7 +281,7 @@ Rectangle {
             id: newAddress
             height: 34
             width: newName.width
-            placeholder: "PUBLIC KEY"
+            placeholder: "ADDRESS"
             text: ""
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
@@ -514,7 +514,7 @@ Rectangle {
                             && addressExists == 0
                             && labelExists == 0) {
                         saveInitiated = true
-                        addressList.append({"contact": contactIndex, "address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
+                        addressList.append({"contact": contactIndex, "fullName": (contactList.get(contactIndex).lastName + contactList.get(contactIndex).fistName),"address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
                         addingAddress = true
                         var datamodel = []

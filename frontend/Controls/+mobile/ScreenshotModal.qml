@@ -52,50 +52,61 @@ Rectangle {
         }
     ]
 
+    MouseArea {
+        anchors.fill: parent
+    }
+
     Text {
         id: screenshotModalLabel
         text: "TAKE A SCREENSHOT TO BACK UP"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 10
+        anchors.topMargin: 15
         font.pixelSize: 16
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
     }
 
-    Image {
-        id: coinLogo
-        source: getLogo(coinName.text)
-        height: 30
-        width: 30
-        anchors.left: parent.left
-        anchors.leftMargin: 28
+    Item {
+        id: coinId
+        height: coinLogo.height
+        width: coinLogo.width + coinName.width + 7
         anchors.top: screenshotModalLabel.bottom
         anchors.topMargin: 20
-    }
+        anchors.horizontalCenter: parent.horizontalCenter
 
-    Label {
-        id: coinName
-        anchors.left: coinLogo.right
-        anchors.leftMargin: 7
-        anchors.verticalCenter: coinLogo.verticalCenter
-        text: walletList.get(walletIndex).name
-        font.pixelSize: 20
-        font.family: xciteMobile.name
-        font.letterSpacing: 2
-        color: darktheme == false? "#2A2C31" : "#F2F2F2"
-        font.bold: true
+        Image {
+            id: coinLogo
+            source: getLogo(coinName.text)
+            height: 30
+            width: 30
+            anchors.left: parent.left
+            anchors.top: parent.top
+        }
+
+        Label {
+            id: coinName
+            anchors.left: coinLogo.right
+            anchors.leftMargin: 7
+            anchors.verticalCenter: coinLogo.verticalCenter
+            text: walletList.get(walletIndex).name
+            font.pixelSize: 20
+            font.family: xciteMobile.name
+            font.letterSpacing: 2
+            color: darktheme == false? "#2A2C31" : "#F2F2F2"
+            font.bold: true
+        }
     }
 
     Label {
         id: walletName
-        anchors.right: parent.right
-        anchors.rightMargin: 28
-        anchors.left: coinName.right
-        anchors.leftMargin: 10
-        anchors.verticalCenter: coinLogo.verticalCenter
+        width: doubbleButtonWidth
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: coinId.bottom
+        anchors.topMargin: 5
         text: walletList.get(walletIndex).label
+        horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 20
         font.family: xciteMobile.name
         font.letterSpacing: 2
@@ -108,7 +119,7 @@ Rectangle {
         id:addressTextLabel
         text: "Your wallet ADDRESS:"
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: coinLogo.bottom
+        anchors.top: walletName.bottom
         anchors.topMargin: 10
         font.pixelSize: 18
         font.family: "Brandon Grotesque"
@@ -122,7 +133,7 @@ Rectangle {
         height: 100
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: addressTextLabel.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 5
         color: "#FFFFFF"
     }
 
@@ -168,7 +179,7 @@ Rectangle {
         height: 150
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: privateKeyTextLabel.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 5
         color: "#FFFFFF"
     }
 
