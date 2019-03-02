@@ -419,7 +419,7 @@ Rectangle {
         height: saveSuccess.height + saveSuccessLabel.height + moreWallets.height + 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
+        anchors.verticalCenterOffset: -50
         visible: selectWallet == 1 && walletAdded == true
 
         Image {

@@ -81,7 +81,7 @@ ApplicationWindow {
         currencyID = 0
         coinIndex = 0
         walletIndex = 1
-        saveAppSettings()
+        updateToAccount()
         addressList.clear()
         contactList.clear()
         walletList.clear()
@@ -327,6 +327,7 @@ ApplicationWindow {
     signal importPrivateKey(string network, string privKey)
     signal helpMe(string help)
     signal checkNetwork(string network)
+    signal updateAccount(string addresslist, string contactlist, string walletlist)
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
@@ -609,6 +610,10 @@ ApplicationWindow {
                             balance = walletList.get(i).balance
                             wallet = walletList.get(i).walletNR
                         }
+                        else if (wallet == 0) {
+                            balance = walletList.get(i).balance
+                            wallet = walletList.get(i).walletNR
+                        }
                     }
                 }
                 else {
@@ -792,8 +797,38 @@ ApplicationWindow {
         // read transactionhistory from persistent data
     }
 
+    function updateToAccount(){
+        var dataModelWallet = []
+        var datamodelContact = []
+        var datamodelAddress = []
+
+        for (var i = 0; i < walletList.count; ++i){
+            dataModelWallet.push(walletList.get(i))
+        }
+        for (var e = 0; e < addressList.count; ++e){
+            datamodelAddress.push(addressList.get(e))
+        }
+        for (var o = 0; o < contactList.count; ++o){
+            datamodelContact.push(contactList.get(o))
+        }
+
+        var walletListJson = JSON.stringify(dataModelWallet)
+        var addressListJson = JSON.stringify(datamodelAddress)
+        var contactListJson = JSON.stringify(datamodelContact)
+
+        updateAccount(addressListJson, contactListJson, walletListJson)
+    }
+
     function addWalletToList(coin, label, addr, pubkey, privkey, view){
-        walletList.append({"name": coin, "label": label, "address": addr, "privatekey" : privkey, "publickey" : pubkey ,"balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "viewOnly" : view, "walletNR": walletID, "remove": false});
+        var favorite = true
+        for(var o = 0; o < walletList.count; o ++) {
+            if (favorite == true) {
+                if (walletList.get(o).name === coin && walletList.get(o).favorite === true) {
+                    favorite = false
+                }
+            }
+        }
+        walletList.append({"name": coin, "label": label, "address": addr, "privatekey" : privkey, "publickey" : pubkey ,"balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": favorite, "viewOnly" : view, "walletNR": walletID, "remove": false});
         walletID = walletID + 1
         addressList.append({"contact": 0, "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
         addressID = addressID +1;
@@ -876,7 +911,7 @@ ApplicationWindow {
         coinIndex = 0
         walletIndex = 1
 
-        saveAppSettings()
+        updateToAccount()
         addressList.clear()
         contactList.clear()
         walletList.clear()
@@ -1070,18 +1105,6 @@ ApplicationWindow {
 
         }
     }
-
-    //    Timer {
-    //        id: xutilityTimer
-    //        interval: 10000
-    //        repeat: false
-    //        running: sessionStart == 1
-    //        onTriggered:  {
-    //          createKeyPair("xfuel");
-    //          createKeyPair("xtrabytes");
-    //        }
-    //    }
-
 
     Timer {
         id: loginTimer
