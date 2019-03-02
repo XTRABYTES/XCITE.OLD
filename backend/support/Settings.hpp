@@ -49,6 +49,7 @@ public slots:
     void SaveAddresses(QString addresslist);
     void SaveContacts(QString contactlist);
     void SaveWallet(QString walletlist, QString addresslist);
+    void UpdateAccount(QString addresslist, QString contactlist, QString walletlist);
 
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);

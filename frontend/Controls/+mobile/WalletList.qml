@@ -133,7 +133,7 @@ Rectangle {
                         onClicked: {
                             if (viewOnly == false) {
                                 if (favorite == true) {
-                                    walletList.setProperty(walletNR, "favorite", false)
+                                    //walletList.setProperty(walletNR, "favorite", false)
                                 }
                                 else {
                                     resetFavorites(name)

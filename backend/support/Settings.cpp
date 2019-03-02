@@ -260,6 +260,22 @@ void Settings::LoadSettings(QByteArray settings){
     emit loginSucceededChanged();
 }
 
+void Settings::UpdateAccount(QString addresslist, QString contactlist, QString walletlist){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    bool localKeys = m_settings->value("localKeys").toBool();
+    m_addresses = addresslist;
+    m_contacts = contactlist;
+    m_wallet = walletlist;
+
+    if (localKeys){
+        QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
+        QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
+        SaveFile(m_username.toLower() + "wallet", encodedWalletString);
+    }else{
+        SaveSettings();
+    }
+}
+
 void Settings::SaveAddresses(QString addresslist){
     m_addresses = addresslist;
     SaveSettings();
