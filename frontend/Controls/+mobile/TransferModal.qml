@@ -61,7 +61,7 @@ Rectangle {
     property int decimals: (coinID.text) == "BTC" ? 8 : 4
     property var inputAmount: Number.fromLocaleString(Qt.locale("en_US"),sendAmount.text)
     property string amountTransfer: "AMOUNT (" + coinID.text + ")"
-    property string keyTransfer: "SEND TO (PUBLIC KEY)"
+    property string keyTransfer: "SEND TO (ADDRESS)"
     property string referenceTransfer: "REFERENCE"
     property real amountSend: 0
     property string searchTxText: ""
@@ -70,6 +70,7 @@ Rectangle {
     property string addressName: compareAddress()
     property real currentBalance: getCurrentBalance()
     property int selectedWallet: getWalletNR(coinID.text, walletLabel.text)
+    property string searchCriteria: ""
 
     function compareAddress(){
         var fromto = ""
@@ -380,7 +381,7 @@ Rectangle {
             id: transferPicklist1
             z: 11
             width: 100
-            height: totalLines * 35
+            height: totalLines * 35 + 25
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5
@@ -404,7 +405,7 @@ Rectangle {
             width: 100
             height: 25
             color: "#2A2C31"
-            anchors.top: transferPicklist1.bottom
+            anchors.bottom: transferPicklist1.bottom
             anchors.horizontalCenter: transferPicklist1.horizontalCenter
             visible: coinListTracker == 1
                      && transactionSend == 0
@@ -498,7 +499,7 @@ Rectangle {
             id: transferPicklist2
             z: 11
             width: 100
-            height: (totalCoinWallets * 35) < 175 ? (totalCoinWallets * 35) : 175
+            height: ((totalCoinWallets * 35) + 25) < 200 ? ((totalCoinWallets * 35) + 25) : 200
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5
@@ -523,7 +524,7 @@ Rectangle {
             width: 100
             height: 25
             color: "#2A2C31"
-            anchors.top: transferPicklist2.bottom
+            anchors.bottom: transferPicklist2.bottom
             anchors.horizontalCenter: transferPicklist2.horizontalCenter
             visible: walletListTracker == 1
                      && transactionSend == 0
@@ -1673,11 +1674,32 @@ Rectangle {
                  && addressbookTracker == 1
     }
 
+    Controls.TextInput {
+        id: searchForAddress
+        placeholder: "SEARCH ADDRESS BOOK"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: addressbookCoinLogo.bottom
+        anchors.topMargin: 20
+        color: searchForAddress.text != "" ? "#2A2C31" : "#727272"
+        textBackground: "#F2F2F2"
+        font.pixelSize: 14
+        font.capitalization: Font.AllUppercase
+        mobile: 1
+        addressBook: 1
+        visible: transferSwitch.on == true
+                 && transactionSend == 0
+                 && addressbookTracker == 1
+        onTextChanged: {
+            detectInteraction()
+            searchCriteria = searchForAddress.text
+        }
+    }
+
     Rectangle {
         id: addressPicklistArea
         width: parent.width
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: addressbookCoinLogo.bottom
+        anchors.top: searchForAddress.bottom
         anchors.topMargin: 20
         anchors.bottom: cancelAddressButton.top
         color: "transparent"
@@ -1686,6 +1708,7 @@ Rectangle {
                  && addressbookTracker == 1
         Mobile.AddressPicklist {
             id: myAddressPicklist
+            searchFilter: searchCriteria
 
         }
     }
@@ -1740,6 +1763,7 @@ Rectangle {
             onClicked: {
                 addressbookTracker = 0
                 currentAddress = ""
+                searchForAddress.text = ""
             }
         }
     }

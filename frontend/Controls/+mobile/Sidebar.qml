@@ -51,7 +51,7 @@ Rectangle {
         width: sidebar.width
         anchors.top: sidebar.top
         anchors.bottom: logoutSection.top
-        contentHeight: homeSection.height + settingsSection.height + backupSection.height + appsSection.height + 100
+        contentHeight: homeSection.height + settingsSection.height + backupSection.height + appsSection.height + notifSection.height + 125
         boundsBehavior: Flickable.StopAtBounds
         clip: true
         visible: appsTracker == 1

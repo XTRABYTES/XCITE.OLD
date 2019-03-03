@@ -29,7 +29,7 @@ TextField {
     color: "white"
     font.family: xciteMobile.name //"Brandon Grotesque"
     font.pixelSize: 26
-    leftPadding: calculator == 1? 42 : 6
+    leftPadding: calculator == 1? 42 : 18
     rightPadding: textboxHeight
     topPadding: 6
     bottomPadding: 4

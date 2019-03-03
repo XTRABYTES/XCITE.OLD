@@ -22,6 +22,8 @@ Rectangle {
     color: "transparent"
     clip :true
 
+    property string searchFilter: ""
+
     Component {
         id: contactLine
 
@@ -34,7 +36,7 @@ Rectangle {
             clip: true
 
             Controls.CardBody {
-
+                id: myCardBody
             }
 
             Rectangle {
@@ -113,13 +115,34 @@ Rectangle {
         sourceModel: addressList
         filters: [
             RegExpFilter {
-                 roleName: "coin"
-                 pattern: "^" + selectedCoin + "$"
+                roleName: "coin"
+                pattern: "^" + selectedCoin + "$"
             },
             ValueFilter {
-                 roleName: "remove"
-                 value: false
+                roleName: "remove"
+                value: false
+            },
+            AnyOf {
+                RegExpFilter {
+                    roleName: "address"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "label"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "fullname"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
             }
+        ]
+        sorters: [
+            StringSorter { roleName: "fullname" },
+            StringSorter { roleName: "label" }
         ]
     }
 

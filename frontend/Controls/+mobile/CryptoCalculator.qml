@@ -666,7 +666,7 @@ Item {
         Text {
             id: button8Label
             text : "8"
-            font.family: xciteMobile.name //"Brandon Grotesque"
+            font.family: xciteMobile.name
             font.pointSize: 20
             font.bold: true
             color: maincolor

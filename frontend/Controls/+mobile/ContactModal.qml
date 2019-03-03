@@ -72,6 +72,8 @@ Rectangle {
     property string oldText
     property string oldMail
     property string oldChat
+    property string newFirst
+    property string newLast
 
     function compareName() {
         contactExists = 0
@@ -405,22 +407,30 @@ Rectangle {
                     if (contactExists == 0) {
                         if (newFirstname.text !== "") {
                             contactList.setProperty(contactIndex, "firstName", newFirstname.text)
-                        };
+                            newFirst = newFirstname.text
+                        }
+                        else {
+                            newFirst = oldFirstName
+                        }
+
+                        ;
                         if (newLastname.text !== "") {
                             contactList.setProperty(contactIndex, "lastName", newLastname.text)
-                        };
+                            newLast = newLastname.text
+                        }
+                        else {
+                            newLast = oldLastName
+                        }
+
+                        ;
+                        replaceName(contactIndex, newFirst, newLast)
                         contactList.setProperty(contactIndex, "telNR", newTel.text);
                         contactList.setProperty(contactIndex, "cellNR", newCell.text);
                         contactList.setProperty(contactIndex, "mailAddress", newMail.text);
                         contactList.setProperty(contactIndex, "chatID", newChat.text);
                         editingContact = true
 
-                        var datamodel = []
-                        for (var i = 0; i < contactList.count; ++i)
-                            datamodel.push(contactList.get(i))
-
-                        var contactListJson = JSON.stringify(datamodel)
-                        saveContactList(contactListJson)
+                        updateToAccount()
                     }
                 }
             }
@@ -437,7 +447,7 @@ Rectangle {
 
                 onSaveFailed: {
                     if (editContactTracker == 1 && editingContact == true) {
-
+                        replaceName(contactIndex, oldFirstName, oldFirstName);
                         contactList.setProperty(contactIndex, "firstName", oldFirstName);
                         contactList.setProperty(contactIndex, "lastName", oldLastName);
                         contactList.setProperty(contactIndex, "telNR", oldTel);
