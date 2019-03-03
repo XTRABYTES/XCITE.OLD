@@ -14,6 +14,8 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 
+import "qrc:/Controls" as Controls
+
 Rectangle {
     id: sidebar
     height: Screen.height
@@ -49,7 +51,7 @@ Rectangle {
         width: sidebar.width
         anchors.top: sidebar.top
         anchors.bottom: logoutSection.top
-        contentHeight: homeSection.height + settingsSection.height + backupSection.height + appsSection.height + 100
+        contentHeight: homeSection.height + settingsSection.height + backupSection.height + appsSection.height + notifSection.height + 125
         boundsBehavior: Flickable.StopAtBounds
         clip: true
         visible: appsTracker == 1
@@ -199,10 +201,11 @@ Rectangle {
 
                     onClicked: {
                         if (selectedPage != "backup") {
+                            backupTracker = 1
                             appsTracker = 0
                             if (userSettings.pinlock === false) {
-                                //selectedPage = "backup"
-                                //mainRoot.push("../WalletBackup.qml")
+                                selectedPage = "backup"
+                                mainRoot.push("../WalletBackup.qml")
                             }
                             else {
                                 pincodeTracker = 1
@@ -408,5 +411,10 @@ Rectangle {
                 detectInteraction()
             }
         }
+    }
+
+    Controls.Pincode {
+        id: myPincode
+        z: 10
     }
 }

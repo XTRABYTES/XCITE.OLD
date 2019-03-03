@@ -18,6 +18,7 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 QT	+= core gui xml quick svg charts sql
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 CONFIG += resources_big
+CONFIG += static
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
@@ -52,6 +53,9 @@ include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
+	    backend/staticnet/staticnet.cpp \
+	    backend/xutility/xutility.cpp \
+	    backend/xutility/crypto/ctools.cpp \
             backend/p2p/p2p.cpp \
             backend/xchat/xchatconversationmodel.cpp \
             backend/XCITE/nodes/nodetransaction.cpp \
@@ -62,6 +66,7 @@ SOURCES += main/main.cpp \
             backend/support/globaleventfilter.cpp \
             backend/testnet/xchattestnetclient.cpp \
             backend/integrations/MarketValue.cpp \
+            backend/integrations/Explorer.cpp \
             backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
             backend/support/Settings.cpp \
@@ -72,9 +77,14 @@ RESOURCES += frontend/frontend.qrc
 
 HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xchat/xchataiml.hpp \
+	    backend/xutility/crypto/allocators.h \
+	    backend/xutility/crypto/ctools.h \
+	    backend/xutility/crypto/numbers.h \
             backend/p2p/p2p.hpp \
             backend/xchat/xchatconversationmodel.hpp \
             backend/XCITE/nodes/nodetransaction.h \
+	    backend/staticnet/staticnet.hpp \
+	    backend/xutility/xutility.hpp \
             backend/testnet/testnet.hpp \
             backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
@@ -86,6 +96,7 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/support/FileDownloader.hpp \
     backend/support/Settings.hpp \
     backend/integrations/MarketValue.hpp \
+    backend/integrations/Explorer.hpp \
     backend/support/qaesencryption.h
 
 DISTFILES += \
@@ -137,16 +148,34 @@ mac {
 }
 
 linux:!android {
+  LIBS += -lssl -lcrypto
+  LIBS += -lboost_system
 }
 
 android {
+    CONFIG += static
     QT += multimedia
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+    #LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib -lboost_system
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
+
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
+
+    #ANDROID_EXTRA_LIBS = \
+     #   $$PWD/dependencies/android/armeabi-v7a/boost/lib/libboost_system.so
 }
+
 
 FORMS += \
     packages/global.xtrabytes.xcite/meta/feedbackpage.ui
 
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+
     ANDROID_PACKAGE_SOURCE_DIR = \
         $$PWD/android
+
+    ANDROID_EXTRA_LIBS = \
+        $$PWD/dependencies/android/armeabi-v7a/boost/libcomp/libcrypto.so \
+        $$PWD/dependencies/android/armeabi-v7a/boost/libcomp/libssl.so
 }

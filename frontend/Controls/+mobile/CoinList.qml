@@ -21,7 +21,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: allWalletCards
     width: Screen.width
-    height: parent.height
+    height: parent.height - 75
     color: "transparent"
 
     property alias cardSpacing: allCoins.spacing
@@ -60,9 +60,22 @@ Rectangle {
 
                 }
 
+                Label {
+                    id: testnetLabel
+                    text: "TESTNET"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+                    anchors.topMargin: 3
+                    font.pixelSize: 10
+                    font.family: "Brandon Grotesque"
+                    color: "#E55541"
+                    font.letterSpacing: 2
+                    visible: testnet
+                }
+
                 Image {
                     id: icon
-                    source: getLogoBig(coinName.text)
+                    source: getLogoBig(name)
                     anchors.horizontalCenter: parent.left
                     anchors.horizontalCenterOffset: icon.implicitWidth/6
                     anchors.verticalCenter: parent.verticalCenter
@@ -76,20 +89,23 @@ Rectangle {
                     anchors.leftMargin: 10
                     anchors.top: parent.top
                     anchors.topMargin: 15
-                    text: name
+                    anchors.right: percentChangeLabel.left
+                    anchors.rightMargin: 10
+                    text: fullname
+                    font.capitalization: Font.AllUppercase
                     font.pixelSize: 24
                     font.family: xciteMobile.name
                     font.letterSpacing: 2
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.bold: true
+                    elide: Text.ElideRight
                 }
 
                 Text {
                     id: amountSizeLabel
-                    anchors.right: parent.right
-                    anchors.rightMargin: 28
-                    anchors.bottom: coinName.bottom
-                    anchors.bottomMargin: 2
+                    anchors.left: amountSizeLabel1.right
+                    anchors.leftMargin: 5
+                    anchors.bottom: amountSizeLabel2.bottom
                     text: name
                     font.pixelSize: 20
                     font.family:  xciteMobile.name
@@ -97,13 +113,12 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: (sumCoinTotal(coinName.text))
-                    property int decimals: name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4)
+                    property real sumBalance: (sumCoinTotal(name))
+                    property int decimals: sumBalance == 0 ? 2 : (name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4))
                     property var amountArray: (sumBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel1
-                    anchors.right: amountSizeLabel.left
-                    anchors.rightMargin: 5
-                    anchors.bottom: amountSizeLabel.bottom
+                    anchors.left: amountSizeLabel2.right
+                    anchors.bottom: amountSizeLabel2.bottom
                     anchors.bottomMargin: 1
                     text:  "." + amountArray[1]
                     font.pixelSize: 16
@@ -112,12 +127,13 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: (sumCoinTotal(coinName.text))
-                    property int decimals: name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4)
+                    property real sumBalance: (sumCoinTotal(name))
+                    property int decimals: sumBalance == 0 ? 2 : (name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4))
                     property var amountArray: (sumBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel2
-                    anchors.right: amountSizeLabel1.left
-                    anchors.verticalCenter: amountSizeLabel.verticalCenter
+                    anchors.left: coinName.left
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 10
                     text: amountArray[0]
                     font.pixelSize: 20
                     font.family:  xciteMobile.name
@@ -125,7 +141,7 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: (sumCoinTotal(coinName.text))
+                    property real sumBalance: (sumCoinTotal(name))
                     property var amountArray: ((coinConversion(name, sumBalance)).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
                     id: totalValueLabel1
                     anchors.right: square.right
@@ -136,19 +152,21 @@ Rectangle {
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
                     color: "#828282"
+                    visible: testnet == false
                 }
 
                 Text {
-                    property real sumBalance: (sumCoinTotal(coinName.text))
+                    property real sumBalance: (sumCoinTotal(name))
                     property var amountArray: ((coinConversion(name, sumBalance)).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
                     id: totalValueLabel2
                     anchors.right: totalValueLabel1.left
-                    anchors.bottom: price1.bottom
-                    anchors.bottomMargin: -1
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 11
                     text:amountArray[0]
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: "#828282"
+                    visible: testnet == false
                 }
 
                 Label {
@@ -160,52 +178,20 @@ Rectangle {
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: "#828282"
+                    visible: testnet == false
                 }
 
                 Text {
                     id: percentChangeLabel
-                    anchors.left: price2.right
-                    anchors.leftMargin: 10
-                    anchors.bottom: price1.bottom
-                    text:"(24h: " + (percentage >= 0? "+" + getPercentage(coinName.text) + "%" : getPercentage(coinName.text) + "%") + ")"
+                    anchors.right: square.right
+                    anchors.rightMargin: 28
+                    anchors.verticalCenter: coinName.verticalCenter
+                    text:"24h: " + (percentage >= 0? "+" + getPercentage(name) + "%" : getPercentage(name) + "%")
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
-                    color: getPercentage(coinName.text) < 0 ? "#E55541" : "#4BBE2E"
+                    color: getPercentage(name) < 0 ? "#E55541" : "#4BBE2E"
                     font.bold: true
-                }
-
-                Text {
-                    property var amountArray: ((getValue(coinName.text) * valueBTC).toLocaleString(Qt.locale("en_US"), "f", 4)).split('.')
-                    id: price1
-                    anchors.left: dollarSign1.right
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 20
-                    text:amountArray[0]
-                    font.pixelSize: 14
-                    font.family:  xciteMobile.name
-                    color: "#828282"
-                }
-
-                Text {
-                    property var amountArray: ((getValue(coinName.text) * valueBTC).toLocaleString(Qt.locale("en_US"), "f", 4)).split('.')
-                    id: price2
-                    anchors.left: price1.right
-                    anchors.bottom: price1.bottom
-                    anchors.bottomMargin: 1
-                    text: "." + amountArray[1]
-                    font.pixelSize: 11
-                    font.family: xciteMobile.name
-                    color: "#828282"
-                }
-
-                Label {
-                    id: dollarSign1
-                    anchors.left: coinName.left
-                    anchors.verticalCenter: price1.verticalCenter
-                    text: fiatTicker
-                    font.pixelSize: 14
-                    font.family:  xciteMobile.name
-                    color: "#828282"
+                    visible: testnet == false
                 }
 
                 MouseArea {
@@ -240,7 +226,10 @@ Rectangle {
                 value: true
             }
         ]
-        sorters: RoleSorter { roleName: "name" ; sortOrder: Qt.DescendingOrder }
+        sorters: [
+            RoleSorter { roleName: "testnet" ; sortOrder: Qt.AscendingOrder },
+            StringSorter { roleName: "name" }
+        ]
     }
 
     ListView {
@@ -249,7 +238,7 @@ Rectangle {
         delegate: walletCard
         spacing: 0
         anchors.fill: parent
-        contentHeight: (filteredCoins.count * 85) + 75
+        contentHeight: (filteredCoins.count * 100)
         interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
         onDraggingChanged: detectInteraction()
     }

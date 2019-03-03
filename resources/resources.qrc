@@ -144,9 +144,6 @@
         <file>icons/icon-coins.svg</file>
         <file>scan-window.svg</file>
         <file>fonts/Brandon_reg.otf</file>
-        <file>fonts/CandelaBook.otf</file>
-        <file>fonts/merge_light.otf</file>
-        <file>fonts/Orkney-Regular.otf</file>
         <file>scan-window_01.svg</file>
         <file>icons/add_address.svg</file>
         <file>icons/icon-coins_01.svg</file>
@@ -181,8 +178,6 @@
         <file>scan-window_02.svg</file>
         <file>icons/XBY_logo_big.svg</file>
         <file>icons/XFUEL_logo_big.svg</file>
-        <file>gifs/loading_02.gif</file>
-        <file>gifs/loading_01.gif</file>
         <file>icons/mobile/add_address-icon_01_dark.svg</file>
         <file>icons/mobile/add_address-icon_01_light.svg</file>
         <file>icons/mobile/add_contact-icon_01_dark.svg</file>
@@ -235,5 +230,11 @@
         <file>backgrounds/launchScreen-logo_01.png</file>
         <file>icons/mobile/debug-icon_01_dark.svg</file>
         <file>icons/mobile/debug-icon_01_light.svg</file>
+        <file>icons/TESTNET_card_logo_colored_01.svg</file>
+        <file>icons/TESTNET_logo_big.svg</file>
+        <file>icons/TESTNET_card_logo_01.svg</file>
+        <file>gifs/loading-gif_01.gif</file>
+        <file>icons/mobile/warning-icon_01.svg</file>
+        <file>fonts/Xolonium-Regular.ttf</file>
     </qresource>
 </RCC>

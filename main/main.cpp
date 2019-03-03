@@ -22,6 +22,8 @@
 #include <QZXing.h>
 #include "../backend/xchat/xchat.hpp"
 #include "../backend/xchat/xchatconversationmodel.hpp"
+#include "../backend/staticnet/staticnet.hpp"
+#include "../backend/xutility/xutility.hpp"
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
@@ -30,6 +32,7 @@
 #include "../backend/support/Settings.hpp"
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
+#include "../backend/integrations/Explorer.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -62,9 +65,14 @@ int main(int argc, char *argv[])
     selector->setExtraSelectors(QStringList() << "mobile");
 #endif
 
-    XchatObject xchatRobot;
     xchatRobot.Initialize();
     engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
+
+    staticNet.Initialize();
+    engine.rootContext()->setContextProperty("StaticNet", &staticNet);
+
+    Xutility xUtil;
+    engine.rootContext()->setContextProperty("xUtil", &xUtil);
 
     // wire-up testnet wallet
     Testnet wallet;
@@ -74,7 +82,11 @@ int main(int argc, char *argv[])
     MarketValue marketValue;
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
 
-	// set app version
+    // wire-up Explorer
+    Explorer explorer;
+    engine.rootContext()->setContextProperty("explorer", &explorer);
+
+    // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
 
@@ -106,11 +118,22 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(saveAddressBook(QString)), &settings, SLOT(SaveAddresses(QString)));
     QObject::connect(rootObject, SIGNAL(saveContactList(QString)), &settings, SLOT(SaveContacts(QString)));
     QObject::connect(rootObject, SIGNAL(saveAppSettings()), &settings, SLOT(SaveSettings()));
-    QObject::connect(rootObject, SIGNAL(saveWalletList(QString)), &settings, SLOT(SaveWallet(QString)));
+    QObject::connect(rootObject, SIGNAL(saveWalletList(QString, QString)), &settings, SLOT(SaveWallet(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(updateAccount(QString, QString, QString)), &settings, SLOT(UpdateAccount(QString, QString, QString)));
+
 
 
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
+
+    // connect QML signals for Explorer
+    QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString)), &explorer, SLOT(getBalanceEntireWallet(QString)));
+
+    // connect QML signals for xUtility
+    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeyPairEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(helpMe(QString)), &xUtil, SLOT(helpEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(checkNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

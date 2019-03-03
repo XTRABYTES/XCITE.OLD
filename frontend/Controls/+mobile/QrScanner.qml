@@ -1,6 +1,5 @@
 import QtQuick.Controls 2.3
 import QtQuick 2.7
-import QtMultimedia 5.5
 import QtGraphicalEffects 1.0
 import QZXing 2.3
 import QtMultimedia 5.8
@@ -30,7 +29,7 @@ Item {
     Camera {
         id: camera
         position: Camera.BackFace
-        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addWalletTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
+        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || viewOnlyTracker == 1 || importKeyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
         focus {
             focusMode: Camera.FocusContinuous
             focusPointMode: CameraFocus.FocusPointAuto
@@ -117,7 +116,7 @@ Item {
 
         Label {
             id: pubKey
-            text: "PUBLIC KEY"
+            text: "ADDRESS"
             anchors.top: scanFrame.bottom
             anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter

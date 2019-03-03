@@ -20,9 +20,9 @@ Rectangle {
     width: parent.width
     height: parent.height
     color: "transparent"
+    clip :true
 
-    property int selectedWallet: 0
-    property string searchFilter:  (selectedWallet == 0 ? "XBY" : "XFUEL")
+    property string searchFilter: ""
 
     Component {
         id: contactLine
@@ -33,9 +33,10 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             height: 80
             color:"transparent"
+            clip: true
 
             Controls.CardBody {
-
+                id: myCardBody
             }
 
             Rectangle {
@@ -114,13 +115,34 @@ Rectangle {
         sourceModel: addressList
         filters: [
             RegExpFilter {
-                 roleName: "coin"
-                 pattern: searchFilter
+                roleName: "coin"
+                pattern: "^" + selectedCoin + "$"
             },
             ValueFilter {
-                 roleName: "remove"
-                 value: false
+                roleName: "remove"
+                value: false
+            },
+            AnyOf {
+                RegExpFilter {
+                    roleName: "address"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "label"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "fullname"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
             }
+        ]
+        sorters: [
+            StringSorter { roleName: "fullname" },
+            StringSorter { roleName: "label" }
         ]
     }
 
@@ -130,7 +152,7 @@ Rectangle {
         id: picklist
         model: filteredAddresses
         delegate: contactLine
-        clip: true
+        contentHeight: (filteredAddresses.count * 80) + 50
         onDraggingChanged: detectInteraction()
     }
 }

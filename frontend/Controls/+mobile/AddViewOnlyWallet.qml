@@ -63,6 +63,9 @@ Rectangle {
     property int scanQR: 0
     property int editFailed: 0
     property int editSaved: 0
+    property bool addingWallet: false
+    property bool walletSaved: false
+    property int saveError: 0
 
     function compareTx() {
         addressExists = 0
@@ -92,7 +95,7 @@ Rectangle {
         invalidAddress = 0
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY") {
-                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "B" && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && (newAddress.text.substring(0,1) == "B") && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -101,6 +104,14 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL") {
                 if (newAddress.length == 34 && newAddress.text.substring(0,1) == "F" && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "XFUEL-TEST") {
+                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "G" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -120,6 +131,7 @@ Rectangle {
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
+        visible: editFailed == 0 && editSaved == 0
     }
 
     Item {
@@ -128,7 +140,7 @@ Rectangle {
         height: addWalletText.height + newIcon.height + newName.height + newAddress.height + scanQrButton.height + saveButton.height + 135
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: addViewOnly == 1 && editFailed == 0 && editSaved == 0
 
         Label {
@@ -225,7 +237,7 @@ Rectangle {
             id: newAddress
             height: 34
             width: newName.width
-            placeholder: "PUBLIC KEY"
+            placeholder: "ADDRESS"
             text: ""
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
@@ -355,6 +367,7 @@ Rectangle {
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: scanQR == 0
+                     && addingWallet == false
 
             MouseArea {
                 anchors.fill: saveButton
@@ -376,15 +389,10 @@ Rectangle {
                             && invalidAddress == 0
                             && addressExists == 0
                             && labelExists == 0) {
-                        walletList.append({"name": coinList.get(coin).name, "label": newName.text, "address": newAddress.text, "balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": false, "viewOnly": true, "walletNR": walletID, "remove": false});
-                        walletID = walletID +1;
-
-                        var dataModelWallet = []
-                        for (var i = 0; i < walletList.count; ++i){
-                            dataModelWallet.push(walletList.get(i))
-                        }
-                        var walletListJson = JSON.stringify(dataModelWallet)
-                        saveWalletList(walletListJson)
+                        addingWallet = true
+                        walletSaved = false
+                        saveError = 0
+                        addWalletToList(coinList.get(coin).name, newName.text, newAddress.text, "", "", true)
                     }
                 }
             }
@@ -393,7 +401,7 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (viewOnlyTracker == 1 && userSettings.localKeys === false) {
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
                         walletAdded = true
                         editSaved = 1
                         viewOnlyTracker = 0
@@ -405,32 +413,46 @@ Rectangle {
                         scanQR = 0
                         selectedAddress = ""
                         scanning = "scanning..."
+                        addingWallet = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (viewOnlyTracker == 1 && userSettings.localKeys === false) {
-                        console.log("save failed")
-                        walletID = walletID - 1
-                        walletList.remove(walletID)
-                        //editFailed = 1
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
+                        if (userSettings.localKeys === false) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            editFailed = 1
+                            addingWallet = false
+                        }
+                        else if (userSettings.localKeys === true && walletSaved == true) {
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            saveError = 1
+                            editFailed = 1
+                            addingWallet = false
+                            walletSaved = false
+                        }
                     }
                 }
 
                 onSaveFileSucceeded: {
-                    if (viewOnlyTracker == 1) {
-                        console.log("save succeeded" && userSettings.localKeys === true)
-                        editSaved = 1
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
+                        walletSaved = true
 
                     }
                 }
 
                 onSaveFileFailed: {
-                    if (viewOnlyTracker == 1 && userSettings.localKeys === true) {
-                        console.log("save failed")
+                    if (viewOnlyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
                         walletID = walletID - 1
                         walletList.remove(walletID)
+                        addressID = addressID -1
+                        addressList.remove(addressID)
                         editFailed = 1
+                        addingWallet = false
                     }
                 }
             }
@@ -448,6 +470,7 @@ Rectangle {
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             visible: scanQR == 0
+                     && addingWallet == false
         }
 
         Rectangle {
@@ -463,6 +486,19 @@ Rectangle {
                            && addressExists == 0 && labelExists == 0) ? maincolor : "#979797"
             border.width: 1
             visible: scanQR == 0
+                     && addingWallet == false
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            playing: addingWallet == true
+            visible: scanQR == 00
+                     && addingWallet == true
         }
     }
 
@@ -473,21 +509,25 @@ Rectangle {
         height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: editFailed == 1
 
         Image {
             id: saveFailed
-            source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+            source: saveError === 0? (darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg') : ('qrc:/icons/mobile/warning-icon_01.svg')
             height: 100
-            width: 100
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
         }
 
         Label {
             id: saveFailedLabel
-            text: "Failed to save your wallet!"
+            width: doubbleButtonWidth
+            maximumLineCount: saveError === 0? 1 : 4
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            text: saveError === 0? "Failed to save your wallet!" : "Your wallet was added but we could not add the wallet address to your addressbook. You will need to add this wallet to your addressbook manually."
             anchors.top: saveFailed.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveFailed.horizontalCenter
@@ -516,6 +556,18 @@ Rectangle {
                 }
 
                 onClicked: {
+                    if (saveError == 1) {
+                        saveError = 0
+                        viewOnlyTracker = 0
+                        newName.text = ""
+                        newAddress.text = ""
+                        addressExists = 0
+                        labelExists = 0
+                        invalidAddress = 0
+                        scanQR = 0
+                        selectedAddress = ""
+                        scanning = "scanning..."
+                    }
                     editFailed = 0
                 }
             }
@@ -550,7 +602,7 @@ Rectangle {
         height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: editSaved == 1
 
         Image {

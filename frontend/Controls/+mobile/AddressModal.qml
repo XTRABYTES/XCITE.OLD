@@ -65,6 +65,8 @@ Rectangle {
     property int deleteAddressTracker: 0
     property int editSaved: 0
     property int editFailed: 0
+    property bool editingAddress: false
+    property bool deletingAddress: false
     property int deleteConfirmed: 0
     property int deleteFailed: 0
     property int favoriteChanged: 0
@@ -145,7 +147,7 @@ Rectangle {
         invalidAddress = 0
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY") {
-                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "B" && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && (newAddress.text.substring(0,1) == "B") && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -160,10 +162,18 @@ Rectangle {
                     invalidAddress = 1
                 }
             }
+            else if (newCoinName.text == "XFUEL-TEST") {
+                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "G" && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
         }
         else {
             if (newCoinName.text == "XBY") {
-                if (newAddress.placeholder.length == 34 && newAddress.placeholder.substring(0,1) == "B") {
+                if (newAddress.placeholder.length == 34 && (newAddress.text.substring(0,1) == "B")) {
                     invalidAddress = 0
                 }
                 else {
@@ -172,6 +182,14 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL") {
                 if (newAddress.placeholder.length == 34 && newAddress.placeholder.substring(0,1) == "F") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "XFUEL-TEST") {
+                if (newAddress.placeholder.length == 34 && newAddress.placeholder.substring(0,1) == "G") {
                     invalidAddress = 0
                 }
                 else {
@@ -315,9 +333,9 @@ Rectangle {
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 0
+                     && editFailed == 0
                      && deleteAddressTracker == 0
-                     && editFailed == 0
-                     && editFailed == 0
+                     && editingAddress == false
 
             MouseArea {
                 anchors.fill: saveEditButton
@@ -352,6 +370,7 @@ Rectangle {
                         if (favoriteChanged == 1) {
                             addressList.setProperty(addressIndex, "favorite", newFavorite);
                         }
+                        editingAddress = true
 
                         var datamodel = []
                         for (var i = 0; i < addressList.count; ++i)
@@ -372,14 +391,15 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (addressTracker == 1) {
+                    if (addressTracker == 1 && editingAddress == true) {
                         editSaved = 1
                         coinListTracker = 0
+                        editingAddress = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (addressTracker == 1) {
+                    if (addressTracker == 1 && editingAddress == true) {
 
                         addressList.setProperty(addressIndex, "logo", oldLogo);
                         addressList.setProperty(addressIndex, "coin", oldCoinName);
@@ -388,6 +408,7 @@ Rectangle {
                         addressList.setProperty(addressIndex, "favorite", oldFavorite);
                         editFailed = 1
                         coinListTracker = 0
+                        editingAddress = false
                     }
                 }
             }
@@ -406,6 +427,7 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteAddressTracker == 0
+                     && editingAddress == false
         }
 
         Rectangle {
@@ -423,6 +445,21 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteAddressTracker == 0
+                     && editingAddress == false
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveEditButton.horizontalCenter
+            anchors.verticalCenter: saveEditButton.verticalCenter
+            playing: editingAddress == true
+            visible: editSaved == 0
+                     && editFailed == 0
+                     && deleteAddressTracker == 0
+                     && editingAddress == true
         }
 
         Image {
@@ -819,7 +856,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: editSaved == 1
         }
 
@@ -937,7 +974,7 @@ Rectangle {
             width: parent.width
             height: deleteText.height + deleteAddressName.height + deleteAddressHash.height + confirmationDeleteButton.height + 64
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: deleteAddressTracker == 1
@@ -987,6 +1024,7 @@ Rectangle {
                 anchors.rightMargin: 5
                 color: "#4BBE2E"
                 opacity: 0.25
+                visible: deletingAddress == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -1012,6 +1050,7 @@ Rectangle {
                         doubleAddress = 0
                         labelExists = 0
                         invalidAddress = 0
+                        deletingAddress = true
 
                         var datamodel = []
                         for (var i = 0; i < addressList.count; ++i)
@@ -1027,18 +1066,20 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (addressTracker == 1) {
+                        if (addressTracker == 1 && deletingAddress == true) {
                             deleteConfirmed = 1
                             coinListTracker = 0
+                            deletingAddress = false
                         }
                     }
 
                     onSaveFailed: {
-                        if (addressTracker == 1) {
+                        if (addressTracker == 1 && deletingAddress == true) {
 
                             addressList.setProperty(addressIndex, "remove", oldRemove);
                             deleteFailed = 1
                             coinListTracker = 0
+                            deletingAddress = false
                         }
                     }
                 }
@@ -1052,6 +1093,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: confirmationDeleteButton.horizontalCenter
                 anchors.verticalCenter: confirmationDeleteButton.verticalCenter
+                visible: deletingAddress == false
             }
 
             Rectangle {
@@ -1064,6 +1106,7 @@ Rectangle {
                 color: "transparent"
                 border.color: "#4BBE2E"
                 border.width: 1
+                visible: deletingAddress == false
             }
 
             Rectangle {
@@ -1076,6 +1119,7 @@ Rectangle {
                 anchors.leftMargin: 5
                 color: "#E55541"
                 opacity: 0.25
+                visible: deletingAddress == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -1108,6 +1152,7 @@ Rectangle {
                 color: "#E55541"
                 anchors.horizontalCenter: cancelDeleteButton.horizontalCenter
                 anchors.verticalCenter: cancelDeleteButton.verticalCenter
+                visible: deletingAddress == false
             }
 
             Rectangle {
@@ -1120,6 +1165,18 @@ Rectangle {
                 color: "transparent"
                 border.color: "#E55541"
                 border.width: 1
+                visible: deletingAddress == false
+            }
+
+            AnimatedImage  {
+                id: waitingDots2
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: confirmationDeleteButton.verticalCenter
+                playing: deletingAddress == true
+                visible: deletingAddress == true
             }
         }
 
@@ -1210,7 +1267,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: deleteConfirmed == 1
         }
 

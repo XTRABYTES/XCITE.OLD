@@ -62,6 +62,9 @@ Rectangle {
         anchors.fill: parent
     }
 
+    property variant deBugArray
+    property int debugError: 0
+
     Text {
         id: debugModalLabel
         text: "DEBUG CONSOLE"
@@ -97,13 +100,13 @@ Rectangle {
             clip: true
 
             ScrollBar.vertical: ScrollBar {
-                    parent: scrollArea.parent
-                    anchors.top: scrollArea.top
-                    anchors.left: scrollArea.right
-                    anchors.bottom: scrollArea.bottom
-                    policy: ScrollBar.AsNeeded
-                    width: 5
-                }
+                parent: scrollArea.parent
+                anchors.top: scrollArea.top
+                anchors.left: scrollArea.right
+                anchors.bottom: scrollArea.bottom
+                policy: ScrollBar.AsNeeded
+                width: 5
+            }
 
             Text {
                 id: replyText
@@ -113,7 +116,7 @@ Rectangle {
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignBottom
                 padding: 7
-                wrapMode: Text.WordWrap
+                wrapMode: Text.Wrap
                 //anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: darktheme == true? maincolor : "#14161B"
@@ -174,26 +177,95 @@ Rectangle {
 
             onClicked: {
                 replyText.text = replyText.text + requestText.text + "<br/>"
-                requestText.text = ""
-
-                // execute command
-
-                // just for test purposes
-                replyText.text = replyText.text + "-- Command does not exist.<br/>Use the command <b>?help</b> to get a list of available commands.<br/>"
+                deBugArray = (requestText.text).split('-')
+                debugError = 0
+                if (deBugArray[0] === "help") {
+                    helpMe("help")
+                    requestText.text = ""
+                }
+                else if (deBugArray[0] === "!!xutil" && deBugArray[1] === "network") {
+                    checkNetwork("network")
+                    requestText.text = ""
+                }
+                else if ((deBugArray[0] === "!!xutil" && deBugArray[1] === "createkeypair" && deBugArray[2] !== "")) {
+                    createKeyPair(deBugArray[2])
+                    requestText.text = ""
+                }
+                else if ((deBugArray[0] === "!!xutil" && deBugArray[1] === "privkey2address" && deBugArray[2] !== "" && deBugArray[3] !== "")) {
+                    importPrivateKey(deBugArray[2], deBugArray[3])
+                    requestText.text = ""
+                }
+                else {
+                    replyText.text = replyText.text + "-- Command does not exist.<br/>Use the command <b>help</b> to get a list of available commands.<br/>"
+                    requestText.text = ""
+                }
             }
         }
 
-        /**
-          Connections {
-                target: Debugging
-                oncommandExecuted: {
-                    replyText.text = replyText.text + "<br/>" + replyFromCommand + "<br/>"
+        Connections {
+            target: xUtil
+            onHelpReply: {
+                if (debugTracker == 1) {
+                    replyText.text = replyText.text + "<br/>" +
+                            "Use one of the following commands:" + "<br/>" +
+                            "<b>" + help1 + "</b><br>" +
+                            "to know which network is active.<br>" +
+                            "<b>" + help2 + "</b><br>" +
+                            "to create a new wallet.<br>" +
+                            "<b>" + help3 + "</b><br>" +
+                            "to extract an address from a private key.<br>"
                 }
-                onWrongCommand: {
-                    replyText.text = replyText.text + "-- Command does not exist.<br/>Use the command <b>?help</b> to get a list of available commands.<br/>"
+            }
+            onKeyPairCreated: {
+                if (debugTracker == 1 && debugError == 0) {
+                    replyText.text = replyText.text + "<br>" +
+                            "<b>Public key</b>:<br>" +
+                            pubKey + "<br>" +
+                            "<b>Private key</b>:<br>" +
+                            privKey + "<br>" +
+                            "<b>Address</b>:<br>" +
+                            address + "<br>"
                 }
-          }
-          **/
+            }
+
+            onAddressExtracted: {
+                if (debugTracker == 1 && debugError == 0) {
+                    replyText.text = replyText.text + "<br>" +
+                            "<b>Public key</b>:<br>" +
+                            pubKey + "<br>" +
+                            "<b>Private key</b>:<br>" +
+                            privKey + "<br>" +
+                            "<b>Address</b>:<br>" +
+                            addressID + "<br>"
+                }
+
+            }
+            onCreateKeypairFailed: {
+                if (debugTracker == 1 && debugError == 0) {
+                    replyText.text = replyText.text + "<br>" +
+                            "We could not create a key for you.<br>"
+                }
+
+            }
+            onBadKey: {
+                if (debugTracker == 1 && debugError == 0) {
+                    replyText.text = replyText.text + "<br>" +
+                            "We could not extract an address from this key.<br>"
+                }
+            }
+            onNetworkStatus: {
+                if (debugTracker == 1) {
+                    replyText.text = replyText.text + "<br>" +
+                            myNetwork + "<br>"
+                }
+            }
+            onBadNetwork: {
+                replyText.text = replyText.text + "<br>" +
+                        noNetwork + "<br>"
+                        debugError = 1
+            }
+        }
+
     }
 
     Image {
@@ -260,6 +332,7 @@ Rectangle {
             onReleased: {
                 if (debugTracker == 1) {
                     debugTracker = 0;
+                    debugError = 0
                     timer.start()
                 }
             }
@@ -270,5 +343,6 @@ Rectangle {
         replyText.text = ""
         replyText.text = ""
         debugTracker = 0
+        debugError = 0
     }
 }

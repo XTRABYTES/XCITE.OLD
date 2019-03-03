@@ -49,10 +49,12 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
+    property bool addingAddress: false
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
     property int contact: contactIndex
+    property bool saveInitiated: false
 
     function compareTx() {
         addressExists = 0
@@ -94,7 +96,7 @@ Rectangle {
         invalidAddress = 0
         if (newAddress.text != "") {
             if (newCoinName.text == "XBY") {
-                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "B" && newAddress.acceptableInput == true) {
+                if (newAddress.length == 34 && (newAddress.text.substring(0,1) == "B") && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -103,6 +105,14 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL") {
                 if (newAddress.length == 34 && newAddress.text.substring(0,1) == "F" && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "XFUEL-TEST") {
+                if (newAddress.length == 34 && newAddress.text.substring(0,1) == "G" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -271,7 +281,7 @@ Rectangle {
             id: newAddress
             height: 34
             width: newName.width
-            placeholder: "PUBLIC KEY"
+            placeholder: "ADDRESS"
             text: ""
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
@@ -481,6 +491,7 @@ Rectangle {
             visible: editSaved == 0
                      && scanQRTracker == 0
                      && editFailed == 0
+                     && saveInitiated == false
 
             MouseArea {
                 anchors.fill: saveButton
@@ -502,8 +513,10 @@ Rectangle {
                             && invalidAddress == 0
                             && addressExists == 0
                             && labelExists == 0) {
-                        addressList.append({"contact": contactIndex, "address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
+                        saveInitiated = true
+                        addressList.append({"contact": contactIndex, "fullName": (contactList.get(contactIndex).lastName + contactList.get(contactIndex).fistName),"address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
+                        addingAddress = true
                         var datamodel = []
                         for (var i = 0; i < addressList.count; ++i)
                             datamodel.push(addressList.get(i))
@@ -519,18 +532,22 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (addAddressTracker == 1) {
+                    if (addAddressTracker == 1 && addingAddress == true) {
                         editSaved = 1
                         coinListTracker = 0
+                        addingAddress = false
+                        saveInitiated = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (addAddressTracker == 1) {
+                    if (addAddressTracker == 1 && addingAddress == true) {
                         addressID = addressID - 1
                         addressList.remove(addressID)
                         editFailed = 1
                         coinListTracker = 0
+                        addingAddress = false
+                        saveInitiated = false
                     }
                 }
             }
@@ -550,6 +567,7 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && scanQRTracker == 0
+                     && saveInitiated == false
         }
 
         Rectangle {
@@ -567,6 +585,21 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && scanQRTracker == 0
+                     && saveInitiated == false
+        }
+
+        AnimatedImage {
+            id: waitingDots2
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            playing: saveInitiated == true
+            visible: editSaved == 0
+                     && scanQRTracker == 0
+                     && editFailed == 0
+                     && saveInitiated == true
         }
 
         // save failed state
@@ -655,7 +688,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: editSaved == 1
         }
 

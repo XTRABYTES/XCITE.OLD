@@ -48,6 +48,7 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
+    property bool addingContact: false
     property int contactExists: 0
 
     function compareName() {
@@ -270,7 +271,9 @@ Rectangle {
             anchors.top: newChat.bottom
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: editSaved == 0 && editFailed == 0
+            visible: editSaved == 0
+                     && editFailed == 0
+                     && addingContact == false
 
             MouseArea {
                 anchors.fill: saveButton
@@ -295,6 +298,7 @@ Rectangle {
                         contactID = contactList.count;
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
+                        addingContact = true
 
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
@@ -310,16 +314,18 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (addContactTracker == 1) {
+                    if (addContactTracker == 1 && addingContact == true) {
                         editSaved = 1
+                        addingContact = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (addContactTracker == 1) {
+                    if (addContactTracker == 1 && addingContact == true) {
                         contactID = contactID - 1
                         contactList.remove(contactID)
                         editFailed = 1
+                        addingContact = false
                     }
                 }
             }
@@ -337,6 +343,7 @@ Rectangle {
             anchors.verticalCenter: saveButton.verticalCenter
             visible: editSaved == 0
                      && editFailed == 0
+                     && addingContact == false
         }
 
         Rectangle {
@@ -352,6 +359,20 @@ Rectangle {
             border.width: 1
             visible: editSaved == 0
                      && editFailed == 0
+                     && addingContact == false
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            playing: addingContact == true
+            visible: editSaved == 0
+                     && editFailed == 0
+                     && addingContact == true
         }
 
         // save failed state
@@ -440,7 +461,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: editSaved == 1
         }
 

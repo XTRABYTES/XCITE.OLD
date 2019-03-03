@@ -61,7 +61,7 @@ Rectangle {
     property int decimals: (coinID.text) == "BTC" ? 8 : 4
     property var inputAmount: Number.fromLocaleString(Qt.locale("en_US"),sendAmount.text)
     property string amountTransfer: "AMOUNT (" + coinID.text + ")"
-    property string keyTransfer: "SEND TO (PUBLIC KEY)"
+    property string keyTransfer: "SEND TO (ADDRESS)"
     property string referenceTransfer: "REFERENCE"
     property real amountSend: 0
     property string searchTxText: ""
@@ -70,6 +70,7 @@ Rectangle {
     property string addressName: compareAddress()
     property real currentBalance: getCurrentBalance()
     property int selectedWallet: getWalletNR(coinID.text, walletLabel.text)
+    property string searchCriteria: ""
 
     function compareAddress(){
         var fromto = ""
@@ -88,7 +89,7 @@ Rectangle {
         if (coinID.text == "XBY") {
             if (keyInput.length === 34
                     && keyInput.text !== ""
-                    && keyInput.text.substring(0,1) == "B"
+                    && (keyInput.text.substring(0,1) == "B")
                     && keyInput.acceptableInput == true) {
                 invalidAddress = 0
             }
@@ -100,6 +101,17 @@ Rectangle {
             if (keyInput.length === 34
                     && keyInput.text !== ""
                     && keyInput.text.substring(0,1) == "F"
+                    && keyInput.acceptableInput == true) {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
+        else if (coinID.text == "XFUEL-TEST") {
+            if (keyInput.length === 34
+                    && keyInput.text !== ""
+                    && keyInput.text.substring(0,1) == "G"
                     && keyInput.acceptableInput == true) {
                 invalidAddress = 0
             }
@@ -125,11 +137,24 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
-        font.pixelSize: 18
+        font.pixelSize: 20
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
         visible: addressbookTracker == 0
+    }
+
+    Label {
+        id: testnetLabel
+        text: "TESTNET"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 40
+        font.pixelSize: 18
+        font.family: "Brandon Grotesque"
+        color: "#E55541"
+        font.letterSpacing: 2
+        visible: getTestnet(coinID.text)
     }
 
     Flickable {
@@ -211,11 +236,11 @@ Rectangle {
 
         Label {
             id: coinID
-            text: newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : walletList.get(walletIndex).name
+            text: coinTracker == 1? (newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : walletList.get(walletIndex).name) : (newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : coinList.get(0).name)
             anchors.left: coinIcon.right
             anchors.leftMargin: 7
             anchors.verticalCenter: coinIcon.verticalCenter
-            font.pixelSize: 24
+            font.pixelSize: (coinID.text).length <= 6? 24 : 18
             font.family: xciteMobile.name
             font.bold: true
             font.letterSpacing: 2
@@ -225,9 +250,11 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && coinListTracker == 0
-            onTextChanged: if (keyInput.text != "") {
-                               checkAddress()
-                           }
+            onTextChanged: {
+                if (keyInput.text != "") {
+                    checkAddress()
+                }
+            }
         }
 
         Label {
@@ -237,8 +264,8 @@ Rectangle {
             anchors.rightMargin: 7
             anchors.left: picklistArrow1.right
             anchors.leftMargin: 15
-            anchors.verticalCenter: coinID.verticalCenter
-            font.pixelSize: 24
+            anchors.verticalCenter: coinIcon.verticalCenter
+            font.pixelSize: (walletLabel.text).length <= 6? 24 : 18
             font.family: xciteMobile.name
             font.bold: true
             font.capitalization: Font.SmallCaps
@@ -250,7 +277,8 @@ Rectangle {
                       && addressbookTracker == 0
                       && scanQRTracker == 0
                       && calculatorTracker == 0
-                      && walletListTracker == 0)
+                      && walletListTracker == 0
+                      && publicKey.text != "")
                      || (transferSwitch.state === "off"
                          && walletListTracker == 0)
         }
@@ -269,6 +297,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletListTracker == 0
+                     && publicKey.text != ""
         }
 
         Text {
@@ -286,6 +315,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletListTracker == 0
+                     && publicKey.text != ""
         }
 
         Image {
@@ -295,7 +325,7 @@ Rectangle {
             width: 20
             anchors.left: coinListTracker == 0 ? coinID.right : transferPicklist1.right
             anchors.leftMargin: 10
-            anchors.verticalCenter: coinID.verticalCenter
+            anchors.verticalCenter: coinIcon.verticalCenter
             visible: transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
@@ -351,7 +381,7 @@ Rectangle {
             id: transferPicklist1
             z: 11
             width: 100
-            height: ((totalLines + 1) * 35)-10
+            height: totalLines * 35 + 25
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5
@@ -411,12 +441,13 @@ Rectangle {
             height: 20
             width: 20
             anchors.right: sendAmount.right
-            anchors.verticalCenter: walletLabel.verticalCenter
+            anchors.verticalCenter: coinIcon.verticalCenter
             visible: transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && walletListTracker == 0
                      && calculatorTracker == 0
+                     && publicKey.text != ""
 
             Rectangle{
                 id: picklistButton2
@@ -461,13 +492,14 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && publicKey.text != ""
         }
 
         Rectangle {
             id: transferPicklist2
             z: 11
             width: 100
-            height: ((totalCoinWallets + 1) * 35)-10
+            height: ((totalCoinWallets * 35) + 25) < 200 ? ((totalCoinWallets * 35) + 25) : 200
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5
@@ -477,6 +509,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && publicKey.text != ""
             clip: true
 
             Controls.WalletPicklist {
@@ -498,6 +531,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && publicKey.text != ""
 
             Image {
                 id: picklistCloseArrow2
@@ -521,6 +555,23 @@ Rectangle {
             }
         }
 
+        Label {
+            id:noWalletLabel
+            text: "NO WALLETS"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: walletBalance.bottom
+            anchors.topMargin: 40
+            font.pixelSize: 20
+            font.family: "Brandon Grotesque"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            font.letterSpacing: 2
+            visible: transactionSend == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+                     && publicKey.text == ""
+        }
+
         // Receive state
 
         Rectangle {
@@ -536,6 +587,7 @@ Rectangle {
                      && transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && publicKey.text != ""
         }
 
         Item {
@@ -554,6 +606,7 @@ Rectangle {
                      && transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && publicKey.text != ""
         }
 
         Text {
@@ -571,6 +624,7 @@ Rectangle {
                      && transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && publicKey.text != ""
         }
 
         Text {
@@ -586,6 +640,7 @@ Rectangle {
                      && transactionSend == 0
                      && addressbookTracker == 0
                      && scanQRTracker == 0
+                     && publicKey.text != ""
         }
 
         // Send state
@@ -606,6 +661,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === true
+                     && publicKey.text != ""
         }
 
         Mobile.AmountInput {
@@ -628,7 +684,9 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
             mobile: 1
+            calculator: getTestnet(coinID.text) === true? 0 : 1
             onTextChanged: detectInteraction()
         }
 
@@ -660,6 +718,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && inputAmount > (walletList.get(selectedWallet).balance)
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
         }
 
         Controls.TextInput {
@@ -680,6 +739,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
@@ -696,7 +756,9 @@ Rectangle {
             anchors.topMargin: 3
             visible: false
             onTextChanged: {
-                keyInput.text = sendAddress.text
+                if (sendAddress.text != "" && transferTracker == 1) {
+                    keyInput.text = sendAddress.text
+                }
             }
         }
 
@@ -717,6 +779,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && keyInput.text != ""
                      && invalidAddress == 1
+                     && publicKey.text != ""
         }
 
         Rectangle {
@@ -735,6 +798,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
 
             MouseArea {
                 anchors.fill: scanQrButton
@@ -787,6 +851,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
 
             MouseArea {
                 anchors.fill: addressBookButton
@@ -808,6 +873,7 @@ Rectangle {
                 onClicked: {
                     addressbookTracker = 1
                     currentAddress = getAddress(coinID.text, walletLabel.text)
+                    selectedCoin = coinID.text
                 }
             }
 
@@ -840,6 +906,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -863,6 +930,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
 
             MouseArea {
                 anchors.fill: sendButton
@@ -931,7 +999,7 @@ Rectangle {
             width: parent.width
             height: sendingLabel.height + to.height + confirmationAddressName.height + reference.height + feeLabel.height + cancelSendButton.height + 70
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: transactionSend == 1
@@ -1308,12 +1376,12 @@ Rectangle {
 
         AnimatedImage {
             id: waitingDots
-            source: 'qrc:/gifs/loading_01.gif'
+            source: 'qrc:/gifs/loading-gif_01.gif'
             width: 75
             height: 50
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             playing: requestSend == 1
             visible: requestSend == 1
 
@@ -1331,7 +1399,7 @@ Rectangle {
 
         Label {
             id: waitingText
-            text: "Waiting for confirmation ..."
+            text: "Waiting for Network to confirm transaction"
             anchors.bottom: waitingDots.top
             anchors.bottomMargin: 70
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1351,7 +1419,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: transactionSend == 1
                      && failedSend == 1
         }
@@ -1456,7 +1524,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: transactionSend == 1
                      && confirmationSend == 1
         }
@@ -1583,7 +1651,7 @@ Rectangle {
         height: 25
         width: 25
         anchors.top: addressbookTitle.bottom
-        anchors.topMargin: 20
+        anchors.topMargin: 30
         anchors.left: parent.left
         anchors.leftMargin: 30
         visible: transferSwitch.on == true
@@ -1606,22 +1674,42 @@ Rectangle {
                  && addressbookTracker == 1
     }
 
+    Controls.TextInput {
+        id: searchForAddress
+        placeholder: "SEARCH ADDRESS BOOK"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: addressbookCoinLogo.bottom
+        anchors.topMargin: 20
+        color: searchForAddress.text != "" ? "#2A2C31" : "#727272"
+        textBackground: "#F2F2F2"
+        font.pixelSize: 14
+        font.capitalization: Font.AllUppercase
+        mobile: 1
+        addressBook: 1
+        visible: transferSwitch.on == true
+                 && transactionSend == 0
+                 && addressbookTracker == 1
+        onTextChanged: {
+            detectInteraction()
+            searchCriteria = searchForAddress.text
+        }
+    }
+
     Rectangle {
         id: addressPicklistArea
         width: parent.width
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: addressbookCoinLogo.bottom
+        anchors.top: searchForAddress.bottom
         anchors.topMargin: 20
-        anchors.bottom: parent.bottom
+        anchors.bottom: cancelAddressButton.top
         color: "transparent"
         visible: transferSwitch.on == true
                  && transactionSend == 0
                  && addressbookTracker == 1
-        clip: true
-
         Mobile.AddressPicklist {
             id: myAddressPicklist
-            selectedWallet: (coinID.text === "XBY" ? 0 : 1)
+            searchFilter: searchCriteria
+
         }
     }
 
@@ -1649,7 +1737,7 @@ Rectangle {
     Rectangle {
         id: cancelAddressButton
         width: doubbleButtonWidth / 2
-        height: 33
+        height: 34
         color: "transparent"
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 50
@@ -1675,6 +1763,7 @@ Rectangle {
             onClicked: {
                 addressbookTracker = 0
                 currentAddress = ""
+                searchForAddress.text = ""
             }
         }
     }
@@ -1888,6 +1977,7 @@ Rectangle {
                     newWalletPicklist = 0
                     newWalletSelect = 0
                     selectedAddress = ""
+                    selectedCoin = "XFUEL"
                     sendAmount.text = ""
                     keyInput.text = sendAddress.text
                     referenceInput.text = ""
@@ -1917,6 +2007,7 @@ Rectangle {
     Controls.Pincode {
         id: myPincode
         z: 10
+        visible: transferTracker == 1
 
         coin: coinID.text
         walletHash: getAddress(coinID.text, walletLabel.text)

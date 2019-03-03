@@ -78,7 +78,7 @@ bool Settings::UserExists(QString username){
     if (userinfo != ""){
         emit userAlreadyExists();
         return true;
-    }else {
+    }else{
         emit usernameAvailable();
         return false;
     }
@@ -89,7 +89,7 @@ void Settings::CreateUser(QString username, QString password){
 
     if(UserExists(username)){
         return;
-    } else {
+    }else{
 
         QVariantMap settings;
         settings.insert("app","xtrabytes");
@@ -117,7 +117,7 @@ void Settings::CreateUser(QString username, QString password){
             m_password = password;
             emit userCreationSucceeded();
 
-        } else {
+        }else{
             emit userCreationFailed();
         }
     }
@@ -146,8 +146,7 @@ void Settings::login(QString username, QString password){
         m_username = username;
         m_password = password;
         LoadSettings(decodedSettings);
-    }
-    else
+    }else
         emit loginFailedChanged();
 }
 
@@ -170,7 +169,7 @@ bool Settings::SaveSettings(){
 
     /*      Add addresses to DB       */
     QJsonArray addressesArray = QJsonDocument::fromJson(m_addresses.toLatin1()).array(); //save addresses saves array to m_addresses
-    settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
+        settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
 
     /*      Add wallets to DB       */
     bool localKeys = m_settings->value("localKeys").toBool();
@@ -204,11 +203,11 @@ void Settings::LoadSettings(QByteArray settings){
     m_settings->clear();
     qDebug() << m_settings;
     foreach(const QString& key, json.keys()) {
-            QJsonValue value = json.value(key);
-            settingsMap.insert(key,value.toString());
-            m_settings->setValue(key,value.toString());
-            m_settings->sync();
-            qDebug() << m_settings;
+        QJsonValue value = json.value(key);
+        settingsMap.insert(key,value.toString());
+        m_settings->setValue(key,value.toString());
+        m_settings->sync();
+        qDebug() << m_settings;
     }
     emit settingsLoaded(settingsMap);
 
@@ -261,6 +260,22 @@ void Settings::LoadSettings(QByteArray settings){
     emit loginSucceededChanged();
 }
 
+void Settings::UpdateAccount(QString addresslist, QString contactlist, QString walletlist){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    bool localKeys = m_settings->value("localKeys").toBool();
+    m_addresses = addresslist;
+    m_contacts = contactlist;
+    m_wallet = walletlist;
+
+    if (localKeys){
+        QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
+        QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
+        SaveFile(m_username.toLower() + "wallet", encodedWalletString);
+    }else{
+        SaveSettings();
+    }
+}
+
 void Settings::SaveAddresses(QString addresslist){
     m_addresses = addresslist;
     SaveSettings();
@@ -271,10 +286,11 @@ void Settings::SaveContacts(QString contactlist){
     SaveSettings();
 }
 
-void Settings::SaveWallet(QString walletlist){
+void Settings::SaveWallet(QString walletlist, QString addresslist){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     bool localKeys = m_settings->value("localKeys").toBool();
     m_wallet = walletlist;
+    m_addresses = addresslist;
 
     if (localKeys){
         QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
@@ -283,7 +299,6 @@ void Settings::SaveWallet(QString walletlist){
     }else{
         SaveSettings();
     }
-
 }
 
 void Settings::onSavePincode(QString pincode){
@@ -422,9 +437,9 @@ void Settings::SaveFile(QString fileName, QString encryptedData){
         file.errorString(); //We can build this out to emit an error message
         emit saveFileFailed();
         return;
-    }
-    else {
+    }else{
         emit saveFileSucceeded();
+        SaveSettings();
     }
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_5_11);

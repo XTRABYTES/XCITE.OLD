@@ -139,7 +139,6 @@
         <file>Controls/+mobile/AmountInput.qml</file>
         <file>+mobile/Login.qml</file>
         <file>+mobile/Onboarding.qml</file>
-        <file>+mobile/SignUp.qml</file>
         <file>+mobile/Home.qml</file>
         <file>Controls/+mobile/QrCode.qml</file>
         <file>Controls/+mobile/CoinPicklist.qml</file>
@@ -169,5 +168,6 @@
         <file>Controls/+mobile/ImportKey.qml</file>
         <file>Controls/+mobile/AddViewOnlyWallet.qml</file>
         <file>Controls/+mobile/NotificationList.qml</file>
+        <file>Controls/+mobile/ScreenshotModal.qml</file>
     </qresource>
 </RCC>

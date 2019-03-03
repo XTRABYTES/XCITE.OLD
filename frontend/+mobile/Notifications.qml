@@ -55,7 +55,7 @@ Rectangle {
         id: clearNotifications
         text: "CLEAR ALL"
         anchors.right: parent.right
-        anchors.rightMargin: 50
+        anchors.rightMargin: 14
         anchors.top: notificationList.top
         anchors.topMargin: 5
         font.pixelSize: 12
@@ -64,21 +64,11 @@ Rectangle {
         font.letterSpacing: 2
         visible: alertList.count > 1
 
-        Image {
-            id: clearIcon
-            source: darktheme == true? 'qrc:/icons/mobile/delete-icon_01_light.svg' : 'qrc:/icons/mobile/delete-icon_01_dark.svg'
-            height: 12
-            fillMode: Image.PreserveAspectFit
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.right
-            anchors.leftMargin: 8
-        }
-
         MouseArea {
             height: 20
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
-            anchors.right: clearIcon.right
+            anchors.right: parent.right
 
             onPressed: {
                 click01.play()

@@ -24,6 +24,7 @@ Item {
     height: Screen.height
 
     property int passError: 0
+    property bool loginInitiated: false
 
     Rectangle {
         id: login
@@ -162,6 +163,22 @@ Item {
             anchors.left: userName.left
             color: (userName.text != "" && passWord.text != "") ? "#1B2934" : "#727272"
             opacity: 0.50
+            visible: loginInitiated == false
+
+            Timer {
+                id: loginSuccesTimer
+                interval: 2000
+                repeat: false
+                running: false
+
+                onTriggered: {
+                    passError = 0
+                    networkError = 0
+                    loginTracker = 0
+                    sessionStart = 1
+                    loginInitiated  = false
+                }
+            }
 
             MouseArea {
                 anchors.fill: parent
@@ -172,6 +189,7 @@ Item {
 
                 onReleased: {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
+                        loginInitiated = true
                         userLogin(userName.text, passWord.text)
                     }
                 }
@@ -205,29 +223,29 @@ Item {
                     }**/
 
                 onLoginSucceededChanged: {
-                    username = userName.text
-                    passError = 0
-                    networkError = 0
-                    loginTracker = 0
-                    sessionStart = 1
                     selectedPage = "home"
                     mainRoot.pop()
                     mainRoot.push("../Home.qml")
+                    username = userName.text
+                    loginSuccesTimer.start()
                 }
 
                 onLoginFailedChanged: {
                     passError = 1
                     passWord.text = ""
+                    loginInitiated  = false
                 }
 
                 onUsernameAvailable: {
                     passError = 1
                     passWord.text = ""
+                    loginInitiated  = false
                 }
 
                 onSettingsServerError: {
                     networkError = 1
                     passWord.text = ""
+                    loginInitiated  = false
                 }
             }
         }
@@ -241,6 +259,7 @@ Item {
             font.bold: true
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
+            visible: logInButton.visible
         }
 
         Rectangle {
@@ -252,6 +271,18 @@ Item {
             color: "transparent"
             border.color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
             opacity: 0.50
+            visible: logInButton.visible
+        }
+
+        AnimatedImage {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            playing: loginInitiated == true
+            visible: loginInitiated == true
         }
 
         Label {

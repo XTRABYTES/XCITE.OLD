@@ -656,6 +656,10 @@ Rectangle {
                     running: false
 
                     onTriggered: {
+                        if (backupTracker == 1){
+                            selectedPage = "backup"
+                            mainRoot.push("../WalletBackup.qml")
+                        }
                         pinOK = 0
                         pincodeTracker = 0
                         unlockPin = 0
@@ -718,12 +722,23 @@ Rectangle {
                             timer3.start()
                         }
                         else if (clearAll == 1) {
+                            pinClearInitiated = true
+                            oldDefaultCurrency = userSettings.defaultCurrency
+                            oldLocale = userSettings.locale
+                            oldPinlock = userSettings.pinlock
+                            oldTheme = userSettings.theme
+                            oldLocalKeys= userSettings.localKeys
                             clearAllSettings()
                             userSettings.locale = "en_us"
                             userSettings.defaultCurrency = 0
                             userSettings.theme = "dark"
                             userSettings.pinlock = false
-                            savePincode("0000")
+                            userSettings.accountCreationCompleted = true
+                            userSettings.localKeys = oldLocalKeys
+                            saveAppSettings()
+                            timer3.start()
+                        }
+                        else if (backupTracker == 1) {
                             timer3.start()
                         }
                     }

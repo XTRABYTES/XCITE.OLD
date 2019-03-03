@@ -230,7 +230,7 @@ Rectangle {
         height: addWalletText4.height + createAddressText.height + createAddressButton.height + importAddressText.height + importAddressButton.height + 90
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: selectWallet == 1 && addActive == 1 && walletAdded == false
 
         Label {
@@ -246,11 +246,10 @@ Rectangle {
         Text {
             id: createAddressText
             width: doubbleButtonWidth
-            maximumLineCount: 1
+            maximumLineCount: 2
             anchors.left: createAddressButton.left
             horizontalAlignment: Text.AlignJustify
-            wrapMode: Text.WordWrap
-            text: "You can create a new <b>" + coinList.get(coinIndex).name + "</b> address."
+            text: "You can create a new <b><br>" + coinList.get(coinIndex).name + "</b> address."
             anchors.top: addWalletText4.bottom
             anchors.topMargin: 30
             color: themecolor
@@ -298,7 +297,8 @@ Rectangle {
             width: doubbleButtonWidth
             anchors.left: importAddressButton.left
             horizontalAlignment: Text.AlignJustify
-            text: "You can import an existing <b>" + coinList.get(coinIndex).name + "</b> wallet."
+            maximumLineCount: 2
+            text: "You can import an existing <b><br>" + coinList.get(coinIndex).name + "</b> wallet."
             anchors.top: createAddressButton.bottom
             anchors.topMargin: 30
             color: themecolor
@@ -348,7 +348,7 @@ Rectangle {
         height: addViewOnlyTextText1.height + addViewOnlyTextText2.height + addViewOnlyButton.height + 45
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: selectWallet == 1 && addViewOnly == 1 && walletAdded == false
 
         Text {
@@ -475,6 +475,7 @@ Rectangle {
                 onClicked: {
                     walletAdded = false
                     selectWallet = 0
+                    walletAdded = false
                 }
             }
         }
@@ -495,7 +496,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
-        text: selectWallet == 1? "BACK" : "CLOSE"
+        text: selectWallet == 1? (walletAdded == true? "CLOSE" : "BACK") : "CLOSE"
         font.pixelSize: 14
         font.family: xciteMobile.name
         color: themecolor
@@ -518,7 +519,16 @@ Rectangle {
 
             onClicked: {
                 if (selectWallet == 1) {
-                    selectWallet = 0
+                    if (walletAdded == true) {
+                        selectedPage = "home"
+                        mainRoot.pop();
+                        selectWallet = 0
+                        walletAdded = false
+                    }
+                    else {
+                        selectWallet = 0
+                        walletAdded = false
+                    }
                 }
                 else {
                     addWalletTracker = 0

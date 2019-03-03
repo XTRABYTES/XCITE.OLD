@@ -60,6 +60,8 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
+    property bool editingContact: false
+    property bool deletingContact: false
     property int contactExists: 0
     property int deleteContactTracker: 0
     property int deleteConfirmed: 0
@@ -70,6 +72,8 @@ Rectangle {
     property string oldText
     property string oldMail
     property string oldChat
+    property string newFirst
+    property string newLast
 
     function compareName() {
         contactExists = 0
@@ -380,6 +384,7 @@ Rectangle {
             visible: editSaved == 0
                      && deleteContactTracker == 0
                      && editFailed == 0
+                     && editingContact == false
 
             MouseArea {
                 anchors.fill: saveButton
@@ -402,21 +407,30 @@ Rectangle {
                     if (contactExists == 0) {
                         if (newFirstname.text !== "") {
                             contactList.setProperty(contactIndex, "firstName", newFirstname.text)
-                        };
+                            newFirst = newFirstname.text
+                        }
+                        else {
+                            newFirst = oldFirstName
+                        }
+
+                        ;
                         if (newLastname.text !== "") {
                             contactList.setProperty(contactIndex, "lastName", newLastname.text)
-                        };
+                            newLast = newLastname.text
+                        }
+                        else {
+                            newLast = oldLastName
+                        }
+
+                        ;
+                        replaceName(contactIndex, newFirst, newLast)
                         contactList.setProperty(contactIndex, "telNR", newTel.text);
                         contactList.setProperty(contactIndex, "cellNR", newCell.text);
                         contactList.setProperty(contactIndex, "mailAddress", newMail.text);
                         contactList.setProperty(contactIndex, "chatID", newChat.text);
+                        editingContact = true
 
-                        var datamodel = []
-                        for (var i = 0; i < contactList.count; ++i)
-                            datamodel.push(contactList.get(i))
-
-                        var contactListJson = JSON.stringify(datamodel)
-                        saveContactList(contactListJson)
+                        updateToAccount()
                     }
                 }
             }
@@ -425,14 +439,15 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (editContactTracker == 1) {
+                    if (editContactTracker == 1 && editingContact == true) {
                         editSaved = 1
+                        editingContact = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (editContactTracker == 1) {
-
+                    if (editContactTracker == 1 && editingContact == true) {
+                        replaceName(contactIndex, oldFirstName, oldFirstName);
                         contactList.setProperty(contactIndex, "firstName", oldFirstName);
                         contactList.setProperty(contactIndex, "lastName", oldLastName);
                         contactList.setProperty(contactIndex, "telNR", oldTel);
@@ -440,6 +455,7 @@ Rectangle {
                         contactList.setProperty(contactIndex, "mailAddress", oldMail);
                         contactList.setProperty(contactIndex, "chatID", oldChat);
                         editFailed = 1
+                        editingContact = false
                     }
                 }
             }
@@ -454,8 +470,9 @@ Rectangle {
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             visible: editSaved == 0
-                     && editFailed == 0
                      && deleteContactTracker == 0
+                     && editFailed == 0
+                     && editingContact == false
         }
 
         Rectangle {
@@ -468,8 +485,23 @@ Rectangle {
             border.color: (contactExists == 0)? maincolor : "#979797"
             border.width: 1
             visible: editSaved == 0
-                     && editFailed == 0
                      && deleteContactTracker == 0
+                     && editFailed == 0
+                     && editingContact == false
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            playing: editingContact == true
+            visible: editSaved == 0
+                     && deleteContactTracker == 0
+                     && editFailed == 0
+                     && editingContact == true
         }
 
         // save failed state
@@ -558,7 +590,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: editSaved == 1
         }
 
@@ -666,7 +698,7 @@ Rectangle {
             width: parent.width
             height: deleteText.height + deleteContactName.height + confirmationDeleteButton.height + 57
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: deleteContactTracker == 1
@@ -705,6 +737,7 @@ Rectangle {
                 anchors.rightMargin: 5
                 color: "#4BBE2E"
                 opacity: 0.25
+                visible: deletingContact == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -726,6 +759,7 @@ Rectangle {
                     onClicked: {
 
                         contactList.setProperty(contactIndex, "remove", true)
+                        deletingContact = true
 
                         var datamodel = []
                         for (var i = 0; i < contactList.count; ++i)
@@ -740,17 +774,19 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (editContactTracker == 1) {
+                        if (editContactTracker == 1 && deletingContact == true) {
                             deleteConfirmed = 1
                             contactExists = 0
+                            deletingContact = false
                         }
                     }
 
                     onSaveFailed: {
-                        if (editContactTracker == 1) {
+                        if (editContactTracker == 1 && deletingContact == true) {
 
                             contactList.setProperty(contactIndex, "remove", false);
                             deleteFailed = 1
+                            deletingContact = false
                         }
                     }
                 }
@@ -764,6 +800,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: confirmationDeleteButton.horizontalCenter
                 anchors.verticalCenter: confirmationDeleteButton.verticalCenter
+                visible: deletingContact == false
             }
 
             Rectangle {
@@ -774,6 +811,7 @@ Rectangle {
                 color: "transparent"
                 border.color: "#4BBE2E"
                 border.width: 1
+                visible: deletingContact == false
             }
 
             Rectangle {
@@ -786,6 +824,7 @@ Rectangle {
                 anchors.leftMargin: 5
                 color: "#E55541"
                 opacity: 0.25
+                visible: deletingContact == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -818,6 +857,7 @@ Rectangle {
                 color: "#E55541"
                 anchors.horizontalCenter: cancelDeleteButton.horizontalCenter
                 anchors.verticalCenter: cancelDeleteButton.verticalCenter
+                visible: deletingContact == false
             }
 
             Rectangle {
@@ -828,6 +868,18 @@ Rectangle {
                 color: "transparent"
                 border.color: "#E55541"
                 border.width: 1
+                visible: deletingContact == false
+            }
+
+            AnimatedImage  {
+                id: waitingDots2
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: confirmationDeleteButton.verticalCenter
+                playing: deletingContact == true
+                visible: deletingContact == true
             }
         }
 
@@ -918,7 +970,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -125
+            anchors.verticalCenterOffset: -50
             visible: deleteConfirmed == 1
         }
 
@@ -1069,6 +1121,7 @@ Rectangle {
             onClicked: {
                 editContactTracker = 0;
                 contactExists = 0;
+                contactIndex = 0;
             }
         }
     }

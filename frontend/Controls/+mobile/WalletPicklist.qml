@@ -33,6 +33,7 @@ Rectangle {
             width: 100
             height: 35
             color: "transparent"
+            clip: true
 
             Rectangle {
                 id: clickIndicator
@@ -51,6 +52,10 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 10
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                horizontalAlignment: Text.AlignRight
+                elide: Text.ElideRight
             }
 
             MouseArea {
@@ -98,7 +103,7 @@ Rectangle {
             },
             RegExpFilter {
                 roleName: "name"
-                pattern: coin
+                pattern: "^" + coin + "$"
             }
 
         ]
@@ -114,7 +119,6 @@ Rectangle {
         id: pickList
         model: filteredWallets
         delegate: picklistEntry
-        interactive: totalCoinWallets * 35 < 175
         onDraggingChanged: detectInteraction()
     }
 }
