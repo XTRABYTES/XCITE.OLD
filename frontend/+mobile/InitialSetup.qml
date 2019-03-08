@@ -241,7 +241,7 @@ Item {
                 height: onboardCompleteText.height + completeButton.height + 50
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -50
+                anchors.verticalCenterOffset: -100
                 visible: userSettings.accountCreationCompleted === true
 
                 Text {

@@ -662,6 +662,7 @@ Rectangle {
                 onClicked: {
                     editContactTracker = 0;
                     contactExists = 0;
+                    contactIndex = 0;
                     editSaved = 0
                 }
             }

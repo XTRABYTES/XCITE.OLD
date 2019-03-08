@@ -149,6 +149,10 @@ Item {
                         onClicked: {
                             sumBalance()
                         }
+
+                        onDoubleClicked: {
+                            portfolioTracker = 1
+                        }
                     }
 
                     states: [
@@ -1936,7 +1940,21 @@ Item {
         anchors.top: homeView.top
     }
 
-    Controls.QrScanner{
+    Controls.WalletModal {
+        id: walletModal
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
+
+    Controls.PortfolioModal {
+        id: myPortfolio
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
+
+    Controls.QrScanner {
         id: qrScanner
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
