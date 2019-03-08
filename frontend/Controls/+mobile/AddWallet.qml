@@ -73,7 +73,7 @@ Rectangle {
         height : addWalletText1.height + addWalletText2.height + addWalletText3.height + walletSwitch.height + continueButton.height + 90
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: selectWallet == 0
 
         Label {
@@ -419,7 +419,7 @@ Rectangle {
         height: saveSuccess.height + saveSuccessLabel.height + moreWallets.height + 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: selectWallet == 1 && walletAdded == true
 
         Image {

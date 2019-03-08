@@ -611,7 +611,7 @@ Rectangle {
 
         Text {
             id: pubKey
-            text: "PUBLIC KEY"
+            text: "ADDRESS"
             anchors.top: qrBorder.bottom
             anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter

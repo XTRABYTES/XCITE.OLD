@@ -169,5 +169,7 @@
         <file>Controls/+mobile/AddViewOnlyWallet.qml</file>
         <file>Controls/+mobile/NotificationList.qml</file>
         <file>Controls/+mobile/ScreenshotModal.qml</file>
+        <file>Controls/+mobile/WalletModal.qml</file>
+        <file>Controls/+mobile/PortfolioModal.qml</file>
     </qresource>
 </RCC>

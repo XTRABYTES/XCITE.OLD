@@ -242,6 +242,8 @@ ApplicationWindow {
     property int debugTracker: 0
     property int backupTracker: 0
     property int screenshotTracker: 0
+    property int walletDetailTracker: 0
+    property int portfolioTracker: 0
 
     // Global variables
     property int sessionStart: 0
@@ -437,7 +439,7 @@ ApplicationWindow {
     function sumBalance() {
         totalBalance = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).active === true) {
+            if (walletList.get(i).active === true && walletList.get(i).include === true) {
                 if (walletList.get(i).name === "XBY") {
                     totalBalance += (walletList.get(i).balance * btcValueXBY * valueBTC)
                 }
@@ -452,7 +454,7 @@ ApplicationWindow {
     function sumCoinTotal(coin) {
         var coinTotal = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === coin) {
+            if (walletList.get(i).name === coin && walletList.get(i).include === true) {
                 coinTotal += walletList.get(i).balance
             }
         }
@@ -462,7 +464,7 @@ ApplicationWindow {
     function sumCoinUnconfirmed(coin) {
         var unconfirmedTotal = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === coin) {
+            if (walletList.get(i).name === coin && walletList.get(i).include === true) {
                 unconfirmedTotal += unconfirmedTotal + walletList.get(i).unconfirmedCoins
             }
         }
@@ -599,7 +601,7 @@ ApplicationWindow {
         var wallet = 0
         var favorite = false
         for(var i = 0; i < walletList.count; i++){
-            if (walletList.get(i).name === coin){
+            if (walletList.get(i).name === coin && walletList.get(i).viewOnly === false){
                 if (favorite == false) {
                     if (walletList.get(i).favorite === true){
                         balance = walletList.get(i).balance
@@ -607,7 +609,7 @@ ApplicationWindow {
                         favorite = true
                     }
                     else {
-                        if (walletList.get(i).balance > balance && walletList.get(i).viewOnly === false){
+                        if (walletList.get(i).balance > balance){
                             balance = walletList.get(i).balance
                             wallet = walletList.get(i).walletNR
                         }
@@ -828,6 +830,79 @@ ApplicationWindow {
         updateAccount(addressListJson, contactListJson, walletListJson)
     }
 
+    function editWalletInAddreslist(coin, address, label, remove) {
+        for (var i = 0; i < addressList.count; i ++) {
+            if (addressList.get(i).coin === coin && addressList.get(i).address === address) {
+                addressList.setProperty(i, "label", label);
+                addressList.setProperty(i, "remove", remove);
+            }
+        }
+    }
+
+    function deleteContactAddresses(contact) {
+        for (var i = 0; i < addressList.count; i ++) {
+            if (addressList.get(i).contact === contact) {
+                addressList.setProperty(i, "remove", true);
+            }
+        }
+    }
+
+    function restoreContactAddresses(contact) {
+        for (var i = 0; i < addressList.count; i ++) {
+            if (addressList.get(i).contact === contact) {
+                addressList.setProperty(i, "remove", false);
+            }
+        }
+    }
+
+    function clearAddressList() {
+        for (var i = 0; i < addressList.count; i ++) {
+            if (addressList.get(i).remove === true) {
+                addressList.setProperty(i, "contact", 0);
+                addressList.setProperty(i, "fullName", "");
+                addressList.setProperty(i, "label", "");
+                addressList.setProperty(i, "address", "");
+                addressList.setProperty(i, "logo", '');
+                addressList.setProperty(i, "coin", "");
+                addressList.setProperty(i, "active", false);
+                addressList.setProperty(i, "favorite", 0);
+            }
+        }
+    }
+
+    function clearContactList() {
+        for (var i = 0; i < contactList.count; i ++) {
+            if (contactList.get(i).remove === true) {
+                contactList.setProperty(i, "firstName", "");
+                contactList.setProperty(i, "lastName", "");
+                contactList.setProperty(i, "photo", '');
+                contactList.setProperty(i, "telNR", "");
+                contactList.setProperty(i, "CellNR", "");
+                contactList.setProperty(i, "mailAddress", "");
+                contactList.setProperty(i, "chatID", "");
+                contactList.setProperty(i, "favorite", false);
+            }
+        }
+    }
+
+    function clearWalletList() {
+        for (var i = 0; i < walletList.count; i ++) {
+            if (walletList.get(i).remove === true) {
+                walletList.setProperty(i, "name", "");
+                walletList.setProperty(i, "label", "");
+                walletList.setProperty(i, "privatekey", "");
+                walletList.setProperty(i, "publickey", "");
+                walletList.setProperty(i, "address", "");
+                walletList.setProperty(i, "balance", 0);
+                walletList.setProperty(i, "unconfirmedCoins", 0);
+                walletList.setProperty(i, "favorite", false);
+                walletList.setProperty(i, "active", false);
+                walletList.setProperty(i, "viewOnly", false);
+                walletList.setProperty(i, "include", false);
+            }
+        }
+    }
+
     function addWalletToList(coin, label, addr, pubkey, privkey, view){
         var favorite = true
         for(var o = 0; o < walletList.count; o ++) {
@@ -837,7 +912,7 @@ ApplicationWindow {
                 }
             }
         }
-        walletList.append({"name": coin, "label": label, "address": addr, "privatekey" : privkey, "publickey" : pubkey ,"balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": favorite, "viewOnly" : view, "walletNR": walletID, "remove": false});
+        walletList.append({"name": coin, "label": label, "address": addr, "privatekey" : privkey, "publickey" : pubkey ,"balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": favorite, "viewOnly" : view, "include" : true, "walletNR": walletID, "remove": false});
         walletID = walletID + 1
         addressList.append({"contact": 0, "fullname": "My addresses", "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
         addressID = addressID +1;
@@ -919,7 +994,9 @@ ApplicationWindow {
         currencyID = 0
         coinIndex = 0
         walletIndex = 1
-
+        clearAddressList()
+        clearContactList()
+        clearWalletList()
         updateToAccount()
         addressList.clear()
         contactList.clear()
@@ -983,6 +1060,7 @@ ApplicationWindow {
             active: false
             favorite: false
             viewOnly: false
+            include: false
             walletNR: 0
             remove: true
         }

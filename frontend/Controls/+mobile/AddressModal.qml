@@ -431,7 +431,7 @@ Rectangle {
         }
 
         Rectangle {
-            width: newName.width
+            width: saveEditButton.width
             height: 34
             color: "transparent"
             border.color: (doubleAddress == 0
@@ -439,9 +439,8 @@ Rectangle {
                            && invalidAddress == 0) ? maincolor : "#727272"
             border.width: 1
             opacity: 0.25
-            anchors.top: scanQrButton.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: saveEditButton.bottom
+            anchors.horizontalCenter: saveEditButton.horizontalCenter
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteAddressTracker == 0
@@ -974,7 +973,7 @@ Rectangle {
             width: parent.width
             height: deleteText.height + deleteAddressName.height + deleteAddressHash.height + confirmationDeleteButton.height + 64
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: deleteAddressTracker == 1
@@ -1187,7 +1186,7 @@ Rectangle {
             height: saveFailed.height + deleteFailedLabel.height + closeDeleteFail.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: deleteFailed == 1
 
             Image {
@@ -1267,7 +1266,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: deleteConfirmed == 1
         }
 
@@ -1405,7 +1404,7 @@ Rectangle {
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: editSaved == 0 && deleteAddressTracker == 0
+        visible: editSaved == 0 && editFailed == 0 && deleteAddressTracker == 0
 
         Rectangle{
             id: closeButton

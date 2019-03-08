@@ -26,6 +26,17 @@ Rectangle {
     height: Screen.height
     color: darktheme == true? "#14161B" : "#FDFDFD"
 
+    LinearGradient {
+        anchors.fill: parent
+        start: Qt.point(0, 0)
+        end: Qt.point(0, parent.height)
+        opacity: 0.05
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "transparent" }
+            GradientStop { position: 1.0; color: maincolor }
+        }
+    }
+
     property int clearFailed: 0
     property bool clearAllInitiated: false
 

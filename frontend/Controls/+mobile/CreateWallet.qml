@@ -339,7 +339,7 @@ Rectangle {
 
                 Image {
                     id: coinLogo
-                    source: 'qrc:/icons/XFUEL_card_logo_01.svg'
+                    source: coinList.get(coinIndex).logo
                     width: 30
                     height: 30
                     anchors.left: coinID.left
@@ -500,8 +500,13 @@ Rectangle {
                                 walletList.remove(walletID)
                                 addressID = addressID -1
                                 addressList.remove(addressID)
+                                newName.text = ""
+                                addressHash.text = ""
+                                publicKey.text = ""
+                                privateKey.text = ""
                                 editFailed = 1
                                 addingWallet = false
+                                walletSaved = false
                             }
                             else if (userSettings.localKeys === true && walletSaved == true) {
                                 addressID = addressID -1
@@ -643,7 +648,7 @@ Rectangle {
             }
 
             Text {
-                text: "TRY AGAIN"
+                text: saveErrorNR == 0? "TRY AGAIN" : "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true

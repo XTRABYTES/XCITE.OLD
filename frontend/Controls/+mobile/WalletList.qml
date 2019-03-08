@@ -62,6 +62,8 @@ Rectangle {
                     }
 
                     onPressAndHold: {
+                        walletIndex = walletNR
+                        walletDetailTracker = 1
                     }
                 }
 
