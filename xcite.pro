@@ -114,7 +114,8 @@ DISTFILES += \
     android/res/values/libs.xml \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew.bat
+    android/gradlew.bat \
+    qml/qmlchart/*
 
 RC_ICONS = xcite.ico
 CONFIG(debug, debug|release) {

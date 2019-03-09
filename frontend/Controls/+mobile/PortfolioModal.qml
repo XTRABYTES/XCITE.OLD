@@ -15,7 +15,7 @@ import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import QtMultimedia 5.8
-import QtCharts 2.2
+import QtCharts 2.0
 
 import "qrc:/Controls" as Controls
 
@@ -28,19 +28,14 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 50
-
     onStateChanged: {
         if (portfolioTracker == 1) {
             totalXBY = coinConversion("XBY", sumCoinTotal("XBY"))
             totalXFUEL = coinConversion("XFUEL", sumCoinTotal("XFUEL"))
-            pieSeries.append("XBY", totalXBY);
-            pieSeries.append("XFUEL", totalXFUEL)
+            pieSeries.find("XBY").value = totalXBY;
+            pieSeries.find("XFUEL").value = totalXFUEL;
         }
-        else {
-            pieSeries.clear()
-        }
-
-        percentage = 100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))
+        percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
     }
 
     LinearGradient {
@@ -78,9 +73,11 @@ Rectangle {
     }
 
     property int coin: 0
-    property int percentage
+    property real percentage
     property real totalXBY
     property real totalXFUEL
+    property var xbySlice
+    property var xfuelSlice
 
     Text {
         id: walletModalLabel
@@ -97,33 +94,27 @@ Rectangle {
     ChartView {
         id: chart
         anchors.top: walletModalLabel.bottom
-        anchors.topMargin: 25
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 240
+        legend.visible: false
         antialiasing: true
+        backgroundColor: "transparent"
 
         PieSeries {
             id: pieSeries
-            size: 200
-            holeSize: 120
+            size: 0.9
+            holeSize: 0.6
+            PieSlice { label: "XBY"; value: 0; color: "#0ED8D2"; borderWidth: 0; borderColor: "transparent" }
+            PieSlice { label: "XFUEL"; value: 0; color: "#FFAE11"; borderWidth: 0; borderColor: "transparent" }
          }
-    }
-
-    Label {
-        id: portfolioPercentage
-        text: percentage  + " %"
-        anchors.verticalCenter: chart.verticalCenter
-        anchors.horizontalCenter: chart.horizontalCenter
-        color: themecolor
-        font.pixelSize: 36
-        font.family: xciteMobile.name
     }
 
     Rectangle {
         id: legendXBY
         width: 20
         height: 20
-        anchors.top: chart.bottom
-        anchors.topMargin: 35
+        anchors.bottom: chart.bottom
         anchors.left: parent.left
         anchors.leftMargin: 28
         color: "#0ED8D2"
@@ -159,9 +150,7 @@ Rectangle {
 
         onClicked: {
             coin = 1
-            percentage = 100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))
-            pieSeries.find("XBY").exploded = true;
-            pieSeries.find("XFUEL").exploded = false;
+            percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
         }
     }
 
@@ -169,8 +158,7 @@ Rectangle {
         id: legendXFUEL
         width: 20
         height: 20
-        anchors.top: chart.bottom
-        anchors.topMargin: 35
+        anchors.bottom: chart.bottom
         anchors.right: parent.right
         anchors.rightMargin: 28
         color: "#FFAE11"
@@ -206,9 +194,7 @@ Rectangle {
 
         onClicked: {
             coin = 0
-            percentage = 100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))
-            pieSeries.find("XBY").exploded = false;
-            pieSeries.find("XFUEL").exploded = true;
+            percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
         }
     }
 
@@ -230,6 +216,17 @@ Rectangle {
             font.pixelSize: 20
             font.family: xciteMobile.name
             font.capitalization: Font.AllUppercase
+        }
+
+        Label {
+            id: portfolioPercentage
+            text: percentage  + " %"
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 28
+            color: "#F2F2F2"
+            font.pixelSize: 20
+            font.family: xciteMobile.name
         }
     }
 
