@@ -24,7 +24,7 @@ Rectangle {
     state: pincodeTracker == 1? "up" : "down"
     height: Screen.height
     color: darktheme == false? "#F7F7F7" : "#14161B"
-    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.left: parent.left
     anchors.top: parent.top
     onStateChanged: detectInteraction()
 
