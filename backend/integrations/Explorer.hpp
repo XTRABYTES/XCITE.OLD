@@ -29,6 +29,8 @@ public:
 
 signals:
     void updateBalance(const QString &coin, const QString &address, const QString &balance);
+    void updateTransactions(const QString &coin, const QString &address, const QString &transactions);
+
 
 public slots:
     void getBalanceEntireWallet(QString);
