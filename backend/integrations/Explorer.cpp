@@ -33,6 +33,14 @@ void Explorer::getBalanceEntireWallet(QString walletList){
                 QString balance = result.value("balance_current").toString();
                 balance = balance.insert(balance.length() - 8, ".");
                 emit updateBalance(coin.toUpper(),address, balance);
+
+                QJsonArray transactions = result.value("transactions").toArray();
+                QJsonDocument doc;
+                doc.setArray(transactions);
+                QString transactionString(doc.toJson(QJsonDocument::Compact));
+
+                emit updateTransactions(coin.toUpper(), address, transactionString);
+
             }
         }
     }
