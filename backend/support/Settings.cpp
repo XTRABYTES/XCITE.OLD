@@ -441,7 +441,7 @@ void Settings::login(QString username, QString password){
 std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *key,  unsigned char *iv) {
   EVP_CIPHER_CTX *ctx;
   std::pair<int,QByteArray>  returnVals;
-  unsigned char ciphertext[32];
+  unsigned char* ciphertext = new unsigned char[32];
   unsigned char* plaintext = new unsigned char[text.size()];
   std::memcpy(plaintext,text.toLatin1().constData(),text.size());
   int plaintext_len = strlen ((char *)plaintext);
@@ -494,6 +494,8 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
 
   BIO_dump_fp (stdout, (const char *)ciphertext, ciphertext_len);
   delete [] plaintext;
+  delete [] ciphertext;
+
 
   return returnVals;
 
