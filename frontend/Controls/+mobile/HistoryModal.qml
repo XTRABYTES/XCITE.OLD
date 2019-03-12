@@ -23,7 +23,7 @@ Rectangle {
     width: Screen.width
     state: historyTracker == 1? "up" : "down"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
@@ -63,7 +63,8 @@ Rectangle {
         source: getLogo(walletList.get(walletIndex).name)
         height: 30
         width: 30
-        anchors.left: searchInput.left
+        anchors.left: parent.left
+        anchors.leftMargin: 28
         anchors.top: historyModalLabel.bottom
         anchors.topMargin: 30
     }
@@ -84,7 +85,8 @@ Rectangle {
     Label {
         id: newWalletLabel
         text: walletList.get(walletIndex).label
-        anchors.right: searchInput.right
+        anchors.right: parent.right
+        anchors.rightMargin: 28
         anchors.bottom: newIcon.bottom
         anchors.bottomMargin: 1
         font.pixelSize: 20
@@ -93,24 +95,10 @@ Rectangle {
         color: themecolor
     }
 
-    Controls.TextInput {
-        id: searchInput
-        height: 34
-        width: parent.width - 56
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: newIcon.bottom
-        anchors.topMargin: 25
-        placeholder: "SEARCH TRANSACTIONS"
-        color: text != ""? "#F2F2F2" : "#727272"
-        textBackground: "#0B0B09"
-        font.pixelSize: 14
-        mobile: 1
-    }
-
     Rectangle {
-        id: historyList
-        width: searchInput.width
-        anchors.top: searchInput.bottom
+        id: history
+        width: parent.width
+        anchors.top: newWalletLabel.bottom
         anchors.topMargin: 15
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -118,9 +106,6 @@ Rectangle {
 
         Controls.HistoryList {
             id: myHistory
-            searchFilter: searchInput.text
-            selectedCoin: newCoinName.text
-            selectedWallet: newWalletLabel.text
         }
     }
 
@@ -175,6 +160,8 @@ Rectangle {
                 running: false
 
                 onTriggered: {
+                     transactionPages = 0
+                    historyList.clear()
                 }
             }
 

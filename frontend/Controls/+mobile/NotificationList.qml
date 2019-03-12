@@ -46,8 +46,8 @@ Rectangle {
                 fillMode: Image.PreserveAspectFit
                 anchors.top: parent.top
                 anchors.topMargin: 14
-                anchors.left: parent.right
-                anchors.leftMargin: 8
+                anchors.right: parent.right
+                anchors.rightMargin: 8
 
                 MouseArea {
                     height: 20

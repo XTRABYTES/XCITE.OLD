@@ -311,6 +311,14 @@ ApplicationWindow {
     property bool oldPinlock: false
     property bool oldLocalKeys: false
     property string selectedCoin: "XFUEL"
+    property real totalXBY: 0
+    property real totalXFUEL: 0
+    property real totalXBYTest: 0
+    property real totalXFUELTest: 0
+    property real totalXBYFiat: totalXBY * valueXBY
+    property real totalXFUELFiat: totalXFUEL * valueXFUEL
+    property string historyCoin: ""
+    property int transactionpages: 0
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -331,6 +339,7 @@ ApplicationWindow {
     signal helpMe(string help)
     signal checkNetwork(string network)
     signal updateAccount(string addresslist, string contactlist, string walletlist)
+    signal updateTransactions(string coin, string address, string page)
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
@@ -363,6 +372,10 @@ ApplicationWindow {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
                             alert = true
                             sumBalance()
+                            sumXBY()
+                            sumXFUEL()
+                            sumXBYTest()
+                            sumXFUELTest()
                         }
                     }
                 }
@@ -449,6 +462,46 @@ ApplicationWindow {
             }
         }
         return totalBalance
+    }
+
+    function sumXBY() {
+        totalXBY =0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "XBY" && walletList.get(i).include === true) {
+                totalXBY += walletList.get(i).balance
+            }
+        }
+        return totalXBY
+    }
+
+    function sumXFUEL() {
+        totalXFUEL = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "XFUEL" && walletList.get(i).include === true) {
+                totalXFUEL += walletList.get(i).balance
+            }
+        }
+        return totalXFUEL
+    }
+
+    function sumXBYTest() {
+        totalXBYTest =0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "XBY-TEST" && walletList.get(i).include === true) {
+                totalXBYTest += walletList.get(i).balance
+            }
+        }
+        return totalXBYTest
+    }
+
+    function sumXFUELTest() {
+        totalXFUELTest = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "XFUEL-TEST" && walletList.get(i).include === true) {
+                totalXFUELTest += walletList.get(i).balance
+            }
+        }
+        return totalXFUELTest
     }
 
     function sumCoinTotal(coin) {
@@ -650,15 +703,15 @@ ApplicationWindow {
     function getAddressIndex(id) {
         for(var i = 0; i < addressList.count; i ++) {
             if (addressList.get(i).uniqueNR === id) {
-                addressIndex = addresList.get(i)
+                addressIndex = addressList.get(i)
             }
         }
     }
 
     function getContactIndex(id) {
         for(var i = 0; i < contactsList.count; i ++) {
-            if (contactsList.get(i).contactNR === id) {
-                contactIndex = contactsList.get(i)
+            if (contactList.get(i).contactNR === id) {
+                contactIndex = contactList.get(i)
             }
         }
     }
@@ -666,7 +719,7 @@ ApplicationWindow {
     function replaceName(id, first, last) {
         for(var i = 0; i < addressList.count; i ++) {
             if (addressList.get(i).contact === id) {
-                contactsList.setProperty(id, "fullname", last+first)
+                contactList.setProperty(id, "fullname", last+first)
             }
         }
     }
@@ -804,8 +857,20 @@ ApplicationWindow {
         }
     }
 
-    function loadHistoryList() {
-        // read transactionhistory from persistent data
+    function loadTransactions(transactions){
+        if (typeof transactions !== "undifined") {
+            console.log("json history list: " + transactions)
+            historyList.clear();
+            var obj = JSON.parse(transactions);
+            console.log("raw history list: " + obj)
+            for (var i in obj){
+                var data = obj[i];
+                historyList.append(data);
+            }
+        }
+        else {
+            console.log("no transactions available")
+        }
     }
 
     function updateToAccount(){
@@ -993,7 +1058,7 @@ ApplicationWindow {
         pictureID = 0
         currencyID = 0
         coinIndex = 0
-        walletIndex = 1
+        walletIndex = 0
         clearAddressList()
         clearContactList()
         clearWalletList()
@@ -1094,6 +1159,16 @@ ApplicationWindow {
             reference: ""
             txid: 0
             txNR: 0
+        }
+    }
+
+    ListModel {
+        id: historyList
+        ListElement {
+            txid: ""
+            direction: false
+            value: ""
+            confirmations: 0
         }
     }
 
@@ -1261,6 +1336,10 @@ ApplicationWindow {
 
         onTriggered: {
             sumBalance()
+            sumXBY()
+            sumXFUEL()
+            sumXBYTest()
+            sumXFUELTest()
         }
     }
     // Order of the pages

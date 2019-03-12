@@ -23,7 +23,7 @@ Rectangle {
     width: Screen.width
     state: editContactTracker == 1? "up" : "down"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 

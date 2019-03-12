@@ -347,6 +347,17 @@ Rectangle {
 
                         onClicked: {
                             walletIndex = walletNR
+                            updateTransactions(name, address, 1)
+                            console.log ("history button clicked, name: " + name + " address: " + address)
+                        }
+                    }
+
+                    Connections {
+                        target: explorer
+
+                        onUpdateTransactions: {
+                            transactionpages = totalPages;
+                            loadTransactions(transactions);
                             historyTracker = 1
                         }
                     }

@@ -30,7 +30,7 @@ Item {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        width: 325
+        width: parent.width - 50
         height: 250
         state: loginTracker == 1? "up" : "down"
         color: "transparent"
@@ -89,25 +89,17 @@ Item {
             }
         }
 
-        Rectangle {
-            anchors.horizontalCenter: loginModalBody.horizontalCenter
-            anchors.bottom: loginModalBody.bottom
-            width: loginModalBody.width
-            height: loginModalBody.height
-            color: "transparent"
-            border.color: maincolor
-            border.width: 1
-            opacity: 0.25
-        }
-
         Controls.TextInput {
             id: userName
             height: 34
             placeholder: "USERNAME"
             text: ""
-            anchors.horizontalCenter: loginModalBody.horizontalCenter
             anchors.top: loginModalBody.top
             anchors.topMargin: 25
+            anchors.left: loginModalBody.left
+            anchors.leftMargin: 25
+            anchors.right: loginModalBody.right
+            anchors.rightMargin: 25
             color: userName.text != "" ? "#F2F2F2" : "#727272"
             textBackground: "#0B0B09"
             mobile: 1
@@ -125,9 +117,12 @@ Item {
             placeholder: "PASSWORD"
             text: ""
             echoMode: TextInput.Password
-            anchors.horizontalCenter: loginModalBody.horizontalCenter
             anchors.top: userName.bottom
             anchors.topMargin: 30
+            anchors.left: loginModalBody.left
+            anchors.leftMargin: 25
+            anchors.right: loginModalBody.right
+            anchors.rightMargin: 25
             color: passWord.text != "" ? "#F2F2F2" : "#727272"
             textBackground: "#0B0B09"
             mobile: 1
@@ -156,11 +151,13 @@ Item {
 
         Rectangle {
             id: logInButton
-            width: userName.width
             height: 34
             anchors.bottom: loginModalBody.bottom
             anchors.bottomMargin: 20
-            anchors.left: userName.left
+            anchors.left: loginModalBody.left
+            anchors.leftMargin: 25
+            anchors.right: loginModalBody.right
+            anchors.rightMargin: 25
             color: (userName.text != "" && passWord.text != "") ? "#1B2934" : "#727272"
             opacity: 0.50
             visible: loginInitiated == false
@@ -263,11 +260,13 @@ Item {
         }
 
         Rectangle {
-            width: userName.width
             height: 34
-            anchors.bottom: loginModalBody.bottom
+            anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
-            anchors.left: userName.left
+            anchors.left: loginModalBody.left
+            anchors.leftMargin: 25
+            anchors.right: loginModalBody.right
+            anchors.rightMargin: 25
             color: "transparent"
             border.color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
             opacity: 0.50
@@ -284,6 +283,19 @@ Item {
             playing: loginInitiated == true
             visible: loginInitiated == true
         }
+
+        Rectangle {
+            anchors.horizontalCenter: loginModalBody.horizontalCenter
+            anchors.bottom: loginModalBody.bottom
+            width: loginModalBody.width
+            height: loginModalBody.height
+            color: "transparent"
+            border.color: maincolor
+            border.width: 1
+            opacity: 0.25
+        }
+
+
 
         Label {
             id: noAccount

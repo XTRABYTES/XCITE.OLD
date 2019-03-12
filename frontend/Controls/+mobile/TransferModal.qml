@@ -26,7 +26,7 @@ Rectangle {
     width: Screen.width
     state: transferTracker == 1? "up" : "down"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: Screen.height
@@ -1261,25 +1261,30 @@ Rectangle {
                     }
                 }
             }
-            /**
-            Connections {
-                target: sendCoins
-                ontransferSucceededChanged: {
-                    confirmationSend == 1
-                    // function to add TX info to Transaction History List
-                }
 
-                onTransferFailedChanged: {
-                    if(networkError == 0){
-                    failedSend = 1
-                    }
-                }
+            Timer {
+                id: timer3
+                interval: 1000
+                repeat: false
+                running: false
 
-                onNetworkError: {
-                    networkError = 1
+                onTriggered: {
+                    appsTracker = 0
+                    selectedPage = "backup"
+                    mainRoot.pop();
+                    // whatever function needed to execute payment
+                    requestSend = 1
                 }
             }
-            */
+
+            Connections {
+                target: UserSettings
+                onPincodeCorrect: {
+                    if (pincodeTracker == 1 && transferTracker == 1) {
+                        timer3.start()
+                    }
+                }
+            }
         }
 
         Text {
@@ -1677,7 +1682,10 @@ Rectangle {
     Controls.TextInput {
         id: searchForAddress
         placeholder: "SEARCH ADDRESS BOOK"
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.leftMargin: 28
+        anchors.left: parent.left
         anchors.top: addressbookCoinLogo.bottom
         anchors.topMargin: 20
         color: searchForAddress.text != "" ? "#2A2C31" : "#727272"
@@ -2003,16 +2011,11 @@ Rectangle {
             }
         }
     }
-
     Controls.Pincode {
         id: myPincode
         z: 10
-        visible: transferTracker == 1
-
-        coin: coinID.text
-        walletHash: getAddress(coinID.text, walletLabel.text)
-        amount: inputAmount
-        partnerHash: keyInput.text
+        anchors.top: parent.top
+        anchors.left: parent.left
     }
 }
 
