@@ -27,28 +27,43 @@ void Explorer::getBalanceEntireWallet(QString walletList){
         QString address = obj.value("address").toString();
         if (coin.length() > 0){
             if ((coin == "xby") || (coin == "xfuel")){
-                QString response =  getBalanceAddress(coin,address);
+                QString response =  getBalanceAddress(coin,address, "1");
                 QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
                 QJsonObject result = jsonResponse.object().value("result").toObject();
                 QString balance = result.value("balance_current").toString();
                 balance = balance.insert(balance.length() - 8, ".");
                 emit updateBalance(coin.toUpper(),address, balance);
 
-                QJsonArray transactions = result.value("transactions").toArray();
-                QJsonDocument doc;
-                doc.setArray(transactions);
-                QString transactionString(doc.toJson(QJsonDocument::Compact));
-
-                emit updateTransactions(coin.toUpper(), address, transactionString);
-
             }
         }
     }
 }
 
-QString Explorer::getBalanceAddress(QString coin, QString address){
+
+void Explorer::getTransactionList(QString coin, QString address, QString page){
+
+    if (coin.length() > 0){
+        if ((coin == "xby") || (coin == "xfuel")){
+            QString response =  getBalanceAddress(coin,address, page);
+            QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
+            QJsonObject meta = jsonResponse.object().value("meta").toObject();
+            int totalPages = meta.value("pages").toInt();
+
+            QJsonObject result = jsonResponse.object().value("result").toObject();
+            QJsonArray transactions = result.value("transactions").toArray();
+            QJsonDocument doc;
+            doc.setArray(transactions);
+            QString transactionString(doc.toJson(QJsonDocument::Compact));
+
+            emit updateTransactions(transactionString, QString::number(totalPages));
+
+         }
+     }
+}
+
+QString Explorer::getBalanceAddress(QString coin, QString address, QString page){
     QString balance = "";
-    QString url = "https://xtrabytes.global/api/"+ coin + "/address/" + address;
+    QString url = "https://xtrabytes.global/api/"+ coin + "/address/" + address + "?page=" + page;
 
     QUrl Url;
     Url.setPath(url);

@@ -25,15 +25,16 @@ class Explorer : public QObject
     Q_OBJECT
 public:
     explicit Explorer(QObject *parent = nullptr);
-    QString  getBalanceAddress(QString coin, QString address);
+    QString  getBalanceAddress(QString coin, QString address, QString page);
 
 signals:
     void updateBalance(const QString &coin, const QString &address, const QString &balance);
-    void updateTransactions(const QString &coin, const QString &address, const QString &transactions);
+    void updateTransactions(const QString &transactions, const QString &totalPages);
 
 
 public slots:
     void getBalanceEntireWallet(QString);
+    void getTransactionList(QString, QString, QString);
     void onResult(QNetworkReply *reply);
 
 private:
