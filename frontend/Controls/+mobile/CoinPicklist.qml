@@ -86,6 +86,7 @@ Rectangle {
                     clickIndicator.visible = false
                     newCoinPicklist = coinID;
                     newCoinSelect = 1
+                    newWalletSelect = 0
                     coinListTracker = 0
                     coinIndex = coinID
                 }

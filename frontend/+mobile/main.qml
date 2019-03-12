@@ -655,7 +655,7 @@ ApplicationWindow {
         var wallet = 0
         var favorite = false
         for(var i = 0; i < walletList.count; i++){
-            if (walletList.get(i).name === coin && walletList.get(i).viewOnly === false){
+            if (walletList.get(i).name === coin){
                 if (favorite == false) {
                     if (walletList.get(i).favorite === true){
                         balance = walletList.get(i).balance
