@@ -128,6 +128,8 @@ int main(int argc, char *argv[])
 
     // connect QML signals for Explorer
     QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString)), &explorer, SLOT(getBalanceEntireWallet(QString)));
+    QObject::connect(rootObject, SIGNAL(updateTransactions(QString, QString, QString)), &explorer, SLOT(getTransactionList(QString, QString, QString)));
+
 
     // connect QML signals for xUtility
     QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeyPairEntry(QString)));
