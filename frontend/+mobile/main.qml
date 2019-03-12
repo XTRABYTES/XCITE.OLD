@@ -318,7 +318,8 @@ ApplicationWindow {
     property real totalXBYFiat: totalXBY * valueXBY
     property real totalXFUELFiat: totalXFUEL * valueXFUEL
     property string historyCoin: ""
-    property int transactionpages: 0
+    property int transactionPages: 0
+    property int currentPage: 0
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
