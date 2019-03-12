@@ -27,6 +27,8 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
+    property int newHistory: 0
+
     states: [
         State {
             name: "up"
@@ -95,14 +97,125 @@ Rectangle {
         color: themecolor
     }
 
+    Label {
+        id: historyPrevious
+        text: "PREVIOUS"
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.top: newIcon.bottom
+        anchors.topMargin: 20
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
+        visible: currentPage !== 1
+
+        Rectangle {
+            anchors.left: historyPrevious.left
+            anchors.right: historyPrevious.right
+            anchors.verticalCenter: historyPrevious.verticalCenter
+            height: historyPrevious.height + 10
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    currentPage = currentPage - 1
+                    newHistory = 1
+                    updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                }
+            }
+
+            Connections {
+                target: explorer
+
+                onUpdateTransactions: {
+                    if (historyTracker === 1) {
+                        loadTransactions(transactions);
+                        newHistory = 0
+                    }
+                }
+            }
+        }
+    }
+
+    Label {
+        id: historyNext
+        text: "NEXT"
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.top: newIcon.bottom
+        anchors.topMargin: 20
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
+        visible: currentPage < transactionPages
+
+        Rectangle {
+            anchors.left: historyNext.left
+            anchors.right: historyNext.right
+            anchors.verticalCenter: historyNext.verticalCenter
+            height: historyNext.height + 10
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    currentPage = currentPage + 1
+                    newHistory = 1
+                    updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                }
+            }
+
+            Connections {
+                target: explorer
+
+                onUpdateTransactions: {
+                    if (historyTracker === 1) {
+                        loadTransactions(transactions);
+                        newHistory = 0
+                    }
+                }
+            }
+        }
+    }
+
     Rectangle {
         id: history
         width: parent.width
-        anchors.top: newWalletLabel.bottom
-        anchors.topMargin: 15
-        anchors.bottom: parent.bottom
+        anchors.top: historyPrevious.bottom
+        anchors.topMargin: 5
+        anchors.bottom: closeHistoryModal.top
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
+        state: (newHistory == 0)? "down" : "up"
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: myHistory; height: 0}
+                PropertyChanges { target: myHistory; anchors.topMargin: -180}
+                PropertyChanges { target: myHistory; cardSpacing: -100}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: myHistory; height: parent.height}
+                PropertyChanges { target: myHistory; anchors.topMargin: 0}
+                PropertyChanges { target: myHistory; cardSpacing: 0}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: myHistory; properties: "height, anchors.topMargin, cardSpacing"; duration: 500; easing.type: Easing.InOutCubic}
+            }
+        ]
+
 
         Controls.HistoryList {
             id: myHistory
@@ -160,7 +273,8 @@ Rectangle {
                 running: false
 
                 onTriggered: {
-                     transactionPages = 0
+                    transactionPages = 0
+                    currentPage = 0
                     historyList.clear()
                 }
             }

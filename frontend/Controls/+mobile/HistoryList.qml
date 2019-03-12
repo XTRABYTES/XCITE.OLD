@@ -22,6 +22,8 @@ Rectangle {
     color: "transparent"
     clip :true
 
+    property alias cardSpacing: picklist.spacing
+
     Component {
         id: historyLine
 
@@ -145,6 +147,7 @@ Rectangle {
         id: picklist
         model: historyList
         delegate: historyLine
+        spacing: 0
         contentHeight: (historyList.count * 100) + 50
         onDraggingChanged: detectInteraction()
     }
