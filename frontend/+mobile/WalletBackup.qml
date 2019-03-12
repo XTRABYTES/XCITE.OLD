@@ -24,6 +24,10 @@ Rectangle {
     height: Screen.height
     color: bgcolor
 
+    MouseArea {
+        anchors.fill: parent
+    }
+
     Text {
         id: backupModalLabel
         text: "WALLET BACK-UP"
@@ -112,10 +116,9 @@ Rectangle {
             }
 
             onClicked: {
-                appsTracker = 0
                 backupTracker = 0
                 selectedPage = "home"
-                mainRoot.pop("../WalletBackup.qml")
+                mainRoot.pop()
             }
         }
     }

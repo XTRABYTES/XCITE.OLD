@@ -30,10 +30,12 @@ Rectangle {
     anchors.topMargin: 50
     onStateChanged: {
         if (portfolioTracker == 1) {
-            totalXBY = coinConversion("XBY", sumCoinTotal("XBY"))
-            totalXFUEL = coinConversion("XFUEL", sumCoinTotal("XFUEL"))
-            pieSeries.find("XBY").value = totalXBY;
-            pieSeries.find("XFUEL").value = totalXFUEL;
+            if (!isNaN(totalXBY)) {
+                pieSeries.find("XBY").value = totalXBY
+            }
+            if (!isNaN(totalXFUEL)) {
+                pieSeries.find("XFUEL").value = totalXFUEL
+            }
         }
         percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
     }
@@ -74,10 +76,6 @@ Rectangle {
 
     property int coin: 0
     property real percentage
-    property real totalXBY
-    property real totalXFUEL
-    property var xbySlice
-    property var xfuelSlice
 
     Text {
         id: walletModalLabel
@@ -107,7 +105,19 @@ Rectangle {
             holeSize: 0.6
             PieSlice { label: "XBY"; value: 0; color: "#0ED8D2"; borderWidth: 0; borderColor: "transparent" }
             PieSlice { label: "XFUEL"; value: 0; color: "#FFAE11"; borderWidth: 0; borderColor: "transparent" }
-         }
+        }
+    }
+
+    Label {
+        id: zeroFunds
+        text: "Your wallet is empty!"
+        anchors.verticalCenter: chart.verticalCenter
+        anchors.horizontalCenter: chart.horizontalCenter
+        font.pixelSize: 24
+        font.family: xciteMobile.name
+        font.letterSpacing: 2
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: totalXBY == 0 && totalXFUEL == 0
     }
 
     Rectangle {

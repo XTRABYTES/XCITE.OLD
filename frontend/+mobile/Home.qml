@@ -28,6 +28,10 @@ Item {
         // continue to wallet
         else {
             sumBalance()
+            sumXBY()
+            sumXFUEL()
+            sumXBYTest()
+            sumXFUELTest()
             checkNotifications()
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"

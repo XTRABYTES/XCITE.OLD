@@ -342,6 +342,9 @@ Rectangle {
             color: "transparent"
             border.color: themecolor
             border.width: 2
+            visible: editSaved == 0
+                     && editFailed == 0
+                     && deleteWalletTracker == 0
 
             Rectangle {
                 id: includeIndicator
@@ -408,9 +411,9 @@ Rectangle {
 
                 onClicked: {
                     if (labelExists == 0) {
-                        walletList.setProperty(walletIndexIndex, "include", newInclude);
+                        walletList.setProperty(walletIndex, "include", newInclude);
                         if (newLabel.text != "") {
-                            walletList.setProperty(walletIndexIndex, "label", newLabel.text);
+                            walletList.setProperty(walletIndex, "label", newLabel.text);
                             editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, newLabel.text, oldRemove)
                         }
                         else {
@@ -438,8 +441,8 @@ Rectangle {
                 onSaveFailed: {
                     if (walletDetailTracker == 1 && editingWallet == true) {
                         if (userSettings.localKeys === false) {
-                            walletList.setProperty(walletIndexIndex, "label", oldLabel);
-                            walletList.setProperty(walletIndexIndex, "include", oldInclude);
+                            walletList.setProperty(walletIndex, "label", oldLabel);
+                            walletList.setProperty(walletIndex, "include", oldInclude);
                             editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                             newInclude = oldInclude
                             editFailed = 1
@@ -466,8 +469,8 @@ Rectangle {
 
                 onSaveFileFailed: {
                     if (walletDetailTracker == 1 && userSettings.localKeys === true && editingWallet == true) {
-                        walletList.setProperty(walletIndexIndex, "label", oldLabel);
-                        walletList.setProperty(walletIndexIndex, "include", oldInclude);
+                        walletList.setProperty(walletIndex, "label", oldLabel);
+                        walletList.setProperty(walletIndex, "include", oldInclude);
                         editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                         editFailed = 1
                         saveErrorNr = 0
@@ -652,7 +655,7 @@ Rectangle {
             height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: editSaved == 1
 
             Image {
@@ -701,7 +704,6 @@ Rectangle {
                         walletAdded = true
                         addWalletTracker = 0;
                         editSaved = 0;
-                        newWallet = 0
                         createWalletTracker = 0
                     }
                 }
@@ -750,7 +752,7 @@ Rectangle {
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             font.family: xciteMobile.name
-            font.pixelSize: 16
+            font.pixelSize: 20
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
         }
 
@@ -761,7 +763,7 @@ Rectangle {
             anchors.topMargin: 7
             anchors.horizontalCenter: parent.horizontalCenter
             font.family: xciteMobile.name
-            font.pixelSize: 16
+            font.pixelSize: 18
             font.bold: true
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
         }
@@ -1220,6 +1222,11 @@ Rectangle {
 
                 onTriggered: {
                     walletIndex = 0
+                    sumBalance()
+                    sumXBY()
+                    sumXFUEL()
+                    sumXBYTest()
+                    sumXFUELTest()
                 }
             }
 

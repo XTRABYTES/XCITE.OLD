@@ -223,7 +223,7 @@ Rectangle {
     }
 
     Rectangle {
-        id: currencySwitch
+        id: pincodeSwitch
         z: 1
         width: 20
         height: 20
@@ -236,7 +236,7 @@ Rectangle {
         border.width: 2
 
         Rectangle {
-            id: currencyIndicator
+            id: pincodeIndicator
             z: 1
             width: 12
             height: 12
@@ -246,7 +246,7 @@ Rectangle {
             color: userSettings.pinlock === true ? maincolor : "#757575"
 
             MouseArea {
-                id: currencyButton
+                id: pincodeButton
                 width: 20
                 height: 20
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -267,15 +267,29 @@ Rectangle {
                     }
                 }
             }
+
+
+
+            Connections {
+                target: UserSettings
+
+                onPincodeCorrect: {
+                    if (pinOK == 1 && unlockPin == 1) {
+                        userSettings.pinlock = false
+                        saveAppSettings();
+                        savePincode("0000")
+                    }
+                }
+            }
         }
     }
 
     Label {
-        id: currencySwitchLabel
+        id: pincodeSwitchLabel
         text: userSettings.pinlock === true ? "ACTIVE" : "NOT ACTIVE"
-        anchors.right: currencySwitch.left
+        anchors.right: pincodeSwitch.left
         anchors.rightMargin: 7
-        anchors.verticalCenter: currencySwitch.verticalCenter
+        anchors.verticalCenter: pincodeSwitch.verticalCenter
         anchors.verticalCenterOffset: 1
         font.pixelSize: 20
         font.family: xciteMobile.name
@@ -288,7 +302,7 @@ Rectangle {
         height: 34
         color: userSettings.pinlock === true? maincolor : "#727272"
         opacity: 0.25
-        anchors.top: currencySwitchLabel.bottom
+        anchors.top: pincodeSwitchLabel.bottom
         anchors.topMargin: 25
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -317,6 +331,7 @@ Rectangle {
             }
         }
     }
+
     Text {
         text: "CHANGE PIN"
         font.family: "Brandon Grotesque"
@@ -394,15 +409,34 @@ Rectangle {
             Connections {
                 target: UserSettings
 
+                onPincodeCorrect: {
+                    if (pinOK == 1 && clearAll == 1) {
+                        clearAllInitiated = true
+                        oldDefaultCurrency = userSettings.defaultCurrency
+                        oldLocale = userSettings.locale
+                        oldPinlock = userSettings.pinlock
+                        oldTheme = userSettings.theme
+                        oldLocalKeys= userSettings.localKeys
+                        clearAllSettings()
+                        userSettings.locale = "en_us"
+                        userSettings.defaultCurrency = 0
+                        userSettings.theme = "dark"
+                        userSettings.pinlock = false
+                        userSettings.accountCreationCompleted = true
+                        userSettings.localKeys = oldLocalKeys
+                        saveAppSettings()
+                    }
+                }
+
                 onSaveSucceeded: {
-                    if (clearAllInitiated == true || pinClearInitiated == true) {
+                    if (clearAllInitiated == true) {
                         clearAllInitiated = false
                         pinClearInitiated = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (clearAllInitiated == true || pinClearInitiated == true) {
+                    if (clearAllInitiated == true) {
                         userSettings.locale = oldLocale
                         userSettings.defaultCurrency = oldDefaultCurrency
                         userSettings.theme = oldTheme
@@ -638,6 +672,8 @@ Rectangle {
     Controls.Pincode {
         id: myPincode
         z: 5
+        anchors.top: parent.top
+        anchors.left: parent.left
     }
 
     Item {
@@ -687,7 +723,7 @@ Rectangle {
             onClicked: {
                 appsTracker = 0
                 selectedPage = "home"
-                mainRoot.pop("../WalletSettings.qml")
+                mainRoot.pop()
             }
         }
     }

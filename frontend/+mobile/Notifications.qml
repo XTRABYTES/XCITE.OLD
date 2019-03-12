@@ -56,8 +56,8 @@ Rectangle {
         text: "CLEAR ALL"
         anchors.right: parent.right
         anchors.rightMargin: 14
-        anchors.top: notificationList.top
-        anchors.topMargin: 5
+        anchors.bottom: notificationList.top
+        anchors.bottomMargin: 5
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -135,7 +135,7 @@ Rectangle {
             onClicked: {
                 appsTracker = 0
                 selectedPage = "home"
-                mainRoot.pop("../Notifications.qml")
+                mainRoot.pop()
             }
         }
     }

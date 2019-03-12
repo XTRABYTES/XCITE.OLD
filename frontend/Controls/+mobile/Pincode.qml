@@ -24,8 +24,6 @@ Rectangle {
     state: pincodeTracker == 1? "up" : "down"
     height: Screen.height
     color: darktheme == false? "#F7F7F7" : "#14161B"
-    anchors.left: parent.left
-    anchors.top: parent.top
     onStateChanged: detectInteraction()
 
     LinearGradient {
@@ -286,10 +284,6 @@ Rectangle {
                                 failToSave = 1;
                             }
                         }
-                    }
-
-                    onSettingsServerError: {
-                        networkError = 1
                     }
                 }
             }
@@ -579,12 +573,9 @@ Rectangle {
                             }
                         }
                     }
-
-                    onSettingsServerError: {
-                        networkError = 1
-                    }
                 }
             }
+
             Text {
                 text: "SAVE"
                 font.family: "Brandon Grotesque"
@@ -656,10 +647,6 @@ Rectangle {
                     running: false
 
                     onTriggered: {
-                        if (backupTracker == 1){
-                            selectedPage = "backup"
-                            mainRoot.push("../WalletBackup.qml")
-                        }
                         pinOK = 0
                         pincodeTracker = 0
                         unlockPin = 0
@@ -681,11 +668,6 @@ Rectangle {
                             unlockPin = 0
                             clearAll = 0
                             pinError = 0
-                            coinList.clear()
-                            walletList.clear()
-                            contactList.clear()
-                            addressList.clear()
-                            transactionList.clear()
                             goodbey = 1
                         }
                         else {
@@ -711,34 +693,7 @@ Rectangle {
                         pinOK = 1
                         pin.text = ""
                         passTry = 0
-                        if (unlockPin == 1) {
-                            userSettings.pinlock = false
-                            saveAppSettings();
-                            savePincode("0000")
-                            timer3.start()
-                        }
-                        else if (transferTracker == 1) {
-                            requestSend = 1
-                            timer3.start()
-                        }
-                        else if (clearAll == 1) {
-                            pinClearInitiated = true
-                            oldDefaultCurrency = userSettings.defaultCurrency
-                            oldLocale = userSettings.locale
-                            oldPinlock = userSettings.pinlock
-                            oldTheme = userSettings.theme
-                            oldLocalKeys= userSettings.localKeys
-                            clearAllSettings()
-                            userSettings.locale = "en_us"
-                            userSettings.defaultCurrency = 0
-                            userSettings.theme = "dark"
-                            userSettings.pinlock = false
-                            userSettings.accountCreationCompleted = true
-                            userSettings.localKeys = oldLocalKeys
-                            saveAppSettings()
-                            timer3.start()
-                        }
-                        else if (backupTracker == 1) {
+                        if (pinOK == 1 && (unlockPin == 1 || transferTracker == 1 || clearAll == 1 || backupTracker == 1)) {
                             timer3.start()
                         }
                     }

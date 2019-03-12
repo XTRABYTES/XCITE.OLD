@@ -48,7 +48,7 @@ TextField {
                       else
                           maincolor //"#34363D"
 
-        implicitWidth: doubbleButtonWidth
+        width: parent.width
     }
     onActiveFocusChanged: {
         if (textInputComponent.focus) {

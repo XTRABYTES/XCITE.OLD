@@ -24,7 +24,7 @@ Rectangle {
     width: Screen.width
     state: addressTracker == 0 ? "down" : "up"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 50

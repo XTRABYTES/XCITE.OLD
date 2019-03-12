@@ -475,7 +475,6 @@ Rectangle {
                 onClicked: {
                     walletAdded = false
                     selectWallet = 0
-                    walletAdded = false
                 }
             }
         }
@@ -535,7 +534,7 @@ Rectangle {
                     walletAdded = false
                     selectWallet = 0
                     selectedPage = "home"
-                    mainRoot.pop();
+                    mainRoot.pop("qrc:/Controls/+mobile/AddWallet.qml");
                 }
             }
         }

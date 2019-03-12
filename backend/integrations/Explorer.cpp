@@ -41,10 +41,10 @@ void Explorer::getBalanceEntireWallet(QString walletList){
 
 
 void Explorer::getTransactionList(QString coin, QString address, QString page){
-
-    if (coin.length() > 0){
-        if ((coin == "xby") || (coin == "xfuel")){
-            QString response =  getBalanceAddress(coin,address, page);
+    QString selectedCoin = coin.toLower();
+    if (selectedCoin.length() > 0){
+        if ((selectedCoin == "xby") || (selectedCoin == "xfuel")){
+            QString response =  getBalanceAddress(selectedCoin,address, page);
             QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
             QJsonObject meta = jsonResponse.object().value("meta").toObject();
             int totalPages = meta.value("pages").toInt();

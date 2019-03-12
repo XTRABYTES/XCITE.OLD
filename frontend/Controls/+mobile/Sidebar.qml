@@ -201,15 +201,37 @@ Rectangle {
 
                     onClicked: {
                         if (selectedPage != "backup") {
-                            backupTracker = 1
-                            appsTracker = 0
-                            if (userSettings.pinlock === false) {
-                                selectedPage = "backup"
-                                mainRoot.push("../WalletBackup.qml")
-                            }
-                            else {
+                            if (userSettings.pinlock === true) {
+                                backupTracker = 1
                                 pincodeTracker = 1
                             }
+                            else {
+                                appsTracker = 0
+                                selectedPage = "backup"
+                                mainRoot.push("qrc:/+mobile/WalletBackup.qml")
+                            }
+                        }
+                    }
+                }
+
+                Timer {
+                    id: timer3
+                    interval: 1000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        appsTracker = 0
+                        selectedPage = "backup"
+                        mainRoot.push("qrc:/+mobile/WalletBackup.qml");
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+                    onPincodeCorrect: {
+                        if (pincodeTracker == 1 && backupTracker == 1) {
+                            timer3.start()
                         }
                     }
                 }
@@ -415,6 +437,8 @@ Rectangle {
 
     Controls.Pincode {
         id: myPincode
-        z: 10
+        z: 100
+        anchors.top: parent.top
+        anchors.left: parent.left
     }
 }
