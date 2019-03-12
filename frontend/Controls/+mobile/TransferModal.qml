@@ -259,7 +259,7 @@ Rectangle {
 
         Label {
             id: walletLabel
-            text: (newWalletSelect == 0 && coinTracker == 0) ? walletList.get(defaultWallet(coinID.text)).label : walletList.get(walletIndex).label
+            text: coinTracker == 1? (newCoinSelect == 0? walletList.get(walletIndex).label : (newWalletSelect == 1? walletList.get(walletIndex).label : walletList.get(defaultWallet(coinID.text)).label)) : (newWalletSelect == 1 ? walletList.get(walletIndex).label : walletList.get(defaultWallet(coinID.text)).label)
             anchors.right: picklistArrow2.left
             anchors.rightMargin: 7
             anchors.left: picklistArrow1.right

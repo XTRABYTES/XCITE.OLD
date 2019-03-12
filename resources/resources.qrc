@@ -236,5 +236,6 @@
         <file>gifs/loading-gif_01.gif</file>
         <file>icons/mobile/warning-icon_01.svg</file>
         <file>fonts/Xolonium-Regular.ttf</file>
+        <file>icons/mobile/lookup-icon_01.svg</file>
     </qresource>
 </RCC>

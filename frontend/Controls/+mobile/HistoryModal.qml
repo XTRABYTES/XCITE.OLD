@@ -97,13 +97,64 @@ Rectangle {
         color: themecolor
     }
 
+    Controls.TextInput {
+        id: searchForTransaction
+        z: 5
+        placeholder: "SEARCH TRANSACTION"
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.right: lookUp.left
+        anchors.top: newIcon.bottom
+        anchors.topMargin: 15
+        color: searchForTransaction.text != "" ? "#2A2C31" : "#727272"
+        textBackground: "#F2F2F2"
+        font.pixelSize: 14
+        mobile: 1
+    }
+
+    Rectangle {
+        id: lookUp
+        height: searchForTransaction.height
+        width: searchForTransaction.height
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.verticalCenter: searchForTransaction.verticalCenter
+        color: "#0ED8D2"
+
+        Image {
+            source: 'qrc:/icons/mobile/lookup-icon_01.svg'
+            height: lookUp.height * 0.7
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                click01.play()
+                detectInteraction()
+                // searchTransaction(walletList.get(walletIndex).name, searchForTransaction.text)
+            }
+        }
+
+        Connections {
+            target: explorer
+            /**
+                onTransactionFound: {
+
+                }*/
+        }
+    }
+
     Label {
         id: historyPrevious
         text: "PREVIOUS"
         anchors.left: parent.left
         anchors.leftMargin: 28
-        anchors.top: newIcon.bottom
-        anchors.topMargin: 20
+        anchors.top: searchForTransaction.bottom
+        anchors.topMargin: 15
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -121,6 +172,8 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
+                    click01.play()
+                    detectInteraction()
                     currentPage = currentPage - 1
                     newHistory = 1
                     updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
@@ -145,8 +198,8 @@ Rectangle {
         text: "NEXT"
         anchors.right: parent.right
         anchors.rightMargin: 28
-        anchors.top: newIcon.bottom
-        anchors.topMargin: 20
+        anchors.top: searchForTransaction.bottom
+        anchors.topMargin: 15
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -164,6 +217,8 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
+                    click01.play()
+                    detectInteraction()
                     currentPage = currentPage + 1
                     newHistory = 1
                     updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)

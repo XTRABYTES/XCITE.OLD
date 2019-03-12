@@ -19,6 +19,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     width: parent.width
     height: parent.height
+    anchors.top: parent.top
     color: "transparent"
     clip :true
 
