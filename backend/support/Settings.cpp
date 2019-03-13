@@ -395,7 +395,6 @@ void Settings::login(QString username, QString password){
      QByteArray sessionIdBa = QByteArray(reinterpret_cast<char*>(decrypted), decryptedSize2);
      sessionId = QString::fromLatin1(sessionIdBa, sessionIdBa.size());
 
-
     QByteArray decodedSettings = encryption.decode(settings.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
     int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
     decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
@@ -406,6 +405,7 @@ void Settings::login(QString username, QString password){
     if(decodedJson.value("app").toString().startsWith("xtrabytes")){
         m_username = username;
         m_password = password;
+
         LoadSettings(decodedSettings);
 
         // Create new rand Num.
@@ -498,9 +498,6 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
 
 
   return returnVals;
-
-
-
 }
 
 bool Settings::SaveSettings(){
@@ -824,4 +821,31 @@ QString Settings::LoadFile(QString fileName){
     in.setVersion(QDataStream::Qt_5_11);
     in >> returnFile;
     return returnFile;
+}
+
+void Settings::CheckSessionId(){
+
+    // Encrypt sessionId with backend key
+    std::pair<int, QByteArray> sessionIdAes = encryptAes(sessionId, backendKey, iiiv);
+    sessionIdAes.second = sessionIdAes.second.toBase64();
+
+    QVariantMap feed;
+     feed.insert("sessionIdAes", sessionIdAes.second);
+     feed.insert("username",m_username);
+
+     QByteArray checkSession =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
+     checkSession = checkSession.toBase64();
+
+     // Send sessionId + settings to backend to save
+     QString checkSessionResponse = RestAPIPostCall2("/v1/checkSessionId", checkSession);
+
+     QJsonDocument jsonResponse = QJsonDocument::fromJson(checkSessionResponse.toLatin1());
+     QJsonValue encryptedText = jsonResponse.object().value("sessionId");
+
+     bool sessionCheckBool = encryptedText.toString() == "true" ? true:false;
+
+
+    emit sessionIdCheck(sessionCheckBool);
+
+
 }
