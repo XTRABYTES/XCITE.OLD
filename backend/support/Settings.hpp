@@ -98,6 +98,10 @@ signals:
     void saveFileSucceeded();
     void saveFileFailed();
     void sessionIdCheck(const bool &sessionAlive);
+    void checkUsername();
+    void createUniqueKeyPair();
+    void checkIdentity();
+    void receiveSessionID();
 
 
 
@@ -108,6 +112,7 @@ private:
     QString m_addresses;
     QString m_contacts;
     QString m_wallet;
+    QString m_oldPincode;
     QString m_pincode;
     QString m_username;
     QString m_password;

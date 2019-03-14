@@ -341,6 +341,7 @@ ApplicationWindow {
     signal checkNetwork(string network)
     signal updateAccount(string addresslist, string contactlist, string walletlist)
     signal updateTransactions(string coin, string address, string page)
+    signal checkSessionId()
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
@@ -827,16 +828,12 @@ ApplicationWindow {
 
     function loadWalletList(wallet) {
         if (typeof wallet !== "undefined") {
-            console.log("json wallet list: " + wallet)
             walletList.clear();
             var obj = JSON.parse(wallet);
-            console.log("raw wallet list: " + obj)
             for (var i in obj){
                 var data = obj[i];
                 walletList.append(data);
             }
-            console.log("walletList Count: " + walletList.count);
-
         }
         else {
             console.log("no wallets saved in account")
@@ -1297,20 +1294,28 @@ ApplicationWindow {
 
     Timer {
         id: networkTimer
-        interval: 30000
+        interval: 60000
         repeat: true
         running: sessionStart == 1
 
         onTriggered: {
-            // check if there is a connection to the accounts server and if the session is still open
+            checkSessionId()
+        }
+    }
 
-            // if connection is available -> networkAvailable = 0
-            // if connection is not available -> networkAvailable = networkAvailable + 1
-            // if networkAvailable >= 4 -> networkLogout = 1 && logoutTracker = 1
-            if (sessionClosed == 1) {
+    Connections {
+        target: UserSettings
+
+        onSessionIdCheck: {
+            if (sessionAlive === false && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
+                console.log("session ID invalid")
+                networkLogout = 1
+                logoutTracker = 1
                 sessionStart = 0
                 sessionClosed = 1
-                logoutTracker = 1
+            }
+            else {
+                console.log("session ID still valid")
             }
         }
     }

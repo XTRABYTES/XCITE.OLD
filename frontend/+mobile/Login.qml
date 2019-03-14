@@ -25,6 +25,10 @@ Item {
 
     property int passError: 0
     property bool loginInitiated: false
+    property int checkUsername: 0
+    property int keyPairSend: 0
+    property int checkIdentity: 0
+    property int receiveSessionID: 0
 
     Rectangle {
         id: login
@@ -187,23 +191,38 @@ Item {
                 onReleased: {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
                         loginInitiated = true
+                        checkUsername = 1
                         userLogin(userName.text, passWord.text)
                     }
                 }
             }
             Connections {
                 target: UserSettings
+
+                onCreateUniqueKeyPair: {
+                    checkUsername = 0
+                    keyPairSend = 1
+
+                }
+
+                onCheckIdentity: {
+                    keyPairSend = 0
+                    checkIdentity = 1
+                }
+
+                onReceiveSessionID: {
+                    checkIdentity = 0
+                    receiveSessionID = 1
+                }
+
                 onContactsLoaded: {
-                    console.log("contacts loaded")
                     loadContactList(contacts)
                 }
 
                 onAddressesLoaded: {
-                    console.log("addressbook loaded")
                     loadAddressList(addresses)
                 }
                 onWalletLoaded: {
-                    console.log("wallet loaded")
                     loadWalletList(wallets)
                 }
 
@@ -212,7 +231,6 @@ Item {
                 }
 
                 onSettingsLoaded: {
-                    console.log("settings loaded")
                     loadSettings(settings);
                 }
                 /** onTransactionsLoaded: {
@@ -225,6 +243,7 @@ Item {
                     mainRoot.push("../Home.qml")
                     username = userName.text
                     loginSuccesTimer.start()
+                    receiveSessionID = 0
                 }
 
                 onLoginFailedChanged: {
@@ -273,15 +292,52 @@ Item {
             visible: logInButton.visible
         }
 
-        AnimatedImage {
-            id: waitingDots
-            source: 'qrc:/gifs/loading-gif_01.gif'
-            width: 90
-            height: 60
+        Label {
+            id: loginRespons
+            text: "Checking username ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
-            playing: loginInitiated == true
-            visible: loginInitiated == true
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: checkUsername == 1
+        }
+
+        Label {
+            id: loginRespons1
+            text: "Creating keypair for session ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: keyPairSend == 1
+        }
+
+        Label {
+            id: loginRespons2
+            text: "Checking identity ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: checkIdentity == 1
+        }
+
+        Label {
+            id: loginRespons3
+            text: "Receiving session ID ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: receiveSessionID == 1
         }
 
         Rectangle {

@@ -300,12 +300,14 @@ RSA * Settings::createRSA(unsigned char * key,int public1)
 }
 
 void Settings::login(QString username, QString password){
+    emit checkUsername();
     if(!UserExists(username)){
         return;
     }
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
 
     // Create Pub/Priv RSA Key
+    emit createUniqueKeyPair();
     keyPair = createKeyPair();
     QByteArray pubKey = keyPair.first;
     QByteArray privKey = keyPair.second;
@@ -333,6 +335,7 @@ void Settings::login(QString username, QString password){
     QByteArray iv = ivValue.toString().toLatin1();
 
      // Check encrypted randNr
+     emit checkIdentity();
      QJsonValue randNumEnc = jsonResponse.object().value("randNum");
      QByteArray randNumBa = randNumEnc.toString().toLatin1();
 
@@ -390,6 +393,7 @@ void Settings::login(QString username, QString password){
      std::memcpy(encryptedSess,sessionIdEncrypted.constData(),sessionIdSize);
 
      // Decrypt sessionId
+     emit receiveSessionID();
      int  decryptedSize2 = RSA_private_decrypt(sessionIdSize,encryptedSess,decrypted,privRSAKey,padding);
 
      QByteArray sessionIdBa = QByteArray(reinterpret_cast<char*>(decrypted), decryptedSize2);
@@ -554,8 +558,10 @@ bool Settings::SaveSettings(){
      bool settingsSavedSuccess = encryptedText.toString() == "success" ? true:false;
 
      if (settingsSavedSuccess){
+         m_oldPincode = m_pincode;
          emit saveSucceeded();
      }else{
+         m_pincode = m_oldPincode;
          emit saveFailed();
      }
 
@@ -624,6 +630,7 @@ void Settings::LoadSettings(QByteArray settings){
     QString pincode = json.value("pincode").toString().toLatin1();
     QByteArray enc_pincode = encryption.encode( pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
     m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length()); //encryption.encode((QString("<xtrabytes>") + pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+    m_oldPincode = QString::fromLatin1(enc_pincode, enc_pincode.length());
 
     emit loginSucceededChanged();
 }
