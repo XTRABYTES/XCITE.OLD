@@ -546,9 +546,19 @@ bool Settings::SaveSettings(){
      finalLogin = finalLogin.toBase64();
 
      // Send sessionId + settings to backend to save
-     QString finalLoginResponse = RestAPIPostCall2("/v1/saveSettings", finalLogin);
+     QString saveSettingsResponse = RestAPIPostCall2("/v1/saveSettings", finalLogin);
 
-     emit saveSucceeded();
+     QJsonDocument jsonResponse = QJsonDocument::fromJson(saveSettingsResponse.toLatin1());
+     QJsonValue encryptedText = jsonResponse.object().value("login");
+
+     bool settingsSavedSuccess = encryptedText.toString() == "success" ? true:false;
+
+     if (settingsSavedSuccess){
+         emit saveSucceeded();
+     }else{
+         emit saveFailed();
+     }
+
 
     return true;
 }
