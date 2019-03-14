@@ -75,6 +75,7 @@ public slots:
 
     QString RestAPIPutCall(QString apiURL, QByteArray payload);
     QByteArray RestAPIGetCall(QString apiURL);
+    void CheckSessionId();
 
 
 signals:
@@ -96,6 +97,7 @@ signals:
     void saveFailed();
     void saveFileSucceeded();
     void saveFileFailed();
+    void sessionIdCheck(const bool &sessionAlive);
 
 
 
