@@ -99,7 +99,7 @@ Rectangle {
             id: logoutLabel
             width: parent.width - 56
             text: manualLogout == 1? ("Are you sure you want to log out?") :
-                                     (networkLogout == 1? ("You have lost connection to the network for more than 2 minutes. You will be logged out automatically.") :
+                                     (networkLogout == 1? ("Your session ID is no longer valid, someone else logged in using your account. You will be logged out automatically.") :
                                                           (sessionClosed == 1? ("Your session was closed by the server. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s). Do you wish to reconnect?") :
                                                                                (autoLogout == 1? ("You have not interacted for 5 minutes. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s)") :
                                                                                                  (requestedLogout == 1? ("Someone requested you to log out.") : ""))))
