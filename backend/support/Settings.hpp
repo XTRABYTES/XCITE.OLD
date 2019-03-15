@@ -69,11 +69,6 @@ public slots:
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
     QString RestAPIPostCall(QString apiURL, QByteArray payload);
-    QString RestAPIPostCall2(QString apiURL, QByteArray payload);
-//    RSA * createRSA(unsigned char * key,int publi);
-
-
-    QString RestAPIPutCall(QString apiURL, QByteArray payload);
     QByteArray RestAPIGetCall(QString apiURL);
     void CheckSessionId();
 
@@ -102,6 +97,9 @@ signals:
     void createUniqueKeyPair();
     void checkIdentity();
     void receiveSessionID();
+    void saveFailedDBError();
+    void saveFailedAPIError();
+
 
 
 

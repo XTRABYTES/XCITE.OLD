@@ -97,8 +97,8 @@ bool Settings::UserExists(QString username){
     }
 }
 
-QString Settings::RestAPIPostCall2(QString apiURL, QByteArray payload){
-    QString returnVal = "";
+QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
+    QString statusCode = "";
     QUrl Url;
     Url.setScheme("http");
     Url.setHost("37.59.57.212");
@@ -118,7 +118,17 @@ QString Settings::RestAPIPostCall2(QString apiURL, QByteArray payload){
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
     loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
-    return reply->readAll();
+
+    statusCode = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
+
+    bool callSuccess = statusCode == "Success" ? true:false;
+
+    if (callSuccess){
+        return reply->readAll();
+    }else{
+        return "";
+    }
+
 }
 
 
@@ -152,7 +162,10 @@ void Settings::CreateUser(QString username, QString password){
        payload = payload.toBase64();
 
        //  Send Pub Key to API.  Response contains backend AES key + iv
-       QString response2 = RestAPIPostCall2("/v1/createKeyPair", payload);
+       QString response2 = RestAPIPostCall("/v1/createKeyPair", payload);
+       if (response2.isEmpty()){
+           return;
+       }
 
        QJsonDocument jsonResponse = QJsonDocument::fromJson(response2.toLatin1());
        QJsonValue encryptedText = jsonResponse.object().value("aeskey");
@@ -165,7 +178,8 @@ void Settings::CreateUser(QString username, QString password){
        const std::size_t aesKeySize = aeskeyEncrypted.size();
        unsigned char* encrypted = new unsigned char[aesKeySize];
        std::memcpy(encrypted,aeskeyEncrypted.constData(),aesKeySize);
-       unsigned char * privKey2 = (unsigned char*) privKey.data();
+       unsigned char* privKey2 = new unsigned char[privKey.size()];
+       std::memcpy(privKey2,privKey.data(),privKey.size());
        RSA * privRSAKey = createRSA(privKey2,0);
 
        // Decrypt AES key using local private key. Stores it to backendKey
@@ -203,7 +217,10 @@ void Settings::CreateUser(QString username, QString password){
         payload3 = payload3.toBase64();
 
         // Send encrypted rand number + settings.  Backend checks randNum and saves settings.  Returns encrypted sessionId
-        QString response3 = RestAPIPostCall2("/v1/decryptAES", payload3);
+        QString response3 = RestAPIPostCall("/v1/decryptAES", payload3);
+        if (response3.isEmpty()){
+            return;
+        }
 
         QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
         QJsonValue encryptedText2 = jsonResponse2.object().value("sessionId");
@@ -229,6 +246,9 @@ void Settings::CreateUser(QString username, QString password){
         }else{
             emit userCreationFailed();
         }
+
+        delete [] encrypted;
+        delete [] privKey2;
     }
 }
 
@@ -324,7 +344,10 @@ void Settings::login(QString username, QString password){
     payload = payload.toBase64();
 
     //  Send Pub Key to API.  Backend returns AES key and randNum encrypted with password
-    QString response2 = RestAPIPostCall2("/v1/login", payload);
+    QString response2 = RestAPIPostCall("/v1/login", payload);
+    if (response2.isEmpty()){
+        return;
+    }
 
     QJsonDocument jsonResponse = QJsonDocument::fromJson(response2.toLatin1());
     QJsonValue encryptedText = jsonResponse.object().value("aeskey");
@@ -339,10 +362,12 @@ void Settings::login(QString username, QString password){
      QJsonValue randNumEnc = jsonResponse.object().value("randNum");
      QByteArray randNumBa = randNumEnc.toString().toLatin1();
 
-     unsigned char * privKey2 = (unsigned char*) privKey.data();
+     unsigned char* privKey2 = new unsigned char[privKey.size()];
+     std::memcpy(privKey2,privKey.data(),privKey.size());
 
      RSA * privRSAKey = createRSA(privKey2,0);
 
+     delete [] privKey2;
      const std::size_t randNumBaSize = randNumBa.size();
      unsigned char* encryptedRandNum = new unsigned char[randNumBaSize];
      std::memcpy(encryptedRandNum,randNumBa.constData(),randNumBaSize);
@@ -380,7 +405,11 @@ void Settings::login(QString username, QString password){
      payload2 = payload2.toBase64();
 
       //  Send Decrypted randNum back to backend (checks if user is right user)
-     QString response3 = RestAPIPostCall2("/v1/checkUser", payload2);
+     QString response3 = RestAPIPostCall("/v1/checkUser", payload2);
+     if (response3.isEmpty()){
+         emit loginFailedChanged();
+         return;
+     }
      QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
      QJsonValue encryptedSettings = jsonResponse2.object().value("settings");
      QString settings = encryptedSettings.toString();
@@ -435,7 +464,11 @@ void Settings::login(QString username, QString password){
          finalLogin = finalLogin.toBase64();
 
          // Send new encrypted Rand Nums to backend
-         QString finalLoginResponse = RestAPIPostCall2("/v1/finalLogin", finalLogin);
+         QString finalLoginResponse = RestAPIPostCall("/v1/finalLogin", finalLogin);
+         if (finalLoginResponse.isEmpty()){
+             emit loginFailedChanged();
+             return;
+         }
     }else{
         emit loginFailedChanged();
     }
@@ -550,7 +583,11 @@ bool Settings::SaveSettings(){
      finalLogin = finalLogin.toBase64();
 
      // Send sessionId + settings to backend to save
-     QString saveSettingsResponse = RestAPIPostCall2("/v1/saveSettings", finalLogin);
+     QString saveSettingsResponse = RestAPIPostCall("/v1/saveSettings", finalLogin);
+     if (saveSettingsResponse.isEmpty()){
+         return false;
+     }
+
 
      QJsonDocument jsonResponse = QJsonDocument::fromJson(saveSettingsResponse.toLatin1());
      QJsonValue encryptedText = jsonResponse.object().value("login");
@@ -699,59 +736,6 @@ bool Settings::checkPincode(QString pincode){
     }
 }
 
-QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
-    QString returnVal = "";
-    QUrl Url;
-    Url.setScheme("http");
-    Url.setHost("37.59.57.212");
-    Url.setPort(8080);
-    Url.setPath(apiURL);
-    qDebug() << Url.toString();
-
-    QNetworkRequest request;
-    request.setUrl(Url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
-
-    QNetworkAccessManager *restclient;
-    restclient = new QNetworkAccessManager(this);
-    QNetworkReply *reply = restclient->post(request, payload);
-
-    QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-    loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
-    returnVal = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
-
-    return returnVal;
-}
-
-
-QString Settings::RestAPIPutCall(QString apiURL, QByteArray payload){
-    QString returnVal = "";
-    QUrl Url;
-    Url.setScheme("http");
-    Url.setHost("37.59.57.212");
-    Url.setPort(8080);
-    Url.setPath(apiURL);
-    qDebug() << Url.toString();
-
-    QNetworkRequest request;
-    request.setUrl(Url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
-
-    QNetworkAccessManager *restclient;
-    restclient = new QNetworkAccessManager(this);
-    QNetworkReply *reply = restclient->put(request, payload);
-
-    QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-    loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
-    returnVal = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
-
-    return returnVal;
-}
-
 
 QByteArray Settings::RestAPIGetCall(QString apiURL){
 
@@ -787,16 +771,16 @@ QString Settings::CheckStatusCode(QString statusCode){
     QString returnVal;
     if (statusCode.startsWith("2")){
         returnVal = "Success";
-        emit saveSucceeded();
+     //   emit saveSucceeded();  Handling response at call
     }else if (statusCode.startsWith("3")) {
         returnVal = "API Connection Error";
-        emit saveFailed();
+        emit saveFailedAPIError();
     }else if (statusCode.startsWith("4")) {
         returnVal = "Input Error";
         emit saveFailed();
     }else if (statusCode.startsWith("5")) {
         returnVal = "DB Error";
-        emit saveFailed();
+        emit saveFailedDBError();
     }else{
         returnVal = "Unknown Error";
         emit saveFailed();
@@ -854,7 +838,10 @@ void Settings::CheckSessionId(){
      checkSession = checkSession.toBase64();
 
      // Send sessionId + settings to backend to save
-     QString checkSessionResponse = RestAPIPostCall2("/v1/checkSessionId", checkSession);
+     QString checkSessionResponse = RestAPIPostCall("/v1/checkSessionId", checkSession);
+     if (checkSessionResponse.isEmpty()){
+         return;
+     }
 
      QJsonDocument jsonResponse = QJsonDocument::fromJson(checkSessionResponse.toLatin1());
      QJsonValue encryptedText = jsonResponse.object().value("sessionId");
@@ -862,7 +849,7 @@ void Settings::CheckSessionId(){
      bool sessionCheckBool = encryptedText.toString() == "true" ? true:false;
 
 
-    emit sessionIdCheck(sessionCheckBool);
+     emit sessionIdCheck(sessionCheckBool);
 
 
 }
