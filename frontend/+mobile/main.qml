@@ -1006,7 +1006,10 @@ ApplicationWindow {
     }
 
     function clearStack() {
-        mainRoot.pop("../main.qml")
+        if (selectedPage != "home") {
+            mainRoot.pop()
+        }
+        mainRoot.pop()
         mainRoot.push("../Onboarding.qml")
     }
 
@@ -1020,6 +1023,7 @@ ApplicationWindow {
 
     // loggin out
     function logOut () {
+        console.log("resetting trackers")
         interactionTracker = 0
         loginTracker = 0
         logoutTracker = 0
@@ -1049,24 +1053,38 @@ ApplicationWindow {
         currencyTracker = 0
         pincodeTracker = 0
         debugTracker = 0
+        backupTracker = 0
+        screenshotTracker = 0
+        walletDetailTracker = 0
+        portfolioTracker = 0
+        console.log("resetting IDs")
         contactID = 1
         addressID = 1
         walletID = 1
         txID = 1
         pictureID = 0
         currencyID = 0
+        console.log("resetting indexes")
         coinIndex = 0
         walletIndex = 0
+        console.log("remove deleted items")
         clearAddressList()
         clearContactList()
         clearWalletList()
+        console.log("save settings to account")
         updateToAccount()
+        console.log("clearing front end lists")
         addressList.clear()
         contactList.clear()
         walletList.clear()
         alertList.clear()
+        console.log("initializing front end lists")
         initialiseLists()
+        console.log("clearing settings")
+        username = ""
+        selectedPage = ""
         clearAllSettings()
+        console.log("clearing stack")
         clearStack()
     }
 

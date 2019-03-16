@@ -178,6 +178,7 @@ Item {
                     passError = 0
                     networkError = 0
                     loginTracker = 0
+                    sessionClosed = 0
                     sessionStart = 1
                     loginInitiated  = false
                 }
