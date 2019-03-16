@@ -28,7 +28,9 @@ Item {
     property int checkUsername: 0
     property int keyPairSend: 0
     property int checkIdentity: 0
+    property int sessionKey: 0
     property int receiveSessionID: 0
+    property int loadingSettings:  0
 
     Rectangle {
         id: login
@@ -202,7 +204,6 @@ Item {
                 onCreateUniqueKeyPair: {
                     checkUsername = 0
                     keyPairSend = 1
-
                 }
 
                 onCheckIdentity: {
@@ -210,9 +211,19 @@ Item {
                     checkIdentity = 1
                 }
 
-                onReceiveSessionID: {
+                onReceiveSessionEncryptionKey: {
                     checkIdentity = 0
+                    sessionKey = 1
+                }
+
+                onReceiveSessionID: {
+                    sessionKey = 0
                     receiveSessionID = 1
+                }
+
+                onLoadingSettings: {
+                    receiveSessionID = 0
+                    loadingSettings = 1
                 }
 
                 onContactsLoaded: {
@@ -243,10 +254,15 @@ Item {
                     mainRoot.push("../Home.qml")
                     username = userName.text
                     loginSuccesTimer.start()
-                    receiveSessionID = 0
+                    loadingSettings = 0
                 }
 
                 onLoginFailedChanged: {
+                    checkUsername = 0
+                    keyPairSend = 0
+                    checkIdentity = 0
+                    receiveSessionID = 0
+                    loadingSettings = 0
                     passError = 1
                     passWord.text = ""
                     loginInitiated  = false
@@ -258,12 +274,7 @@ Item {
                     loginInitiated  = false
                 }
 
-                onSettingsServerError: {
-                    networkError = 1
-                    passWord.text = ""
-                    loginInitiated  = false
-                }
-            }
+             }
         }
 
         Text {
@@ -330,7 +341,19 @@ Item {
 
         Label {
             id: loginRespons3
-            text: "Receiving session ID ..."
+            text: "Retrieving session encryption key ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: sessionKey == 1
+        }
+
+        Label {
+            id: loginRespons4
+            text: "Retrieving session ID ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
             color: "#F2F2F2"
@@ -338,6 +361,18 @@ Item {
             font.family: xciteMobile.name
             font.italic: true
             visible: receiveSessionID == 1
+        }
+
+        Label {
+            id: loginRespons5
+            text: "Loading account settings ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: loadingSettings == 1
         }
 
         Rectangle {
@@ -404,113 +439,5 @@ Item {
             anchors.topMargin: 5
             color: "#F2F2F2"
         }
-    }
-
-    Rectangle {
-        id: serverError
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.top
-        width: Screen.width
-        height: 100
-        state: networkError == 0? "up" : "down"
-        color: "black"
-        opacity: 0.9
-
-
-        states: [
-            State {
-                name: "up"
-                PropertyChanges { target: serverError; anchors.bottomMargin: 0}
-            },
-            State {
-                name: "down"
-                PropertyChanges { target: serverError; anchors.bottomMargin: -100}
-            }
-        ]
-
-        transitions: [
-            Transition {
-                from: "*"
-                to: "*"
-                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
-            }
-        ]
-
-        Label {
-            id: serverErrorText
-            text: "A network error occured, please try again later."
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            color: "#FD2E2E"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-        }
-
-        Rectangle {
-            id: okButton
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            radius: 5
-            color: "#1B2934"
-            opacity: 0.5
-
-            LinearGradient {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(x, y)
-                end: Qt.point(x, parent.height)
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 1.0; color: "#0ED8D2" }
-                }
-            }
-
-
-            MouseArea {
-                anchors.fill: parent
-
-                onReleased: {
-                    networkError = 0
-                    passError = 0
-                }
-            }
-        }
-
-        Text {
-            id: okButtonText
-            text: "OK"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            color: "#F2F2F2"
-            font.bold: true
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.verticalCenter: okButton.verticalCenter
-        }
-
-        Rectangle {
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.bottom: okButton.bottom
-            radius: 5
-            color: "transparent"
-            opacity: 0.5
-            border.width: 1
-            border.color: "#0ED8D2"
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            color: "black"
-        }
-    }
-    Component.onDestruction: {
     }
 }

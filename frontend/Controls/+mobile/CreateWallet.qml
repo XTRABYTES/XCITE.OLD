@@ -65,6 +65,7 @@ Rectangle {
     property bool walletSaved: false
     property int saveErrorNR: 0
     property bool createInitiated: false
+    property string failError: ""
 
     function compareName() {
         labelExists = 0
@@ -101,7 +102,7 @@ Rectangle {
         visible: editSaved == 0 && newWallet == 0 && editFailed == 0 && createFailed == 0
     }
 
-     Flickable {
+    Flickable {
         z: 1
         id: scrollArea
         width: parent.width
@@ -540,6 +541,30 @@ Rectangle {
                             addingWallet = false
                         }
                     }
+
+                    onSaveFailedDBError: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            failError = "Database ERROR"
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            failError = "Network ERROR"
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            failError = "Input ERROR"
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            failError = "Unknown ERROR"
+                        }
+                    }
                 }
             }
 
@@ -615,13 +640,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -643,6 +680,7 @@ Rectangle {
                             createWalletTracker = 0
                         }
                         editFailed = 0
+                        failError = ""
                     }
                 }
             }
