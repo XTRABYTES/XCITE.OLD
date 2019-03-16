@@ -83,6 +83,7 @@ Rectangle {
     property bool newInclude
     property bool walletEdited
     property int saveErrorNR: 0
+    property string failError: ""
 
     function compareLabel(){
         labelExists = 0
@@ -477,6 +478,30 @@ Rectangle {
                         editingWallet = false
                     }
                 }
+
+                onSaveFailedDBError: {
+                    if (walletDetailTracker == 1 && editingWallet == true) {
+                        failError = "Database ERROR"
+                    }
+                }
+
+                onSaveFailedAPIError: {
+                    if (walletDetailTracker == 1 && editingWallet == true) {
+                        failError = "Network ERROR"
+                    }
+                }
+
+                onSaveFailedInputError: {
+                    if (walletDetailTracker == 1 && editingWallet == true) {
+                        failError = "Input ERROR"
+                    }
+                }
+
+                onSaveFailedUnknownError: {
+                    if (walletDetailTracker == 1 && editingWallet == true) {
+                        failError = "Unknown ERROR"
+                    }
+                }
             }
         }
 
@@ -597,13 +622,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -622,6 +659,7 @@ Rectangle {
                             walletDetailTracker = 0;
                         }
                         editFailed = 0
+                        failError = ""
                     }
                 }
             }
@@ -879,6 +917,30 @@ Rectangle {
                         deletingWallet = false
                     }
                 }
+
+                onSaveFailedDBError: {
+                    if (deleteWalletTracker == 1 && deletingAddress == true) {
+                        failError = "Database ERROR"
+                    }
+                }
+
+                onSaveFailedAPIError: {
+                    if (deleteWalletTracker == 1 && deletingAddress == true) {
+                        failError = "Network ERROR"
+                    }
+                }
+
+                onSaveFailedInputError: {
+                    if (deleteWalletTracker == 1 && deletingAddress == true) {
+                        failError = "Input ERROR"
+                    }
+                }
+
+                onSaveFailedUnknownError: {
+                    if (deleteWalletTracker == 1 && deletingAddress == true) {
+                        failError = "Unknown ERROR"
+                    }
+                }
             }
         }
 
@@ -1011,13 +1073,25 @@ Rectangle {
             font.bold: true
         }
 
+        Label {
+            id: deleteFailedError
+            text: failError
+            anchors.top: deleteFailedLabel.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: failedIcon.horizontalCenter
+            color: maincolor
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+        }
+
         Rectangle {
             id: closeDeleteFail
             width: doubbleButtonWidth / 2
             height: 34
             color: maincolor
             opacity: 0.25
-            anchors.top: deleteFailedLabel.bottom
+            anchors.top: deleteFailedError.bottom
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1037,6 +1111,7 @@ Rectangle {
                     }
                     deleteFailed = 0
                     deleteWalletTracker = 0
+                    failError = ""
                 }
             }
         }

@@ -66,6 +66,7 @@ Rectangle {
     property bool walletSaved: false
     property int saveErrorNR: 0
     property bool importInitiated: false
+    property string failError: ""
 
     function compareTx() {
         addressExists = 0
@@ -709,6 +710,30 @@ Rectangle {
                             addingWallet = false
                         }
                     }
+
+                    onSaveFailedDBError: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            failError = "Database ERROR"
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            failError = "Network ERROR"
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            failError = "Input ERROR"
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            failError = "Unknown ERROR"
+                        }
+                    }
                 }
             }
 
@@ -772,13 +797,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -798,6 +835,7 @@ Rectangle {
                         }
 
                         editFailed = 0
+                        failError = ""
                     }
                 }
             }

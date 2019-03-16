@@ -50,6 +50,7 @@ Rectangle {
     property int editFailed: 0
     property bool addingContact: false
     property int contactExists: 0
+    property string failError: ""
 
     function compareName() {
         contactExists = 0
@@ -328,6 +329,30 @@ Rectangle {
                         addingContact = false
                     }
                 }
+
+                onSaveFailedDBError: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        failError = "Database ERROR"
+                    }
+                }
+
+                onSaveFailedAPIError: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        failError = "Network ERROR"
+                    }
+                }
+
+                onSaveFailedInputError: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        failError = "Input ERROR"
+                    }
+                }
+
+                onSaveFailedUnknownError: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        failError = "Unknown ERROR"
+                    }
+                }
             }
         }
 
@@ -406,13 +431,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 

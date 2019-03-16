@@ -79,7 +79,8 @@ Rectangle {
             autoLogout = 0
             requestedLogout = 0
             networkLogout = 0
-            sessionClosed = 0
+            sessionStart = 0
+            sessionClosed = 1
             logOut()
         }
     }

@@ -136,7 +136,7 @@ void Settings::CreateUser(QString username, QString password){
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Latin1"));
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
 
-
+    emit checkUsername();
     if(UserExists(username)){
         return;
     }else{
@@ -145,6 +145,7 @@ void Settings::CreateUser(QString username, QString password){
        settings.insert("app","xtrabytes");
        m_settings->setValue("app","xtrabytes");
 
+       emit createUniqueKeyPair();
        // Create Pub/Priv RSA Key
        keyPair = createKeyPair();
        QByteArray pubKey = keyPair.first;
@@ -171,6 +172,7 @@ void Settings::CreateUser(QString username, QString password){
        QJsonValue encryptedText = jsonResponse.object().value("aeskey");
        QByteArray aeskeyEncrypted = encryptedText.toString().toLatin1();
 
+       emit receiveSessionEncryptionKey();
        // Get IV from API to use in future encryptions
        QJsonValue ivValue = jsonResponse.object().value("iv");
        QByteArray iv = ivValue.toString().toLatin1();
@@ -182,9 +184,11 @@ void Settings::CreateUser(QString username, QString password){
        std::memcpy(privKey2,privKey.data(),privKey.size());
        RSA * privRSAKey = createRSA(privKey2,0);
 
+
        // Decrypt AES key using local private key. Stores it to backendKey
        int  decryptedSize = RSA_private_decrypt(aesKeySize,encrypted,backendKey,privRSAKey,padding);
 
+       emit saveAccountSettings();
        // Save iv data to local storage
        std::memcpy(iiiv,iv.constData(),iv.size());
 
@@ -222,6 +226,7 @@ void Settings::CreateUser(QString username, QString password){
             return;
         }
 
+        emit receiveSessionID();
         QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
         QJsonValue encryptedText2 = jsonResponse2.object().value("sessionId");
         QByteArray sessionIdEncrypted = encryptedText2.toString().toLatin1();
@@ -384,6 +389,7 @@ void Settings::login(QString username, QString password){
     QString randNumDec = QString::fromLatin1(decodedRandNum);
     randNumDec = randNumDec.chopped(randNumDec.length() - 9); //ensure value is 9 characters
 
+    emit receiveSessionEncryptionKey();
     //Decrypt the AES key with local private key
     const std::size_t aesKeySize = aeskeyEncrypted.size();
     unsigned char* aeskeyEncryptedChar = new unsigned char[aesKeySize];
@@ -439,6 +445,7 @@ void Settings::login(QString username, QString password){
         m_username = username;
         m_password = password;
 
+        emit loadingSettings();
         LoadSettings(decodedSettings);
 
         // Create new rand Num.
@@ -771,19 +778,18 @@ QString Settings::CheckStatusCode(QString statusCode){
     QString returnVal;
     if (statusCode.startsWith("2")){
         returnVal = "Success";
-     //   emit saveSucceeded();  Handling response at call
     }else if (statusCode.startsWith("3")) {
         returnVal = "API Connection Error";
         emit saveFailedAPIError();
     }else if (statusCode.startsWith("4")) {
         returnVal = "Input Error";
-        emit saveFailed();
+        emit saveFailedInputError();
     }else if (statusCode.startsWith("5")) {
         returnVal = "DB Error";
         emit saveFailedDBError();
     }else{
         returnVal = "Unknown Error";
-        emit saveFailed();
+        emit saveFailedUnknownError();
     }
     return returnVal;
 }

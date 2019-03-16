@@ -87,6 +87,8 @@ Rectangle {
     property int passError3: 0
     property int failToSave: 0
 
+    property string failError: ""
+
     Flickable {
         id: scrollArea
         width: parent.width
@@ -282,6 +284,38 @@ Rectangle {
                                 newPin1.text = "";
                                 newPin2.text = "";
                                 failToSave = 1;
+                            }
+                        }
+                    }
+
+                    onSaveFailedDBError: {
+                        if (pincodeTracker == 1) {
+                            if (changePin == 0){
+                                failError = "Database ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (pincodeTracker == 1) {
+                            if (changePin == 0){
+                                failError = "Network ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (pincodeTracker == 1) {
+                            if (changePin == 0){
+                                failError = "Input ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (pincodeTracker == 1) {
+                            if (changePin == 0){
+                                failError = "Unknown ERROR"
                             }
                         }
                     }
@@ -573,6 +607,37 @@ Rectangle {
                             }
                         }
                     }
+                    onSaveFailedDBError: {
+                        if (pincodeTracker == 1) {
+                            if (changePin == 1){
+                                failError = "Database ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (pincodeTracker == 1) {
+                            if (changePin == 1){
+                                failError = "Network ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (pincodeTracker == 1) {
+                            if (changePin == 1){
+                                failError = "Input ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (pincodeTracker == 1) {
+                            if (changePin == 1){
+                                failError = "Unknown ERROR"
+                            }
+                        }
+                    }
                 }
             }
 
@@ -745,13 +810,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFailed
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 

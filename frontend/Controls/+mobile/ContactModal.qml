@@ -74,6 +74,7 @@ Rectangle {
     property string oldChat
     property string newFirst
     property string newLast
+    property string failError
 
     function compareName() {
         contactExists = 0
@@ -458,6 +459,22 @@ Rectangle {
                         editingContact = false
                     }
                 }
+
+                onSaveFailedDBError: {
+                    failError = "Database ERROR"
+                }
+
+                onSaveFailedAPIError: {
+                    failError = "Network ERROR"
+                }
+
+                onSaveFailedInputError: {
+                    failError = "Input ERROR"
+                }
+
+                onSaveFailedUnknownError: {
+                    failError = "Unknown ERROR"
+                }
             }
         }
 
@@ -535,13 +552,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -555,6 +584,7 @@ Rectangle {
 
                     onClicked: {
                         editFailed = 0
+                        failError = ""
                     }
                 }
             }
@@ -790,6 +820,30 @@ Rectangle {
                             deletingContact = false
                         }
                     }
+
+                    onSaveFailedDBError: {
+                        if (editContactTracker == 1 && deletingContact == true) {
+                            failError = "Database ERROR"
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (editContactTracker == 1 && deletingContact == true) {
+                            failError = "Network ERROR"
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (editContactTracker == 1 && deletingContact == true) {
+                            failError = "Input ERROR"
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (editContactTracker == 1 && deletingContact == true) {
+                            failError = "Unknown ERROR"
+                        }
+                    }
                 }
             }
 
@@ -915,13 +969,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: deleteFailedError
+                text: failError
+                anchors.top: deleteFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: failedIcon.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeDeleteFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: deleteFailedLabel.bottom
+                anchors.top: deleteFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -936,6 +1002,7 @@ Rectangle {
                     onClicked: {
                         deleteContactTracker = 0
                         deleteFailed = 0
+                        failError = ""
                     }
                 }
             }

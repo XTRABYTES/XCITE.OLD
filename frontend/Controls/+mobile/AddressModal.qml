@@ -80,6 +80,7 @@ Rectangle {
     property bool oldRemove
     property int oldFavorite
     property int newFavorite
+    property string failError: ""
 
     function compareTx(){
         doubleAddress = 0
@@ -409,6 +410,30 @@ Rectangle {
                         editFailed = 1
                         coinListTracker = 0
                         editingAddress = false
+                    }
+                }
+
+                onSaveFailedDBError: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        failError = "Database ERROR"
+                    }
+                }
+
+                onSaveFailedAPIError: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        failError = "Network ERROR"
+                    }
+                }
+
+                onSaveFailedInputError: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        failError = "Input ERROR"
+                    }
+                }
+
+                onSaveFailedUnknownError: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        failError = "Unknown ERROR"
                     }
                 }
             }
@@ -800,13 +825,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1081,6 +1118,30 @@ Rectangle {
                             deletingAddress = false
                         }
                     }
+
+                    onSaveFailedDBError: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            failError = "Database ERROR"
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            failError = "Network ERROR"
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            failError = "Input ERROR"
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            failError = "Unknown ERROR"
+                        }
+                    }
                 }
             }
 
@@ -1210,13 +1271,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: deleteFailedError
+                text: failError
+                anchors.top: deleteFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: failedIcon.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeDeleteFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: deleteFailedLabel.bottom
+                anchors.top: deleteFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1231,6 +1304,7 @@ Rectangle {
                     onClicked: {
                         deleteAddressTracker = 0
                         deleteFailed = 0
+                        failError = ""
                     }
                 }
             }

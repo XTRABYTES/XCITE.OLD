@@ -95,10 +95,15 @@ signals:
     void sessionIdCheck(const bool &sessionAlive);
     void checkUsername();
     void createUniqueKeyPair();
+    void receiveSessionEncryptionKey();
+    void saveAccountSettings();
     void checkIdentity();
     void receiveSessionID();
+    void loadingSettings();
     void saveFailedDBError();
     void saveFailedAPIError();
+    void saveFailedInputError();
+    void saveFailedUnknownError();
 
 
 
