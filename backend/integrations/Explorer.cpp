@@ -61,6 +61,58 @@ void Explorer::getTransactionList(QString coin, QString address, QString page){
      }
 }
 
+void Explorer::getDetails(QString coin, QString transaction) {
+    QString selectedCoin = coin.toLower();
+    if (selectedCoin.length() > 0){
+        if ((selectedCoin == "xby") || (selectedCoin == "xfuel")){
+            QString response =  getTransactionDetails(selectedCoin,transaction);
+            QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
+            QJsonObject result = jsonResponse.object().value("result").toObject();
+            QString timestamp = result.value("data").toString();
+            int confirms = result.value("confirmations").toInt();
+            QString balance = result.value("amount").toString();
+            QJsonArray inputs = result.value("inputs").toArray();
+            QJsonDocument inputdoc;
+            inputdoc.setArray(inputs);
+            QString inputString(inputdoc.toJson(QJsonDocument::Compact));
+            QJsonArray outputs = result.value("outputs").toArray();
+            QJsonDocument outputdoc;
+            outputdoc.setArray(outputs);
+            QString outputString(outputdoc.toJson(QJsonDocument::Compact));
+
+            emit updateTransactionsDetails(timestamp, QString::number(confirms), balance, inputString, outputString);
+
+         }
+     }
+}
+
+QString Explorer::getTransactionDetails(QString coin, QString transaction) {
+    QString url = "https://xtrabytes.global/api/"+ coin + "/transaction/" + transaction;
+
+    QUrl Url;
+    Url.setPath(url);
+
+    QEventLoop eventLoop;
+    QNetworkAccessManager mgr;
+    QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
+
+    QJsonObject json;
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("Accept", "application/json");
+
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
+    QNetworkReply *reply = mgr.get(request);
+    eventLoop.exec();
+
+    QString strReply = (QString)reply->readAll();
+    return strReply;
+}
+
 QString Explorer::getBalanceAddress(QString coin, QString address, QString page){
     QString balance = "";
     QString url = "https://xtrabytes.global/api/"+ coin + "/address/" + address + "?page=" + page;

@@ -24,6 +24,24 @@ Rectangle {
     clip :true
 
     property alias cardSpacing: picklist.spacing
+    property string searchCriteria: ""
+
+    Label {
+        id: noResultLabel
+        text: "No transactions matching your search criteria."
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.top: parent.top
+        anchors.topMargin: 30
+        wrapMode: Text.WordWrap
+        horizontalAlignment: Text.AlignHCenter
+        font.family: xciteMobile.name
+        font.pixelSize: 18
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: filteredHistory.count == 0
+    }
 
     Component {
         id: historyLine
@@ -69,6 +87,12 @@ Rectangle {
 
                 onClicked: {
                     clickIndicator.visible = false
+                    transactionTimestamp = ""
+                    transactionAmount = 0
+                    transactionNR = txid
+                    transactionDirection = direction
+                    transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),value) )/ 100000000
+                    getDetails(amountTicker.text, txid)
                 }
             }
 
@@ -92,9 +116,33 @@ Rectangle {
                 height: 5
                 width: 5
                 radius: 5
-                anchors.left: transactionID.left
-                anchors.verticalCenter: amountTicker.verticalCenter
+                anchors.right: transactionID.left
+                anchors.verticalCenter: confirmationAmount.verticalCenter
                 color: confirmations < 4? "#E555412" : (confirmations < 6? "#FF8400" : "#4BBE2E")
+            }
+
+            Label {
+                id: confirmationLabel
+                text: "confirmations"
+                anchors.left: transactionID.left
+                anchors.top: transactionID.bottom
+                anchors.topMargin: 7
+                font.family: xciteMobile.name
+                font.pixelSize: 18
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Label {
+                id: confirmationAmount
+                text: confirmations
+                anchors.left: confirmationIndicator.right
+                anchors.leftMargin: 7
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 10
+                font.family: xciteMobile.name
+                font.pixelSize: 18
+                font.bold: true
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
             Label {
@@ -143,13 +191,30 @@ Rectangle {
         }
     }
 
+    SortFilterProxyModel {
+        id: filteredHistory
+        sourceModel: historyList
+        filters: [
+            AnyOf {
+                RegExpFilter {
+                    roleName: "txid"
+                    pattern: searchCriteria
+                }
+                RegExpFilter {
+                    roleName: "value"
+                    pattern: searchCriteria
+                }
+            }
+        ]
+    }
+
     ListView {
         anchors.fill: parent
         id: picklist
-        model: historyList
+        model: filteredHistory
         delegate: historyLine
         spacing: 0
-        contentHeight: (historyList.count * 100) + 50
+        contentHeight: (filteredHistory.count * 100) + 50
         onDraggingChanged: detectInteraction()
     }
 }

@@ -172,5 +172,7 @@
         <file>Controls/+mobile/PortfolioModal.qml</file>
         <file>Controls/+mobile/HistoryList.qml</file>
         <file>Controls/+mobile/TransactionModal.qml</file>
+        <file>Controls/+mobile/TransactionDetailModal.qml</file>
+        <file>Controls/+mobile/TransactionAddressList.qml</file>
     </qresource>
 </RCC>
