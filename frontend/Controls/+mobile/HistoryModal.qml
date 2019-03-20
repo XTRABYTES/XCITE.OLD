@@ -103,63 +103,19 @@ Rectangle {
         placeholder: "SEARCH TRANSACTION"
         anchors.left: parent.left
         anchors.leftMargin: 28
-        anchors.right: lookUp.left
+        anchors.right: parent.right
+        anchors.rightMargin: 28
         anchors.top: newIcon.bottom
         anchors.topMargin: 20
         color: searchForTransaction.text != "" ? "#2A2C31" : "#727272"
         textBackground: "#F2F2F2"
         font.pixelSize: 14
         mobile: 1
-    }
+        deleteImg: 'qrc:/icons/mobile/delete-icon_01_dark.svg'
 
-    Rectangle {
-        id: lookUp
-        height: searchForTransaction.height
-        width: searchForTransaction.height
-        anchors.right: parent.right
-        anchors.rightMargin: 28
-        anchors.verticalCenter: searchForTransaction.verticalCenter
-        color: "#0ED8D2"
-        opacity: 0.25
-    }
-
-    Image {
-        source: 'qrc:/icons/mobile/lookup-icon_01.svg'
-        height: lookUp.height * 0.7
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: lookUp.horizontalCenter
-        anchors.verticalCenter: lookUp.verticalCenter
-    }
-
-    MouseArea {
-        anchors.fill: lookUp
-
-        onClicked: {
-            click01.play()
-            detectInteraction()
-            // searchTransaction(walletList.get(walletIndex).name, searchForTransaction.text)
+        onTextChanged: {
+            myHistory.searchCriteria = searchForTransaction.text
         }
-    }
-
-    Connections {
-        target: explorer
-        /**
-            onTransactionFound: {
-
-            }*/
-    }
-
-    Rectangle {
-        id: lookUpBorder
-        height: searchForTransaction.height
-        width: searchForTransaction.height
-        anchors.right: parent.right
-        anchors.rightMargin: 28
-        anchors.verticalCenter: searchForTransaction.verticalCenter
-        color: "transparent"
-        opacity: 0.5
-        border.color: "#0ED8D2"
-        border.width: 1
     }
 
     Label {
@@ -374,6 +330,13 @@ Rectangle {
                 }
             }
         }
+    }
+
+    Controls.TransactionDetailModal {
+        id: myTransactionDetails
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 }
 

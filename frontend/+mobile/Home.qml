@@ -33,6 +33,11 @@ Item {
             sumXBYTest()
             sumXFUELTest()
             checkNotifications()
+            marketValueChangedSignal("btcusd")
+            marketValueChangedSignal("btceur")
+            marketValueChangedSignal("btcgbp")
+            marketValueChangedSignal("xbybtc")
+            marketValueChangedSignal("xbycha")
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"
         }

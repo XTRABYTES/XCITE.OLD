@@ -73,6 +73,11 @@ ApplicationWindow {
         currencyTracker = 0
         pincodeTracker = 0
         debugTracker = 0
+        backupTracker = 0
+        screenshotTracker = 0
+        walletDetailTracker = 0
+        portfolioTracker = 0
+        transactionDetailTracker = 0
         contactID = 1
         addressID = 1
         walletID = 1
@@ -244,6 +249,7 @@ ApplicationWindow {
     property int screenshotTracker: 0
     property int walletDetailTracker: 0
     property int portfolioTracker: 0
+    property int transactionDetailTracker: 0
 
     // Global variables
     property int sessionStart: 0
@@ -320,6 +326,11 @@ ApplicationWindow {
     property string historyCoin: ""
     property int transactionPages: 0
     property int currentPage: 0
+    property string transactionNR: ""
+    property string transactionTimestamp: ""
+    property bool transactionDirection: false
+    property real transactionAmount: 0
+    property string transactionConfirmations: ""
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -342,6 +353,7 @@ ApplicationWindow {
     signal updateAccount(string addresslist, string contactlist, string walletlist)
     signal updateTransactions(string coin, string address, string page)
     signal checkSessionId()
+    signal getDetails(string coin, string transaction)
 
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
@@ -871,6 +883,43 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: explorer
+
+        onUpdateTransactionsDetails: {
+            if (historyTracker == 1) {
+                console.log ("confirmations: " + confirmations)
+                loadTransactionAddresses(inputs, outputs)
+                transactionTimestamp = timestamp
+                transactionConfirmations = confirmations
+                transactionDetailTracker = 1
+            }
+        }
+    }
+
+    function loadTransactionAddresses(inputs, outputs){
+        if (typeof inputs !== "undifined") {
+            console.log("json input list: " + inputs)
+            inputAddresses.clear();
+            var objInput = JSON.parse(inputs);
+            console.log("raw input list: " + objInput)
+            for (var i in objInput){
+                var dataInput = objInput[i];
+                inputAddresses.append(dataInput);
+            }
+        }
+        if (typeof outputs !== "undifined") {
+            console.log("json output list: " + outputs)
+            outputAddresses.clear();
+            var objOutput = JSON.parse(outputs);
+            console.log("raw ouput list: " + objOutput)
+            for (var e in objOutput){
+                var dataOutput = objOutput[e];
+                outputAddresses.append(dataOutput);
+            }
+        }
+    }
+
     function updateToAccount(){
         var dataModelWallet = []
         var datamodelContact = []
@@ -1057,6 +1106,7 @@ ApplicationWindow {
         screenshotTracker = 0
         walletDetailTracker = 0
         portfolioTracker = 0
+        transactionDetailTracker = 0
         console.log("resetting IDs")
         contactID = 1
         addressID = 1
@@ -1185,6 +1235,22 @@ ApplicationWindow {
             direction: false
             value: ""
             confirmations: 0
+        }
+    }
+
+    ListModel {
+        id: inputAddresses
+        ListElement {
+            address: ""
+            amount: ""
+        }
+    }
+
+    ListModel {
+        id: outputAddresses
+        ListElement {
+            address: ""
+            amount: ""
         }
     }
 
