@@ -264,15 +264,11 @@ Rectangle {
             anchors.bottom: totalLine.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
-
-            Controls.CardBody {
-                id: cardbody1
-            }
         }
 
         Label {
             id: totalLabel
-            text: "WALLET TOTAL:"
+            text: "Wallet total:"
             anchors.left: parent.left
             anchors.leftMargin: 28
             anchors.top: parent.top
@@ -312,7 +308,7 @@ Rectangle {
             anchors.top: totalAmount.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
-            color: darktheme == true? "black" : "white"
+            color: "transparent"
         }
 
         Rectangle {
@@ -321,15 +317,11 @@ Rectangle {
             anchors.bottom: infoLine.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
-
-            Controls.CardBody {
-                id: cardbody2
-            }
         }
 
         Label {
             id: infoLabel
-            text: "COIN VALUE:"
+            text: "Coin value:"
             anchors.left: parent.left
             anchors.leftMargin: 28
             anchors.top: totalLine.bottom
@@ -392,7 +384,7 @@ Rectangle {
             anchors.top: coinValue.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
-            color: darktheme == true? "black" : "white"
+            color: "transparent"
         }
 
         Rectangle {
@@ -401,15 +393,11 @@ Rectangle {
             anchors.bottom: valueLine.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
-
-            Controls.CardBody {
-                id: cardbody3
-            }
         }
 
         Label {
             id: valueLabel
-            text: "TOTAL VALUE:"
+            text: "Total value:"
             anchors.left: parent.left
             anchors.leftMargin: 28
             anchors.top: infoLine.bottom
@@ -449,7 +437,7 @@ Rectangle {
             anchors.top: totalValue.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
-            color: darktheme == true? "black" : "white"
+            color: "transparent"
         }
 
     }

@@ -91,7 +91,6 @@ Rectangle {
                     transactionAmount = 0
                     transactionNR = txid
                     transactionDirection = direction
-                    transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),value) )/ 100000000
                     getDetails(amountTicker.text, txid)
                 }
             }

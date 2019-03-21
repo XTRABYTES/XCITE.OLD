@@ -46,6 +46,11 @@ Rectangle {
         }
     ]
 
+    onStateChanged: {
+        selectedAddressList = "input"
+        myTransactionAdresses.transactionAddresses = "input"
+    }
+
     MouseArea {
         anchors.fill: parent
     }
@@ -58,7 +63,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
-        font.pixelSize: 16
+        font.pixelSize: 20
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
     }
@@ -95,7 +100,7 @@ Rectangle {
 
     Label {
         id: timestampLabel
-        text: "Timestamp:"
+        text: "Date & Time:"
         anchors.left: parent.left
         anchors.leftMargin: 28
         anchors.right: parent.right
@@ -165,7 +170,7 @@ Rectangle {
         font.family: xciteMobile.name
         font.pixelSize: 18
         font.bold: true
-        color: transactionDirection == false? "#E55541" : "#4BBE2E"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
     }
 
     Label {
@@ -180,20 +185,20 @@ Rectangle {
         font.family: xciteMobile.name
         font.pixelSize: 14
         font.bold: true
-        color: transactionDirection == false? "#E55541" : "#4BBE2E"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
     }
 
     Label {
         property int decimals: transactionAmount == 0? 2 : (transactionAmount <= 1000 ? 8 : (transactionAmount <= 1000000 ? 4 : 2))
         property var amountArray: (transactionAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
         id: amountValue2
-        text: transactionDirection == false? ("- " + amountArray[0]) : ("+ " + amountArray[0])
+        text: amountArray[0]
         anchors.right: amountValue1.left
         anchors.bottom: amountTicker.bottom
         font.family: xciteMobile.name
         font.pixelSize: 18
         font.bold: true
-        color: transactionDirection == false? "#E55541" : "#4BBE2E"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
     }
 
     Timer {
@@ -202,13 +207,19 @@ Rectangle {
         repeat: false
         running: false
         onTriggered:  {
-           addressArea.state = "down"
+            if (selectedAddressList == "input") {
+                myTransactionAdresses.transactionAddresses = "input"
+            }
+            else if (selectedAddressList == "output") {
+                myTransactionAdresses.transactionAddresses = "output"
+            }
+            addressArea.state = "down"
         }
     }
 
     Label {
         id: inputLabel
-        text: "Input Addresses"
+        text: "Paying Addresses"
         anchors.left: parent.left
         anchors.leftMargin: 28
         anchors.top: confirmationAmount.bottom
@@ -238,12 +249,9 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (selectedAddressList != "input") {
-                        addressArea.state = "up"
-                        selectedAddressList = "input"
-                        myTransactionAdresses.transactionAddresses = "input"
-                        timer.start()
-                    }
+                    addressArea.state = "up"
+                    selectedAddressList = "input"
+                    timer.start()
                 }
             }
         }
@@ -281,12 +289,9 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (selectedAddressList != "output") {
-                        addressArea.state = "up"
-                        selectedAddressList = "output"
-                        myTransactionAdresses.transactionAddresses = "output"
-                        timer.start()
-                    }
+                    addressArea.state = "up"
+                    selectedAddressList = "output"
+                    timer.start()
                 }
             }
         }
@@ -381,7 +386,7 @@ Rectangle {
             onClicked: {
                 transactionDetailTracker = 0;
                 selectedAddressList = "input"
-
+                myTransactionAdresses.transactionAddresses = "input"
             }
         }
     }
