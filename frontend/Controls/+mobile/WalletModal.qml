@@ -809,6 +809,9 @@ Rectangle {
         Text {
             id: deleteWalletHash
             text: addressHash.text
+            width: doubbleButtonWidth
+            wrapMode: Text.WrapAnywhere
+            maximumLineCount: 2
             anchors.top: deleteWalletName.bottom
             anchors.topMargin: 7
             anchors.horizontalCenter: parent.horizontalCenter
@@ -866,7 +869,7 @@ Rectangle {
                     labelExists = 0
                     deletingWallet = true
                     walletDeleted = false
-                    walletList.setProperty(walletIndexIndex, "remove", true)
+                    walletList.setProperty(walletIndex, "remove", true)
                     editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, true)
                     updateToAccount()
                  }
@@ -876,9 +879,13 @@ Rectangle {
                 target: UserSettings
 
                 onSaveSucceeded: {
-                    if (deleteWalletTracker == 1 && deletingAddress == true) {
+                    if (deleteWalletTracker == 1 && deletingWallet == true) {
                         deleteConfirmed = 1
                         deletingWallet = false
+                        sumXBY()
+                        sumXFUEL()
+                        sumXBYTest()
+                        sumXFUELTest()
                         sumBalance()
                     }
                 }
@@ -886,7 +893,7 @@ Rectangle {
                 onSaveFailed: {
                     if (deleteWalletTracker == 1 && deletingWallet == true) {
                         if (userSettings.localKeys === false) {
-                        walletList.setProperty(walletIndexIndex, "remove", false)
+                        walletList.setProperty(walletIndex, "remove", false)
                         editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
                         deleteFailed = 1
                         coinListTracker = 0
@@ -910,7 +917,7 @@ Rectangle {
 
                 onSaveFileFailed: {
                     if (deleteWalletTracker == 1 && userSettings.localKeys === true && deletingWallet == true) {
-                        walletList.setProperty(walletIndexIndex, "remove", false)
+                        walletList.setProperty(walletIndex, "remove", false)
                         editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
                         deleteFailed = 1
                         deleteErrorNr = 0
