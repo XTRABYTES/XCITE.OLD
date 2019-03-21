@@ -43,56 +43,6 @@ ApplicationWindow {
         font.letterSpacing: 2
     }
 
-    Component.onDestruction: {
-        interactionTracker = 0
-        loginTracker = 0
-        logoutTracker = 0
-        addWalletTracker = 0
-        createWalletTracker = 0
-        appsTracker = 0
-        coinTracker = 0
-        walletTracker = 0
-        transferTracker = 0
-        historyTracker = 0
-        addressTracker = 0
-        contactTracker = 0
-        addAddressTracker = 0
-        addCoinTracker = 0
-        addContactTracker = 0
-        editContactTracker = 0
-        coinListTracker = 0
-        walletListTracker = 0
-        addressbookTracker = 0
-        scanQRTracker = 0
-        tradingTracker = 0
-        balanceTracker = 0
-        calculatorTracker = 0
-        addressQRTracker = 0
-        pictureTracker = 0
-        cellTracker = 0
-        currencyTracker = 0
-        pincodeTracker = 0
-        debugTracker = 0
-        backupTracker = 0
-        screenshotTracker = 0
-        walletDetailTracker = 0
-        portfolioTracker = 0
-        transactionDetailTracker = 0
-        contactID = 1
-        addressID = 1
-        walletID = 1
-        txID = 1
-        pictureID = 0
-        currencyID = 0
-        coinIndex = 0
-        walletIndex = 1
-        updateToAccount()
-        addressList.clear()
-        contactList.clear()
-        walletList.clear()
-        clearAllSettings()
-    }
-
     Component.onCompleted: {
         clearAllSettings()
 
@@ -892,6 +842,7 @@ ApplicationWindow {
                 loadTransactionAddresses(inputs, outputs)
                 transactionTimestamp = timestamp
                 transactionConfirmations = confirmations
+                transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
                 transactionDetailTracker = 1
             }
         }
@@ -1054,14 +1005,6 @@ ApplicationWindow {
         userSettings.localKeys = false;
     }
 
-    function clearStack() {
-        if (selectedPage != "home") {
-            mainRoot.pop()
-        }
-        mainRoot.pop()
-        mainRoot.push("../Onboarding.qml")
-    }
-
     function initialiseLists() {
         addressList.append({"contact": 0, "address": "", "label": "", "logo": '', "coin": "", "favorite": 0, "active": false, "uniqueNR": 0, "remove": true})
 
@@ -1134,8 +1077,7 @@ ApplicationWindow {
         username = ""
         selectedPage = ""
         clearAllSettings()
-        console.log("clearing stack")
-        clearStack()
+        Qt.quit()
     }
 
     // check for user interaction

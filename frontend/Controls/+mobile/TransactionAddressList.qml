@@ -66,7 +66,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pixelSize: 18
                 font.bold: true
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                color: walletList.get(walletIndex).address === address? (transactionAddresses == "input"? "#E55541" : "#4BBE2E") : (darktheme == true? "#F2F2F2" : "#2A2C31")
             }
 
             Label {
@@ -82,7 +82,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pixelSize: 14
                 font.bold: true
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                color: walletList.get(walletIndex).address === address? (transactionAddresses == "input"? "#E55541" : "#4BBE2E") : (darktheme == true? "#F2F2F2" : "#2A2C31")
             }
 
             Label {
@@ -97,7 +97,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pixelSize: 18
                 font.bold: true
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                color: walletList.get(walletIndex).address === address? (transactionAddresses == "input"? "#E55541" : "#4BBE2E") : (darktheme == true? "#F2F2F2" : "#2A2C31")
             }
         }
     }

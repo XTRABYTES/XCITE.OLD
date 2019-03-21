@@ -942,6 +942,8 @@ Item {
                     font.capitalization: Font.AllUppercase
                     mobile: 1
                     addressBook: 1
+                    deleteImg: 'qrc:/icons/mobile/delete-icon_01_dark.svg'
+
                     onTextChanged: {
                         detectInteraction()
                         searchCriteria = searchForAddress.text
