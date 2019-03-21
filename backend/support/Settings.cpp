@@ -259,13 +259,13 @@ void Settings::CreateUser(QString username, QString password){
 
 QString Settings::createRandNum(){
     srand (time (0));
-    int a = 1000000000;
-    int b = 10000000000;
+   int a = 1000000000;
+   int b = 10000000000;
 
-    int num = a + rand() * (b-a);
-
+   int num = (double)rand() / (RAND_MAX + 1) * (b - a) + a;
     QString randNum = QString::number(abs(num));
     randNum = randNum.chopped(randNum.length() - 9); //ensure value is 9 characters
+
     return randNum;
 }
 
@@ -382,7 +382,6 @@ void Settings::login(QString username, QString password){
 
      QByteArray randNumDec1;
      randNumDec1 = QByteArray(reinterpret_cast<char*>(decrypted), decryptedSize);
-     qDebug()<< "encrypted randNumPrePass: " + randNumDec1;
 
      //Decrypt decrypted randNum with password
     QByteArray decodedRandNum = encryption.decode(randNumDec1, (password + "xtrabytesxtrabytes").toLatin1());
@@ -409,6 +408,7 @@ void Settings::login(QString username, QString password){
 
     QByteArray payload2 =  QJsonDocument::fromVariant(feed2).toJson(QJsonDocument::Compact);
      payload2 = payload2.toBase64();
+
 
       //  Send Decrypted randNum back to backend (checks if user is right user)
      QString response3 = RestAPIPostCall("/v1/checkUser", payload2);
@@ -437,7 +437,6 @@ void Settings::login(QString username, QString password){
     QByteArray decodedSettings = encryption.decode(settings.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
     int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
     decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
-    qDebug().noquote() << decodedSettings;
     QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
 
 
@@ -455,6 +454,7 @@ void Settings::login(QString username, QString password){
         QString encodedRandNrStr = QString::fromLatin1(encodedRandNr, encodedRandNr.length());
 
         std::pair<int, QByteArray> randNumAes = encryptAes(randNum, backendKey, iiiv);
+
         randNumAes.second = randNumAes.second.toBase64();
 
         std::pair<int, QByteArray> sessionIdAes = encryptAes(sessionId, backendKey, iiiv);
@@ -468,6 +468,7 @@ void Settings::login(QString username, QString password){
          feed3.insert("username",username);
 
          QByteArray finalLogin =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
+
          finalLogin = finalLogin.toBase64();
 
          // Send new encrypted Rand Nums to backend
