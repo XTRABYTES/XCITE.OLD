@@ -75,8 +75,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 14
                 font.family: xciteMobile.name
-                font.pixelSize: 12
-                font.capitalization: Font.SmallCaps
+                font.pixelSize: 16
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 

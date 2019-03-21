@@ -416,7 +416,7 @@ ApplicationWindow {
     function sumBalance() {
         totalBalance = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).active === true && walletList.get(i).include === true) {
+            if (walletList.get(i).active === true && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 if (walletList.get(i).name === "XBY") {
                     totalBalance += (walletList.get(i).balance * btcValueXBY * valueBTC)
                 }
@@ -431,7 +431,7 @@ ApplicationWindow {
     function sumXBY() {
         totalXBY =0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === "XBY" && walletList.get(i).include === true) {
+            if (walletList.get(i).name === "XBY" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXBY += walletList.get(i).balance
             }
         }
@@ -441,7 +441,7 @@ ApplicationWindow {
     function sumXFUEL() {
         totalXFUEL = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === "XFUEL" && walletList.get(i).include === true) {
+            if (walletList.get(i).name === "XFUEL" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXFUEL += walletList.get(i).balance
             }
         }
@@ -451,7 +451,7 @@ ApplicationWindow {
     function sumXBYTest() {
         totalXBYTest =0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === "XBY-TEST" && walletList.get(i).include === true) {
+            if (walletList.get(i).name === "XBY-TEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXBYTest += walletList.get(i).balance
             }
         }
@@ -461,7 +461,7 @@ ApplicationWindow {
     function sumXFUELTest() {
         totalXFUELTest = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === "XFUEL-TEST" && walletList.get(i).include === true) {
+            if (walletList.get(i).name === "XFUEL-TEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXFUELTest += walletList.get(i).balance
             }
         }
@@ -471,7 +471,7 @@ ApplicationWindow {
     function sumCoinTotal(coin) {
         var coinTotal = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === coin && walletList.get(i).include === true) {
+            if (walletList.get(i).name === coin && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 coinTotal += walletList.get(i).balance
             }
         }
@@ -481,7 +481,7 @@ ApplicationWindow {
     function sumCoinUnconfirmed(coin) {
         var unconfirmedTotal = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === coin && walletList.get(i).include === true) {
+            if (walletList.get(i).name === coin && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 unconfirmedTotal += unconfirmedTotal + walletList.get(i).unconfirmedCoins
             }
         }
