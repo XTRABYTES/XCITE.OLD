@@ -66,6 +66,7 @@ public slots:
     void SaveWallet(QString walletlist, QString addresslist);
     void UpdateAccount(QString addresslist, QString contactlist, QString walletlist);
 
+    void initialisePincode(QString pincode);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
     QString RestAPIPostCall(QString apiURL, QByteArray payload);

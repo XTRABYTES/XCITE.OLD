@@ -73,6 +73,10 @@ void Settings::onClearAllSettings() {
     m_settings->remove("locale");
     m_settings->remove("pinlock");
     m_settings->remove("theme");
+    m_settings->remove("xby");
+    m_settings->remove("xfuel");
+    m_settings->remove("xbytest");
+    m_settings->remove("xfueltest");
     m_settings->sync();
 
     m_settings->setFallbacksEnabled(fallbacks);
@@ -719,6 +723,12 @@ void Settings::SaveWallet(QString walletlist, QString addresslist){
     }else{
         SaveSettings();
     }
+}
+
+void Settings::initialisePincode(QString pincode){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    QByteArray enc_pincode = encryption.encode((QString("<xtrabytes>") + pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+    m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length()); //encryption.encode((QString("<xtrabytes>") + pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
 }
 
 void Settings::onSavePincode(QString pincode){
