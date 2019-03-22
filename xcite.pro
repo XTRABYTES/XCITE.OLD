@@ -115,7 +115,16 @@ DISTFILES += \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat \
-    qml/qmlchart/*
+    qml/qmlchart/* \
+    android/res/drawable-mdpi/icon.png \
+    android/res/drawable-mdpi/splash.png \
+    android/res/drawable-ldpi/icon.png \
+    android/res/drawable-ldpi/splash.png \
+    android/res/drawable-hdpi/icon.png \
+    android/res/drawable-hdpi/splash.png \
+    android/res/drawable-xhdpi/splash.png \
+    android/res/drawable-xxhdpi/splash.png \
+    android/res/drawable-xxxhdpi/splash.png
 
 RC_ICONS = xcite.ico
 CONFIG(debug, debug|release) {

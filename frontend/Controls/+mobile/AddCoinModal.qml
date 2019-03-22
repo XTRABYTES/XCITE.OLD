@@ -141,6 +141,19 @@ Rectangle {
                                             walletList.setProperty(y, "active", true)
                                         }
                                     }
+                                    if (name == "XFUEL") {
+                                       userSettings.xfuel = true
+                                    }
+                                    if (name == "XBY") {
+                                       userSettings.xby = true
+                                    }
+                                    if (name == "XFUEL-TEST") {
+                                       userSettings.xfueltest = true
+                                    }
+                                    if (name == "XBY-TEST") {
+                                       userSettings.xbytest = true
+                                    }
+
                                 }
                                 else {
                                     coinList.setProperty(i, "active", false)
@@ -154,6 +167,19 @@ Rectangle {
                                             walletList.setProperty(o, "active", false)
                                         }
                                     }
+                                    if (name == "XFUEL") {
+                                       userSettings.xfuel = false
+                                    }
+                                    if (name == "XBY") {
+                                       userSettings.xby = false
+                                    }
+                                    if (name == "XFUEL-TEST") {
+                                       userSettings.xfueltest = false
+                                    }
+                                    if (name == "XBY-TEST") {
+                                       userSettings.xbytest = false
+                                    }
+
                                 }
                             }
                         }
@@ -163,11 +189,6 @@ Rectangle {
                         compareCoin()
                         //filterActiveCoin.visible = active == false
                         sumBalance()
-                        var datamodel = []
-                        for (var e = 0; e < walletList.count; ++e)
-                            datamodel.push(walletList.get(e))
-
-                        var walletListJson = JSON.stringify(datamodel)
                     }
                 }
             }

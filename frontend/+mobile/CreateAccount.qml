@@ -451,15 +451,14 @@ Rectangle {
                             userSettings.defaultCurrency = 0
                             userSettings.theme = "dark"
                             userSettings.pinlock = false
+                            userSettings.xby = true
+                            userSettings.xfuel = true
+                            userSettings.xbytest = true
+                            userSettings.xfueltest = true
                             userSettings.accountCreationCompleted = false
-                            savePincode("0000");
+                            initialisePincode("0000");
                             contactList.setProperty(0, "firstName", "My addresses");
-                            var datamodel = []
-                            for (var i = 0; i < contactList.count; ++i)
-                                datamodel.push(contactList.get(i))
-
-                            var contactListJson = JSON.stringify(datamodel)
-                            saveContactList(contactListJson)
+                            updateToAccount();
                             username = userName.text
                             newAccount = true
                             accountCreated = 1

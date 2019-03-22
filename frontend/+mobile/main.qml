@@ -304,7 +304,7 @@ ApplicationWindow {
     signal updateTransactions(string coin, string address, string page)
     signal checkSessionId()
     signal getDetails(string coin, string transaction)
-
+    signal initialisePincode(string pincode)
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
 
@@ -810,6 +810,14 @@ ApplicationWindow {
             userSettings.pinlock = settingsLoaded.pinlock === "true";
             userSettings.theme = settingsLoaded.theme;
             userSettings.localKeys = settingsLoaded.localKeys === "true";
+            userSettings.xby = settingsLoaded.xby === "true";
+            userSettings.xfuel = settingsLoaded.xfuel === "true";
+            userSettings.xbytest = settingsLoaded.xbytest === "true";
+            userSettings.xfueltest = settingsLoaded.xfueltest === "true";
+            coinList.setProperty(0, "active", userSettings.xfuel);
+            coinList.setProperty(1, "active", userSettings.xby);
+            coinList.setProperty(2, "active", userSettings.xfueltest);
+            coinList.setProperty(3, "active", userSettings.xbytest);
 
         }
         else {
@@ -1001,8 +1009,13 @@ ApplicationWindow {
         userSettings.defaultCurrency = 0;
         userSettings.theme = "dark";
         userSettings.pinlock = false;
+        initialisePincode("0000");
         userSettings.locale = "en_us"
         userSettings.localKeys = false;
+        userSettings.xby = true;
+        userSettings.xfuel = true;
+        userSettings.xbytest = true;
+        userSettings.xfueltest = true;
     }
 
     function initialiseLists() {
@@ -1015,69 +1028,23 @@ ApplicationWindow {
 
     // loggin out
     function logOut () {
-        console.log("resetting trackers")
-        interactionTracker = 0
-        loginTracker = 0
-        logoutTracker = 0
-        addWalletTracker = 0
-        createWalletTracker = 0
-        appsTracker = 0
-        coinTracker = 0
-        walletTracker = 0
-        transferTracker = 0
-        historyTracker = 0
-        addressTracker = 0
-        contactTracker = 0
-        addAddressTracker = 0
-        addCoinTracker = 0
-        addContactTracker = 0
-        editContactTracker = 0
-        coinListTracker = 0
-        walletListTracker = 0
-        addressbookTracker = 0
-        scanQRTracker = 0
-        tradingTracker = 0
-        balanceTracker = 0
-        calculatorTracker = 0
-        addressQRTracker = 0
-        pictureTracker = 0
-        cellTracker = 0
-        currencyTracker = 0
-        pincodeTracker = 0
-        debugTracker = 0
-        backupTracker = 0
-        screenshotTracker = 0
-        walletDetailTracker = 0
-        portfolioTracker = 0
-        transactionDetailTracker = 0
-        console.log("resetting IDs")
-        contactID = 1
-        addressID = 1
-        walletID = 1
-        txID = 1
-        pictureID = 0
-        currencyID = 0
-        console.log("resetting indexes")
-        coinIndex = 0
-        walletIndex = 0
-        console.log("remove deleted items")
-        clearAddressList()
-        clearContactList()
-        clearWalletList()
-        console.log("save settings to account")
         updateToAccount()
-        console.log("clearing front end lists")
-        addressList.clear()
-        contactList.clear()
-        walletList.clear()
-        alertList.clear()
-        console.log("initializing front end lists")
-        initialiseLists()
-        console.log("clearing settings")
-        username = ""
-        selectedPage = ""
-        clearAllSettings()
-        Qt.quit()
+    }
+
+    Connections {
+        target: UserSettings
+
+        onSaveSucceeded: {
+            if (goodbey == 1) {
+                Qt.quit()
+            }
+        }
+
+        onSaveFailed: {
+            if (goodbey == 1) {
+                Qt.quit()
+            }
+        }
     }
 
     // check for user interaction
@@ -1235,6 +1202,10 @@ ApplicationWindow {
         property bool pinlock
         property bool accountCreationCompleted
         property bool localKeys
+        property bool xby
+        property bool xfuel
+        property bool xbytest
+        property bool xfueltest
 
         onThemeChanged: {
             darktheme = userSettings.theme == "dark"? true : false
