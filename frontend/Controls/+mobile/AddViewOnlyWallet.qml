@@ -119,6 +119,22 @@ Rectangle {
                     invalidAddress = 1
                 }
             }
+            else if (newCoinName.text == "BTC") {
+                if (newAddress.length > 25 && newAddress.length < 36 &&(newAddress.text.substring(0,1) == "1" || newAddress.text.substring(0,1) == "3" || newAddress.text.substring(0,3) == "bc1") && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "ETH") {
+                if (newAddress.length == 42 && newAddress.text.substring(0,2) == "0x" && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
         }
     }
 
@@ -936,8 +952,7 @@ Rectangle {
                 videoOutput.sourceRect;
                 // only scan the central quarter of the area for a barcode
                 return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
-                                                                                           0.22, 0.09, 0.56, 0.82
-                                                                                           )));
+                                                                                           0.22, 0.09, 0.56, 0.82)));
             }
         }
     }

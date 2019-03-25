@@ -291,7 +291,12 @@ Item {
 
                     Label {
                         property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
-                        property real totalCoinsSum: totalCoins.text === "XBY"? totalXBY : (totalCoins.text === "XFUEL"? totalXFUEL: (totalCoins.text === "XBY-TEST"? totalXBYTest :(totalCoins.text === "XFUEL-TEST"? totalXFUELTest : 0 )))
+                        property real totalCoinsSum: totalCoins.text === "XBY"? totalXBY :
+                                                                                (totalCoins.text === "XFUEL"? totalXFUEL:
+                                                                                                              (totalCoins.text === "XBY-TEST"? totalXBYTest :
+                                                                                                                                               (totalCoins.text === "XFUEL-TEST"? totalXFUELTest :
+                                                                                                                                                                                  (totalCoins.text === "BTC"? totalBTC :
+                                                                                                                                                                                                              (totalCoins.text === "ETH"? totalETH : 0)))))
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total1
                         z: 5
@@ -307,7 +312,12 @@ Item {
 
                     Label {
                         property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
-                        property real totalCoinsSum:  totalCoins.text === "XBY"? totalXBY : (totalCoins.text === "XFUEL"? totalXFUEL: (totalCoins.text === "XBY-TEST"? totalXBYTest :(totalCoins.text === "XFUEL-TEST"? totalXFUELTest : 0 )))
+                        property real totalCoinsSum:  totalCoins.text === "XBY"? totalXBY :
+                                                                                 (totalCoins.text === "XFUEL"? totalXFUEL:
+                                                                                                               (totalCoins.text === "XBY-TEST"? totalXBYTest :
+                                                                                                                                                (totalCoins.text === "XFUEL-TEST"? totalXFUELTest :
+                                                                                                                                                                                   (totalCoins.text === "BTC"? totalBTC :
+                                                                                                                                                                                                               (totalCoins.text === "ETH"? totalETH : 0)))))
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total2
                         z: 5
@@ -337,7 +347,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaCoinList; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaCoinList; height: Screen.height - 180}
                             PropertyChanges { target: scrollAreaCoinList; anchors.topMargin: 180}
                             PropertyChanges { target: myCoinCards; cardSpacing: 0}
                         }
@@ -375,7 +385,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaWalletList; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaWalletList; height: Screen.height - 180}
                             PropertyChanges { target: scrollAreaWalletList; anchors.topMargin: 180}
                             PropertyChanges { target: myWalletCards; cardSpacing: 0}
                         }
@@ -769,10 +779,10 @@ Item {
                             }
 
                             Label {
-                                property int decimals: (getValue(getName(coinIndex)) * valueBTCUSD) <= 1 ? 4 : 2
+                                property int decimals: (getValue(getName(coinIndex)) * valueBTC) <= 1 ? 4 : 2
                                 id: fiatValue
                                 z: 6
-                                text: "$" + (getValue(getName(coinIndex)) * valueBTCUSD).toLocaleString(Qt.locale("en_US"), "f", decimals)
+                                text: fiatTicker + (getValue(getName(coinIndex)) * valueBTC).toLocaleString(Qt.locale("en_US"), "f", decimals)
                                 font.pixelSize: 13
                                 font.family: xciteMobile.name
                                 color: "white"
@@ -992,7 +1002,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaContactList; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaContactList; height: Screen.height - 180}
                             PropertyChanges { target: scrollAreaContactList; anchors.topMargin: 180}
                             PropertyChanges { target: myContacts; cardSpacing: 0}
                         }
@@ -1030,7 +1040,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaAddressBook; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaAddressBook; height: Screen.height - 180}
                             PropertyChanges { target: scrollAreaAddressBook; anchors.topMargin: 180}
                             PropertyChanges { target: myAddressCards; cardSpacing: 0}
                         }

@@ -85,8 +85,8 @@ Rectangle {
 
                 Text {
                     id: coinName
-                    anchors.left: icon.right
-                    anchors.leftMargin: 10
+                    anchors.left: parent.left
+                    anchors.leftMargin: 60
                     anchors.top: parent.top
                     anchors.topMargin: 15
                     anchors.right: percentChangeLabel.left
@@ -113,8 +113,8 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL: (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : 0 )))
-                    property int decimals: sumBalance == 0 ? 2 : (name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4))
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property int decimals: name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4)
                     property var amountArray: (sumBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel1
                     anchors.left: amountSizeLabel2.right
@@ -127,8 +127,8 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : 0 )))
-                    property int decimals: sumBalance == 0 ? 2 : (name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4))
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property int decimals: name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4)
                     property var amountArray: (sumBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel2
                     anchors.left: coinName.left
@@ -141,8 +141,8 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : 0 )))
-                    property real sumFiat: name === "XBY"? totalXBYFiat : (name === "XFUEL"? totalXFUELFiat : 0)
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property real sumFiat: name === "XBY"? totalXBYFiat : (name === "XFUEL"? totalXFUELFiat : (name === "BTC"? totalBTCFiat : (name === "ETH"? totalETHFiat : 0)))
                     property var amountArray: (sumFiat.toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
                     id: totalValueLabel1
                     anchors.right: square.right
@@ -157,8 +157,8 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : 0 )))
-                    property real sumFiat: name === "XBY"? totalXBYFiat : (name === "XFUEL"? totalXFUELFiat : 0)
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property real sumFiat: name === "XBY"? totalXBYFiat : (name === "XFUEL"? totalXFUELFiat : (name === "BTC"? totalBTCFiat : (name === "ETH"? totalETHFiat : 0)))
                     property var amountArray: (sumFiat.toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
                     id: totalValueLabel2
                     anchors.right: totalValueLabel1.left
@@ -230,7 +230,8 @@ Rectangle {
         ]
         sorters: [
             RoleSorter { roleName: "testnet" ; sortOrder: Qt.AscendingOrder },
-            StringSorter { roleName: "name" }
+            RoleSorter {roleName: "xby"; sortOrder: Qt.DescendingOrder},
+            StringSorter { roleName: "name"}
         ]
     }
 

@@ -31,10 +31,16 @@ Rectangle {
     onStateChanged: {
         if (portfolioTracker == 1) {
             if (!isNaN(totalXBY)) {
-                pieSeries.find("XBY").value = totalXBY
+                pieSeries.find("XBY").value = totalXBY * valueXBY
             }
             if (!isNaN(totalXFUEL)) {
-                pieSeries.find("XFUEL").value = totalXFUEL
+                pieSeries.find("XFUEL").value = totalXFUEL * valueXFUEL
+            }
+            if (!isNaN(totalBTC)) {
+                pieSeries.find("BTC").value = totalBTC * valueBTC
+            }
+            if (!isNaN(totalETH)) {
+                pieSeries.find("ETH").value = totalETH * valueETH
             }
         }
         percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
@@ -92,6 +98,7 @@ Rectangle {
     ChartView {
         id: chart
         anchors.top: walletModalLabel.bottom
+        anchors.topMargin: 10
         anchors.left: parent.left
         anchors.right: parent.right
         height: 240
@@ -105,6 +112,8 @@ Rectangle {
             holeSize: 0.6
             PieSlice { label: "XBY"; value: 0; color: "#0ED8D2"; borderWidth: 0; borderColor: "transparent" }
             PieSlice { label: "XFUEL"; value: 0; color: "#FFAE11"; borderWidth: 0; borderColor: "transparent" }
+            PieSlice { label: "BTC"; value: 0; color: "#B46606"; borderWidth: 0; borderColor: "transparent" }
+            PieSlice { label: "ETH"; value: 0; color: "#B3B3B3"; borderWidth: 0; borderColor: "transparent" }
         }
     }
 
@@ -124,7 +133,7 @@ Rectangle {
         id: legendXBY
         width: 20
         height: 20
-        anchors.bottom: chart.bottom
+        anchors.top: chart.top
         anchors.left: parent.left
         anchors.leftMargin: 28
         color: "#0ED8D2"
@@ -168,7 +177,7 @@ Rectangle {
         id: legendXFUEL
         width: 20
         height: 20
-        anchors.bottom: chart.bottom
+        anchors.top: chart.top
         anchors.right: parent.right
         anchors.rightMargin: 28
         color: "#FFAE11"
@@ -209,10 +218,98 @@ Rectangle {
     }
 
     Rectangle {
+        id: legendBTC
+        width: 20
+        height: 20
+        anchors.bottom: chart.bottom
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        color: "#B46606"
+        border.color: coin == 4? themecolor : "transparent"
+    }
+
+    Label {
+        id: btcLabel
+        text: "BTC"
+        anchors.verticalCenter: legendBTC.verticalCenter
+        anchors.left: legendBTC.right
+        anchors.leftMargin: 10
+        font.pixelSize: 20
+        font.family: xciteMobile.name
+        font.letterSpacing: 2
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+    }
+
+    Rectangle {
+        width: btcLabel.width - 10
+        height: 1
+        anchors.horizontalCenter: btcLabel.horizontalCenter
+        anchors.top: btcLabel.bottom
+        color: themecolor
+        visible: coin == 4
+    }
+
+    MouseArea {
+        anchors.top: legendBTC.top
+        anchors.bottom: legendBTC.bottom
+        anchors.left: legendBTC.left
+        anchors.right: btcLabel.right
+
+        onClicked: {
+            coin = 4
+            percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
+        }
+    }
+
+    Rectangle {
+        id: legendETH
+        width: 20
+        height: 20
+        anchors.bottom: chart.bottom
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        color: "#B3B3B3"
+        border.color: coin == 5? themecolor : "transparent"
+    }
+
+    Label {
+        id: ethLabel
+        text: "ETH"
+        anchors.verticalCenter: legendETH.verticalCenter
+        anchors.right: legendETH.left
+        anchors.rightMargin: 10
+        font.pixelSize: 20
+        font.family: xciteMobile.name
+        font.letterSpacing: 2
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+    }
+
+    Rectangle {
+        width: ethLabel.width - 10
+        height: 1
+        anchors.horizontalCenter: ethLabel.horizontalCenter
+        anchors.top: ethLabel.bottom
+        color: themecolor
+        visible: coin == 5
+    }
+
+    MouseArea {
+        anchors.top: legendETH.top
+        anchors.bottom: legendETH.bottom
+        anchors.left: ethLabel.left
+        anchors.right: legendETH.right
+
+        onClicked: {
+            coin = 5
+            percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
+        }
+    }
+
+    Rectangle {
         id: coinBar
         width: parent.width
         height: 30
-        anchors.top: legendXBY.bottom
+        anchors.top: legendBTC.bottom
         anchors.topMargin: 25
         anchors.horizontalCenter: parent.horizontalCenter
         color: "black"
@@ -291,8 +388,11 @@ Rectangle {
         }
 
         Label {
+            property real sumBalance: totalAmountTicker.text === "XBY"? totalXBY : (totalAmountTicker.text === "XFUEL"? totalXFUEL : (totalAmountTicker.text === "BTC"? totalBTC : (totalAmountTicker.text === "ETH"? totalETH : 0)))
+            property int decimals: (totalAmountTicker.text == "BTC" || totalAmountTicker.text == "ETH")? 8 : (sumBalance >= 100000 ? 2 : 4)
+            property string amount: sumBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)
             id: totalAmount
-            text: sumCoinTotal(totalAmountTicker.text)
+            text: amount
             anchors.right: totalAmountTicker.left
             anchors.rightMargin: 7
             anchors.top: totalAmountTicker.top
@@ -333,7 +433,7 @@ Rectangle {
 
         Label {
             id: coinValue
-            text: coin == 0? valueXFUEL.toLocaleString(Qt.locale("en_US"), "f", 4) : valueXBY.toLocaleString(Qt.locale("en_US"), "f", 4)
+            text: coin == 0? valueXFUEL.toLocaleString(Qt.locale("en_US"), "f", 4) : (coin == 1? valueXBY.toLocaleString(Qt.locale("en_US"), "f", 4) : (coin == 4? valueBTC.toLocaleString(Qt.locale("en_US"), "f", 4) : valueETH.toLocaleString(Qt.locale("en_US"), "f", 4)))
             anchors.right: parent.right
             anchors.rightMargin: 28
             anchors.top: infoLabel.bottom

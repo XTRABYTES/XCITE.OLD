@@ -237,5 +237,9 @@
         <file>icons/mobile/warning-icon_01.svg</file>
         <file>fonts/Xolonium-Regular.ttf</file>
         <file>icons/mobile/lookup-icon_01.svg</file>
+        <file>icons/BTC_card_logo_01.svg</file>
+        <file>icons/BTC_logo_big.svg</file>
+        <file>icons/ETH_card_logo_01.svg</file>
+        <file>icons/ETH_logo_big.svg</file>
     </qresource>
 </RCC>

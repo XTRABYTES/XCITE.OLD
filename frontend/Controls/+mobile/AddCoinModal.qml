@@ -153,6 +153,12 @@ Rectangle {
                                     if (name == "XBY-TEST") {
                                        userSettings.xbytest = true
                                     }
+                                    if (name == "BTC") {
+                                       userSettings.btc = true
+                                    }
+                                    if (name == "ETH") {
+                                       userSettings.eth = true
+                                    }
 
                                 }
                                 else {
@@ -179,7 +185,12 @@ Rectangle {
                                     if (name == "XBY-TEST") {
                                        userSettings.xbytest = false
                                     }
-
+                                    if (name == "BTC") {
+                                       userSettings.btc = false
+                                    }
+                                    if (name == "ETH") {
+                                       userSettings.eth = false
+                                    }
                                 }
                             }
                         }
@@ -187,7 +198,6 @@ Rectangle {
 
                     onClicked: {
                         compareCoin()
-                        //filterActiveCoin.visible = active == false
                         sumBalance()
                     }
                 }

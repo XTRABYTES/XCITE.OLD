@@ -169,36 +169,7 @@ Rectangle {
                         addressTracker = 1
                     }
                 }
-                /**
-                Rectangle {
-                    id: favoriteButton
-                    width: 28
-                    height: 28
-                    anchors.verticalCenter: addressFavorite.verticalCenter
-                    anchors.horizontalCenter: addressFavorite.horizontalCenter
-                    color: "transparent"
 
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onPressed: {
-                            detectInteraction()
-                        }
-
-                        onClicked: {
-                            addressIndex = uniqueNR
-                            if (appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0) {
-                                if (favorite == 1) {
-                                    addressList.setProperty(uniqueNR, "favorite", 0)
-                                }
-                                else {
-                                    addressList.setProperty(uniqueNR, "favorite", 1)
-                                }
-                            }
-                        }
-                    }
-                }
-                **/
                 Rectangle {
                     id: transfer
                     height: 34

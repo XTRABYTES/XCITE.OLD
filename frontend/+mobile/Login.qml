@@ -262,6 +262,7 @@ Item {
                     checkUsername = 0
                     keyPairSend = 0
                     checkIdentity = 0
+                    sessionKey = 0
                     receiveSessionID = 0
                     loadingSettings = 0
                     passError = 1
