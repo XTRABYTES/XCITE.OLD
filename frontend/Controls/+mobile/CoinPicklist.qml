@@ -108,16 +108,15 @@ Rectangle {
         sourceModel: coinList
         filters: [
             ValueFilter {
-                enabled: onlyActive == true
                 roleName: "active"
                 value: true
             }
         ]
         sorters: [
-            RoleSorter { roleName: "favorite"; sortOrder: Qt.DescendingOrder },
-            StringSorter { roleName: "name" }
+            RoleSorter { roleName: "testnet" ; sortOrder: Qt.AscendingOrder },
+            RoleSorter {roleName: "xby"; sortOrder: Qt.DescendingOrder},
+            StringSorter { roleName: "name"}
         ]
-
     }
 
     ListView {

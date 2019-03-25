@@ -79,10 +79,13 @@ ApplicationWindow {
         coinList.setProperty(0, "totalBalance", 0);
         coinList.setProperty(0, "active", true);
         coinList.setProperty(0, "testnet", false );
+        coinList.setProperty(0, "xby", 1);
         coinList.setProperty(0, "coinID", 0);
-        coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "testnet" : false, "coinID": 1});
-        coinList.append({"name": "XFUEL-TEST", "fullname": "xfuel", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "coinID": 2});
-        coinList.append({"name": "XBY-TEST", "fullname": "xtrabytes", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "coinID": 3});
+        coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "testnet" : false, "xby": 1,"coinID": 1});
+        coinList.append({"name": "XFUEL-TEST", "fullname": "xfuel", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 2});
+        coinList.append({"name": "XBY-TEST", "fullname": "xtrabytes", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 3});
+        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
+        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 5});
 
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
@@ -113,6 +116,22 @@ ApplicationWindow {
         coinList.setProperty(0, "percentage", percentageXFUEL);
     }
 
+    onValueBTCChanged: {
+        coinList.setProperty(5, "fiatValue", valueBTC);
+    }
+
+    onPercentageBTCChanged: {
+         coinList.setProperty(4, "percentage", percentageBTC);
+    }
+
+    onBtcValueETHChanged: {
+        coinList.setProperty(5, "coinValueBTC", btcValueETH);
+        coinList.setProperty(5, "fiatValue", btcValueETH * valueBTC);
+    }
+    onPercentageETHChanged: {
+        coinList.setProperty(5, "percentage", percentageETH);
+    }
+
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -139,6 +158,7 @@ ApplicationWindow {
     property real valueBTCEUR
     property real valueBTCGBP
     property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : userSettings.defaultCurrency == 2? valueBTCGBP : btcValueBTC
+    property real percentageBTC
 
     // Coin info, retrieved from server
     property string nameXBY: "XBY"
@@ -150,6 +170,10 @@ ApplicationWindow {
     property real btcValueXFUEL
     property real valueXFUEL: btcValueXFUEL * valueBTC
     property real percentageXFUEL
+
+    property real btcValueETH: 0.03404581
+    property real valueETH: btcValueETH * valueBTC
+    property real percentageETH
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
@@ -271,8 +295,12 @@ ApplicationWindow {
     property real totalXFUEL: 0
     property real totalXBYTest: 0
     property real totalXFUELTest: 0
+    property real totalBTC: 0
+    property real totalETH: 0
     property real totalXBYFiat: totalXBY * valueXBY
     property real totalXFUELFiat: totalXFUEL * valueXFUEL
+    property real totalBTCFiat: totalBTC * valueBTC
+    property real totalETHFiat: totalETH * valueETH
     property string historyCoin: ""
     property int transactionPages: 0
     property int currentPage: 0
@@ -340,6 +368,8 @@ ApplicationWindow {
                             sumXFUEL()
                             sumXBYTest()
                             sumXFUELTest()
+                            sumBTC()
+                            sumETH()
                         }
                     }
                 }
@@ -423,6 +453,12 @@ ApplicationWindow {
                 else if (walletList.get(i).name === "XFUEL") {
                     totalBalance += (walletList.get(i).balance * btcValueXFUEL * valueBTC)
                 }
+                else if (walletList.get(i).name === "BTC") {
+                    totalBalance += (walletList.get(i).balance * valueBTC)
+                }
+                else if (walletList.get(i).name === "ETH") {
+                    totalBalance += (walletList.get(i).balance * btcValueETH * valueBTC)
+                }
             }
         }
         return totalBalance
@@ -466,6 +502,26 @@ ApplicationWindow {
             }
         }
         return totalXFUELTest
+    }
+
+    function sumBTC() {
+        totalBTC = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "BTC" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+                totalBTC += walletList.get(i).balance
+            }
+        }
+        return totalBTC
+    }
+
+    function sumETH() {
+        totalETH = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "ETH" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+                totalETH += walletList.get(i).balance
+            }
+        }
+        return totalXFUEL
     }
 
     function sumCoinTotal(coin) {
@@ -741,22 +797,41 @@ ApplicationWindow {
 
     // Start up functions
     function setMarketValue(currency, currencyValue) {
-        if (currencyValue !== "") {
+        if (!isNaN(currencyValue) && currencyValue !== "") {
             var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
             if (currency === "btcusd"){
                 valueBTCUSD = currencyVal;
-            }else if(currency === "btceur"){
+            }
+            else if(currency === "btceur"){
                 valueBTCEUR = currencyVal;
-            }else if(currency === "btcgbp"){
+            }
+            else if(currency === "btcgbp"){
                 valueBTCGBP = currencyVal;
-            }else if(currency === "xbybtc"){
+            }
+            else if(currency === "xbybtc"){
                 btcValueXBY = currencyVal;
                 btcValueXFUEL = currencyVal
-            }else if(currency === "xbycha"){
+            }
+            else if(currency === "xbycha"){
                 percentageXBY = currencyVal;
                 percentageXFUEL = currencyVal;
             }
+            else if(currency === "btccha"){
+                percentageBTC = currencyVal;
+            }
+            else if(currency === "ethbtc"){
+                btcValueETH = currencyVal;
+            }
+            else if (currency === "ethcha"){
+                percentageETH = currencyVal;
+            }
             sumBalance()
+            sumXBY()
+            sumXFUEL()
+            sumXBYTest()
+            sumXFUELTest()
+            sumBTC()
+            sumETH()
         }
     }
 
@@ -818,7 +893,8 @@ ApplicationWindow {
             coinList.setProperty(1, "active", userSettings.xby);
             coinList.setProperty(2, "active", userSettings.xfueltest);
             coinList.setProperty(3, "active", userSettings.xbytest);
-
+            coinList.setProperty(4, "active", userSettings.btc);
+            coinList.setProperty(5, "active", userSettings.eth);
         }
         else {
             console.log("no settings saved in account")
@@ -1119,6 +1195,7 @@ ApplicationWindow {
             totalBalance: 0
             active: false
             testnet: false
+            xby: 0
             coinID: 0
         }
     }
@@ -1206,6 +1283,8 @@ ApplicationWindow {
         property bool xfuel
         property bool xbytest
         property bool xfueltest
+        property bool btc
+        property bool eth
 
         onThemeChanged: {
             darktheme = userSettings.theme == "dark"? true : false
@@ -1244,7 +1323,9 @@ ApplicationWindow {
             marketValueChangedSignal("btcgbp")
             marketValueChangedSignal("xbybtc")
             marketValueChangedSignal("xbycha")
-
+            marketValueChangedSignal("btccha")
+            marketValueChangedSignal("ethbtc")
+            marketValueChangedSignal("ethcha")
         }
     }
 
@@ -1254,6 +1335,7 @@ ApplicationWindow {
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
+            clearWalletList()
             var datamodel = []
             for (var i = 0; i < walletList.count; ++i)
                 datamodel.push(walletList.get(i))
@@ -1343,6 +1425,8 @@ ApplicationWindow {
             sumXFUEL()
             sumXBYTest()
             sumXFUELTest()
+            sumBTC()
+            sumETH()
         }
     }
     // Order of the pages

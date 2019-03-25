@@ -175,7 +175,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int decimals: balance == 0? 2 : (balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2))
+                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
                     property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel1
                     anchors.right: amountSizeLabel.left
@@ -189,7 +189,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int decimals: balance == 0? 2 : (balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2))
+                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
                     property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel2
                     anchors.right: amountSizeLabel1.left
@@ -346,10 +346,12 @@ Rectangle {
                         }
 
                         onClicked: {
-                            walletIndex = walletNR
-                            transactionPages = 0
-                            currentPage = 1
-                            updateTransactions(name, address, 1)
+                            if (walletNR < 2){
+                                walletIndex = walletNR
+                                transactionPages = 0
+                                currentPage = 1
+                                updateTransactions(name, address, 1)
+                            }
                         }
                     }
 
@@ -371,7 +373,7 @@ Rectangle {
                     font.family: xciteMobile.name
                     font.pointSize: 14
                     font.bold: true
-                    color: darktheme == true? "#F2F2F2" : maincolor
+                    color: walletNR < 2? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
                     anchors.horizontalCenter: history.horizontalCenter
                     anchors.verticalCenter: history.verticalCenter
                 }
@@ -386,7 +388,7 @@ Rectangle {
                     anchors.leftMargin: 7
                     color: "transparent"
                     opacity: 0.5
-                    border.color: maincolor
+                    border.color: walletNR < 2? maincolor : "#979797"
                     border.width: 1
                 }
             }

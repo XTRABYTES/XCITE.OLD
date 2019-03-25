@@ -119,6 +119,27 @@ Rectangle {
                 invalidAddress = 1
             }
         }
+        else if (coinID.text == "BTC") {
+            if (keyInput.length > 25
+                    && keyInput.length < 36
+                    &&(keyInput.text.substring(0,1) == "1" || keyInput.text.substring(0,1) == "3" || keyInput.text.substring(0,3) == "bc1")
+                    && keyInput.acceptableInput == true) {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
+        else if (coinID.text == "ETH") {
+            if (keyInput.length == 42
+                    && keyInput.text.substring(0,2) == "0x"
+                    && keyInput.acceptableInput == true) {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
     }
 
     function getCurrentBalance(){

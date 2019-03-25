@@ -32,12 +32,20 @@ Item {
             sumXFUEL()
             sumXBYTest()
             sumXFUELTest()
+            sumBTC()
+            sumETH()
             checkNotifications()
             marketValueChangedSignal("btcusd")
             marketValueChangedSignal("btceur")
             marketValueChangedSignal("btcgbp")
             marketValueChangedSignal("xbybtc")
             marketValueChangedSignal("xbycha")
+            var datamodel = []
+            for (var i = 0; i < walletList.count; ++i)
+                datamodel.push(walletList.get(i))
+
+            var walletListJson = JSON.stringify(datamodel)
+            updateBalanceSignal(walletListJson);
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"
         }

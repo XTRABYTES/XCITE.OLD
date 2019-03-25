@@ -1050,7 +1050,7 @@ Rectangle {
     Item {
         id: deleteAddresFailed
         width: parent.width
-        height: saveFailed.height + deleteFailedLabel.height + closeDeleteFail.height + 60
+        height: failedIcon.height + deleteFailedLabel.height + deleteFailedError + closeDeleteFail.height + 70
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -100

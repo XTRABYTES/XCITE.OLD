@@ -14,6 +14,7 @@
 #include <QSettings>
 #include "Explorer.hpp"
 
+
 Explorer::Explorer(QObject *parent) : QObject(parent)
 {
 }
@@ -39,15 +40,11 @@ void Explorer::getBalanceEntireWallet(QString walletList){
                 double balanceLong = jsonResponse.object().value("balance").toDouble();
                 QString balance = "";
                 if (coin == "eth"){
-                    balance = QString::number(balanceLong,'f');
-                    int pos = balance.lastIndexOf(QChar('.')); // converting double to string added decimal at end.
-                    balance = balance.remove("."); // remove that decimal
-                    balance = balance.insert(pos - 18, "."); // add new decimal. ETH is at 18 places from end
+                    double convertFromWei = balanceLong / 1000000000000000000;
+                    balance = QString::number(convertFromWei);
                 }else{
-                    balance = QString::number(balanceLong, 'f');
-                    int pos = balance.lastIndexOf(QChar('.'));
-                    balance = balance.remove(".");
-                    balance = balance.insert(pos- 8, "."); // add new decimal. BTC is at 8 places from end
+                    double convertFromSAT = balanceLong / 100000000;
+                    balance = QString::number(convertFromSAT);
                 }
 
                 emit updateBalance(coin.toUpper(),address, balance);
