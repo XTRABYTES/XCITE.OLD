@@ -154,6 +154,10 @@ mac {
         QMAKE_INFO_PLIST = resources/ios/Info.plist
         app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchScreen-logo_01.png
         QMAKE_BUNDLE_DATA += app_launch_images
+
+        INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
+        INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+        LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
     }
 }
 
@@ -167,15 +171,10 @@ android {
     QT += multimedia
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-    #LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib -lboost_system
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
-
-    #ANDROID_EXTRA_LIBS = \
-     #   $$PWD/dependencies/android/armeabi-v7a/boost/lib/libboost_system.so
 }
-
 
 FORMS += \
     packages/global.xtrabytes.xcite/meta/feedbackpage.ui
