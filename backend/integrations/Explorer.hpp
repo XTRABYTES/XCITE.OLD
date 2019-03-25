@@ -25,7 +25,9 @@ class Explorer : public QObject
     Q_OBJECT
 public:
     explicit Explorer(QObject *parent = nullptr);
-    QString  getBalanceAddress(QString coin, QString address, QString page);
+    QString  getBalanceAddressXBY(QString coin, QString address, QString page);
+    QString  getBalanceAddressExt(QString coin, QString address);
+
     QString getTransactionDetails(QString coin, QString transaction);
 
 signals:
@@ -37,8 +39,6 @@ public slots:
     void getBalanceEntireWallet(QString);
     void getTransactionList(QString, QString, QString);
     void getDetails(QString, QString);
-    void onResult(QNetworkReply *reply);
-
 private:
     QString explorerValue;
 };
