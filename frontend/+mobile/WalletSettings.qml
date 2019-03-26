@@ -39,6 +39,8 @@ Rectangle {
 
     property int clearFailed: 0
     property bool clearAllInitiated: false
+    property bool changeVolumeInitiated: false
+    property int changeVolumeFailed: 0
 
     MouseArea {
         anchors.fill: parent
@@ -199,6 +201,7 @@ Rectangle {
             anchors.fill: parent
 
             onPressed: {
+                click01.play()
                 detectInteraction()
             }
 
@@ -353,7 +356,301 @@ Rectangle {
         border.width: 1
     }
 
+    Label {
+        id: notificationLabel
+        z: 1
+        text: "NOTIFICATION SOUND:"
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        font.bold: true
+        color: themecolor
+        anchors.top: changePinButton.bottom
+        anchors.topMargin: 20
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
 
+    Image {
+        id: picklistArrow2
+        z: 1
+        source: 'qrc:/icons/dropdown_icon.svg'
+        height: 20
+        width: 20
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.top: notificationLabel.bottom
+        anchors.topMargin: 10
+        visible: soundTracker == 0
+
+        ColorOverlay {
+            anchors.fill: parent
+            source: parent
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        }
+
+        Rectangle{
+            id: picklistButton2
+            height: 20
+            width: 20
+            radius: 15
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+        }
+
+        MouseArea {
+            anchors.fill: picklistButton2
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                soundTracker = 1
+            }
+        }
+    }
+
+    Label {
+        id: chosenSound
+        z: 1
+        text: soundList.get(selectedSound).name
+        font.pixelSize: 20
+        font.family: xciteMobile.name
+        color: themecolor
+        anchors.verticalCenter: picklistArrow2.verticalCenter
+        anchors.verticalCenterOffset: 1
+        anchors.right: picklistArrow2.left
+        anchors.rightMargin: 10
+        visible: soundTracker == 0
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                notification.play()
+                detectInteraction()
+            }
+        }
+    }
+
+    DropShadow {
+        id: shadowSoundPicklist
+        z:11
+        anchors.fill: soundPicklist
+        source: soundPicklist
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.3
+        transparentBorder: true
+        visible: soundTracker == 1
+    }
+
+    Rectangle {
+        id: soundPicklist
+        z: 11
+        width: 120
+        height: 165
+        color: "#2A2C31"
+        anchors.top: picklistArrow2.top
+        anchors.topMargin: -5
+        anchors.right: picklistArrow2.right
+        visible: soundTracker == 1
+        clip: true
+
+        Controls.SoundPicklist {
+            id: mySoundPicklist
+        }
+    }
+
+    Rectangle {
+        id: picklistClose2
+        z: 11
+        width: 120
+        height: 25
+        color: "#2A2C31"
+        anchors.bottom: soundPicklist.bottom
+        anchors.horizontalCenter: soundPicklist.horizontalCenter
+        visible:soundTracker == 1
+
+        Image {
+            id: picklistCloseArrow2
+            source: 'qrc:/icons/dropdown-arrow.svg'
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            rotation: 180
+        }
+
+        MouseArea {
+            anchors.fill: parent
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                soundTracker = 0
+            }
+        }
+    }
+
+    Label {
+        id: volumeLabel
+        z: 1
+        text: "NOTIFICATION VOLUME:"
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        font.bold: true
+        color: themecolor
+        anchors.top: picklistArrow2.bottom
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
+
+    Image {
+        id: volumeLevel0
+        source: selectedVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
+        height: selectedVolume == 0? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: parent.left
+        anchors.horizontalCenterOffset: 58
+        anchors.verticalCenter: volumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeVolumeInitiated == false) {
+                        oldVolume = userSettings.volume
+                        userSettings.volume = 0
+                        notification.play()
+                        changeVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Image {
+        id: volumeLevel1
+        source: selectedVolume == 1? 'qrc:/icons/mobile/volume_level_1-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_1-icon_light.svg' : 'qrc:/icons/mobile/volume_level_1-icon_dark.svg')
+        height: selectedVolume == 1? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: volumeLevel0.right
+        anchors.horizontalCenterOffset: 60
+        anchors.verticalCenter: volumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeVolumeInitiated == false) {
+                        oldVolume = userSettings.volume
+                        userSettings.volume = 1
+                        notification.play()
+                        changeVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Image {
+        id: volumeLevel2
+        source: selectedVolume == 2? 'qrc:/icons/mobile/volume_level_2-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_2-icon_light.svg' : 'qrc:/icons/mobile/volume_level_2-icon_dark.svg')
+        height: selectedVolume == 2? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: volumeLevel3.left
+        anchors.horizontalCenterOffset: -60
+        anchors.verticalCenter: volumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeVolumeInitiated == false) {
+                        oldVolume = userSettings.volume
+                        userSettings.volume = 2
+                        notification.play()
+                        changeVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Image {
+        id: volumeLevel3
+        source: selectedVolume == 3? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
+        height: selectedVolume == 3? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: parent.right
+        anchors.horizontalCenterOffset: -58
+        anchors.verticalCenter: volumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeVolumeInitiated == false) {
+                        oldVolume = userSettings.volume
+                        userSettings.volume = 3
+                        notification.play()
+                        changeVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Connections {
+        target: UserSettings
+
+        onSaveSucceeded: {
+            if (changeVolumeInitiated == true) {
+                changeVolumeInitiated = false
+            }
+        }
+
+        onSaveFailed: {
+            if (changeVolumeInitiated == true) {
+                userSettings.volume = oldVolume
+                changeVolumeFailed = 1
+                changeVolumeInitiated = false
+            }
+        }
+    }
 
     Rectangle {
         id: clearButton
@@ -417,6 +714,8 @@ Rectangle {
                         oldPinlock = userSettings.pinlock
                         oldTheme = userSettings.theme
                         oldLocalKeys= userSettings.localKeys
+                        oldSound = userSettings.sound
+                        oldVolume = userSettings.volume
                         clearAllSettings()
                         userSettings.locale = "en_us"
                         userSettings.defaultCurrency = 0
@@ -424,6 +723,8 @@ Rectangle {
                         userSettings.pinlock = false
                         userSettings.accountCreationCompleted = true
                         userSettings.localKeys = oldLocalKeys
+                        userSettings.sound = 0
+                        userSettings.volume = 1
                         saveAppSettings()
                     }
                 }
@@ -441,6 +742,8 @@ Rectangle {
                         userSettings.defaultCurrency = oldDefaultCurrency
                         userSettings.theme = oldTheme
                         userSettings.pinlock = oldPinlock
+                        userSettings.sound = oldSound
+                        userSettings.volume = oldVolume
                         clearAllInitiated = false
                         pinClearInitiated = false
                         clearFailed = 1
@@ -559,6 +862,44 @@ Rectangle {
         }
     }
 
+    Item {
+        z: 12
+        width: popupSoundFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: soundChangeFailed == 1
+
+        Rectangle {
+            id: popupSoundFail
+            height: 50
+            width: popupCurrencyText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupSoundText
+            text: "FAILED to change your sound!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: soundChangeFailed == 1
+            interval: 2000
+
+            onTriggered: soundChangeFailed = 0
+        }
+    }
+
     Controls.Pincode {
         id: myPincode
         z: 5
@@ -608,9 +949,14 @@ Rectangle {
         MouseArea {
             anchors.fill: backbutton
 
-            onPressed: detectInteraction()
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
 
             onClicked: {
+                currencyTracker = 0
+                soundTracker = 0
                 appsTracker = 0
                 selectedPage = "home"
                 mainRoot.pop()

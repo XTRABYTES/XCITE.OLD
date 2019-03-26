@@ -151,7 +151,6 @@
         <file>Controls/+mobile/HistoryModal.qml</file>
         <file>Controls/+mobile/AddWallet.qml</file>
         <file>Controls/+mobile/CreateWallet.qml</file>
-        <file>../resources/icons/XFUEL_card_logo_01.svg</file>
         <file>+mobile/InitialSetup.qml</file>
         <file>+mobile/CreateAccount.qml</file>
         <file>Controls/+mobile/CardBody.qml</file>
@@ -174,5 +173,7 @@
         <file>Controls/+mobile/TransactionModal.qml</file>
         <file>Controls/+mobile/TransactionDetailModal.qml</file>
         <file>Controls/+mobile/TransactionAddressList.qml</file>
+        <file>+mobile/StandBy.qml</file>
+        <file>Controls/+mobile/SoundPicklist.qml</file>
     </qresource>
 </RCC>

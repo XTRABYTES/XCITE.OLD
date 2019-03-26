@@ -42,7 +42,7 @@ void Explorer::getBalanceEntireWallet(QString walletList){
                 if (coin == "eth"){
                     double convertFromWei = balanceLong / 1000000000000000000;
                     balance = QString::number(convertFromWei);
-                }else{
+                 }else{
                     double convertFromSAT = balanceLong / 100000000;
                     balance = QString::number(convertFromSAT);
                 }

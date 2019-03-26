@@ -402,7 +402,7 @@ Rectangle {
             id: transferPicklist1
             z: 11
             width: 100
-            height: totalLines * 35 + 25
+            height: (totalLines * 35) < 175? ((totalLines * 35) + 25) : 200
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5
@@ -520,7 +520,7 @@ Rectangle {
             id: transferPicklist2
             z: 11
             width: 100
-            height: ((totalCoinWallets * 35) + 25) < 200 ? ((totalCoinWallets * 35) + 25) : 200
+            height: ((totalCoinWallets * 35) < 175) ? ((totalCoinWallets * 35) + 25) : 200
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5

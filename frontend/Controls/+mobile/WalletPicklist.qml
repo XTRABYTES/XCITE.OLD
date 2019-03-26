@@ -17,7 +17,7 @@ import SortFilterProxyModel 0.2
 Rectangle {
     id: completePicklist
     width: 100
-    height: totalCoinWallets * 35 < 175 ? totalCoinWallets * 35 : 175
+    height: (totalCoinWallets * 35 < 175)? totalCoinWallets * 35 : 175
     radius: 5
     color: "#2A2C31"
 
@@ -119,7 +119,19 @@ Rectangle {
         id: pickList
         model: filteredWallets
         delegate: picklistEntry
+        interactive: (totalCoinWallets) > 175
         onDraggingChanged: detectInteraction()
+
+        ScrollBar.vertical: ScrollBar {
+            parent: pickList.parent
+            anchors.top: pickList.top
+            anchors.right: pickList.right
+            anchors.bottom: pickList.bottom
+            width: 5
+            opacity: 1
+            policy: ScrollBar.AlwaysOn
+            visible: (totalCoinWallets) > 175
+        }
     }
 }
 

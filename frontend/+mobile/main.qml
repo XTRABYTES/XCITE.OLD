@@ -20,6 +20,7 @@ import Qt.labs.folderlistmodel 2.11
 import QtMultimedia 5.8
 import QtGraphicalEffects 1.0
 
+
 ApplicationWindow {
     property bool isNetworkActive: false
 
@@ -46,6 +47,9 @@ ApplicationWindow {
     Component.onCompleted: {
         clearAllSettings()
 
+        goodbey = 0
+        standBy = 0
+
         contactID = 1
         addressID = 1
         walletID = 1
@@ -69,6 +73,12 @@ ApplicationWindow {
         fiatCurrencies.append({"currency": "EUR", "ticker": "€", "currencyNR": 1});
         fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": 2});
         //fiatCurrencies.append({"currency": "BTC", "ticker": "₿", "currencyNR": 3});
+
+        soundList.setProperty(0, "name", "sound 01");
+        soundList.setProperty(0, "sound", 'qrc:/sounds/notification_1.wav')
+        soundList.setProperty(0, "soundNR", 0)
+        soundList.append({"name": "sound 02", "sound": 'qrc:/sounds/notification_2.wav', "soundNR": 1});
+        soundList.append({"name": "sound 03", "sound": 'qrc:/sounds/notification_3.wav', "soundNR": 2});
 
         coinList.setProperty(0, "name", nameXFUEL);
         coinList.setProperty(0, "fullname", "xfuel");
@@ -121,7 +131,7 @@ ApplicationWindow {
     }
 
     onPercentageBTCChanged: {
-         coinList.setProperty(4, "percentage", percentageBTC);
+        coinList.setProperty(4, "percentage", percentageBTC);
     }
 
     onBtcValueETHChanged: {
@@ -224,11 +234,13 @@ ApplicationWindow {
     property int walletDetailTracker: 0
     property int portfolioTracker: 0
     property int transactionDetailTracker: 0
+    property int soundTracker: 0
 
     // Global variables
     property int sessionStart: 0
     property int sessionTime: 0
     property int sessionClosed: 0
+    property int standBy: 0
     property int autoLogout: 0
     property int manualLogout: 0
     property int networkLogout: 0
@@ -309,6 +321,13 @@ ApplicationWindow {
     property bool transactionDirection: false
     property real transactionAmount: 0
     property string transactionConfirmations: ""
+    property bool saveSound: false
+    property int oldSound: 0
+    property int oldVolume: 1
+    property int soundChangeFailed: 0
+    property int volumeChangeFailed: 0
+    property int selectedSound: userSettings.sound
+    property int selectedVolume: userSettings.volume
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -335,6 +354,12 @@ ApplicationWindow {
     signal initialisePincode(string pincode)
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
+
+    onStandByChanged: {
+        if(standBy == 1){
+            //
+        }
+    }
 
     // Automated functions
 
@@ -363,6 +388,7 @@ ApplicationWindow {
                             balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
                             alert = true
+                            notification.play()
                             sumBalance()
                             sumXBY()
                             sumXFUEL()
@@ -795,7 +821,7 @@ ApplicationWindow {
         }
     }
 
-    // Start up functions
+
     function setMarketValue(currency, currencyValue) {
         if (!isNaN(currencyValue) && currencyValue !== "") {
             var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
@@ -835,6 +861,7 @@ ApplicationWindow {
         }
     }
 
+    // Start up functions
     function loadContactList(contacts) {
         if (typeof contacts !== "undefined") {
             contactList.clear();
@@ -889,6 +916,8 @@ ApplicationWindow {
             userSettings.xfuel = settingsLoaded.xfuel === "true";
             userSettings.xbytest = settingsLoaded.xbytest === "true";
             userSettings.xfueltest = settingsLoaded.xfueltest === "true";
+            userSettings.sound = settingsLoaded.sound;
+            userSettings.volume = settingsLoaded.volume;
             coinList.setProperty(0, "active", userSettings.xfuel);
             coinList.setProperty(1, "active", userSettings.xby);
             coinList.setProperty(2, "active", userSettings.xfueltest);
@@ -1092,6 +1121,8 @@ ApplicationWindow {
         userSettings.xfuel = true;
         userSettings.xbytest = true;
         userSettings.xfueltest = true;
+        userSettings.sound = 0
+        userSettings.volume = 1
     }
 
     function initialiseLists() {
@@ -1266,6 +1297,15 @@ ApplicationWindow {
         }
     }
 
+    ListModel {
+        id: soundList
+        ListElement {
+            name: ""
+            sound: 'qrc:/sounds/notification_1.wav'
+            soundNR: 0
+        }
+    }
+
     // Global components
     Clipboard {
         id: clipboard
@@ -1285,6 +1325,8 @@ ApplicationWindow {
         property bool xfueltest
         property bool btc
         property bool eth
+        property int sound: 0
+        property int volume: 1
 
         onThemeChanged: {
             darktheme = userSettings.theme == "dark"? true : false
@@ -1310,13 +1352,20 @@ ApplicationWindow {
     SoundEffect {
         id: click01
         source: "qrc:/sounds/click_02.wav"
-        volume: 0.15
+        volume: 0.25
     }
+
+    SoundEffect {
+        id: notification
+        source: soundList.get(selectedSound).sound
+        volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
+    }
+
     Timer {
         id: marketValueTimer
         interval: 60000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 && standBy == 0
         onTriggered:  {
             marketValueChangedSignal("btcusd")
             marketValueChangedSignal("btceur")
@@ -1330,16 +1379,35 @@ ApplicationWindow {
     }
 
     Timer {
-        id: explorerTimer
-        interval: 60000
+        id: explorerTimer1
+        interval: standBy == 0? 60000 : 600000
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
             clearWalletList()
             var datamodel = []
             for (var i = 0; i < walletList.count; ++i)
-                datamodel.push(walletList.get(i))
+                if(walletList.get(i).name === "XBY" || walletList.get(i).name === "XFUEL") {
+                    datamodel.push(walletList.get(i))
+                }
+            var walletListJson = JSON.stringify(datamodel)
+            updateBalanceSignal(walletListJson);
 
+        }
+    }
+
+    Timer {
+        id: explorerTimer2
+        interval: standBy == 0? 150050 : 600050
+        repeat: true
+        running: sessionStart == 1
+        onTriggered:  {
+            clearWalletList()
+            var datamodel = []
+            for (var i = 0; i < walletList.count; ++i)
+                if(walletList.get(i).name === "BTC" || walletList.get(i).name === "ETH") {
+                    datamodel.push(walletList.get(i))
+                }
             var walletListJson = JSON.stringify(datamodel)
             updateBalanceSignal(walletListJson);
 
@@ -1350,7 +1418,7 @@ ApplicationWindow {
         id: loginTimer
         interval: 30000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 && standBy == 0
 
         onTriggered: {
             if (interactionTracker == 1) {
@@ -1363,9 +1431,8 @@ ApplicationWindow {
                 if (sessionTime >= 10){
                     sessionTime = 0
                     sessionStart = 0
-                    // show pop up that you will be logged out if you do not interact
-                    autoLogout = 1
-                    logoutTracker = 1
+                    standBy = 1
+                    mainRoot.push("../StandBy.qml")
                 }
             }
         }
@@ -1373,7 +1440,7 @@ ApplicationWindow {
 
     Timer {
         id: networkTimer
-        interval: 60000
+        interval: standBy == 0? 60000 : 600000
         repeat: true
         running: sessionStart == 1
 
@@ -1403,7 +1470,7 @@ ApplicationWindow {
         id: requestTimer
         interval: 5000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 && standBy == 0
 
         onTriggered: {
             checkNotifications()
@@ -1417,7 +1484,7 @@ ApplicationWindow {
         id: timer
         interval: 15000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 & standBy == 0
 
         onTriggered: {
             sumBalance()

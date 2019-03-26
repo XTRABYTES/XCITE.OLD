@@ -53,6 +53,9 @@ void MarketValue::findAllCurrencyValues(){
     findCurrencyValue("btcgbp");
     findCurrencyValue("xbybtc");
     findCurrencyValue("xbycha");
+    findCurrencyValue("btccha");
+    findCurrencyValue("ethbtc");
+    findCurrencyValue("ethcha");
 }
 
 void MarketValue::setMarketValue(const QString &check, const QString &currency, const QString &currencyValue) {

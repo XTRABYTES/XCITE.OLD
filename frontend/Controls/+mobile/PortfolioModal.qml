@@ -110,10 +110,10 @@ Rectangle {
             id: pieSeries
             size: 0.9
             holeSize: 0.6
-            PieSlice { label: "XBY"; value: 0; color: "#0ED8D2"; borderWidth: 0; borderColor: "transparent" }
-            PieSlice { label: "XFUEL"; value: 0; color: "#FFAE11"; borderWidth: 0; borderColor: "transparent" }
-            PieSlice { label: "BTC"; value: 0; color: "#B46606"; borderWidth: 0; borderColor: "transparent" }
-            PieSlice { label: "ETH"; value: 0; color: "#B3B3B3"; borderWidth: 0; borderColor: "transparent" }
+            PieSlice { label: "XFUEL"; value: 0; color: "#FFAE11"; borderWidth: (coin == 0? 2 : 0); borderColor: (coin == 0? themecolor : "transparent") }
+            PieSlice { label: "XBY"; value: 0; color: "#0ED8D2"; borderWidth: (coin == 1? 2 : 0); borderColor: (coin == 1? themecolor : "transparent") }
+            PieSlice { label: "BTC"; value: 0; color: "#F7931A"; borderWidth: (coin == 4? 2 : 0); borderColor: (coin == 4? themecolor : "transparent") }
+            PieSlice { label: "ETH"; value: 0; color: "#A690FC"; borderWidth: (coin == 5? 2 : 0); borderColor: (coin == 5? themecolor : "transparent") }
         }
     }
 
@@ -168,6 +168,8 @@ Rectangle {
         anchors.right: xbyLabel.right
 
         onClicked: {
+            click01.play()
+            detectInteraction()
             coin = 1
             percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
         }
@@ -212,6 +214,8 @@ Rectangle {
         anchors.right: legendXFUEL.right
 
         onClicked: {
+            click01.play()
+            detectInteraction()
             coin = 0
             percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
         }
@@ -224,7 +228,7 @@ Rectangle {
         anchors.bottom: chart.bottom
         anchors.left: parent.left
         anchors.leftMargin: 28
-        color: "#B46606"
+        color: "#F7931A"
         border.color: coin == 4? themecolor : "transparent"
     }
 
@@ -256,6 +260,8 @@ Rectangle {
         anchors.right: btcLabel.right
 
         onClicked: {
+            click01.play()
+            detectInteraction()
             coin = 4
             percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
         }
@@ -268,7 +274,7 @@ Rectangle {
         anchors.bottom: chart.bottom
         anchors.right: parent.right
         anchors.rightMargin: 28
-        color: "#B3B3B3"
+        color: "#A690FC"
         border.color: coin == 5? themecolor : "transparent"
     }
 
@@ -300,6 +306,8 @@ Rectangle {
         anchors.right: legendETH.right
 
         onClicked: {
+            click01.play()
+            detectInteraction()
             coin = 5
             percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
         }

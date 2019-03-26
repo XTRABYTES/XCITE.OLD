@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import SortFilterProxyModel 0.2
 
 import "qrc:/Controls" as Controls
 
@@ -197,6 +198,8 @@ Rectangle {
                     }
 
                     onClicked: {
+                        click01.play()
+                        detectInteraction()
                         compareCoin()
                         sumBalance()
                     }
@@ -204,11 +207,32 @@ Rectangle {
             }
         }
 
+        SortFilterProxyModel {
+            id: filteredCurrencies
+            sourceModel: coinList
+            sorters: [
+                RoleSorter {roleName: "testnet" ; sortOrder: Qt.AscendingOrder},
+                RoleSorter {roleName: "xby"; sortOrder: Qt.DescendingOrder},
+                StringSorter {roleName: "name"}
+            ]
+        }
+
         ListView {
             anchors.fill: parent
             id: allWallets
-            model: coinList
+            model: filteredCurrencies
             delegate: walletCard
+
+            ScrollBar.vertical: ScrollBar {
+                parent: allWallets.parent
+                anchors.top: allWallets.top
+                anchors.right: allWallets.right
+                anchors.bottom: allWallets.bottom
+                width: 5
+                opacity: 1
+                policy: ScrollBar.AlwaysOn
+                visible: (coinList.count * 50) > (parent.height)
+            }
         }
 
         Rectangle {
@@ -238,9 +262,7 @@ Rectangle {
                 }
             }
         }
-
     }
-
 }
 
 

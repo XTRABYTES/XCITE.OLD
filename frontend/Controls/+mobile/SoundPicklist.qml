@@ -1,5 +1,5 @@
 /**
-* Filename: CurrencyPicklist.qml
+* Filename: SoundPicklist.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
 * blockchain protocol to host decentralized applications
@@ -44,32 +44,20 @@ Rectangle {
                 height: 60
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                playing: saveCurrency == true
-                visible: saveCurrency == true? (userSettings.defaultCurrency === currencyNR? true : false) : false
+                playing: saveSound == true
+                visible: saveSound == true? (userSettings.sound === soundNR? true : false) : false
             }
 
             Label {
-                id: currencyName
-                text: currency
-                color: "#F2F2F2"
+                id: soundName
+                text: name
+                color: userSettings.sound === soundNR? "#0ED8D2" : "#F2F2F2"
                 font.pixelSize: 16
                 font.family: xciteMobile.name
                 anchors.verticalCenter: picklistRow.verticalCenter
                 anchors.left: picklistRow.left
                 anchors.leftMargin: 7
-                visible: saveCurrency == true? (userSettings.defaultCurrency === currencyNR? false : true) : true
-            }
-
-            Label {
-                id: currencyTicker
-                text: ticker
-                color: "#F2F2F2"
-                font.pixelSize: 16
-                font.family: xciteMobile.name
-                anchors.verticalCenter: picklistRow.verticalCenter
-                anchors.right: picklistRow.right
-                anchors.rightMargin: 7
-                visible: saveCurrency == true? (userSettings.defaultCurrency === currencyNR? false : true) : true
+                visible: saveSound == true? (userSettings.sound === soundNR? false : true) : true
             }
 
             MouseArea {
@@ -77,7 +65,6 @@ Rectangle {
 
                 onPressed: {
                     clickIndicator.visible = true
-                    click01.play()
                     detectInteraction()
                 }
 
@@ -90,12 +77,13 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (saveCurrency == false) {
+                    if (saveSound == false) {
                         clickIndicator.visible = false
-                        oldCurrency = userSettings.defaultCurrency
-                        userSettings.defaultCurrency = currencyNR;
-                        saveCurrency = true
-                        updateToAccount()
+                        oldSound = userSettings.sound
+                        userSettings.sound = soundNR;
+                        notification.play()
+                        saveSound = true
+                        saveAppSettings()
                     }
                 }
 
@@ -103,18 +91,16 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (currencyTracker === 1) {
-                            currencyTracker = 0
-                            sumBalance()
-                            saveCurrency =false
+                        if (soundTracker === 1) {
+                            saveSound =false
                         }
                     }
 
                     onSaveFailed: {
-                        if (currencyTracker === 1) {
-                            userSettings.defaultCurrency = oldCurrency
-                            currencyChangeFailed = 1
-                            saveCurrency = false
+                        if (soundTracker === 1) {
+                            userSettings.sound = oldSound
+                            soundChangeFailed = 1
+                            saveSound = false
                         }
                     }
                 }
@@ -126,7 +112,7 @@ Rectangle {
                 color: "#5F5F5F"
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                visible: index < totalLines ? true : false
+                visible: index < (soundList.count - 1) ? true : false
             }
         }
     }
@@ -134,9 +120,9 @@ Rectangle {
     ListView {
         anchors.fill: parent
         id: pickList
-        model: fiatCurrencies
+        model: soundList
         delegate: picklistEntry
-        contentHeight: fiatCurrencies.count * 35
+        contentHeight: soundList.count * 35
         onDraggingChanged: detectInteraction()
     }
 }
