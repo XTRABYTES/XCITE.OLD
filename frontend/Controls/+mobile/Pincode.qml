@@ -264,10 +264,10 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (createPin == 1){
                                 console.log("save succeeded");
-                                console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
+                                console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + ", account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                                 newPin1.text = "";
                                 newPin2.text = "";
                                 newPinSaved = 1
@@ -277,7 +277,7 @@ Rectangle {
                     }
 
                     onSaveFailed: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (createPin == 1) {
                                 console.log("save failed");
                                 userSettings.pinlock = true;
@@ -289,7 +289,7 @@ Rectangle {
                     }
 
                     onSaveFailedDBError: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (changePin == 0){
                                 failError = "Database ERROR"
                             }
@@ -297,7 +297,7 @@ Rectangle {
                     }
 
                     onSaveFailedAPIError: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1  && selectedPage == "settings") {
                             if (changePin == 0){
                                 failError = "Network ERROR"
                             }
@@ -305,7 +305,7 @@ Rectangle {
                     }
 
                     onSaveFailedInputError: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1  && selectedPage == "settings") {
                             if (changePin == 0){
                                 failError = "Input ERROR"
                             }
@@ -313,7 +313,7 @@ Rectangle {
                     }
 
                     onSaveFailedUnknownError: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1  && selectedPage == "settings") {
                             if (changePin == 0){
                                 failError = "Unknown ERROR"
                             }
@@ -583,7 +583,7 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (pincodeTracker == 1){
+                        if (pincodeTracker == 1 && selectedPage == "settings"){
                             if (changePin == 1) {
                                 if (newPinSaved == 0) {
                                     newPinSaved = 1
@@ -598,7 +598,7 @@ Rectangle {
                     }
 
                     onSaveFailed: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (changePin == 1){
                                 currentPin.text = ""
                                 changePin1.text = ""
@@ -608,7 +608,7 @@ Rectangle {
                         }
                     }
                     onSaveFailedDBError: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (changePin == 1){
                                 failError = "Database ERROR"
                             }
@@ -616,7 +616,7 @@ Rectangle {
                     }
 
                     onSaveFailedAPIError: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (changePin == 1){
                                 failError = "Network ERROR"
                             }
@@ -624,7 +624,7 @@ Rectangle {
                     }
 
                     onSaveFailedInputError: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (changePin == 1){
                                 failError = "Input ERROR"
                             }
@@ -632,7 +632,7 @@ Rectangle {
                     }
 
                     onSaveFailedUnknownError: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (changePin == 1){
                                 failError = "Unknown ERROR"
                             }

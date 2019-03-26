@@ -241,5 +241,21 @@
         <file>icons/BTC_logo_big.svg</file>
         <file>icons/ETH_card_logo_01.svg</file>
         <file>icons/ETH_logo_big.svg</file>
+        <file>icons/mobile/standby-icon_01.svg</file>
+        <file>sounds/notification_1.wav</file>
+        <file>sounds/notification_2.wav</file>
+        <file>sounds/notification_3.wav</file>
+        <file>icons/mobile/volume_level_1-icon_dark.svg</file>
+        <file>icons/mobile/volume_level_1-icon_focus.svg</file>
+        <file>icons/mobile/volume_level_1-icon_light.svg</file>
+        <file>icons/mobile/volume_level_2-icon_dark.svg</file>
+        <file>icons/mobile/volume_level_2-icon_focus.svg</file>
+        <file>icons/mobile/volume_level_2-icon_light.svg</file>
+        <file>icons/mobile/volume_level_3-icon_dark.svg</file>
+        <file>icons/mobile/volume_level_3-icon_focus.svg</file>
+        <file>icons/mobile/volume_level_3-icon_light.svg</file>
+        <file>icons/mobile/volume_level_0-icon_dark.svg</file>
+        <file>icons/mobile/volume_level_0-icon_focus.svg</file>
+        <file>icons/mobile/volume_level_0-icon_light.svg</file>
     </qresource>
 </RCC>

@@ -287,8 +287,10 @@ Rectangle {
         }
 
         Label {
+            property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
+            property string amountArray: walletList.get(walletIndex).balance.toLocaleString(Qt.locale("en_US"), "f", decimals)
             id: balanceAmount
-            text: walletList.get(walletIndex).balance
+            text: amountArray
             anchors.right: balanceTicker.left
             anchors.rightMargin: 7
             anchors.top: balanceText.bottom
@@ -1050,7 +1052,7 @@ Rectangle {
     Item {
         id: deleteAddresFailed
         width: parent.width
-        height: failedIcon.height + deleteFailedLabel.height + deleteFailedError + closeDeleteFail.height + 70
+        height: failedIcon.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 70
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -100

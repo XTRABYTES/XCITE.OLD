@@ -41,7 +41,7 @@ Rectangle {
         width: parent.width
         anchors.top: notificationModalLabel.bottom
         anchors.topMargin: 35
-        anchors.bottom: parent.bottom
+        anchors.bottom: closeNotificationModal.top
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true

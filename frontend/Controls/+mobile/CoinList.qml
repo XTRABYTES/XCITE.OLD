@@ -77,7 +77,7 @@ Rectangle {
                     id: icon
                     source: getLogoBig(name)
                     anchors.horizontalCenter: parent.left
-                    anchors.horizontalCenterOffset: icon.implicitWidth/6
+                    anchors.horizontalCenterOffset: 15 //icon.implicitWidth/6
                     anchors.verticalCenter: parent.verticalCenter
                     height: 70
                     fillMode: Image.PreserveAspectFit
