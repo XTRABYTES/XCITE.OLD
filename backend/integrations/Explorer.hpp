@@ -19,6 +19,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QtWidgets>
+
 
 class Explorer : public QObject
 {
@@ -39,6 +41,7 @@ public slots:
     void getBalanceEntireWallet(QString);
     void getTransactionList(QString, QString, QString);
     void getDetails(QString, QString);
+    void WalletUpdate(QString coin, QString label, QString message);
 private:
     QString explorerValue;
 };
