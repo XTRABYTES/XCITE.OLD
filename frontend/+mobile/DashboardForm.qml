@@ -835,7 +835,7 @@ Item {
                 Item {
                     id: contact
                     z: 5
-                    height: lastName.implicitHeight
+                    height: firstName.implicitHeight +  lastName.implicitHeight + 10
                     anchors.verticalCenter: bigPhoto.verticalCenter
                     width: homeHeader2.width -140
                     anchors.left: parent.left
@@ -865,24 +865,27 @@ Item {
                     Label {
                         id: firstName
                         z: 5
+                        anchors.right: parent.right
+                        anchors.top: parent.top
                         anchors.left: parent.left
-                        anchors.bottom: parent.bottom
                         text: contactTracker == 1? contactList.get(contactIndex).firstName : ""
+                        horizontalAlignment: Text.AlignRight
+                        color: darktheme == true? "#F2F2F2" : "#2A2C31"
                         font.pixelSize: 30
                         font.family:  xciteMobile.name
                         font.letterSpacing: 2
                         font.capitalization: Font.SmallCaps
-                        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                        elide: Text.ElideRigh
                     }
 
                     Label {
                         id: lastName
                         z: 5
-                        anchors.left: firstName.right
-                        anchors.leftMargin: firstName.text == ""? 0 : 5
-                        anchors.bottom: parent.bottom
                         anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
                         text: contactTracker == 1? contactList.get(contactIndex).lastName : ""
+                        horizontalAlignment: Text.AlignRight
                         color: darktheme == true? "#F2F2F2" : "#2A2C31"
                         font.pixelSize: 30
                         font.family:  xciteMobile.name

@@ -13,6 +13,7 @@
 #include <QEventLoop>
 #include <QSettings>
 #include "Explorer.hpp"
+#include <QWindow>
 
 
 Explorer::Explorer(QObject *parent) : QObject(parent)
@@ -181,4 +182,17 @@ QString Explorer::getBalanceAddressExt(QString coin, QString address){
 
     QString strReply = (QString)reply->readAll();
     return strReply;
+}
+
+void Explorer::WalletUpdate(QString coin, QString label, QString message)
+{
+    QMessageBox *msgBox = new QMessageBox;
+    msgBox->setParent(0);
+    msgBox->setWindowTitle(coin + " " + label);
+    msgBox->setText(message);
+    msgBox->setStandardButtons(QMessageBox::Ok);
+    msgBox->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+    msgBox->show();
+
+    // check if current window is the active window, if not make it active
 }

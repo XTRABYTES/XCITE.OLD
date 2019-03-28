@@ -24,6 +24,9 @@ Rectangle {
     height: Screen.height
     color: bgcolor
 
+    property bool updatingWallets: false
+    property int updateFailed: 0
+
     Text {
         id: notificationModalLabel
         text: "NOTIFICATIONS"
@@ -76,10 +79,69 @@ Rectangle {
             }
 
             onClicked: {
-                alertList.clear();
-                alertList.append({"date": "null", "origin": "null", "message": "null"});
-                checkNotifications()
+                if (updatingWallets == false) {
+                    alertList.clear();
+                    alertList.append({"date": "", "origin": "", "message": ""});
+                    checkNotifications()
+                    updatingWallets = true
+                    updateToAccount()
+                }
             }
+        }
+
+        Connections {
+            target: UserSettings
+
+            onSaveSucceeded: {
+                if (selectedPage == "notif" && updatingWallets == true) {
+                    updatingWallets == false
+                }
+            }
+
+            onSaveFailed: {
+                if (selectedPage == "notif" && updatingWallets == true) {
+                    updateFailed = 1
+                    updatingWallets == false
+                }
+            }
+        }
+    }
+
+    Item {
+        z: 12
+        width: popupUpdateFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: updateFailed == 1
+
+        Rectangle {
+            id: popupUpdateFail
+            height: 50
+            width: popupFailText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupFailText
+            text: "FAILED update your wallets!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: updateFailed == 1
+            interval: 2000
+
+            onTriggered: updateFailed = 0
         }
     }
 

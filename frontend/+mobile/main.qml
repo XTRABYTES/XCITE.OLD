@@ -20,7 +20,6 @@ import Qt.labs.folderlistmodel 2.11
 import QtMultimedia 5.8
 import QtGraphicalEffects 1.0
 
-
 ApplicationWindow {
     property bool isNetworkActive: false
 
@@ -31,17 +30,23 @@ ApplicationWindow {
     width: Screen.width
     height: Screen.height
     title: qsTr("XCITE")
-    color: "#14161B"
+    color: "#2A2C31"
 
-    Label {
-        id:helloModalLabel
-        text: "HELLO"
-        anchors.horizontalCenter: parent.horizontalCenter
+    MediaPlayer {
+        id: introSound
+        source: "qrc:/sounds/intro_01.wav"
+        volume: 1
+        autoPlay: true
+    }
+
+    Image {
+        id: xbyLogo
+        source: 'qrc:/logos/xby_logo_tm.png'
+        width: Screen.width - 100
+        fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: parent.verticalCenter
-        font.pixelSize: 20
-        font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
-        font.letterSpacing: 2
+        anchors.verticalCenterOffset: -50
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
     Component.onCompleted: {
@@ -103,6 +108,7 @@ ApplicationWindow {
         marketValueChangedSignal("xbybtc");
         marketValueChangedSignal("xbycha");
 
+        selectedPage = "onBoarding"
         mainRoot.push("../Onboarding.qml")
     }
 
@@ -142,6 +148,30 @@ ApplicationWindow {
         coinList.setProperty(5, "percentage", percentageETH);
     }
 
+    onStandByChanged: {
+        if(standBy == 1) {
+            standbyTimer.start()
+            networkTimer.restart()
+            explorerTimer1.restart()
+            explorerTimer2.restart()
+        }
+
+        else {
+            standbyTimer.stop()
+            requestTimer.restart()
+            networkTimer.restart()
+            loginTimer.restart()
+            explorerTimer1.restart()
+            explorerTimer2.restart()
+            marketValueTimer.restart()
+        }
+    }
+
+    onGoodbeyChanged: {
+        if(goodbey == 1) {
+            outroSound.play()
+        }
+    }
 
     // Place holder values for wallets
     property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
@@ -181,7 +211,7 @@ ApplicationWindow {
     property real valueXFUEL: btcValueXFUEL * valueBTC
     property real percentageXFUEL
 
-    property real btcValueETH: 0.03404581
+    property real btcValueETH
     property real valueETH: btcValueETH * valueBTC
     property real percentageETH
 
@@ -241,6 +271,7 @@ ApplicationWindow {
     property int sessionTime: 0
     property int sessionClosed: 0
     property int standBy: 0
+    property int screenSaver: 0
     property int autoLogout: 0
     property int manualLogout: 0
     property int networkLogout: 0
@@ -354,12 +385,7 @@ ApplicationWindow {
     signal initialisePincode(string pincode)
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
-
-    onStandByChanged: {
-        if(standBy == 1){
-            //
-        }
-    }
+    signal walletUpdate(string coin, string label, string message)
 
     // Automated functions
 
@@ -388,6 +414,9 @@ ApplicationWindow {
                             balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
                             alert = true
+                            if (standBy == 1) {
+                                walletUpdate(walletList.get(i).name, walletList.get(i).label, balanceAlert)
+                            }
                             notification.play()
                             sumBalance()
                             sumXBY()
@@ -811,17 +840,6 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: xUtil
-
-        onKeyPairCreated: {
-            console.log("Address is: " + address)
-            console.log("PubKey is: " + pubKey)
-            console.log("PrivKey is: " + privKey)
-        }
-    }
-
-
     function setMarketValue(currency, currencyValue) {
         if (!isNaN(currencyValue) && currencyValue !== "") {
             var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
@@ -871,9 +889,6 @@ ApplicationWindow {
                 contactList.append(data);
             }
         }
-        else {
-            console.log("no contacts saved in account")
-        }
     }
 
     function loadAddressList(addresses) {
@@ -885,9 +900,6 @@ ApplicationWindow {
                 addressList.append(data);
             }
         }
-        else {
-            console.log("no addresses saved in account")
-        }
     }
 
     function loadWalletList(wallet) {
@@ -898,9 +910,6 @@ ApplicationWindow {
                 var data = obj[i];
                 walletList.append(data);
             }
-        }
-        else {
-            console.log("no wallets saved in account")
         }
     }
 
@@ -925,24 +934,16 @@ ApplicationWindow {
             coinList.setProperty(4, "active", userSettings.btc);
             coinList.setProperty(5, "active", userSettings.eth);
         }
-        else {
-            console.log("no settings saved in account")
-        }
     }
 
     function loadTransactions(transactions){
         if (typeof transactions !== "undifined") {
-            console.log("json history list: " + transactions)
             historyList.clear();
             var obj = JSON.parse(transactions);
-            console.log("raw history list: " + obj)
             for (var i in obj){
                 var data = obj[i];
                 historyList.append(data);
             }
-        }
-        else {
-            console.log("no transactions available")
         }
     }
 
@@ -963,20 +964,16 @@ ApplicationWindow {
 
     function loadTransactionAddresses(inputs, outputs){
         if (typeof inputs !== "undifined") {
-            console.log("json input list: " + inputs)
             inputAddresses.clear();
             var objInput = JSON.parse(inputs);
-            console.log("raw input list: " + objInput)
             for (var i in objInput){
                 var dataInput = objInput[i];
                 inputAddresses.append(dataInput);
             }
         }
         if (typeof outputs !== "undifined") {
-            console.log("json output list: " + outputs)
             outputAddresses.clear();
             var objOutput = JSON.parse(outputs);
-            console.log("raw ouput list: " + objOutput)
             for (var e in objOutput){
                 var dataOutput = objOutput[e];
                 outputAddresses.append(dataOutput);
@@ -1135,7 +1132,12 @@ ApplicationWindow {
 
     // loggin out
     function logOut () {
-        updateToAccount()
+        if (selectedPage == "onBoarding") {
+            Qt.quit()
+        }
+        else  {
+            updateToAccount()
+        }
     }
 
     Connections {
@@ -1291,9 +1293,9 @@ ApplicationWindow {
     ListModel {
         id: alertList
         ListElement {
-            date: "null"
-            message: "null"
-            origin: "null"
+            date: ""
+            message: ""
+            origin: ""
         }
     }
 
@@ -1359,6 +1361,24 @@ ApplicationWindow {
         id: notification
         source: soundList.get(selectedSound).sound
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
+    }
+
+    SoundEffect {
+        id: succesSound
+        source: "qrc:/sounds/succes_01.wav"
+        volume: 0.50
+    }
+
+    SoundEffect {
+        id: failSound
+        source: "qrc:/sounds/fail_01.wav"
+        volume: 0.50
+    }
+
+    SoundEffect {
+        id: outroSound
+        source: "qrc:/sounds/outro_01.wav"
+        volume: 1
     }
 
     Timer {
@@ -1454,14 +1474,10 @@ ApplicationWindow {
 
         onSessionIdCheck: {
             if (sessionAlive === false && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
-                console.log("session ID invalid")
                 networkLogout = 1
                 logoutTracker = 1
                 sessionStart = 0
                 sessionClosed = 1
-            }
-            else {
-                console.log("session ID still valid")
             }
         }
     }
@@ -1496,6 +1512,19 @@ ApplicationWindow {
             sumETH()
         }
     }
+
+    Timer {
+        id: standbyTimer
+        interval: 30000
+        repeat: true
+        running: false
+
+        onTriggered: {
+            if (screenSaver == 0)
+                screenSaver = 1
+        }
+    }
+
     // Order of the pages
     StackView {
         id: mainRoot

@@ -265,6 +265,7 @@ Rectangle {
                         }
 
                         onCreateKeypairFailed: {
+                            failSound.play()
                             createFailed = 1
                         }
                     }

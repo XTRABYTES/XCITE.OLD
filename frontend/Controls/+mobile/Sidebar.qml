@@ -417,6 +417,7 @@ Rectangle {
                     click01.play()
                     detectInteraction()
                     standBy = 1
+                    screenSaver = 1
                     mainRoot.push("../StandBy.qml")
                     appsTracker = 0
                 }

@@ -31,7 +31,7 @@ Rectangle {
             id: notificationRow
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
-            height: date == "null"? 0 : 130
+            height: date == ""? 0 : 130
             color:"transparent"
             clip: true
 
