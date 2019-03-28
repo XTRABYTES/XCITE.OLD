@@ -1132,12 +1132,7 @@ ApplicationWindow {
 
     // loggin out
     function logOut () {
-        if (selectedPage == "onBoarding") {
-            Qt.quit()
-        }
-        else  {
-            updateToAccount()
-        }
+        updateToAccount()
     }
 
     Connections {
