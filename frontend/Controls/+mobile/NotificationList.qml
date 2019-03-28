@@ -38,7 +38,7 @@ Rectangle {
             Controls.CardBody {
 
             }
-
+            /**
             Image {
                 id: clearIcon
                 source: darktheme == true? 'qrc:/icons/mobile/delete-icon_01_light.svg' : 'qrc:/icons/mobile/delete-icon_01_dark.svg'
@@ -66,7 +66,7 @@ Rectangle {
                     }
                 }
             }
-
+            */
             Label {
                 id: notificationDate
                 text: date

@@ -71,6 +71,8 @@ Rectangle {
     property real currentBalance: getCurrentBalance()
     property int selectedWallet: getWalletNR(coinID.text, walletLabel.text)
     property string searchCriteria: ""
+    property string clipboardTest: clipboard.text
+    property int copy2clipboard: 0
 
     function compareAddress(){
         var fromto = ""
@@ -662,6 +664,60 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && publicKey.text != ""
+
+            Rectangle {
+                anchors.fill: parent
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressAndHold: {
+                        if(copy2clipboard == 0) {
+                            // copy to clipboard
+                            copy2clipboard= 1
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            z: 12
+            width: popupClipboard.width
+            height: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: copy2clipboard == 1
+
+            Rectangle {
+                id: popupClipboard
+                height: 50
+                width: popupClipboardText.width + 56
+                color: "#34363D"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Label {
+                id: popupClipboardText
+                text: "Copied to clipboard!"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Timer {
+                repeat: false
+                running: copy2clipboard == 1
+                interval: 2000
+
+                onTriggered: copy2clipboard = 0
+            }
         }
 
         // Send state

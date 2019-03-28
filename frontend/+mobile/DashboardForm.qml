@@ -835,7 +835,7 @@ Item {
                 Item {
                     id: contact
                     z: 5
-                    height: firstName.implicitHeight +  lastName.implicitHeight + 10
+                    height: firstName.implicitHeight +  lastName.implicitHeight + 5
                     anchors.verticalCenter: bigPhoto.verticalCenter
                     width: homeHeader2.width -140
                     anchors.left: parent.left
@@ -875,7 +875,7 @@ Item {
                         font.family:  xciteMobile.name
                         font.letterSpacing: 2
                         font.capitalization: Font.SmallCaps
-                        elide: Text.ElideRigh
+                        elide: Text.ElideRight
                     }
 
                     Label {
