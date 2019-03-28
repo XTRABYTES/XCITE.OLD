@@ -20,7 +20,6 @@ import Qt.labs.folderlistmodel 2.11
 import QtMultimedia 5.8
 import QtGraphicalEffects 1.0
 
-
 ApplicationWindow {
     property bool isNetworkActive: false
 
@@ -31,17 +30,23 @@ ApplicationWindow {
     width: Screen.width
     height: Screen.height
     title: qsTr("XCITE")
-    color: "#14161B"
+    color: "#2A2C31"
 
-    Label {
-        id:helloModalLabel
-        text: "HELLO"
-        anchors.horizontalCenter: parent.horizontalCenter
+    MediaPlayer {
+        id: introSound
+        source: "qrc:/sounds/intro_01.wav"
+        volume: 1
+        autoPlay: true
+    }
+
+    Image {
+        id: xbyLogo
+        source: 'qrc:/logos/xby_logo_tm.png'
+        width: Screen.width - 100
+        fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: parent.verticalCenter
-        font.pixelSize: 20
-        font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
-        font.letterSpacing: 2
+        anchors.verticalCenterOffset: -50
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
     Component.onCompleted: {
@@ -103,6 +108,7 @@ ApplicationWindow {
         marketValueChangedSignal("xbybtc");
         marketValueChangedSignal("xbycha");
 
+        selectedPage = "onBoarding"
         mainRoot.push("../Onboarding.qml")
     }
 
@@ -144,18 +150,26 @@ ApplicationWindow {
 
     onStandByChanged: {
         if(standBy == 1) {
+            standbyTimer.start()
             networkTimer.restart()
             explorerTimer1.restart()
             explorerTimer2.restart()
         }
 
         else {
+            standbyTimer.stop()
             requestTimer.restart()
             networkTimer.restart()
             loginTimer.restart()
             explorerTimer1.restart()
             explorerTimer2.restart()
             marketValueTimer.restart()
+        }
+    }
+
+    onGoodbeyChanged: {
+        if(goodbey == 1) {
+            outroSound.play()
         }
     }
 
@@ -257,6 +271,7 @@ ApplicationWindow {
     property int sessionTime: 0
     property int sessionClosed: 0
     property int standBy: 0
+    property int screenSaver: 0
     property int autoLogout: 0
     property int manualLogout: 0
     property int networkLogout: 0
@@ -1117,7 +1132,12 @@ ApplicationWindow {
 
     // loggin out
     function logOut () {
-        updateToAccount()
+        if (selectedPage == "onBoarding") {
+            Qt.quit()
+        }
+        else  {
+            updateToAccount()
+        }
     }
 
     Connections {
@@ -1343,6 +1363,24 @@ ApplicationWindow {
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
     }
 
+    SoundEffect {
+        id: succesSound
+        source: "qrc:/sounds/succes_01.wav"
+        volume: 0.50
+    }
+
+    SoundEffect {
+        id: failSound
+        source: "qrc:/sounds/fail_01.wav"
+        volume: 0.50
+    }
+
+    SoundEffect {
+        id: outroSound
+        source: "qrc:/sounds/outro_01.wav"
+        volume: 1
+    }
+
     Timer {
         id: marketValueTimer
         interval: 60000
@@ -1474,6 +1512,19 @@ ApplicationWindow {
             sumETH()
         }
     }
+
+    Timer {
+        id: standbyTimer
+        interval: 30000
+        repeat: true
+        running: false
+
+        onTriggered: {
+            if (screenSaver == 0)
+                screenSaver = 1
+        }
+    }
+
     // Order of the pages
     StackView {
         id: mainRoot

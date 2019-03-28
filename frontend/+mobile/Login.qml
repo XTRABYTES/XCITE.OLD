@@ -31,6 +31,7 @@ Item {
     property int sessionKey: 0
     property int receiveSessionID: 0
     property int loadingSettings:  0
+    property int verifyingBalances: 0
 
     Rectangle {
         id: login
@@ -181,6 +182,7 @@ Item {
                     sessionClosed = 0
                     sessionStart = 1
                     loginInitiated  = false
+                    verifyingBalances = 0
                 }
             }
 
@@ -256,6 +258,7 @@ Item {
                     username = userName.text
                     loginSuccesTimer.start()
                     loadingSettings = 0
+                    verifyingBalances = 0
                 }
 
                 onLoginFailedChanged: {
@@ -375,6 +378,18 @@ Item {
             font.family: xciteMobile.name
             font.italic: true
             visible: loadingSettings == 1
+        }
+
+        Label {
+            id: loginRespons6
+            text: "Verifying wallet balances ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: verifyingBalances == 1
         }
 
         Rectangle {

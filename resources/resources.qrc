@@ -257,5 +257,11 @@
         <file>icons/mobile/volume_level_0-icon_dark.svg</file>
         <file>icons/mobile/volume_level_0-icon_focus.svg</file>
         <file>icons/mobile/volume_level_0-icon_light.svg</file>
+        <file>sounds/fail_01.wav</file>
+        <file>sounds/intro_01.wav</file>
+        <file>sounds/outro_01.wav</file>
+        <file>sounds/succes_01.wav</file>
+        <file>logos/xby_logo_tm.png</file>
+        <file>gifs/screensaver_01.gif</file>
     </qresource>
 </RCC>

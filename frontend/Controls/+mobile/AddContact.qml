@@ -316,6 +316,7 @@ Rectangle {
 
                 onSaveSucceeded: {
                     if (addContactTracker == 1 && addingContact == true) {
+                        succesSound.play()
                         editSaved = 1
                         addingContact = false
                     }
@@ -323,6 +324,7 @@ Rectangle {
 
                 onSaveFailed: {
                     if (addContactTracker == 1 && addingContact == true) {
+                        failSound.play()
                         contactID = contactID - 1
                         contactList.remove(contactID)
                         editFailed = 1
