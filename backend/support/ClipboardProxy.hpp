@@ -21,6 +21,7 @@ class ClipboardProxy : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString text READ dataText WRITE setDataText NOTIFY dataChanged)
+    Q_PROPERTY(QString selectionText READ selectionText WRITE setSelectionText NOTIFY selectionChanged)
 
 public:
     explicit ClipboardProxy(QObject *parent = 0);
