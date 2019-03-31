@@ -263,5 +263,7 @@
         <file>sounds/succes_01.wav</file>
         <file>logos/xby_logo_tm.png</file>
         <file>gifs/screensaver_01.gif</file>
+        <file>gifs/xby_screensaver_01.gif</file>
+        <file>videos/xby_screensaver_01.mp4</file>
     </qresource>
 </RCC>

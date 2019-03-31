@@ -86,6 +86,10 @@ int main(int argc, char *argv[])
     Explorer explorer;
     engine.rootContext()->setContextProperty("explorer", &explorer);
 
+    // wire-up ClipboardProxy
+    ClipboardProxy clipboardProxy;
+    engine.rootContext()->setContextProperty("clipboardProxy", &clipboardProxy);
+
     // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
@@ -131,6 +135,10 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(updateTransactions(QString, QString, QString)), &explorer, SLOT(getTransactionList(QString, QString, QString)));
     QObject::connect(rootObject, SIGNAL(getDetails(QString, QString)), &explorer, SLOT(getDetails(QString, QString)));
     QObject::connect(rootObject, SIGNAL(walletUpdate(QString, QString, QString)), &explorer, SLOT(WalletUpdate(QString,QString,QString)));
+
+    // connect QML signal for ClipboardProxy
+    QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));
+    QObject::connect(rootObject, SIGNAL(copyImage2Clipboard(QUrl)), &clipboardProxy, SLOT(copyImage2Clipboard(QUrl)));
 
     // connect QML signals for xUtility
     QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeyPairEntry(QString)));

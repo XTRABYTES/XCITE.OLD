@@ -152,11 +152,11 @@ TextField {
 
                 onClicked: {
                     if(textInputComponent.text == "") {
-                        // copy placeholderTextComponent.text to clipboard
+                        copyText2Clipboard(placeholderTextComponent.text)
                     }
 
                     else {
-                        // copy textInputComponent.text to clipboard
+                        copyText2Clipboard(textInputComponent.text)
                     }
                     clipBoard = 0
                     textCopied = 1

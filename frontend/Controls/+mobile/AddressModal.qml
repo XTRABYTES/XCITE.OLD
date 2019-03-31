@@ -596,6 +596,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newName
+            z: 1.2
             text: ""
             height: 34
             placeholder: addressName
@@ -621,6 +622,7 @@ Rectangle {
 
         Label {
             id: nameWarning
+            z: 1.1
             text: "Already an address with this label for this contact!"
             color: "#FD2E2E"
             anchors.left: newName.left
@@ -637,6 +639,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newAddress
+            z: 1.1
             text: ""
             height: 34
             width: newName.width
@@ -662,6 +665,7 @@ Rectangle {
 
         Label {
             id: addressWarning1
+            z: 1
             text: "Already a contact for this address!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -678,6 +682,7 @@ Rectangle {
 
         Label {
             id: addressWarning2
+            z: 1
             text: "Invalid address!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -708,6 +713,7 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
+            z: 1
             width: newAddress.width
             height: 34
             anchors.top: newAddress.bottom
@@ -757,6 +763,7 @@ Rectangle {
 
         DropShadow {
             id: shadowTransferPicklist1
+            z: 1
             anchors.fill: newPicklist1
             source: newPicklist1
             horizontalOffset: 0
@@ -775,6 +782,7 @@ Rectangle {
 
         Rectangle {
             id: newPicklist1
+            z: 1
             width: 100
             height: ((totalLines + 1) * 35)-10
             radius: 4
@@ -794,6 +802,7 @@ Rectangle {
 
         Rectangle {
             id: picklistClose1
+            z: 1
             width: 100
             height: 25
             radius: 4
