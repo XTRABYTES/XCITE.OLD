@@ -36,15 +36,20 @@ public:
 
     void setDataText(const QString &text);
     QString dataText() const;
+    
+    void setSelectionText(const QString &text);
+    QString selectionText() const;
 
     QImage getImage() const;
 
 signals:
     void dataChanged();
+
     void imageChanged();
 
 public slots:
     void copyText2Clipboard(QString);
+
 };
 
 #endif
