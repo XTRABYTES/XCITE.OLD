@@ -148,49 +148,11 @@ ApplicationWindow {
         coinList.setProperty(5, "percentage", percentageETH);
     }
 
-    onStandByChanged: {
-        if(standBy == 1) {
-            standbyTimer.start()
-            networkTimer.restart()
-            explorerTimer1.restart()
-            explorerTimer2.restart()
-        }
-
-        else {
-            standbyTimer.stop()
-            requestTimer.restart()
-            networkTimer.restart()
-            loginTimer.restart()
-            explorerTimer1.restart()
-            explorerTimer2.restart()
-            marketValueTimer.restart()
-        }
-    }
-
     onGoodbeyChanged: {
         if(goodbey == 1) {
             outroSound.play()
         }
     }
-
-    // Place holder values for wallets
-    property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
-    property string nameXBY1: nameXBY
-    property string labelXBY1: "Main"
-    property real balanceXBY1: wallet.balance
-    property real unconfirmedXBY1: 0
-
-    property string receivingAddressXFUEL1: "F6xCY2wNyE7KwkWcUqeZVTy6WvciHYb5Eq"
-    property string nameXFUEL1: nameXFUEL
-    property string labelXFUEL1: "Main"
-    property real balanceXFUEL1: 1465078.00000000 // xfuelwallet.balance
-    property real unconfirmedXFUEL1: 0
-
-    property string receivingAddressXFUEL2: "FAQbF9wCFPgE37PrNHeCU4KXpHezQrgUDu"
-    property string nameXFUEL2: nameXFUEL
-    property string labelXFUEL2: "Test"
-    property real balanceXFUEL2: 1358832.85000000 // xfuelwallet.balance
-    property real unconfirmedXFUEL2: 0
 
     // BTC information
     property real btcValueBTC: 1
@@ -200,7 +162,7 @@ ApplicationWindow {
     property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : userSettings.defaultCurrency == 2? valueBTCGBP : btcValueBTC
     property real percentageBTC
 
-    // Coin info, retrieved from server
+    // Coin info
     property string nameXBY: "XBY"
     property real btcValueXBY
     property real valueXBY: btcValueXBY * valueBTC
@@ -386,6 +348,7 @@ ApplicationWindow {
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
     signal walletUpdate(string coin, string label, string message)
+    signal copyText2Clipboard(string text)
 
     // Automated functions
 
@@ -1380,16 +1343,18 @@ ApplicationWindow {
         id: marketValueTimer
         interval: 60000
         repeat: true
-        running: sessionStart == 1 && standBy == 0
+        running: sessionStart == 1
         onTriggered:  {
-            marketValueChangedSignal("btcusd")
-            marketValueChangedSignal("btceur")
-            marketValueChangedSignal("btcgbp")
-            marketValueChangedSignal("xbybtc")
-            marketValueChangedSignal("xbycha")
-            marketValueChangedSignal("btccha")
-            marketValueChangedSignal("ethbtc")
-            marketValueChangedSignal("ethcha")
+            if (standBy == 0) {
+                marketValueChangedSignal("btcusd")
+                marketValueChangedSignal("btceur")
+                marketValueChangedSignal("btcgbp")
+                marketValueChangedSignal("xbybtc")
+                marketValueChangedSignal("xbycha")
+                marketValueChangedSignal("btccha")
+                marketValueChangedSignal("ethbtc")
+                marketValueChangedSignal("ethcha")
+            }
         }
     }
 
@@ -1401,28 +1366,10 @@ ApplicationWindow {
         onTriggered:  {
             clearWalletList()
             var datamodel = []
-            for (var i = 0; i < walletList.count; ++i)
-                if(walletList.get(i).name === "XBY" || walletList.get(i).name === "XFUEL") {
-                    datamodel.push(walletList.get(i))
-                }
-            var walletListJson = JSON.stringify(datamodel)
-            updateBalanceSignal(walletListJson);
 
-        }
-    }
-
-    Timer {
-        id: explorerTimer2
-        interval: standBy == 0? 150050 : 600050
-        repeat: true
-        running: sessionStart == 1
-        onTriggered:  {
-            clearWalletList()
-            var datamodel = []
             for (var i = 0; i < walletList.count; ++i)
-                if(walletList.get(i).name === "BTC" || walletList.get(i).name === "ETH") {
-                    datamodel.push(walletList.get(i))
-                }
+                datamodel.push(walletList.get(i))
+
             var walletListJson = JSON.stringify(datamodel)
             updateBalanceSignal(walletListJson);
 
@@ -1433,7 +1380,7 @@ ApplicationWindow {
         id: loginTimer
         interval: 30000
         repeat: true
-        running: sessionStart == 1 && standBy == 0
+        running: sessionStart == 1
 
         onTriggered: {
             if (interactionTracker == 1) {
@@ -1446,8 +1393,10 @@ ApplicationWindow {
                 if (sessionTime >= 10){
                     sessionTime = 0
                     sessionStart = 0
-                    standBy = 1
-                    mainRoot.push("../StandBy.qml")
+                    if (standBy == 0) {
+                        standBy = 1
+                        mainRoot.push("../StandBy.qml")
+                    }
                 }
             }
         }
@@ -1460,7 +1409,9 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            checkSessionId()
+            if (standBy == 0) {
+                checkSessionId()
+            }
         }
     }
 
@@ -1481,7 +1432,7 @@ ApplicationWindow {
         id: requestTimer
         interval: 5000
         repeat: true
-        running: sessionStart == 1 && standBy == 0
+        running: sessionStart == 1
 
         onTriggered: {
             checkNotifications()
@@ -1495,28 +1446,18 @@ ApplicationWindow {
         id: timer
         interval: 15000
         repeat: true
-        running: sessionStart == 1 & standBy == 0
+        running: sessionStart == 1
 
         onTriggered: {
-            sumBalance()
-            sumXBY()
-            sumXFUEL()
-            sumXBYTest()
-            sumXFUELTest()
-            sumBTC()
-            sumETH()
-        }
-    }
-
-    Timer {
-        id: standbyTimer
-        interval: 30000
-        repeat: true
-        running: false
-
-        onTriggered: {
-            if (screenSaver == 0)
-                screenSaver = 1
+            if (standBy == 0) {
+                sumBalance()
+                sumXBY()
+                sumXFUEL()
+                sumXBYTest()
+                sumXFUELTest()
+                sumBTC()
+                sumETH()
+            }
         }
     }
 

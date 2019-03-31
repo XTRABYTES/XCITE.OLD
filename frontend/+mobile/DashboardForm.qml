@@ -1150,7 +1150,7 @@ Item {
                             if (addressQRTracker == 0) {
                                 if (contactTracker == 1) {
                                     contactTracker = 0
-                                    contactIndex = 0
+                                    //contactIndex = 0
                                 }
                             }
 

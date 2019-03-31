@@ -213,6 +213,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newName
+            z: 1.2
             height: 34
             placeholder: "ADDRESS LABEL"
             text: ""
@@ -236,6 +237,7 @@ Rectangle {
 
         Label {
             id: nameWarning
+            z: 1.1
             text: "Already an address with this label!"
             color: "#FD2E2E"
             anchors.left: newName.left
@@ -252,6 +254,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newAddress
+            z: 1.1
             height: 34
             width: newName.width
             placeholder: "ADDRESS"
@@ -276,6 +279,7 @@ Rectangle {
 
         Label {
             id: addressWarning1
+            z: 1
             text: "This address is already in your account!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -292,6 +296,7 @@ Rectangle {
 
         Label {
             id: addressWarning2
+            z: 1
             text: "Invalid address format!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -322,6 +327,7 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
+            z: 1
             width: newAddress.width
             height: 34
             anchors.top: newAddress.bottom
@@ -373,6 +379,7 @@ Rectangle {
 
         Rectangle {
             id: saveButton
+            z: 1
             width: newAddress.width
             height: 34
             color: (newName.text != ""
@@ -500,6 +507,7 @@ Rectangle {
         }
 
         Text {
+            z: 1
             text: "SAVE"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -515,6 +523,7 @@ Rectangle {
         }
 
         Rectangle {
+            z: 1
             width: newAddress.width
             height: 34
             anchors.bottom: saveButton.bottom
@@ -532,6 +541,7 @@ Rectangle {
 
         AnimatedImage  {
             id: waitingDots
+            z: 1
             source: 'qrc:/gifs/loading-gif_01.gif'
             width: 90
             height: 60

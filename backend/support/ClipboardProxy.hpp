@@ -14,14 +14,22 @@
 #define CLIPBOARDPROXY_HPP
 
 #include <QObject>
+#include <QImage>
+#include <QUrl>
+#include <QQuickItemGrabResult>
+#include <QQuickItem>
 #include <QClipboard>
+#include <QDebug>
 #include <QGuiApplication>
+
+class QQuickItem;
 
 class ClipboardProxy : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString text READ dataText WRITE setDataText NOTIFY dataChanged)
-    Q_PROPERTY(QString selectionText READ selectionText WRITE setSelectionText NOTIFY selectionChanged)
+    Q_PROPERTY(QImage image READ getImage WRITE setImage NOTIFY imageChanged)
+    Q_INVOKABLE void setImage(const QImage &image);
 
 public:
     explicit ClipboardProxy(QObject *parent = 0);
@@ -32,9 +40,16 @@ public:
     void setSelectionText(const QString &text);
     QString selectionText() const;
 
+    QImage getImage() const;
+
 signals:
     void dataChanged();
-    void selectionChanged();
+
+    void imageChanged();
+
+public slots:
+    void copyText2Clipboard(QString);
+
 };
 
 #endif

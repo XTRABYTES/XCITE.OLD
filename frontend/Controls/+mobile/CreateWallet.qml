@@ -179,6 +179,7 @@ Rectangle {
 
             Controls.TextInput {
                 id: newName
+                z: 1.1
                 height: 34
                 width: doubbleButtonWidth
                 placeholder: "WALLET LABEL"
@@ -199,6 +200,7 @@ Rectangle {
 
             Label {
                 id: nameWarning
+                z: 1
                 text: "Already an address with this label!"
                 color: "#FD2E2E"
                 anchors.left: newName.left
@@ -214,6 +216,7 @@ Rectangle {
 
             Rectangle {
                 id: createWalletButton
+                z: 1
                 width: doubbleButtonWidth
                 height: 34
                 anchors.top: newName.bottom
@@ -274,6 +277,7 @@ Rectangle {
 
             Text {
                 id: createWalletButtonText
+                z: 1
                 text: "CREATE WALLET"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
@@ -285,6 +289,7 @@ Rectangle {
             }
 
             Rectangle {
+                z: 1
                 width: createWalletButton.width
                 height: 34
                 anchors.bottom: createWalletButton.bottom
@@ -298,6 +303,7 @@ Rectangle {
 
             AnimatedImage {
                 id: waitingDots2
+                z: 1
                 source: 'qrc:/gifs/loading-gif_01.gif'
                 width: 90
                 height: 60

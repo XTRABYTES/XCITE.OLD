@@ -24,6 +24,36 @@ Rectangle {
     height: Screen.height
     color: bgcolor
 
+    Item {
+        anchors.fill: parent
+        visible: screenSaver == 1
+
+        MediaPlayer {
+            id: mediaplayer
+            source: "qrc:/videos/xby_screensaver_01.mp4"
+            loops: MediaPlayer.Infinite
+        }
+
+        VideoOutput {
+            source: mediaplayer
+            height: parent.height
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                mediaplayer.pause()
+                standbyTimer.stop()
+                screenSaver = 0
+                standbyTimer.start()
+            }
+        }
+    }
+
     Text {
         id: standbyModalLabel
         text: "STAND BY MODUS"
@@ -79,9 +109,10 @@ Rectangle {
                 if(userSettings.pinlock === true) {
                     pincodeTracker = 1
                 }
-                else {
+                else if (userSettings.pinlock === false) {
                     standBy = 0
-                    mainRoot.pop()
+                    selectedPage = "home"
+                    mainRoot.pop("../DashboardForm.qml")
                 }
             }
         }
@@ -91,10 +122,11 @@ Rectangle {
 
             onPincodeCorrect: {
                 if (pinOK == 1 && standBy == 1) {
+                    standBy = 0
                     pincodeTracker = 0
                     pinOK = 0
-                    standBy = 0
-                    mainRoot.pop()
+                    selectedPage = "home"
+                    mainRoot.pop("../DashboardForm.qml")
                 }
             }
         }
@@ -152,7 +184,8 @@ Rectangle {
             onClicked: {
                 goodbey = 1
                 standBy = 0
-                mainRoot.pop()
+                selectedPage = "home"
+                mainRoot.pop("../DashboardForm.qml")
             }
         }
     }
@@ -181,28 +214,21 @@ Rectangle {
         visible: screenSaver == 0
     }
 
-    AnimatedImage  {
-        id: screensaver
-        source: 'qrc:/gifs/screensaver_01.gif'
-        height: parent.height
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        playing: screenSaver == 1
-        visible: screenSaver == 1
+    Timer {
+        id: standbyTimer
+        interval: 15000
+        repeat: true
+        running: standBy == 1
 
-        MouseArea {
-            anchors.fill: parent
-
-            onClicked: {
-                timer.restart()
-                screenSaver = 0
-            }
+        onTriggered: {
+            if (screenSaver == 0)
+                screenSaver = 1
+                mediaplayer.play()
         }
     }
 
     Controls.Pincode {
-        id: myPincode
+        id: standbyPincode
         z: 5
         anchors.top: parent.top
         anchors.left: parent.left

@@ -85,6 +85,9 @@ Rectangle {
                     checkNotifications()
                     updatingWallets = true
                     updateToAccount()
+                    appsTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
                 }
             }
         }
