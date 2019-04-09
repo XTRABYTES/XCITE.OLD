@@ -25,12 +25,6 @@ void ClipboardProxy::setDataText(const QString &text)
 
 }
 
-void ClipboardProxy::setImage(const QImage &image)
-{
-    QGuiApplication::clipboard()->setImage(image, QClipboard::Clipboard);
-}
-
-
 void ClipboardProxy::copyText2Clipboard(QString text)
 {
     setDataText(text);
@@ -39,9 +33,4 @@ void ClipboardProxy::copyText2Clipboard(QString text)
 QString ClipboardProxy::dataText() const
 {
     return QGuiApplication::clipboard()->text(QClipboard::Clipboard);
-}
-
-QImage ClipboardProxy::getImage() const
-{
-    return QGuiApplication::clipboard()->image(QClipboard::Clipboard);
 }

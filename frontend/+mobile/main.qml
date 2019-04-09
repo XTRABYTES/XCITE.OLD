@@ -79,11 +79,13 @@ ApplicationWindow {
         fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": 2});
         //fiatCurrencies.append({"currency": "BTC", "ticker": "₿", "currencyNR": 3});
 
-        soundList.setProperty(0, "name", "sound 01");
-        soundList.setProperty(0, "sound", 'qrc:/sounds/notification_1.wav')
+        soundList.setProperty(0, "name", "Bonjour");
+        soundList.setProperty(0, "sound", 'qrc:/sounds/Bonjour.wav')
         soundList.setProperty(0, "soundNR", 0)
-        soundList.append({"name": "sound 02", "sound": 'qrc:/sounds/notification_2.wav', "soundNR": 1});
-        soundList.append({"name": "sound 03", "sound": 'qrc:/sounds/notification_3.wav', "soundNR": 2});
+        soundList.append({"name": "Hello", "sound": 'qrc:/sounds/Hello.wav', "soundNR": 1});
+        soundList.append({"name": "Hola", "sound": 'qrc:/sounds/hola.wav', "soundNR": 2});
+        soundList.append({"name": "Servus", "sound": 'qrc:/sounds/Servus.wav', "soundNR": 3});
+        soundList.append({"name": "Szia", "sound": 'qrc:/sounds/Szia.wav', "soundNR": 4});
 
         coinList.setProperty(0, "name", nameXFUEL);
         coinList.setProperty(0, "fullname", "xfuel");
@@ -107,6 +109,11 @@ ApplicationWindow {
         marketValueChangedSignal("btcgbp");
         marketValueChangedSignal("xbybtc");
         marketValueChangedSignal("xbycha");
+        marketValueChangedSignal("xflbtc");
+        marketValueChangedSignal("xflcha");
+        marketValueChangedSignal("btccha");
+        marketValueChangedSignal("ethbtc");
+        marketValueChangedSignal("ethcha");
 
         selectedPage = "onBoarding"
         mainRoot.push("../Onboarding.qml")
@@ -807,30 +814,34 @@ ApplicationWindow {
         if (!isNaN(currencyValue) && currencyValue !== "") {
             var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
             if (currency === "btcusd"){
-                valueBTCUSD = currencyVal;
+                valueBTCUSD = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
             }
             else if(currency === "btceur"){
-                valueBTCEUR = currencyVal;
+                valueBTCEUR = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
             }
             else if(currency === "btcgbp"){
-                valueBTCGBP = currencyVal;
+                valueBTCGBP = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
             }
             else if(currency === "xbybtc"){
-                btcValueXBY = currencyVal;
-                btcValueXFUEL = currencyVal
+                btcValueXBY = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
             }
             else if(currency === "xbycha"){
-                percentageXBY = currencyVal;
-                percentageXFUEL = currencyVal;
+                percentageXBY = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "xflbtc"){
+                btcValueXFUEL = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "xflcha"){
+                percentageXFUEL = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
             }
             else if(currency === "btccha"){
-                percentageBTC = currencyVal;
+                percentageBTC = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
             }
             else if(currency === "ethbtc"){
-                btcValueETH = currencyVal;
+                btcValueETH = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
             }
             else if (currency === "ethcha"){
-                percentageETH = currencyVal;
+                percentageETH = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
             }
             sumBalance()
             sumXBY()
@@ -1312,7 +1323,7 @@ ApplicationWindow {
     SoundEffect {
         id: click01
         source: "qrc:/sounds/click_02.wav"
-        volume: 0.25
+        volume: 0.15
     }
 
     SoundEffect {
@@ -1323,19 +1334,19 @@ ApplicationWindow {
 
     SoundEffect {
         id: succesSound
-        source: "qrc:/sounds/succes_01.wav"
+        source: "qrc:/sounds/Success.wav"
         volume: 0.50
     }
 
     SoundEffect {
         id: failSound
-        source: "qrc:/sounds/fail_01.wav"
+        source: "qrc:/sounds/Fail.wav"
         volume: 0.50
     }
 
     SoundEffect {
         id: outroSound
-        source: "qrc:/sounds/outro_01.wav"
+        source: "qrc:/sounds/Outro.wav"
         volume: 1
     }
 
@@ -1351,6 +1362,8 @@ ApplicationWindow {
                 marketValueChangedSignal("btcgbp")
                 marketValueChangedSignal("xbybtc")
                 marketValueChangedSignal("xbycha")
+                marketValueChangedSignal("xflbtc")
+                marketValueChangedSignal("xflcha")
                 marketValueChangedSignal("btccha")
                 marketValueChangedSignal("ethbtc")
                 marketValueChangedSignal("ethcha")
@@ -1404,7 +1417,7 @@ ApplicationWindow {
 
     Timer {
         id: networkTimer
-        interval: standBy == 0? 60000 : 600000
+        interval: 60000
         repeat: true
         running: sessionStart == 1
 

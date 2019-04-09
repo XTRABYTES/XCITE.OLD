@@ -265,5 +265,14 @@
         <file>gifs/screensaver_01.gif</file>
         <file>gifs/xby_screensaver_01.gif</file>
         <file>videos/xby_screensaver_01.mp4</file>
+        <file>sounds/Bonjour.wav</file>
+        <file>sounds/Fail.wav</file>
+        <file>sounds/Hello.wav</file>
+        <file>sounds/hola.wav</file>
+        <file>sounds/Intro.wav</file>
+        <file>sounds/Outro.wav</file>
+        <file>sounds/Servus.wav</file>
+        <file>sounds/Succes.wav</file>
+        <file>sounds/Szia.wav</file>
     </qresource>
 </RCC>
