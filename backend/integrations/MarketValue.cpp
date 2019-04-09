@@ -53,6 +53,8 @@ void MarketValue::findAllCurrencyValues(){
     findCurrencyValue("btcgbp");
     findCurrencyValue("xbybtc");
     findCurrencyValue("xbycha");
+    findCurrencyValue("xflbtc");
+    findCurrencyValue("xflcha");
     findCurrencyValue("btccha");
     findCurrencyValue("ethbtc");
     findCurrencyValue("ethcha");

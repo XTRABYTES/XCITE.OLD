@@ -124,5 +124,16 @@ Rectangle {
         delegate: picklistEntry
         contentHeight: soundList.count * 35
         onDraggingChanged: detectInteraction()
+
+        ScrollBar.vertical: ScrollBar {
+            parent: pickList.parent
+            anchors.top: pickList.top
+            anchors.right: pickList.right
+            anchors.bottom: pickList.bottom
+            width: 5
+            opacity: 1
+            policy: ScrollBar.AlwaysOn
+            visible: (soundList.count * 35) > 140
+        }
     }
 }

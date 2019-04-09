@@ -766,9 +766,10 @@ Item {
                             color: "black"
 
                             Label {
+                                property int decimals: getValue(getName(coinIndex)) >= 1? 4 : 8
                                 id: btcValue
                                 z: 6
-                                text: getValue(getName(coinIndex)) + " BTC"
+                                text: (getValue(getName(coinIndex)).toLocaleString(Qt.locale("en_US"), "f", decimals)) + " BTC"
                                 font.pixelSize: 13
                                 font.family: xciteMobile.name
                                 color: "white"

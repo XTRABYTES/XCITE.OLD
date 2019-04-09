@@ -348,7 +348,7 @@ Rectangle {
         height: addViewOnlyTextText1.height + addViewOnlyTextText2.height + addViewOnlyButton.height + 45
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
+        anchors.verticalCenterOffset: -50
         visible: selectWallet == 1 && addViewOnly == 1 && walletAdded == false
 
         Text {
