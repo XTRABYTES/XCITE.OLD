@@ -28,8 +28,6 @@ class ClipboardProxy : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString text READ dataText WRITE setDataText NOTIFY dataChanged)
-    Q_PROPERTY(QImage image READ getImage WRITE setImage NOTIFY imageChanged)
-    Q_INVOKABLE void setImage(const QImage &image);
 
 public:
     explicit ClipboardProxy(QObject *parent = 0);
@@ -37,15 +35,8 @@ public:
     void setDataText(const QString &text);
     QString dataText() const;
     
-    void setSelectionText(const QString &text);
-    QString selectionText() const;
-
-    QImage getImage() const;
-
 signals:
     void dataChanged();
-
-    void imageChanged();
 
 public slots:
     void copyText2Clipboard(QString);
