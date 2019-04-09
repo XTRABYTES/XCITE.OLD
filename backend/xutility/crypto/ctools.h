@@ -44,6 +44,8 @@
 
 #include "allocators.h"
 #include "numbers.h"
+#include "../transaction/serialize.h"
+
 
 template<typename T1>
 inline uint256 Hash(const T1 pbegin, const T1 pend)
@@ -68,7 +70,49 @@ inline uint160 Hash160(const T1 pbegin, const T1 pend)
     return hash2;
 }
 
+inline uint160 Hash160(const std::vector<unsigned char>& vch)
+{
+    return Hash160(vch.begin(), vch.end());
+}
 
+class CHashWriter
+{
+private:
+    SHA256_CTX ctx;
+
+public:
+    int nType;
+    int nVersion;
+
+    void Init() {
+        SHA256_Init(&ctx);
+    }
+
+    CHashWriter(int nTypeIn, int nVersionIn) : nType(nTypeIn), nVersion(nVersionIn) {
+        Init();
+    }
+
+    CHashWriter& write(const char *pch, size_t size) {
+        SHA256_Update(&ctx, pch, size);
+        return (*this);
+    }
+
+    // invalidates the object
+    uint256 GetHash() {
+        uint256 hash1;
+        SHA256_Final((unsigned char*)&hash1, &ctx);
+        uint256 hash2;
+        SHA256((unsigned char*)&hash1, sizeof(hash1), (unsigned char*)&hash2);
+        return hash2;
+    }
+
+    template<typename T>
+    CHashWriter& operator<<(const T& obj) {
+        // Serialize to this stream
+        ::Serialize(*this, obj, nType, nVersion);
+        return (*this);
+    }
+};
 
 // secp256k1:
 // const unsigned int PRIVATE_KEY_SIZE = 279;
@@ -87,12 +131,12 @@ public:
 };
 
 /** A reference to a CScript: the Hash160 of its serialization (see script.h) */
-/*class CScriptID : public uint160
+class CScriptID : public uint160
 {
 public:
     CScriptID() : uint160(0) { }
     CScriptID(const uint160 &in) : uint160(in) { }
-};*/
+};
 
 /** An encapsulated public key. */
 class CPubKey {
@@ -302,7 +346,8 @@ public:
  *  A CTxDestination is the internal data type encoded in a CXCiteAddress
  */
 
-typedef boost::variant<CNoDestination, CKeyID> CTxDestination;
+//typedef boost::variant<CNoDestination, CKeyID> CTxDestination;
+typedef boost::variant<CNoDestination, CKeyID, CScriptID> CTxDestination;
 
 
 static const char* pszBase58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -598,6 +643,12 @@ public:
         SetString(pszAddress);
     }
 
+
+    CTxDestination Get() const {
+        uint160 id;
+        memcpy(&id, &vchData[0], 20);
+        return CKeyID(id);    
+    }
 
     bool GetKeyID(CKeyID &keyID) const {
         if (!IsValid())
