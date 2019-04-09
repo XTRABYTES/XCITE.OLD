@@ -56,6 +56,7 @@ SOURCES += main/main.cpp \
 	    backend/staticnet/staticnet.cpp \
 	    backend/xutility/xutility.cpp \
 	    backend/xutility/crypto/ctools.cpp \
+	    backend/xutility/transaction/transaction.cpp \
             backend/p2p/p2p.cpp \
             backend/xchat/xchatconversationmodel.cpp \
             backend/XCITE/nodes/nodetransaction.cpp \
@@ -80,6 +81,8 @@ HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xutility/crypto/allocators.h \
 	    backend/xutility/crypto/ctools.h \
 	    backend/xutility/crypto/numbers.h \
+	    backend/xutility/transaction/transaction.h \
+	    backend/xutility/transaction/serialize.h \
             backend/p2p/p2p.hpp \
             backend/xchat/xchatconversationmodel.hpp \
             backend/XCITE/nodes/nodetransaction.h \
