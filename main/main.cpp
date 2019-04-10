@@ -145,6 +145,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
     QObject::connect(rootObject, SIGNAL(helpMe(QString)), &xUtil, SLOT(helpEntry(QString)));
     QObject::connect(rootObject, SIGNAL(checkNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(testTransaction(QString)), &xUtil, SLOT(txTestEntry(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

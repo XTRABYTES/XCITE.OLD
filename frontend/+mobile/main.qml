@@ -347,6 +347,7 @@ ApplicationWindow {
     signal importPrivateKey(string network, string privKey)
     signal helpMe(string help)
     signal checkNetwork(string network)
+    signal testTransaction(string test)
     signal updateAccount(string addresslist, string contactlist, string walletlist)
     signal updateTransactions(string coin, string address, string page)
     signal checkSessionId()

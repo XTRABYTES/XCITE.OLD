@@ -90,8 +90,9 @@ void Xutility::help() {
     xchatRobot.SubmitMsg("!!xutil privkey2address [privkey]");
     QString help3 = "!!xutil-privkey2address-[xtrabytes/xfuel]-[privkey]";
     xchatRobot.SubmitMsg("!!xutil rawtxtest");
+    QString help4 = "!!xutil-rawtxtest";
 
-    emit helpReply(help1, help2, help3);
+    emit helpReply(help1, help2, help3, help4);
 }
 
 void Xutility::privkey2address(const QJsonArray *params) {
@@ -153,6 +154,14 @@ void Xutility::networkEntry(QString netwrk) {
 
     QString setNetwork = "!!xutil " + netwrk;
     this->CheckUserInputForKeyWord(setNetwork);
+}
+
+void Xutility::txTestEntry(QString test) {
+
+    qDebug()<< "test transaction requested!";
+
+    QString transactionTest = "!!xutil rawtxtest";
+    this->CheckUserInputForKeyWord(transactionTest);
 }
 
 void Xutility::importPrivateKeyEntry(QString network, QString privKey) {
@@ -236,6 +245,8 @@ void Xutility::set_network(const QJsonArray *params) {
 }
 
 void Xutility::rawtxtest(const QJsonArray *params) {
+
+      qDebug()<< "Creating transaction...";
 	
       std::vector<std::string> inputs;
       inputs.push_back("00f54ee63cdcfa8a3252e2cd995b960287bf38bfe2a399a9bb19544bbf2028a3,1,76a91416c9b41e22ab3436e7c2099e14196bda77d948b888ac,20"); 
@@ -252,6 +263,9 @@ void Xutility::rawtxtest(const QJsonArray *params) {
       std::cout << "Raw transaction: " << RawTransaction << std::endl;
 
       xchatRobot.SubmitMsg("RawTransaction: "+QString::fromStdString(RawTransaction));
+      QString testResult = ("RawTransaction: "+QString::fromStdString(RawTransaction));
+      qDebug()<< testResult;
+      emit rawTxTestResult(testResult);
 }
 
 

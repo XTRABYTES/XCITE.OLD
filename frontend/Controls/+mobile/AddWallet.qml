@@ -146,7 +146,7 @@ Rectangle {
         }
 
         Text {
-            id: receiveText
+            id: activeText
             text: "ACTIVE"
             anchors.right: walletSwitch.left
             anchors.rightMargin: 7
@@ -157,7 +157,7 @@ Rectangle {
         }
 
         Text {
-            id: sendText
+            id: viewText
             text: "VIEW ONLY"
             anchors.left: walletSwitch.right
             anchors.leftMargin: 7

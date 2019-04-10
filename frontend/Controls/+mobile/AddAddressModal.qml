@@ -262,7 +262,7 @@ Rectangle {
             anchors.rightMargin: 28
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
-            color: newName.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
@@ -306,7 +306,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
-            color: newAddress.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0

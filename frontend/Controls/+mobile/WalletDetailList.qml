@@ -104,7 +104,7 @@ Rectangle {
                     anchors.verticalCenter: coinLogo.verticalCenter
                     text: name
                     font.pixelSize: 20
-                    font.family: xciteMobile.name
+                    font.family: "Brandon Grotesque"
                     font.letterSpacing: 2
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.bold: true
@@ -119,7 +119,7 @@ Rectangle {
                     anchors.verticalCenter: coinLogo.verticalCenter
                     text: label
                     font.pixelSize: 20
-                    font.family: xciteMobile.name
+                    font.family: "Brandon Grotesque"
                     font.letterSpacing: 2
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.bold: true
@@ -136,7 +136,7 @@ Rectangle {
                     anchors.bottomMargin: 10
                     text: address
                     font.pixelSize: 14
-                    font.family: xciteMobile.name
+                    font.family: "Brandon Grotesque"
                     font.letterSpacing: 2
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     elide: Text.ElideRight

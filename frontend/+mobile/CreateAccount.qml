@@ -172,7 +172,7 @@ Rectangle {
                 anchors.top: createUsernameText.bottom
                 anchors.topMargin: 10
                 rightPadding: 34
-                color: userName.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
 
@@ -279,7 +279,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: createPasswordText.bottom
                 anchors.topMargin: 10
-                color: passWord1.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
                 deleteBtn: passwordWarning1 == 0? 0 : 1
@@ -325,7 +325,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: passWord1.bottom
                 anchors.topMargin: 20
-                color: passWord2.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
                 deleteBtn: passwordWarning2 == 0? 0 : 1
@@ -455,6 +455,8 @@ Rectangle {
                             userSettings.xfuel = true
                             userSettings.xbytest = true
                             userSettings.xfueltest = true
+                            userSettings.btc = true
+                            userSettings.eth = true
                             userSettings.sound = 0
                             userSettings.volume = 1
                             userSettings.accountCreationCompleted = false

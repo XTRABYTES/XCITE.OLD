@@ -141,7 +141,7 @@ Rectangle {
         anchors.rightMargin: 62
         anchors.bottom: closeDebugModal.top
         anchors.bottomMargin: 25
-        color: requestText.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+        color: themecolor
         textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
         font.pixelSize: 14
         mobile: 1
@@ -195,6 +195,10 @@ Rectangle {
                     importPrivateKey(deBugArray[2], deBugArray[3])
                     requestText.text = ""
                 }
+                else if (deBugArray[0] === "!!xutil" && deBugArray[1] === "rawtxtest") {
+                    testTransaction("test")
+                    requestText.text = ""
+                }
                 else {
                     replyText.text = replyText.text + "-- Command does not exist.<br/>Use the command <b>help</b> to get a list of available commands.<br/>"
                     requestText.text = ""
@@ -213,7 +217,9 @@ Rectangle {
                             "<b>" + help2 + "</b><br>" +
                             "to create a new wallet.<br>" +
                             "<b>" + help3 + "</b><br>" +
-                            "to extract an address from a private key.<br>"
+                            "to extract an address from a private key.<br>" +
+                            "<b>" + help4 + "</b><br>" +
+                            "to send a testtransaction.<br>"
                 }
             }
             onKeyPairCreated: {
@@ -260,9 +266,17 @@ Rectangle {
                 }
             }
             onBadNetwork: {
-                replyText.text = replyText.text + "<br>" +
-                        noNetwork + "<br>"
-                        debugError = 1
+                if (debugTracker == 1) {
+                    replyText.text = replyText.text + "<br>" +
+                            noNetwork + "<br>"
+                    debugError = 1
+                }
+            }
+            onRawTxTestResult: {
+                if (debugTracker == 1 && debugError == 0) {
+                    replyText.text = replyText.text + "<br/>" +
+                            testResult + "<br>"
+                }
             }
         }
 

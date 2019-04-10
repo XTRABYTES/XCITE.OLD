@@ -109,7 +109,7 @@ Item {
             anchors.leftMargin: 25
             anchors.right: loginModalBody.right
             anchors.rightMargin: 25
-            color: userName.text != "" ? "#F2F2F2" : "#727272"
+            color: themecolor
             textBackground: "#0B0B09"
             mobile: 1
             font.pixelSize: 14
@@ -133,7 +133,7 @@ Item {
             anchors.leftMargin: 25
             anchors.right: loginModalBody.right
             anchors.rightMargin: 25
-            color: passWord.text != "" ? "#F2F2F2" : "#727272"
+            color: themecolor
             textBackground: "#0B0B09"
             mobile: 1
             font.pixelSize: 14

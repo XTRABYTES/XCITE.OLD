@@ -606,7 +606,7 @@ Rectangle {
             anchors.rightMargin: 28
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
-            color: newName.text != "" ? themecolor : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             readOnly: contact == 0
@@ -647,7 +647,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
-            color: newAddress.text != "" ? themecolor : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             readOnly: contact == 0

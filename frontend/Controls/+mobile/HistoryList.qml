@@ -40,7 +40,7 @@ Rectangle {
         font.family: xciteMobile.name
         font.pixelSize: 18
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: filteredHistory.count == 0
+        visible: filteredHistory.count == 0 && searchCriteria != ""
     }
 
     Component {

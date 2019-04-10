@@ -78,7 +78,7 @@ TextField {
         opacity: !textInputComponent.displayText
                  && (!textInputComponent.activeFocus
                      || textInputComponent.horizontalAlignment !== Qt.AlignHCenter) ? 1.0 : 0.0
-        color: textInputComponent.color
+        color: "#727272"
         clip: contentWidth > width
         elide: Text.ElideRight
     }

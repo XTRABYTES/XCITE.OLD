@@ -28,7 +28,6 @@ Item {
         }
         else
             toggleswitch.state = "on"
-
     }
 
     function releaseSwitch() {
@@ -55,7 +54,11 @@ Item {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: toggle()
+            onClicked: {
+                if (coinListTracker === 0 && walletListTracker === 0) {
+                    toggle()
+                }
+            }
         }
 
         InnerShadow {
@@ -84,8 +87,13 @@ Item {
             drag.axis: Drag.XAxis
             drag.minimumX: 5
             drag.maximumX: 35
-            onClicked: toggle()
-            onReleased: releaseSwitch()
+            enabled: coinListTracker === 0 && walletListTracker === 0
+            onClicked: {
+                toggle()
+            }
+            onReleased: {
+                releaseSwitch()
+            }
         }
     }
 

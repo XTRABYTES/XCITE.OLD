@@ -283,6 +283,7 @@ Item {
                         anchors.fill: completeButton
 
                         onReleased: {
+                            updateToAccount();
                             mainRoot.pop()
                             mainRoot.push("../Home.qml")
                             sessionStart = 1

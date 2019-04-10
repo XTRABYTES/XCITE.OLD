@@ -950,7 +950,7 @@ Item {
                     placeholder: "SEARCH ADDRESS BOOK"
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom: homeHeader2.bottom
-                    color: searchForAddress.text != "" ? "#2A2C31" : "#727272"
+                    color: "#2A2C31"
                     textBackground: "#F2F2F2"
                     font.pixelSize: 14
                     font.capitalization: Font.AllUppercase
