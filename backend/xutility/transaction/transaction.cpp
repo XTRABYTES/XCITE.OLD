@@ -11,10 +11,46 @@
  */
 
 #include <iostream>
+#include <iomanip> 
+#include <limits>
+#include <sstream>
 
+#include <boost/cstdint.hpp>
 #include <boost/algorithm/string.hpp>
 
 #include "transaction.h"
+
+static const int64 COIN = 100000000;
+
+int64 AmountFromStr(const char *value) {		
+     double dAmount;
+     std::stringstream ss(value);
+     ss >> dAmount;		
+     dAmount = dAmount * COIN ;
+     int64 iAmount = dAmount;   
+     return (int64)(dAmount > 0 ? dAmount + 0.5 : dAmount - 0.5) ;
+}        
+
+int IntFromStr(const char *value) {		
+     int iNumber;
+     std::stringstream ss(value);
+     ss >> iNumber;		
+     return iNumber ;
+}        
+
+
+std::string StrFromAmount(int64 amount) {
+     std::ostringstream strs;     
+     strs << std::fixed << std::setprecision(8) << ((double)amount / (double)COIN);
+     std::string str = strs.str();          
+     for(std::string::size_type s=str.length()-1; s>0; --s)  {
+        if(str[s] == '0') str.erase(s,1);
+        else break;
+     }    
+     return str;
+}
+
+
 
 class CScriptVisitor : public boost::static_visitor<bool>
 {
@@ -141,7 +177,7 @@ std::string CreateRawTransaction(const std::vector<std::string> &inputs, const s
          uint256 txid;
          txid.SetHex(input_details.at(0));
         
-         int nOutput = std::stoi(input_details.at(1));
+         int nOutput = IntFromStr(input_details.at(1).c_str());
 
          CTxIn in(COutPoint(txid, nOutput));
          rawTx.vin.push_back(in);
@@ -156,9 +192,7 @@ std::string CreateRawTransaction(const std::vector<std::string> &inputs, const s
          CXCiteAddress address(output_details.at(0),35);  // 35 = XFUEL network    	
       	CScript scriptPubKey;
          scriptPubKey.SetDestination(address.Get());
-         // *** fixmee!! int64 nAmount = AmountFromValue(output_details.at(1));
-         int64 nAmount = std::stoi(output_details.at(1));
-         nAmount = nAmount * 100000000;
+         int64 nAmount = AmountFromStr(output_details.at(1).c_str());         
 
          CTxOut out(nAmount, scriptPubKey);
          rawTx.vout.push_back(out);
