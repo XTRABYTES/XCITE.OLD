@@ -34,6 +34,7 @@ public:
     void help();
     void createkeypair(const QJsonArray *params);
     void privkey2address(const QJsonArray *params);
+    void rawtxtest(const QJsonArray *params);
 signals:
     void keyPairCreated(const QString &address, const QString &pubKey, const QString &privKey);
     void addressExtracted(const QString &priv, const QString &pubKey, const QString &addressID);
