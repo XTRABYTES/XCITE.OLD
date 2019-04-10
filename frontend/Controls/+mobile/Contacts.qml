@@ -27,6 +27,23 @@ Rectangle {
     property alias cardSpacing: allContacts.spacing
     property string searchFilter: ""
 
+    Label {
+        id: noResultLabel
+        text: "No contacts matching your search criteria."
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.top: parent.top
+        anchors.topMargin: 30
+        wrapMode: Text.WordWrap
+        horizontalAlignment: Text.AlignHCenter
+        font.family: xciteMobile.name
+        font.pixelSize: 18
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: filteredContacts.count == 0 && searchFilter != ""
+    }
+
     Component {
         id: contactCard
 

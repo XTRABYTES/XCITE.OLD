@@ -872,7 +872,7 @@ Rectangle {
             anchors.top: walletBalance.bottom
             anchors.topMargin: 20
             placeholder: amountTransfer
-            color: sendAmount.text !== "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: DoubleValidator {bottom: 0; top: ((walletList.get(selectedWallet).balance))}
@@ -930,7 +930,7 @@ Rectangle {
             anchors.top: sendAmount.bottom
             anchors.topMargin: 15
             placeholder: keyTransfer
-            color: keyInput.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: transferSwitch.on == true
@@ -1101,7 +1101,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 20
-            color: referenceInput.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: transferSwitch.on == true

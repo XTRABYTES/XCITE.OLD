@@ -42,9 +42,11 @@ signals:
     void badKey();
     void badNetwork(const QString &noNetwork);
     void networkStatus(const QString &myNetwork);
-    void helpReply(const QString &help1, const QString &help2, const QString &help3);
+    void helpReply(const QString &help1, const QString &help2, const QString &help3, const QString &help4);
+    void rawTxTestResult(const QString &testResult);
 
 public slots:
+    void txTestEntry(QString test);
     void createKeyPairEntry(QString network);
     void importPrivateKeyEntry(QString network, QString privKey);
     void networkEntry(QString netwrk);

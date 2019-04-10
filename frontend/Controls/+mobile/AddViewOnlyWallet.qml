@@ -223,7 +223,7 @@ Rectangle {
             anchors.rightMargin: 28
             anchors.top: selectedCoin.bottom
             anchors.topMargin: 25
-            color: newName.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             mobile: 1
@@ -262,7 +262,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
-            color: newAddress.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: scanQRTracker == 0

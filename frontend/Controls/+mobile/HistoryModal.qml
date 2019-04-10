@@ -172,6 +172,7 @@ Rectangle {
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionPages > 0
     }
 
     Label {

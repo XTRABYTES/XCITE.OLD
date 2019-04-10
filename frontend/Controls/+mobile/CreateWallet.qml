@@ -187,7 +187,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: createWalletText.bottom
                 anchors.topMargin: 25
-                color: newName.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: darktheme == false? "#484A4D" : "#0B0B09"
                 font.pixelSize: 14
                 mobile: 1
@@ -334,7 +334,7 @@ Rectangle {
                 anchors.top: parent.top
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
             }
 
             Item {
@@ -361,7 +361,7 @@ Rectangle {
                     anchors.verticalCenter: coinLogo.verticalCenter
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.pixelSize: 18
-                    font.family: xciteMobile.name
+                    font.family: "Brandon Grotesque"
                     font.bold: true
                 }
             }
@@ -374,7 +374,7 @@ Rectangle {
                 text: "Public Key:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
                 font.bold: true
             }
 
@@ -400,7 +400,7 @@ Rectangle {
                 text: "Private Key:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
                 font.bold: true
             }
 
@@ -426,7 +426,7 @@ Rectangle {
                 text: "Address:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
                 font.bold: true
             }
 
@@ -456,7 +456,7 @@ Rectangle {
                 anchors.topMargin: 25
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
             }
 
             Rectangle {

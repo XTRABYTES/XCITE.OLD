@@ -133,7 +133,7 @@ Rectangle {
             anchors.rightMargin: 28
             anchors.left: newPhoto.right
             anchors.leftMargin: 25
-            color: newFirstname.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+ / }
@@ -155,7 +155,7 @@ Rectangle {
             anchors.right: newFirstname.right
             anchors.top: newFirstname.bottom
             anchors.topMargin: 10
-            color: newLastname.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
@@ -195,7 +195,7 @@ Rectangle {
             anchors.right: newLastname.right
             anchors.top: newPhoto.bottom
             anchors.topMargin: 45
-            color: newTel.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
@@ -216,7 +216,7 @@ Rectangle {
             anchors.right: newTel.right
             anchors.top: newTel.bottom
             anchors.topMargin: 10
-            color: newCell.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
@@ -237,7 +237,7 @@ Rectangle {
             anchors.right: newCell.right
             anchors.top: newCell.bottom
             anchors.topMargin: 10
-            color: newMail.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
@@ -257,7 +257,7 @@ Rectangle {
             anchors.right: newMail.right
             anchors.top: newMail.bottom
             anchors.topMargin: 10
-            color: newChat.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
