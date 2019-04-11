@@ -390,6 +390,7 @@ Rectangle {
                 text: "Here you will find your public key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
+                font.family: "Brandon Grotesque"
             }
 
             Label {
@@ -416,6 +417,7 @@ Rectangle {
                 text: "Here you will find your private key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
+                font.family: "Brandon Grotesque"
             }
 
             Label {
@@ -442,6 +444,7 @@ Rectangle {
                 text: "Here you will find your address"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
+                font.family: "Brandon Grotesque"
             }
 
             Text {

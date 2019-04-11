@@ -98,6 +98,8 @@ Rectangle {
                     }
 
                     onClicked: {
+                        coinTracker = 0
+                        contactTracker = 0
                         appsTracker = 0
                         if (selectedPage != "home") {
                             //push of current page

@@ -98,8 +98,7 @@ Rectangle {
         width: 20
         anchors.right: parent.right
         anchors.rightMargin: 28
-        anchors.top: currencyLabel.bottom
-        anchors.topMargin: 10
+        anchors.verticalCenter: currencyLabel.verticalCenter
         visible: currencyTracker == 0
 
         ColorOverlay {
@@ -220,7 +219,7 @@ Rectangle {
         font.bold: true
         color: themecolor
         anchors.top: picklistArrow.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 30
         anchors.left: parent.left
         anchors.leftMargin: 28
     }
@@ -231,8 +230,7 @@ Rectangle {
         width: 20
         height: 20
         radius: 10
-        anchors.top: pincodeLabel.bottom
-        anchors.topMargin: 10
+        anchors.verticalCenter: pincodeLabel.verticalCenter
         anchors.right: picklistArrow.right
         color: "transparent"
         border.color: themecolor
@@ -365,7 +363,7 @@ Rectangle {
         font.bold: true
         color: themecolor
         anchors.top: changePinButton.bottom
-        anchors.topMargin: 20
+        anchors.topMargin: 25
         anchors.left: parent.left
         anchors.leftMargin: 28
     }
@@ -378,8 +376,7 @@ Rectangle {
         width: 20
         anchors.right: parent.right
         anchors.rightMargin: 28
-        anchors.top: notificationLabel.bottom
-        anchors.topMargin: 10
+        anchors.verticalCenter: notificationLabel.verticalCenter
         visible: soundTracker == 0
 
         ColorOverlay {
@@ -509,7 +506,7 @@ Rectangle {
         font.bold: true
         color: themecolor
         anchors.top: picklistArrow2.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 30
         anchors.left: parent.left
         anchors.leftMargin: 28
     }

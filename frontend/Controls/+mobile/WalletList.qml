@@ -69,34 +69,23 @@ Rectangle {
 
                 Image {
                     id: walletFavorite
-                    source: 'qrc:/icons/icon-favorite.svg'
+                    source: favorite == true ? 'qrc:/icons/mobile/favorite-icon_01_color.svg' : (darktheme === true? 'qrc:/icons/mobile/favorite-icon_01_light.svg' : 'qrc:/icons/mobile/favorite-icon_01_dark.svg')
                     width: 18
-                    height: 18
+                    fillMode: Image.PreserveAspectFit
                     anchors.verticalCenter: walletName.verticalCenter
-                    anchors.verticalCenterOffset: 2
+                    anchors.verticalCenterOffset: -2
                     anchors.left: parent.left
                     anchors.leftMargin: 28
-
-                    ColorOverlay {
-                        id: favoriteColor
-                        anchors.fill: parent
-                        source: parent
-                        color: favorite == true ? "#FDBC40" : "#757575"
-                    }
                     state: favorite == true ? "yes" : "no"
 
                     states: [
                         State {
                             name: "yes"
-                            PropertyChanges { target: favoriteColor; color: "#FDBC40"}
                             PropertyChanges { target: walletFavorite; width: 20}
-                            PropertyChanges { target: walletFavorite; height: 20}
                         },
                         State {
                             name: "no"
-                            PropertyChanges { target: favoriteColor; opacity: "#2A2C31"}
                             PropertyChanges { target: walletFavorite; width: 18}
-                            PropertyChanges { target: walletFavorite; height: 18}
                         }
                     ]
 
@@ -104,14 +93,12 @@ Rectangle {
                         Transition {
                             from: "no"
                             to: "yes"
-                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
-                            NumberAnimation { target: walletFavorite; properties: "width, height"; duration: 200; easing.type: Easing.OutBack}
+                            NumberAnimation { target: walletFavorite; properties: "width"; duration: 200; easing.type: Easing.OutBack}
                         },
                         Transition {
                             from: "yes"
                             to: "no"
-                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
-                            NumberAnimation { target: walletFavorite; properties: "width, height"; duration: 200; easing.type: Easing.InBack}
+                            NumberAnimation { target: walletFavorite; properties: "width"; duration: 200; easing.type: Easing.InBack}
                         }
                     ]
                 }
@@ -257,7 +244,7 @@ Rectangle {
                     font.family: xciteMobile.name
                     font.letterSpacing: 2
                     font.bold: true
-                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                    color: "#E55541"
                     visible: viewOnly
                 }
 

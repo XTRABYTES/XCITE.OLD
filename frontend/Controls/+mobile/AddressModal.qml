@@ -276,7 +276,7 @@ Rectangle {
 
         Image {
             id: favoriteAddressIcon
-            source: 'qrc:/icons/icon-favorite.svg'
+            source: addressList.get(addressIndex).favorite === 1 ? 'qrc:/icons/mobile/favorite-icon_01_color.svg' : (darktheme === true? 'qrc:/icons/mobile/favorite-icon_01_light.svg' : 'qrc:/icons/mobile/favorite-icon_01_dark.svg')
             width: 25
             height: 25
             anchors.verticalCenter: addressNameLabel.verticalCenter
@@ -285,12 +285,6 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteAddressTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: addressList.get(addressIndex).favorite === 1 ? "#FDBC40" : "#979797"
-            }
 
             MouseArea {
                 anchors.fill: parent
