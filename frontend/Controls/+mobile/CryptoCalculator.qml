@@ -293,7 +293,7 @@ Item {
     Rectangle {
         id: xbyButton1
         height: 34
-        width: (Screen.width - 76) / 5
+        width: (Screen.width - 71) / 4
         anchors.top: outputAmountTicker.bottom
         anchors.topMargin: 25
         anchors.left: inputAmount.left
