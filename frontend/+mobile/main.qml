@@ -328,6 +328,9 @@ ApplicationWindow {
     property int volumeChangeFailed: 0
     property int selectedSound: userSettings.sound
     property int selectedVolume: userSettings.volume
+    property int oldSystemVolume: 1
+    property int systemVolumeChangeFailed: 0
+    property int selectedSystemVolume: userSettings.systemVolume
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -902,6 +905,7 @@ ApplicationWindow {
             userSettings.xfueltest = settingsLoaded.xfueltest === "true";
             userSettings.sound = settingsLoaded.sound;
             userSettings.volume = settingsLoaded.volume;
+            userSettings.systemVolume = settingsLoaded.systemVolume;
             coinList.setProperty(0, "active", userSettings.xfuel);
             coinList.setProperty(1, "active", userSettings.xby);
             coinList.setProperty(2, "active", userSettings.xfueltest);
@@ -1299,6 +1303,7 @@ ApplicationWindow {
         property bool eth
         property int sound: 0
         property int volume: 1
+        property int systemVolume: 1
 
         onThemeChanged: {
             darktheme = userSettings.theme == "dark"? true : false
@@ -1324,7 +1329,7 @@ ApplicationWindow {
     SoundEffect {
         id: click01
         source: "qrc:/sounds/click_02.wav"
-        volume: 0.15
+        volume: selectedSystemVolume == 0? 0 : 0.15
     }
 
     SoundEffect {
@@ -1348,7 +1353,7 @@ ApplicationWindow {
     SoundEffect {
         id: outroSound
         source: "qrc:/sounds/Outro.wav"
-        volume: 1
+        volume: selectedSystemVolume == 0? 0 : 1
     }
 
     Timer {

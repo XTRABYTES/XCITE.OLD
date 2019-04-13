@@ -41,6 +41,8 @@ Rectangle {
     property bool clearAllInitiated: false
     property bool changeVolumeInitiated: false
     property int changeVolumeFailed: 0
+    property bool changeSystemVolumeInitiated: false
+    property int changeSystemVolumeFailed: 0
 
     MouseArea {
         anchors.fill: parent
@@ -631,12 +633,88 @@ Rectangle {
         }
     }
 
+    Label {
+        id: systemVolumeLabel
+        z: 1
+        text: "APP SYSTEM SOUND VOLUME:"
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        font.bold: true
+        color: themecolor
+        anchors.top: volumeLevel3.bottom
+        anchors.topMargin: 30
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
+
+    Image {
+        id: systemVolumeLevel0
+        source: selectedSystemVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
+        height: selectedSystemVolume == 0? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: parent.left
+        anchors.horizontalCenterOffset: 58
+        anchors.verticalCenter: systemVolumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeSystemVolumeInitiated == false) {
+                        oldSystemVolume = userSettings.systemVolume
+                        userSettings.systemVolume = 0
+                        changeSystemVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Image {
+        id: systemVolumeLevel1
+        source: selectedSystemVolume == 1? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
+        height: selectedSystemVolume == 1? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: systemVolumeLevel0.right
+        anchors.horizontalCenterOffset: 60
+        anchors.verticalCenter: systemVolumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeSystemVolumeInitiated == false) {
+                        oldSystemVolume = userSettings.systemVolume
+                        userSettings.systemVolume = 1
+                        changeSystemVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+
     Connections {
         target: UserSettings
 
         onSaveSucceeded: {
             if (changeVolumeInitiated == true) {
                 changeVolumeInitiated = false
+            }
+            if (changeSystemVolumeInitiated == true) {
+                changeSystemVolumeInitiated = false
             }
         }
 
@@ -646,8 +724,14 @@ Rectangle {
                 changeVolumeFailed = 1
                 changeVolumeInitiated = false
             }
+            if (changeSystemVolumeInitiated == true) {
+                userSettings.systemVolume = oldSystemVolume
+                changeSystemVolumeFailed = 1
+                changeSystemVolumeInitiated = false
+            }
         }
     }
+
 
     Rectangle {
         id: clearButton
@@ -689,6 +773,9 @@ Rectangle {
                     oldPinlock = userSettings.pinlock
                     oldTheme = userSettings.theme
                     oldLocalKeys= userSettings.localKeys
+                    oldSound = userSettings.sound
+                    oldVolume = userSettings.volume
+                    oldSystemVolume = userSettings.systemVolume
                     clearAllSettings()
                     userSettings.locale = "en_us"
                     userSettings.defaultCurrency = 0
@@ -696,6 +783,9 @@ Rectangle {
                     userSettings.pinlock = false
                     userSettings.accountCreationCompleted = true
                     userSettings.localKeys = oldLocalKeys
+                    userSettings.sound = 0
+                    userSettings.volume = 1
+                    userSettings.systemVolume = 1
                     saveAppSettings()
                 }
             }
@@ -713,6 +803,7 @@ Rectangle {
                         oldLocalKeys= userSettings.localKeys
                         oldSound = userSettings.sound
                         oldVolume = userSettings.volume
+                        oldSystemVolume = userSettings.systemVolume
                         clearAllSettings()
                         userSettings.locale = "en_us"
                         userSettings.defaultCurrency = 0
@@ -722,6 +813,7 @@ Rectangle {
                         userSettings.localKeys = oldLocalKeys
                         userSettings.sound = 0
                         userSettings.volume = 1
+                        userSettings.systemVolume = 1
                         saveAppSettings()
                     }
                 }
@@ -741,6 +833,7 @@ Rectangle {
                         userSettings.pinlock = oldPinlock
                         userSettings.sound = oldSound
                         userSettings.volume = oldVolume
+                        userSettings.systemVolume = oldSystemVolume
                         clearAllInitiated = false
                         pinClearInitiated = false
                         clearFailed = 1
@@ -871,7 +964,7 @@ Rectangle {
         Rectangle {
             id: popupSoundFail
             height: 50
-            width: popupCurrencyText.width + 56
+            width: popupSoundText.width + 56
             color: "#34363D"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -894,6 +987,82 @@ Rectangle {
             interval: 2000
 
             onTriggered: soundChangeFailed = 0
+        }
+    }
+
+    Item {
+        z: 12
+        width: popupVolumeFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: volumeChangeFailed == 1
+
+        Rectangle {
+            id: popupVolumeFail
+            height: 50
+            width: popupVolumeText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupVolumeText
+            text: "FAILED to change your notification volume!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: volumeChangeFailed == 1
+            interval: 2000
+
+            onTriggered: volumeChangeFailed = 0
+        }
+    }
+
+    Item {
+        z: 12
+        width: popupSystemVolumeFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: systemVolumeChangeFailed == 1
+
+        Rectangle {
+            id: popupSystemVolumeFail
+            height: 50
+            width: popupSystemVolumeText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupSystemVolumeText
+            text: "FAILED to change your system sound volume!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: systemVolumeChangeFailed == 1
+            interval: 2000
+
+            onTriggered: systemVolumeChangeFailed = 0
         }
     }
 
