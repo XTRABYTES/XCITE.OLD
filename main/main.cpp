@@ -138,7 +138,6 @@ int main(int argc, char *argv[])
 
     // connect QML signal for ClipboardProxy
     QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));
-    QObject::connect(rootObject, SIGNAL(copyImage2Clipboard(QUrl)), &clipboardProxy, SLOT(copyImage2Clipboard(QUrl)));
 
     // connect QML signals for xUtility
     QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeyPairEntry(QString)));
