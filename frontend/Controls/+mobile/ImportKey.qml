@@ -186,7 +186,7 @@ Rectangle {
 
             Text {
                 id: addWalletText
-                width: newName.implicitWidth
+                width: newName.width
                 maximumLineCount: 3
                 anchors.left: newName.left
                 horizontalAlignment: Text.AlignHCenter
@@ -203,6 +203,7 @@ Rectangle {
             Controls.TextInput {
                 id: newName
                 height: 34
+                width: doubbleButtonWidth
                 placeholder: "WALLET LABEL"
                 text: ""
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -240,6 +241,7 @@ Rectangle {
             Controls.TextInput {
                 id: newAddress
                 height: 34
+                width: doubbleButtonWidth
                 placeholder: "PRIVATE KEY"
                 text: ""
                 anchors.horizontalCenter: parent.horizontalCenter

@@ -89,12 +89,16 @@ Rectangle {
         text: walletList.get(walletIndex).label
         anchors.right: parent.right
         anchors.rightMargin: 28
+        anchors.left: newCoinName.right
+        anchors.leftMargin: 10
         anchors.bottom: newIcon.bottom
         anchors.bottomMargin: 1
         font.pixelSize: 20
         font.family: "Brandon Grotesque"
         font.weight: Font.Bold
         color: themecolor
+        horizontalAlignment: Text.AlignRight
+        elide: Text.ElideRight
     }
 
     Controls.TextInput {
