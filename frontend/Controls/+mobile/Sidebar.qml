@@ -87,7 +87,9 @@ Rectangle {
 
             Rectangle {
                 id: homeButtonArea
-                anchors.fill:homeSection
+                width: parent.width
+                height: home.height + homeText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
@@ -142,7 +144,9 @@ Rectangle {
 
             Rectangle {
                 id: settingsButtonArea
-                anchors.fill: settingsSection
+                width: parent.width
+                height: settings.height + settingsText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
@@ -194,7 +198,9 @@ Rectangle {
 
             Rectangle {
                 id: backupButtonArea
-                anchors.fill: backupSection
+                width: parent.width
+                height: backup.height + backupText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
@@ -274,7 +280,9 @@ Rectangle {
 
             Rectangle {
                 id: appsButtonArea
-                anchors.fill: appsSection
+                width: parent.width
+                height: apps.height + appsText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
@@ -337,7 +345,9 @@ Rectangle {
 
             Rectangle {
                 id: notifButtonArea
-                anchors.fill: notifSection
+                width: parent.width
+                height: notif.height + notifText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
@@ -411,7 +421,9 @@ Rectangle {
 
         Rectangle {
             id: standbyButtonArea
-            anchors.fill: standbySection
+            width: parent.width
+            height: standby.height + standbyText.height + 5
+            anchors.top: parent.top
             color: "transparent"
             MouseArea {
                 anchors.fill: parent
@@ -460,7 +472,9 @@ Rectangle {
 
         Rectangle {
             id: logoutButtonArea
-            anchors.fill: logoutSection
+            width: parent.width
+            height: logout.height + logoutText.height + 5
+            anchors.top: parent.top
             color: "transparent"
             MouseArea {
                 anchors.fill: parent

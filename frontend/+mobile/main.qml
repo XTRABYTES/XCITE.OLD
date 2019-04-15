@@ -1405,13 +1405,11 @@ ApplicationWindow {
             if (interactionTracker == 1) {
                 sessionTime = 0
                 interactionTracker = 0
-                // reset timer on serverside
             }
             else {
                 sessionTime = sessionTime +1
                 if (sessionTime >= 10){
                     sessionTime = 0
-                    sessionStart = 0
                     if (standBy == 0) {
                         standBy = 1
                         mainRoot.push("../StandBy.qml")
