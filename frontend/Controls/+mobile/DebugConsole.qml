@@ -180,7 +180,7 @@ Rectangle {
                 deBugArray = (requestText.text).split('-')
                 debugError = 0
                 if (deBugArray[0] === "help") {
-                    helpMe("help")
+                    helpMe()
                     requestText.text = ""
                 }
                 else if (deBugArray[0] === "!!xutil" && deBugArray[1] === "network") {
@@ -195,8 +195,8 @@ Rectangle {
                     importPrivateKey(deBugArray[2], deBugArray[3])
                     requestText.text = ""
                 }
-                else if (deBugArray[0] === "!!xutil" && deBugArray[1] === "rawtxtest") {
-                    testTransaction("test")
+                else if (deBugArray[0] === "!!staticnet" && deBugArray[1] === "sendcoin") {
+                    sendcoins(deBugArray[2], (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
                     requestText.text = ""
                 }
                 else {
@@ -218,8 +218,9 @@ Rectangle {
                             "to create a new wallet.<br>" +
                             "<b>" + help3 + "</b><br>" +
                             "to extract an address from a private key.<br>" +
+                            "or <br>" +
                             "<b>" + help4 + "</b><br>" +
-                            "to send a testtransaction.<br>"
+                            "to send a transaction.<br>"
                 }
             }
             onKeyPairCreated: {
@@ -272,12 +273,12 @@ Rectangle {
                     debugError = 1
                 }
             }
-            onRawTxTestResult: {
-                if (debugTracker == 1 && debugError == 0) {
-                    replyText.text = replyText.text + "<br/>" +
-                            testResult + "<br>"
-                }
-            }
+            //onRawTxTestResult: {
+            //    if (debugTracker == 1 && debugError == 0) {
+            //        replyText.text = replyText.text + "<br/>" +
+            //                testResult + "<br>"
+            //    }
+            //}
         }
 
     }

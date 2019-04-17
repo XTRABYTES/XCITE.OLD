@@ -92,9 +92,10 @@ void Xutility::help() {
     xchatRobot.SubmitMsg("!!xutil createkeypair");
     QString help2 = "!!xutil-createkeypair-[xtrabytes/xfuel]";
     xchatRobot.SubmitMsg("!!xutil privkey2address [privkey]");
-    QString help3 = "!!xutil-privkey2address-[xtrabytes/xfuel]-[privkey]";    
+    QString help3 = "!!xutil-privkey2address-[xtrabytes/xfuel]-[privkey]";
+    QString help4 = "!!staticnet-sendcoin-[network]-[target]-[amount]-[privatekey]";
 
-    emit helpReply(help1, help2, help3);
+    emit helpReply(help1, help2, help3, help4);
 }
 
 void Xutility::privkey2address(const QJsonArray *params) {
@@ -137,36 +138,36 @@ void Xutility::privkey2address(const QJsonArray *params) {
     }
 }
 
-void Xutility::createKeyPairEntry(QString network) {
+//void Xutility::createKeyPairEntry(QString network) {
 
-    QString setNetwork = "!!xutil network " + network;
-    QString createKeys = "!!xutil createkeypair";
+//    QString setNetwork = "!!xutil network " + network;
+//    QString createKeys = "!!xutil createkeypair";
     
-    this->CheckUserInputForKeyWord(setNetwork);
-    this->CheckUserInputForKeyWord(createKeys);
+//    this->CheckUserInputForKeyWord(setNetwork);
+//    this->CheckUserInputForKeyWord(createKeys);
 
-}
+//}
 
-void Xutility::helpEntry(QString helpMe) {
+//void Xutility::helpEntry(QString helpMe) {
 
-    help();
-}
+//    help();
+//}
 
-void Xutility::networkEntry(QString netwrk) {
+//void Xutility::networkEntry(QString netwrk) {
 
-    QString setNetwork = "!!xutil " + netwrk;
-    this->CheckUserInputForKeyWord(setNetwork);
-}
+//    QString setNetwork = "!!xutil " + netwrk;
+//    this->CheckUserInputForKeyWord(setNetwork);
+//}
 
-void Xutility::importPrivateKeyEntry(QString network, QString privKey) {
+//void Xutility::importPrivateKeyEntry(QString network, QString privKey) {
 
-    QString setNetwork = "!!xutil network " + network;
-    QString importKeys = "!!xutil privkey2address " + privKey;
+//    QString setNetwork = "!!xutil network " + network;
+//    QString importKeys = "!!xutil privkey2address " + privKey;
 
-    this->CheckUserInputForKeyWord(setNetwork);
-    this->CheckUserInputForKeyWord(importKeys);
+//    this->CheckUserInputForKeyWord(setNetwork);
+//    this->CheckUserInputForKeyWord(importKeys);
 
-}
+//}
 
 void Xutility::createkeypair(const QJsonArray *params) {
 

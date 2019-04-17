@@ -41,13 +41,13 @@ signals:
     void badKey();
     void badNetwork(const QString &noNetwork);
     void networkStatus(const QString &myNetwork);
-    void helpReply(const QString &help1, const QString &help2, const QString &help3);
+    void helpReply(const QString &help1, const QString &help2, const QString &help3, const QString &help4);
 
 public slots:
-    void createKeyPairEntry(QString network);
-    void importPrivateKeyEntry(QString network, QString privKey);
-    void networkEntry(QString netwrk);
-    void helpEntry(QString helpMe);
+    //void createKeyPairEntry(QString network);
+    //void importPrivateKeyEntry(QString network, QString privKey);
+    //void networkEntry(QString netwrk);
+    //void helpEntry(QString helpMe);
     unsigned char getNetworkid(std::vector<std::string>::iterator network_iterator ) const;
     unsigned char getSelectedNetworkid() const;
 

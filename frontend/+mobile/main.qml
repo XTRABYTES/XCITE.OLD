@@ -348,7 +348,7 @@ ApplicationWindow {
     signal updateBalanceSignal(string walletList)
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
-    signal helpMe(string help)
+    signal helpMe()
     signal checkNetwork(string network)
     signal testTransaction(string test)
     signal updateAccount(string addresslist, string contactlist, string walletlist)
@@ -360,6 +360,7 @@ ApplicationWindow {
     signal checkPincode(string pincode)
     signal walletUpdate(string coin, string label, string message)
     signal copyText2Clipboard(string text)
+    signal sendCoins(string network, string message)
 
     // Automated functions
 
