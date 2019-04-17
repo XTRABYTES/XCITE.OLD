@@ -71,7 +71,8 @@ SOURCES += main/main.cpp \
             backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
             backend/support/Settings.cpp \
-    backend/support/qaesencryption.cpp
+            backend/support/qaesencryption.cpp \
+            backend/integrations/wallet.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -97,10 +98,11 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/MarketValue.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
-    backend/support/Settings.hpp \
-    backend/integrations/MarketValue.hpp \
-    backend/integrations/Explorer.hpp \
-    backend/support/qaesencryption.h
+            backend/support/Settings.hpp \
+            backend/integrations/MarketValue.hpp \
+            backend/integrations/Explorer.hpp \
+            backend/support/qaesencryption.h \
+            backend/integrations/wallet.hpp
 
 DISTFILES += \
     xcite.ico \
