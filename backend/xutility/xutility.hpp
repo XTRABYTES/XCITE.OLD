@@ -34,7 +34,6 @@ public:
     void help();
     void createkeypair(const QJsonArray *params);
     void privkey2address(const QJsonArray *params);
-    void rawtxtest(const QJsonArray *params);
 signals:
     void keyPairCreated(const QString &address, const QString &pubKey, const QString &privKey);
     void addressExtracted(const QString &priv, const QString &pubKey, const QString &addressID);
@@ -42,16 +41,15 @@ signals:
     void badKey();
     void badNetwork(const QString &noNetwork);
     void networkStatus(const QString &myNetwork);
-    void helpReply(const QString &help1, const QString &help2, const QString &help3, const QString &help4);
-    void rawTxTestResult(const QString &testResult);
+    void helpReply(const QString &help1, const QString &help2, const QString &help3);
 
 public slots:
-    void txTestEntry(QString test);
     void createKeyPairEntry(QString network);
     void importPrivateKeyEntry(QString network, QString privKey);
     void networkEntry(QString netwrk);
     void helpEntry(QString helpMe);
     unsigned char getNetworkid(std::vector<std::string>::iterator network_iterator ) const;
+    unsigned char getSelectedNetworkid() const;
 
 private:
     bool xutility_initialised = false;

@@ -42,9 +42,12 @@
 #include <vector>
 #include <stdexcept>
 #include <openssl/bn.h>
+#include <iomanip> 
+#include <limits>
+#include <iostream>
+#include <sstream>
 
-
-
+#include <boost/cstdint.hpp>
 
 typedef long long  int64;
 typedef unsigned long long  uint64;
