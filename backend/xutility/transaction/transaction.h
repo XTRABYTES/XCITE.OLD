@@ -478,5 +478,8 @@ bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, co
 bool PubkeyHashSolver(const CScript& scriptPubKey, std::vector<valtype>& vSolutionsRet);
 std::string CreateRawTransaction(const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey );
 
+extern int64 AmountFromStr(const char *value);		
+extern int IntFromStr(const char *value);		
+extern std::string StrFromAmount(int64 amount);
 
 #endif
