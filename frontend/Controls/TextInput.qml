@@ -126,8 +126,8 @@ TextField {
         width: 190
         height: 40
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.bottom
-        anchors.topMargin: 10
+        anchors.bottom: parent.top
+        anchors.bottomMargin: 10
         visible: clipBoard == 1
 
         MouseArea {

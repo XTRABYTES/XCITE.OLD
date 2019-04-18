@@ -44,10 +44,10 @@ signals:
     void helpReply(const QString &help1, const QString &help2, const QString &help3, const QString &help4);
 
 public slots:
-    //void createKeyPairEntry(QString network);
-    //void importPrivateKeyEntry(QString network, QString privKey);
-    //void networkEntry(QString netwrk);
-    //void helpEntry(QString helpMe);
+    void createKeypairEntry(QString network);
+    void importPrivateKeyEntry(QString network, QString privKey);
+    void networkEntry(QString netwrk);
+    void helpEntry();
     unsigned char getNetworkid(std::vector<std::string>::iterator network_iterator ) const;
     unsigned char getSelectedNetworkid() const;
 
