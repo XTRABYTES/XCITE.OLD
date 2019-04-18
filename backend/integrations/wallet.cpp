@@ -22,10 +22,18 @@ void Wallet::helpEntry() {
      xUtility.CheckUserInputForKeyWord("!!xutil help");
 }
 
-void Wallet::networkEntry(QString netwrk) {
+bool Wallet::helpReply(QString help1, QString help2, QString help3, QString help4) {
+    emit help(help1, help2, help3, help4);
+}
 
-    QString setNetwork = "!!xutil network " + netwrk;
+void Wallet::networkEntry(QString network) {
+
+    QString setNetwork = "!!xutil network " + network;
     xUtility.CheckUserInputForKeyWord(setNetwork);
+}
+
+bool Wallet::networkReply(QString network) {
+    emit networkStatus(network);
 }
 
 void Wallet::createKeypairEntry(QString network) {
@@ -39,6 +47,14 @@ void Wallet::createKeypairEntry(QString network) {
     xUtility.CheckUserInputForKeyWord(createKeys);
 }
 
+bool Wallet::newKeypair(QString address, QString pubKey, QString privKey) {
+    emit newKeypairCreated(address, pubKey, privKey);
+}
+
+bool Wallet::keypairFailed() {
+    emit newKeypairFailed();
+}
+
 void Wallet::importPrivateKeyEntry(QString network, QString privKey) {
 
     QString setNetwork = "!!xutil network " + network;
@@ -49,8 +65,18 @@ void Wallet::importPrivateKeyEntry(QString network, QString privKey) {
 
 }
 
+bool Wallet::addressExtracted(QString privKey, QString pubKey, QString addressID) {
+    emit addressExtractedSucceeded(privKey, pubKey, addressID);
+}
+
+bool Wallet::badkey() {
+    emit addressExtractedFailed();
+}
+
 
 void Wallet::sendCoinsEntry(QString network, QString msg) {
+
+    qDebug() << "send coins requested!";
 
     QString setNetwork = "!!xutil network " + network;
     QString sendCoins = "!!staticnet sendcoin " + msg;

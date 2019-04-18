@@ -139,18 +139,17 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString)), &explorer, SLOT(getBalanceEntireWallet(QString)));
     QObject::connect(rootObject, SIGNAL(updateTransactions(QString, QString, QString)), &explorer, SLOT(getTransactionList(QString, QString, QString)));
     QObject::connect(rootObject, SIGNAL(getDetails(QString, QString)), &explorer, SLOT(getDetails(QString, QString)));
-    QObject::connect(rootObject, SIGNAL(walletUpdate(QString, QString, QString)), &explorer, SLOT(WalletUpdate(QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(walletUpdate(QString, QString, QString)), &explorer, SLOT(WalletUpdate(QString, QString, QString)));
 
     // connect QML signal for ClipboardProxy
     QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));
 
     // connect QML signals for walletFunctions
-    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &walletFunction, SLOT(createKeypairEntry(QString)));
-    QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &walletFunction, SLOT(importPrivateKeyEntry(QString, QString)));
-    QObject::connect(rootObject, SIGNAL(helpMe()), &walletFunction, SLOT(helpEntry()));
-    QObject::connect(rootObject, SIGNAL(sendCoins(QString network, QString msg)), &walletFunction, SLOT(sendCoinsEntry(QString,QString)));
-    QObject::connect(rootObject, SIGNAL(checkNetwork(QString)), &walletFunction, SLOT(networkEntry(QString)));
-    //QObject::connect(rootObject, SIGNAL(testTransaction(QString)), &walletFunction, SLOT(txTestEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeypairEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(helpMe()), &xUtil, SLOT(helpEntry()));
+    QObject::connect(rootObject, SIGNAL(sendCoins(QString, QString)), &walletFunction, SLOT(sendCoinsEntry(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(checkNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

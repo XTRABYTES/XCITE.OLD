@@ -96,7 +96,9 @@ void Xutility::help() {
     QString help4 = "!!staticnet-sendcoin-[network]-[target]-[amount]-[privatekey]";
 
     emit helpReply(help1, help2, help3, help4);
+
 }
+
 
 void Xutility::privkey2address(const QJsonArray *params) {
 
@@ -130,6 +132,7 @@ void Xutility::privkey2address(const QJsonArray *params) {
             QString addressID = QString::fromStdString(XciteGenAddressStr);
 
             emit addressExtracted(privKey, pubKey, addressID);
+
         }
 
     } else {
@@ -138,36 +141,36 @@ void Xutility::privkey2address(const QJsonArray *params) {
     }
 }
 
-//void Xutility::createKeyPairEntry(QString network) {
+void Xutility::createKeypairEntry(QString network) {
 
-//    QString setNetwork = "!!xutil network " + network;
-//    QString createKeys = "!!xutil createkeypair";
+    QString setNetwork = "!!xutil network " + network;
+    QString createKeys = "!!xutil createkeypair";
     
-//    this->CheckUserInputForKeyWord(setNetwork);
-//    this->CheckUserInputForKeyWord(createKeys);
+    this->CheckUserInputForKeyWord(setNetwork);
+    this->CheckUserInputForKeyWord(createKeys);
 
-//}
+}
 
-//void Xutility::helpEntry(QString helpMe) {
+void Xutility::helpEntry() {
 
-//    help();
-//}
+    help();
+}
 
-//void Xutility::networkEntry(QString netwrk) {
+void Xutility::networkEntry(QString netwrk) {
 
-//    QString setNetwork = "!!xutil " + netwrk;
-//    this->CheckUserInputForKeyWord(setNetwork);
-//}
+    QString setNetwork = "!!xutil " + netwrk;
+    this->CheckUserInputForKeyWord(setNetwork);
+}
 
-//void Xutility::importPrivateKeyEntry(QString network, QString privKey) {
+void Xutility::importPrivateKeyEntry(QString network, QString privKey) {
 
-//    QString setNetwork = "!!xutil network " + network;
-//    QString importKeys = "!!xutil privkey2address " + privKey;
+    QString setNetwork = "!!xutil network " + network;
+    QString importKeys = "!!xutil privkey2address " + privKey;
 
-//    this->CheckUserInputForKeyWord(setNetwork);
-//    this->CheckUserInputForKeyWord(importKeys);
+    this->CheckUserInputForKeyWord(setNetwork);
+    this->CheckUserInputForKeyWord(importKeys);
 
-//}
+}
 
 void Xutility::createkeypair(const QJsonArray *params) {
 
@@ -195,6 +198,7 @@ void Xutility::createkeypair(const QJsonArray *params) {
 
         emit keyPairCreated(address, pubKey, privKey);
 
+
         xchatRobot.SubmitMsg("Private key: "+QString::fromStdString(CXCiteSecret(key,getNetworkid(network)).ToString()));
         xchatRobot.SubmitMsg("Public key: "+QString::fromStdString(pubkeyBase58));
         xchatRobot.SubmitMsg("Address: "+QString::fromStdString(CXCiteAddress(keyID,getNetworkid(network)).ToString()));
@@ -203,6 +207,7 @@ void Xutility::createkeypair(const QJsonArray *params) {
         xchatRobot.SubmitMsg("Bad or mising network ID.");
 
         emit createKeypairFailed();
+
     }
 }
 
@@ -212,6 +217,7 @@ void Xutility::set_network(const QJsonArray *params) {
         xchatRobot.SubmitMsg("Active network: "+QString::fromStdString(*network));
         QString myNetwork = ("Active network: "+QString::fromStdString(*network));
         emit networkStatus(myNetwork);
+
 
     } else {
         bool param_valid=false;
@@ -228,12 +234,15 @@ void Xutility::set_network(const QJsonArray *params) {
         if (param_valid) {
             xchatRobot.SubmitMsg("New active network: "+QString::fromStdString(*network));
             currentNetwork = QString::fromStdString(*network);
+            qDebug() << "current network: " + currentNetwork;
 
         } else {
             xchatRobot.SubmitMsg("("+params->at(2).toString()+") is invalid network type. Existing types are:"+networktypes);
             xchatRobot.SubmitMsg("Active network: "+QString::fromStdString(*network));
             QString networkFault = ("("+params->at(2).toString()+") is invalid network type. Existing types are:"+networktypes);
+            qDebug() << networkFault;
             emit badNetwork(networkFault);
+
         }
 
     }

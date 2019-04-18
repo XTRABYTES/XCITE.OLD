@@ -196,7 +196,8 @@ Rectangle {
                     requestText.text = ""
                 }
                 else if (deBugArray[0] === "!!staticnet" && deBugArray[1] === "sendcoin") {
-                    sendcoins(deBugArray[2], (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
+                    console.log(deBugArray[2] + " - " + (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
+                    sendCoins(deBugArray[2], (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
                     requestText.text = ""
                 }
                 else {

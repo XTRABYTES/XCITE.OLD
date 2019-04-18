@@ -40,15 +40,16 @@ void StaticNet::Initialize() {
 
 }
 
-
 bool StaticNet::CheckUserInputForKeyWord(const QString msg) {
+
+    qDebug() << "staticnet accessed!";
       
       if (!(msg.split(" ").at(0) == "!!staticnet")) return false;
       
 		QThread* thread = new QThread;
 		SnetKeyWordWorker* worker = new SnetKeyWordWorker(&msg);
 		worker->moveToThread(thread);
-		connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
+        //connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
 		connect(thread, SIGNAL (started()), worker, SLOT (process()));
 		connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
 		connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
@@ -110,7 +111,9 @@ SnetKeyWordWorker::~SnetKeyWordWorker() {
 	//xchatRobot.SubmitMsg("SnetKeyWordWorker() worker stopped."); 
 }
 
-void SnetKeyWordWorker::process() { 
+void SnetKeyWordWorker::process() {
+
+    qDebug() << "Processing staticnet command";
 
     const QString _msg = *msg;
 	 QStringList args = msg->split(" ");
@@ -119,12 +122,15 @@ void SnetKeyWordWorker::process() {
     for (QStringList::const_iterator it = args.constBegin(); it != args.constEnd(); ++it) params.append(QJsonValue(*it));
     params.push_back(QString::number(staticNet.GetNewRequestID()));
     
-    CmdParser(&params);        	 	 	 
+    CmdParser(&params);
+
+    qDebug() << "Processing done";
     	 	 	      
 }
 
 void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
 
+    qDebug() << "reading command";
 
     QString command = params->at(1).toString();
 
@@ -136,6 +142,7 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
     } else if (command == "echo") {
         request(params);
     } else if (command == "sendcoin") {
+        qDebug() << "send coin command recognized";
         sendcoin(params);          
     } else {
         xchatRobot.SubmitMsg("Bad !!staticnet command. Ignored.");
@@ -181,10 +188,12 @@ void SnetKeyWordWorker::onResponse( QJsonArray params, QJsonObject res)
 
 void SnetKeyWordWorker::sendcoin(const QJsonArray *params) {
 
+        qDebug() << "Initiate sending coins";
+
 		QThread* thread = new QThread;
 		SendcoinWorker* worker = new SendcoinWorker(params);
 		worker->moveToThread(thread);
-		connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
+        //connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
 		connect(thread, SIGNAL (started()), worker, SLOT (process()));
 		connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
 		connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
@@ -237,6 +246,7 @@ void SendcoinWorker::txbroadcast_onResponse( QJsonArray params, QJsonObject res)
     QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
     //xchatRobot.SubmitMsg("Recevied txbroadcast reply from STaTiC network. ID: #"+params.last().toString());
     xchatRobot.SubmitMsg(formattedJsonString);
+    qDebug() << formattedJsonString;
     }
     emit finished();
 }

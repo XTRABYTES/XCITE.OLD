@@ -28,25 +28,25 @@
 #include <boost/thread/mutex.hpp>
 
 class StaticNetHttpClient:  public QObject  {
-   Q_OBJECT
+    Q_OBJECT
     
-	public:    
-	    StaticNetHttpClient(const QString &endpoint, QObject *parent = 0 );	
-	    ~StaticNetHttpClient() {}
-	    QNetworkReply *reply;
-	    void request(const QJsonArray *params);
+public:
+    StaticNetHttpClient(const QString &endpoint, QObject *parent = 0 );
+    ~StaticNetHttpClient() {}
+    QNetworkReply *reply;
+    void request(const QJsonArray *params);
 
-	public Q_SLOTS:
-       void slotNetworkError(QNetworkReply::NetworkError error);
-       void onResponse(QNetworkReply *res);
+public Q_SLOTS:
+    void slotNetworkError(QNetworkReply::NetworkError error);
+    void onResponse(QNetworkReply *res);
 
-	signals:
-    	 void response(QJsonArray params, QJsonObject res);
+signals:
+    void response(QJsonArray params, QJsonObject res);
 
-   private:
-       QNetworkRequest req;
-       QNetworkAccessManager *manager;    
-	    
+private:
+    QNetworkRequest req;
+    QNetworkAccessManager *manager;
+
 };
 
 class SendcoinWorker : public QObject {
@@ -54,7 +54,7 @@ class SendcoinWorker : public QObject {
 
 public:
     SendcoinWorker(const QJsonArray *params);
-    ~SendcoinWorker();    
+    ~SendcoinWorker();
 
 public slots:
     void process();
@@ -62,13 +62,13 @@ public slots:
 signals:
     void finished();
     void error(QString err);
-  	 void sendcoinFailed();
+    void sendcoinFailed();
 
 public Q_SLOTS:
-    	void unspent_request(const QJsonArray *params);
-    	void unspent_onResponse(QJsonArray params, QJsonObject );
-    	void txbroadcast_request(const QJsonArray *params);
-    	void txbroadcast_onResponse(QJsonArray params, QJsonObject );
+    void unspent_request(const QJsonArray *params);
+    void unspent_onResponse(QJsonArray params, QJsonObject );
+    void txbroadcast_request(const QJsonArray *params);
+    void txbroadcast_onResponse(QJsonArray params, QJsonObject );
 
 
 private:
@@ -87,7 +87,7 @@ class SnetKeyWordWorker : public QObject {
 
 public:
     SnetKeyWordWorker(const QString *msg);
-    ~SnetKeyWordWorker();    
+    ~SnetKeyWordWorker();
 
 public slots:
     void process();
@@ -95,17 +95,17 @@ public slots:
 signals:
     void finished();
     void error(QString err);
-  	 void response(QVariant response);
+    void response(QVariant response);
 
 public Q_SLOTS:
-    	void request(const QJsonArray *params);
-    	void onResponse(QJsonArray params, QJsonObject );
+    void request(const QJsonArray *params);
+    void onResponse(QJsonArray params, QJsonObject );
 
 private:
     const QString *msg;
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
-    void help();        
+    void help();
     void sendcoin(const QJsonArray *params);
 };
 
@@ -113,25 +113,25 @@ private:
 class StaticNet : public QObject {
     Q_OBJECT
 
-	public:
-    	StaticNet(QObject *parent = 0) : QObject(parent) {}
-    	~StaticNet() {}
-    	void Initialize();   
-      bool CheckUserInputForKeyWord(const QString msg);
+public:
+    StaticNet(QObject *parent = 0) : QObject(parent) {}
+    ~StaticNet() {}
+    void Initialize();
+    bool CheckUserInputForKeyWord(const QString msg);
 
-      QString GetConnectStr() {
-         return ConnectStr;      
-      };      
+    QString GetConnectStr() {
+        return ConnectStr;
+    };
 
-    	int GetNewRequestID() {
+    int GetNewRequestID() {
         boost::unique_lock<boost::mutex> scoped_lock(mutex);
         return ++requestID;
-      };
+    };
 
-	private:
-	   boost::mutex mutex;
-	   int requestID;    
-	   QString ConnectStr;	
+private:
+    boost::mutex mutex;
+    int requestID;
+    QString ConnectStr;
 };
 
 
