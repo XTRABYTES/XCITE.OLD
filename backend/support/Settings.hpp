@@ -22,6 +22,11 @@
 #include <QDateTime>
 #include <QNetworkReply>
 #include "qaesencryption.h"
+#include <openssl/rsa.h>
+#include <string>
+#include <iostream>
+
+
 
 class Settings : public QObject
 {
@@ -34,6 +39,16 @@ public:
     QString CheckStatusCode(QString);
     void SaveFile(QString, QString);
     QString LoadFile(QString);
+    std::pair<QByteArray, QByteArray> createKeyPair();
+    int rsaEncrypt(const unsigned char *message, size_t messageLength, unsigned char **encryptedMessage, unsigned char **encryptedKey,
+          size_t *encryptedKeyLength, unsigned char **iv, size_t *ivLength);
+
+    std::pair<int, QByteArray> encryptAes(QString text, unsigned char *key, unsigned char *iv);
+    RSA * createRSA(unsigned char * key,int public1);
+    QString createRandNum();
+
+
+
 
 
 
@@ -51,11 +66,12 @@ public slots:
     void SaveWallet(QString walletlist, QString addresslist);
     void UpdateAccount(QString addresslist, QString contactlist, QString walletlist);
 
+    void initialisePincode(QString pincode);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
     QString RestAPIPostCall(QString apiURL, QByteArray payload);
-    QString RestAPIPutCall(QString apiURL, QByteArray payload);
     QByteArray RestAPIGetCall(QString apiURL);
+    void CheckSessionId();
 
 
 signals:
@@ -77,6 +93,19 @@ signals:
     void saveFailed();
     void saveFileSucceeded();
     void saveFileFailed();
+    void sessionIdCheck(const bool &sessionAlive);
+    void checkUsername();
+    void createUniqueKeyPair();
+    void receiveSessionEncryptionKey();
+    void saveAccountSettings();
+    void checkIdentity();
+    void receiveSessionID();
+    void loadingSettings();
+    void saveFailedDBError();
+    void saveFailedAPIError();
+    void saveFailedInputError();
+    void saveFailedUnknownError();
+
 
 
 
@@ -87,9 +116,14 @@ private:
     QString m_addresses;
     QString m_contacts;
     QString m_wallet;
+    QString m_oldPincode;
     QString m_pincode;
     QString m_username;
     QString m_password;
+    QString sessionId;
+    std::pair<QByteArray,QByteArray> keyPair;
+    unsigned char backendKey[32];
+    unsigned char iiiv[16];
 
 };
 

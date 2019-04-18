@@ -23,9 +23,11 @@ Rectangle {
     width: Screen.width
     state: historyTracker == 1? "up" : "down"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+
+    property int newHistory: 0
 
     states: [
         State {
@@ -48,7 +50,7 @@ Rectangle {
 
     Text {
         id: historyModalLabel
-        text: "TRANSACTION HISTORY"
+        text: "TRANSACTIONS"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
@@ -63,7 +65,8 @@ Rectangle {
         source: getLogo(walletList.get(walletIndex).name)
         height: 30
         width: 30
-        anchors.left: searchInput.left
+        anchors.left: parent.left
+        anchors.leftMargin: 28
         anchors.top: historyModalLabel.bottom
         anchors.topMargin: 30
     }
@@ -84,43 +87,180 @@ Rectangle {
     Label {
         id: newWalletLabel
         text: walletList.get(walletIndex).label
-        anchors.right: searchInput.right
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.left: newCoinName.right
+        anchors.leftMargin: 10
         anchors.bottom: newIcon.bottom
         anchors.bottomMargin: 1
         font.pixelSize: 20
         font.family: "Brandon Grotesque"
         font.weight: Font.Bold
         color: themecolor
+        horizontalAlignment: Text.AlignRight
+        elide: Text.ElideRight
     }
 
     Controls.TextInput {
-        id: searchInput
-        height: 34
-        width: parent.width - 56
-        anchors.horizontalCenter: parent.horizontalCenter
+        id: searchForTransaction
+        z: 5
+        placeholder: "SEARCH TRANSACTION"
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.right: parent.right
+        anchors.rightMargin: 28
         anchors.top: newIcon.bottom
-        anchors.topMargin: 25
-        placeholder: "SEARCH TRANSACTIONS"
-        color: text != ""? "#F2F2F2" : "#727272"
-        textBackground: "#0B0B09"
+        anchors.topMargin: 20
+        color: searchForTransaction.text != "" ? "#2A2C31" : "#727272"
+        textBackground: "#F2F2F2"
         font.pixelSize: 14
         mobile: 1
+        deleteImg: 'qrc:/icons/mobile/delete-icon_01_dark.svg'
+
+        onTextChanged: {
+            myHistory.searchCriteria = searchForTransaction.text
+        }
+    }
+
+    Label {
+        id: historyPrevious
+        text: "PREVIOUS"
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.top: searchForTransaction.bottom
+        anchors.topMargin: 15
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
+        visible: currentPage !== 1
+
+        Rectangle {
+            anchors.left: historyPrevious.left
+            anchors.right: historyPrevious.right
+            anchors.verticalCenter: historyPrevious.verticalCenter
+            height: historyPrevious.height + 10
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    click01.play()
+                    detectInteraction()
+                    currentPage = currentPage - 1
+                    newHistory = 1
+                    updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                }
+            }
+
+            Connections {
+                target: explorer
+
+                onUpdateTransactions: {
+                    if (historyTracker === 1) {
+                        loadTransactions(transactions);
+                        newHistory = 0
+                    }
+                }
+            }
+        }
+    }
+
+    Label {
+        id: pageCount
+        text: "page " + currentPage + " of " + transactionPages
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: searchForTransaction.bottom
+        anchors.topMargin: 15
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionPages > 0
+    }
+
+    Label {
+        id: historyNext
+        text: "NEXT"
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.top: searchForTransaction.bottom
+        anchors.topMargin: 15
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
+        visible: currentPage < transactionPages
+
+        Rectangle {
+            anchors.left: historyNext.left
+            anchors.right: historyNext.right
+            anchors.verticalCenter: historyNext.verticalCenter
+            height: historyNext.height + 10
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    click01.play()
+                    detectInteraction()
+                    currentPage = currentPage + 1
+                    newHistory = 1
+                    updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                }
+            }
+
+            Connections {
+                target: explorer
+
+                onUpdateTransactions: {
+                    if (historyTracker === 1) {
+                        loadTransactions(transactions);
+                        newHistory = 0
+                    }
+                }
+            }
+        }
     }
 
     Rectangle {
-        id: historyList
-        width: searchInput.width
-        anchors.top: searchInput.bottom
-        anchors.topMargin: 15
-        anchors.bottom: parent.bottom
+        id: history
+        width: parent.width
+        anchors.top: historyPrevious.bottom
+        anchors.topMargin: 5
+        anchors.bottom: closeHistoryModal.top
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
+        state: (newHistory == 0)? "down" : "up"
+        clip: true
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: myHistory; height: 0}
+                PropertyChanges { target: myHistory; anchors.topMargin: -180}
+                PropertyChanges { target: myHistory; cardSpacing: -100}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: myHistory; height: parent.height}
+                PropertyChanges { target: myHistory; anchors.topMargin: 0}
+                PropertyChanges { target: myHistory; cardSpacing: 0}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: myHistory; properties: "height, anchors.topMargin, cardSpacing"; duration: 500; easing.type: Easing.InOutCubic}
+            }
+        ]
+
 
         Controls.HistoryList {
             id: myHistory
-            searchFilter: searchInput.text
-            selectedCoin: newCoinName.text
-            selectedWallet: newWalletLabel.text
         }
     }
 
@@ -175,6 +315,9 @@ Rectangle {
                 running: false
 
                 onTriggered: {
+                    transactionPages = 0
+                    currentPage = 0
+                    historyList.clear()
                 }
             }
 
@@ -192,6 +335,13 @@ Rectangle {
                 }
             }
         }
+    }
+
+    Controls.TransactionDetailModal {
+        id: myTransactionDetails
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 }
 

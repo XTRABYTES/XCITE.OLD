@@ -14,8 +14,15 @@
 #define CLIPBOARDPROXY_HPP
 
 #include <QObject>
+#include <QImage>
+#include <QUrl>
+#include <QQuickItemGrabResult>
+#include <QQuickItem>
 #include <QClipboard>
+#include <QDebug>
 #include <QGuiApplication>
+
+class QQuickItem;
 
 class ClipboardProxy : public QObject
 {
@@ -27,9 +34,13 @@ public:
 
     void setDataText(const QString &text);
     QString dataText() const;
-
+    
 signals:
     void dataChanged();
+
+public slots:
+    void copyText2Clipboard(QString);
+
 };
 
 #endif

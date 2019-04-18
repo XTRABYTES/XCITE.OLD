@@ -141,7 +141,7 @@ Rectangle {
         anchors.rightMargin: 62
         anchors.bottom: closeDebugModal.top
         anchors.bottomMargin: 25
-        color: requestText.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+        color: themecolor
         textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
         font.pixelSize: 14
         mobile: 1
@@ -180,7 +180,7 @@ Rectangle {
                 deBugArray = (requestText.text).split('-')
                 debugError = 0
                 if (deBugArray[0] === "help") {
-                    helpMe("help")
+                    helpMe()
                     requestText.text = ""
                 }
                 else if (deBugArray[0] === "!!xutil" && deBugArray[1] === "network") {
@@ -193,6 +193,11 @@ Rectangle {
                 }
                 else if ((deBugArray[0] === "!!xutil" && deBugArray[1] === "privkey2address" && deBugArray[2] !== "" && deBugArray[3] !== "")) {
                     importPrivateKey(deBugArray[2], deBugArray[3])
+                    requestText.text = ""
+                }
+                else if (deBugArray[0] === "!!staticnet" && deBugArray[1] === "sendcoin") {
+                    console.log(deBugArray[2] + " - " + (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
+                    sendCoins(deBugArray[2], (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
                     requestText.text = ""
                 }
                 else {
@@ -213,7 +218,10 @@ Rectangle {
                             "<b>" + help2 + "</b><br>" +
                             "to create a new wallet.<br>" +
                             "<b>" + help3 + "</b><br>" +
-                            "to extract an address from a private key.<br>"
+                            "to extract an address from a private key.<br>" +
+                            "or <br>" +
+                            "<b>" + help4 + "</b><br>" +
+                            "to send a transaction.<br>"
                 }
             }
             onKeyPairCreated: {
@@ -260,10 +268,18 @@ Rectangle {
                 }
             }
             onBadNetwork: {
-                replyText.text = replyText.text + "<br>" +
-                        noNetwork + "<br>"
-                        debugError = 1
+                if (debugTracker == 1) {
+                    replyText.text = replyText.text + "<br>" +
+                            noNetwork + "<br>"
+                    debugError = 1
+                }
             }
+            //onRawTxTestResult: {
+            //    if (debugTracker == 1 && debugError == 0) {
+            //        replyText.text = replyText.text + "<br/>" +
+            //                testResult + "<br>"
+            //    }
+            //}
         }
 
     }

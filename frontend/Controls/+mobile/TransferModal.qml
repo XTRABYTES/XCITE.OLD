@@ -14,7 +14,6 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
-import Clipboard 1.0
 import QZXing 2.3
 import QtMultimedia 5.8
 
@@ -26,7 +25,7 @@ Rectangle {
     width: Screen.width
     state: transferTracker == 1? "up" : "down"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: Screen.height
@@ -71,6 +70,9 @@ Rectangle {
     property real currentBalance: getCurrentBalance()
     property int selectedWallet: getWalletNR(coinID.text, walletLabel.text)
     property string searchCriteria: ""
+    property int copy2clipboard: 0
+    property int copyImage2clipboard: 0
+    property int screenShot: 0
 
     function compareAddress(){
         var fromto = ""
@@ -119,6 +121,27 @@ Rectangle {
                 invalidAddress = 1
             }
         }
+        else if (coinID.text == "BTC") {
+            if (keyInput.length > 25
+                    && keyInput.length < 36
+                    &&(keyInput.text.substring(0,1) == "1" || keyInput.text.substring(0,1) == "3" || keyInput.text.substring(0,3) == "bc1")
+                    && keyInput.acceptableInput == true) {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
+        else if (coinID.text == "ETH") {
+            if (keyInput.length == 42
+                    && keyInput.text.substring(0,2) == "0x"
+                    && keyInput.acceptableInput == true) {
+                invalidAddress = 0
+            }
+            else {
+                invalidAddress = 1
+            }
+        }
     }
 
     function getCurrentBalance(){
@@ -141,7 +164,7 @@ Rectangle {
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
-        visible: addressbookTracker == 0
+        visible: addressbookTracker == 0 && screenShot == 0
     }
 
     Label {
@@ -187,6 +210,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && screenShot == 0
             onStateChanged: detectInteraction()
         }
 
@@ -203,6 +227,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && screenShot == 0
         }
         Text {
             id: sendText
@@ -217,6 +242,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && screenShot == 0
         }
 
         Image {
@@ -259,7 +285,7 @@ Rectangle {
 
         Label {
             id: walletLabel
-            text: (newWalletSelect == 0 && coinTracker == 0) ? walletList.get(defaultWallet(coinID.text)).label : walletList.get(walletIndex).label
+            text: coinTracker == 1? (newCoinSelect == 0? walletList.get(walletIndex).label : (newWalletSelect == 1? walletList.get(walletIndex).label : walletList.get(defaultWallet(coinID.text)).label)) : (newWalletSelect == 1 ? walletList.get(walletIndex).label : walletList.get(defaultWallet(coinID.text)).label)
             anchors.right: picklistArrow2.left
             anchors.rightMargin: 7
             anchors.left: picklistArrow1.right
@@ -298,6 +324,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletListTracker == 0
                      && publicKey.text != ""
+                     && screenShot == 0
         }
 
         Text {
@@ -316,6 +343,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletListTracker == 0
                      && publicKey.text != ""
+                     && screenShot == 0
         }
 
         Image {
@@ -331,6 +359,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && coinListTracker == 0
                      && calculatorTracker == 0
+                     && screenShot == 0
 
             Rectangle{
                 id: picklistButton1
@@ -375,13 +404,14 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && screenShot == 0
         }
 
         Rectangle {
             id: transferPicklist1
             z: 11
             width: 100
-            height: totalLines * 35 + 25
+            height: (totalLines * 35) < 175? ((totalLines * 35) + 25) : 200
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5
@@ -391,6 +421,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && screenShot == 0
             clip: true
 
             Controls.CoinPicklist {
@@ -412,6 +443,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
+                     && screenShot == 0
 
             Image {
                 id: picklistCloseArrow1
@@ -448,6 +480,7 @@ Rectangle {
                      && walletListTracker == 0
                      && calculatorTracker == 0
                      && publicKey.text != ""
+                     && screenShot == 0
 
             Rectangle{
                 id: picklistButton2
@@ -493,13 +526,14 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && publicKey.text != ""
+                     && screenShot == 0
         }
 
         Rectangle {
             id: transferPicklist2
             z: 11
             width: 100
-            height: ((totalCoinWallets * 35) + 25) < 200 ? ((totalCoinWallets * 35) + 25) : 200
+            height: ((totalCoinWallets * 35) < 175) ? ((totalCoinWallets * 35) + 25) : 200
             color: "#2A2C31"
             anchors.top: coinIcon.top
             anchors.topMargin: -5
@@ -510,6 +544,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && publicKey.text != ""
+                     && screenShot == 0
             clip: true
 
             Controls.WalletPicklist {
@@ -532,6 +567,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && publicKey.text != ""
+                     && screenShot == 0
 
             Image {
                 id: picklistCloseArrow2
@@ -588,30 +624,53 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && publicKey.text != ""
-        }
 
-        Item {
-            id: qrPlaceholder
-            width: 180
-            height: 180
-            anchors.horizontalCenter: qrBorder.horizontalCenter
-            anchors.verticalCenter: qrBorder.verticalCenter
+            Item {
+                id: qrPlaceholder
+                width: 180
+                height: 180
+                anchors.horizontalCenter: qrBorder.horizontalCenter
+                anchors.verticalCenter: qrBorder.verticalCenter
 
-            Image {
-                anchors.fill: parent
-                source: "image://QZXing/encode/" + publicKey.text
-                cache: false
+                Image {
+                    anchors.fill: parent
+                    source: "image://QZXing/encode/" + publicKey.text
+                    cache: false
+                }
             }
-            visible: transferSwitch.on == false
-                     && transactionSend == 0
-                     && addressbookTracker == 0
-                     && scanQRTracker == 0
-                     && publicKey.text != ""
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressed: {
+
+                }
+
+                onClicked: {
+                    if (screenShot == 0) {
+                        screenShot = 1
+                    }
+
+                    else if (screenShot == 1) {
+                        screenShot = 0
+                    }
+                }
+
+                onPressAndHold: {
+                    if(copyImage2clipboard == 0) {
+                        qrBorder.grabToImage(function(result) {
+                            clipboardProxy.setImage(result.url);
+                            qrCode.source = clipboard.image
+                        });
+                        //copyImage2clipboard = 1
+                    }
+                }
+            }
         }
 
         Text {
             id: pubKey
-            text: "PUBLIC KEY"
+            text: "ADDRESS"
             anchors.top: qrBorder.bottom
             anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter
@@ -641,6 +700,144 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && publicKey.text != ""
+
+            Rectangle {
+                width: parent.width
+                height: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressAndHold: {
+                        if(copy2clipboard == 0) {
+                            copyText2Clipboard(publicKey.text)
+                            copy2clipboard = 1
+                        }
+                    }
+                }
+            }
+        }
+
+        DropShadow {
+            z: 12
+            anchors.fill: textPopup
+            source: textPopup
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.4
+            transparentBorder: true
+            visible: copy2clipboard == 1
+        }
+
+        Item {
+            id: textPopup
+            z: 12
+            width: popupClipboard.width
+            height: popupClipboardText.height + 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: copy2clipboard == 1
+
+            Rectangle {
+                id: popupClipboard
+                height: 50
+                width: popupClipboardText.width + 20
+                color: "#34363D"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Label {
+                id: popupClipboardText
+                text: publicKey.text + "<br>Address copied!"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                horizontalAlignment: Text.AlignHCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Timer {
+                repeat: false
+                running: copy2clipboard == 1
+                interval: 2000
+
+                onTriggered: copy2clipboard = 0
+            }
+        }
+
+        DropShadow {
+            z: 12
+            anchors.fill: imagePopup
+            source: imagePopup
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.4
+            transparentBorder: true
+            visible: copyImage2clipboard == 1
+        }
+
+        Item {
+            id: imagePopup
+            z: 12
+            width: qrBackground.width
+            height: qrBackground.height
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -100
+            visible: copyImage2clipboard == 1
+
+            Rectangle {
+                id: qrBackground
+                width: popupClipboardImage.width + 20
+                height: qrCode.height + popupClipboardImage.height + 15
+                color: "#34363D"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Image {
+                id: qrCode
+                height: 75
+                width: 75
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 10
+            }
+
+            Label {
+                id: popupClipboardImage
+                text: "QR code copied!"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                horizontalAlignment: Text.AlignHCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+            }
+
+            Timer {
+                repeat: false
+                running: copyImage2clipboard == 1
+                interval: 2000
+
+                onTriggered: copyImage2clipboard = 0
+            }
         }
 
         // Send state
@@ -666,6 +863,7 @@ Rectangle {
 
         Mobile.AmountInput {
             id: sendAmount
+            z: 1.4
             height: 34
             anchors.right: parent.right
             anchors.rightMargin: 28
@@ -674,7 +872,7 @@ Rectangle {
             anchors.top: walletBalance.bottom
             anchors.topMargin: 20
             placeholder: amountTransfer
-            color: sendAmount.text !== "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: DoubleValidator {bottom: 0; top: ((walletList.get(selectedWallet).balance))}
@@ -704,6 +902,7 @@ Rectangle {
 
         Label {
             text: "Insufficient funds"
+            z: 1.3
             color: "#FD2E2E"
             anchors.left: sendAmount.left
             anchors.leftMargin: 5
@@ -723,6 +922,7 @@ Rectangle {
 
         Controls.TextInput {
             id: keyInput
+            z: 1.3
             text: sendAddress.text
             height: 34
             width: sendAmount.width
@@ -730,7 +930,7 @@ Rectangle {
             anchors.top: sendAmount.bottom
             anchors.topMargin: 15
             placeholder: keyTransfer
-            color: keyInput.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: transferSwitch.on == true
@@ -764,6 +964,7 @@ Rectangle {
 
         Label {
             id: addressWarning
+            z: 1.2
             text: "Invalid address format!"
             color: "#FD2E2E"
             anchors.left: keyInput.left
@@ -784,6 +985,7 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
+            z: 1.2
             width: (sendAmount.width - 14) / 2
             height: 34
             anchors.top: keyInput.bottom
@@ -837,6 +1039,7 @@ Rectangle {
 
         Rectangle {
             id: addressBookButton
+            z: 1.2
             width: (sendAmount.width - 14) / 2
             height: 34
             border.color: maincolor
@@ -891,13 +1094,14 @@ Rectangle {
 
         Controls.TextInput {
             id: referenceInput
+            z: 1.1
             height: 34
             width: keyInput.width
             placeholder: referenceTransfer
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 20
-            color: referenceInput.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: transferSwitch.on == true
@@ -913,6 +1117,7 @@ Rectangle {
 
         Rectangle {
             id: sendButton
+            z: 1
             width: keyInput.width
             height: 34
             color: (invalidAddress == 0
@@ -962,6 +1167,7 @@ Rectangle {
         }
 
         Text {
+            z: 1
             text: "SEND"
             font.family: xciteMobile.name
             font.pointSize: 14
@@ -977,6 +1183,7 @@ Rectangle {
         }
 
         Rectangle {
+            z: 1
             width: keyInput.width
             height: 34
             color: "transparent"
@@ -1261,25 +1468,30 @@ Rectangle {
                     }
                 }
             }
-            /**
-            Connections {
-                target: sendCoins
-                ontransferSucceededChanged: {
-                    confirmationSend == 1
-                    // function to add TX info to Transaction History List
-                }
 
-                onTransferFailedChanged: {
-                    if(networkError == 0){
-                    failedSend = 1
-                    }
-                }
+            Timer {
+                id: timer3
+                interval: 1000
+                repeat: false
+                running: false
 
-                onNetworkError: {
-                    networkError = 1
+                onTriggered: {
+                    appsTracker = 0
+                    selectedPage = "backup"
+                    mainRoot.pop();
+                    // whatever function needed to execute payment
+                    requestSend = 1
                 }
             }
-            */
+
+            Connections {
+                target: UserSettings
+                onPincodeCorrect: {
+                    if (pincodeTracker == 1 && transferTracker == 1) {
+                        timer3.start()
+                    }
+                }
+            }
         }
 
         Text {
@@ -1677,7 +1889,10 @@ Rectangle {
     Controls.TextInput {
         id: searchForAddress
         placeholder: "SEARCH ADDRESS BOOK"
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.leftMargin: 28
+        anchors.left: parent.left
         anchors.top: addressbookCoinLogo.bottom
         anchors.topMargin: 20
         color: searchForAddress.text != "" ? "#2A2C31" : "#727272"
@@ -1943,6 +2158,7 @@ Rectangle {
                  && calculatorTracker == 0
                  && scanQRTracker == 0
                  && addressbookTracker == 0
+                 && screenShot == 0
 
         Rectangle{
             id: closeButton
@@ -1987,6 +2203,7 @@ Rectangle {
                     scanQRTracker = 0
                     scanning = "scanning..."
                     networkError = 0
+                    screenShot = 0
                 }
             }
 
@@ -2003,16 +2220,11 @@ Rectangle {
             }
         }
     }
-
     Controls.Pincode {
         id: myPincode
         z: 10
-        visible: transferTracker == 1
-
-        coin: coinID.text
-        walletHash: getAddress(coinID.text, walletLabel.text)
-        amount: inputAmount
-        partnerHash: keyInput.text
+        anchors.top: parent.top
+        anchors.left: parent.left
     }
 }
 

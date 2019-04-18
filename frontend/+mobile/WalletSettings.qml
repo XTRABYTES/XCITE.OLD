@@ -26,8 +26,23 @@ Rectangle {
     height: Screen.height
     color: darktheme == true? "#14161B" : "#FDFDFD"
 
+    LinearGradient {
+        anchors.fill: parent
+        start: Qt.point(0, 0)
+        end: Qt.point(0, parent.height)
+        opacity: 0.05
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "transparent" }
+            GradientStop { position: 1.0; color: maincolor }
+        }
+    }
+
     property int clearFailed: 0
     property bool clearAllInitiated: false
+    property bool changeVolumeInitiated: false
+    property int changeVolumeFailed: 0
+    property bool changeSystemVolumeInitiated: false
+    property int changeSystemVolumeFailed: 0
 
     MouseArea {
         anchors.fill: parent
@@ -85,8 +100,7 @@ Rectangle {
         width: 20
         anchors.right: parent.right
         anchors.rightMargin: 28
-        anchors.top: currencyLabel.bottom
-        anchors.topMargin: 10
+        anchors.verticalCenter: currencyLabel.verticalCenter
         visible: currencyTracker == 0
 
         ColorOverlay {
@@ -188,6 +202,7 @@ Rectangle {
             anchors.fill: parent
 
             onPressed: {
+                click01.play()
                 detectInteraction()
             }
 
@@ -206,26 +221,25 @@ Rectangle {
         font.bold: true
         color: themecolor
         anchors.top: picklistArrow.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 30
         anchors.left: parent.left
         anchors.leftMargin: 28
     }
 
     Rectangle {
-        id: currencySwitch
+        id: pincodeSwitch
         z: 1
         width: 20
         height: 20
         radius: 10
-        anchors.top: pincodeLabel.bottom
-        anchors.topMargin: 10
+        anchors.verticalCenter: pincodeLabel.verticalCenter
         anchors.right: picklistArrow.right
         color: "transparent"
         border.color: themecolor
         border.width: 2
 
         Rectangle {
-            id: currencyIndicator
+            id: pincodeIndicator
             z: 1
             width: 12
             height: 12
@@ -235,7 +249,7 @@ Rectangle {
             color: userSettings.pinlock === true ? maincolor : "#757575"
 
             MouseArea {
-                id: currencyButton
+                id: pincodeButton
                 width: 20
                 height: 20
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -256,15 +270,29 @@ Rectangle {
                     }
                 }
             }
+
+
+
+            Connections {
+                target: UserSettings
+
+                onPincodeCorrect: {
+                    if (pinOK == 1 && unlockPin == 1) {
+                        userSettings.pinlock = false
+                        saveAppSettings();
+                        savePincode("0000")
+                    }
+                }
+            }
         }
     }
 
     Label {
-        id: currencySwitchLabel
+        id: pincodeSwitchLabel
         text: userSettings.pinlock === true ? "ACTIVE" : "NOT ACTIVE"
-        anchors.right: currencySwitch.left
+        anchors.right: pincodeSwitch.left
         anchors.rightMargin: 7
-        anchors.verticalCenter: currencySwitch.verticalCenter
+        anchors.verticalCenter: pincodeSwitch.verticalCenter
         anchors.verticalCenterOffset: 1
         font.pixelSize: 20
         font.family: xciteMobile.name
@@ -277,7 +305,7 @@ Rectangle {
         height: 34
         color: userSettings.pinlock === true? maincolor : "#727272"
         opacity: 0.25
-        anchors.top: currencySwitchLabel.bottom
+        anchors.top: pincodeSwitchLabel.bottom
         anchors.topMargin: 25
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -306,6 +334,7 @@ Rectangle {
             }
         }
     }
+
     Text {
         text: "CHANGE PIN"
         font.family: "Brandon Grotesque"
@@ -327,6 +356,381 @@ Rectangle {
         border.width: 1
     }
 
+    Label {
+        id: notificationLabel
+        z: 1
+        text: "NOTIFICATION SOUND:"
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        font.bold: true
+        color: themecolor
+        anchors.top: changePinButton.bottom
+        anchors.topMargin: 25
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
+
+    Image {
+        id: picklistArrow2
+        z: 1
+        source: 'qrc:/icons/dropdown_icon.svg'
+        height: 20
+        width: 20
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.verticalCenter: notificationLabel.verticalCenter
+        visible: soundTracker == 0
+
+        ColorOverlay {
+            anchors.fill: parent
+            source: parent
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        }
+
+        Rectangle{
+            id: picklistButton2
+            height: 20
+            width: 20
+            radius: 15
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+        }
+
+        MouseArea {
+            anchors.fill: picklistButton2
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                soundTracker = 1
+            }
+        }
+    }
+
+    Label {
+        id: chosenSound
+        z: 1
+        text: soundList.get(selectedSound).name
+        font.pixelSize: 20
+        font.family: xciteMobile.name
+        color: themecolor
+        anchors.verticalCenter: picklistArrow2.verticalCenter
+        anchors.verticalCenterOffset: 1
+        anchors.right: picklistArrow2.left
+        anchors.rightMargin: 10
+        visible: soundTracker == 0
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                notification.play()
+                detectInteraction()
+            }
+        }
+    }
+
+    DropShadow {
+        id: shadowSoundPicklist
+        z:11
+        anchors.fill: soundPicklist
+        source: soundPicklist
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.3
+        transparentBorder: true
+        visible: soundTracker == 1
+    }
+
+    Rectangle {
+        id: soundPicklist
+        z: 11
+        width: 120
+        height: 165
+        color: "#2A2C31"
+        anchors.top: picklistArrow2.top
+        anchors.topMargin: -5
+        anchors.right: picklistArrow2.right
+        visible: soundTracker == 1
+        clip: true
+
+        Controls.SoundPicklist {
+            id: mySoundPicklist
+        }
+    }
+
+    Rectangle {
+        id: picklistClose2
+        z: 11
+        width: 120
+        height: 25
+        color: "#2A2C31"
+        anchors.bottom: soundPicklist.bottom
+        anchors.horizontalCenter: soundPicklist.horizontalCenter
+        visible:soundTracker == 1
+
+        Image {
+            id: picklistCloseArrow2
+            source: 'qrc:/icons/dropdown-arrow.svg'
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            rotation: 180
+        }
+
+        MouseArea {
+            anchors.fill: parent
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                soundTracker = 0
+            }
+        }
+    }
+
+    Label {
+        id: volumeLabel
+        z: 1
+        text: "NOTIFICATION VOLUME:"
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        font.bold: true
+        color: themecolor
+        anchors.top: picklistArrow2.bottom
+        anchors.topMargin: 30
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
+
+    Image {
+        id: volumeLevel0
+        source: selectedVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
+        height: selectedVolume == 0? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: parent.left
+        anchors.horizontalCenterOffset: 58
+        anchors.verticalCenter: volumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeVolumeInitiated == false) {
+                        oldVolume = userSettings.volume
+                        userSettings.volume = 0
+                        notification.play()
+                        changeVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Image {
+        id: volumeLevel1
+        source: selectedVolume == 1? 'qrc:/icons/mobile/volume_level_1-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_1-icon_light.svg' : 'qrc:/icons/mobile/volume_level_1-icon_dark.svg')
+        height: selectedVolume == 1? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: volumeLevel0.right
+        anchors.horizontalCenterOffset: 60
+        anchors.verticalCenter: volumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeVolumeInitiated == false) {
+                        oldVolume = userSettings.volume
+                        userSettings.volume = 1
+                        notification.play()
+                        changeVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Image {
+        id: volumeLevel2
+        source: selectedVolume == 2? 'qrc:/icons/mobile/volume_level_2-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_2-icon_light.svg' : 'qrc:/icons/mobile/volume_level_2-icon_dark.svg')
+        height: selectedVolume == 2? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: volumeLevel3.left
+        anchors.horizontalCenterOffset: -60
+        anchors.verticalCenter: volumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeVolumeInitiated == false) {
+                        oldVolume = userSettings.volume
+                        userSettings.volume = 2
+                        notification.play()
+                        changeVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Image {
+        id: volumeLevel3
+        source: selectedVolume == 3? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
+        height: selectedVolume == 3? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: parent.right
+        anchors.horizontalCenterOffset: -58
+        anchors.verticalCenter: volumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeVolumeInitiated == false) {
+                        oldVolume = userSettings.volume
+                        userSettings.volume = 3
+                        notification.play()
+                        changeVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Label {
+        id: systemVolumeLabel
+        z: 1
+        text: "APP SYSTEM SOUND VOLUME:"
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        font.bold: true
+        color: themecolor
+        anchors.top: volumeLevel3.bottom
+        anchors.topMargin: 30
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
+
+    Image {
+        id: systemVolumeLevel0
+        source: selectedSystemVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
+        height: selectedSystemVolume == 0? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: parent.left
+        anchors.horizontalCenterOffset: 58
+        anchors.verticalCenter: systemVolumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeSystemVolumeInitiated == false) {
+                        oldSystemVolume = userSettings.systemVolume
+                        userSettings.systemVolume = 0
+                        changeSystemVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+    Image {
+        id: systemVolumeLevel1
+        source: selectedSystemVolume == 1? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
+        height: selectedSystemVolume == 1? 40 : 30
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: systemVolumeLevel0.right
+        anchors.horizontalCenterOffset: 60
+        anchors.verticalCenter: systemVolumeLabel.bottom
+        anchors.verticalCenterOffset: 30
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (changeSystemVolumeInitiated == false) {
+                        oldSystemVolume = userSettings.systemVolume
+                        userSettings.systemVolume = 1
+                        changeSystemVolumeInitiated = true
+                        updateToAccount()
+                    }
+                }
+            }
+        }
+    }
+
+
+    Connections {
+        target: UserSettings
+
+        onSaveSucceeded: {
+            if (changeVolumeInitiated == true) {
+                changeVolumeInitiated = false
+            }
+            if (changeSystemVolumeInitiated == true) {
+                changeSystemVolumeInitiated = false
+            }
+        }
+
+        onSaveFailed: {
+            if (changeVolumeInitiated == true) {
+                userSettings.volume = oldVolume
+                changeVolumeFailed = 1
+                changeVolumeInitiated = false
+            }
+            if (changeSystemVolumeInitiated == true) {
+                userSettings.systemVolume = oldSystemVolume
+                changeSystemVolumeFailed = 1
+                changeSystemVolumeInitiated = false
+            }
+        }
+    }
 
 
     Rectangle {
@@ -369,6 +773,9 @@ Rectangle {
                     oldPinlock = userSettings.pinlock
                     oldTheme = userSettings.theme
                     oldLocalKeys= userSettings.localKeys
+                    oldSound = userSettings.sound
+                    oldVolume = userSettings.volume
+                    oldSystemVolume = userSettings.systemVolume
                     clearAllSettings()
                     userSettings.locale = "en_us"
                     userSettings.defaultCurrency = 0
@@ -376,6 +783,9 @@ Rectangle {
                     userSettings.pinlock = false
                     userSettings.accountCreationCompleted = true
                     userSettings.localKeys = oldLocalKeys
+                    userSettings.sound = 0
+                    userSettings.volume = 1
+                    userSettings.systemVolume = 1
                     saveAppSettings()
                 }
             }
@@ -383,19 +793,47 @@ Rectangle {
             Connections {
                 target: UserSettings
 
+                onPincodeCorrect: {
+                    if (pinOK == 1 && clearAll == 1) {
+                        clearAllInitiated = true
+                        oldDefaultCurrency = userSettings.defaultCurrency
+                        oldLocale = userSettings.locale
+                        oldPinlock = userSettings.pinlock
+                        oldTheme = userSettings.theme
+                        oldLocalKeys= userSettings.localKeys
+                        oldSound = userSettings.sound
+                        oldVolume = userSettings.volume
+                        oldSystemVolume = userSettings.systemVolume
+                        clearAllSettings()
+                        userSettings.locale = "en_us"
+                        userSettings.defaultCurrency = 0
+                        userSettings.theme = "dark"
+                        userSettings.pinlock = false
+                        userSettings.accountCreationCompleted = true
+                        userSettings.localKeys = oldLocalKeys
+                        userSettings.sound = 0
+                        userSettings.volume = 1
+                        userSettings.systemVolume = 1
+                        saveAppSettings()
+                    }
+                }
+
                 onSaveSucceeded: {
-                    if (clearAllInitiated == true || pinClearInitiated == true) {
+                    if (clearAllInitiated == true) {
                         clearAllInitiated = false
                         pinClearInitiated = false
                     }
                 }
 
                 onSaveFailed: {
-                    if (clearAllInitiated == true || pinClearInitiated == true) {
+                    if (clearAllInitiated == true) {
                         userSettings.locale = oldLocale
                         userSettings.defaultCurrency = oldDefaultCurrency
                         userSettings.theme = oldTheme
                         userSettings.pinlock = oldPinlock
+                        userSettings.sound = oldSound
+                        userSettings.volume = oldVolume
+                        userSettings.systemVolume = oldSystemVolume
                         clearAllInitiated = false
                         pinClearInitiated = false
                         clearFailed = 1
@@ -514,119 +952,125 @@ Rectangle {
         }
     }
 
-    // Network error
-
-    Rectangle {
-        id: serverError
+    Item {
+        z: 12
+        width: popupSoundFail.width
+        height: 50
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.top
-        width: Screen.width
-        state: networkError == 0? "up" : "down"
-        color: "black"
-        opacity: 0.9
-        clip: true
-        visible: pincodeTracker == 0
-        onStateChanged: detectInteraction()
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: soundChangeFailed == 1
 
-        states: [
-            State {
-                name: "up"
-                PropertyChanges { target: serverError; anchors.bottomMargin: 0}
-                PropertyChanges { target: serverError; height: 0}
-            },
-            State {
-                name: "down"
-                PropertyChanges { target: serverError; anchors.bottomMargin: -100}
-                PropertyChanges { target: serverError; height: 100}
-            }
-        ]
-
-        transitions: [
-            Transition {
-                from: "*"
-                to: "*"
-                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
-            }
-        ]
+        Rectangle {
+            id: popupSoundFail
+            height: 50
+            width: popupSoundText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
 
         Label {
-            id: serverErrorText
-            text: "A network error occured, please try again later."
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            color: "#FD2E2E"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-        }
-
-        Rectangle {
-            id: okButton
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            color: "#1B2934"
-            opacity: 0.5
-
-            LinearGradient {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(x, y)
-                end: Qt.point(x, parent.height)
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 1.0; color: "#0ED8D2" }
-                }
-            }
-
-
-            MouseArea {
-                anchors.fill: parent
-
-                onPressed: detectInteraction()
-
-                onReleased: {
-                    networkError = 0
-                }
-            }
-        }
-
-        Text {
-            id: okButtonText
-            text: "OK"
-            font.family: xciteMobile.name
+            id: popupSoundText
+            text: "FAILED to change your sound!"
+            font.family: "Brandon Grotesque"
             font.pointSize: 14
-            color: "#F2F2F2"
             font.bold: true
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.verticalCenter: okButton.verticalCenter
-        }
-
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.bottom: okButton.bottom
-            color: "transparent"
-            opacity: 0.5
-            border.width: 1
-            border.color: "#0ED8D2"
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 1
+            color: "#E55541"
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            color: bgcolor
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: soundChangeFailed == 1
+            interval: 2000
+
+            onTriggered: soundChangeFailed = 0
+        }
+    }
+
+    Item {
+        z: 12
+        width: popupVolumeFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: volumeChangeFailed == 1
+
+        Rectangle {
+            id: popupVolumeFail
+            height: 50
+            width: popupVolumeText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupVolumeText
+            text: "FAILED to change your notification volume!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: volumeChangeFailed == 1
+            interval: 2000
+
+            onTriggered: volumeChangeFailed = 0
+        }
+    }
+
+    Item {
+        z: 12
+        width: popupSystemVolumeFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: systemVolumeChangeFailed == 1
+
+        Rectangle {
+            id: popupSystemVolumeFail
+            height: 50
+            width: popupSystemVolumeText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupSystemVolumeText
+            text: "FAILED to change your system sound volume!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: systemVolumeChangeFailed == 1
+            interval: 2000
+
+            onTriggered: systemVolumeChangeFailed = 0
         }
     }
 
     Controls.Pincode {
         id: myPincode
         z: 5
+        anchors.top: parent.top
+        anchors.left: parent.left
     }
 
     Item {
@@ -671,12 +1115,17 @@ Rectangle {
         MouseArea {
             anchors.fill: backbutton
 
-            onPressed: detectInteraction()
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
 
             onClicked: {
+                currencyTracker = 0
+                soundTracker = 0
                 appsTracker = 0
                 selectedPage = "home"
-                mainRoot.pop("../WalletSettings.qml")
+                mainRoot.pop()
             }
         }
     }

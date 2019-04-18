@@ -14,7 +14,9 @@
 #include <QDebug>
 #include "xutility.hpp"
 #include "../xchat/xchat.hpp"
+#include "../staticnet/staticnet.hpp"
 #include "./crypto/ctools.h"
+#include "./transaction/transaction.h"
 
 //Xutility xUtility;
 
@@ -40,6 +42,11 @@ unsigned char Xutility::getNetworkid(std::vector<std::string>::iterator network_
     if ( selected_network.compare("xtrabytes") == 0 ) return 25;
     if ( selected_network.compare("testnet") == 0 ) return 38;
     return 0;
+}
+
+
+unsigned char Xutility::getSelectedNetworkid() const {
+    return getNetworkid(network);
 }
 
 
@@ -86,9 +93,12 @@ void Xutility::help() {
     QString help2 = "!!xutil-createkeypair-[xtrabytes/xfuel]";
     xchatRobot.SubmitMsg("!!xutil privkey2address [privkey]");
     QString help3 = "!!xutil-privkey2address-[xtrabytes/xfuel]-[privkey]";
+    QString help4 = "!!staticnet-sendcoin-[network]-[target]-[amount]-[privatekey]";
 
-    emit helpReply(help1, help2, help3);
+    emit helpReply(help1, help2, help3, help4);
+
 }
+
 
 void Xutility::privkey2address(const QJsonArray *params) {
 
@@ -122,6 +132,7 @@ void Xutility::privkey2address(const QJsonArray *params) {
             QString addressID = QString::fromStdString(XciteGenAddressStr);
 
             emit addressExtracted(privKey, pubKey, addressID);
+
         }
 
     } else {
@@ -130,7 +141,7 @@ void Xutility::privkey2address(const QJsonArray *params) {
     }
 }
 
-void Xutility::createKeyPairEntry(QString network) {
+void Xutility::createKeypairEntry(QString network) {
 
     QString setNetwork = "!!xutil network " + network;
     QString createKeys = "!!xutil createkeypair";
@@ -140,7 +151,7 @@ void Xutility::createKeyPairEntry(QString network) {
 
 }
 
-void Xutility::helpEntry(QString helpMe) {
+void Xutility::helpEntry() {
 
     help();
 }
@@ -187,6 +198,7 @@ void Xutility::createkeypair(const QJsonArray *params) {
 
         emit keyPairCreated(address, pubKey, privKey);
 
+
         xchatRobot.SubmitMsg("Private key: "+QString::fromStdString(CXCiteSecret(key,getNetworkid(network)).ToString()));
         xchatRobot.SubmitMsg("Public key: "+QString::fromStdString(pubkeyBase58));
         xchatRobot.SubmitMsg("Address: "+QString::fromStdString(CXCiteAddress(keyID,getNetworkid(network)).ToString()));
@@ -195,6 +207,7 @@ void Xutility::createkeypair(const QJsonArray *params) {
         xchatRobot.SubmitMsg("Bad or mising network ID.");
 
         emit createKeypairFailed();
+
     }
 }
 
@@ -204,6 +217,7 @@ void Xutility::set_network(const QJsonArray *params) {
         xchatRobot.SubmitMsg("Active network: "+QString::fromStdString(*network));
         QString myNetwork = ("Active network: "+QString::fromStdString(*network));
         emit networkStatus(myNetwork);
+
 
     } else {
         bool param_valid=false;
@@ -220,15 +234,19 @@ void Xutility::set_network(const QJsonArray *params) {
         if (param_valid) {
             xchatRobot.SubmitMsg("New active network: "+QString::fromStdString(*network));
             currentNetwork = QString::fromStdString(*network);
+            qDebug() << "current network: " + currentNetwork;
 
         } else {
             xchatRobot.SubmitMsg("("+params->at(2).toString()+") is invalid network type. Existing types are:"+networktypes);
             xchatRobot.SubmitMsg("Active network: "+QString::fromStdString(*network));
             QString networkFault = ("("+params->at(2).toString()+") is invalid network type. Existing types are:"+networktypes);
+            qDebug() << networkFault;
             emit badNetwork(networkFault);
+
         }
 
     }
 }
+
 
 

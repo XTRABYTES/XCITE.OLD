@@ -24,8 +24,6 @@ Rectangle {
     state: pincodeTracker == 1? "up" : "down"
     height: Screen.height
     color: darktheme == false? "#F7F7F7" : "#14161B"
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.top: parent.top
     onStateChanged: detectInteraction()
 
     LinearGradient {
@@ -89,6 +87,8 @@ Rectangle {
     property int passError3: 0
     property int failToSave: 0
 
+    property string failError: ""
+
     Flickable {
         id: scrollArea
         width: parent.width
@@ -133,6 +133,7 @@ Rectangle {
 
             Controls.AmountInput {
                 id: newPin1
+                z: 1.2
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -155,6 +156,7 @@ Rectangle {
 
             Label {
                 id: createPinText2
+                z: 1.1
                 text: "Retype your 4-digit pincode"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: newPin1.bottom
@@ -166,6 +168,7 @@ Rectangle {
 
             Controls.AmountInput {
                 id: newPin2
+                z: 1.1
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -198,6 +201,7 @@ Rectangle {
 
             Label {
                 id: noMatch
+                z: 1
                 text: "The pincodes you entered don't match!"
                 color: "#FD2E2E"
                 anchors.left: newPin2.left
@@ -212,6 +216,7 @@ Rectangle {
 
             Rectangle {
                 id: savePin
+                z: 1
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? maincolor : "#727272"
@@ -264,10 +269,10 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (createPin == 1){
                                 console.log("save succeeded");
-                                console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
+                                console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + ", account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                                 newPin1.text = "";
                                 newPin2.text = "";
                                 newPinSaved = 1
@@ -277,7 +282,7 @@ Rectangle {
                     }
 
                     onSaveFailed: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (createPin == 1) {
                                 console.log("save failed");
                                 userSettings.pinlock = true;
@@ -288,12 +293,41 @@ Rectangle {
                         }
                     }
 
-                    onSettingsServerError: {
-                        networkError = 1
+                    onSaveFailedDBError: {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                            if (changePin == 0){
+                                failError = "Database ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (pincodeTracker == 1  && selectedPage == "settings") {
+                            if (changePin == 0){
+                                failError = "Network ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (pincodeTracker == 1  && selectedPage == "settings") {
+                            if (changePin == 0){
+                                failError = "Input ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (pincodeTracker == 1  && selectedPage == "settings") {
+                            if (changePin == 0){
+                                failError = "Unknown ERROR"
+                            }
+                        }
                     }
                 }
             }
             Text {
+                z: 1
                 text: "SAVE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
@@ -304,6 +338,7 @@ Rectangle {
             }
 
             Rectangle {
+                z: 1
                 width: savePin.width
                 height: 34
                 anchors.bottom: savePin.bottom
@@ -338,6 +373,7 @@ Rectangle {
 
             Controls.AmountInput {
                 id: currentPin
+                z: 1.3
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -416,6 +452,7 @@ Rectangle {
 
             Label {
                 id: newPinText1
+                z: 1.2
                 text: "Choose a new 4-digit pincode"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: currentPin.bottom
@@ -427,6 +464,7 @@ Rectangle {
 
             Controls.AmountInput {
                 id: changePin1
+                z: 1.2
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -449,6 +487,7 @@ Rectangle {
 
             Label {
                 id: newPinText2
+                z: 1.1
                 text: "Choose a new 4-digit pincode"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: changePin1.bottom
@@ -460,6 +499,7 @@ Rectangle {
 
             Controls.AmountInput {
                 id: changePin2
+                z: 1.1
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -492,6 +532,7 @@ Rectangle {
 
             Label {
                 id: noMatch2
+                z: 1
                 text: "The new pincodes you entered don't match!"
                 color: "#FD2E2E"
                 anchors.left: changePin2.left
@@ -506,6 +547,7 @@ Rectangle {
 
             Rectangle {
                 id: editPin
+                z: 1
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? maincolor : "#727272"
@@ -555,7 +597,7 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (pincodeTracker == 1){
+                        if (pincodeTracker == 1 && selectedPage == "settings"){
                             if (changePin == 1) {
                                 if (newPinSaved == 0) {
                                     newPinSaved = 1
@@ -570,7 +612,7 @@ Rectangle {
                     }
 
                     onSaveFailed: {
-                        if (pincodeTracker == 1) {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (changePin == 1){
                                 currentPin.text = ""
                                 changePin1.text = ""
@@ -579,13 +621,42 @@ Rectangle {
                             }
                         }
                     }
+                    onSaveFailedDBError: {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                            if (changePin == 1){
+                                failError = "Database ERROR"
+                            }
+                        }
+                    }
 
-                    onSettingsServerError: {
-                        networkError = 1
+                    onSaveFailedAPIError: {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                            if (changePin == 1){
+                                failError = "Network ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                            if (changePin == 1){
+                                failError = "Input ERROR"
+                            }
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                            if (changePin == 1){
+                                failError = "Unknown ERROR"
+                            }
+                        }
                     }
                 }
             }
+
             Text {
+                z: 1
                 text: "SAVE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
@@ -596,6 +667,7 @@ Rectangle {
             }
 
             Rectangle {
+                z: 1
                 width: editPin.width
                 height: 34
                 anchors.bottom: editPin.bottom
@@ -656,10 +728,6 @@ Rectangle {
                     running: false
 
                     onTriggered: {
-                        if (backupTracker == 1){
-                            selectedPage = "backup"
-                            mainRoot.push("../WalletBackup.qml")
-                        }
                         pinOK = 0
                         pincodeTracker = 0
                         unlockPin = 0
@@ -681,11 +749,6 @@ Rectangle {
                             unlockPin = 0
                             clearAll = 0
                             pinError = 0
-                            coinList.clear()
-                            walletList.clear()
-                            contactList.clear()
-                            addressList.clear()
-                            transactionList.clear()
                             goodbey = 1
                         }
                         else {
@@ -711,34 +774,7 @@ Rectangle {
                         pinOK = 1
                         pin.text = ""
                         passTry = 0
-                        if (unlockPin == 1) {
-                            userSettings.pinlock = false
-                            saveAppSettings();
-                            savePincode("0000")
-                            timer3.start()
-                        }
-                        else if (transferTracker == 1) {
-                            requestSend = 1
-                            timer3.start()
-                        }
-                        else if (clearAll == 1) {
-                            pinClearInitiated = true
-                            oldDefaultCurrency = userSettings.defaultCurrency
-                            oldLocale = userSettings.locale
-                            oldPinlock = userSettings.pinlock
-                            oldTheme = userSettings.theme
-                            oldLocalKeys= userSettings.localKeys
-                            clearAllSettings()
-                            userSettings.locale = "en_us"
-                            userSettings.defaultCurrency = 0
-                            userSettings.theme = "dark"
-                            userSettings.pinlock = false
-                            userSettings.accountCreationCompleted = true
-                            userSettings.localKeys = oldLocalKeys
-                            saveAppSettings()
-                            timer3.start()
-                        }
-                        else if (backupTracker == 1) {
+                        if (pinOK == 1 && (unlockPin == 1 || transferTracker == 1 || clearAll == 1 || backupTracker == 1)) {
                             timer3.start()
                         }
                     }
@@ -790,13 +826,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFailed
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 

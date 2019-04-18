@@ -30,66 +30,30 @@ ApplicationWindow {
     width: Screen.width
     height: Screen.height
     title: qsTr("XCITE")
-    color: "#14161B"
+    color: "#2A2C31"
 
-    Label {
-        id:helloModalLabel
-        text: "HELLO"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        font.pixelSize: 20
-        font.family: "Brandon Grotesque"
-        color: "#F2F2F2"
-        font.letterSpacing: 2
+    MediaPlayer {
+        id: introSound
+        source: "qrc:/sounds/intro_01.wav"
+        volume: 1
+        autoPlay: true
     }
 
-    Component.onDestruction: {
-        interactionTracker = 0
-        loginTracker = 0
-        logoutTracker = 0
-        addWalletTracker = 0
-        createWalletTracker = 0
-        appsTracker = 0
-        coinTracker = 0
-        walletTracker = 0
-        transferTracker = 0
-        historyTracker = 0
-        addressTracker = 0
-        contactTracker = 0
-        addAddressTracker = 0
-        addCoinTracker = 0
-        addContactTracker = 0
-        editContactTracker = 0
-        coinListTracker = 0
-        walletListTracker = 0
-        addressbookTracker = 0
-        scanQRTracker = 0
-        tradingTracker = 0
-        balanceTracker = 0
-        calculatorTracker = 0
-        addressQRTracker = 0
-        pictureTracker = 0
-        cellTracker = 0
-        currencyTracker = 0
-        pincodeTracker = 0
-        debugTracker = 0
-        contactID = 1
-        addressID = 1
-        walletID = 1
-        txID = 1
-        pictureID = 0
-        currencyID = 0
-        coinIndex = 0
-        walletIndex = 1
-        updateToAccount()
-        addressList.clear()
-        contactList.clear()
-        walletList.clear()
-        clearAllSettings()
+    Image {
+        id: xbyLogo
+        source: 'qrc:/logos/xby_logo_tm.png'
+        width: Screen.width - 100
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -50
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
     Component.onCompleted: {
         clearAllSettings()
+
+        goodbey = 0
+        standBy = 0
 
         contactID = 1
         addressID = 1
@@ -115,6 +79,14 @@ ApplicationWindow {
         fiatCurrencies.append({"currency": "GBP", "ticker": "£", "currencyNR": 2});
         //fiatCurrencies.append({"currency": "BTC", "ticker": "₿", "currencyNR": 3});
 
+        soundList.setProperty(0, "name", "Bonjour");
+        soundList.setProperty(0, "sound", 'qrc:/sounds/Bonjour.wav')
+        soundList.setProperty(0, "soundNR", 0)
+        soundList.append({"name": "Hello", "sound": 'qrc:/sounds/Hello.wav', "soundNR": 1});
+        soundList.append({"name": "Hola", "sound": 'qrc:/sounds/hola.wav', "soundNR": 2});
+        soundList.append({"name": "Servus", "sound": 'qrc:/sounds/Servus.wav', "soundNR": 3});
+        soundList.append({"name": "Szia", "sound": 'qrc:/sounds/Szia.wav', "soundNR": 4});
+
         coinList.setProperty(0, "name", nameXFUEL);
         coinList.setProperty(0, "fullname", "xfuel");
         coinList.setProperty(0, "logo", 'qrc:/icons/XFUEL_card_logo_01.svg');
@@ -124,17 +96,26 @@ ApplicationWindow {
         coinList.setProperty(0, "totalBalance", 0);
         coinList.setProperty(0, "active", true);
         coinList.setProperty(0, "testnet", false );
+        coinList.setProperty(0, "xby", 1);
         coinList.setProperty(0, "coinID", 0);
-        coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "testnet" : false, "coinID": 1});
-        coinList.append({"name": "XFUEL-TEST", "fullname": "xfuel", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "coinID": 2});
-        coinList.append({"name": "XBY-TEST", "fullname": "xtrabytes", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "coinID": 3});
+        coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "testnet" : false, "xby": 1,"coinID": 1});
+        coinList.append({"name": "XFUEL-TEST", "fullname": "xfuel", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 2});
+        coinList.append({"name": "XBY-TEST", "fullname": "xtrabytes", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 3});
+        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
+        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 5});
 
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
         marketValueChangedSignal("btcgbp");
         marketValueChangedSignal("xbybtc");
         marketValueChangedSignal("xbycha");
+        marketValueChangedSignal("xflbtc");
+        marketValueChangedSignal("xflcha");
+        marketValueChangedSignal("btccha");
+        marketValueChangedSignal("ethbtc");
+        marketValueChangedSignal("ethcha");
 
+        selectedPage = "onBoarding"
         mainRoot.push("../Onboarding.qml")
     }
 
@@ -158,25 +139,27 @@ ApplicationWindow {
         coinList.setProperty(0, "percentage", percentageXFUEL);
     }
 
+    onValueBTCChanged: {
+        coinList.setProperty(5, "fiatValue", valueBTC);
+    }
 
-    // Place holder values for wallets
-    property string receivingAddressXBY1: "BiJeija103JfjQWpdkl230fjFEI3019JKl"
-    property string nameXBY1: nameXBY
-    property string labelXBY1: "Main"
-    property real balanceXBY1: wallet.balance
-    property real unconfirmedXBY1: 0
+    onPercentageBTCChanged: {
+        coinList.setProperty(4, "percentage", percentageBTC);
+    }
 
-    property string receivingAddressXFUEL1: "F6xCY2wNyE7KwkWcUqeZVTy6WvciHYb5Eq"
-    property string nameXFUEL1: nameXFUEL
-    property string labelXFUEL1: "Main"
-    property real balanceXFUEL1: 1465078.00000000 // xfuelwallet.balance
-    property real unconfirmedXFUEL1: 0
+    onBtcValueETHChanged: {
+        coinList.setProperty(5, "coinValueBTC", btcValueETH);
+        coinList.setProperty(5, "fiatValue", btcValueETH * valueBTC);
+    }
+    onPercentageETHChanged: {
+        coinList.setProperty(5, "percentage", percentageETH);
+    }
 
-    property string receivingAddressXFUEL2: "FAQbF9wCFPgE37PrNHeCU4KXpHezQrgUDu"
-    property string nameXFUEL2: nameXFUEL
-    property string labelXFUEL2: "Test"
-    property real balanceXFUEL2: 1358832.85000000 // xfuelwallet.balance
-    property real unconfirmedXFUEL2: 0
+    onGoodbeyChanged: {
+        if(goodbey == 1) {
+            outroSound.play()
+        }
+    }
 
     // BTC information
     property real btcValueBTC: 1
@@ -184,8 +167,9 @@ ApplicationWindow {
     property real valueBTCEUR
     property real valueBTCGBP
     property real valueBTC: userSettings.defaultCurrency == 0? valueBTCUSD : userSettings.defaultCurrency == 1? valueBTCEUR : userSettings.defaultCurrency == 2? valueBTCGBP : btcValueBTC
+    property real percentageBTC
 
-    // Coin info, retrieved from server
+    // Coin info
     property string nameXBY: "XBY"
     property real btcValueXBY
     property real valueXBY: btcValueXBY * valueBTC
@@ -195,6 +179,10 @@ ApplicationWindow {
     property real btcValueXFUEL
     property real valueXFUEL: btcValueXFUEL * valueBTC
     property real percentageXFUEL
+
+    property real btcValueETH
+    property real valueETH: btcValueETH * valueBTC
+    property real percentageETH
 
     // Global theme settings, non-editable
     property color maincolor: "#0ED8D2"
@@ -242,11 +230,17 @@ ApplicationWindow {
     property int debugTracker: 0
     property int backupTracker: 0
     property int screenshotTracker: 0
+    property int walletDetailTracker: 0
+    property int portfolioTracker: 0
+    property int transactionDetailTracker: 0
+    property int soundTracker: 0
 
     // Global variables
     property int sessionStart: 0
     property int sessionTime: 0
     property int sessionClosed: 0
+    property int standBy: 0
+    property int screenSaver: 0
     property int autoLogout: 0
     property int manualLogout: 0
     property int networkLogout: 0
@@ -309,6 +303,34 @@ ApplicationWindow {
     property bool oldPinlock: false
     property bool oldLocalKeys: false
     property string selectedCoin: "XFUEL"
+    property real totalXBY: 0
+    property real totalXFUEL: 0
+    property real totalXBYTest: 0
+    property real totalXFUELTest: 0
+    property real totalBTC: 0
+    property real totalETH: 0
+    property real totalXBYFiat: totalXBY * valueXBY
+    property real totalXFUELFiat: totalXFUEL * valueXFUEL
+    property real totalBTCFiat: totalBTC * valueBTC
+    property real totalETHFiat: totalETH * valueETH
+    property string historyCoin: ""
+    property int transactionPages: 0
+    property int currentPage: 0
+    property string transactionNR: ""
+    property string transactionTimestamp: ""
+    property bool transactionDirection: false
+    property real transactionAmount: 0
+    property string transactionConfirmations: ""
+    property bool saveSound: false
+    property int oldSound: 0
+    property int oldVolume: 1
+    property int soundChangeFailed: 0
+    property int volumeChangeFailed: 0
+    property int selectedSound: userSettings.sound
+    property int selectedVolume: userSettings.volume
+    property int oldSystemVolume: 1
+    property int systemVolumeChangeFailed: 0
+    property int selectedSystemVolume: userSettings.systemVolume
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -326,12 +348,19 @@ ApplicationWindow {
     signal updateBalanceSignal(string walletList)
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
-    signal helpMe(string help)
+    signal helpMe()
     signal checkNetwork(string network)
+    signal testTransaction(string test)
     signal updateAccount(string addresslist, string contactlist, string walletlist)
-
+    signal updateTransactions(string coin, string address, string page)
+    signal checkSessionId()
+    signal getDetails(string coin, string transaction)
+    signal initialisePincode(string pincode)
     signal savePincode(string pincode)
     signal checkPincode(string pincode)
+    signal walletUpdate(string coin, string label, string message)
+    signal copyText2Clipboard(string text)
+    signal sendCoins(string network, string message)
 
     // Automated functions
 
@@ -360,7 +389,17 @@ ApplicationWindow {
                             balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
                             alert = true
+                            if (standBy == 1) {
+                                walletUpdate(walletList.get(i).name, walletList.get(i).label, balanceAlert)
+                            }
+                            notification.play()
                             sumBalance()
+                            sumXBY()
+                            sumXFUEL()
+                            sumXBYTest()
+                            sumXFUELTest()
+                            sumBTC()
+                            sumETH()
                         }
                     }
                 }
@@ -437,22 +476,88 @@ ApplicationWindow {
     function sumBalance() {
         totalBalance = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).active === true) {
+            if (walletList.get(i).active === true && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 if (walletList.get(i).name === "XBY") {
                     totalBalance += (walletList.get(i).balance * btcValueXBY * valueBTC)
                 }
                 else if (walletList.get(i).name === "XFUEL") {
                     totalBalance += (walletList.get(i).balance * btcValueXFUEL * valueBTC)
                 }
+                else if (walletList.get(i).name === "BTC") {
+                    totalBalance += (walletList.get(i).balance * valueBTC)
+                }
+                else if (walletList.get(i).name === "ETH") {
+                    totalBalance += (walletList.get(i).balance * btcValueETH * valueBTC)
+                }
             }
         }
         return totalBalance
     }
 
+    function sumXBY() {
+        totalXBY =0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "XBY" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+                totalXBY += walletList.get(i).balance
+            }
+        }
+        return totalXBY
+    }
+
+    function sumXFUEL() {
+        totalXFUEL = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "XFUEL" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+                totalXFUEL += walletList.get(i).balance
+            }
+        }
+        return totalXFUEL
+    }
+
+    function sumXBYTest() {
+        totalXBYTest =0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "XBY-TEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+                totalXBYTest += walletList.get(i).balance
+            }
+        }
+        return totalXBYTest
+    }
+
+    function sumXFUELTest() {
+        totalXFUELTest = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "XFUEL-TEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+                totalXFUELTest += walletList.get(i).balance
+            }
+        }
+        return totalXFUELTest
+    }
+
+    function sumBTC() {
+        totalBTC = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "BTC" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+                totalBTC += walletList.get(i).balance
+            }
+        }
+        return totalBTC
+    }
+
+    function sumETH() {
+        totalETH = 0
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === "ETH" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+                totalETH += walletList.get(i).balance
+            }
+        }
+        return totalXFUEL
+    }
+
     function sumCoinTotal(coin) {
         var coinTotal = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === coin) {
+            if (walletList.get(i).name === coin && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 coinTotal += walletList.get(i).balance
             }
         }
@@ -462,7 +567,7 @@ ApplicationWindow {
     function sumCoinUnconfirmed(coin) {
         var unconfirmedTotal = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === coin) {
+            if (walletList.get(i).name === coin && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 unconfirmedTotal += unconfirmedTotal + walletList.get(i).unconfirmedCoins
             }
         }
@@ -607,7 +712,7 @@ ApplicationWindow {
                         favorite = true
                     }
                     else {
-                        if (walletList.get(i).balance > balance && walletList.get(i).viewOnly === false){
+                        if (walletList.get(i).balance > balance){
                             balance = walletList.get(i).balance
                             wallet = walletList.get(i).walletNR
                         }
@@ -648,15 +753,15 @@ ApplicationWindow {
     function getAddressIndex(id) {
         for(var i = 0; i < addressList.count; i ++) {
             if (addressList.get(i).uniqueNR === id) {
-                addressIndex = addresList.get(i)
+                addressIndex = addressList.get(i)
             }
         }
     }
 
     function getContactIndex(id) {
         for(var i = 0; i < contactsList.count; i ++) {
-            if (contactsList.get(i).contactNR === id) {
-                contactIndex = contactsList.get(i)
+            if (contactList.get(i).contactNR === id) {
+                contactIndex = contactList.get(i)
             }
         }
     }
@@ -664,7 +769,7 @@ ApplicationWindow {
     function replaceName(id, first, last) {
         for(var i = 0; i < addressList.count; i ++) {
             if (addressList.get(i).contact === id) {
-                contactsList.setProperty(id, "fullname", last+first)
+                contactList.setProperty(id, "fullname", last+first)
             }
         }
     }
@@ -710,37 +815,50 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: xUtil
-
-        onKeyPairCreated: {
-            console.log("Address is: " + address)
-            console.log("PubKey is: " + pubKey)
-            console.log("PrivKey is: " + privKey)
+    function setMarketValue(currency, currencyValue) {
+        if (!isNaN(currencyValue) && currencyValue !== "") {
+            var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
+            if (currency === "btcusd"){
+                valueBTCUSD = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "btceur"){
+                valueBTCEUR = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "btcgbp"){
+                valueBTCGBP = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "xbybtc"){
+                btcValueXBY = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "xbycha"){
+                percentageXBY = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "xflbtc"){
+                btcValueXFUEL = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "xflcha"){
+                percentageXFUEL = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "btccha"){
+                percentageBTC = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if(currency === "ethbtc"){
+                btcValueETH = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            else if (currency === "ethcha"){
+                percentageETH = Number.fromLocaleString(Qt.locale("en_US"),currencyVal);
+            }
+            sumBalance()
+            sumXBY()
+            sumXFUEL()
+            sumXBYTest()
+            sumXFUELTest()
+            sumBTC()
+            sumETH()
         }
     }
 
     // Start up functions
-    function setMarketValue(currency, currencyValue) {
-        if (currencyValue !== "") {
-            var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
-            if (currency === "btcusd"){
-                valueBTCUSD = currencyVal;
-            }else if(currency === "btceur"){
-                valueBTCEUR = currencyVal;
-            }else if(currency === "btcgbp"){
-                valueBTCGBP = currencyVal;
-            }else if(currency === "xbybtc"){
-                btcValueXBY = currencyVal;
-                btcValueXFUEL = currencyVal
-            }else if(currency === "xbycha"){
-                percentageXBY = currencyVal;
-                percentageXFUEL = currencyVal;
-            }
-            sumBalance()
-        }
-    }
-
     function loadContactList(contacts) {
         if (typeof contacts !== "undefined") {
             contactList.clear();
@@ -749,9 +867,6 @@ ApplicationWindow {
                 var data = obj[i];
                 contactList.append(data);
             }
-        }
-        else {
-            console.log("no contacts saved in account")
         }
     }
 
@@ -764,26 +879,16 @@ ApplicationWindow {
                 addressList.append(data);
             }
         }
-        else {
-            console.log("no addresses saved in account")
-        }
     }
 
     function loadWalletList(wallet) {
         if (typeof wallet !== "undefined") {
-            console.log("json wallet list: " + wallet)
             walletList.clear();
             var obj = JSON.parse(wallet);
-            console.log("raw wallet list: " + obj)
             for (var i in obj){
                 var data = obj[i];
                 walletList.append(data);
             }
-            console.log("walletList Count: " + walletList.count);
-
-        }
-        else {
-            console.log("no wallets saved in account")
         }
     }
 
@@ -795,15 +900,65 @@ ApplicationWindow {
             userSettings.pinlock = settingsLoaded.pinlock === "true";
             userSettings.theme = settingsLoaded.theme;
             userSettings.localKeys = settingsLoaded.localKeys === "true";
-
-        }
-        else {
-            console.log("no settings saved in account")
+            userSettings.xby = settingsLoaded.xby === "true";
+            userSettings.xfuel = settingsLoaded.xfuel === "true";
+            userSettings.xbytest = settingsLoaded.xbytest === "true";
+            userSettings.xfueltest = settingsLoaded.xfueltest === "true";
+            userSettings.sound = settingsLoaded.sound;
+            userSettings.volume = settingsLoaded.volume;
+            userSettings.systemVolume = settingsLoaded.systemVolume;
+            coinList.setProperty(0, "active", userSettings.xfuel);
+            coinList.setProperty(1, "active", userSettings.xby);
+            coinList.setProperty(2, "active", userSettings.xfueltest);
+            coinList.setProperty(3, "active", userSettings.xbytest);
+            coinList.setProperty(4, "active", userSettings.btc);
+            coinList.setProperty(5, "active", userSettings.eth);
         }
     }
 
-    function loadHistoryList() {
-        // read transactionhistory from persistent data
+    function loadTransactions(transactions){
+        if (typeof transactions !== "undifined") {
+            historyList.clear();
+            var obj = JSON.parse(transactions);
+            for (var i in obj){
+                var data = obj[i];
+                historyList.append(data);
+            }
+        }
+    }
+
+    Connections {
+        target: explorer
+
+        onUpdateTransactionsDetails: {
+            if (historyTracker == 1) {
+                console.log ("confirmations: " + confirmations)
+                loadTransactionAddresses(inputs, outputs)
+                transactionTimestamp = timestamp
+                transactionConfirmations = confirmations
+                transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
+                transactionDetailTracker = 1
+            }
+        }
+    }
+
+    function loadTransactionAddresses(inputs, outputs){
+        if (typeof inputs !== "undifined") {
+            inputAddresses.clear();
+            var objInput = JSON.parse(inputs);
+            for (var i in objInput){
+                var dataInput = objInput[i];
+                inputAddresses.append(dataInput);
+            }
+        }
+        if (typeof outputs !== "undifined") {
+            outputAddresses.clear();
+            var objOutput = JSON.parse(outputs);
+            for (var e in objOutput){
+                var dataOutput = objOutput[e];
+                outputAddresses.append(dataOutput);
+            }
+        }
     }
 
     function updateToAccount(){
@@ -828,6 +983,79 @@ ApplicationWindow {
         updateAccount(addressListJson, contactListJson, walletListJson)
     }
 
+    function editWalletInAddreslist(coin, address, label, remove) {
+        for (var i = 0; i < addressList.count; i ++) {
+            if (addressList.get(i).coin === coin && addressList.get(i).address === address) {
+                addressList.setProperty(i, "label", label);
+                addressList.setProperty(i, "remove", remove);
+            }
+        }
+    }
+
+    function deleteContactAddresses(contact) {
+        for (var i = 0; i < addressList.count; i ++) {
+            if (addressList.get(i).contact === contact) {
+                addressList.setProperty(i, "remove", true);
+            }
+        }
+    }
+
+    function restoreContactAddresses(contact) {
+        for (var i = 0; i < addressList.count; i ++) {
+            if (addressList.get(i).contact === contact) {
+                addressList.setProperty(i, "remove", false);
+            }
+        }
+    }
+
+    function clearAddressList() {
+        for (var i = 0; i < addressList.count; i ++) {
+            if (addressList.get(i).remove === true) {
+                addressList.setProperty(i, "contact", 0);
+                addressList.setProperty(i, "fullName", "");
+                addressList.setProperty(i, "label", "");
+                addressList.setProperty(i, "address", "");
+                addressList.setProperty(i, "logo", '');
+                addressList.setProperty(i, "coin", "");
+                addressList.setProperty(i, "active", false);
+                addressList.setProperty(i, "favorite", 0);
+            }
+        }
+    }
+
+    function clearContactList() {
+        for (var i = 0; i < contactList.count; i ++) {
+            if (contactList.get(i).remove === true) {
+                contactList.setProperty(i, "firstName", "");
+                contactList.setProperty(i, "lastName", "");
+                contactList.setProperty(i, "photo", '');
+                contactList.setProperty(i, "telNR", "");
+                contactList.setProperty(i, "CellNR", "");
+                contactList.setProperty(i, "mailAddress", "");
+                contactList.setProperty(i, "chatID", "");
+                contactList.setProperty(i, "favorite", false);
+            }
+        }
+    }
+
+    function clearWalletList() {
+        for (var i = 0; i < walletList.count; i ++) {
+            if (walletList.get(i).remove === true) {
+                walletList.setProperty(i, "name", "");
+                walletList.setProperty(i, "label", "");
+                walletList.setProperty(i, "privatekey", "");
+                walletList.setProperty(i, "publickey", "");
+                walletList.setProperty(i, "address", "");
+                walletList.setProperty(i, "balance", 0);
+                walletList.setProperty(i, "unconfirmedCoins", 0);
+                walletList.setProperty(i, "favorite", false);
+                walletList.setProperty(i, "active", false);
+                walletList.setProperty(i, "viewOnly", false);
+                walletList.setProperty(i, "include", false);
+            }
+        }
+    }
+
     function addWalletToList(coin, label, addr, pubkey, privkey, view){
         var favorite = true
         for(var o = 0; o < walletList.count; o ++) {
@@ -837,7 +1065,7 @@ ApplicationWindow {
                 }
             }
         }
-        walletList.append({"name": coin, "label": label, "address": addr, "privatekey" : privkey, "publickey" : pubkey ,"balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": favorite, "viewOnly" : view, "walletNR": walletID, "remove": false});
+        walletList.append({"name": coin, "label": label, "address": addr, "privatekey" : privkey, "publickey" : pubkey ,"balance" : 0, "unconfirmedCoins": 0, "active": true, "favorite": favorite, "viewOnly" : view, "include" : true, "walletNR": walletID, "remove": false});
         walletID = walletID + 1
         addressList.append({"contact": 0, "fullname": "My addresses", "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
         addressID = addressID +1;
@@ -863,13 +1091,15 @@ ApplicationWindow {
         userSettings.defaultCurrency = 0;
         userSettings.theme = "dark";
         userSettings.pinlock = false;
+        initialisePincode("0000");
         userSettings.locale = "en_us"
         userSettings.localKeys = false;
-    }
-
-    function clearStack() {
-        mainRoot.pop("../main.qml")
-        mainRoot.push("../Onboarding.qml")
+        userSettings.xby = true;
+        userSettings.xfuel = true;
+        userSettings.xbytest = true;
+        userSettings.xfueltest = true;
+        userSettings.sound = 0
+        userSettings.volume = 1
     }
 
     function initialiseLists() {
@@ -882,52 +1112,23 @@ ApplicationWindow {
 
     // loggin out
     function logOut () {
-        interactionTracker = 0
-        loginTracker = 0
-        logoutTracker = 0
-        addWalletTracker = 0
-        createWalletTracker = 0
-        appsTracker = 0
-        coinTracker = 0
-        walletTracker = 0
-        transferTracker = 0
-        historyTracker = 0
-        addressTracker = 0
-        contactTracker = 0
-        addAddressTracker = 0
-        addCoinTracker = 0
-        addContactTracker = 0
-        editContactTracker = 0
-        coinListTracker = 0
-        walletListTracker = 0
-        addressbookTracker = 0
-        scanQRTracker = 0
-        tradingTracker = 0
-        balanceTracker = 0
-        calculatorTracker = 0
-        addressQRTracker = 0
-        pictureTracker = 0
-        cellTracker = 0
-        currencyTracker = 0
-        pincodeTracker = 0
-        debugTracker = 0
-        contactID = 1
-        addressID = 1
-        walletID = 1
-        txID = 1
-        pictureID = 0
-        currencyID = 0
-        coinIndex = 0
-        walletIndex = 1
-
         updateToAccount()
-        addressList.clear()
-        contactList.clear()
-        walletList.clear()
-        alertList.clear()
-        initialiseLists()
-        clearAllSettings()
-        clearStack()
+    }
+
+    Connections {
+        target: UserSettings
+
+        onSaveSucceeded: {
+            if (goodbey == 1) {
+                Qt.quit()
+            }
+        }
+
+        onSaveFailed: {
+            if (goodbey == 1) {
+                Qt.quit()
+            }
+        }
     }
 
     // check for user interaction
@@ -983,6 +1184,7 @@ ApplicationWindow {
             active: false
             favorite: false
             viewOnly: false
+            include: false
             walletNR: 0
             remove: true
         }
@@ -1001,6 +1203,7 @@ ApplicationWindow {
             totalBalance: 0
             active: false
             testnet: false
+            xby: 0
             coinID: 0
         }
     }
@@ -1016,6 +1219,32 @@ ApplicationWindow {
             reference: ""
             txid: 0
             txNR: 0
+        }
+    }
+
+    ListModel {
+        id: historyList
+        ListElement {
+            txid: ""
+            direction: false
+            value: ""
+            confirmations: 0
+        }
+    }
+
+    ListModel {
+        id: inputAddresses
+        ListElement {
+            address: ""
+            amount: ""
+        }
+    }
+
+    ListModel {
+        id: outputAddresses
+        ListElement {
+            address: ""
+            amount: ""
         }
     }
 
@@ -1039,9 +1268,18 @@ ApplicationWindow {
     ListModel {
         id: alertList
         ListElement {
-            date: "null"
-            message: "null"
-            origin: "null"
+            date: ""
+            message: ""
+            origin: ""
+        }
+    }
+
+    ListModel {
+        id: soundList
+        ListElement {
+            name: ""
+            sound: 'qrc:/sounds/notification_1.wav'
+            soundNR: 0
         }
     }
 
@@ -1058,6 +1296,15 @@ ApplicationWindow {
         property bool pinlock
         property bool accountCreationCompleted
         property bool localKeys
+        property bool xby
+        property bool xfuel
+        property bool xbytest
+        property bool xfueltest
+        property bool btc
+        property bool eth
+        property int sound: 0
+        property int volume: 1
+        property int systemVolume: 1
 
         onThemeChanged: {
             darktheme = userSettings.theme == "dark"? true : false
@@ -1083,30 +1330,63 @@ ApplicationWindow {
     SoundEffect {
         id: click01
         source: "qrc:/sounds/click_02.wav"
-        volume: 0.15
+        volume: selectedSystemVolume == 0? 0 : 0.15
     }
+
+    SoundEffect {
+        id: notification
+        source: soundList.get(selectedSound).sound
+        volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
+    }
+
+    SoundEffect {
+        id: succesSound
+        source: "qrc:/sounds/Success.wav"
+        volume: 0.50
+    }
+
+    SoundEffect {
+        id: failSound
+        source: "qrc:/sounds/Fail.wav"
+        volume: 0.50
+    }
+
+    SoundEffect {
+        id: outroSound
+        source: "qrc:/sounds/Outro.wav"
+        volume: selectedSystemVolume == 0? 0 : 1
+    }
+
     Timer {
         id: marketValueTimer
         interval: 60000
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
-            marketValueChangedSignal("btcusd")
-            marketValueChangedSignal("btceur")
-            marketValueChangedSignal("btcgbp")
-            marketValueChangedSignal("xbybtc")
-            marketValueChangedSignal("xbycha")
-
+            if (standBy == 0) {
+                marketValueChangedSignal("btcusd")
+                marketValueChangedSignal("btceur")
+                marketValueChangedSignal("btcgbp")
+                marketValueChangedSignal("xbybtc")
+                marketValueChangedSignal("xbycha")
+                marketValueChangedSignal("xflbtc")
+                marketValueChangedSignal("xflcha")
+                marketValueChangedSignal("btccha")
+                marketValueChangedSignal("ethbtc")
+                marketValueChangedSignal("ethcha")
+            }
         }
     }
 
     Timer {
-        id: explorerTimer
-        interval: 60000
+        id: explorerTimer1
+        interval: standBy == 0? 60000 : 600000
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
+            clearWalletList()
             var datamodel = []
+
             for (var i = 0; i < walletList.count; ++i)
                 datamodel.push(walletList.get(i))
 
@@ -1126,16 +1406,15 @@ ApplicationWindow {
             if (interactionTracker == 1) {
                 sessionTime = 0
                 interactionTracker = 0
-                // reset timer on serverside
             }
             else {
                 sessionTime = sessionTime +1
                 if (sessionTime >= 10){
                     sessionTime = 0
-                    sessionStart = 0
-                    // show pop up that you will be logged out if you do not interact
-                    autoLogout = 1
-                    logoutTracker = 1
+                    if (standBy == 0) {
+                        standBy = 1
+                        mainRoot.push("../StandBy.qml")
+                    }
                 }
             }
         }
@@ -1143,20 +1422,26 @@ ApplicationWindow {
 
     Timer {
         id: networkTimer
-        interval: 30000
+        interval: 60000
         repeat: true
         running: sessionStart == 1
 
         onTriggered: {
-            // check if there is a connection to the accounts server and if the session is still open
+            if (standBy == 0) {
+                checkSessionId()
+            }
+        }
+    }
 
-            // if connection is available -> networkAvailable = 0
-            // if connection is not available -> networkAvailable = networkAvailable + 1
-            // if networkAvailable >= 4 -> networkLogout = 1 && logoutTracker = 1
-            if (sessionClosed == 1) {
+    Connections {
+        target: UserSettings
+
+        onSessionIdCheck: {
+            if (sessionAlive === false && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
+                networkLogout = 1
+                logoutTracker = 1
                 sessionStart = 0
                 sessionClosed = 1
-                logoutTracker = 1
             }
         }
     }
@@ -1182,9 +1467,18 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            sumBalance()
+            if (standBy == 0) {
+                sumBalance()
+                sumXBY()
+                sumXFUEL()
+                sumXBYTest()
+                sumXFUELTest()
+                sumBTC()
+                sumETH()
+            }
         }
     }
+
     // Order of the pages
     StackView {
         id: mainRoot

@@ -14,6 +14,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
+import QtQuick.Window 2.2
 
 import "../Theme" 1.0
 
@@ -24,6 +25,8 @@ TextField {
     property alias deleteImg: deleteInput.source
     property alias textBackground: inputBackground.color
     property int textboxHeight: textInputComponent.height
+    property int clipBoard: 0
+    property int textCopied: 0
 
     id: textInputComponent
     color: "white"
@@ -48,12 +51,16 @@ TextField {
                       else
                           maincolor //"#34363D"
 
-        implicitWidth: doubbleButtonWidth
+        width: parent.width
     }
     onActiveFocusChanged: {
         if (textInputComponent.focus) {
             EventFilter.focus(this)
         }
+    }
+
+    onPressAndHold: {
+        clipBoard = 1
     }
 
     property alias placeholder: placeholderTextComponent.text
@@ -71,7 +78,7 @@ TextField {
         opacity: !textInputComponent.displayText
                  && (!textInputComponent.activeFocus
                      || textInputComponent.horizontalAlignment !== Qt.AlignHCenter) ? 1.0 : 0.0
-        color: textInputComponent.color
+        color: "#727272"
         clip: contentWidth > width
         elide: Text.ElideRight
     }
@@ -95,6 +102,188 @@ TextField {
                 textInputComponent.text = ""
                 selectedAddress = ""
             }
+        }
+    }
+
+    DropShadow {
+        z: 12
+        anchors.fill: clipBoardPopup
+        source: clipBoardPopup
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.4
+        transparentBorder: true
+        visible: clipBoard == 1
+    }
+
+    Item {
+        id: clipBoardPopup
+        z: 12
+        width: 190
+        height: 40
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.top
+        anchors.bottomMargin: 10
+        visible: clipBoard == 1
+
+        MouseArea {
+            height: Screen.height
+            width: Screen.width
+            anchors.verticalCenter: Screen.verticalCenter
+            anchors.horizontalCenter: Screen.horizontalCenter
+
+            onClicked: clipBoard = 0
+        }
+
+        Rectangle {
+            id: copyToClipboard
+            height: 40
+            width: 75
+            color: "#34363D"
+            anchors.left: parent.left
+            anchors.verticalCenter: clipBoardPopup.verticalCenter
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if(textInputComponent.text == "") {
+                        copyText2Clipboard(placeholderTextComponent.text)
+                    }
+
+                    else {
+                        copyText2Clipboard(textInputComponent.text)
+                    }
+                    clipBoard = 0
+                    textCopied = 1
+                }
+            }
+        }
+
+        Label {
+            id: toClipboardText
+            text: "Copy"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#F2F2F2"
+            anchors.horizontalCenter: copyToClipboard.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Rectangle {
+            id: copyFromClipboard
+            height: 40
+            width: 75
+            color: "#34363D"
+            anchors.left: copyToClipboard.right
+            anchors.verticalCenter: clipBoardPopup.verticalCenter
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    textInputComponent.text = clipboard.text
+                    clipBoard = 0
+                }
+            }
+        }
+
+        Label {
+            id: fromClipboardText
+            text: "Paste"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#F2F2F2"
+            anchors.horizontalCenter: copyFromClipboard.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+
+
+        Rectangle {
+            id: closeClipboard
+            height: 40
+            width: 40
+            color: "#34363D"
+            anchors.left: copyFromClipboard.right
+            anchors.verticalCenter: parent.verticalCenter
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    clipBoard = 0
+                }
+            }
+        }
+
+        Image {
+            id: closeClipboardImage
+            source:'qrc:/icons/mobile/delete-icon_01_light.svg'
+            height: 15
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: closeClipboard.horizontalCenter
+            anchors.verticalCenter: closeClipboard.verticalCenter
+        }
+    }
+
+    DropShadow {
+        z: 12
+        anchors.fill: copiedPopup
+        source: copiedPopup
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.4
+        transparentBorder: true
+        visible: textCopied == 1
+    }
+
+    Item {
+        id: copiedPopup
+        z: 12
+        width: popupCopied.width
+        height: 40
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.bottom
+        anchors.verticalCenterOffset: 10
+        visible: textCopied == 1
+
+        Rectangle {
+            id: popupCopied
+            height: 40
+            width: popupCopiedText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupCopiedText
+            text: "Copied to clipboard!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#F2F2F2"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: textCopied == 1
+            interval: 2000
+
+            onTriggered: textCopied = 0
         }
     }
 }

@@ -146,7 +146,7 @@ Rectangle {
         }
 
         Text {
-            id: receiveText
+            id: activeText
             text: "ACTIVE"
             anchors.right: walletSwitch.left
             anchors.rightMargin: 7
@@ -157,7 +157,7 @@ Rectangle {
         }
 
         Text {
-            id: sendText
+            id: viewText
             text: "VIEW ONLY"
             anchors.left: walletSwitch.right
             anchors.leftMargin: 7
@@ -348,7 +348,7 @@ Rectangle {
         height: addViewOnlyTextText1.height + addViewOnlyTextText2.height + addViewOnlyButton.height + 45
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
+        anchors.verticalCenterOffset: -50
         visible: selectWallet == 1 && addViewOnly == 1 && walletAdded == false
 
         Text {
@@ -419,7 +419,7 @@ Rectangle {
         height: saveSuccess.height + saveSuccessLabel.height + moreWallets.height + 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.verticalCenterOffset: -100
         visible: selectWallet == 1 && walletAdded == true
 
         Image {
@@ -475,7 +475,6 @@ Rectangle {
                 onClicked: {
                     walletAdded = false
                     selectWallet = 0
-                    walletAdded = false
                 }
             }
         }
@@ -535,7 +534,7 @@ Rectangle {
                     walletAdded = false
                     selectWallet = 0
                     selectedPage = "home"
-                    mainRoot.pop();
+                    mainRoot.pop("qrc:/Controls/+mobile/AddWallet.qml");
                 }
             }
         }

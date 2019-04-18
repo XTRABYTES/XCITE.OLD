@@ -23,7 +23,7 @@ Rectangle {
     width: Screen.width
     state: addAddressTracker == 1? "up" : "down"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     onStateChanged: detectInteraction()
@@ -55,6 +55,7 @@ Rectangle {
     property int labelExists: 0
     property int contact: contactIndex
     property bool saveInitiated: false
+    property string failError: ""
 
     function compareTx() {
         addressExists = 0
@@ -113,6 +114,22 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL-TEST") {
                 if (newAddress.length == 34 && newAddress.text.substring(0,1) == "G" && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "BTC") {
+                if (newAddress.length > 25 && newAddress.length < 36 &&(newAddress.text.substring(0,1) == "1" || newAddress.text.substring(0,1) == "3" || newAddress.text.substring(0,3) == "bc1") && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "ETH") {
+                if (newAddress.length == 42 && newAddress.text.substring(0,2) == "0x" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -235,6 +252,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newName
+            z: 1.2
             height: 34
             placeholder: "ADDRESS LABEL"
             text: ""
@@ -244,7 +262,7 @@ Rectangle {
             anchors.rightMargin: 28
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
-            color: newName.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
@@ -261,6 +279,7 @@ Rectangle {
 
         Label {
             id: nameWarning
+            z: 1.1
             text: "Already an address with this label!"
             color: "#FD2E2E"
             anchors.left: newName.left
@@ -279,6 +298,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newAddress
+            z: 1.1
             height: 34
             width: newName.width
             placeholder: "ADDRESS"
@@ -286,7 +306,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
-            color: newAddress.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
@@ -305,6 +325,7 @@ Rectangle {
 
         Label {
             id: addressWarning1
+            z: 1
             text: "Already a contact for this address!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -323,6 +344,7 @@ Rectangle {
 
         Label {
             id: addressWarning2
+            z: 1
             text: "Invalid address format!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -355,6 +377,7 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
+            z: 1
             width: newAddress.width
             height: 34
             anchors.top: newAddress.bottom
@@ -408,6 +431,7 @@ Rectangle {
 
         DropShadow {
             id: shadowTransferPicklist
+            z: 2
             anchors.fill: newPicklist
             source: newPicklist
             horizontalOffset: 0
@@ -426,6 +450,7 @@ Rectangle {
 
         Rectangle {
             id: newPicklist
+            z: 2
             width: 100
             height: ((totalLines + 1) * 35)-10
             color: "#2A2C31"
@@ -444,6 +469,7 @@ Rectangle {
 
         Rectangle {
             id: picklistClose
+            z: 2
             width: 100
             height: 25
             color: "#2A2C31"
@@ -478,6 +504,7 @@ Rectangle {
 
         Rectangle {
             id: saveButton
+            z: 1
             width: newAddress.width
             height: 34
             color: (newName.text != ""
@@ -550,10 +577,35 @@ Rectangle {
                         saveInitiated = false
                     }
                 }
+
+                onSaveFailedDBError: {
+                    if (addAddressTracker == 1 && addingAddress == true) {
+                    failError = "Database ERROR"
+                    }
+                }
+
+                onSaveFailedAPIError: {
+                    if (addAddressTracker == 1 && addingAddress == true) {
+                    failError = "Network ERROR"
+                    }
+                }
+
+                onSaveFailedInputError: {
+                    if (addAddressTracker == 1 && addingAddress == true) {
+                    failError = "Input ERROR"
+                    }
+                }
+
+                onSaveFailedUnknownError: {
+                    if (addAddressTracker == 1 && addingAddress == true) {
+                    failError = "Unknown ERROR"
+                    }
+                }
             }
         }
 
         Text {
+            z: 1
             text: "SAVE"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -571,6 +623,7 @@ Rectangle {
         }
 
         Rectangle {
+            z: 1
             width: newAddress.width
             height: 34
             anchors.bottom: saveButton.bottom
@@ -590,6 +643,7 @@ Rectangle {
 
         AnimatedImage {
             id: waitingDots2
+            z: 1
             source: 'qrc:/gifs/loading-gif_01.gif'
             width: 90
             height: 60
@@ -633,13 +687,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -653,6 +719,7 @@ Rectangle {
 
                     onClicked: {
                         editFailed = 0
+                        failError = ""
                     }
                 }
             }

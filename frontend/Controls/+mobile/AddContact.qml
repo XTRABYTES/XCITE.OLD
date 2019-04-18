@@ -23,7 +23,7 @@ Rectangle {
     width: Screen.width
     state: addContactTracker == 1? "up" : "down"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
@@ -50,6 +50,7 @@ Rectangle {
     property int editFailed: 0
     property bool addingContact: false
     property int contactExists: 0
+    property string failError: ""
 
     function compareName() {
         contactExists = 0
@@ -123,6 +124,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newFirstname
+            z: 1.6
             height: 34
             placeholder: "FIRST NAME"
             anchors.bottom: newPhoto.verticalCenter
@@ -131,7 +133,7 @@ Rectangle {
             anchors.rightMargin: 28
             anchors.left: newPhoto.right
             anchors.leftMargin: 25
-            color: newFirstname.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+ / }
@@ -146,13 +148,14 @@ Rectangle {
 
         Controls.TextInput {
             id: newLastname
+            z: 1.5
             height: 34
             placeholder: "LAST NAME"
             anchors.left: newFirstname.left
             anchors.right: newFirstname.right
             anchors.top: newFirstname.bottom
             anchors.topMargin: 10
-            color: newLastname.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
@@ -167,6 +170,7 @@ Rectangle {
 
         Label {
             id: nameWarning1
+            z: 1.5
             text: "Contact already exists!"
             color: "#FD2E2E"
             anchors.horizontalCenter: newLastname.horizontalCenter
@@ -184,13 +188,14 @@ Rectangle {
 
         Controls.TextInput {
             id: newTel
+            z: 1.4
             height: 34
             placeholder: "TELEPHONE NUMBER"
             anchors.left: newPhoto.left
             anchors.right: newLastname.right
             anchors.top: newPhoto.bottom
             anchors.topMargin: 45
-            color: newTel.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
@@ -204,13 +209,14 @@ Rectangle {
 
         Controls.TextInput {
             id: newCell
+            z: 1.3
             height: 34
             placeholder: "CELLPHONE NUMBER"
             anchors.left: newTel.left
             anchors.right: newTel.right
             anchors.top: newTel.bottom
             anchors.topMargin: 10
-            color: newCell.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             validator: RegExpValidator { regExp: /[0-9+]+/ }
@@ -224,13 +230,14 @@ Rectangle {
 
         Controls.TextInput {
             id: newMail
+            z: 1.2
             height: 34
             placeholder: "EMAIL ADDRESS"
             anchors.left: newCell.left
             anchors.right: newCell.right
             anchors.top: newCell.bottom
             anchors.topMargin: 10
-            color: newMail.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
@@ -243,13 +250,14 @@ Rectangle {
 
         Controls.TextInput {
             id: newChat
+            z: 1.1
             height: 34
             placeholder: "X-CHAT ID"
             anchors.left: newMail.left
             anchors.right: newMail.right
             anchors.top: newMail.bottom
             anchors.topMargin: 10
-            color: newChat.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
@@ -262,6 +270,7 @@ Rectangle {
 
         Rectangle {
             id: saveButton
+            z: 1
             width: parent.width - 56
             height: 34
             color: ((newFirstname.text !== ""
@@ -315,6 +324,7 @@ Rectangle {
 
                 onSaveSucceeded: {
                     if (addContactTracker == 1 && addingContact == true) {
+                        succesSound.play()
                         editSaved = 1
                         addingContact = false
                     }
@@ -322,16 +332,42 @@ Rectangle {
 
                 onSaveFailed: {
                     if (addContactTracker == 1 && addingContact == true) {
+                        failSound.play()
                         contactID = contactID - 1
                         contactList.remove(contactID)
                         editFailed = 1
                         addingContact = false
                     }
                 }
+
+                onSaveFailedDBError: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        failError = "Database ERROR"
+                    }
+                }
+
+                onSaveFailedAPIError: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        failError = "Network ERROR"
+                    }
+                }
+
+                onSaveFailedInputError: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        failError = "Input ERROR"
+                    }
+                }
+
+                onSaveFailedUnknownError: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        failError = "Unknown ERROR"
+                    }
+                }
             }
         }
 
         Text {
+            z: 1
             text: "SAVE"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -347,6 +383,7 @@ Rectangle {
         }
 
         Rectangle {
+            z: 1
             width: newTel.width
             height: 34
             anchors.bottom: saveButton.bottom
@@ -364,6 +401,7 @@ Rectangle {
 
         AnimatedImage  {
             id: waitingDots
+            z: 1
             source: 'qrc:/gifs/loading-gif_01.gif'
             width: 90
             height: 60
@@ -406,13 +444,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 

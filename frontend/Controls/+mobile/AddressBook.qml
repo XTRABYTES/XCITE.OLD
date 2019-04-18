@@ -110,34 +110,22 @@ Rectangle {
 
                 Image {
                     id: addressFavorite
-                    source: 'qrc:/icons/icon-favorite.svg'
+                    source: favorite == 1 ? 'qrc:/icons/mobile/favorite-icon_01_color.svg' : (darktheme === true? 'qrc:/icons/mobile/favorite-icon_01_light.svg' : 'qrc:/icons/mobile/favorite-icon_01_dark.svg')
                     width: 18
-                    height: 18
+                    fillMode: Image.PreserveAspectFit
                     anchors.verticalCenter: addressHash.verticalCenter
                     anchors.verticalCenterOffset: -2
                     anchors.horizontalCenter: addressCoinLogo.horizontalCenter
-
-
-                    ColorOverlay {
-                        id: favoriteColor
-                        anchors.fill: parent
-                        source: parent
-                        color: favorite == 1 ? "#FDBC40" : "#757575"
-                    }
                     state: favorite == 1 ? "yes" : "no"
 
                     states: [
                         State {
                             name: "yes"
-                            PropertyChanges { target: favoriteColor; color: "#FDBC40"}
                             PropertyChanges { target: addressFavorite; width: 20}
-                            PropertyChanges { target: addressFavorite; height: 20}
                         },
                         State {
                             name: "no"
-                            PropertyChanges { target: favoriteColor; opacity: "#757575"}
                             PropertyChanges { target: addressFavorite; width: 18}
-                            PropertyChanges { target: addressFavorite; height: 18}
                         }
                     ]
 
@@ -145,14 +133,12 @@ Rectangle {
                         Transition {
                             from: "no"
                             to: "yes"
-                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
-                            NumberAnimation { target: addressFavorite; properties: "width, height"; duration: 200; easing.type: Easing.OutBack}
+                            NumberAnimation { target: addressFavorite; properties: "width"; duration: 200; easing.type: Easing.OutBack}
                         },
                         Transition {
                             from: "yes"
                             to: "no"
-                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
-                            NumberAnimation { target: addressFavorite; properties: "width, height"; duration: 200; easing.type: Easing.InBack}
+                            NumberAnimation { target: addressFavorite; properties: "width"; duration: 200; easing.type: Easing.InBack}
                         }
                     ]
                 }
@@ -169,36 +155,7 @@ Rectangle {
                         addressTracker = 1
                     }
                 }
-                /**
-                Rectangle {
-                    id: favoriteButton
-                    width: 28
-                    height: 28
-                    anchors.verticalCenter: addressFavorite.verticalCenter
-                    anchors.horizontalCenter: addressFavorite.horizontalCenter
-                    color: "transparent"
 
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onPressed: {
-                            detectInteraction()
-                        }
-
-                        onClicked: {
-                            addressIndex = uniqueNR
-                            if (appsTracker == 0 && addAddressTracker == 0 && addressTracker == 0 && transferTracker == 0) {
-                                if (favorite == 1) {
-                                    addressList.setProperty(uniqueNR, "favorite", 0)
-                                }
-                                else {
-                                    addressList.setProperty(uniqueNR, "favorite", 1)
-                                }
-                            }
-                        }
-                    }
-                }
-                **/
                 Rectangle {
                     id: transfer
                     height: 34

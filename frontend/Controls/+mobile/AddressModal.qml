@@ -24,7 +24,7 @@ Rectangle {
     width: Screen.width
     state: addressTracker == 0 ? "down" : "up"
     height: Screen.height
-    color: "transparent"
+    color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 50
@@ -80,6 +80,7 @@ Rectangle {
     property bool oldRemove
     property int oldFavorite
     property int newFavorite
+    property string failError: ""
 
     function compareTx(){
         doubleAddress = 0
@@ -170,6 +171,22 @@ Rectangle {
                     invalidAddress = 1
                 }
             }
+            else if (newCoinName.text == "BTC") {
+                if (newAddress.length > 25 && newAddress.length < 36 &&(newAddress.text.substring(0,1) == "1" || newAddress.text.substring(0,1) == "3" || newAddress.text.substring(0,3) == "bc1") && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "ETH") {
+                if (newAddress.length == 42 && newAddress.text.substring(0,2) == "0x" && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
         }
         else {
             if (newCoinName.text == "XBY") {
@@ -190,6 +207,22 @@ Rectangle {
             }
             else if (newCoinName.text == "XFUEL-TEST") {
                 if (newAddress.placeholder.length == 34 && newAddress.placeholder.substring(0,1) == "G") {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "BTC") {
+                if (newAddress.placeholder.length > 25 && newAddress.placeholder.length < 36 &&(newAddress.placeholder.substring(0,1) == "1" || newAddress.placeholder.substring(0,1) == "3" || newAddress.placeholder.substring(0,3) == "bc1")) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "ETH") {
+                if (newAddress.placeholder.length == 42 && newAddress.placeholder.substring(0,2) == "0x") {
                     invalidAddress = 0
                 }
                 else {
@@ -243,7 +276,7 @@ Rectangle {
 
         Image {
             id: favoriteAddressIcon
-            source: 'qrc:/icons/icon-favorite.svg'
+            source: addressList.get(addressIndex).favorite === 1 ? 'qrc:/icons/mobile/favorite-icon_01_color.svg' : (darktheme === true? 'qrc:/icons/mobile/favorite-icon_01_light.svg' : 'qrc:/icons/mobile/favorite-icon_01_dark.svg')
             width: 25
             height: 25
             anchors.verticalCenter: addressNameLabel.verticalCenter
@@ -252,12 +285,6 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteAddressTracker == 0
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: addressList.get(addressIndex).favorite === 1 ? "#FDBC40" : "#979797"
-            }
 
             MouseArea {
                 anchors.fill: parent
@@ -411,6 +438,30 @@ Rectangle {
                         editingAddress = false
                     }
                 }
+
+                onSaveFailedDBError: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        failError = "Database ERROR"
+                    }
+                }
+
+                onSaveFailedAPIError: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        failError = "Network ERROR"
+                    }
+                }
+
+                onSaveFailedInputError: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        failError = "Input ERROR"
+                    }
+                }
+
+                onSaveFailedUnknownError: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        failError = "Unknown ERROR"
+                    }
+                }
             }
         }
 
@@ -431,7 +482,7 @@ Rectangle {
         }
 
         Rectangle {
-            width: newName.width
+            width: saveEditButton.width
             height: 34
             color: "transparent"
             border.color: (doubleAddress == 0
@@ -439,9 +490,8 @@ Rectangle {
                            && invalidAddress == 0) ? maincolor : "#727272"
             border.width: 1
             opacity: 0.25
-            anchors.top: scanQrButton.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: saveEditButton.bottom
+            anchors.horizontalCenter: saveEditButton.horizontalCenter
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteAddressTracker == 0
@@ -540,6 +590,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newName
+            z: 1.2
             text: ""
             height: 34
             placeholder: addressName
@@ -549,7 +600,7 @@ Rectangle {
             anchors.rightMargin: 28
             anchors.top: newIcon.bottom
             anchors.topMargin: 25
-            color: newName.text != "" ? themecolor : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             readOnly: contact == 0
@@ -565,6 +616,7 @@ Rectangle {
 
         Label {
             id: nameWarning
+            z: 1.1
             text: "Already an address with this label for this contact!"
             color: "#FD2E2E"
             anchors.left: newName.left
@@ -581,6 +633,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newAddress
+            z: 1.1
             text: ""
             height: 34
             width: newName.width
@@ -588,7 +641,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
-            color: newAddress.text != "" ? themecolor : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             readOnly: contact == 0
@@ -606,6 +659,7 @@ Rectangle {
 
         Label {
             id: addressWarning1
+            z: 1
             text: "Already a contact for this address!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -622,6 +676,7 @@ Rectangle {
 
         Label {
             id: addressWarning2
+            z: 1
             text: "Invalid address!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -652,6 +707,7 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
+            z: 1
             width: newAddress.width
             height: 34
             anchors.top: newAddress.bottom
@@ -701,6 +757,7 @@ Rectangle {
 
         DropShadow {
             id: shadowTransferPicklist1
+            z: 1
             anchors.fill: newPicklist1
             source: newPicklist1
             horizontalOffset: 0
@@ -719,6 +776,7 @@ Rectangle {
 
         Rectangle {
             id: newPicklist1
+            z: 1
             width: 100
             height: ((totalLines + 1) * 35)-10
             radius: 4
@@ -738,6 +796,7 @@ Rectangle {
 
         Rectangle {
             id: picklistClose1
+            z: 1
             width: 100
             height: 25
             radius: 4
@@ -801,13 +860,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -974,7 +1045,7 @@ Rectangle {
             width: parent.width
             height: deleteText.height + deleteAddressName.height + deleteAddressHash.height + confirmationDeleteButton.height + 64
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: deleteAddressTracker == 1
@@ -1082,6 +1153,30 @@ Rectangle {
                             deletingAddress = false
                         }
                     }
+
+                    onSaveFailedDBError: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            failError = "Database ERROR"
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            failError = "Network ERROR"
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            failError = "Input ERROR"
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            failError = "Unknown ERROR"
+                        }
+                    }
                 }
             }
 
@@ -1187,7 +1282,7 @@ Rectangle {
             height: saveFailed.height + deleteFailedLabel.height + closeDeleteFail.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: deleteFailed == 1
 
             Image {
@@ -1211,13 +1306,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: deleteFailedError
+                text: failError
+                anchors.top: deleteFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: failedIcon.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeDeleteFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: deleteFailedLabel.bottom
+                anchors.top: deleteFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1232,6 +1339,7 @@ Rectangle {
                     onClicked: {
                         deleteAddressTracker = 0
                         deleteFailed = 0
+                        failError = ""
                     }
                 }
             }
@@ -1267,7 +1375,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: deleteConfirmed == 1
         }
 
@@ -1405,7 +1513,7 @@ Rectangle {
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: editSaved == 0 && deleteAddressTracker == 0
+        visible: editSaved == 0 && editFailed == 0 && deleteAddressTracker == 0
 
         Rectangle{
             id: closeButton

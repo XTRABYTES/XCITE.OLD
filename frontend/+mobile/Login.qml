@@ -25,12 +25,19 @@ Item {
 
     property int passError: 0
     property bool loginInitiated: false
+    property int checkUsername: 0
+    property int keyPairSend: 0
+    property int checkIdentity: 0
+    property int sessionKey: 0
+    property int receiveSessionID: 0
+    property int loadingSettings:  0
+    property int verifyingBalances: 0
 
     Rectangle {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        width: 325
+        width: parent.width - 50
         height: 250
         state: loginTracker == 1? "up" : "down"
         color: "transparent"
@@ -70,6 +77,7 @@ Item {
 
         Rectangle {
             id: loginModalBody
+            z: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             width: parent.width
@@ -89,26 +97,19 @@ Item {
             }
         }
 
-        Rectangle {
-            anchors.horizontalCenter: loginModalBody.horizontalCenter
-            anchors.bottom: loginModalBody.bottom
-            width: loginModalBody.width
-            height: loginModalBody.height
-            color: "transparent"
-            border.color: maincolor
-            border.width: 1
-            opacity: 0.25
-        }
-
         Controls.TextInput {
             id: userName
+            z: 1.3
             height: 34
             placeholder: "USERNAME"
             text: ""
-            anchors.horizontalCenter: loginModalBody.horizontalCenter
             anchors.top: loginModalBody.top
             anchors.topMargin: 25
-            color: userName.text != "" ? "#F2F2F2" : "#727272"
+            anchors.left: loginModalBody.left
+            anchors.leftMargin: 25
+            anchors.right: loginModalBody.right
+            anchors.rightMargin: 25
+            color: themecolor
             textBackground: "#0B0B09"
             mobile: 1
             font.pixelSize: 14
@@ -121,14 +122,18 @@ Item {
 
         Controls.TextInput {
             id: passWord
+            z: 1.2
             height: 34
             placeholder: "PASSWORD"
             text: ""
             echoMode: TextInput.Password
-            anchors.horizontalCenter: loginModalBody.horizontalCenter
             anchors.top: userName.bottom
             anchors.topMargin: 30
-            color: passWord.text != "" ? "#F2F2F2" : "#727272"
+            anchors.left: loginModalBody.left
+            anchors.leftMargin: 25
+            anchors.right: loginModalBody.right
+            anchors.rightMargin: 25
+            color: themecolor
             textBackground: "#0B0B09"
             mobile: 1
             font.pixelSize: 14
@@ -142,6 +147,7 @@ Item {
 
         Text {
             id: passWordError
+            z: 1.1
             text: "Username & Password combination is not correct!"
             color: "#FD2E2E"
             anchors.left: passWord.left
@@ -156,11 +162,14 @@ Item {
 
         Rectangle {
             id: logInButton
-            width: userName.width
+            z: 1.1
             height: 34
             anchors.bottom: loginModalBody.bottom
             anchors.bottomMargin: 20
-            anchors.left: userName.left
+            anchors.left: loginModalBody.left
+            anchors.leftMargin: 25
+            anchors.right: loginModalBody.right
+            anchors.rightMargin: 25
             color: (userName.text != "" && passWord.text != "") ? "#1B2934" : "#727272"
             opacity: 0.50
             visible: loginInitiated == false
@@ -175,8 +184,10 @@ Item {
                     passError = 0
                     networkError = 0
                     loginTracker = 0
+                    sessionClosed = 0
                     sessionStart = 1
                     loginInitiated  = false
+                    verifyingBalances = 0
                 }
             }
 
@@ -190,23 +201,47 @@ Item {
                 onReleased: {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
                         loginInitiated = true
+                        checkUsername = 1
                         userLogin(userName.text, passWord.text)
                     }
                 }
             }
             Connections {
                 target: UserSettings
+
+                onCreateUniqueKeyPair: {
+                    checkUsername = 0
+                    keyPairSend = 1
+                }
+
+                onCheckIdentity: {
+                    keyPairSend = 0
+                    checkIdentity = 1
+                }
+
+                onReceiveSessionEncryptionKey: {
+                    checkIdentity = 0
+                    sessionKey = 1
+                }
+
+                onReceiveSessionID: {
+                    sessionKey = 0
+                    receiveSessionID = 1
+                }
+
+                onLoadingSettings: {
+                    receiveSessionID = 0
+                    loadingSettings = 1
+                }
+
                 onContactsLoaded: {
-                    console.log("contacts loaded")
                     loadContactList(contacts)
                 }
 
                 onAddressesLoaded: {
-                    console.log("addressbook loaded")
                     loadAddressList(addresses)
                 }
                 onWalletLoaded: {
-                    console.log("wallet loaded")
                     loadWalletList(wallets)
                 }
 
@@ -215,7 +250,6 @@ Item {
                 }
 
                 onSettingsLoaded: {
-                    console.log("settings loaded")
                     loadSettings(settings);
                 }
                 /** onTransactionsLoaded: {
@@ -228,9 +262,17 @@ Item {
                     mainRoot.push("../Home.qml")
                     username = userName.text
                     loginSuccesTimer.start()
+                    loadingSettings = 0
+                    verifyingBalances = 0
                 }
 
                 onLoginFailedChanged: {
+                    checkUsername = 0
+                    keyPairSend = 0
+                    checkIdentity = 0
+                    sessionKey = 0
+                    receiveSessionID = 0
+                    loadingSettings = 0
                     passError = 1
                     passWord.text = ""
                     loginInitiated  = false
@@ -242,16 +284,12 @@ Item {
                     loginInitiated  = false
                 }
 
-                onSettingsServerError: {
-                    networkError = 1
-                    passWord.text = ""
-                    loginInitiated  = false
-                }
-            }
+             }
         }
 
         Text {
             id: logInButtonText
+            z: 1.1
             text: "LOG IN"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -263,27 +301,124 @@ Item {
         }
 
         Rectangle {
-            width: userName.width
+            z: 1.1
             height: 34
-            anchors.bottom: loginModalBody.bottom
+            anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
-            anchors.left: userName.left
+            anchors.left: loginModalBody.left
+            anchors.leftMargin: 25
+            anchors.right: loginModalBody.right
+            anchors.rightMargin: 25
             color: "transparent"
             border.color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
             opacity: 0.50
             visible: logInButton.visible
         }
 
-        AnimatedImage {
-            id: waitingDots
-            source: 'qrc:/gifs/loading-gif_01.gif'
-            width: 90
-            height: 60
+        Label {
+            id: loginRespons
+            z: 1.1
+            text: "Checking username ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
-            playing: loginInitiated == true
-            visible: loginInitiated == true
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: checkUsername == 1
         }
+
+        Label {
+            id: loginRespons1
+            z: 1.1
+            text: "Creating keypair for session ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: keyPairSend == 1
+        }
+
+        Label {
+            id: loginRespons2
+            z: 1.1
+            text: "Checking identity ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: checkIdentity == 1
+        }
+
+        Label {
+            id: loginRespons3
+            z: 1.1
+            text: "Retrieving session encryption key ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: sessionKey == 1
+        }
+
+        Label {
+            id: loginRespons4
+            z: 1.1
+            text: "Retrieving session ID ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: receiveSessionID == 1
+        }
+
+        Label {
+            id: loginRespons5
+            z: 1.1
+            text: "Loading account settings ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: loadingSettings == 1
+        }
+
+        Label {
+            id: loginRespons6
+            z: 1.1
+            text: "Verifying wallet balances ..."
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.verticalCenter: logInButton.verticalCenter
+            color: "#F2F2F2"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.italic: true
+            visible: verifyingBalances == 1
+        }
+
+        Rectangle {
+            z: 1
+            anchors.horizontalCenter: loginModalBody.horizontalCenter
+            anchors.bottom: loginModalBody.bottom
+            width: loginModalBody.width
+            height: loginModalBody.height
+            color: "transparent"
+            border.color: maincolor
+            border.width: 1
+            opacity: 0.25
+        }
+
+
 
         Label {
             id: noAccount
@@ -336,113 +471,5 @@ Item {
             anchors.topMargin: 5
             color: "#F2F2F2"
         }
-    }
-
-    Rectangle {
-        id: serverError
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.top
-        width: Screen.width
-        height: 100
-        state: networkError == 0? "up" : "down"
-        color: "black"
-        opacity: 0.9
-
-
-        states: [
-            State {
-                name: "up"
-                PropertyChanges { target: serverError; anchors.bottomMargin: 0}
-            },
-            State {
-                name: "down"
-                PropertyChanges { target: serverError; anchors.bottomMargin: -100}
-            }
-        ]
-
-        transitions: [
-            Transition {
-                from: "*"
-                to: "*"
-                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
-            }
-        ]
-
-        Label {
-            id: serverErrorText
-            text: "A network error occured, please try again later."
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            color: "#FD2E2E"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-        }
-
-        Rectangle {
-            id: okButton
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            radius: 5
-            color: "#1B2934"
-            opacity: 0.5
-
-            LinearGradient {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(x, y)
-                end: Qt.point(x, parent.height)
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 1.0; color: "#0ED8D2" }
-                }
-            }
-
-
-            MouseArea {
-                anchors.fill: parent
-
-                onReleased: {
-                    networkError = 0
-                    passError = 0
-                }
-            }
-        }
-
-        Text {
-            id: okButtonText
-            text: "OK"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            color: "#F2F2F2"
-            font.bold: true
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.verticalCenter: okButton.verticalCenter
-        }
-
-        Rectangle {
-            width: (doubbleButtonWidth - 10) / 2
-            height: 33
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.bottom: okButton.bottom
-            radius: 5
-            color: "transparent"
-            opacity: 0.5
-            border.width: 1
-            border.color: "#0ED8D2"
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            color: "black"
-        }
-    }
-    Component.onDestruction: {
     }
 }

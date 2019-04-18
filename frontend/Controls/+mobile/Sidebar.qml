@@ -59,14 +59,14 @@ Rectangle {
         Item {
             id: homeSection
             width: sidebar.width
-            height: homeText.height + 80
+            height: homeText.height + 70
             anchors.top: parent.top
 
             Image {
                 id: home
                 source: 'qrc:/icons/mobile/home-icon_01.svg'
                 anchors.top: parent.top
-                anchors.topMargin: 25
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: 40
                 height: 40
@@ -87,16 +87,21 @@ Rectangle {
 
             Rectangle {
                 id: homeButtonArea
-                anchors.fill:homeSection
+                width: parent.width
+                height: home.height + homeText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
 
                     onPressed: {
+                        click01.play()
                         detectInteraction()
                     }
 
                     onClicked: {
+                        coinTracker = 0
+                        contactTracker = 0
                         appsTracker = 0
                         if (selectedPage != "home") {
                             //push of current page
@@ -111,13 +116,13 @@ Rectangle {
         Item {
             id: settingsSection
             width: sidebar.width
-            height: settingsText.height + 80
+            height: settingsText.height + 70
             anchors.top: homeSection.bottom
 
             Image {
                 id: settings
                 anchors.top: parent.top
-                anchors.topMargin: 25
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: 'qrc:/icons/mobile/settings-icon_01.svg'
                 width: 40
@@ -139,12 +144,15 @@ Rectangle {
 
             Rectangle {
                 id: settingsButtonArea
-                anchors.fill: settingsSection
+                width: parent.width
+                height: settings.height + settingsText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
 
                     onPressed: {
+                        click01.play()
                         detectInteraction()
                     }
 
@@ -162,13 +170,13 @@ Rectangle {
         Item {
             id: backupSection
             width: sidebar.width
-            height: backupText.height + 80
+            height: backupText.height + 70
             anchors.top: settingsSection.bottom
 
             Image {
                 id: backup
                 anchors.top: parent.top
-                anchors.topMargin: 25
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: 'qrc:/icons/mobile/wallet-icon_01.svg'
                 width: 40
@@ -190,26 +198,51 @@ Rectangle {
 
             Rectangle {
                 id: backupButtonArea
-                anchors.fill: backupSection
+                width: parent.width
+                height: backup.height + backupText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
 
                     onPressed: {
+                        click01.play()
                         detectInteraction()
                     }
 
                     onClicked: {
                         if (selectedPage != "backup") {
-                            backupTracker = 1
-                            appsTracker = 0
-                            if (userSettings.pinlock === false) {
-                                selectedPage = "backup"
-                                mainRoot.push("../WalletBackup.qml")
-                            }
-                            else {
+                            if (userSettings.pinlock === true) {
+                                backupTracker = 1
                                 pincodeTracker = 1
                             }
+                            else {
+                                appsTracker = 0
+                                selectedPage = "backup"
+                                mainRoot.push("qrc:/+mobile/WalletBackup.qml")
+                            }
+                        }
+                    }
+                }
+
+                Timer {
+                    id: timer3
+                    interval: 1000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        appsTracker = 0
+                        selectedPage = "backup"
+                        mainRoot.push("qrc:/+mobile/WalletBackup.qml");
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+                    onPincodeCorrect: {
+                        if (pincodeTracker == 1 && backupTracker == 1) {
+                            timer3.start()
                         }
                     }
                 }
@@ -219,13 +252,13 @@ Rectangle {
         Item {
             id: appsSection
             width: sidebar.width
-            height: appsText.height + 80
+            height: appsText.height + 70
             anchors.top: backupSection.bottom
 
             Image {
                 id: apps
                 anchors.top: parent.top
-                anchors.topMargin: 25
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: 'qrc:/icons/mobile/dapps-icon_01.svg'
                 width: 40
@@ -247,12 +280,15 @@ Rectangle {
 
             Rectangle {
                 id: appsButtonArea
-                anchors.fill: appsSection
+                width: parent.width
+                height: apps.height + appsText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
 
                     onPressed: {
+                        click01.play()
                         detectInteraction()
                     }
 
@@ -270,13 +306,13 @@ Rectangle {
         Item {
             id: notifSection
             width: sidebar.width
-            height: notifText.height + 80
+            height: notifText.height + 70
             anchors.top: appsSection.bottom
 
             Image {
                 id: notif
                 anchors.top: parent.top
-                anchors.topMargin: 25
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: 'qrc:/icons/mobile/notification-icon_01.svg'
                 width: 40
@@ -309,12 +345,15 @@ Rectangle {
 
             Rectangle {
                 id: notifButtonArea
-                anchors.fill: notifSection
+                width: parent.width
+                height: notif.height + notifText.height + 5
+                anchors.top: parent.top
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
 
                     onPressed: {
+                        click01.play()
                         detectInteraction()
                     }
 
@@ -351,9 +390,60 @@ Rectangle {
     }
 
     Item {
+        id: standbySection
+        width: sidebar.width
+        height: standbyText.height + 70
+        anchors.bottom: logoutSection.top
+        visible: appsTracker == 1
+
+        Image {
+            id: standby
+            anchors.bottom: standbyText.top
+            anchors.bottomMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            source: 'qrc:/icons/mobile/standby-icon_01.svg'
+            width: 40
+            height: 40
+            fillMode: Image.PreserveAspectFit
+            z: 100
+        }
+
+        Text {
+            id: standbyText
+            text: "STAND BY"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 50
+            color: maincolor
+            font.family: xciteMobile.name
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.bold: true
+        }
+
+        Rectangle {
+            id: standbyButtonArea
+            width: parent.width
+            height: standby.height + standbyText.height + 5
+            anchors.top: parent.top
+            color: "transparent"
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    click01.play()
+                    detectInteraction()
+                    standBy = 1
+                    screenSaver = 0
+                    timer.start()
+                    mainRoot.push("../StandBy.qml")
+                    appsTracker = 0
+                }
+            }
+        }
+    }
+
+    Item {
         id: logoutSection
         width: sidebar.width
-        height: homeText.height + 105
+        height: logoutText.height + 70
         anchors.bottom: parent.bottom
         visible: appsTracker == 1
 
@@ -382,11 +472,15 @@ Rectangle {
 
         Rectangle {
             id: logoutButtonArea
-            anchors.fill: logoutSection
+            width: parent.width
+            height: logout.height + logoutText.height + 5
+            anchors.top: parent.top
             color: "transparent"
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
+                    click01.play()
+                    detectInteraction()
                     sessionStart = 0
                     sessionTime = 0
                     manualLogout = 1
@@ -415,6 +509,8 @@ Rectangle {
 
     Controls.Pincode {
         id: myPincode
-        z: 10
+        z: 100
+        anchors.top: parent.top
+        anchors.left: parent.left
     }
 }

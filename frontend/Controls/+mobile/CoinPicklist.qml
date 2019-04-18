@@ -18,9 +18,9 @@ import SortFilterProxyModel 0.2
 Rectangle {
     id: completePicklist
     width: 100
-    height: totalLines * 35 < 175 ? totalLines * 35 : 175
-    radius: 5
+    height: (totalLines * 35) < 175? (totalLines * 35) : 175
     color: "#2A2C31"
+    clip: true
 
     property bool onlyActive: false
 
@@ -71,6 +71,8 @@ Rectangle {
                 anchors.fill: parent
 
                 onPressed: {
+                    click01.play()
+                    detectInteraction()
                     clickIndicator.visible = true
                 }
 
@@ -86,6 +88,7 @@ Rectangle {
                     clickIndicator.visible = false
                     newCoinPicklist = coinID;
                     newCoinSelect = 1
+                    newWalletSelect = 0
                     coinListTracker = 0
                     coinIndex = coinID
                 }
@@ -107,16 +110,15 @@ Rectangle {
         sourceModel: coinList
         filters: [
             ValueFilter {
-                enabled: onlyActive == true
                 roleName: "active"
                 value: true
             }
         ]
         sorters: [
-            RoleSorter { roleName: "favorite"; sortOrder: Qt.DescendingOrder },
-            StringSorter { roleName: "name" }
+            RoleSorter {roleName: "testnet" ; sortOrder: Qt.AscendingOrder},
+            RoleSorter {roleName: "xby"; sortOrder: Qt.DescendingOrder},
+            StringSorter {roleName: "name"}
         ]
-
     }
 
     ListView {
@@ -124,8 +126,19 @@ Rectangle {
         id: pickList
         model: filteredCurrencies
         delegate: picklistEntry
-        interactive: totalLines * 35 < 175
+        interactive: (totalLines * 35) > 175
         onDraggingChanged: detectInteraction()
+
+        ScrollBar.vertical: ScrollBar {
+            parent: pickList.parent
+            anchors.top: pickList.top
+            anchors.right: pickList.right
+            anchors.bottom: pickList.bottom
+            width: 5
+            opacity: 1
+            policy: ScrollBar.AlwaysOn
+            visible: (totalLines * 35) > 175
+        }
     }
 }
 

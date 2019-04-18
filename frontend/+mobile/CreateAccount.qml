@@ -54,10 +54,16 @@ Rectangle {
     property int signUpError: 0
     property int selectStorage: 0
     property int storageSwitchState: 0
-    property int checkUsername : 0
+    property int verifyUsername : 0
     property bool createAccountInitiated: false
     property bool saveInitiated: false
     property int saveFailed: 0
+    property string failError: ""
+    property int checkUsername: 0
+    property int keyPairSend: 0
+    property int sessionKey: 0
+    property int receiveSessionID: 0
+    property int savingSettings:  0
 
     function validation(text){
         var regExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
@@ -166,14 +172,14 @@ Rectangle {
                 anchors.top: createUsernameText.bottom
                 anchors.topMargin: 10
                 rightPadding: 34
-                color: userName.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
 
                 onTextChanged: {
                     usernameLength(userName.text)
                     availableUsername = 0
-                    checkUsername = 0
+                    verifyUsername = 0
                 }
 
                 Image {
@@ -184,7 +190,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 10
-                    visible: checkUsername == 0
+                    visible: verifyUsername == 0
 
                     Rectangle {
                         height: 34
@@ -197,7 +203,7 @@ Rectangle {
                             anchors.fill: parent
 
                             onClicked: {
-                                checkUsername = 1
+                                verifyUsername = 1
                                 userExists(userName.text)
                             }
                         }
@@ -229,7 +235,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 7
-                    visible: checkUsername == 1
+                    visible: verifyUsername == 1
                 }
             }
 
@@ -273,7 +279,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: createPasswordText.bottom
                 anchors.topMargin: 10
-                color: passWord1.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
                 deleteBtn: passwordWarning1 == 0? 0 : 1
@@ -319,7 +325,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: passWord1.bottom
                 anchors.topMargin: 20
-                color: passWord2.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
                 deleteBtn: passwordWarning2 == 0? 0 : 1
@@ -388,6 +394,11 @@ Rectangle {
 
                     onTriggered: {
                         usernameWarning = 1
+                        checkUsername = 0
+                        keyPairSend = 0
+                        sessionKey = 0
+                        receiveSessionID = 0
+                        savingSettings = 0
                         availableUsername = 0
                         passWord1.text = ""
                         passWord2.text = ""
@@ -405,6 +416,7 @@ Rectangle {
                     onReleased: {
                         if ((usernameWarning == 0 || usernameWarning == 2)  && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
                             createAccountInitiated = true
+                            checkUsername = 1
                             createUser(userName.text, passWord1.text)
                         }
                     }
@@ -412,45 +424,99 @@ Rectangle {
 
                 Connections {
                     target: UserSettings
-                    onUserCreationSucceeded: {
-                        userSettings.locale = "en_us"
-                        userSettings.defaultCurrency = 0
-                        userSettings.theme = "dark"
-                        userSettings.pinlock = false
-                        userSettings.accountCreationCompleted = false
-                        savePincode("0000");
-                        contactList.setProperty(0, "firstName", "My addresses");
-                        var datamodel = []
-                        for (var i = 0; i < contactList.count; ++i)
-                            datamodel.push(contactList.get(i))
 
-                        var contactListJson = JSON.stringify(datamodel)
-                        saveContactList(contactListJson)
-                        username = userName.text
-                        newAccount = true
-                        accountCreated = 1
-                        availableUsername = 0
-                        networkError = 0
-                        signUpError = 0
-                        createAccountInitiated = false
+                    onCreateUniqueKeyPair: {
+                        checkUsername = 0
+                        keyPairSend = 1
                     }
+
+                    onReceiveSessionEncryptionKey: {
+                        keyPairSend = 0
+                        sessionKey = 1
+                    }
+
+                    onReceiveSessionID: {
+                        sessionKey = 0
+                        receiveSessionID = 1
+                    }
+
+                    onLoadingSettings: {
+                        receiveSessionID = 0
+                        savingSettings = 1
+                    }
+
+                    onUserCreationSucceeded: {
+                        if (createAccountInitiated == true) {
+                            userSettings.locale = "en_us"
+                            userSettings.defaultCurrency = 0
+                            userSettings.theme = "dark"
+                            userSettings.pinlock = false
+                            userSettings.xby = true
+                            userSettings.xfuel = true
+                            userSettings.xbytest = true
+                            userSettings.xfueltest = true
+                            userSettings.btc = true
+                            userSettings.eth = true
+                            userSettings.sound = 0
+                            userSettings.volume = 1
+                            userSettings.systemVolume = 1
+                            userSettings.accountCreationCompleted = false
+                            initialisePincode("0000");
+                            contactList.setProperty(0, "firstName", "My addresses");
+                            updateToAccount();
+                            username = userName.text
+                            newAccount = true
+                            accountCreated = 1
+                            availableUsername = 0
+                            networkError = 0
+                            signUpError = 0
+                            createAccountInitiated = false
+                        }
+                    }
+
                     onUserAlreadyExists: {
-                        accountCreationTimer.start()
+                        if (createAccountInitiated == true) {
+                            accountCreationTimer.start()
+                        }
                     }
+
                     onUserCreationFailed: {
-                        if (networkError == 0) {
+                        if (createAccountInitiated == true) {
                             signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
                             userName.text = ""
                             passWord1.text = ""
                             passWord2.text = ""
                             createAccountInitiated = false
                         }
                     }
-                    onSettingsServerError: {
-                        networkError = 1
-                        passWord1.text = ""
-                        passWord2.text = ""
-                        createAccountInitiated = false
+
+                    onSaveFailedDBError: {
+                        if (createAccountInitiated == true) {
+                            failError = "Database ERROR"
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (createAccountInitiated == true) {
+                            failError = "Network ERROR"
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (createAccountInitiated == true) {
+                            failError = "Input ERROR"
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (createAccountInitiated == true) {
+                            failError = "Unknown ERROR"
+                        }
                     }
                 }
             }
@@ -479,15 +545,64 @@ Rectangle {
                 visible: createAccountInitiated == false
             }
 
-            AnimatedImage {
-                id: waitingDots
-                source: 'qrc:/gifs/loading-gif_01.gif'
-                width: 90
-                height: 60
+            Label {
+                id: createRespons
+                text: "Checking username ..."
                 anchors.horizontalCenter: createAccountButton.horizontalCenter
                 anchors.verticalCenter: createAccountButton.verticalCenter
-                playing: createAccountInitiated == true
-                visible: createAccountInitiated == true
+                color: "#F2F2F2"
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.italic: true
+                visible: checkUsername == 1
+            }
+
+            Label {
+                id: createRespons1
+                text: "Creating keypair for session ..."
+                anchors.horizontalCenter: createAccountButton.horizontalCenter
+                anchors.verticalCenter: createAccountButton.verticalCenter
+                color: "#F2F2F2"
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.italic: true
+                visible: keyPairSend == 1
+            }
+
+            Label {
+                id: createRespons2
+                text: "Retrieving session encryption key..."
+                anchors.horizontalCenter: createAccountButton.horizontalCenter
+                anchors.verticalCenter: createAccountButton.verticalCenter
+                color: "#F2F2F2"
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.italic: true
+                visible: sessionKey == 1
+            }
+
+            Label {
+                id: loginRespons3
+                text: "Saving account settings ..."
+                anchors.horizontalCenter: createAccountButton.horizontalCenter
+                anchors.verticalCenter: createAccountButton.verticalCenter
+                color: "#F2F2F2"
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.italic: true
+                visible: savingSettings == 1
+            }
+
+            Label {
+                id: createRespons4
+                text: "Retrieving session ID ..."
+                anchors.horizontalCenter: createAccountButton.horizontalCenter
+                anchors.verticalCenter: createAccountButton.verticalCenter
+                color: "#F2F2F2"
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.italic: true
+                visible: receiveSessionID == 1
             }
 
             Label {
@@ -591,13 +706,25 @@ Rectangle {
             font.bold: true
         }
 
+        Label {
+            id: creationFailedError
+            text: failError
+            anchors.top: creationFailedLabel.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: failedIcon.horizontalCenter
+            color: maincolor
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+        }
+
         Rectangle {
             id: closeFail
             width: doubbleButtonWidth / 2
             height: 34
             color: maincolor
             opacity: 0.25
-            anchors.top: creationFailedLabel.bottom
+            anchors.top: creationFailedError.bottom
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -619,6 +746,7 @@ Rectangle {
 
                 onClicked: {
                     signUpError = 0;
+                    failError = ""
 
                 }
             }
@@ -974,112 +1102,6 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 50
-    }
-
-    Rectangle {
-        id: serverError
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.top
-        width: Screen.width
-        height: 100
-        state: networkError == 0? "up" : "down"
-        color: "black"
-        opacity: 0.9
-        clip: true
-
-
-        states: [
-            State {
-                name: "up"
-                PropertyChanges { target: serverError; anchors.bottomMargin: 0}
-                PropertyChanges { target: serverError; height: 0}
-            },
-            State {
-                name: "down"
-                PropertyChanges { target: serverError; anchors.bottomMargin: -100}
-                PropertyChanges { target: serverError; height: 100}
-            }
-        ]
-
-        transitions: [
-            Transition {
-                from: "*"
-                to: "*"
-                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.InOutCubic}
-            }
-        ]
-
-        Label {
-            id: serverErrorText
-            text: "A network error occured, please try again later."
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            color: "#FD2E2E"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-        }
-
-        Rectangle {
-            id: okButton
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            color: "#1B2934"
-            opacity: 0.5
-
-            LinearGradient {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(x, y)
-                end: Qt.point(x, parent.height)
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 1.0; color: "#0ED8D2" }
-                }
-            }
-
-
-            MouseArea {
-                anchors.fill: parent
-
-                onReleased: {
-                    networkError = 0
-                }
-            }
-        }
-
-        Text {
-            id: okButtonText
-            text: "OK"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            color: "#F2F2F2"
-            font.bold: true
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.verticalCenter: okButton.verticalCenter
-        }
-
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.bottom: okButton.bottom
-            color: "transparent"
-            opacity: 0.5
-            border.width: 1
-            border.color: "#0ED8D2"
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            color: bgcolor
-        }
     }
 }
 

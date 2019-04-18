@@ -66,6 +66,7 @@ Rectangle {
     property bool walletSaved: false
     property int saveErrorNR: 0
     property bool importInitiated: false
+    property string failError: ""
 
     function compareTx() {
         addressExists = 0
@@ -185,7 +186,7 @@ Rectangle {
 
             Text {
                 id: addWalletText
-                width: newName.implicitWidth
+                width: newName.width
                 maximumLineCount: 3
                 anchors.left: newName.left
                 horizontalAlignment: Text.AlignHCenter
@@ -202,12 +203,13 @@ Rectangle {
             Controls.TextInput {
                 id: newName
                 height: 34
+                width: doubbleButtonWidth
                 placeholder: "WALLET LABEL"
                 text: ""
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: addWalletText.bottom
                 anchors.topMargin: 25
-                color: newName.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: darktheme == false? "#484A4D" : "#0B0B09"
                 font.pixelSize: 14
                 mobile: 1
@@ -239,12 +241,13 @@ Rectangle {
             Controls.TextInput {
                 id: newAddress
                 height: 34
+                width: doubbleButtonWidth
                 placeholder: "PRIVATE KEY"
                 text: ""
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: newName.bottom
                 anchors.topMargin: 15
-                color: newAddress.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: darktheme == false? "#484A4D" : "#0B0B09"
                 font.pixelSize: 14
                 visible: scanQRTracker == 0
@@ -491,7 +494,7 @@ Rectangle {
                 anchors.top: parent.top
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
             }
 
             Item {
@@ -504,7 +507,7 @@ Rectangle {
 
                 Image {
                     id: coinLogo
-                    source: 'qrc:/icons/XFUEL_card_logo_01.svg'
+                    source: coinList.get(coinIndex).logo
                     width: 30
                     height: 30
                     anchors.left: coinID.left
@@ -518,7 +521,7 @@ Rectangle {
                     anchors.verticalCenter: coinLogo.verticalCenter
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.pixelSize: 18
-                    font.family: xciteMobile.name
+                    font.family: "Brandon Grotesque"
                     font.bold: true
                 }
             }
@@ -531,7 +534,7 @@ Rectangle {
                 text: "Public Key:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
                 font.bold: true
             }
 
@@ -547,6 +550,7 @@ Rectangle {
                 text: "Here you will find your public key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
+                font.family: "Brandon Grotesque"
             }
 
             Label {
@@ -557,7 +561,7 @@ Rectangle {
                 text: "Private Key:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
                 font.bold: true
             }
 
@@ -573,6 +577,7 @@ Rectangle {
                 text: "Here you will find your private key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
+                font.family: "Brandon Grotesque"
             }
 
             Label {
@@ -583,7 +588,7 @@ Rectangle {
                 text: "Address:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
                 font.bold: true
             }
 
@@ -595,6 +600,7 @@ Rectangle {
                 text: "Here you will find your private key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
+                font.family: "Brandon Grotesque"
             }
 
             Text {
@@ -609,7 +615,7 @@ Rectangle {
                 anchors.topMargin: 25
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
             }
 
             Rectangle {
@@ -663,8 +669,15 @@ Rectangle {
                                 walletList.remove(walletID)
                                 addressID = addressID -1
                                 addressList.remove(addressID)
+                                newName.text = ""
+                                newAddress.text = ""
+                                addressHash.text = ""
+                                publicKey.text = ""
+                                privateKey.text = ""
+                                scanning = "scanning..."
                                 editFailed = 1
                                 addingWallet = false
+                                walletSaved = false
                             }
                             else if (userSettings.localKeys === true && walletSaved ==true) {
                                 addressID = addressID -1
@@ -700,6 +713,30 @@ Rectangle {
                             addressList.remove(addressID)
                             editFailed = 1
                             addingWallet = false
+                        }
+                    }
+
+                    onSaveFailedDBError: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            failError = "Database ERROR"
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            failError = "Network ERROR"
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            failError = "Input ERROR"
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            failError = "Unknown ERROR"
                         }
                     }
                 }
@@ -765,13 +802,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -791,12 +840,13 @@ Rectangle {
                         }
 
                         editFailed = 0
+                        failError = ""
                     }
                 }
             }
 
             Text {
-                text: "TRY AGAIN"
+                text: saveErrorNR == 0? "TRY AGAIN" : "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true

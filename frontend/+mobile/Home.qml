@@ -28,7 +28,29 @@ Item {
         // continue to wallet
         else {
             sumBalance()
+            sumXBY()
+            sumXFUEL()
+            sumXBYTest()
+            sumXFUELTest()
+            sumBTC()
+            sumETH()
             checkNotifications()
+            marketValueChangedSignal("btcusd");
+            marketValueChangedSignal("btceur");
+            marketValueChangedSignal("btcgbp");
+            marketValueChangedSignal("xbybtc");
+            marketValueChangedSignal("xbycha");
+            marketValueChangedSignal("xflbtc");
+            marketValueChangedSignal("xflcha");
+            marketValueChangedSignal("btccha");
+            marketValueChangedSignal("ethbtc");
+            marketValueChangedSignal("ethcha");
+            var datamodel = []
+            for (var i = 0; i < walletList.count; ++i)
+                datamodel.push(walletList.get(i))
+
+            var walletListJson = JSON.stringify(datamodel)
+            updateBalanceSignal(walletListJson);
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"
         }

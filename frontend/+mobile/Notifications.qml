@@ -24,9 +24,12 @@ Rectangle {
     height: Screen.height
     color: bgcolor
 
+    property bool updatingWallets: false
+    property int updateFailed: 0
+
     Text {
         id: notificationModalLabel
-        text: "NOTIFICATIONS"
+        text: "ALERTS"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
@@ -41,7 +44,7 @@ Rectangle {
         width: parent.width
         anchors.top: notificationModalLabel.bottom
         anchors.topMargin: 35
-        anchors.bottom: parent.bottom
+        anchors.bottom: closeNotificationModal.top
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
@@ -56,8 +59,8 @@ Rectangle {
         text: "CLEAR ALL"
         anchors.right: parent.right
         anchors.rightMargin: 14
-        anchors.top: notificationList.top
-        anchors.topMargin: 5
+        anchors.bottom: notificationList.top
+        anchors.bottomMargin: 5
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -76,10 +79,72 @@ Rectangle {
             }
 
             onClicked: {
-                alertList.clear();
-                alertList.append({"date": "null", "origin": "null", "message": "null"});
-                checkNotifications()
+                if (updatingWallets == false) {
+                    alertList.clear();
+                    alertList.append({"date": "", "origin": "", "message": ""});
+                    checkNotifications()
+                    updatingWallets = true
+                    updateToAccount()
+                    appsTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
             }
+        }
+
+        Connections {
+            target: UserSettings
+
+            onSaveSucceeded: {
+                if (selectedPage == "notif" && updatingWallets == true) {
+                    updatingWallets == false
+                }
+            }
+
+            onSaveFailed: {
+                if (selectedPage == "notif" && updatingWallets == true) {
+                    updateFailed = 1
+                    updatingWallets == false
+                }
+            }
+        }
+    }
+
+    Item {
+        z: 12
+        width: popupUpdateFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: updateFailed == 1
+
+        Rectangle {
+            id: popupUpdateFail
+            height: 50
+            width: popupFailText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupFailText
+            text: "FAILED update your wallets!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: updateFailed == 1
+            interval: 2000
+
+            onTriggered: updateFailed = 0
         }
     }
 
@@ -135,7 +200,7 @@ Rectangle {
             onClicked: {
                 appsTracker = 0
                 selectedPage = "home"
-                mainRoot.pop("../Notifications.qml")
+                mainRoot.pop()
             }
         }
     }

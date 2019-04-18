@@ -1,4 +1,4 @@
-/**
+ /**
  * Filename: Applications.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -99,7 +99,7 @@ Rectangle {
             onClicked: {
                 appsTracker = 0
                 selectedPage = "home"
-                mainRoot.pop("../Applications.qml")
+                mainRoot.pop()
             }
         }
     }

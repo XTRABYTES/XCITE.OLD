@@ -56,6 +56,7 @@ SOURCES += main/main.cpp \
 	    backend/staticnet/staticnet.cpp \
 	    backend/xutility/xutility.cpp \
 	    backend/xutility/crypto/ctools.cpp \
+	    backend/xutility/transaction/transaction.cpp \
             backend/p2p/p2p.cpp \
             backend/xchat/xchatconversationmodel.cpp \
             backend/XCITE/nodes/nodetransaction.cpp \
@@ -70,7 +71,8 @@ SOURCES += main/main.cpp \
             backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
             backend/support/Settings.cpp \
-    backend/support/qaesencryption.cpp
+            backend/support/qaesencryption.cpp \
+            backend/integrations/wallet.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -80,6 +82,8 @@ HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xutility/crypto/allocators.h \
 	    backend/xutility/crypto/ctools.h \
 	    backend/xutility/crypto/numbers.h \
+	    backend/xutility/transaction/transaction.h \
+	    backend/xutility/transaction/serialize.h \
             backend/p2p/p2p.hpp \
             backend/xchat/xchatconversationmodel.hpp \
             backend/XCITE/nodes/nodetransaction.h \
@@ -94,10 +98,11 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/MarketValue.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
-    backend/support/Settings.hpp \
-    backend/integrations/MarketValue.hpp \
-    backend/integrations/Explorer.hpp \
-    backend/support/qaesencryption.h
+            backend/support/Settings.hpp \
+            backend/integrations/MarketValue.hpp \
+            backend/integrations/Explorer.hpp \
+            backend/support/qaesencryption.h \
+            backend/integrations/wallet.hpp
 
 DISTFILES += \
     xcite.ico \
@@ -114,7 +119,17 @@ DISTFILES += \
     android/res/values/libs.xml \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew.bat
+    android/gradlew.bat \
+    qml/qmlchart/* \
+    android/res/drawable-mdpi/icon.png \
+    android/res/drawable-mdpi/splash.png \
+    android/res/drawable-ldpi/icon.png \
+    android/res/drawable-ldpi/splash.png \
+    android/res/drawable-hdpi/icon.png \
+    android/res/drawable-hdpi/splash.png \
+    android/res/drawable-xhdpi/splash.png \
+    android/res/drawable-xxhdpi/splash.png \
+    android/res/drawable-xxxhdpi/splash.png
 
 RC_ICONS = xcite.ico
 CONFIG(debug, debug|release) {
@@ -144,6 +159,10 @@ mac {
         QMAKE_INFO_PLIST = resources/ios/Info.plist
         app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchScreen-logo_01.png
         QMAKE_BUNDLE_DATA += app_launch_images
+
+        INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
+        INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+        LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
     }
 }
 
@@ -157,15 +176,10 @@ android {
     QT += multimedia
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-    #LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib -lboost_system
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
-
-    #ANDROID_EXTRA_LIBS = \
-     #   $$PWD/dependencies/android/armeabi-v7a/boost/lib/libboost_system.so
 }
-
 
 FORMS += \
     packages/global.xtrabytes.xcite/meta/feedbackpage.ui

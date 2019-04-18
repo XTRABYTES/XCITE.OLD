@@ -1,4 +1,4 @@
-/**
+ /**
 * Filename: DashboardForm.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -149,6 +149,10 @@ Item {
                         onClicked: {
                             sumBalance()
                         }
+
+                        onDoubleClicked: {
+                            portfolioTracker = 1
+                        }
                     }
 
                     states: [
@@ -272,6 +276,7 @@ Item {
                     anchors.top: coinInfo1.bottom
                     anchors.right: coinInfo1.right
 
+
                     Label {
                         id: totalCoins
                         z: 5
@@ -281,11 +286,17 @@ Item {
                         font.pixelSize: 20
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
+
                     }
 
                     Label {
                         property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
-                        property real totalCoinsSum: sumCoinTotal(totalCoins.text)
+                        property real totalCoinsSum: totalCoins.text === "XBY"? totalXBY :
+                                                                                (totalCoins.text === "XFUEL"? totalXFUEL:
+                                                                                                              (totalCoins.text === "XBY-TEST"? totalXBYTest :
+                                                                                                                                               (totalCoins.text === "XFUEL-TEST"? totalXFUELTest :
+                                                                                                                                                                                  (totalCoins.text === "BTC"? totalBTC :
+                                                                                                                                                                                                              (totalCoins.text === "ETH"? totalETH : 0)))))
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total1
                         z: 5
@@ -301,7 +312,12 @@ Item {
 
                     Label {
                         property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
-                        property real totalCoinsSum: sumCoinTotal(totalCoins.text)
+                        property real totalCoinsSum:  totalCoins.text === "XBY"? totalXBY :
+                                                                                 (totalCoins.text === "XFUEL"? totalXFUEL:
+                                                                                                               (totalCoins.text === "XBY-TEST"? totalXBYTest :
+                                                                                                                                                (totalCoins.text === "XFUEL-TEST"? totalXFUELTest :
+                                                                                                                                                                                   (totalCoins.text === "BTC"? totalBTC :
+                                                                                                                                                                                                               (totalCoins.text === "ETH"? totalETH : 0)))))
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total2
                         z: 5
@@ -331,7 +347,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaCoinList; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaCoinList; height: Screen.height - 180}
                             PropertyChanges { target: scrollAreaCoinList; anchors.topMargin: 180}
                             PropertyChanges { target: myCoinCards; cardSpacing: 0}
                         }
@@ -369,7 +385,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaWalletList; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaWalletList; height: Screen.height - 180}
                             PropertyChanges { target: scrollAreaWalletList; anchors.topMargin: 180}
                             PropertyChanges { target: myWalletCards; cardSpacing: 0}
                         }
@@ -750,9 +766,10 @@ Item {
                             color: "black"
 
                             Label {
+                                property int decimals: getValue(getName(coinIndex)) >= 1? 4 : 8
                                 id: btcValue
                                 z: 6
-                                text: getValue(getName(coinIndex)) + " BTC"
+                                text: (getValue(getName(coinIndex)).toLocaleString(Qt.locale("en_US"), "f", decimals)) + " BTC"
                                 font.pixelSize: 13
                                 font.family: xciteMobile.name
                                 color: "white"
@@ -763,10 +780,10 @@ Item {
                             }
 
                             Label {
-                                property int decimals: (getValue(getName(coinIndex)) * valueBTCUSD) <= 1 ? 4 : 2
+                                property int decimals: (getValue(getName(coinIndex)) * valueBTC) <= 1 ? 4 : 2
                                 id: fiatValue
                                 z: 6
-                                text: "$" + (getValue(getName(coinIndex)) * valueBTCUSD).toLocaleString(Qt.locale("en_US"), "f", decimals)
+                                text: fiatTicker + (getValue(getName(coinIndex)) * valueBTC).toLocaleString(Qt.locale("en_US"), "f", decimals)
                                 font.pixelSize: 13
                                 font.family: xciteMobile.name
                                 color: "white"
@@ -819,7 +836,7 @@ Item {
                 Item {
                     id: contact
                     z: 5
-                    height: lastName.implicitHeight
+                    height: firstName.implicitHeight +  lastName.implicitHeight + 5
                     anchors.verticalCenter: bigPhoto.verticalCenter
                     width: homeHeader2.width -140
                     anchors.left: parent.left
@@ -849,24 +866,27 @@ Item {
                     Label {
                         id: firstName
                         z: 5
+                        anchors.right: parent.right
+                        anchors.top: parent.top
                         anchors.left: parent.left
-                        anchors.bottom: parent.bottom
                         text: contactTracker == 1? contactList.get(contactIndex).firstName : ""
+                        horizontalAlignment: Text.AlignRight
+                        color: darktheme == true? "#F2F2F2" : "#2A2C31"
                         font.pixelSize: 30
                         font.family:  xciteMobile.name
                         font.letterSpacing: 2
                         font.capitalization: Font.SmallCaps
-                        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                        elide: Text.ElideRight
                     }
 
                     Label {
                         id: lastName
                         z: 5
-                        anchors.left: firstName.right
-                        anchors.leftMargin: firstName.text == ""? 0 : 5
-                        anchors.bottom: parent.bottom
                         anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
                         text: contactTracker == 1? contactList.get(contactIndex).lastName : ""
+                        horizontalAlignment: Text.AlignRight
                         color: darktheme == true? "#F2F2F2" : "#2A2C31"
                         font.pixelSize: 30
                         font.family:  xciteMobile.name
@@ -930,12 +950,14 @@ Item {
                     placeholder: "SEARCH ADDRESS BOOK"
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom: homeHeader2.bottom
-                    color: searchForAddress.text != "" ? "#2A2C31" : "#727272"
+                    color: "#2A2C31"
                     textBackground: "#F2F2F2"
                     font.pixelSize: 14
                     font.capitalization: Font.AllUppercase
                     mobile: 1
                     addressBook: 1
+                    deleteImg: 'qrc:/icons/mobile/delete-icon_01_dark.svg'
+
                     onTextChanged: {
                         detectInteraction()
                         searchCriteria = searchForAddress.text
@@ -984,7 +1006,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaContactList; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaContactList; height: Screen.height - 180}
                             PropertyChanges { target: scrollAreaContactList; anchors.topMargin: 180}
                             PropertyChanges { target: myContacts; cardSpacing: 0}
                         }
@@ -1022,7 +1044,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaAddressBook; height: Screen.height - 230}
+                            PropertyChanges { target: scrollAreaAddressBook; height: Screen.height - 180}
                             PropertyChanges { target: scrollAreaAddressBook; anchors.topMargin: 180}
                             PropertyChanges { target: myAddressCards; cardSpacing: 0}
                         }
@@ -1129,7 +1151,7 @@ Item {
                             if (addressQRTracker == 0) {
                                 if (contactTracker == 1) {
                                     contactTracker = 0
-                                    contactIndex = 0
+                                    //contactIndex = 0
                                 }
                             }
 
@@ -1936,7 +1958,21 @@ Item {
         anchors.top: homeView.top
     }
 
-    Controls.QrScanner{
+    Controls.WalletModal {
+        id: walletModal
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
+
+    Controls.PortfolioModal {
+        id: myPortfolio
+        z: 10
+        anchors.horizontalCenter: homeView.horizontalCenter
+        anchors.top: homeView.top
+    }
+
+    Controls.QrScanner {
         id: qrScanner
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter

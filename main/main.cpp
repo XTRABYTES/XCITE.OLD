@@ -33,6 +33,7 @@
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
 #include "../backend/integrations/Explorer.hpp"
+#include "../backend/integrations/Wallet.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -86,6 +87,14 @@ int main(int argc, char *argv[])
     Explorer explorer;
     engine.rootContext()->setContextProperty("explorer", &explorer);
 
+    // wire-up wallet
+    Wallet walletFunction;
+    engine.rootContext()->setContextProperty("WalletFunction", &walletFunction);
+
+    // wire-up ClipboardProxy
+    ClipboardProxy clipboardProxy;
+    engine.rootContext()->setContextProperty("clipboardProxy", &clipboardProxy);
+
     // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
@@ -113,6 +122,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(userExists(QString)), &settings, SLOT(UserExists(QString)));
     QObject::connect(rootObject, SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
     QObject::connect(rootObject, SIGNAL(clearAllSettings()), &settings, SLOT(onClearAllSettings()));
+    QObject::connect(rootObject, SIGNAL(initialisePincode(QString)), &settings, SLOT(initialisePincode(QString)));
     QObject::connect(rootObject, SIGNAL(savePincode(QString)), &settings, SLOT(onSavePincode(QString)));
     QObject::connect(rootObject, SIGNAL(checkPincode(QString)), &settings, SLOT(checkPincode(QString)));
     QObject::connect(rootObject, SIGNAL(saveAddressBook(QString)), &settings, SLOT(SaveAddresses(QString)));
@@ -120,19 +130,25 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(saveAppSettings()), &settings, SLOT(SaveSettings()));
     QObject::connect(rootObject, SIGNAL(saveWalletList(QString, QString)), &settings, SLOT(SaveWallet(QString, QString)));
     QObject::connect(rootObject, SIGNAL(updateAccount(QString, QString, QString)), &settings, SLOT(UpdateAccount(QString, QString, QString)));
-
-
+    QObject::connect(rootObject, SIGNAL(checkSessionId()), &settings, SLOT(CheckSessionId()));
 
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
 
     // connect QML signals for Explorer
     QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString)), &explorer, SLOT(getBalanceEntireWallet(QString)));
+    QObject::connect(rootObject, SIGNAL(updateTransactions(QString, QString, QString)), &explorer, SLOT(getTransactionList(QString, QString, QString)));
+    QObject::connect(rootObject, SIGNAL(getDetails(QString, QString)), &explorer, SLOT(getDetails(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(walletUpdate(QString, QString, QString)), &explorer, SLOT(WalletUpdate(QString, QString, QString)));
 
-    // connect QML signals for xUtility
-    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeyPairEntry(QString)));
+    // connect QML signal for ClipboardProxy
+    QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));
+
+    // connect QML signals for walletFunctions
+    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeypairEntry(QString)));
     QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
-    QObject::connect(rootObject, SIGNAL(helpMe(QString)), &xUtil, SLOT(helpEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(helpMe()), &xUtil, SLOT(helpEntry()));
+    QObject::connect(rootObject, SIGNAL(sendCoins(QString, QString)), &walletFunction, SLOT(sendCoinsEntry(QString, QString)));
     QObject::connect(rootObject, SIGNAL(checkNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
 
     // Fetch currency values

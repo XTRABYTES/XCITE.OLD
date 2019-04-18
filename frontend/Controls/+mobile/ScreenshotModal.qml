@@ -63,7 +63,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.topMargin: 15
         font.pixelSize: 16
-        font.family: xciteMobile.name
+        font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
     }
@@ -92,7 +92,7 @@ Rectangle {
             anchors.verticalCenter: coinLogo.verticalCenter
             text: walletList.get(walletIndex).name
             font.pixelSize: 20
-            font.family: xciteMobile.name
+            font.family: "Brandon Grotesque"
             font.letterSpacing: 2
             color: darktheme == false? "#2A2C31" : "#F2F2F2"
             font.bold: true
@@ -108,7 +108,7 @@ Rectangle {
         text: walletList.get(walletIndex).label
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 20
-        font.family: xciteMobile.name
+        font.family: "Brandon Grotesque"
         font.letterSpacing: 2
         color: darktheme == false? "#2A2C31" : "#F2F2F2"
         font.bold: true
@@ -158,6 +158,7 @@ Rectangle {
         anchors.top: qrBorder1.bottom
         anchors.topMargin: 10
         font.pixelSize: 14
+        font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
     }
 
@@ -208,6 +209,7 @@ Rectangle {
         horizontalAlignment: Text.AlignLeft
         wrapMode: Text.WrapAnywhere
         font.pixelSize: 14
+        font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
     }
 

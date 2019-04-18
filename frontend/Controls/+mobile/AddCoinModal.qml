@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import SortFilterProxyModel 0.2
 
 import "qrc:/Controls" as Controls
 
@@ -141,6 +142,25 @@ Rectangle {
                                             walletList.setProperty(y, "active", true)
                                         }
                                     }
+                                    if (name == "XFUEL") {
+                                       userSettings.xfuel = true
+                                    }
+                                    if (name == "XBY") {
+                                       userSettings.xby = true
+                                    }
+                                    if (name == "XFUEL-TEST") {
+                                       userSettings.xfueltest = true
+                                    }
+                                    if (name == "XBY-TEST") {
+                                       userSettings.xbytest = true
+                                    }
+                                    if (name == "BTC") {
+                                       userSettings.btc = true
+                                    }
+                                    if (name == "ETH") {
+                                       userSettings.eth = true
+                                    }
+
                                 }
                                 else {
                                     coinList.setProperty(i, "active", false)
@@ -154,30 +174,65 @@ Rectangle {
                                             walletList.setProperty(o, "active", false)
                                         }
                                     }
+                                    if (name == "XFUEL") {
+                                       userSettings.xfuel = false
+                                    }
+                                    if (name == "XBY") {
+                                       userSettings.xby = false
+                                    }
+                                    if (name == "XFUEL-TEST") {
+                                       userSettings.xfueltest = false
+                                    }
+                                    if (name == "XBY-TEST") {
+                                       userSettings.xbytest = false
+                                    }
+                                    if (name == "BTC") {
+                                       userSettings.btc = false
+                                    }
+                                    if (name == "ETH") {
+                                       userSettings.eth = false
+                                    }
                                 }
                             }
                         }
                     }
 
                     onClicked: {
+                        click01.play()
+                        detectInteraction()
                         compareCoin()
-                        //filterActiveCoin.visible = active == false
                         sumBalance()
-                        var datamodel = []
-                        for (var e = 0; e < walletList.count; ++e)
-                            datamodel.push(walletList.get(e))
-
-                        var walletListJson = JSON.stringify(datamodel)
                     }
                 }
             }
         }
 
+        SortFilterProxyModel {
+            id: filteredCurrencies
+            sourceModel: coinList
+            sorters: [
+                RoleSorter {roleName: "testnet" ; sortOrder: Qt.AscendingOrder},
+                RoleSorter {roleName: "xby"; sortOrder: Qt.DescendingOrder},
+                StringSorter {roleName: "name"}
+            ]
+        }
+
         ListView {
             anchors.fill: parent
             id: allWallets
-            model: coinList
+            model: filteredCurrencies
             delegate: walletCard
+
+            ScrollBar.vertical: ScrollBar {
+                parent: allWallets.parent
+                anchors.top: allWallets.top
+                anchors.right: allWallets.right
+                anchors.bottom: allWallets.bottom
+                width: 5
+                opacity: 1
+                policy: ScrollBar.AlwaysOn
+                visible: (coinList.count * 50) > (parent.height)
+            }
         }
 
         Rectangle {
@@ -207,9 +262,7 @@ Rectangle {
                 }
             }
         }
-
     }
-
 }
 
 

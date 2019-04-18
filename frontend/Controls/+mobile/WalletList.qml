@@ -62,39 +62,30 @@ Rectangle {
                     }
 
                     onPressAndHold: {
+                        walletIndex = walletNR
+                        walletDetailTracker = 1
                     }
                 }
 
                 Image {
                     id: walletFavorite
-                    source: 'qrc:/icons/icon-favorite.svg'
+                    source: favorite == true ? 'qrc:/icons/mobile/favorite-icon_01_color.svg' : (darktheme === true? 'qrc:/icons/mobile/favorite-icon_01_light.svg' : 'qrc:/icons/mobile/favorite-icon_01_dark.svg')
                     width: 18
-                    height: 18
+                    fillMode: Image.PreserveAspectFit
                     anchors.verticalCenter: walletName.verticalCenter
-                    anchors.verticalCenterOffset: 2
+                    anchors.verticalCenterOffset: -2
                     anchors.left: parent.left
                     anchors.leftMargin: 28
-
-                    ColorOverlay {
-                        id: favoriteColor
-                        anchors.fill: parent
-                        source: parent
-                        color: favorite == true ? "#FDBC40" : "#757575"
-                    }
                     state: favorite == true ? "yes" : "no"
 
                     states: [
                         State {
                             name: "yes"
-                            PropertyChanges { target: favoriteColor; color: "#FDBC40"}
                             PropertyChanges { target: walletFavorite; width: 20}
-                            PropertyChanges { target: walletFavorite; height: 20}
                         },
                         State {
                             name: "no"
-                            PropertyChanges { target: favoriteColor; opacity: "#2A2C31"}
                             PropertyChanges { target: walletFavorite; width: 18}
-                            PropertyChanges { target: walletFavorite; height: 18}
                         }
                     ]
 
@@ -102,14 +93,12 @@ Rectangle {
                         Transition {
                             from: "no"
                             to: "yes"
-                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
-                            NumberAnimation { target: walletFavorite; properties: "width, height"; duration: 200; easing.type: Easing.OutBack}
+                            NumberAnimation { target: walletFavorite; properties: "width"; duration: 200; easing.type: Easing.OutBack}
                         },
                         Transition {
                             from: "yes"
                             to: "no"
-                            PropertyAnimation { target: favoriteColor; property: "color"; duration: 200; easing.type: Easing.InOutCubic}
-                            NumberAnimation { target: walletFavorite; properties: "width, height"; duration: 200; easing.type: Easing.InBack}
+                            NumberAnimation { target: walletFavorite; properties: "width"; duration: 200; easing.type: Easing.InBack}
                         }
                     ]
                 }
@@ -173,7 +162,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int decimals: balance == 0? 2 : (balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2))
+                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
                     property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel1
                     anchors.right: amountSizeLabel.left
@@ -187,7 +176,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int decimals: balance == 0? 2 : (balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2))
+                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
                     property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel2
                     anchors.right: amountSizeLabel1.left
@@ -255,7 +244,7 @@ Rectangle {
                     font.family: xciteMobile.name
                     font.letterSpacing: 2
                     font.bold: true
-                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                    color: "#E55541"
                     visible: viewOnly
                 }
 
@@ -344,8 +333,24 @@ Rectangle {
                         }
 
                         onClicked: {
-                            walletIndex = walletNR
-                            historyTracker = 1
+                            if (coinIndex < 2){
+                                walletIndex = walletNR
+                                transactionPages = 0
+                                currentPage = 1
+                                updateTransactions(name, address, 1)
+                            }
+                        }
+                    }
+
+                    Connections {
+                        target: explorer
+
+                        onUpdateTransactions: {
+                            if (historyTracker === 0) {
+                                transactionPages = totalPages;
+                                loadTransactions(transactions);
+                                historyTracker = 1
+                            }
                         }
                     }
                 }
@@ -355,7 +360,7 @@ Rectangle {
                     font.family: xciteMobile.name
                     font.pointSize: 14
                     font.bold: true
-                    color: darktheme == true? "#F2F2F2" : maincolor
+                    color: coinIndex < 2? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
                     anchors.horizontalCenter: history.horizontalCenter
                     anchors.verticalCenter: history.verticalCenter
                 }
@@ -370,7 +375,7 @@ Rectangle {
                     anchors.leftMargin: 7
                     color: "transparent"
                     opacity: 0.5
-                    border.color: maincolor
+                    border.color: coinIndex < 2? maincolor : "#979797"
                     border.width: 1
                 }
             }

@@ -65,6 +65,7 @@ Rectangle {
     property bool walletSaved: false
     property int saveErrorNR: 0
     property bool createInitiated: false
+    property string failError: ""
 
     function compareName() {
         labelExists = 0
@@ -101,7 +102,7 @@ Rectangle {
         visible: editSaved == 0 && newWallet == 0 && editFailed == 0 && createFailed == 0
     }
 
-     Flickable {
+    Flickable {
         z: 1
         id: scrollArea
         width: parent.width
@@ -178,6 +179,7 @@ Rectangle {
 
             Controls.TextInput {
                 id: newName
+                z: 1.1
                 height: 34
                 width: doubbleButtonWidth
                 placeholder: "WALLET LABEL"
@@ -185,7 +187,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: createWalletText.bottom
                 anchors.topMargin: 25
-                color: newName.text != "" ? "#F2F2F2" : "#727272"
+                color: themecolor
                 textBackground: darktheme == false? "#484A4D" : "#0B0B09"
                 font.pixelSize: 14
                 mobile: 1
@@ -198,6 +200,7 @@ Rectangle {
 
             Label {
                 id: nameWarning
+                z: 1
                 text: "Already an address with this label!"
                 color: "#FD2E2E"
                 anchors.left: newName.left
@@ -213,6 +216,7 @@ Rectangle {
 
             Rectangle {
                 id: createWalletButton
+                z: 1
                 width: doubbleButtonWidth
                 height: 34
                 anchors.top: newName.bottom
@@ -264,6 +268,7 @@ Rectangle {
                         }
 
                         onCreateKeypairFailed: {
+                            failSound.play()
                             createFailed = 1
                         }
                     }
@@ -272,6 +277,7 @@ Rectangle {
 
             Text {
                 id: createWalletButtonText
+                z: 1
                 text: "CREATE WALLET"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
@@ -283,6 +289,7 @@ Rectangle {
             }
 
             Rectangle {
+                z: 1
                 width: createWalletButton.width
                 height: 34
                 anchors.bottom: createWalletButton.bottom
@@ -296,6 +303,7 @@ Rectangle {
 
             AnimatedImage {
                 id: waitingDots2
+                z: 1
                 source: 'qrc:/gifs/loading-gif_01.gif'
                 width: 90
                 height: 60
@@ -326,7 +334,7 @@ Rectangle {
                 anchors.top: parent.top
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
             }
 
             Item {
@@ -339,7 +347,7 @@ Rectangle {
 
                 Image {
                     id: coinLogo
-                    source: 'qrc:/icons/XFUEL_card_logo_01.svg'
+                    source: coinList.get(coinIndex).logo
                     width: 30
                     height: 30
                     anchors.left: coinID.left
@@ -353,7 +361,7 @@ Rectangle {
                     anchors.verticalCenter: coinLogo.verticalCenter
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.pixelSize: 18
-                    font.family: xciteMobile.name
+                    font.family: "Brandon Grotesque"
                     font.bold: true
                 }
             }
@@ -366,7 +374,7 @@ Rectangle {
                 text: "Public Key:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
                 font.bold: true
             }
 
@@ -382,6 +390,7 @@ Rectangle {
                 text: "Here you will find your public key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
+                font.family: "Brandon Grotesque"
             }
 
             Label {
@@ -392,7 +401,7 @@ Rectangle {
                 text: "Private Key:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
                 font.bold: true
             }
 
@@ -408,6 +417,7 @@ Rectangle {
                 text: "Here you will find your private key"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
+                font.family: "Brandon Grotesque"
             }
 
             Label {
@@ -418,7 +428,7 @@ Rectangle {
                 text: "Address:"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 18
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
                 font.bold: true
             }
 
@@ -434,6 +444,7 @@ Rectangle {
                 text: "Here you will find your address"
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
+                font.family: "Brandon Grotesque"
             }
 
             Text {
@@ -448,7 +459,7 @@ Rectangle {
                 anchors.topMargin: 25
                 color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 font.pixelSize: 16
-                font.family: xciteMobile.name
+                font.family: "Brandon Grotesque"
             }
 
             Rectangle {
@@ -500,8 +511,13 @@ Rectangle {
                                 walletList.remove(walletID)
                                 addressID = addressID -1
                                 addressList.remove(addressID)
+                                newName.text = ""
+                                addressHash.text = ""
+                                publicKey.text = ""
+                                privateKey.text = ""
                                 editFailed = 1
                                 addingWallet = false
+                                walletSaved = false
                             }
                             else if (userSettings.localKeys === true && walletSaved == true) {
                                 addressID = addressID -1
@@ -533,6 +549,30 @@ Rectangle {
                             addressList.remove(addressID)
                             editFailed = 1
                             addingWallet = false
+                        }
+                    }
+
+                    onSaveFailedDBError: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            failError = "Database ERROR"
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            failError = "Network ERROR"
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            failError = "Input ERROR"
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            failError = "Unknown ERROR"
                         }
                     }
                 }
@@ -610,13 +650,25 @@ Rectangle {
                 font.bold: true
             }
 
+            Label {
+                id: saveFailedError
+                text: failError
+                anchors.top: saveFailedLabel.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveFailed.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+            }
+
             Rectangle {
                 id: closeFail
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: maincolor
                 opacity: 0.25
-                anchors.top: saveFailedLabel.bottom
+                anchors.top: saveFailedError.bottom
                 anchors.topMargin: 50
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -638,12 +690,13 @@ Rectangle {
                             createWalletTracker = 0
                         }
                         editFailed = 0
+                        failError = ""
                     }
                 }
             }
 
             Text {
-                text: "TRY AGAIN"
+                text: saveErrorNR == 0? "TRY AGAIN" : "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true

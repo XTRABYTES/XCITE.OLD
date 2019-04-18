@@ -167,8 +167,6 @@
         <file>icons/XFUEL_card_logo_colored_01.svg</file>
         <file>icons/xby_logo_TM.svg</file>
         <file>icons/xby_logo_TM_01.svg</file>
-        <file>icons/XBY_card_logo_01.svg</file>
-        <file>icons/XFUEL_card_logo_01.svg</file>
         <file>icons/icon-error_01.svg</file>
         <file>icons/icon-close_01.svg</file>
         <file>icons/XBY_logo_large.svg</file>
@@ -236,5 +234,48 @@
         <file>gifs/loading-gif_01.gif</file>
         <file>icons/mobile/warning-icon_01.svg</file>
         <file>fonts/Xolonium-Regular.ttf</file>
+        <file>icons/mobile/lookup-icon_01.svg</file>
+        <file>icons/BTC_card_logo_01.svg</file>
+        <file>icons/BTC_logo_big.svg</file>
+        <file>icons/ETH_card_logo_01.svg</file>
+        <file>icons/ETH_logo_big.svg</file>
+        <file>icons/mobile/standby-icon_01.svg</file>
+        <file>sounds/notification_1.wav</file>
+        <file>sounds/notification_2.wav</file>
+        <file>sounds/notification_3.wav</file>
+        <file>icons/mobile/volume_level_1-icon_dark.svg</file>
+        <file>icons/mobile/volume_level_1-icon_focus.svg</file>
+        <file>icons/mobile/volume_level_1-icon_light.svg</file>
+        <file>icons/mobile/volume_level_2-icon_dark.svg</file>
+        <file>icons/mobile/volume_level_2-icon_focus.svg</file>
+        <file>icons/mobile/volume_level_2-icon_light.svg</file>
+        <file>icons/mobile/volume_level_3-icon_dark.svg</file>
+        <file>icons/mobile/volume_level_3-icon_focus.svg</file>
+        <file>icons/mobile/volume_level_3-icon_light.svg</file>
+        <file>icons/mobile/volume_level_0-icon_dark.svg</file>
+        <file>icons/mobile/volume_level_0-icon_focus.svg</file>
+        <file>icons/mobile/volume_level_0-icon_light.svg</file>
+        <file>sounds/fail_01.wav</file>
+        <file>sounds/intro_01.wav</file>
+        <file>sounds/outro_01.wav</file>
+        <file>sounds/succes_01.wav</file>
+        <file>logos/xby_logo_tm.png</file>
+        <file>gifs/screensaver_01.gif</file>
+        <file>gifs/xby_screensaver_01.gif</file>
+        <file>videos/xby_screensaver_01.mp4</file>
+        <file>sounds/Bonjour.wav</file>
+        <file>sounds/Fail.wav</file>
+        <file>sounds/Hello.wav</file>
+        <file>sounds/hola.wav</file>
+        <file>sounds/Intro.wav</file>
+        <file>sounds/Outro.wav</file>
+        <file>sounds/Servus.wav</file>
+        <file>sounds/Succes.wav</file>
+        <file>sounds/Szia.wav</file>
+        <file>icons/mobile/favorite-icon_01_color.svg</file>
+        <file>icons/mobile/favorite-icon_01_dark.svg</file>
+        <file>icons/mobile/favorite-icon_01_light.svg</file>
+        <file>icons/XFUEL_card_logo_01.svg</file>
+        <file>icons/XBY_card_logo_01.svg</file>
     </qresource>
 </RCC>

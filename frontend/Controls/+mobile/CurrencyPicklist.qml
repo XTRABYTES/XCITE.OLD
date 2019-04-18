@@ -77,6 +77,7 @@ Rectangle {
 
                 onPressed: {
                     clickIndicator.visible = true
+                    click01.play()
                     detectInteraction()
                 }
 
@@ -94,7 +95,7 @@ Rectangle {
                         oldCurrency = userSettings.defaultCurrency
                         userSettings.defaultCurrency = currencyNR;
                         saveCurrency = true
-                        saveAppSettings()
+                        updateToAccount()
                     }
                 }
 

@@ -31,14 +31,14 @@ Rectangle {
             id: notificationRow
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
-            height: date == "null"? 0 : 130
+            height: date == ""? 0 : 130
             color:"transparent"
             clip: true
 
             Controls.CardBody {
 
             }
-
+            /**
             Image {
                 id: clearIcon
                 source: darktheme == true? 'qrc:/icons/mobile/delete-icon_01_light.svg' : 'qrc:/icons/mobile/delete-icon_01_dark.svg'
@@ -46,8 +46,8 @@ Rectangle {
                 fillMode: Image.PreserveAspectFit
                 anchors.top: parent.top
                 anchors.topMargin: 14
-                anchors.left: parent.right
-                anchors.leftMargin: 8
+                anchors.right: parent.right
+                anchors.rightMargin: 8
 
                 MouseArea {
                     height: 20
@@ -66,7 +66,7 @@ Rectangle {
                     }
                 }
             }
-
+            */
             Label {
                 id: notificationDate
                 text: date
@@ -75,8 +75,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 14
                 font.family: xciteMobile.name
-                font.pixelSize: 12
-                font.capitalization: Font.SmallCaps
+                font.pixelSize: 16
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 

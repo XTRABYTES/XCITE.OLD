@@ -82,6 +82,18 @@ Item {
                     }
                     newAmount = (fromAmount).toLocaleString(Qt.locale("en_US"), "f", decimals)
                 }
+                else if (toCurrency == "ETH") {
+                    if (((fromAmount * btcValueXBY)/btcValueETH) >= 1000000) {
+                        decimals = 2
+                    }
+                    else if ((((fromAmount * btcValueXBY)/btcValueETH) <= 1000000) && (((fromAmount * btcValueXBY)/btcValueETH) >= 1000)) {
+                        decimals = 4
+                    }
+                    else {
+                        decimals = 8
+                    }
+                    newAmount = ((fromAmount * btcValueXBY)/btcValueETH).toLocaleString(Qt.locale("en_US"), "f", decimals)
+                }
             }
             else if (fromCurrency == "XFUEL") {
                 if (toCurrency == "XBY") {
@@ -107,6 +119,18 @@ Item {
                         decimals = 8
                     }
                     newAmount = (fromAmount).toLocaleString(Qt.locale("en_US"), "f", decimals)
+                }
+                else if (toCurrency == "ETH") {
+                    if (((fromAmount * btcValueXFUEL)/btcValueETH) >= 1000000) {
+                        decimals = 2
+                    }
+                    else if ((((fromAmount * btcValueXFUEL)/btcValueETH) <= 1000000) && (((fromAmount * btcValueXFUEL)/btcValueETH) >= 1000)) {
+                        decimals = 4
+                    }
+                    else {
+                        decimals = 8
+                    }
+                    newAmount = ((fromAmount * btcValueXFUEL)/btcValueETH).toLocaleString(Qt.locale("en_US"), "f", decimals)
                 }
             }
             else if (fromCurrency == "BTC") {
@@ -134,6 +158,18 @@ Item {
                     }
                     newAmount = (fromAmount / btcValueXFUEL).toLocaleString(Qt.locale("en_US"), "f", decimals)
                 }
+                else if (toCurrency == "ETH") {
+                    if ((fromAmount / btcValueETH) >= 1000000) {
+                        decimals = 2
+                    }
+                    else if (((fromAmount / btcValueETH) <= 1000000) && ((fromAmount / btcValueETH) >= 1000)) {
+                        decimals = 4
+                    }
+                    else {
+                        decimals = 8
+                    }
+                    newAmount = (fromAmount / btcValueETH).toLocaleString(Qt.locale("en_US"), "f", decimals)
+                }
             }
             else if (fromCurrency == "FIAT") {
                 if (toCurrency == "XBY") {
@@ -159,6 +195,18 @@ Item {
                         decimals = 8
                     }
                     newAmount = (fromAmount / valueXFUEL).toLocaleString(Qt.locale("en_US"), "f", decimals)
+                }
+                else if (toCurrency == "ETH") {
+                    if ((fromAmount / valueETH) >= 1000000) {
+                        decimals = 2
+                    }
+                    else if (((fromAmount / valueETH) <= 1000000) && ((fromAmount / valueETH) >= 1000)) {
+                        decimals = 4
+                    }
+                    else {
+                        decimals = 8
+                    }
+                    newAmount = (fromAmount / valueETH).toLocaleString(Qt.locale("en_US"), "f", decimals)
                 }
             }
         }

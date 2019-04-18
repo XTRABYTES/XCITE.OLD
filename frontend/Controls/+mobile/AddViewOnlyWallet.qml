@@ -59,13 +59,14 @@ Rectangle {
     property int addressExists: 0
     property int labelExists: 0
     property int invalidAddress: 0
-    property int coin: 0
+    property int coin: coinIndex
     property int scanQR: 0
     property int editFailed: 0
     property int editSaved: 0
     property bool addingWallet: false
     property bool walletSaved: false
-    property int saveError: 0
+    property int saveErrorNR: 0
+    property string failError: ""
 
     function compareTx() {
         addressExists = 0
@@ -83,7 +84,7 @@ Rectangle {
     function compareName() {
         labelExists = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (newCoinName.text === coinList.get(coin).name) {
+            if (newCoinName.text === walletList.get(i).name) {
                 if (walletList.get(i).label === newName.text && walletList.get(i).remove === false) {
                     labelExists = 1
                 }
@@ -118,6 +119,22 @@ Rectangle {
                     invalidAddress = 1
                 }
             }
+            else if (newCoinName.text == "BTC") {
+                if (newAddress.length > 25 && newAddress.length < 36 &&(newAddress.text.substring(0,1) == "1" || newAddress.text.substring(0,1) == "3" || newAddress.text.substring(0,3) == "bc1") && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
+            else if (newCoinName.text == "ETH") {
+                if (newAddress.length == 42 && newAddress.text.substring(0,2) == "0x" && newAddress.acceptableInput == true) {
+                    invalidAddress = 0
+                }
+                else {
+                    invalidAddress = 1
+                }
+            }
         }
     }
 
@@ -141,7 +158,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -100
-        visible: addViewOnly == 1 && editFailed == 0 && editSaved == 0
+        visible: addViewOnly == 1 && editFailed == 0 && editSaved == 0 && scanQRTracker == 0
 
         Label {
             id: addWalletText
@@ -196,6 +213,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newName
+            z: 1.2
             height: 34
             placeholder: "ADDRESS LABEL"
             text: ""
@@ -205,7 +223,7 @@ Rectangle {
             anchors.rightMargin: 28
             anchors.top: selectedCoin.bottom
             anchors.topMargin: 25
-            color: newName.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             mobile: 1
@@ -219,6 +237,7 @@ Rectangle {
 
         Label {
             id: nameWarning
+            z: 1.1
             text: "Already an address with this label!"
             color: "#FD2E2E"
             anchors.left: newName.left
@@ -230,11 +249,12 @@ Rectangle {
             font.weight: Font.Normal
             visible: newName.text != ""
                      && labelExists == 1
-                     && scanQR == 0
+                     && scanQRTracker == 0
         }
 
         Controls.TextInput {
             id: newAddress
+            z: 1.1
             height: 34
             width: newName.width
             placeholder: "ADDRESS"
@@ -242,10 +262,10 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newName.bottom
             anchors.topMargin: 15
-            color: newAddress.text != "" ? (darktheme == false? "#2A2C31" : "#F2F2F2") : "#727272"
+            color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
-            visible: scanQR == 0
+            visible: scanQRTracker == 0
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
@@ -259,6 +279,7 @@ Rectangle {
 
         Label {
             id: addressWarning1
+            z: 1
             text: "This address is already in your account!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -270,11 +291,12 @@ Rectangle {
             font.weight: Font.Normal
             visible: newAddress.text != ""
                      && addressExists == 1
-                     && scanQR == 0
+                     && scanQRTracker == 0
         }
 
         Label {
             id: addressWarning2
+            z: 1
             text: "Invalid address format!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -286,7 +308,7 @@ Rectangle {
             font.weight: Font.Normal
             visible: newAddress.text != ""
                      && invalidAddress == 1
-                     && scanQR == 0
+                     && scanQRTracker == 0
         }
 
         Text {
@@ -305,6 +327,7 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
+            z: 1
             width: newAddress.width
             height: 34
             anchors.top: newAddress.bottom
@@ -313,7 +336,7 @@ Rectangle {
             border.color: maincolor
             border.width: 2
             color: "transparent"
-            visible: scanQR == 0
+            visible: scanQRTracker == 0
 
             MouseArea {
                 anchors.fill: scanQrButton
@@ -337,7 +360,7 @@ Rectangle {
 
                 onClicked: {
                     addressExists = 0
-                    scanQR = 1
+                    scanQRTracker = 1
                     scanning = "scanning..."
                 }
             }
@@ -356,6 +379,7 @@ Rectangle {
 
         Rectangle {
             id: saveButton
+            z: 1
             width: newAddress.width
             height: 34
             color: (newName.text != ""
@@ -366,7 +390,7 @@ Rectangle {
             anchors.top: scanQrButton.bottom
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: scanQR == 0
+            visible: scanQRTracker == 0
                      && addingWallet == false
 
             MouseArea {
@@ -391,7 +415,7 @@ Rectangle {
                             && labelExists == 0) {
                         addingWallet = true
                         walletSaved = false
-                        saveError = 0
+                        saveErrorNR = 0
                         addWalletToList(coinList.get(coin).name, newName.text, newAddress.text, "", "", true)
                     }
                 }
@@ -410,7 +434,7 @@ Rectangle {
                         addressExists = 0
                         labelExists = 0
                         invalidAddress = 0
-                        scanQR = 0
+                        scanQRTracker = 0
                         selectedAddress = ""
                         scanning = "scanning..."
                         addingWallet = false
@@ -430,7 +454,7 @@ Rectangle {
                         else if (userSettings.localKeys === true && walletSaved == true) {
                             addressID = addressID -1
                             addressList.remove(addressID)
-                            saveError = 1
+                            saveErrorNR = 1
                             editFailed = 1
                             addingWallet = false
                             walletSaved = false
@@ -455,10 +479,35 @@ Rectangle {
                         addingWallet = false
                     }
                 }
+
+                onSaveFailedDBError: {
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
+                        failError = "Database ERROR"
+                    }
+                }
+
+                onSaveFailedAPIError: {
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
+                        failError = "Network ERROR"
+                    }
+                }
+
+                onSaveFailedInputError: {
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
+                        failError = "Input ERROR"
+                    }
+                }
+
+                onSaveFailedUnknownError: {
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
+                        failError = "Unknown ERROR"
+                    }
+                }
             }
         }
 
         Text {
+            z: 1
             text: "SAVE"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -469,11 +518,12 @@ Rectangle {
                     && addressExists == 0 && labelExists == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
-            visible: scanQR == 0
+            visible: scanQRTracker == 0
                      && addingWallet == false
         }
 
         Rectangle {
+            z: 1
             width: newAddress.width
             height: 34
             anchors.bottom: saveButton.bottom
@@ -485,19 +535,20 @@ Rectangle {
                            && invalidAddress == 0
                            && addressExists == 0 && labelExists == 0) ? maincolor : "#979797"
             border.width: 1
-            visible: scanQR == 0
+            visible: scanQRTracker == 0
                      && addingWallet == false
         }
 
         AnimatedImage  {
             id: waitingDots
+            z: 1
             source: 'qrc:/gifs/loading-gif_01.gif'
             width: 90
             height: 60
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             playing: addingWallet == true
-            visible: scanQR == 00
+            visible: scanQRTracker == 0
                      && addingWallet == true
         }
     }
@@ -514,7 +565,7 @@ Rectangle {
 
         Image {
             id: saveFailed
-            source: saveError === 0? (darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg') : ('qrc:/icons/mobile/warning-icon_01.svg')
+            source: saveErrorNR === 0? (darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg') : ('qrc:/icons/mobile/warning-icon_01.svg')
             height: 100
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
@@ -524,11 +575,23 @@ Rectangle {
         Label {
             id: saveFailedLabel
             width: doubbleButtonWidth
-            maximumLineCount: saveError === 0? 1 : 4
+            maximumLineCount: saveErrorNR === 0? 1 : 4
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
-            text: saveError === 0? "Failed to save your wallet!" : "Your wallet was added but we could not add the wallet address to your addressbook. You will need to add this wallet to your addressbook manually."
+            text: saveErrorNR === 0? "Failed to save your wallet!" : "Your wallet was added but we could not add the wallet address to your addressbook. You will need to add this wallet to your addressbook manually."
             anchors.top: saveFailed.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: saveFailed.horizontalCenter
+            color: maincolor
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+        }
+
+        Label {
+            id: saveFailedError
+            text: failError
+            anchors.top: saveFailedLabel.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: saveFailed.horizontalCenter
             color: maincolor
@@ -543,7 +606,7 @@ Rectangle {
             height: 34
             color: maincolor
             opacity: 0.25
-            anchors.top: saveFailedLabel.bottom
+            anchors.top: saveFailedError.bottom
             anchors.topMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -557,24 +620,25 @@ Rectangle {
 
                 onClicked: {
                     if (saveError == 1) {
-                        saveError = 0
+                        saveErrorNR = 0
                         viewOnlyTracker = 0
                         newName.text = ""
                         newAddress.text = ""
                         addressExists = 0
                         labelExists = 0
                         invalidAddress = 0
-                        scanQR = 0
+                        scanQRTracker = 0
                         selectedAddress = ""
                         scanning = "scanning..."
                     }
                     editFailed = 0
+                    failError = ""
                 }
             }
         }
 
         Text {
-            text: "TRY AGAIN"
+            text: saveErrorNR == 0? "TRY AGAIN" : "OK"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
@@ -653,7 +717,7 @@ Rectangle {
                     addressExists = 0
                     labelExists = 0
                     invalidAddress = 0
-                    scanQR = 0
+                    scanQRTracker = 0
                     selectedAddress = ""
                     scanning = "scanning..."
                 }
@@ -707,7 +771,7 @@ Rectangle {
         height: Screen.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        visible: scanQR == 1
+        visible: scanQRTracker == 1
 
         Timer {
             id: timer
@@ -716,7 +780,7 @@ Rectangle {
             running: false
 
             onTriggered:{
-                scanQR = 0
+                scanQRTracker = 0
                 publicKey.text = "scanning..."
             }
         }
@@ -724,7 +788,7 @@ Rectangle {
         Camera {
             id: camera
             position: Camera.BackFace
-            cameraState: (viewOnlyTracker == 1) ? (scanQR == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
+            cameraState: (viewOnlyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
             focus {
                 focusMode: Camera.FocusContinuous
                 focusPointMode: CameraFocus.FocusPointAuto
@@ -844,7 +908,7 @@ Rectangle {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 50
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: scanQR == 1
+            visible: scanQRTracker == 1
 
             MouseArea {
                 anchors.fill: cancelScanButton
@@ -860,7 +924,7 @@ Rectangle {
                 }
 
                 onClicked: {
-                    scanQR = 0
+                    scanQRTracker = 0
                     selectedAddress = ""
                     publicKey.text = "scanning..."
                 }
@@ -898,8 +962,7 @@ Rectangle {
                 videoOutput.sourceRect;
                 // only scan the central quarter of the area for a barcode
                 return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
-                                                                                           0.22, 0.09, 0.56, 0.82
-                                                                                           )));
+                                                                                           0.22, 0.09, 0.56, 0.82)));
             }
         }
     }
@@ -915,7 +978,7 @@ Rectangle {
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         visible: viewOnlyTracker == 1
-                 && scanQR == 0
+                 && scanQRTracker == 0
 
 
         Rectangle{
@@ -943,7 +1006,7 @@ Rectangle {
                     addressExists = 0
                     labelExists = 0
                     invalidAddress = 0
-                    scanQR = 0
+                    scanQRTracker = 0
                     selectedAddress = ""
                     scanning = "scanning..."
                 }

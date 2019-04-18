@@ -77,7 +77,7 @@ Rectangle {
                     id: icon
                     source: getLogoBig(name)
                     anchors.horizontalCenter: parent.left
-                    anchors.horizontalCenterOffset: icon.implicitWidth/6
+                    anchors.horizontalCenterOffset: 15 //icon.implicitWidth/6
                     anchors.verticalCenter: parent.verticalCenter
                     height: 70
                     fillMode: Image.PreserveAspectFit
@@ -85,8 +85,8 @@ Rectangle {
 
                 Text {
                     id: coinName
-                    anchors.left: icon.right
-                    anchors.leftMargin: 10
+                    anchors.left: parent.left
+                    anchors.leftMargin: 60
                     anchors.top: parent.top
                     anchors.topMargin: 15
                     anchors.right: percentChangeLabel.left
@@ -107,42 +107,43 @@ Rectangle {
                     anchors.leftMargin: 5
                     anchors.bottom: amountSizeLabel2.bottom
                     text: name
-                    font.pixelSize: 20
+                    font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
-                    property real sumBalance: (sumCoinTotal(name))
-                    property int decimals: sumBalance == 0 ? 2 : (name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4))
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property int decimals: name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4)
                     property var amountArray: (sumBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel1
                     anchors.left: amountSizeLabel2.right
                     anchors.bottom: amountSizeLabel2.bottom
                     anchors.bottomMargin: 1
                     text:  "." + amountArray[1]
-                    font.pixelSize: 16
+                    font.pixelSize: 14
                     font.family:  xciteMobile.name
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
-                    property real sumBalance: (sumCoinTotal(name))
-                    property int decimals: sumBalance == 0 ? 2 : (name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4))
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property int decimals: name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4)
                     property var amountArray: (sumBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel2
                     anchors.left: coinName.left
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 10
                     text: amountArray[0]
-                    font.pixelSize: 20
+                    font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
-                    property real sumBalance: (sumCoinTotal(name))
-                    property var amountArray: ((coinConversion(name, sumBalance)).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property real sumFiat: name === "XBY"? totalXBYFiat : (name === "XFUEL"? totalXFUELFiat : (name === "BTC"? totalBTCFiat : (name === "ETH"? totalETHFiat : 0)))
+                    property var amountArray: (sumFiat.toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
                     id: totalValueLabel1
                     anchors.right: square.right
                     anchors.rightMargin:28
@@ -156,12 +157,13 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: (sumCoinTotal(name))
-                    property var amountArray: ((coinConversion(name, sumBalance)).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property real sumFiat: name === "XBY"? totalXBYFiat : (name === "XFUEL"? totalXFUELFiat : (name === "BTC"? totalBTCFiat : (name === "ETH"? totalETHFiat : 0)))
+                    property var amountArray: (sumFiat.toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
                     id: totalValueLabel2
                     anchors.right: totalValueLabel1.left
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 11
+                    anchors.bottomMargin: 10
                     text:amountArray[0]
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
@@ -228,7 +230,8 @@ Rectangle {
         ]
         sorters: [
             RoleSorter { roleName: "testnet" ; sortOrder: Qt.AscendingOrder },
-            StringSorter { roleName: "name" }
+            RoleSorter {roleName: "xby"; sortOrder: Qt.DescendingOrder},
+            StringSorter { roleName: "name"}
         ]
     }
 

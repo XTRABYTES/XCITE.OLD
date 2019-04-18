@@ -23,52 +23,117 @@
 #include <QSignalMapper>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QThread>
 
+#include <boost/thread/mutex.hpp>
 
 class StaticNetHttpClient:  public QObject  {
-   Q_OBJECT
+    Q_OBJECT
     
-	public:    
-	    StaticNetHttpClient(const QString &endpoint, QObject *parent = 0 );	
-	    ~StaticNetHttpClient() {}
-	    QNetworkReply *reply;
-	    void request(const QJsonArray *params);
+public:
+    StaticNetHttpClient(const QString &endpoint, QObject *parent = 0 );
+    ~StaticNetHttpClient() {}
+    QNetworkReply *reply;
+    void request(const QJsonArray *params);
 
-	public Q_SLOTS:
-       void slotNetworkError(QNetworkReply::NetworkError error);
-       void onResponse(QNetworkReply *res);
+public Q_SLOTS:
+    void slotNetworkError(QNetworkReply::NetworkError error);
+    void onResponse(QNetworkReply *res);
 
-	signals:
-    	 void response(QJsonArray params, QJsonObject res);
+signals:
+    void response(QJsonArray params, QJsonObject res);
 
-   private:
-       QNetworkRequest req;
-       QNetworkAccessManager *manager;    
-	    
+private:
+    QNetworkRequest req;
+    QNetworkAccessManager *manager;
+
+};
+
+class SendcoinWorker : public QObject {
+    Q_OBJECT
+
+public:
+    SendcoinWorker(const QJsonArray *params);
+    ~SendcoinWorker();
+
+public slots:
+    void process();
+
+signals:
+    void finished();
+    void error(QString err);
+    void sendcoinFailed();
+
+public Q_SLOTS:
+    void unspent_request(const QJsonArray *params);
+    void unspent_onResponse(QJsonArray params, QJsonObject );
+    void txbroadcast_request(const QJsonArray *params);
+    void txbroadcast_onResponse(QJsonArray params, QJsonObject );
+
+
+private:
+    std::string secret;
+    std::string hexscript;
+    std::string sender_address;
+    std::string target_address;
+    std::string value_str;
+    QString req_id;
+    StaticNetHttpClient *client;
+};
+
+
+class SnetKeyWordWorker : public QObject {
+    Q_OBJECT
+
+public:
+    SnetKeyWordWorker(const QString *msg);
+    ~SnetKeyWordWorker();
+
+public slots:
+    void process();
+
+signals:
+    void finished();
+    void error(QString err);
+    void response(QVariant response);
+
+public Q_SLOTS:
+    void request(const QJsonArray *params);
+    void onResponse(QJsonArray params, QJsonObject );
+
+private:
+    const QString *msg;
+    void CmdParser(const QJsonArray *params);
+    StaticNetHttpClient *client;
+    void help();
+    void sendcoin(const QJsonArray *params);
 };
 
 
 class StaticNet : public QObject {
     Q_OBJECT
 
-	public:
-    	StaticNet(QObject *parent = 0) : QObject(parent) {}
-    	~StaticNet() {}
-    	void Initialize();   
-    	void CmdParser(const QJsonArray *params);
-    	bool CheckUserInputForKeyWord(const QString msg);
+public:
+    StaticNet(QObject *parent = 0) : QObject(parent) {}
+    ~StaticNet() {}
+    void Initialize();
+    bool CheckUserInputForKeyWord(const QString msg);
 
-	public Q_SLOTS:
-    	void request(const QJsonArray *params);
-    	void onResponse(QJsonArray params, QJsonObject );
+    QString GetConnectStr() {
+        return ConnectStr;
+    };
 
-	signals:
-    	void response(QVariant response);
+    int GetNewRequestID() {
+        boost::unique_lock<boost::mutex> scoped_lock(mutex);
+        return ++requestID;
+    };
 
-	private:
-	   int requestID;
-    	StaticNetHttpClient *client;
+private:
+    boost::mutex mutex;
+    int requestID;
+    QString ConnectStr;
 };
+
 
 extern StaticNet staticNet;
 
