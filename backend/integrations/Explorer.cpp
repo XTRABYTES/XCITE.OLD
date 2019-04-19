@@ -85,41 +85,8 @@ void Explorer::getDetails(QString coin, QString transaction) {
             QJsonObject result = jsonResponse.object().value("result").toObject();
 
             QString timestamp = result.value("data").toString();
-            QStringList args = timestamp.split(" ");
-            QJsonArray params;
-            for (QStringList::const_iterator it0 = args.constBegin(); it0 != args.constEnd(); ++it0) params.append(QJsonValue(*it0));
-            QString txDate = params.at(0).toString();
-            QStringList dateArgs = txDate.split("-");
-            QJsonArray dateParams;
-            for (QStringList::const_iterator it1 = dateArgs.constBegin(); it1 != dateArgs.constEnd(); ++it1) dateParams.append(QJsonValue(*it1));
-            QString txMonth = dateParams.at(1).toString();
-            if (txMonth == "Jan") {
-                txMonth = "01";
-            } else if (txMonth == "Feb") {
-                txMonth = "02";
-            } else if (txMonth == "Mar") {
-                txMonth = "03";
-            } else if (txMonth == "Apr") {
-                txMonth = "04";
-            } else if (txMonth == "May") {
-                txMonth = "05";
-            } else if (txMonth == "Jun") {
-                txMonth = "06";
-            } else if (txMonth == "Jul") {
-                txMonth = "07";
-            } else if (txMonth == "Aug") {
-                txMonth = "08";
-            } else if (txMonth == "Sep") {
-                txMonth = "09";
-            } else if (txMonth == "Oct") {
-                txMonth = "10";
-            } else if (txMonth == "Nov") {
-                txMonth = "11";
-            } else if (txMonth == "Dec") {
-                txMonth = "12";
-            }
-            timestamp = dateParams.at(0).toString() + "-" + txMonth + "-" + dateParams.at(2).toString() + " " + params.at(1).toString();
-            QDateTime date = QDateTime::fromString(timestamp, "yyyy-MM-dd HH:mm:ss");
+            QLocale::setDefault(QLocale::English);
+            QDateTime date = QLocale().toDateTime(timestamp, "yyyy-MMM-dd HH:mm:ss");
             date.setTimeSpec(Qt::UTC);
             QDateTime local = date.toLocalTime();
             timestamp = local.toString("yyyy-MMMM-dd HH:mm:ss");
