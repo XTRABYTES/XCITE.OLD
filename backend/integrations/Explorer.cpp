@@ -85,7 +85,7 @@ void Explorer::getDetails(QString coin, QString transaction) {
             QJsonObject result = jsonResponse.object().value("result").toObject();
 
             QString timestamp = result.value("data").toString();
-            QDateTime date = QDateTime::fromString(timestamp, "yyyy-MMM-dd HH:mm:ss");
+            QDateTime date = QLocale().toDateTime(timestamp, "yyyy-MMM-dd HH:mm:ss");
             date.setTimeSpec(Qt::UTC);
             QDateTime local = date.toLocalTime();
             timestamp = local.toString("yyyy-MMMM-dd HH:mm:ss");
