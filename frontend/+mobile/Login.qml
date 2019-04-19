@@ -279,11 +279,11 @@ Item {
                 }
 
                 onUsernameAvailable: {
+                    checkUsername = 0
                     passError = 1
                     passWord.text = ""
                     loginInitiated  = false
                 }
-
              }
         }
 

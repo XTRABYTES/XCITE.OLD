@@ -88,12 +88,12 @@ void Xutility::CmdParser(const QJsonArray *params) {
 void Xutility::help() {
     xchatRobot.SubmitMsg("!!xutil usage informations:");
     xchatRobot.SubmitMsg("!!xutil network [net]");
-    QString help1 = "!!xutil-network";
+    QString help1 = "!!xutil network";
     xchatRobot.SubmitMsg("!!xutil createkeypair");
-    QString help2 = "!!xutil-createkeypair-[xtrabytes/xfuel]";
+    QString help2 = "!!xutil createkeypair [xtrabytes/xfuel]";
     xchatRobot.SubmitMsg("!!xutil privkey2address [privkey]");
-    QString help3 = "!!xutil-privkey2address-[xtrabytes/xfuel]-[privkey]";
-    QString help4 = "!!staticnet-sendcoin-[network]-[target]-[amount]-[privatekey]";
+    QString help3 = "!!xutil privkey2address [xtrabytes/xfuel] [privkey]";
+    QString help4 = "!!staticnet sendcoin [target] [amount] [privatekey]";
 
     emit helpReply(help1, help2, help3, help4);
 

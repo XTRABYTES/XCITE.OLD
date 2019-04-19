@@ -184,7 +184,7 @@ Rectangle {
                     requestText.text = ""
                 }
                 else if (deBugArray[0] === "!!xutil" && deBugArray[1] === "network") {
-                    checkNetwork("network")
+                    setNetwork("network")
                     requestText.text = ""
                 }
                 else if ((deBugArray[0] === "!!xutil" && deBugArray[1] === "createkeypair" && deBugArray[2] !== "")) {
@@ -196,9 +196,8 @@ Rectangle {
                     requestText.text = ""
                 }
                 else if (deBugArray[0] === "!!staticnet" && deBugArray[1] === "sendcoin") {
-                    console.log(deBugArray[2] + " - " + (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
-//                    sendCoins(deBugArray[2], (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
-                    sendCoins("xfuel", (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
+                    console.log(deBugArray[2] + "  " + deBugArray[3] + " " + deBugArray[4])
+                    sendCoins(deBugArray[2] + " " + deBugArray[3] + " " + deBugArray[4]);
 
                     requestText.text = ""
                 }

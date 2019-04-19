@@ -63,6 +63,7 @@ TextField {
         clipBoard = 1
     }
 
+
     property alias placeholder: placeholderTextComponent.text
 
     Text {

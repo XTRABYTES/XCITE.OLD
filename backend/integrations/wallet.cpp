@@ -74,14 +74,14 @@ bool Wallet::badkey() {
 }
 
 
-void Wallet::sendCoinsEntry(QString network, QString msg) {
+void Wallet::sendCoinsEntry(QString msg) {
 
     qDebug() << "send coins requested!";
 
-    QString setNetwork = "!!xutil network " + network;
+    //QString setNetwork = "!!xutil network " + network;
     QString sendCoins = "!!staticnet sendcoin " + msg;
 
-    xUtility.CheckUserInputForKeyWord(setNetwork);
+    //xUtility.CheckUserInputForKeyWord(setNetwork);
     staticNet.CheckUserInputForKeyWord(sendCoins);
 
 }
