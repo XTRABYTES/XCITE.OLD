@@ -49,7 +49,7 @@ bool StaticNet::CheckUserInputForKeyWord(const QString msg) {
 		QThread* thread = new QThread;
 		SnetKeyWordWorker* worker = new SnetKeyWordWorker(&msg);
 		worker->moveToThread(thread);
-        //connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
+        connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
 		connect(thread, SIGNAL (started()), worker, SLOT (process()));
 		connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
 		connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
@@ -193,7 +193,7 @@ void SnetKeyWordWorker::sendcoin(const QJsonArray *params) {
 		QThread* thread = new QThread;
 		SendcoinWorker* worker = new SendcoinWorker(params);
 		worker->moveToThread(thread);
-        //connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
+        connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
 		connect(thread, SIGNAL (started()), worker, SLOT (process()));
 		connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
 		connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
