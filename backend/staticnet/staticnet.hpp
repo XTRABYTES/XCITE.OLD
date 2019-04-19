@@ -128,6 +128,9 @@ public:
         return ++requestID;
     };
 
+public slots:
+    void errorString(const QString error);
+
 private:
     boost::mutex mutex;
     int requestID;

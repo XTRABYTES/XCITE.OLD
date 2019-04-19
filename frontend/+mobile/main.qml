@@ -349,7 +349,7 @@ ApplicationWindow {
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
     signal helpMe()
-    signal checkNetwork(string network)
+    signal setNetwork(string network)
     signal testTransaction(string test)
     signal updateAccount(string addresslist, string contactlist, string walletlist)
     signal updateTransactions(string coin, string address, string page)
@@ -360,7 +360,7 @@ ApplicationWindow {
     signal checkPincode(string pincode)
     signal walletUpdate(string coin, string label, string message)
     signal copyText2Clipboard(string text)
-    signal sendCoins(string network, string message)
+    signal sendCoins(string message)
 
     // Automated functions
 
@@ -932,9 +932,8 @@ ApplicationWindow {
 
         onUpdateTransactionsDetails: {
             if (historyTracker == 1) {
-                console.log ("confirmations: " + confirmations)
                 loadTransactionAddresses(inputs, outputs)
-                transactionTimestamp = timestamp
+                transactionTimestamp = timestamp // convert to local time?
                 transactionConfirmations = confirmations
                 transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
                 transactionDetailTracker = 1
@@ -1380,7 +1379,7 @@ ApplicationWindow {
 
     Timer {
         id: explorerTimer1
-        interval: standBy == 0? 60000 : 600000
+        interval: 15000
         repeat: true
         running: sessionStart == 1
         onTriggered:  {

@@ -148,8 +148,8 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeypairEntry(QString)));
     QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
     QObject::connect(rootObject, SIGNAL(helpMe()), &xUtil, SLOT(helpEntry()));
-    QObject::connect(rootObject, SIGNAL(sendCoins(QString, QString)), &walletFunction, SLOT(sendCoinsEntry(QString, QString)));
-    QObject::connect(rootObject, SIGNAL(checkNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(sendCoins(QString)), &walletFunction, SLOT(sendCoinsEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

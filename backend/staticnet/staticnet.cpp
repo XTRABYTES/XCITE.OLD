@@ -59,6 +59,10 @@ bool StaticNet::CheckUserInputForKeyWord(const QString msg) {
 	
 }
 
+void StaticNet::errorString(const QString error) {
+    qDebug() << error;
+}
+
 StaticNetHttpClient::StaticNetHttpClient(const QString &endpoint, QObject *parent ): QObject(parent) {
 	
      req.setUrl(QUrl(endpoint));
@@ -116,7 +120,7 @@ void SnetKeyWordWorker::process() {
     qDebug() << "Processing staticnet command";
 
     const QString _msg = *msg;
-	 QStringList args = msg->split(" ");
+    QStringList args = msg->split(" ");
     QJsonArray params; 
     
     for (QStringList::const_iterator it = args.constBegin(); it != args.constEnd(); ++it) params.append(QJsonValue(*it));
@@ -133,6 +137,9 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
     qDebug() << "reading command";
 
     QString command = params->at(1).toString();
+    QString fullCommand = params->at(0).toString() + " " + params->at(1).toString() + " " + params->at(2).toString() + " " + params->at(3).toString() + " " + params->at(4).toString();
+
+    qDebug() << "command: " + fullCommand;
 
     if (command == "help") {
         help();
@@ -317,7 +324,7 @@ void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
 
 void SendcoinWorker::process() { 
                   
-      //	!!staticnet sendcoin	[target-address] [sending-amount] [sender-privatekey]
+      //	!!staticnet sendcoin [target-address] [sending-amount] [sender-privatekey]
       // example:
       // !!staticnet sendcoin FBCMNhonjRxELB2UrxNGHgAusPnNHvsMUi 1.23456789 R9fXvzTuqz9BqgyiV4tmiY2LkioUq7GxKGTcJibruKpNYitutbft
 

@@ -42,7 +42,7 @@ public slots:
     void networkEntry(QString network);
     void createKeypairEntry(QString network);
     void importPrivateKeyEntry(QString network, QString privKey);
-    void sendCoinsEntry(QString network, QString msg);
+    void sendCoinsEntry(QString msg);
 
 
 };
