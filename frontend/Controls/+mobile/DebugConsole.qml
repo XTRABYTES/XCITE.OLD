@@ -177,7 +177,7 @@ Rectangle {
 
             onClicked: {
                 replyText.text = replyText.text + requestText.text + "<br/>"
-                deBugArray = (requestText.text).split('-')
+                deBugArray = (requestText.text).split(' ')
                 debugError = 0
                 if (deBugArray[0] === "help") {
                     helpMe()
@@ -197,7 +197,9 @@ Rectangle {
                 }
                 else if (deBugArray[0] === "!!staticnet" && deBugArray[1] === "sendcoin") {
                     console.log(deBugArray[2] + " - " + (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
-                    sendCoins(deBugArray[2], (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
+//                    sendCoins(deBugArray[2], (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
+                    sendCoins("xfuel", (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
+
                     requestText.text = ""
                 }
                 else {
