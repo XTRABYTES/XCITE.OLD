@@ -826,7 +826,6 @@ void Settings::SaveFile(QString fileName, QString encryptedData){
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_5_11);
     out << encryptedData;
-
 }
 
 QString Settings::LoadFile(QString fileName){
