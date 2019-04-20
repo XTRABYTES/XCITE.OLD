@@ -1101,7 +1101,7 @@ Rectangle {
         width: 150
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
     }
 }
 

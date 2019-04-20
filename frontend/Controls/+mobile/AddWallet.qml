@@ -493,7 +493,7 @@ Rectangle {
         id: closeAddWallet
         z: 4
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         text: selectWallet == 1? (walletAdded == true? "CLOSE" : "BACK") : "CLOSE"
         font.pixelSize: 14

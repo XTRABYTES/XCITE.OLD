@@ -226,7 +226,7 @@ Item {
         width: 150
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
         anchors.bottom: backgroundSplash.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
     }
 
     Login {

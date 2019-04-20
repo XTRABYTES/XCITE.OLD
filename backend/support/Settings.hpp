@@ -66,6 +66,7 @@ public slots:
     void SaveWallet(QString walletlist, QString addresslist);
     void UpdateAccount(QString addresslist, QString contactlist, QString walletlist);
 
+    void checkOS();
     void initialisePincode(QString pincode);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
@@ -75,6 +76,7 @@ public slots:
 
 
 signals:
+    void oSReturned(const QString os);
     void loginSucceededChanged();
     void loginFailedChanged();
     void userCreationSucceeded();

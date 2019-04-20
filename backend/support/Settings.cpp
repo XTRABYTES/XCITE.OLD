@@ -37,6 +37,12 @@ Settings::Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *
     m_settings = settings;
 }
 
+void Settings::checkOS() {
+    QString os;
+    // function to check OS, only return iOS & android
+    emit oSReturned(os);
+}
+
 void Settings::setLocale(QString locale) {
     if (!m_translator.isEmpty()) {
         QCoreApplication::removeTranslator(&m_translator);

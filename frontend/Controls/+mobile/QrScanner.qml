@@ -147,7 +147,7 @@ Item {
         height: 34
         color: "transparent"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         visible: scanQRTracker == 1
 
