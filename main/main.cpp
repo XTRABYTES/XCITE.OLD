@@ -34,6 +34,8 @@
 #include "../backend/integrations/MarketValue.hpp"
 #include "../backend/integrations/Explorer.hpp"
 #include "../backend/integrations/Wallet.hpp"
+#include "../backend/integrations/xutility_integration.hpp"
+#include "../backend/integrations/staticnet_integration.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -90,6 +92,14 @@ int main(int argc, char *argv[])
     // wire-up wallet
     Wallet walletFunction;
     engine.rootContext()->setContextProperty("WalletFunction", &walletFunction);
+
+    // wire-up xutility_integration
+    xutility_integration xUtil_int;
+    engine.rootContext()->setContextProperty("xUtil_int", &xUtil_int);
+
+    // wire-up staticnet_integration
+    staticnet_integration static_int;
+    engine.rootContext()->setContextProperty("static_int", &static_int);
 
     // wire-up ClipboardProxy
     ClipboardProxy clipboardProxy;
@@ -149,7 +159,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeypairEntry(QString)));
     QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
     QObject::connect(rootObject, SIGNAL(helpMe()), &xUtil, SLOT(helpEntry()));
-    QObject::connect(rootObject, SIGNAL(sendCoins(QString)), &walletFunction, SLOT(sendCoinsEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(sendCoins(QString)), &static_int, SLOT(sendCoinsEntry(QString)));
     QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
 
     // Fetch currency values

@@ -72,7 +72,9 @@ SOURCES += main/main.cpp \
             backend/support/FileDownloader.cpp \
             backend/support/Settings.cpp \
             backend/support/qaesencryption.cpp \
-            backend/integrations/wallet.cpp
+            backend/integrations/wallet.cpp \
+    backend/integrations/xutility_integration.cpp \
+    backend/integrations/staticnet_integration.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -102,7 +104,9 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/MarketValue.hpp \
             backend/integrations/Explorer.hpp \
             backend/support/qaesencryption.h \
-            backend/integrations/wallet.hpp
+            backend/integrations/wallet.hpp \
+    backend/integrations/xutility_integration.hpp \
+    backend/integrations/staticnet_integration.hpp
 
 DISTFILES += \
     xcite.ico \
