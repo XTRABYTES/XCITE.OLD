@@ -320,7 +320,7 @@ Item {
         Item {
             z: 3
             width: Screen.width
-            height: 125
+            height: myOS === "android"? 125 : 145
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -344,7 +344,7 @@ Item {
             width: 150
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 50
+            anchors.bottomMargin: myOS === "android"? 50 : 70
         }
 
         Rectangle {

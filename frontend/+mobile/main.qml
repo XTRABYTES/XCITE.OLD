@@ -50,6 +50,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        checkOS()
         clearAllSettings()
 
         goodbey = 0
@@ -189,6 +190,7 @@ ApplicationWindow {
     property color themecolor: darktheme == true? "#F2F2F2" : "#2A2C31"
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
     property real doubbleButtonWidth: Screen.width - 56
+    property string myOS: "android"
 
     // Global setting, editable
     property bool darktheme: userSettings.theme == "dark"? true : false
@@ -333,6 +335,7 @@ ApplicationWindow {
     property int selectedSystemVolume: userSettings.systemVolume
 
     // Signals
+    signal checkOS()
     signal loginSuccesfulSignal(string username, string password)
     signal loginFailed()
     signal marketValueChangedSignal(string currency)
@@ -812,6 +815,14 @@ ApplicationWindow {
 
         onUpdateBalance: {
             updateBalance(coin, address, balance)
+        }
+    }
+
+    Connections {
+        target: UserSettings
+
+        onOSReturned: {
+            myOS = os
         }
     }
 

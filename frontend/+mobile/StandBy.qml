@@ -30,7 +30,7 @@ Rectangle {
 
         MediaPlayer {
             id: mediaplayer
-            source: "qrc:/videos/xby_screensaver_01.mp4"
+            source: "qrc:/videos/XCITE_screensaver_01.mp4"
             loops: MediaPlayer.Infinite
         }
 
@@ -47,9 +47,8 @@ Rectangle {
 
             onClicked: {
                 mediaplayer.pause()
-                standbyTimer.stop()
                 screenSaver = 0
-                standbyTimer.start()
+                standbyTimer.restart()
             }
         }
     }

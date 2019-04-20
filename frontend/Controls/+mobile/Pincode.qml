@@ -1112,7 +1112,7 @@ Rectangle {
         id: bottomGradient
         z: 3
         width: Screen.width
-        height: 125
+        height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1132,7 +1132,7 @@ Rectangle {
         id: closePincode
         z: 10
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         text: "BACK"
         font.pixelSize: 14

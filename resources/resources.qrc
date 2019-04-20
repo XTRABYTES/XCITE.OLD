@@ -262,7 +262,6 @@
         <file>logos/xby_logo_tm.png</file>
         <file>gifs/screensaver_01.gif</file>
         <file>gifs/xby_screensaver_01.gif</file>
-        <file>videos/xby_screensaver_01.mp4</file>
         <file>sounds/Bonjour.wav</file>
         <file>sounds/Fail.wav</file>
         <file>sounds/Hello.wav</file>
@@ -277,5 +276,6 @@
         <file>icons/mobile/favorite-icon_01_light.svg</file>
         <file>icons/XFUEL_card_logo_01.svg</file>
         <file>icons/XBY_card_logo_01.svg</file>
+        <file>videos/XCITE_screensaver_01.mp4</file>
     </qresource>
 </RCC>
