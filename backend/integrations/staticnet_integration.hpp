@@ -15,12 +15,13 @@
 
 #include <QMainWindow>
 #include <QObject>
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QWidget>
 
-class staticnet_integration : public QObject
-{
+class staticnet_integration : public QObject {
         Q_OBJECT
-{
+
 public:
     explicit staticnet_integration(QObject *parent = nullptr);
 
@@ -28,7 +29,8 @@ public:
 
 public slots:
     void sendCoinsEntry(QString msg);
-    void onResponsefromStaticnet(QJsonArray response);
+    void onResponseFromStaticnetEntry(QJsonObject response);
 };
+
 
 #endif // STATICNET_INTEGRATION_HPP

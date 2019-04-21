@@ -16,6 +16,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include <QDebug>
+#include <QMetaObject>
 #include "staticnet.hpp"
 #include "../xchat/xchat.hpp"
 #include "../xutility/xutility.hpp"
@@ -113,6 +114,10 @@ SnetKeyWordWorker::SnetKeyWordWorker(const QString *msg) {
 
 SnetKeyWordWorker::~SnetKeyWordWorker() {
 	//xchatRobot.SubmitMsg("SnetKeyWordWorker() worker stopped."); 
+}
+
+int SnetKeyWordWorker::errorString(QString errorstr) {
+    qDebug() << "Error string recevied" << errorstr;
 }
 
 void SnetKeyWordWorker::process() {
@@ -254,7 +259,8 @@ void SendcoinWorker::txbroadcast_onResponse( QJsonArray params, QJsonObject res)
     //xchatRobot.SubmitMsg("Recevied txbroadcast reply from STaTiC network. ID: #"+params.last().toString());
     xchatRobot.SubmitMsg(formattedJsonString);
     qDebug() << formattedJsonString;
-    }
+    }    
+    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, res));
     emit finished();
 }
 
