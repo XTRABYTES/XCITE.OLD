@@ -37,8 +37,8 @@ public:
     Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent = 0);
     void setLocale(QString);
     QString CheckStatusCode(QString);
-    void SaveFile(QString, QString);
-    QString LoadFile(QString);
+    void SaveFile(QString, QString, QString);
+    QString LoadFile(QString, QString);
     std::pair<QByteArray, QByteArray> createKeyPair();
     int rsaEncrypt(const unsigned char *message, size_t messageLength, unsigned char **encryptedMessage, unsigned char **encryptedKey,
           size_t *encryptedKeyLength, unsigned char **iv, size_t *ivLength);
@@ -46,27 +46,24 @@ public:
     std::pair<int, QByteArray> encryptAes(QString text, unsigned char *key, unsigned char *iv);
     RSA * createRSA(unsigned char * key,int public1);
     QString createRandNum();
-
-
-
-
-
-
+    void loginFile(QString username, QString password, QString fileLocation);
 
 public slots:
     void onLocaleChange(QString);
     void onClearAllSettings();
     void login(QString username, QString password);
     bool SaveSettings();
-    void LoadSettings(QByteArray settings);
+    QString ImportWallet(QString, QString);
+    void LoadSettings(QByteArray settings, QString location);
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
     void SaveAddresses(QString addresslist);
     void SaveContacts(QString contactlist);
     void SaveWallet(QString walletlist, QString addresslist);
+    void ExportWallet(QString walletlist, QString addresslist);
     void UpdateAccount(QString addresslist, QString contactlist, QString walletlist);
 
-    void checkOS();
+    void onCheckOS();
     void initialisePincode(QString pincode);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
