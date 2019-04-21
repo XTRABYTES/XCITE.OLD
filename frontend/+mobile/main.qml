@@ -50,9 +50,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        checkOS()
-        clearAllSettings()
-
         goodbey = 0
         standBy = 0
 
