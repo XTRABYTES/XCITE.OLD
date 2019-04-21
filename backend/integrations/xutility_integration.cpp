@@ -10,6 +10,7 @@
  *
  */
 
+#include <QDebug>
 #include "../xutility/xutility.hpp"
 #include "xutility_integration.hpp"
 

@@ -33,7 +33,7 @@
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
 #include "../backend/integrations/Explorer.hpp"
-#include "../backend/integrations/Wallet.hpp"
+#include "../backend/integrations/wallet.hpp"
 #include "../backend/integrations/xutility_integration.hpp"
 #include "../backend/integrations/staticnet_integration.hpp"
 
@@ -71,12 +71,6 @@ int main(int argc, char *argv[])
     xchatRobot.Initialize();
     engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
 
-    staticNet.Initialize();
-    engine.rootContext()->setContextProperty("StaticNet", &staticNet);
-
-    Xutility xUtil;
-    engine.rootContext()->setContextProperty("xUtil", &xUtil);
-
     // wire-up testnet wallet
     Testnet wallet;
     engine.rootContext()->setContextProperty("wallet", &wallet);
@@ -96,10 +90,15 @@ int main(int argc, char *argv[])
     // wire-up xutility_integration
     xutility_integration xUtil_int;
     engine.rootContext()->setContextProperty("xUtil_int", &xUtil_int);
+    Xutility xUtil;
+    engine.rootContext()->setContextProperty("xUtil", &xUtil);
 
     // wire-up staticnet_integration
+    staticNet.Initialize();
+    engine.rootContext()->setContextProperty("StaticNet", &staticNet);
     staticnet_integration static_int;
     engine.rootContext()->setContextProperty("static_int", &static_int);
+
 
     // wire-up ClipboardProxy
     ClipboardProxy clipboardProxy;
@@ -160,6 +159,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
     QObject::connect(rootObject, SIGNAL(helpMe()), &xUtil, SLOT(helpEntry()));
     QObject::connect(rootObject, SIGNAL(sendCoins(QString)), &static_int, SLOT(sendCoinsEntry(QString)));
+    QObject::connect(&staticNet, SIGNAL(ResponseFromStaticnet(QJsonObject)), &static_int, SLOT(onResponseFromStaticnetEntry(QJsonObject)),Qt::QueuedConnection);      
     QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
 
     // Fetch currency values

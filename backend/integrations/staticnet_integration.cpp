@@ -10,7 +10,8 @@
  *
  */
 
-#include "../xutility/xutility.hpp"
+#include <QDebug>
+#include "../staticnet/staticnet.hpp"
 #include "staticnet_integration.hpp"
 
 staticnet_integration::staticnet_integration(QObject *parent) : QObject(parent)
@@ -29,6 +30,11 @@ void staticnet_integration::sendCoinsEntry(QString msg) {
 
 }
 
-void staticnet_integration::onResponsefromStaticnet(QJsonArray response) {
-     qDebug() << "staticnet response recevied";
+
+void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
+     qDebug() << "staticnet response recevied:";
+
+     QJsonDocument json_doc(response);
+     QString json_string = json_doc.toJson();
+     qDebug() << json_string;
 }

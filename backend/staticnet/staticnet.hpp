@@ -42,6 +42,7 @@ public Q_SLOTS:
 
 signals:
     void response(QJsonArray params, QJsonObject res);
+    void error(QNetworkReply::NetworkError); // FIXMEEE
 
 private:
     QNetworkRequest req;
@@ -100,6 +101,7 @@ signals:
 public Q_SLOTS:
     void request(const QJsonArray *params);
     void onResponse(QJsonArray params, QJsonObject );
+    int errorString(QString errorstr);
 
 private:
     const QString *msg;
@@ -128,8 +130,15 @@ public:
         return ++requestID;
     };
 
+
 public slots:
     void errorString(const QString error);
+    void onResponseFromStaticnet(QJsonObject response) {
+        qDebug() << "staticnet response recevied";       
+    }
+
+signals:
+	 void ResponseFromStaticnet(QJsonObject);
 
 private:
     boost::mutex mutex;
