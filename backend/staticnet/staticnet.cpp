@@ -49,7 +49,6 @@ bool StaticNet::CheckUserInputForKeyWord(const QString msg) {
       
 		QThread* thread = new QThread;
 		SnetKeyWordWorker* worker = new SnetKeyWordWorker(&msg);
-        worker->msg = msg;
 		worker->moveToThread(thread);
         connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
 		connect(thread, SIGNAL (started()), worker, SLOT (process()));
@@ -81,8 +80,6 @@ void StaticNetHttpClient::request(const QJsonArray *params) {
      QJsonDocument json;
      QJsonObject obj;
 
-     std::cout << "params->at(1):" << params->at(1).toString().toStdString() << std::endl;
-     std::cout << "params->at(2):" << params->at(2).toString().toStdString() << std::endl;
 
      obj.insert("dicom", QJsonValue::fromVariant("1.0"));
      obj.insert("type", QJsonValue::fromVariant("request"));
@@ -109,8 +106,9 @@ void StaticNetHttpClient::onResponse(QNetworkReply *res) {
 }
 
 
-SnetKeyWordWorker::SnetKeyWordWorker(const QString *msg) { 
-    this->msg = msg;
+SnetKeyWordWorker::SnetKeyWordWorker(const QString *_msg) {
+		
+    this->msg = QString(*_msg);
 }
 
 SnetKeyWordWorker::~SnetKeyWordWorker() {
@@ -123,22 +121,18 @@ int SnetKeyWordWorker::errorString(QString errorstr) {
 
 void SnetKeyWordWorker::process() {
 
-    qDebug() << "Processing staticnet command";
-
-    const QString _msg = *msg;
-    qDebug() << "1";
-    QStringList args = msg->split(" ");
-    QJsonArray params;
-
-
+    qDebug() << "Processing staticnet command: [" << msg << "]";
+    
+    QStringList args = msg.split(" ");
+    QJsonArray params; 
+    
     for (QStringList::const_iterator it = args.constBegin(); it != args.constEnd(); ++it) params.append(QJsonValue(*it));
-    qDebug() << "2";
     params.push_back(QString::number(staticNet.GetNewRequestID()));
-
+    
     CmdParser(&params);
 
     qDebug() << "Processing done";
-
+    	 	 	      
 }
 
 void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
