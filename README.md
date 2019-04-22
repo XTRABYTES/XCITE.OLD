@@ -165,7 +165,7 @@ Openssl 1.0.2q
 
 Edit the .pro file
 
-> Edit the xcitedesk.pro file to include the correct paths of the compiled dependencies. See the example bellow:
+> Edit the xcitedesk.pro file to include the correct paths of the compiled dependencies. See the example below:
 [![xcite-pro-file](https://github.com/xtrabytesteam/xcite/blob/master/documentation/guide8.png)](#instructions-desktop-platform-only)
 
 ### Install Qt
