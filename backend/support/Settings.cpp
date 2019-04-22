@@ -737,7 +737,7 @@ void Settings::SaveWallet(QString walletlist, QString addresslist){
     }
 }
 
-void Settings::ExportWallet(QString walletlist, QString addresslist){
+void Settings::ExportWallet(QString walletlist){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
     QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
@@ -891,7 +891,7 @@ QString Settings::LoadFile(QString fileName, QString fileLocation){
     return returnFile;
 }
 
-QString Settings::ImportWallet(QString username, QString password){
+void Settings::ImportWallet(QString username, QString password){
     loginFile(username,password, "import");
 }
 

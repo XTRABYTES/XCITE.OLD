@@ -53,14 +53,14 @@ public slots:
     void onClearAllSettings();
     void login(QString username, QString password);
     bool SaveSettings();
-    QString ImportWallet(QString, QString);
+    void ImportWallet(QString, QString);
     void LoadSettings(QByteArray settings, QString location);
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
     void SaveAddresses(QString addresslist);
     void SaveContacts(QString contactlist);
     void SaveWallet(QString walletlist, QString addresslist);
-    void ExportWallet(QString walletlist, QString addresslist);
+    void ExportWallet(QString walletlist);
     void UpdateAccount(QString addresslist, QString contactlist, QString walletlist);
 
     void onCheckOS();

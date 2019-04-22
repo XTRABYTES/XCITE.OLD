@@ -333,7 +333,7 @@ Rectangle {
                         }
 
                         onClicked: {
-                            if (coinIndex < 2){
+                            if (coinIndex < 4){
                                 walletIndex = walletNR
                                 transactionPages = 0
                                 currentPage = 1
@@ -360,7 +360,7 @@ Rectangle {
                     font.family: xciteMobile.name
                     font.pointSize: 14
                     font.bold: true
-                    color: coinIndex < 2? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                    color: coinIndex < 4? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
                     anchors.horizontalCenter: history.horizontalCenter
                     anchors.verticalCenter: history.verticalCenter
                 }
@@ -375,7 +375,7 @@ Rectangle {
                     anchors.leftMargin: 7
                     color: "transparent"
                     opacity: 0.5
-                    border.color: coinIndex < 2? maincolor : "#979797"
+                    border.color: coinIndex < 4? maincolor : "#979797"
                     border.width: 1
                 }
             }

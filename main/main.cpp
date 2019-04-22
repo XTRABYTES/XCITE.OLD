@@ -140,6 +140,8 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(saveAppSettings()), &settings, SLOT(SaveSettings()));
     QObject::connect(rootObject, SIGNAL(saveWalletList(QString, QString)), &settings, SLOT(SaveWallet(QString, QString)));
     QObject::connect(rootObject, SIGNAL(updateAccount(QString, QString, QString)), &settings, SLOT(UpdateAccount(QString, QString, QString)));
+    QObject::connect(rootObject, SIGNAL(importAccount(QString, QString)), &settings, SLOT(ImportWallet(QString,QString)));
+    QObject::connect(rootObject,SIGNAL(exportAccount(QString)), &settings, SLOT(ExportWallet(QString)));
     QObject::connect(rootObject, SIGNAL(checkSessionId()), &settings, SLOT(CheckSessionId()));
 
     // connect QML signals for market value

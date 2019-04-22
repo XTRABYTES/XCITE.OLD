@@ -49,6 +49,7 @@ bool StaticNet::CheckUserInputForKeyWord(const QString msg) {
       
 		QThread* thread = new QThread;
 		SnetKeyWordWorker* worker = new SnetKeyWordWorker(&msg);
+        worker->msg = msg;
 		worker->moveToThread(thread);
         connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
 		connect(thread, SIGNAL (started()), worker, SLOT (process()));
@@ -125,16 +126,19 @@ void SnetKeyWordWorker::process() {
     qDebug() << "Processing staticnet command";
 
     const QString _msg = *msg;
+    qDebug() << "1";
     QStringList args = msg->split(" ");
-    QJsonArray params; 
-    
+    QJsonArray params;
+
+
     for (QStringList::const_iterator it = args.constBegin(); it != args.constEnd(); ++it) params.append(QJsonValue(*it));
+    qDebug() << "2";
     params.push_back(QString::number(staticNet.GetNewRequestID()));
-    
+
     CmdParser(&params);
 
     qDebug() << "Processing done";
-    	 	 	      
+
 }
 
 void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {

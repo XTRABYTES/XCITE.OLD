@@ -231,7 +231,7 @@ Rectangle {
         sorters: [
             RoleSorter { roleName: "testnet" ; sortOrder: Qt.AscendingOrder },
             RoleSorter {roleName: "xby"; sortOrder: Qt.DescendingOrder},
-            StringSorter { roleName: "name"}
+            StringSorter { roleName: "fullname"}
         ]
     }
 

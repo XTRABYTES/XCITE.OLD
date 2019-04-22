@@ -1809,6 +1809,7 @@ Item {
                         anchors.fill: parent
 
                         onClicked: {
+                            swipe.play()
                             view.currentIndex = 0
                         }
                     }
@@ -1827,6 +1828,7 @@ Item {
                         anchors.fill: parent
 
                         onClicked: {
+                            swipe.play()
                             if (addCoinTracker == 0)
                                 view.currentIndex = 1
                         }
