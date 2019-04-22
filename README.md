@@ -161,12 +161,12 @@ Berkeley DB 4.8.30 NC (Windows example)
 
 Openssl 1.0.2q
 
-> Follow these [instructions](https://github.com/xtrabytesteam/xcite/blob/master/documentation/build-openssl-windows.txt) on how to compile (Windows example)
+> Follow these [instructions](https://github.com/XTRABYTES/XCITE/blob/master/documentation/build-openssl-windows.txt) on how to compile (Windows example)
 
 Edit the .pro file
 
 > Edit the xcitedesk.pro file to include the correct paths of the compiled dependencies. See the example below:
-[![xcite-pro-file](https://github.com/xtrabytesteam/xcite/blob/master/documentation/guide8.png)](#instructions-desktop-platform-only)
+[![xcite-pro-file](https://github.com/XTRABYTES/XCITE/blob/master/documentation/guide8.png)](#instructions-desktop-platform-only)
 
 ### Install Qt
 
@@ -183,7 +183,7 @@ Our development is currently targeting Qt 5.11.3 and up. When the Qt installer a
 - Qt 5.11.3 -> Android x86 (Android virtual device components)
 
 **Windows installer options**
-[![qt-windows-installation](https://github.com/xtrabytesteam/xcite/blob/master/documentation/guide5.png)](#install-qt)
+[![qt-windows-installation](https://github.com/xtrabytes/XCITE/blob/master/documentation/guide5.png)](#install-qt)
 
 After installing Qt, clone this repository and open xcitedesk.pro (for the desktop platform) or the xcite.pro (for the mobile platform) using Qt Creator.
 
@@ -225,15 +225,15 @@ XCODE, developed by Apple, provides a suite of software development tools, simil
 - Open the xcite.pro in QT
 - Go to Build --> Run qmake
 
-[![QT qmake](https://github.com/xtrabytesteam/xcite/blob/master/documentation/guide1.png)](#project-configuration-ios)
+[![QT qmake](https://github.com/xtrabytes/XCITE/blob/master/documentation/guide1.png)](#project-configuration-ios)
 
 - Go to your XCITE folder and search for the newly created .xcodeproj file
 
-[![mac folder](https://github.com/xtrabytesteam/xcite/blob/master/documentation/guide2.png)](#project-configuration-ios)
+[![mac folder](https://github.com/xtrabytes/XCITE/blob/master/documentation/guide2.png)](#project-configuration-ios)
 
 - Open the .xcodeproj file in XCODE and choose Product --> Build
 
-[![iOS build](https://github.com/xtrabytesteam/xcite/blob/master/documentation/guide3.png)](#project-configuration-ios)
+[![iOS build](https://github.com/xtrabytes/XCITE/blob/master/documentation/guide3.png)](#project-configuration-ios)
 
 
 ### Qt Troubleshooting Advice
@@ -291,7 +291,7 @@ Other Qt errors:
 
 ## XCITE Desktop Screenshots
 
-[![xcite-testnet-2-21-18](https://github.com/xtrabytesteam/xcite/blob/master/documentation/laptop.png)](https://github.com/xtrabytesteam/xcite/blob/master/README.md#xcite-desktop-screenshots)
+[![xcite-testnet-2-21-18](https://github.com/xtrabytes/XCITE/blob/master/documentation/laptop.png)](https://github.com/xtrabytesteam/xcite/blob/master/README.md#xcite-desktop-screenshots)
 
 **Testnet Interaction**
 [![xcite-testnet-2-21-18](https://user-images.githubusercontent.com/17502298/36481552-2c7ba1a0-16de-11e8-8848-102cfa4653e7.gif)](https://github.com/xtrabytesteam/xcite/blob/master/README.md#xcite-desktop-screenshots)
@@ -321,19 +321,19 @@ Other Qt errors:
 
 ## XCITE Mobile Screenshots
 
-<img src="https://github.com/xtrabytesteam/xcite/blob/master/documentation/guide4.png">
+<img src="https://github.com/xtrabytes/XCITE/blob/master/documentation/guide4.png">
 
 **XCITE Mobile -> Start**
 
-<img src="https://github.com/xtrabytesteam/xcite/blob/master/documentation/xciteg1.jpg" width="375" height="716">
+<img src="https://github.com/xtrabytes/XCITE/blob/master/documentation/xciteg1.jpg" width="375" height="716">
 
 **XCITE Mobile -> Home**
 
-<img src="https://github.com/xtrabytesteam/xcite/blob/master/documentation/xciteg2.jpg" width="375" height="716">
+<img src="https://github.com/xtrabytes/XCITE/blob/master/documentation/xciteg2.jpg" width="375" height="716">
 
 **XCITE Mobile -> Transfer**
 
-<img src="https://github.com/xtrabytesteam/xcite/blob/master/documentation/xciteg3.jpg" width="375" height="716">
+<img src="https://github.com/xtrabytes/XCITE/blob/master/documentation/xciteg3.jpg" width="375" height="716">
 
 
 ## Contributing
