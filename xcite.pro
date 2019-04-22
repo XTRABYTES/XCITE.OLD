@@ -189,7 +189,7 @@ linux:!android {
 
 android {
     CONFIG += static
-    QT += multimedia
+    QT += multimedia androidextras
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60

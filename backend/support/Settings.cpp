@@ -22,6 +22,10 @@
 #include <cstring>
 #include <tuple>
 
+#ifdef Q_OS_ANDROID //added to get write permission for Android
+#include <QtAndroid>
+#endif
+
 using std::string;
 using std::cin;
 
@@ -37,10 +41,8 @@ Settings::Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *
     m_settings = settings;
 }
 
-void Settings::checkOS() {
-    QString os;
-    // function to check OS, only return iOS & android
-    emit oSReturned(os);
+void Settings::onCheckOS() {
+    emit oSReturned(QSysInfo::productType());
 }
 
 void Settings::setLocale(QString locale) {
@@ -335,6 +337,10 @@ RSA * Settings::createRSA(unsigned char * key,int public1)
 }
 
 void Settings::login(QString username, QString password){
+    loginFile(username,password,"default");
+}
+
+void Settings::loginFile(QString username, QString password, QString fileLocation){
     emit checkUsername();
     if(!UserExists(username)){
         return;
@@ -455,7 +461,7 @@ void Settings::login(QString username, QString password){
         m_password = password;
 
         emit loadingSettings();
-        LoadSettings(decodedSettings);
+        LoadSettings(decodedSettings, fileLocation);
 
         // Create new rand Num.
         QString randNum = createRandNum();
@@ -624,7 +630,7 @@ bool Settings::SaveSettings(){
     return true;
 }
 
-void Settings::LoadSettings(QByteArray settings){
+void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
 
     QJsonObject json = QJsonDocument::fromJson(settings).object();
@@ -664,7 +670,7 @@ void Settings::LoadSettings(QByteArray settings){
     m_wallet.clear();
     if (localKeys){
         qDebug().noquote() << "local wallet";
-        QString walletFile = LoadFile(m_username.toLower() + "wallet");
+        QString walletFile = LoadFile(m_username.toLower() + ".wallet", fileLocation);
         QByteArray decodedWallet = encryption.decode(walletFile.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
         qDebug().noquote() << "Decoded Wallet " + decodedWallet;
         int pos = decodedWallet.lastIndexOf(QChar(']')); // find last bracket to mark the end of the json
@@ -700,7 +706,7 @@ void Settings::UpdateAccount(QString addresslist, QString contactlist, QString w
     if (localKeys){
         QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
         QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
-        SaveFile(m_username.toLower() + "wallet", encodedWalletString);
+        SaveFile(m_username.toLower() + ".wallet", encodedWalletString, "default");
     }else{
         SaveSettings();
     }
@@ -725,10 +731,17 @@ void Settings::SaveWallet(QString walletlist, QString addresslist){
     if (localKeys){
         QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
         QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
-        SaveFile(m_username.toLower() + "wallet", encodedWalletString);
+        SaveFile(m_username.toLower() + ".wallet", encodedWalletString, "default");
     }else{
         SaveSettings();
     }
+}
+
+void Settings::ExportWallet(QString walletlist, QString addresslist){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
+    QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
+    SaveFile(m_username.toLower() + ".wallet", encodedWalletString, "export");
 }
 
 void Settings::initialisePincode(QString pincode){
@@ -811,12 +824,29 @@ QString Settings::CheckStatusCode(QString statusCode){
     return returnVal;
 }
 
-void Settings::SaveFile(QString fileName, QString encryptedData){
+void Settings::SaveFile(QString fileName, QString encryptedData, QString fileLocation){
+
+    #ifdef Q_OS_ANDROID //added to get write permission for Android
+    auto  result = QtAndroid::checkPermission(QString("android.permission.WRITE_EXTERNAL_STORAGE"));
+        if(result == QtAndroid::PermissionResult::Denied){
+            QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.WRITE_EXTERNAL_STORAGE"}));
+            if(resultHash["android.permission.WRITE_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Denied){
+                emit saveFileFailed();
+                return;
+            }
+        }
+    #endif
     QString currentDir = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0];
+    if (fileLocation == "export"){
+        currentDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation)[0];
+    }
+    QDir dir;
+    dir.mkpath(currentDir);
     qDebug() << " Writing to " + currentDir + "/" + fileName;
     QFile file(currentDir + "/" + fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         file.errorString(); //We can build this out to emit an error message
+        qDebug() << file.errorString();
         emit saveFileFailed();
         return;
     }else{
@@ -828,9 +858,24 @@ void Settings::SaveFile(QString fileName, QString encryptedData){
     out << encryptedData;
 }
 
-QString Settings::LoadFile(QString fileName){
+QString Settings::LoadFile(QString fileName, QString fileLocation){
+
+    #ifdef Q_OS_ANDROID //added to get write permission for Android
+    auto  result = QtAndroid::checkPermission(QString("android.permission.WRITE_EXTERNAL_STORAGE"));
+        if(result == QtAndroid::PermissionResult::Denied){
+            QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.WRITE_EXTERNAL_STORAGE"}));
+            if(resultHash["android.permission.WRITE_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Denied){
+                emit saveFileFailed();
+                return "ERROR";
+            }
+        }
+    #endif
     QString returnFile;
+
     QString currentDir = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0];
+    if (fileLocation == "import"){
+        currentDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation)[0];
+    }
 
     qDebug() << "Reading from " + currentDir + "/" + fileName;
 
@@ -844,6 +889,10 @@ QString Settings::LoadFile(QString fileName){
     in.setVersion(QDataStream::Qt_5_11);
     in >> returnFile;
     return returnFile;
+}
+
+QString Settings::ImportWallet(QString username, QString password){
+    loginFile(username,password, "import");
 }
 
 void Settings::CheckSessionId(){
