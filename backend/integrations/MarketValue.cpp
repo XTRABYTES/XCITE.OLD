@@ -10,6 +10,7 @@
  *
  */
 
+#include <QEventLoop>
 #include <QSettings>
 #include "MarketValue.hpp"
 
@@ -17,38 +18,51 @@ MarketValue::MarketValue(QObject *parent) : QObject(parent)
 {
 }
 
-void MarketValue::findXBYValue(QString currency)
+void MarketValue::findCurrencyValue(QString currency)
 {
-    QSettings appSettings;
-    appSettings.setValue("defaultCurrency", currency);
+    QUrl Url;
+    Url.setScheme("http");
+    Url.setHost("37.59.57.212");
+    Url.setPort(8080);
+    Url.setPath("/v1/marketvalue/" + currency);
 
-    QNetworkRequest request(QUrl("https://api.coinmarketcap.com/v1/ticker/xtrabytes/?convert="+currency));
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QNetworkRequest request;
+    request.setUrl(Url);
 
-    QNetworkAccessManager *restclient = new QNetworkAccessManager(this);
-    connect(restclient, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
+    QNetworkAccessManager *restclient;
+    restclient = new QNetworkAccessManager(this);
+    request.setRawHeader("Accept", "application/json");
 
-    QNetworkReply* reply = restclient->get(request);
-    reply->setProperty("selectedCurrency", currency);
+    QNetworkReply *reply = restclient->get(request);
+    QByteArray bytes = reply->readAll();
+
+    QEventLoop loop;
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    loop.exec();
+
+    QString currencyValue = QString::fromStdString(reply->readAll().toStdString());
+    currencyValue.remove(0, 1).chop(2);
+    setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
+    qDebug() << currency + ":" + currencyValue;
 }
 
-void MarketValue::onFinished(QNetworkReply* reply)
-{
-    if (reply->error()) {
-        qDebug() << reply->errorString();
-        return;
-    }
-
-    QString selectedCurrency = reply->property("selectedCurrency").toString();
-
-    QString marketValue = "";
-    QString strReply = (QString)reply->readAll();
-    QJsonDocument priceDataDoc = QJsonDocument::fromJson(strReply.toUtf8());
-    QJsonArray priceDataArray = priceDataDoc.array();
-    foreach (const QJsonValue &value, priceDataArray){
-        QJsonObject jsonObj = value.toObject();
-        marketValue = jsonObj["price_"+selectedCurrency.toLower()].toString();
-    }
-    setMarketValue(marketValue);
+void MarketValue::findAllCurrencyValues(){
+    findCurrencyValue("btcusd");
+    findCurrencyValue("btceur");
+    findCurrencyValue("btcgbp");
+    findCurrencyValue("xbybtc");
+    findCurrencyValue("xbycha");
+    findCurrencyValue("xflbtc");
+    findCurrencyValue("xflcha");
+    findCurrencyValue("btccha");
+    findCurrencyValue("ethbtc");
+    findCurrencyValue("ethcha");
 }
 
+void MarketValue::setMarketValue(const QString &check, const QString &currency, const QString &currencyValue) {
+    if (check != m_marketValue) {
+        m_marketValue = check;
+        emit marketValueChanged(currency, currencyValue);
+    }
+}

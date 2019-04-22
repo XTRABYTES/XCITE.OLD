@@ -22,6 +22,8 @@
 #include <QZXing.h>
 #include "../backend/xchat/xchat.hpp"
 #include "../backend/xchat/xchatconversationmodel.hpp"
+#include "../backend/staticnet/staticnet.hpp"
+#include "../backend/xutility/xutility.hpp"
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
@@ -30,6 +32,10 @@
 #include "../backend/support/Settings.hpp"
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
+#include "../backend/integrations/Explorer.hpp"
+#include "../backend/integrations/wallet.hpp"
+#include "../backend/integrations/xutility_integration.hpp"
+#include "../backend/integrations/staticnet_integration.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -51,6 +57,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<XChatConversationModel>("XChatConversationModel", 0, 1, "XChatConversationModel");
     qmlRegisterType<AddressBookModel>("AddressBookModel", 0, 1, "AddressBookModel");
     qmlRegisterType<ClipboardProxy>("Clipboard", 1, 0, "Clipboard");
+    qmlRegisterType<Settings>("xtrabytes.xcite.settings", 1, 0, "XCiteSettings");
 
     QQmlApplicationEngine engine;
     QZXing::registerQMLImageProvider(engine);
@@ -61,7 +68,6 @@ int main(int argc, char *argv[])
     selector->setExtraSelectors(QStringList() << "mobile");
 #endif
 
-    XchatObject xchatRobot;
     xchatRobot.Initialize();
     engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
 
@@ -72,8 +78,33 @@ int main(int argc, char *argv[])
     // wire-up market value
     MarketValue marketValue;
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
-    
-	// set app version
+
+    // wire-up Explorer
+    Explorer explorer;
+    engine.rootContext()->setContextProperty("explorer", &explorer);
+
+    // wire-up wallet
+    Wallet walletFunction;
+    engine.rootContext()->setContextProperty("WalletFunction", &walletFunction);
+
+    // wire-up xutility_integration
+    xutility_integration xUtil_int;
+    engine.rootContext()->setContextProperty("xUtil_int", &xUtil_int);
+    Xutility xUtil;
+    engine.rootContext()->setContextProperty("xUtil", &xUtil);
+
+    // wire-up staticnet_integration
+    staticNet.Initialize();
+    engine.rootContext()->setContextProperty("StaticNet", &staticNet);
+    staticnet_integration static_int;
+    engine.rootContext()->setContextProperty("static_int", &static_int);
+
+
+    // wire-up ClipboardProxy
+    ClipboardProxy clipboardProxy;
+    engine.rootContext()->setContextProperty("clipboardProxy", &clipboardProxy);
+
+    // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
 
@@ -84,6 +115,10 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("ReleaseChecker", &releaseChecker);
     releaseChecker.checkForUpdate();
 
+    QSettings appSettings;
+    Settings settings(&engine, &appSettings);
+    engine.rootContext()->setContextProperty("UserSettings", &settings);
+
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty()) {
         return -1;
@@ -91,19 +126,46 @@ int main(int argc, char *argv[])
 
     QObject *rootObject = engine.rootObjects().first();
 
-    QSettings appSettings;
-    Settings settings(&engine, &appSettings);
+    QObject::connect(rootObject, SIGNAL(checkOS()), &settings, SLOT(onCheckOS()));
+    QObject::connect(rootObject, SIGNAL(userLogin(QString, QString)), &settings, SLOT(login(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(createUser(QString, QString)), &settings, SLOT(CreateUser(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(userExists(QString)), &settings, SLOT(UserExists(QString)));
     QObject::connect(rootObject, SIGNAL(localeChange(QString)), &settings, SLOT(onLocaleChange(QString)));
     QObject::connect(rootObject, SIGNAL(clearAllSettings()), &settings, SLOT(onClearAllSettings()));
+    QObject::connect(rootObject, SIGNAL(initialisePincode(QString)), &settings, SLOT(initialisePincode(QString)));
+    QObject::connect(rootObject, SIGNAL(savePincode(QString)), &settings, SLOT(onSavePincode(QString)));
+    QObject::connect(rootObject, SIGNAL(checkPincode(QString)), &settings, SLOT(checkPincode(QString)));
+    QObject::connect(rootObject, SIGNAL(saveAddressBook(QString)), &settings, SLOT(SaveAddresses(QString)));
+    QObject::connect(rootObject, SIGNAL(saveContactList(QString)), &settings, SLOT(SaveContacts(QString)));
+    QObject::connect(rootObject, SIGNAL(saveAppSettings()), &settings, SLOT(SaveSettings()));
+    QObject::connect(rootObject, SIGNAL(saveWalletList(QString, QString)), &settings, SLOT(SaveWallet(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(updateAccount(QString, QString, QString)), &settings, SLOT(UpdateAccount(QString, QString, QString)));
+    QObject::connect(rootObject, SIGNAL(importAccount(QString, QString)), &settings, SLOT(ImportWallet(QString,QString)));
+    QObject::connect(rootObject,SIGNAL(exportAccount(QString)), &settings, SLOT(ExportWallet(QString)));
+    QObject::connect(rootObject, SIGNAL(checkSessionId()), &settings, SLOT(CheckSessionId()));
 
     // connect QML signals for market value
-    QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findXBYValue(QString)));
+    QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
 
-    // Set defaultCurrency
-    if(appSettings.contains("defaultCurrency"))
-        marketValue.findXBYValue(appSettings.value("defaultCurrency").toString());
-    else
-        marketValue.findXBYValue("USD");
+    // connect QML signals for Explorer
+    QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString)), &explorer, SLOT(getBalanceEntireWallet(QString)));
+    QObject::connect(rootObject, SIGNAL(updateTransactions(QString, QString, QString)), &explorer, SLOT(getTransactionList(QString, QString, QString)));
+    QObject::connect(rootObject, SIGNAL(getDetails(QString, QString)), &explorer, SLOT(getDetails(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(walletUpdate(QString, QString, QString)), &explorer, SLOT(WalletUpdate(QString, QString, QString)));
+
+    // connect QML signal for ClipboardProxy
+    QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));
+
+    // connect QML signals for walletFunctions
+    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeypairEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(helpMe()), &xUtil, SLOT(helpEntry()));
+    QObject::connect(rootObject, SIGNAL(sendCoins(QString)), &static_int, SLOT(sendCoinsEntry(QString)));
+    QObject::connect(&staticNet, SIGNAL(ResponseFromStaticnet(QJsonObject)), &static_int, SLOT(onResponseFromStaticnetEntry(QJsonObject)),Qt::QueuedConnection);      
+    QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
+
+    // Fetch currency values
+    marketValue.findAllCurrencyValues();
 
     // Set last locale
     settings.setLocale(appSettings.value("locale").toString());

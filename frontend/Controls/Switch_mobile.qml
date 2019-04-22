@@ -25,11 +25,9 @@ Item {
     function toggle() {
         if (toggleswitch.state == "on"){
             toggleswitch.state = "off"
-            picklistTracker = 0
         }
         else
             toggleswitch.state = "on"
-            picklistTracker = 0
     }
 
     function releaseSwitch() {
@@ -51,10 +49,16 @@ Item {
         radius: 15
         color: "black"
         opacity: 0.35
+        border.color: "#F2F2F2"
+        border.width: 1
 
         MouseArea {
             anchors.fill: parent
-            onClicked: toggle()
+            onClicked: {
+                if (coinListTracker === 0 && walletListTracker === 0) {
+                    toggle()
+                }
+            }
         }
 
         InnerShadow {
@@ -83,8 +87,13 @@ Item {
             drag.axis: Drag.XAxis
             drag.minimumX: 5
             drag.maximumX: 35
-            onClicked: toggle()
-            onReleased: releaseSwitch()
+            enabled: coinListTracker === 0 && walletListTracker === 0
+            onClicked: {
+                toggle()
+            }
+            onReleased: {
+                releaseSwitch()
+            }
         }
     }
 

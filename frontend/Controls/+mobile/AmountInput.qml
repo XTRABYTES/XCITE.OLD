@@ -23,22 +23,22 @@ TextField {
     property int deleteBtn: 1
     property alias textBackground: inputBackground.color
     property int textboxHeight: textInputComponent.height
+    property int calculator : 1
 
     id: textInputComponent
     color: "white"
-    font.weight: Font.Bold
-    font.pixelSize: 24
-    leftPadding: 42
+    font.family: xciteMobile.name //"Brandon Grotesque"
+    font.pixelSize: 26
+    leftPadding: calculator == 1? 42 : 18
     rightPadding: textboxHeight
-    topPadding: 10
-    bottomPadding: 10
+    topPadding: 6
+    bottomPadding: 4
     verticalAlignment: Text.AlignVCenter
     selectByMouse: true
     inputMethodHints: Qt.ImhFormattedNumbersOnly
     background: Rectangle {
         id: inputBackground
         color: "#34363D"
-        radius: 4
         border.width: parent.activeFocus ? 2 : 0
         border.color: "#34363D"
         implicitWidth: 273
@@ -64,26 +64,20 @@ TextField {
         opacity: !textInputComponent.displayText
                  && (!textInputComponent.activeFocus
                      || textInputComponent.horizontalAlignment !== Qt.AlignHCenter) ? 1.0 : 0.0
-        color: textInputComponent.color
+        color: "#727272"
         clip: contentWidth > width
         elide: Text.ElideRight
     }
 
     Image {
         id: deleteInput
-        source: 'qrc:/icons/CloseIcon.svg'
+        source: darktheme == true? 'qrc:/icons/mobile/delete-icon_01_light.svg' : 'qrc:/icons/mobile/delete-icon_01_dark.svg'
         height: 12
         width: 12
         anchors.right: textInputComponent.right
         anchors.rightMargin: 11
         anchors.verticalCenter: textInputComponent.verticalCenter
         visible: textInputComponent.text != ""
-
-        ColorOverlay {
-            anchors.fill: parent
-            source: parent
-            color: "#F2F2F2"
-        }
 
         MouseArea {
             width: textboxHeight
@@ -98,18 +92,13 @@ TextField {
 
     Image {
         id: amountCalculator
-        source: 'qrc:/icons/icon-converter.svg'
+        source: darktheme == true? 'qrc:/icons/mobile/conversion-icon_01_light.svg' : 'qrc:/icons/mobile/conversion-icon_01_dark.svg'
         height: 16
         width: 20
         anchors.left: textInputComponent.left
         anchors.leftMargin: 11
         anchors.verticalCenter: textInputComponent.verticalCenter
-
-        ColorOverlay {
-            anchors.fill: parent
-            source: parent
-            color: "#F2F2F2"
-        }
+        visible: calculator == 1
 
         MouseArea {
             width: textboxHeight

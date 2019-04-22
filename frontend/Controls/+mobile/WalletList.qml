@@ -16,11 +16,16 @@ import QtQuick.Window 2.2
 import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
+import "qrc:/Controls" as Controls
+
 Rectangle {
     id: allWalletCards
     width: Screen.width
-    height: parent.height
+    height: parent.height - 75
+
     color: "transparent"
+
+    property alias cardSpacing: allWallets.spacing
 
     Component {
         id: walletCard
@@ -29,250 +34,380 @@ Rectangle {
             id: currencyRow
             color: "transparent"
             width: Screen.width
-            height: {
-                if (active == 0) {
-                    0
-                }
-                else {
-                    85
-                }
-            }
-                    /**if (unconfirmedCoins != 0) {
-                        95
-                    }
-                    else {
-                        85
-                    }
-                }
-            }*/
-            visible: active == 1
-
-            DropShadow {
-                anchors.fill: square
-                source: square
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color:"#2A2C31"
-                transparentBorder: true
-            }
+            height: 140
+            anchors.horizontalCenter: parent.horizontalCenter
+            clip: true
 
             Rectangle {
                 id: square
-                width: parent.width - 55
-                height: 75 //unconfirmedCoins != 0 ? 85: 75
+                width: parent.width
+                height: 140
                 radius: 4
-                color: "#42454F"
+                color: "transparent"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: 10
-                visible: active == 1
 
+                Controls.CardBody {
 
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        detectInteraction()
+                    }
+
+                    onReleased: {
+                    }
+
+                    onPressAndHold: {
+                        walletIndex = walletNR
+                        walletDetailTracker = 1
+                    }
+                }
 
                 Image {
-                    id: icon
-                    source: logo
+                    id: walletFavorite
+                    source: favorite == true ? 'qrc:/icons/mobile/favorite-icon_01_color.svg' : (darktheme === true? 'qrc:/icons/mobile/favorite-icon_01_light.svg' : 'qrc:/icons/mobile/favorite-icon_01_dark.svg')
+                    width: 18
+                    fillMode: Image.PreserveAspectFit
+                    anchors.verticalCenter: walletName.verticalCenter
+                    anchors.verticalCenterOffset: -2
                     anchors.left: parent.left
-                    anchors.leftMargin: 14
-                    anchors.top: parent.top
-                    anchors.topMargin: 9
-                    width: 25
-                    height: 25
-                    visible: active == 1
+                    anchors.leftMargin: 28
+                    state: favorite == true ? "yes" : "no"
+
+                    states: [
+                        State {
+                            name: "yes"
+                            PropertyChanges { target: walletFavorite; width: 20}
+                        },
+                        State {
+                            name: "no"
+                            PropertyChanges { target: walletFavorite; width: 18}
+                        }
+                    ]
+
+                    transitions: [
+                        Transition {
+                            from: "no"
+                            to: "yes"
+                            NumberAnimation { target: walletFavorite; properties: "width"; duration: 200; easing.type: Easing.OutBack}
+                        },
+                        Transition {
+                            from: "yes"
+                            to: "no"
+                            NumberAnimation { target: walletFavorite; properties: "width"; duration: 200; easing.type: Easing.InBack}
+                        }
+                    ]
+                }
+
+                Rectangle {
+                    id: favoriteButton
+                    width: 30
+                    height: 30
+                    anchors.verticalCenter: walletFavorite.verticalCenter
+                    anchors.horizontalCenter: walletFavorite.horizontalCenter
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            if (viewOnly == false) {
+                                if (favorite == true) {
+                                    //walletList.setProperty(walletNR, "favorite", false)
+                                }
+                                else {
+                                    resetFavorites(name)
+                                    walletList.setProperty(walletNR, "favorite", true)
+                                }
+                            }
+                        }
+                    }
                 }
 
                 Text {
-                    id: coinName
-                    anchors.left: icon.right
-                    anchors.leftMargin: 7
-                    anchors.verticalCenter: icon.verticalCenter
-                    text: name
-                    font.pixelSize: 18
-                    font.family: "Brandon Grotesque"
-                    color: "#E5E5E5"
+                    id: walletName
+                    anchors.left: parent.left
+                    anchors.leftMargin: 54
+                    anchors.right: amountSizeLabel2.left
+                    anchors.rightMargin: 10
+                    anchors.verticalCenter: amountSizeLabel.verticalCenter
+                    text: label
+                    font.pixelSize: 20
+                    font.family: xciteMobile.name
+                    font.letterSpacing: 2
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                     font.bold: true
-                    visible: active == 1
+                    elide: Text.ElideRight
                 }
 
                 Text {
                     id: amountSizeLabel
                     anchors.right: parent.right
-                    anchors.rightMargin: 14
-                    anchors.verticalCenter: coinName.verticalCenter
+                    anchors.rightMargin: 28
+                    anchors.top: parent.top
+                    anchors.topMargin: 15
                     text: name
-                    font.pixelSize: 18
-                    font.family: "Brandon Grotesque"
-                    color: "#E5E5E5"
-                    font.bold: true
-                    visible: active == 1
+                    font.pixelSize: 20
+                    font.family:  xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
-                    property int decimals: name == "BTC" ? 8 : (balance >= 100000 ? 2 : 4)
+                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
                     property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel1
                     anchors.right: amountSizeLabel.left
-                    anchors.rightMargin: 5
+                    anchors.rightMargin: 3
                     anchors.bottom: amountSizeLabel.bottom
                     anchors.bottomMargin: 1
-                    text: "." + amountArray[1]
-                    font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
-                    color: "#E5E5E5"
-                    font.bold: true
-                    visible: active == 1
+                    text:  "." + amountArray[1]
+                    font.pixelSize: 16
+                    font.family:  xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Text {
-                    property int decimals: name == "BTC" ? 8 : (balance >= 100000 ? 2 : 4)
+                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
                     property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel2
                     anchors.right: amountSizeLabel1.left
-                    anchors.verticalCenter: coinName.verticalCenter
+                    anchors.verticalCenter: walletName.verticalCenter
                     text: amountArray[0]
-                    font.pixelSize: 18
-                    font.family: "Brandon Grotesque"
-                    color: "#E5E5E5"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property var amountArray: (fiatValue.toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
-                    id: totalValueLabel1
-                    anchors.right: square.right
-                    anchors.rightMargin:14
-                    anchors.bottom: totalValueLabel2.bottom
-                    text: "." + amountArray[1]
-                    font.pixelSize: 11
-                    font.family: "Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property var amountArray: (fiatValue.toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
-                    id: totalValueLabel2
-                    anchors.right: totalValueLabel1.left
-                    anchors.verticalCenter: price2.verticalCenter
-                    text: amountArray[0]
-                    font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
+                    font.pixelSize: 20
+                    font.family:  xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
                 }
 
                 Label {
-                    id: dollarSign2
-                    anchors.right: totalValueLabel2.left
-                    anchors.leftMargin: 0
-                    anchors.verticalCenter: totalValueLabel2.verticalCenter
-                    text: "$"
-                    font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    id: percentChangeLabel
-                    anchors.left: price2.right
-                    anchors.leftMargin: 5
-                    anchors.bottom: price2.bottom
-                    text: percentage >= 0? "+" + percentage + "%" : percentage + "%"
-                    font.pixelSize: 12
-                    font.family: "Brandon Grotesque"
-                    color: percentage <= 0 ? "#E55541" : "#4BBE2E"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property var amountArray: (coinValue.toLocaleString(Qt.locale("en_US"), "f", 4)).split('.')
-                    id: price1
-                    anchors.left: dollarSign1.right
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 10
-                    text: amountArray[0]
-                    font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Text {
-                    property var amountArray: (coinValue.toLocaleString(Qt.locale("en_US"), "f", 4)).split('.')
-                    id: price2
-                    anchors.left: price1.right
-                    anchors.bottom: price1.bottom
-                    text: "." + amountArray[1]
-                    font.pixelSize: 11
-                    font.family: "Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                Label {
-                    id: dollarSign1
-                    anchors.left: icon.left
-                    anchors.verticalCenter: price1.verticalCenter
-                    text: "$"
-                    font.pixelSize: 14
-                    font.family: "Brandon Grotesque"
-                    color: "#828282"
-                    font.bold: true
-                    visible: active == 1
-                }
-
-                /**Text {
-                    id: unconfirmed
-                    anchors.right: squamountSizeLabelare.right
+                    id: unconfirmedTicker
+                    text: name
+                    anchors.right: amountSizeLabel.right
                     anchors.top: amountSizeLabel.bottom
-                    anchors.topMargin: 4
-                    text: "Unconfirmed " + unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", 4) + " " + name
+                    anchors.topMargin: 2
                     font.pixelSize: 12
-                    font.family: "Brandon Grotesque"
-                    color: "#F2F2F2"
-                    font.weight: Font.Light
-                    font.italic: true
-                    visible: unconfirmedCoins != 0 && active == 1
-                }*/
+                    font.family: xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                }
 
-                MouseArea {
-                    anchors.fill: parent
+                Label {
+                    property int decimals: unconfirmedCoins == 0? 2 : (unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2))
+                    property var unconfirmedArray: (unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                    id: unconfirmedTotal1
+                    text: "." + unconfirmedArray[1]
+                    anchors.right: unconfirmedTicker.left
+                    anchors.bottom: unconfirmedTicker.bottom
+                    anchors.rightMargin: 3
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                }
 
-                    onClicked: {
-                        if (appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0) {
+                Label {
+                    property int decimals: unconfirmedCoins == 0? 2 : (unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2))
+                    property var unconfirmedArray: (unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                    id: unconfirmedTotal2
+                    text: unconfirmedArray[0]
+                    anchors.right: unconfirmedTotal1.left
+                    anchors.top: unconfirmedTotal1.top
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                }
+
+                Label {
+                    id: unconfirmedLabel
+                    text: "Unconfirmed:"
+                    anchors.right: unconfirmedTotal2.left
+                    anchors.top: unconfirmedTotal2.top
+                    anchors.rightMargin: 7
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                }
+
+                Label {
+                    id: viewOnlyLabel
+                    text: " VIEW ONLY"
+                    anchors.left: transfer.left
+                    anchors.bottom:  unconfirmedLabel.bottom
+                    anchors.bottomMargin: -5
+                    font.pixelSize: 14
+                    font.family: xciteMobile.name
+                    font.letterSpacing: 2
+                    font.bold: true
+                    color: "#E55541"
+                    visible: viewOnly
+                }
+
+                Rectangle {
+                    id: transfer
+                    height: 34
+                    anchors.left: parent.left
+                    anchors.leftMargin: 28
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 20
+                    anchors.right: parent.horizontalCenter
+                    anchors.rightMargin: 7
+                    color: darktheme == true? "#14161B" : "#F2F2F2"
+                    opacity: 0.5
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onReleased: {
+                        }
+
+                        onCanceled: {
+                        }
+
+                        onClicked: {
+                            walletIndex = walletNR
+                            switchState = 0
                             transferTracker = 1
-                            currencyIndex = walletNR
                         }
                     }
+                }
+
+                Label {
+                    text: "TRANSFER"
+                    font.family: xciteMobile.name
+                    font.pointSize: 14
+                    font.bold: true
+                    color: darktheme == true? "#F2F2F2" : maincolor
+                    anchors.horizontalCenter: transfer.horizontalCenter
+                    anchors.verticalCenter: transfer.verticalCenter
+                }
+
+                Rectangle {
+                    height: 34
+                    anchors.left: parent.left
+                    anchors.leftMargin: 28
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 20
+                    anchors.right: parent.horizontalCenter
+                    anchors.rightMargin: 7
+                    color: "transparent"
+                    opacity: 0.5
+                    border.color: maincolor
+                    border.width: 1
+                }
+
+                Rectangle {
+                    id: history
+                    height: 34
+                    anchors.right: parent.right
+                    anchors.rightMargin: 28
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 20
+                    anchors.left: parent.horizontalCenter
+                    anchors.leftMargin: 7
+                    color: darktheme == true? "#14161B" : "#F2F2F2"
+                    opacity: 0.5
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onReleased: {
+                        }
+
+                        onCanceled: {
+                        }
+
+                        onClicked: {
+                            if (coinIndex < 4){
+                                walletIndex = walletNR
+                                transactionPages = 0
+                                currentPage = 1
+                                updateTransactions(name, address, 1)
+                            }
+                        }
+                    }
+
+                    Connections {
+                        target: explorer
+
+                        onUpdateTransactions: {
+                            if (historyTracker === 0) {
+                                transactionPages = totalPages;
+                                loadTransactions(transactions);
+                                historyTracker = 1
+                            }
+                        }
+                    }
+                }
+
+                Label {
+                    text: "HISTORY"
+                    font.family: xciteMobile.name
+                    font.pointSize: 14
+                    font.bold: true
+                    color: coinIndex < 4? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                    anchors.horizontalCenter: history.horizontalCenter
+                    anchors.verticalCenter: history.verticalCenter
+                }
+
+                Rectangle {
+                    height: 34
+                    anchors.right: parent.right
+                    anchors.rightMargin: 28
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 20
+                    anchors.left: parent.horizontalCenter
+                    anchors.leftMargin: 7
+                    color: "transparent"
+                    opacity: 0.5
+                    border.color: coinIndex < 4? maincolor : "#979797"
+                    border.width: 1
                 }
             }
         }
     }
 
     SortFilterProxyModel {
-        id: filteredCoins
-        sourceModel: currencyList
-        sorters: RoleSorter { roleName: "fiatValue" ; sortOrder: Qt.DescendingOrder }
+        id: filteredWallets
+        sourceModel: walletList
+        filters: [
+            RegExpFilter {
+                roleName: "name"
+                pattern: "^" + getName(coinIndex) + "$"
+            },
+            ValueFilter {
+                roleName: "remove"
+                value: false
+            }
+
+        ]
+        sorters: RoleSorter { roleName: "balance" ; sortOrder: Qt.DescendingOrder }
     }
 
     ListView {
-        anchors.fill: parent
         id: allWallets
-        model: filteredCoins
+        model: filteredWallets
         delegate: walletCard
-        contentHeight: (totalWallets * 98)
+        spacing: 0
+        anchors.fill: parent
+        contentHeight: (filteredWallets.count  * 140)
         interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
-   }
+        onDraggingChanged: detectInteraction()
+    }
 }
 

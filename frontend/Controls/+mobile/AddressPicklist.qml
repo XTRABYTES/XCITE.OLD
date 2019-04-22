@@ -14,17 +14,15 @@ import QtQuick 2.7
 import QtQuick.Controls 2.3
 import SortFilterProxyModel 0.2
 
-
+import "qrc:/Controls" as Controls
 
 Rectangle {
     width: parent.width
     height: parent.height
     color: "transparent"
+    clip :true
 
-    property int selectedWallet: 0
-    property string searchFilter:  (selectedWallet == 0 ? "XBY":
-                                                          (selectedWallet == 1 ? "XFUEL" :
-                                                                                 (selectedWallet == 2 ? "BTC" : "ETH")))
+    property string searchFilter: ""
 
     Component {
         id: contactLine
@@ -33,13 +31,43 @@ Rectangle {
             id: contactsRow
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
-            height: 45
+            height: 80
             color:"transparent"
+            clip: true
+
+            Controls.CardBody {
+                id: myCardBody
+            }
+
+            Rectangle {
+                id: clickIndicator
+                anchors.fill: parent
+                color: maincolor
+                opacity: 0.25
+                visible: false
+
+                Connections {
+                    target: picklist
+                    onMovementEnded: {
+                        clickIndicator.visible = false
+                    }
+                }
+            }
 
             MouseArea {
                 anchors.fill: parent
 
+                onPressed: {
+                    clickIndicator.visible = true
+                    detectInteraction()
+                }
+
+                onReleased: {
+                    clickIndicator.visible = false
+                }
+
                 onClicked: {
+                    clickIndicator.visible = false
                     if (transferTracker == 1) {
                         addressbookTracker = 0;
                         selectedAddress = address
@@ -47,42 +75,38 @@ Rectangle {
                 }
             }
 
-            Rectangle {
-                height: 1
-                width: parent.width - 10
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                color: "#727272"
-            }
-
             Label {
                 id: addressContactName
-                text: {
-                    if (name.length > 12) {
-                        name.substring(0,12) + "..."}
-                    else {
-                        name
-                    }
-                }
+                width: 130
+                text: contactList.get(contact).firstName + " " + contactList.get(contact).lastName + " (" + label + ")"
                 anchors.left: parent.left
-                anchors.leftMargin: 30
-                anchors.verticalCenter: parent.verticalCenter
-                font.family: "Brandon Grotesque"
-                font.pixelSize: 16
+                anchors.leftMargin: 28
+                anchors.right: parent.right
+                anchors.rightMargin: 28
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                font.family: xciteMobile.name
+                font.pixelSize: 20
+                font.capitalization: Font.SmallCaps
+                font.letterSpacing: 2
                 font.bold: true
-                color: "#F2F2F2"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                elide: Text.ElideRight
             }
 
             Label {
                 id: addressHash
-                text: (address).substring(0,17) + "..."
+                text: address
                 anchors.left: parent.left
-                anchors.leftMargin: 163
-                anchors.bottom: addressContactName.bottom
-                font.family: "Brandon Grotesque"
+                anchors.leftMargin: 28
+                anchors.right: parent.right
+                anchors.rightMargin: 28
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 10
+                font.family: xciteMobile.name
                 font.pixelSize: 14
-                font.weight: Font.Light
-                color: "#F2F2F2"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                elide: Text.ElideRight
             }
         }
     }
@@ -91,13 +115,34 @@ Rectangle {
         sourceModel: addressList
         filters: [
             RegExpFilter {
-                 roleName: "coin"
-                 pattern: searchFilter
+                roleName: "coin"
+                pattern: "^" + selectedCoin + "$"
             },
             ValueFilter {
-                 roleName: "active"
-                 value: true
+                roleName: "remove"
+                value: false
+            },
+            AnyOf {
+                RegExpFilter {
+                    roleName: "address"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "label"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "fullname"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
             }
+        ]
+        sorters: [
+            StringSorter { roleName: "fullname" },
+            StringSorter { roleName: "label" }
         ]
     }
 
@@ -107,5 +152,7 @@ Rectangle {
         id: picklist
         model: filteredAddresses
         delegate: contactLine
+        contentHeight: (filteredAddresses.count * 80) + 50
+        onDraggingChanged: detectInteraction()
     }
 }

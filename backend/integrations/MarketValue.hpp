@@ -23,25 +23,21 @@
 class MarketValue : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString marketValue READ marketValue WRITE setMarketValue NOTIFY marketValueChanged)
+//    Q_PROPERTY(QString marketValue READ marketValue WRITE setMarketValue NOTIFY marketValueChanged)
 public:
     explicit MarketValue(QObject *parent = nullptr);
+    void setMarketValue(const QString &check, const QString &currency, const QString &currencyValue);
 
-    void setMarketValue(const QString &value) {
-        if (value != m_marketValue) {
-            m_marketValue = value;
-            emit marketValueChanged();
-        }
-    }
     QString marketValue() const {
         return m_marketValue;
     }
 
 signals:
-    void marketValueChanged();
+    void marketValueChanged(QString currency, QString currencyValue);
 public slots:
-    void findXBYValue(QString currency);
-    void onFinished(QNetworkReply* reply);
+    void findAllCurrencyValues();
+    void findCurrencyValue(QString currency);
+
 private:
     QString m_marketValue;
 };

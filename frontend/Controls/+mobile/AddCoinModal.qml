@@ -14,16 +14,17 @@ import QtQuick.Controls 2.3
 import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import SortFilterProxyModel 0.2
 
 import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addCoinModal
     width: parent.width
-    height: parent.height - 150
+    height: parent.height - 180
     color: "transparent"
     anchors.top: parent.top
-    anchors.topMargin: 150
+    anchors.topMargin: 180
     anchors.right: parent.right
 
     property alias sidebarState: addCoinSidebar.state
@@ -32,7 +33,7 @@ Rectangle {
         id: addCoinSidebar
         height: parent.height
         width: 0
-        color: "#34363D"
+        color: darktheme == false ? "#34363D" : "#2A2C31"
         anchors.top: parent.top
         anchors.right: parent.right
         state: "closed"
@@ -60,96 +61,179 @@ Rectangle {
         ]
 
         Component {
-                id: walletCard
+            id: walletCard
+
+            Rectangle {
+                id: currencyRow
+                color: "transparent"
+                width: Screen.width
+                height: 50
+
+                Image {
+                    id: icon
+                    source: logo
+                    anchors.left: parent.left
+                    anchors.leftMargin: 14
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 25
+                    height: 25
+                }
+
+                Text {
+                    id: coinName
+                    anchors.left: icon.right
+                    anchors.leftMargin: 7
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
+                    elide: Text.ElideRight
+                    anchors.verticalCenter: icon.verticalCenter
+                    text: name
+                    font.pixelSize: 18
+                    font.family: xciteMobile.name
+                    color: "#E5E5E5"
+                    font.bold: true
+                }
 
                 Rectangle {
-                    id: currencyRow
-                    color: "transparent"
-                    width: Screen.width
-                    height: 50
+                    id: filterActiveCoin
+                    height: parent.height
+                    width: parent.width
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: "black"
+                    opacity: .25
+                    visible: active == false
+                }
 
-                    Image {
-                            id: icon
-                            source: logo
-                            anchors.left: parent.left
-                            anchors.leftMargin: 14
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: 25
-                            height: 25
-                        }
+                Rectangle {
+                    id: divider1
+                    height: 1
+                    width: parent.width
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    color: "#2a2c31"
+                    opacity: 0.5
+                }
 
-                        Text {
-                            id: coinName
-                            anchors.left: icon.right
-                            anchors.leftMargin: 7
-                            anchors.verticalCenter: icon.verticalCenter
-                            text: name
-                            font.pixelSize: 18
-                            font.family: "Brandon Grotesque"
-                            color: "#E5E5E5"
-                            font.bold: true
-                        }
+                Rectangle {
+                    id: divider2
+                    height: 1
+                    width: parent.width
+                    anchors.bottom: divider1.top
+                    anchors.left: parent.left
+                    color: "#979797"
+                }
 
-                        Rectangle {
-                            id: filterActiveCoin
-                            height: parent.height
-                            width: parent.width
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: "black"
-                            opacity: .25
-                            visible: active == 0
-                        }
+                MouseArea {
+                    anchors.fill: parent
 
-                        Rectangle {
-                            id: divider1
-                            height: 1
-                            width: parent.width
-                            anchors.bottom: parent.bottom
-                            anchors.left: parent.left
-                            color: "#2a2c31"
-                            opacity: 0.5
-                        }
-
-                        Rectangle {
-                            id: divider2
-                            height: 1
-                            width: parent.width
-                            anchors.bottom: divider1.top
-                            anchors.left: parent.left
-                            color: "#979797"
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-
-                            function compareCoin() {
-                                for(var i = 0; i < currencyList.count; i++) {
-                                    if (currencyList.get(i).name === name) {
-                                        if (active == 0) {
-                                            currencyList.setProperty(i, "active", 1)
+                    function compareCoin() {
+                        for(var i = 0; i < coinList.count; i++) {
+                            if (coinList.get(i).name === name) {
+                                if (active == false) {
+                                    coinList.setProperty(i, "active", true)
+                                    for (var e = 0; e < addressList.count; e++) {
+                                        if (addressList.get(e).coin === name) {
+                                            addressList.setProperty(e, "active", true)
                                         }
-                                        else {
-                                            currencyList.setProperty(i, "active", 0)
+                                    }
+                                    for (var y = 0; y < walletList.count; y++) {
+                                        if (walletList.get(y).name === name) {
+                                            walletList.setProperty(y, "active", true)
                                         }
+                                    }
+                                    if (name == "XFUEL") {
+                                       userSettings.xfuel = true
+                                    }
+                                    if (name == "XBY") {
+                                       userSettings.xby = true
+                                    }
+                                    if (name == "XFUEL-TEST") {
+                                       userSettings.xfueltest = true
+                                    }
+                                    if (name == "XBY-TEST") {
+                                       userSettings.xbytest = true
+                                    }
+                                    if (name == "BTC") {
+                                       userSettings.btc = true
+                                    }
+                                    if (name == "ETH") {
+                                       userSettings.eth = true
+                                    }
+
+                                }
+                                else {
+                                    coinList.setProperty(i, "active", false)
+                                    for (var a = 0; a < addressList.count; a++) {
+                                        if (addressList.get(a).coin === name) {
+                                            addressList.setProperty(a, "active", false)
+                                        }
+                                    }
+                                    for (var o = 0; o < walletList.count; o++) {
+                                        if (walletList.get(o).name === name) {
+                                            walletList.setProperty(o, "active", false)
+                                        }
+                                    }
+                                    if (name == "XFUEL") {
+                                       userSettings.xfuel = false
+                                    }
+                                    if (name == "XBY") {
+                                       userSettings.xby = false
+                                    }
+                                    if (name == "XFUEL-TEST") {
+                                       userSettings.xfueltest = false
+                                    }
+                                    if (name == "XBY-TEST") {
+                                       userSettings.xbytest = false
+                                    }
+                                    if (name == "BTC") {
+                                       userSettings.btc = false
+                                    }
+                                    if (name == "ETH") {
+                                       userSettings.eth = false
                                     }
                                 }
                             }
-
-                            onClicked: {
-                                compareCoin()
-                                sumBalance()
-                            }
                         }
                     }
-            }
 
-            ListView {
-                anchors.fill: parent
-                id: allWallets
-                model: currencyList
-                delegate: walletCard
-          }
+                    onClicked: {
+                        click01.play()
+                        detectInteraction()
+                        compareCoin()
+                        sumBalance()
+                    }
+                }
+            }
+        }
+
+        SortFilterProxyModel {
+            id: filteredCurrencies
+            sourceModel: coinList
+            sorters: [
+                RoleSorter {roleName: "testnet" ; sortOrder: Qt.AscendingOrder},
+                RoleSorter {roleName: "xby"; sortOrder: Qt.DescendingOrder},
+                StringSorter {roleName: "name"}
+            ]
+        }
+
+        ListView {
+            anchors.fill: parent
+            id: allWallets
+            model: filteredCurrencies
+            delegate: walletCard
+
+            ScrollBar.vertical: ScrollBar {
+                parent: allWallets.parent
+                anchors.top: allWallets.top
+                anchors.right: allWallets.right
+                anchors.bottom: allWallets.bottom
+                width: 5
+                opacity: 1
+                policy: ScrollBar.AlwaysOn
+                visible: (coinList.count * 50) > (parent.height)
+            }
+        }
 
         Rectangle {
             id: clickArea
@@ -172,15 +256,13 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
 
-                onClicked: {
+                onPressed: {
                     addCoinSidebar.state = "closed"
                     timer.start()
                 }
             }
         }
-
     }
-
 }
 
 

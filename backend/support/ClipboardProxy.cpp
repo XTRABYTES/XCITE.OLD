@@ -15,11 +15,19 @@
 ClipboardProxy::ClipboardProxy(QObject *parent)
     : QObject(parent)
 {
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    QObject::connect(clipboard, &QClipboard::dataChanged, this, &ClipboardProxy::dataChanged);
 }
 
 void ClipboardProxy::setDataText(const QString &text)
 {
     QGuiApplication::clipboard()->setText(text, QClipboard::Clipboard);
+
+}
+
+void ClipboardProxy::copyText2Clipboard(QString text)
+{
+    setDataText(text);
 }
 
 QString ClipboardProxy::dataText() const

@@ -14,6 +14,8 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 
+import "qrc:/Controls" as Controls
+
 Rectangle {
     id: sidebar
     height: Screen.height
@@ -22,6 +24,8 @@ Rectangle {
     color: "#2A2C31"
     anchors.left: parent.left
     z: 100
+
+    onStateChanged: detectInteraction()
 
     states: [
         State {
@@ -38,196 +42,449 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: sidebar; property: "anchors.leftMargin"; duration: 300; easing.type: Easing.OutCubic}
+            NumberAnimation { target: sidebar; property: "anchors.leftMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
-    Image {
-        id: settings
-        anchors.bottom: sidebar.bottom
-        anchors.bottomMargin: 65
-        anchors.horizontalCenter: sidebar.horizontalCenter
-        source: '../icons/icon-settings.svg'
-        width: 35
-        height: 35
-        z: 100
+    Flickable {
+        id: sections
+        width: sidebar.width
+        anchors.top: sidebar.top
+        anchors.bottom: logoutSection.top
+        contentHeight: homeSection.height + settingsSection.height + backupSection.height + appsSection.height + notifSection.height + 125
+        boundsBehavior: Flickable.StopAtBounds
+        clip: true
         visible: appsTracker == 1
-        /**MouseArea {
-            anchors.fill: settings
-            onClicked: {
-                mainRoot.push("../Settings.qml")
-                appsTracker = 0
+
+        Item {
+            id: homeSection
+            width: sidebar.width
+            height: homeText.height + 70
+            anchors.top: parent.top
+
+            Image {
+                id: home
+                source: 'qrc:/icons/mobile/home-icon_01.svg'
+                anchors.top: parent.top
+                anchors.topMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Text {
+                    id: homeText
+                    text: "HOME"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
             }
-        }*/
-        ColorOverlay {
-            anchors.fill: settings
-            source: settings
-            color: "#5E8BFE"
+
+            Rectangle {
+                id: homeButtonArea
+                width: parent.width
+                height: home.height + homeText.height + 5
+                anchors.top: parent.top
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        coinTracker = 0
+                        contactTracker = 0
+                        appsTracker = 0
+                        if (selectedPage != "home") {
+                            //push of current page
+                            selectedPage = "home"
+                            mainRoot.push("../DashboardForm.qml")
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: settingsSection
+            width: sidebar.width
+            height: settingsText.height + 70
+            anchors.top: homeSection.bottom
+
+            Image {
+                id: settings
+                anchors.top: parent.top
+                anchors.topMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: 'qrc:/icons/mobile/settings-icon_01.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Text {
+                    id: settingsText
+                    text: "SETTINGS"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                id: settingsButtonArea
+                width: parent.width
+                height: settings.height + settingsText.height + 5
+                anchors.top: parent.top
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        if (selectedPage != "settings") {
+                            appsTracker = 0
+                            selectedPage = "settings"
+                            mainRoot.push("../WalletSettings.qml")
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: backupSection
+            width: sidebar.width
+            height: backupText.height + 70
+            anchors.top: settingsSection.bottom
+
+            Image {
+                id: backup
+                anchors.top: parent.top
+                anchors.topMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: 'qrc:/icons/mobile/wallet-icon_01.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Text {
+                    id: backupText
+                    text: "BACK UP"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                id: backupButtonArea
+                width: parent.width
+                height: backup.height + backupText.height + 5
+                anchors.top: parent.top
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        if (selectedPage != "backup") {
+                            if (userSettings.pinlock === true) {
+                                backupTracker = 1
+                                pincodeTracker = 1
+                            }
+                            else {
+                                appsTracker = 0
+                                selectedPage = "backup"
+                                mainRoot.push("qrc:/+mobile/WalletBackup.qml")
+                            }
+                        }
+                    }
+                }
+
+                Timer {
+                    id: timer3
+                    interval: 1000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        appsTracker = 0
+                        selectedPage = "backup"
+                        mainRoot.push("qrc:/+mobile/WalletBackup.qml");
+                    }
+                }
+
+                Connections {
+                    target: UserSettings
+                    onPincodeCorrect: {
+                        if (pincodeTracker == 1 && backupTracker == 1) {
+                            timer3.start()
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: appsSection
+            width: sidebar.width
+            height: appsText.height + 70
+            anchors.top: backupSection.bottom
+
+            Image {
+                id: apps
+                anchors.top: parent.top
+                anchors.topMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: 'qrc:/icons/mobile/dapps-icon_01.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Text {
+                    id: appsText
+                    text: "APPS"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                id: appsButtonArea
+                width: parent.width
+                height: apps.height + appsText.height + 5
+                anchors.top: parent.top
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        if (selectedPage != "apps") {
+                            appsTracker = 0
+                            selectedPage = "apps"
+                            mainRoot.push("../Applications.qml")
+                        }
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: notifSection
+            width: sidebar.width
+            height: notifText.height + 70
+            anchors.top: appsSection.bottom
+
+            Image {
+                id: notif
+                anchors.top: parent.top
+                anchors.topMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: 'qrc:/icons/mobile/notification-icon_01.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                z: 100
+
+                Rectangle {
+                    id: notifIndicator
+                    width: 8
+                    height: 8
+                    radius: 4
+                    color: "#E55541"
+                    anchors.horizontalCenter: parent.right
+                    anchors.verticalCenter: parent.top
+                    visible: alertList.count > 1
+                }
+
+                Text {
+                    id: notifText
+                    text: "ALERTS"
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 5
+                    color: maincolor
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                id: notifButtonArea
+                width: parent.width
+                height: notif.height + notifText.height + 5
+                anchors.top: parent.top
+                color: "transparent"
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        if (selectedPage != "notif") {
+                            appsTracker = 0
+                            selectedPage = "notif"
+                            mainRoot.push("../Notifications.qml")
+                        }
+                    }
+                }
+            }
         }
     }
 
-    Rectangle{
-        width: xchangeText.width + 5
-        height: 2
-        color: "#7F7F7F"
-        anchors.bottom: settings.top
-        anchors.bottomMargin: 25
-        anchors.horizontalCenter: xchangeLink.horizontalCenter
-        visible: appsTracker == 1
-        z: 100
+    Rectangle {
+        id: fadeOut
+        width: sidebar.width
+        height: 100
+        anchors.bottom: sections.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: "transparent"
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(x, y)
+            end: Qt.point(x, y + height)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: "#2A2C31" }
+                GradientStop { position: 1.0; color: "#2A2C31" }
+            }
+        }
     }
 
-    Image {
-        id: xchangeLink
-        source: '../icons/XCHANGE_02.svg'
-        anchors.bottom: settings.top
-        anchors.bottomMargin: 75
-        anchors.horizontalCenter: sidebar.horizontalCenter
-        width: 40
-        height: 40
-        z: 100
+    Item {
+        id: standbySection
+        width: sidebar.width
+        height: standbyText.height + 70
+        anchors.bottom: logoutSection.top
         visible: appsTracker == 1
-        ColorOverlay {
-            anchors.fill: xchangeLink
-            source: xchangeLink
-            color: "#5E8BFE" // make image like it lays under grey glass
+
+        Image {
+            id: standby
+            anchors.bottom: standbyText.top
+            anchors.bottomMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            source: 'qrc:/icons/mobile/standby-icon_01.svg'
+            width: 40
+            height: 40
+            fillMode: Image.PreserveAspectFit
+            z: 100
         }
+
         Text {
-            id: xchangeText
-            text: "X-CHANGE"
-            anchors.top: parent.bottom
-            anchors.topMargin: 5
-            color: "#5E8BFE"
-            font.family: "Brandon Grotesque"
+            id: standbyText
+            text: "STAND BY"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 50
+            color: maincolor
+            font.family: xciteMobile.name
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
         }
+
         Rectangle {
-            id: xchangeButtonArea
-            width: xchangeLink.width
-            height: xchangeLink.height
-            anchors.left: xchangeLink.left
-            anchors.bottom: xchangeLink.bottom
+            id: standbyButtonArea
+            width: parent.width
+            height: standby.height + standbyText.height + 5
+            anchors.top: parent.top
             color: "transparent"
             MouseArea {
-                anchors.fill: xchangeButtonArea
+                anchors.fill: parent
                 onClicked: {
-                    mainRoot.push("../xchange.qml")
+                    click01.play()
+                    detectInteraction()
+                    standBy = 1
+                    screenSaver = 0
+                    timer.start()
+                    mainRoot.push("../StandBy.qml")
                     appsTracker = 0
                 }
             }
         }
     }
 
-    Image {
-        id: xvaultLink
-        source: '../icons/XVAULT_02.svg'
-        anchors.bottom: xchangeLink.top
-        anchors.bottomMargin: 50
-        anchors.horizontalCenter: sidebar.horizontalCenter
-        width: 40
-        height: 40
-        z: 100
+    Item {
+        id: logoutSection
+        width: sidebar.width
+        height: logoutText.height + 70
+        anchors.bottom: parent.bottom
         visible: appsTracker == 1
-        ColorOverlay {
-            anchors.fill: xvaultLink
-            source: xvaultLink
-            color: "#5E8BFE"
+
+        Image {
+            id: logout
+            anchors.bottom: logoutText.top
+            anchors.bottomMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            source: 'qrc:/icons/mobile/logout-icon_01.svg'
+            width: 40
+            height: 40
+            fillMode: Image.PreserveAspectFit
+            z: 100
         }
+
         Text {
-            text: "X-VAULT"
-            anchors.top: parent.bottom
-            anchors.topMargin: 5
-            color: "#5E8BFE"
-            font.family: "Brandon Grotesque"
+            id: logoutText
+            text: "LOG OUT"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 50
+            color: maincolor
+            font.family: xciteMobile.name
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
         }
-    }
 
-    Image {
-        id: xchatLink
-        source: '../icons/XCHAT_02.svg'
-        anchors.bottom: xvaultLink.top
-        anchors.bottomMargin: 50
-        anchors.horizontalCenter: sidebar.horizontalCenter
-        width: 40
-        height: 40
-        z: 100
-        visible: appsTracker == 1
-        ColorOverlay {
-            anchors.fill: xchatLink
-            source: xchatLink
-            color: "#5E8BFE"
-        }
-        Text {
-            text: "X-CHAT"
-            anchors.top: parent.bottom
-            anchors.topMargin: 5
-            color: "#5E8BFE"
-            font.family: "Brandon Grotesque"
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.bold: true
-        }
-    }
-
-    /**
-    Text {
-        id: calculatorLink
-        text: "CALCULATOR"
-        anchors.bottom: xchatLink.top
-        anchors.bottomMargin: 50
-        color: "#5E8BFF"
-        font.family: "Brandon Grotesque"
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.bold: true
-        MouseArea {
-            anchors.fill: calculatorLink
-            onClicked: {
-                mainRoot.push("../xcalculator.qml")
-                appsTracker = 0
-            }
-        }
-    }
-    */
-
-    Image {
-        id: home
-        source: 'qrc:/icons/icon-home.svg'
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: sidebar.horizontalCenter
-        width: 40
-        height: 40
-        z: 100
-        visible: appsTracker == 1
-        ColorOverlay {
-            anchors.fill: home
-            source: home
-            color: "#5E8BFE" // make image like it lays under grey glass
-        }
-        Text {
-            id: homeText
-            text: "HOME"
-            anchors.top: parent.bottom
-            anchors.topMargin: 5
-            color: "#5E8BFE"
-            font.family: "Brandon Grotesque"
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.bold: true
-        }
         Rectangle {
-            id: homeButtonArea
-            width: home.width
-            height: home.height
-            anchors.left: home.left
-            anchors.bottom: home.bottom
+            id: logoutButtonArea
+            width: parent.width
+            height: logout.height + logoutText.height + 5
+            anchors.top: parent.top
             color: "transparent"
             MouseArea {
-                anchors.fill: homeButtonArea
+                anchors.fill: parent
                 onClicked: {
-                    mainRoot.pop("../DashboardForm.qml")
-                    appsTracker = 0
+                    click01.play()
+                    detectInteraction()
+                    sessionStart = 0
+                    sessionTime = 0
+                    manualLogout = 1
+                    logoutTracker = 1
                 }
             }
         }
@@ -237,14 +494,23 @@ Rectangle {
         anchors.left: parent.right
         width: appsTracker == 1 ? (Screen.width - parent.width) : 0
         height: parent.height
-        color: "transparent"
+        color: "black"
+        opacity: 0.5
 
         MouseArea {
             anchors.fill: parent
 
-            onClicked: {
+            onPressed: {
                 appsTracker = 0
+                detectInteraction()
             }
         }
+    }
+
+    Controls.Pincode {
+        id: myPincode
+        z: 100
+        anchors.top: parent.top
+        anchors.left: parent.left
     }
 }

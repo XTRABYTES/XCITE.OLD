@@ -18,7 +18,7 @@ import SortFilterProxyModel 0.2
 Rectangle {
     id: completePicklist
     width: 100
-    height: totalLines * 35
+    height: totalLines * 35 < 175 ? totalLines * 35 : 175
     radius: 5
     color: "#2A2C31"
 
@@ -35,6 +35,14 @@ Rectangle {
             height: 35
             color: "transparent"
 
+            Rectangle {
+                id: clickIndicator
+                anchors.fill: parent
+                color: "white"
+                opacity: 0.25
+                visible: false
+            }
+
             Image {
                 id: picklistCoinLogo
                 source: logo
@@ -50,8 +58,7 @@ Rectangle {
                 text: name
                 color: "#F2F2F2"
                 font.pixelSize: 16
-                font.family: "Brandon Grotesque"
-                font.weight: Font.Medium
+                font.family: xciteMobile.name //"Brandon Grotesque"
                 anchors.verticalCenter: picklistCoinLogo.verticalCenter
                 anchors.left: picklistCoinLogo.right
                 anchors.leftMargin: 7
@@ -60,7 +67,20 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
 
+                onPressed: {
+                    clickIndicator.visible = true
+                }
+
+                onCanceled: {
+                    clickIndicator.visible = false
+                }
+
+                onReleased: {
+                    clickIndicator.visible = false
+                }
+
                 onClicked: {
+                    clickIndicator.visible = false
                     newCoinPicklist = index;
                     newCoinSelect = 1
                     picklistTracker = 0
@@ -80,18 +100,19 @@ Rectangle {
 
     SortFilterProxyModel {
         id: filteredCurrencies
-        sourceModel: currencyList
+        sourceModel: coinList
         filters: [
             ValueFilter {
-                 enabled: onlyActive == true
-                 roleName: "active"
-                 value: true
+                enabled: onlyActive == true
+                roleName: "active"
+                value: true
             }
         ]
-        /**sorters: [
+        sorters: [
             RoleSorter { roleName: "favorite"; sortOrder: Qt.DescendingOrder },
             StringSorter { roleName: "name" }
-        ]*/
+        ]
+
     }
 
     ListView {

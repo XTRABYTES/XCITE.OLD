@@ -20,10 +20,6 @@ import "qrc:/Controls" as Controls
 
 Item {
 
-    Loader {
-        id: pageLoader
-    }
-
     // shared vars
 
     property int pageTracker: view.currentIndex == 0 ? 0 : 1

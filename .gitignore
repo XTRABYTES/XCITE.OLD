@@ -20,7 +20,7 @@
 # Compiled Static libraries
 *.lai
 *.la
-*.a
+#*.a
 *.lib
 
 # Executables
@@ -37,7 +37,13 @@ Makefile
 build/release/*
 packages/global.xtrabytes.xcite/data/*
 android
+android-build/
+android-libxcite.so-deployment-settings.json
+app_process
+linker
 
 # Qt
 *.pro.user
 *.pro.user.*
+
+!dependencies

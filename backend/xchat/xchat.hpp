@@ -57,4 +57,6 @@ private:
     bool m_bIsInitialized;
 };
 
+extern XchatObject xchatRobot;
+
 #endif // XCHAT_H
