@@ -21,6 +21,7 @@
 #include <cstdint>
 #include <cstring>
 #include <tuple>
+#include <QMessageBox>
 
 #ifdef Q_OS_ANDROID //added to get write permission for Android
 #include <QtAndroid>
@@ -625,9 +626,7 @@ bool Settings::SaveSettings(){
          m_pincode = m_oldPincode;
          emit saveFailed();
      }
-
-
-    return true;
+     return true;
 }
 
 void Settings::LoadSettings(QByteArray settings, QString fileLocation){
@@ -686,6 +685,7 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     docWallet.setArray(walletArray);
     QString wallet(docWallet.toJson(QJsonDocument::Compact));
     m_wallet = wallet;
+
     emit walletLoaded(m_wallet);
 
     QString pincode = json.value("pincode").toString().toLatin1();
@@ -865,7 +865,6 @@ QString Settings::LoadFile(QString fileName, QString fileLocation){
         if(result == QtAndroid::PermissionResult::Denied){
             QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.WRITE_EXTERNAL_STORAGE"}));
             if(resultHash["android.permission.WRITE_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Denied){
-                emit saveFileFailed();
                 return "ERROR";
             }
         }
@@ -882,6 +881,7 @@ QString Settings::LoadFile(QString fileName, QString fileLocation){
     QFile file(currentDir + "/" + fileName);
     if (!file.open(QIODevice::ReadOnly)) {
         file.errorString(); //We can build this out to emit an error message
+        NoWalletFile();
         return "ERROR";
     }
 
@@ -918,9 +918,21 @@ void Settings::CheckSessionId(){
      QJsonValue encryptedText = jsonResponse.object().value("sessionId");
 
      bool sessionCheckBool = encryptedText.toString() == "true" ? true:false;
-
-
      emit sessionIdCheck(sessionCheckBool);
 
 
+}
+
+void Settings::NoWalletFile()
+{
+    qDebug() << "No wallet file found!";
+
+    QMessageBox *msgBox = new QMessageBox;
+    msgBox->setParent(0);
+    msgBox->setWindowTitle("Wallet file ERROR!!!");
+    msgBox->setIcon(QMessageBox::Warning);
+    msgBox->setText("No wallet file was found");
+    msgBox->setStandardButtons(QMessageBox::Ok);
+    msgBox->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+    msgBox->show();
 }

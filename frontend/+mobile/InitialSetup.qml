@@ -21,6 +21,8 @@ import "qrc:/Controls" as Controls
 
 Item {
 
+    property int gotoWallet: 0
+
     Rectangle {
         id: backgroundSetup
         z: 1
@@ -274,7 +276,7 @@ Item {
                         end: Qt.point(x, parent.height)
                         gradient: Gradient {
                             GradientStop { position: 0.0; color: "transparent" }
-                            GradientStop { position: 1.0; color: "#0ED8D2" }
+                            GradientStop { position: 1.0; color: gotoWallet === 0? "#0ED8D2" : "#979797" }
                         }
                     }
 
@@ -282,12 +284,16 @@ Item {
                     MouseArea {
                         anchors.fill: completeButton
 
-                        onReleased: {
-                            updateToAccount();
-                            mainRoot.pop()
-                            mainRoot.push("../Home.qml")
-                            sessionStart = 1
-                            selectedPage = "home"
+                        onClicked: {
+                            if (gotoWallet == 0) {
+                                gotoWallet = 1
+                                updateToAccount();
+                                mainRoot.pop()
+                                mainRoot.push("../Home.qml")
+                                sessionStart = 1
+                                selectedPage = "home"
+                                gotoWallet = 0
+                            }
                         }
                     }
                 }
@@ -297,7 +303,7 @@ Item {
                     text: "GO TO WALLET"
                     font.family: xciteMobile.name
                     font.pointSize: 14
-                    color: themecolor
+                    color: gotoWallet == 0? themecolor : "#979797"
                     font.bold: true
                     anchors.horizontalCenter: completeButton.horizontalCenter
                     anchors.verticalCenter: completeButton.verticalCenter
@@ -312,7 +318,7 @@ Item {
                     color: "transparent"
                     opacity: 0.5
                     border.width: 1
-                    border.color: "#0ED8D2"
+                    border.color: gotoWallet === 0? "#0ED8D2" : "#979797"
                 }
             }
         }

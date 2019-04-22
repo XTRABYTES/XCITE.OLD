@@ -1,5 +1,5 @@
 /**
- * Filename: Login.qml
+ * Filename: ImportAccount.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -19,12 +19,12 @@ import QtQuick.Layouts 1.3
 import "qrc:/Controls" as Controls
 
 Item {
-    id: loginModal
+    id: importModal
     width: Screen.width
     height: Screen.height
 
     property int passError: 0
-    property bool loginInitiated: false
+    property bool importInitiated: false
     property int checkUsername: 0
     property int keyPairSend: 0
     property int checkIdentity: 0
@@ -39,7 +39,7 @@ Item {
         anchors.top: parent.top
         width: parent.width - 50
         height: 250
-        state: loginTracker == 1? "up" : "down"
+        state: importTracker == 1? "up" : "down"
         color: "transparent"
 
         states: [
@@ -64,11 +64,11 @@ Item {
         // login function
 
         Label {
-            id: loginModalLabel
+            id: importModalLabel
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.top
             anchors.verticalCenterOffset: 27
-            text: "LOG IN TO YOUR ACCOUNT"
+            text: "IMPORT AN EXISTING ACCOUNT"
             font.pixelSize: 18
             font.family: "Brandon Grotesque"
             color: "#F2F2F2"
@@ -76,7 +76,7 @@ Item {
         }
 
         Rectangle {
-            id: loginModalBody
+            id: importModalBody
             z: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
@@ -103,11 +103,11 @@ Item {
             height: 34
             placeholder: "USERNAME"
             text: ""
-            anchors.top: loginModalBody.top
+            anchors.top: importModalBody.top
             anchors.topMargin: 25
-            anchors.left: loginModalBody.left
+            anchors.left: importModalBody.left
             anchors.leftMargin: 25
-            anchors.right: loginModalBody.right
+            anchors.right: importModalBody.right
             anchors.rightMargin: 25
             color: themecolor
             textBackground: "#0B0B09"
@@ -129,9 +129,9 @@ Item {
             echoMode: TextInput.Password
             anchors.top: userName.bottom
             anchors.topMargin: 30
-            anchors.left: loginModalBody.left
+            anchors.left: importModalBody.left
             anchors.leftMargin: 25
-            anchors.right: loginModalBody.right
+            anchors.right: importModalBody.right
             anchors.rightMargin: 25
             color: themecolor
             textBackground: "#0B0B09"
@@ -161,21 +161,21 @@ Item {
         }
 
         Rectangle {
-            id: logInButton
+            id: importButton
             z: 1.1
             height: 34
-            anchors.bottom: loginModalBody.bottom
+            anchors.bottom: importModalBody.bottom
             anchors.bottomMargin: 20
-            anchors.left: loginModalBody.left
+            anchors.left: importModalBody.left
             anchors.leftMargin: 25
-            anchors.right: loginModalBody.right
+            anchors.right: importModalBody.right
             anchors.rightMargin: 25
             color: (userName.text != "" && passWord.text != "") ? "#1B2934" : "#727272"
             opacity: 0.50
-            visible: loginInitiated == false
+            visible: importInitiated == false
 
             Timer {
-                id: loginSuccesTimer
+                id: importSuccesTimer
                 interval: 2000
                 repeat: false
                 running: false
@@ -186,7 +186,7 @@ Item {
                     loginTracker = 0
                     sessionClosed = 0
                     sessionStart = 1
-                    loginInitiated  = false
+                    importInitiated  = false
                     verifyingBalances = 0
                 }
             }
@@ -200,9 +200,9 @@ Item {
 
                 onReleased: {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
-                        loginInitiated = true
+                        importInitiated = true
                         checkUsername = 1
-                        userLogin(userName.text, passWord.text)
+                        importAccount(userName.text, passWord.text)
                     }
                 }
             }
@@ -210,65 +210,65 @@ Item {
                 target: UserSettings
 
                 onCreateUniqueKeyPair: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     checkUsername = 0
                     keyPairSend = 1
                     }
                 }
 
                 onCheckIdentity: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     keyPairSend = 0
                     checkIdentity = 1
                     }
                 }
 
                 onReceiveSessionEncryptionKey: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     checkIdentity = 0
                     sessionKey = 1
                     }
                 }
 
                 onReceiveSessionID: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     sessionKey = 0
                     receiveSessionID = 1
                     }
                 }
 
                 onLoadingSettings: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     receiveSessionID = 0
                     loadingSettings = 1
                     }
                 }
 
                 onContactsLoaded: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     loadContactList(contacts)
                     }
                 }
 
                 onAddressesLoaded: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     loadAddressList(addresses)
                     }
                 }
                 onWalletLoaded: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     loadWalletList(wallets)
                     }
                 }
 
                 onClearSettings:{
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     clearSettings();
                     }
                 }
 
                 onSettingsLoaded: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     loadSettings(settings);
                     loadingSettings = 0
                     verifyingBalances = 1
@@ -276,19 +276,19 @@ Item {
                 }
 
                 onLoginSucceededChanged: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     selectedPage = "home"
                     mainRoot.pop()
                     mainRoot.push("../Home.qml")
                     username = userName.text
-                    loginSuccesTimer.start()
+                    importSuccesTimer.start()
                     loadingSettings = 0
                     verifyingBalances = 0
                     }
                 }
 
                 onLoginFailedChanged: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     checkUsername = 0
                     keyPairSend = 0
                     checkIdentity = 0
@@ -297,32 +297,32 @@ Item {
                     loadingSettings = 0
                     passError = 1
                     passWord.text = ""
-                    loginInitiated  = false
+                    importInitiated  = false
                     }
                 }
 
                 onUsernameAvailable: {
-                    if (loginTracker == 1){
+                    if (importTracker == 1) {
                     checkUsername = 0
                     passError = 1
                     passWord.text = ""
-                    loginInitiated  = false
+                    importInitiated  = false
                     }
                 }
              }
         }
 
         Text {
-            id: logInButtonText
+            id: importButtonText
             z: 1.1
-            text: "LOG IN"
+            text: "IMPORT ACCOUNT"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             color: (userName.text != "" && passWord.text != "") ? "#F2F2F2" : "#979797"
             font.bold: true
-            anchors.horizontalCenter: logInButton.horizontalCenter
-            anchors.verticalCenter: logInButton.verticalCenter
-            visible: logInButton.visible
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.verticalCenter: importButton.verticalCenter
+            visible: importButton.visible
         }
 
         Rectangle {
@@ -330,22 +330,22 @@ Item {
             height: 34
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
-            anchors.left: loginModalBody.left
+            anchors.left: importModalBody.left
             anchors.leftMargin: 25
-            anchors.right: loginModalBody.right
+            anchors.right: importModalBody.right
             anchors.rightMargin: 25
             color: "transparent"
             border.color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
             opacity: 0.50
-            visible: logInButton.visible
+            visible: importButton.visible
         }
 
         Label {
-            id: loginRespons
+            id: importRespons
             z: 1.1
             text: "Checking username ..."
-            anchors.horizontalCenter: logInButton.horizontalCenter
-            anchors.verticalCenter: logInButton.verticalCenter
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.verticalCenter: importButton.verticalCenter
             color: "#F2F2F2"
             font.pixelSize: 14
             font.family: xciteMobile.name
@@ -354,11 +354,11 @@ Item {
         }
 
         Label {
-            id: loginRespons1
+            id: importRespons1
             z: 1.1
             text: "Creating keypair for session ..."
-            anchors.horizontalCenter: logInButton.horizontalCenter
-            anchors.verticalCenter: logInButton.verticalCenter
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.verticalCenter: importButton.verticalCenter
             color: "#F2F2F2"
             font.pixelSize: 14
             font.family: xciteMobile.name
@@ -367,11 +367,11 @@ Item {
         }
 
         Label {
-            id: loginRespons2
+            id: importRespons2
             z: 1.1
             text: "Checking identity ..."
-            anchors.horizontalCenter: logInButton.horizontalCenter
-            anchors.verticalCenter: logInButton.verticalCenter
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.verticalCenter: importButton.verticalCenter
             color: "#F2F2F2"
             font.pixelSize: 14
             font.family: xciteMobile.name
@@ -380,11 +380,11 @@ Item {
         }
 
         Label {
-            id: loginRespons3
+            id: importRespons3
             z: 1.1
             text: "Retrieving session encryption key ..."
-            anchors.horizontalCenter: logInButton.horizontalCenter
-            anchors.verticalCenter: logInButton.verticalCenter
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.verticalCenter: importButton.verticalCenter
             color: "#F2F2F2"
             font.pixelSize: 14
             font.family: xciteMobile.name
@@ -393,11 +393,11 @@ Item {
         }
 
         Label {
-            id: loginRespons4
+            id: importRespons4
             z: 1.1
             text: "Retrieving session ID ..."
-            anchors.horizontalCenter: logInButton.horizontalCenter
-            anchors.verticalCenter: logInButton.verticalCenter
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.verticalCenter: importButton.verticalCenter
             color: "#F2F2F2"
             font.pixelSize: 14
             font.family: xciteMobile.name
@@ -406,11 +406,11 @@ Item {
         }
 
         Label {
-            id: loginRespons5
+            id: importRespons5
             z: 1.1
             text: "Loading account settings ..."
-            anchors.horizontalCenter: logInButton.horizontalCenter
-            anchors.verticalCenter: logInButton.verticalCenter
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.verticalCenter: importButton.verticalCenter
             color: "#F2F2F2"
             font.pixelSize: 14
             font.family: xciteMobile.name
@@ -419,11 +419,11 @@ Item {
         }
 
         Label {
-            id: loginRespons6
+            id: importRespons6
             z: 1.1
             text: "Verifying wallet balances ..."
-            anchors.horizontalCenter: logInButton.horizontalCenter
-            anchors.verticalCenter: logInButton.verticalCenter
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.verticalCenter: importButton.verticalCenter
             color: "#F2F2F2"
             font.pixelSize: 14
             font.family: xciteMobile.name
@@ -433,105 +433,31 @@ Item {
 
         Rectangle {
             z: 1
-            anchors.horizontalCenter: loginModalBody.horizontalCenter
-            anchors.bottom: loginModalBody.bottom
-            width: loginModalBody.width
-            height: loginModalBody.height
+            anchors.horizontalCenter: importModalBody.horizontalCenter
+            anchors.bottom: importModalBody.bottom
+            width: importModalBody.width
+            height: importModalBody.height
             color: "transparent"
             border.color: maincolor
             border.width: 1
             opacity: 0.25
         }
 
-        Label {
-            id: importAccount
-            text: "Import an existing account?"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: login.bottom
-            anchors.topMargin: 20
-            color: "#F2F2F2"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
 
-            Rectangle {
-                id: importAccountButton
-                width: importAccount.width
-                height: 30
-                anchors.horizontalCenter: importAccount.horizontalCenter
-                anchors.verticalCenter: importAccount.verticalCenter
-                color: "transparent"
-
-                MouseArea {
-                    anchors.fill: importAccountButton
-
-                    onClicked: {
-                        loginTracker = 0
-                        importTracker = 1
-                    }
-                }
-            }
-
-            Rectangle {
-                id: underlineImport
-                width: importAccount.width
-                height: 1
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: importAccount.bottom
-                anchors.topMargin: 5
-                color: "#F2F2F2"
-            }
-        }
 
         Label {
             id: noAccount
-            text: "You don't have an account?"
+            width: doubbleButtonWidth
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignJustify
+            maximumLineCount: 5
+            text: "Before you try to import an account, make sure you placed the exported wallet file in your device's download folder."
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: login.bottom
             anchors.topMargin: 70
             color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
-        }
-
-        Label {
-            id: createAccount
-            text: "Create one here."
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: noAccount.bottom
-            anchors.topMargin: 15
-            color: "#F2F2F2"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-
-            Rectangle {
-                id: createAccountButton
-                width: createAccount.width
-                height: 30
-                anchors.horizontalCenter: createAccount.horizontalCenter
-                anchors.verticalCenter: createAccount.verticalCenter
-                color: "transparent"
-
-                MouseArea {
-                    anchors.fill: createAccountButton
-
-                    onClicked: {
-                        userSettings.accountCreationCompleted = false
-                        mainRoot.pop()
-                        mainRoot.push("../CreateAccount.qml")
-                        loginTracker = 0
-                    }
-                }
-            }
-        }
-
-        Rectangle {
-            id: underlineCreate
-            width: createAccount.width
-            height: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: createAccount.bottom
-            anchors.topMargin: 5
-            color: "#F2F2F2"
         }
     }
 }

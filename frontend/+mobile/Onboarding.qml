@@ -41,7 +41,7 @@ Item {
         width: Screen.width
         height: Screen.height
         color: "#14161B"
-        state: loginTracker == 0? "hidden" : "inView"
+        state: loginTracker == 0? (importTracker == 0? "hidden" : "inView") : "inView"
 
         LinearGradient {
             anchors.fill: parent
@@ -93,7 +93,7 @@ Item {
         anchors.verticalCenterOffset: -50
         color: "transparent"
 
-        state: loginTracker == 0? "inView" : "hidden"
+        state: loginTracker == 0? (importTracker == 0? "inView": "hidden") : "hidden"
 
         states: [
             State {
@@ -194,7 +194,7 @@ Item {
 
     Label {
         id: closeButtonLabel
-        text: "CLOSE"
+        text: loginTracker == 1? "CLOSE" : "BACK"
         anchors.bottom: combinationMark.top
         anchors.bottomMargin: 25
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
@@ -215,7 +215,13 @@ Item {
             anchors.fill: closeButton
 
             onClicked: {
+                if (loginTracker == 1) {
                 Qt.quit()
+                }
+                if (importTracker == 1) {
+                    importTracker = 0
+                    loginTracker = 1
+                }
             }
         }
     }
@@ -232,5 +238,9 @@ Item {
 
     Login {
         id: myLogin
+    }
+
+    ImportAccount {
+        id: myImport
     }
 }
