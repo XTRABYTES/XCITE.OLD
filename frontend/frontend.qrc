@@ -175,5 +175,6 @@
         <file>Controls/+mobile/TransactionAddressList.qml</file>
         <file>+mobile/StandBy.qml</file>
         <file>Controls/+mobile/SoundPicklist.qml</file>
+        <file>+mobile/ImportAccount.qml</file>
     </qresource>
 </RCC>

@@ -198,6 +198,7 @@ ApplicationWindow {
     // Trackers
     property int interactionTracker: 0
     property int loginTracker: 0
+    property int importTracker: 0
     property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
