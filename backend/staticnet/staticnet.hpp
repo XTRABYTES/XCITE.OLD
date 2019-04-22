@@ -87,8 +87,7 @@ class SnetKeyWordWorker : public QObject {
     Q_OBJECT
 
 public:
-    QString msg;
-    SnetKeyWordWorker(const QString *msg);
+    SnetKeyWordWorker(const QString *_msg);
     ~SnetKeyWordWorker();
 
 public slots:
@@ -105,7 +104,7 @@ public Q_SLOTS:
     int errorString(QString errorstr);
 
 private:
-
+    QString msg;
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
     void help();
