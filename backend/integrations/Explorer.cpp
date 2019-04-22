@@ -27,13 +27,25 @@ void Explorer::getBalanceEntireWallet(QString walletList){
         QJsonObject obj = value.toObject();
         QString coin = obj.value("name").toString().toLower();
         QString address = obj.value("address").toString();
+        if (coin == "xfuel-test") {
+            coin = "xfuel-testnet";
+        }
+        else if (coin == "xby-test") {
+            coin = "xby-testnet";
+        }
         if (coin.length() > 0){
-            if ((coin == "xby") || (coin == "xfuel")){
+            if ((coin == "xby") || (coin == "xfuel") || (coin == "xfuel-testnet") || (coin == "xby-testnet")){
                 QString response =  getBalanceAddressXBY(coin,address, "1");
                 QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
                 QJsonObject result = jsonResponse.object().value("result").toObject();
                 QString balance = result.value("balance_current").toString();
                 balance = balance.insert(balance.length() - 8, ".");
+                if (coin == "xfuel-testnet") {
+                    coin = "xfuel-test";
+                }
+                else if (coin == "xby-testnet") {
+                    coin = "xby-test";
+                }
                 emit updateBalance(coin.toUpper(),address, balance);
             } else if((coin == "btc") || (coin == "eth")){
                 QString response =  getBalanceAddressExt(coin,address);
@@ -57,8 +69,14 @@ void Explorer::getBalanceEntireWallet(QString walletList){
 
 void Explorer::getTransactionList(QString coin, QString address, QString page){
     QString selectedCoin = coin.toLower();
+    if (selectedCoin == "xfuel-test") {
+        selectedCoin = "xfuel-testnet";
+    }
+    else if (selectedCoin == "xby-test") {
+        selectedCoin = "xby-testnet";
+    }
     if (selectedCoin.length() > 0){
-        if ((selectedCoin == "xby") || (selectedCoin == "xfuel")){
+        if ((selectedCoin == "xby") || (selectedCoin == "xfuel") || (selectedCoin == "xfuel-testnet") || (selectedCoin == "xby-testnet")){
             QString response =  getBalanceAddressXBY(selectedCoin,address, page);
             QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
             QJsonObject meta = jsonResponse.object().value("meta").toObject();
@@ -78,8 +96,14 @@ void Explorer::getTransactionList(QString coin, QString address, QString page){
 
 void Explorer::getDetails(QString coin, QString transaction) {
     QString selectedCoin = coin.toLower();
+    if (selectedCoin == "xfuel-test") {
+        selectedCoin = "xfuel-testnet";
+    }
+    else if (selectedCoin == "xby-test") {
+        selectedCoin = "xby-testnet";
+    }
     if (selectedCoin.length() > 0){
-        if ((selectedCoin == "xby") || (selectedCoin == "xfuel")){
+        if ((selectedCoin == "xby") || (selectedCoin == "xfuel") || (selectedCoin == "xfuel-testnet") || (selectedCoin == "xby-testnet")){
             QString response =  getTransactionDetails(selectedCoin,transaction);
             QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
             QJsonObject result = jsonResponse.object().value("result").toObject();
@@ -200,6 +224,4 @@ void Explorer::WalletUpdate(QString coin, QString label, QString message)
     msgBox->setStandardButtons(QMessageBox::Ok);
     msgBox->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
     msgBox->show();
-
-    // check if current window is the active window, if not make it active
 }

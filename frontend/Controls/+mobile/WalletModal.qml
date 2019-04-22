@@ -287,7 +287,7 @@ Rectangle {
         }
 
         Label {
-            property int decimals: walletList.get(walletIndex).balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
+            property int decimals: walletList.get(walletIndex).balance <= 1 ? 8 : (walletList.get(walletIndex).balance <= 1000 ? 4 : 2)
             property string amountArray: walletList.get(walletIndex).balance.toLocaleString(Qt.locale("en_US"), "f", decimals)
             id: balanceAmount
             text: amountArray

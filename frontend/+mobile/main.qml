@@ -345,6 +345,8 @@ ApplicationWindow {
     signal saveContactList(string contactList)
     signal saveAppSettings()
     signal saveWalletList(string walletList, string addresses)
+    signal importAccount(string username, string password)
+    signal exportAccount(string walletList)
     signal updateBalanceSignal(string walletList)
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
@@ -362,8 +364,7 @@ ApplicationWindow {
     signal copyText2Clipboard(string text)
     signal sendCoins(string message)
 
-    // Automated functions
-
+    // functions
     function updateBalance(coin, address, balance) {
         var balanceAlert
         var difference
@@ -412,7 +413,6 @@ ApplicationWindow {
         var walletListJson = JSON.stringify(datamodel)
     }
 
-    // Global functions
     function countWallets() {
         totalWallets = 0
         if (coinTracker == 0) {
@@ -799,30 +799,6 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: marketValue
-
-        onMarketValueChanged: {
-            setMarketValue(currency, currencyValue)
-        }
-    }
-
-    Connections {
-        target: explorer
-
-        onUpdateBalance: {
-            updateBalance(coin, address, balance)
-        }
-    }
-
-    Connections {
-        target: UserSettings
-
-        onOSReturned: {
-            myOS = os
-        }
-    }
-
     function setMarketValue(currency, currencyValue) {
         if (!isNaN(currencyValue) && currencyValue !== "") {
             var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
@@ -866,7 +842,7 @@ ApplicationWindow {
         }
     }
 
-    // Start up functions
+    // Start up
     function loadContactList(contacts) {
         if (typeof contacts !== "undefined") {
             contactList.clear();
@@ -912,6 +888,8 @@ ApplicationWindow {
             userSettings.xfuel = settingsLoaded.xfuel === "true";
             userSettings.xbytest = settingsLoaded.xbytest === "true";
             userSettings.xfueltest = settingsLoaded.xfueltest === "true";
+            userSettings.xby = settingsLoaded.btc === "true";
+            userSettings.xfuel = settingsLoaded.eth === "true";
             userSettings.sound = settingsLoaded.sound;
             userSettings.volume = settingsLoaded.volume;
             userSettings.systemVolume = settingsLoaded.systemVolume;
@@ -935,20 +913,6 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: explorer
-
-        onUpdateTransactionsDetails: {
-            if (historyTracker == 1) {
-                loadTransactionAddresses(inputs, outputs)
-                transactionTimestamp = timestamp // convert to local time?
-                transactionConfirmations = confirmations
-                transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
-                transactionDetailTracker = 1
-            }
-        }
-    }
-
     function loadTransactionAddresses(inputs, outputs){
         if (typeof inputs !== "undifined") {
             inputAddresses.clear();
@@ -968,6 +932,21 @@ ApplicationWindow {
         }
     }
 
+    // export walletList
+    function exportWallets(){
+        var dataModelWallet = []
+
+        for (var i = 0; i < walletList.count; ++i){
+            dataModelWallet.push(walletList.get(i))
+        }
+
+        var walletListJson = JSON.stringify(dataModelWallet)
+
+        exportAccount(walletListJson)
+    }
+
+
+    // edit account
     function updateToAccount(){
         var dataModelWallet = []
         var datamodelContact = []
@@ -1093,6 +1072,7 @@ ApplicationWindow {
         saveWalletList(walletListJson, addressListJson)
     }
 
+    // initialise
     function clearSettings(){
         userSettings.accountCreationCompleted = false;
         userSettings.defaultCurrency = 0;
@@ -1105,8 +1085,11 @@ ApplicationWindow {
         userSettings.xfuel = true;
         userSettings.xbytest = true;
         userSettings.xfueltest = true;
+        userSettings.btc = true;
+        userSettings.eth = true;
         userSettings.sound = 0
         userSettings.volume = 1
+        userSettings.systemVolume = 1
     }
 
     function initialiseLists() {
@@ -1122,8 +1105,33 @@ ApplicationWindow {
         updateToAccount()
     }
 
+    // check for user interaction
+    function detectInteraction() {
+        if (interactionTracker == 0) {
+            interactionTracker = 1
+        }
+    }
+
+    // connections
+    Connections {
+        target: marketValue
+
+        onMarketValueChanged: {
+            setMarketValue(currency, currencyValue)
+        }
+    }
+
     Connections {
         target: UserSettings
+
+        onSessionIdCheck: {
+            if (sessionAlive === false && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
+                networkLogout = 1
+                logoutTracker = 1
+                sessionStart = 0
+                sessionClosed = 1
+            }
+        }
 
         onSaveSucceeded: {
             if (goodbey == 1) {
@@ -1136,12 +1144,27 @@ ApplicationWindow {
                 Qt.quit()
             }
         }
+
+        onOSReturned: {
+            myOS = os
+        }
     }
 
-    // check for user interaction
-    function detectInteraction() {
-        if (interactionTracker == 0) {
-            interactionTracker = 1
+    Connections {
+        target: explorer
+
+        onUpdateTransactionsDetails: {
+            if (historyTracker == 1) {
+                loadTransactionAddresses(inputs, outputs)
+                transactionTimestamp = timestamp // convert to local time?
+                transactionConfirmations = confirmations
+                transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
+                transactionDetailTracker = 1
+            }
+        }
+
+        onUpdateBalance: {
+            updateBalance(coin, address, balance)
         }
     }
 
@@ -1329,11 +1352,13 @@ ApplicationWindow {
         source: 'qrc:/fonts/Brandon_reg.otf'
     }
 
+    // need to look into removing this
     Network {
         id: network
         handler: wallet
     }
 
+    // sounds
     SoundEffect {
         id: click01
         source: "qrc:/sounds/click_02.wav"
@@ -1361,9 +1386,16 @@ ApplicationWindow {
     SoundEffect {
         id: outroSound
         source: "qrc:/sounds/Outro.wav"
-        volume: selectedSystemVolume == 0? 0 : 1
+        volume: selectedSystemVolume == 0? 0 : 0.5
     }
 
+    SoundEffect {
+        id: swipe
+        source: "qrc:/sounds/swipe_01.wav"
+        volume: selectedSystemVolume == 0? 0 : 0.2
+    }
+
+    // timers
     Timer {
         id: marketValueTimer
         interval: 60000
@@ -1440,19 +1472,6 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: UserSettings
-
-        onSessionIdCheck: {
-            if (sessionAlive === false && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
-                networkLogout = 1
-                logoutTracker = 1
-                sessionStart = 0
-                sessionClosed = 1
-            }
-        }
-    }
-
     Timer {
         id: requestTimer
         interval: 5000
@@ -1467,25 +1486,6 @@ ApplicationWindow {
         }
     }
 
-    Timer {
-        id: timer
-        interval: 15000
-        repeat: true
-        running: sessionStart == 1
-
-        onTriggered: {
-            if (standBy == 0) {
-                sumBalance()
-                sumXBY()
-                sumXFUEL()
-                sumXBYTest()
-                sumXFUELTest()
-                sumBTC()
-                sumETH()
-            }
-        }
-    }
-
     // Order of the pages
     StackView {
         id: mainRoot
@@ -1493,6 +1493,7 @@ ApplicationWindow {
         anchors.fill: parent
     }
 
+    // native back button
     onClosing: {
         if (mainRoot.depth > 1) {
             close.accepted = false
