@@ -283,6 +283,24 @@ Rectangle {
             //}
         }
 
+        Connections {
+            target: static_int
+            onSendCoinsSuccess: {
+                if (debugTracker == 1) {
+                    replyText.text = replyText.text + "<br/>" +
+                            "Send Success!:" + "<br/>" +
+                            "TransactionId:" + transactionId + "<br>"
+                }
+            }
+            onSendCoinsFailure: {
+                if (debugTracker == 1) {
+                    replyText.text = replyText.text + "<br/>" +
+                            "Send Failed!:" + "<br/>" +
+                            "Error:" + error + "<br>"
+                }
+            }
+        }
+
     }
 
     Image {

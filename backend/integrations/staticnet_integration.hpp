@@ -25,7 +25,9 @@ class staticnet_integration : public QObject {
 public:
     explicit staticnet_integration(QObject *parent = nullptr);
 
-// signals:
+signals:
+    void sendCoinsSuccess(QString transactionId);
+    void sendCoinsFailure(QString error);
 
 public slots:
     void sendCoinsEntry(QString msg);

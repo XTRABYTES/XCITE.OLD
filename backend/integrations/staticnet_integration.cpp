@@ -35,6 +35,18 @@ void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
      qDebug() << "staticnet response recevied:";
 
      QJsonDocument json_doc(response);
+     QJsonValue error = response.value("error");
+     QJsonValue txid = response.value("txid");
+
+    if (error.isNull()){
+        emit sendCoinsSuccess(txid.toString());
+        qDebug() << "transactionId: " + txid.toString();
+    }else{
+        emit sendCoinsFailure(error.toString());
+        qDebug() << "ERROR: " + txid.toString();
+
+    }
+
      QString json_string = json_doc.toJson();
      qDebug() << json_string;
 }
