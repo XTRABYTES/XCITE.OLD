@@ -58,9 +58,9 @@ We aim to deliver a blockchain platform that provides users with superior speed,
 
 
 ## Features 
-[![xcite_android_github](https://forthebadge.com/images/badges/built-for-android.svg)](https://xtrabytes.global)
-[![forthebadge](https://forthebadge.com/images/badges/uses-html.svg)](https://xtrabytes.global)
-[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://xtrabytes.global)
+[![xcite_android_github](https://forthebadge.com/images/badges/built-for-android.svg)](#features)
+[![forthebadge](https://forthebadge.com/images/badges/uses-html.svg)](#features)
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](#features)
 
 A few of the things you can do with XCITE:
 
