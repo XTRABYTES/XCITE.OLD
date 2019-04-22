@@ -45,3 +45,5 @@ linker
 # Qt
 *.pro.user
 *.pro.user.*
+
+!dependencies
