@@ -220,7 +220,7 @@ In Qt Options --> Devices --> Android, confirm that the prerequisite paths are c
 
 [![QT options](https://i.imgur.com/zs1UU3G.png)](#project-configuration-android)
 
-- [![Complete instructions guide](https://img.shields.io/badge/click_HERE_for_the-android_guide-green.svg?style=popout&logo=github&logoColor=white&labelColor=blue)](https://github.com/xtrabytes/xcite/blob/master/documentation/guide/Android%20setup.pdf)
+- [![Complete instructions guide](https://img.shields.io/badge/click_HERE_for_the-android_guide-green.svg?style=flat&logo=github&logoColor=white&labelColor=blue)](https://github.com/xtrabytes/xcite/blob/master/documentation/guide/Android%20setup.pdf)
 
 ### Project Configuration (iOS)
 
