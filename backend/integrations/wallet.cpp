@@ -82,6 +82,6 @@ void Wallet::sendCoinsEntry(QString msg) {
     QString sendCoins = "!!staticnet sendcoin " + msg;
 
     //xUtility.CheckUserInputForKeyWord(setNetwork);
-    staticNet.CheckUserInputForKeyWord(sendCoins);
+    // staticNet.CheckUserInputForKeyWord(sendCoins);  no direct call ! need use the integration methods
 
 }

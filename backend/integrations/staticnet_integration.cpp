@@ -21,11 +21,14 @@ staticnet_integration::staticnet_integration(QObject *parent) : QObject(parent)
 void staticnet_integration::sendCoinsEntry(QString msg) {
 
     qDebug() << "send coins requested!";
-
+    int _traceID;
     QString sendCoins = "!!staticnet sendcoin " + msg;
-
-    staticNet.CheckUserInputForKeyWord(sendCoins);
-
+    if (staticNet.CheckUserInputForKeyWord(sendCoins, &_traceID)) {
+       qDebug() << "staticnet command accepted";
+    } else {
+       qDebug() << "staticnet command not accepted";
+    }
+    
 }
 
 

@@ -51,8 +51,9 @@ void XchatObject::Initialize() {
 void XchatObject::SubmitMsgCall(const QString &msg) {
     QString message;
     xUtility.Initialize();
-
-    if (!((staticNet.CheckUserInputForKeyWord(msg)) || (xUtility.CheckUserInputForKeyWord(msg)))) {
+    
+    int staticNet_traceID;
+    if (!((staticNet.CheckUserInputForKeyWord(msg,&staticNet_traceID)) || (xUtility.CheckUserInputForKeyWord(msg)))) {
     
         bool keyWordUsedUserInput = this->CheckUserInputForKeyWord(msg);
         bool keyWordUsedAIInput = this->CheckAIInputForKeyWord(m_pXchatAiml->getResponse(msg));
