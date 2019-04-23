@@ -512,5 +512,6 @@ Rectangle {
         z: 100
         anchors.top: parent.top
         anchors.left: parent.left
+        visible: appsTracker == 1
     }
 }

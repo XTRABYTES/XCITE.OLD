@@ -2281,6 +2281,7 @@ Rectangle {
         z: 10
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
+        visible: transferTracker == 1
     }
 }
 
