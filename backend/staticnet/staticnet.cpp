@@ -279,6 +279,7 @@ void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
     int64 send_value = AmountFromStr(value_str.c_str());    
     int64 fee_value = AmountFromStr("1.00000000");    
     
+    qDebug() << res;
     QJsonObject json = res["unspents"].toObject();   
     
     

@@ -22,10 +22,8 @@ void staticnet_integration::sendCoinsEntry(QString msg) {
 
     qDebug() << "send coins requested!";
 
-    //QString setNetwork = "!!xutil network " + network;
     QString sendCoins = "!!staticnet sendcoin " + msg;
 
-    //xUtility.CheckUserInputForKeyWord(setNetwork);
     staticNet.CheckUserInputForKeyWord(sendCoins);
 
 }
