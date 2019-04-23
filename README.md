@@ -45,7 +45,8 @@ We aim to deliver a blockchain platform that provides users with superior speed,
 - [Dependencies](#dependencies)
   - [Desktop Platform](#required-dependencies-for-the-desktop-platform-windows-macos-linux)
   - [Mobile Platform](#required-dependencies-for-the-mobile-platform-android-ios)
-  - [Instructions (Desktop Platform)](#instructions-desktop-platform-only)
+  - [MinGW (Windows)](#mingw-windows-only)
+  - [Compiling (Desktop Platform)](#compiling-desktop-platforms-only)
 - [Installing QT](#install-qt)
   - [Project Configuration (Android)](#project-configuration-android)
   - [Project Configuration (iOS)](#project-configuration-ios)
@@ -122,9 +123,9 @@ Prerequisites for macOS deployment:
 - [Xcode](https://developer.apple.com/xcode/)
 - [Apple Developer Account](https://developer.apple.com/) (Apple ID)
 
-
+--------
 ### Dependencies
-Dependencies are a set of resource files (modules, libraries) needed for the creation of the application. You will need to compile the dependencies by using the correct compiler.
+Dependencies are a set of resource files (modules, libraries) needed for the creation of the application. You can compile, from source, by using the correct compiler.
 
 #### Required dependencies for the desktop platform (Windows, macOS, Linux):
 - [Boost 1.60](https://www.boost.org/users/history/version_1_60_0.html) -> C++ libraries
@@ -135,38 +136,50 @@ Dependencies are a set of resource files (modules, libraries) needed for the cre
 #### Required dependencies for the mobile platform (Android, iOS):
 - The required dependencies are already included and can be found inside the XCITE /dependencies folder. There is no need to compile them.
 
-### Instructions (Desktop platform only)
-Create a folder where you are going to copy the required dependencies, for example, C:\deps.
+#### MinGW (Windows only)
+If you use Windows, you will need __MinGW__. You can download the MinGW compiler for Windows [here](https://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download). 
 
-You can download the MinGW compiler for Windows [here](https://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download). 
+- __MinGW__ provides a complete open source programming toolset for developers working on the Windows platform. It includes a port of the GNU Compiler Collection (GCC), including C, C++ and other compilers.<br>
+- __MSYS__ is an alternative to Microsoft's cmd.exe. It provides a general purpose command line environment, suited for use with MinGW.
+- [![Complete instructions guide](https://img.shields.io/badge/click_HERE_for_the-mingw_guide-green.svg?style=flat&logo=github&logoColor=white&labelColor=blue)](https://github.com/xtrabytes/xcite/blob/master/documentation/guide/mingwsetup.pdf)
+
+### Compiling (Desktop platforms only)
+Compiling converts source code (in our case, the dependency files) to binary or object code (the files needed for the XCITE app build).
+A compiler is a computer program (or set of programs) that transforms source code written in a programming language (the source  language) into another computer language (the target language, often having a binary form known as object code).
+
+Create a folder where you are going to copy the required dependencies, for example, C:\deps.
 
 *Note that the compiling procedures in the macOS and Linux systems are similar to Windows. Use the Windows example as a reference.*
 
 Boost (Windows example)
 
-> - Open a Windows command prompt line and inside the boost folder type:
->   - bootstrap.bat mingw
->   - b2 --build-type=complete --with-chrono --with-filesystem --with-program_options --
+- Open a __Windows__ command prompt line and inside the boost folder type:
+  - bootstrap.bat mingw
+  - b2 --build-type=complete --with-chrono --with-filesystem --with-program_options --
 with-system --with-thread toolset=gcc variant=release link=static threading=multi
 runtime-link=static stage
 
 Berkeley DB 4.8.30 NC (Windows example)
 
-> - Using the MinGW command prompt window type:
->   - cd db-4.8.30.NC/build_unix
->   - Still inside the build_unix folder type:
->     - ../dist/configure --enable-mingw --enable-cxx --disable-shared --disablereplication
->   - Once it finishes aggregating all the necessary files, type:
->     - Make
+- Using the __MinGW__ command prompt window type:
+  - cd db-4.8.30.NC/build_unix
+  - Still inside the build_unix folder type:
+    - ../dist/configure --enable-mingw --enable-cxx --disable-shared --disablereplication
+  - Once it finishes aggregating all the necessary files, type:
+    - Make
 
 Openssl 1.0.2q
 
-> Follow these [instructions](https://github.com/XTRABYTES/XCITE/blob/master/documentation/build-openssl-windows.txt) on how to compile (Windows example)
+Follow the instructions on how to compile openssl libraries (Windows example).
+- [![Complete instructions guide](https://img.shields.io/badge/click_HERE_for_the-openssl_guide-green.svg?style=flat&logo=github&logoColor=white&labelColor=blue)](https://github.com/XTRABYTES/XCITE/blob/master/documentation/build-openssl-windows.txt)
 
-Edit the .pro file
+__Editing the .pro file__
 
-> Edit the xcitedesk.pro file to include the correct paths of the compiled dependencies. See the example below:
+Edit the xcitedesk.pro file to include the correct paths of the compiled dependencies. See the example below:
+
 [![xcite-pro-file](https://github.com/XTRABYTES/XCITE/blob/master/documentation/guide8.png)](#instructions-desktop-platform-only)
+
+---------
 
 ### Install Qt
 
@@ -207,6 +220,7 @@ In Qt Options --> Devices --> Android, confirm that the prerequisite paths are c
 
 [![QT options](https://i.imgur.com/zs1UU3G.png)](#project-configuration-android)
 
+- [![Complete instructions guide](https://img.shields.io/badge/click_HERE_for_the-android_guide-green.svg?style=popout&logo=github&logoColor=white&labelColor=blue)](https://github.com/xtrabytes/xcite/blob/master/documentation/guide/Android%20setup.pdf)
 
 ### Project Configuration (iOS)
 
@@ -340,6 +354,10 @@ Other Qt errors:
 
 If you would like to contribute to XCITE development, please [contact us](mailto:development@xtrabytes.global). We would love to hear from you.
 
+Submit any __bugs__ through the project's tracker: <br>
+
+[![Issues](https://img.shields.io/github/issues/xtrabytes/xcite.svg?logo=github)]( https://github.com/XTRABYTES/XCITE/issues )
+
 ## Frequently Asked Questions
 
 **1. Where is the rest of the source code?**
@@ -379,6 +397,10 @@ If you would like to contribute to XCITE development, please [contact us](mailto
     <span> | </span>
     <a href="https://github.com/XTRABYTES/XCITE/">
       Github
+    </a>
+    <span> | </span>
+    <a href="https://blog.xtrabytes.global/">
+      Blog
     </a>
     <span> | </span>
     <a href="https://twitter.com/xtrabytes">
