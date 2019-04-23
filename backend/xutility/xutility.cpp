@@ -158,7 +158,8 @@ void Xutility::helpEntry() {
 
 void Xutility::networkEntry(QString netwrk) {
 
-    QString setNetwork = "!!xutil " + netwrk;
+    qDebug() << "accessing xutil";
+    QString setNetwork = "!!xutil network " + netwrk;
     this->CheckUserInputForKeyWord(setNetwork);
 }
 
@@ -235,6 +236,7 @@ void Xutility::set_network(const QJsonArray *params) {
             xchatRobot.SubmitMsg("New active network: "+QString::fromStdString(*network));
             currentNetwork = QString::fromStdString(*network);
             qDebug() << "current network: " + currentNetwork;
+            emit newNetwork(currentNetwork);
 
         } else {
             xchatRobot.SubmitMsg("("+params->at(2).toString()+") is invalid network type. Existing types are:"+networktypes);

@@ -236,15 +236,10 @@ Rectangle {
 
                     onReleased: {
                         if (newName.text != "" && labelExists == 0) {
-                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY") {
+                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY" || coinList.get(coinIndex).name === "XTEST") {
                                 createInitiated = true
                                 createKeyPair(coinList.get(coinIndex).fullname)
                             }
-                            else if (coinList.get(coinIndex).name === "XFUEL-TEST") {
-                                createInitiated = true
-                                createKeyPair("testnet")
-                            }
-
                             else {
                                 createFailed = 1
                             }

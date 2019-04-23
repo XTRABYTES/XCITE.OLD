@@ -163,7 +163,7 @@ Rectangle {
                     invalidAddress = 1
                 }
             }
-            else if (newCoinName.text == "XFUEL-TEST") {
+            else if (newCoinName.text == "XTEST") {
                 if (newAddress.length == 34 && newAddress.text.substring(0,1) == "G" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
@@ -205,7 +205,7 @@ Rectangle {
                     invalidAddress = 1
                 }
             }
-            else if (newCoinName.text == "XFUEL-TEST") {
+            else if (newCoinName.text == "XTEST") {
                 if (newAddress.placeholder.length == 34 && newAddress.placeholder.substring(0,1) == "G") {
                     invalidAddress = 0
                 }

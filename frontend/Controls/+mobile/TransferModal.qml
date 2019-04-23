@@ -73,6 +73,8 @@ Rectangle {
     property int copy2clipboard: 0
     property int copyImage2clipboard: 0
     property int screenShot: 0
+    property int badNetwork: 0
+    property bool selectNetwork: false
 
     function compareAddress(){
         var fromto = ""
@@ -110,7 +112,7 @@ Rectangle {
                 invalidAddress = 1
             }
         }
-        else if (coinID.text == "XFUEL-TEST") {
+        else if (coinID.text == "XTEST") {
             if (keyInput.length === 34
                     && keyInput.text !== ""
                     && keyInput.text.substring(0,1) == "G"
@@ -861,6 +863,25 @@ Rectangle {
                      && publicKey.text != ""
         }
 
+        Label {
+            id: invalidCurrency
+            text: "NOT POSSIBLE AT THE MOMENT"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: walletBalance.bottom
+            anchors.topMargin: 40
+            font.pixelSize: 16
+            font.family: "Brandon Grotesque"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            visible: transferSwitch.on == true
+                     && transactionSend == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+                     && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
+                     && coinID.text != "XFUEL"
+        }
+
         Mobile.AmountInput {
             id: sendAmount
             z: 1.4
@@ -883,6 +904,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
+                     && coinID.text == "XFUEL"
             mobile: 1
             calculator: getTestnet(coinID.text) === true? 0 : 1
             onTextChanged: detectInteraction()
@@ -915,9 +937,10 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && inputAmount > (walletList.get(selectedWallet).balance)
+                     && inputAmount > ((walletList.get(selectedWallet).balance) + 1)
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
+                     && coinID.text == "XFUEL"
         }
 
         Controls.TextInput {
@@ -940,6 +963,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
+                     && coinID.text == "XFUEL"
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
@@ -981,6 +1005,7 @@ Rectangle {
                      && keyInput.text != ""
                      && invalidAddress == 1
                      && publicKey.text != ""
+                     && coinID.text == "XFUEL"
         }
 
         Rectangle {
@@ -1001,6 +1026,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
+                     && coinID.text == "XFUEL"
 
             MouseArea {
                 anchors.fill: scanQrButton
@@ -1055,6 +1081,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
+                     && coinID.text == "XFUEL"
 
             MouseArea {
                 anchors.fill: addressBookButton
@@ -1111,6 +1138,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
+                     && coinID.text == "XFUEL"
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -1136,8 +1164,10 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
+                     && coinID.text == "XFUEL"
 
             MouseArea {
+                property string network: coinID.text == "XBY"? "xtrabytes" : (coinID.text == "XFUEL"? "xfuel" : (coinID.text == "XTEST"? "testnet" : "nothing"))
                 anchors.fill: sendButton
 
                 onPressed: {
@@ -1156,11 +1186,32 @@ Rectangle {
                             && keyInput.text !== ""
                             && sendAmount.text !== ""
                             && inputAmount !== 0
-                            && inputAmount <= (walletList.get(selectedWallet).balance)
-                            && calculatorTracker == 0) {
+                            && inputAmount <= ((walletList.get(selectedWallet).balance) + 1)
+                            && calculatorTracker == 0
+                            && (network == "xtrabytes" || network == "xfuel" || network == "testnet")) {
+                        selectNetwork = true
+                        console.log("setting network")
+                        setNetwork(network)
+                    }
+                }
+
+                Connections {
+                    target: xUtil
+
+                    onNewNetwork: {
+                        if (transferTracker == 1 && selectNetwork == true) {
                         transactionSend = 1
                         coinListTracker = 0
                         walletListTracker = 0
+                        selectNetwork = false
+                        }
+                    }
+
+                    onBadNetwork: {
+                        if (transferTracker == 1 && selectNetwork == true) {
+                        badNetwork = 1
+                            selectNetwork = false
+                        }
                     }
                 }
             }
@@ -1206,7 +1257,7 @@ Rectangle {
             width: parent.width
             height: sendingLabel.height + to.height + confirmationAddressName.height + reference.height + feeLabel.height + cancelSendButton.height + 70
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
             visible: transactionSend == 1
@@ -1463,7 +1514,9 @@ Rectangle {
                         pincodeTracker = 1
                     }
                     else {
-                        // whatever function needed to execute payment
+                        console.log(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
+                        sendCoins(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
+                        failedSend = 0
                         requestSend = 1
                     }
                 }
@@ -1476,20 +1529,39 @@ Rectangle {
                 running: false
 
                 onTriggered: {
-                    appsTracker = 0
-                    selectedPage = "backup"
-                    mainRoot.pop();
-                    // whatever function needed to execute payment
+                    console.log(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
+                    sendCoins(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
+                    failedSend = 0
                     requestSend = 1
                 }
             }
 
             Connections {
                 target: UserSettings
+
                 onPincodeCorrect: {
                     if (pincodeTracker == 1 && transferTracker == 1) {
                         timer3.start()
                     }
+                }
+            }
+
+            Connections {
+                target: static_int
+
+                onSendCoinsSuccess : {
+                    if (transferTracker == 1 && requestSend == 1) {
+                    confirmationSend = 1
+                    requestSend = 0
+                        // provisional TX info
+                        transactionList.append ({"coinName": coinID.text, "walletLabel": walletLabel.text, "reference": referenceText.text, "txid": transactionId, "txNR": txID })
+                        txID = txID + 1
+                    }
+                }
+
+                onSendCoinsFailure : {
+                    requestSend = 0
+                    failedSend = 1
                 }
             }
         }
@@ -1551,6 +1623,7 @@ Rectangle {
                 }
 
                 onClicked: {
+                    failedSend = 0
                     transactionSend = 0
                 }
             }
@@ -1596,17 +1669,6 @@ Rectangle {
             anchors.verticalCenterOffset: -50
             playing: requestSend == 1
             visible: requestSend == 1
-
-            // Just to get past this stage
-
-            MouseArea {
-                anchors.fill: parent
-
-                onClicked: {
-                    confirmationSend = 1
-                    requestSend = 0
-                }
-            }
         }
 
         Label {
@@ -1631,7 +1693,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: transactionSend == 1
                      && failedSend == 1
         }
@@ -1736,7 +1798,7 @@ Rectangle {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            anchors.verticalCenterOffset: -100
             visible: transactionSend == 1
                      && confirmationSend == 1
         }
@@ -1793,12 +1855,6 @@ Rectangle {
                 }
 
                 onClicked: {
-                    // provisional TX info
-                    transactionDate = new Date().toLocaleDateString(Qt.locale(),"dd MMM yy")
-                    timestamp = Number.fromLocaleString(new Date().toLocaleDateString(Qt.locale(),"yyMMdd") + new Date().toLocaleTimeString(Qt.locale(),"HHmmsszzz"))
-                    transactionList.append ({"coinName": coinID.text, "walletLabel": walletLabel.text, "date": transactionDate, "amount": Number.fromLocaleString(Qt.locale("en_US"), ("-"+sendAmount.text)), "txPartner": keyInput.text, "reference": referenceText.text, "txid": txID, "txNR": timestamp })
-                    txID = txID + 1
-
                     sendAmount.text = ""
                     keyInput.text = ""
                     referenceInput.text = ""
@@ -2224,7 +2280,7 @@ Rectangle {
         id: myPincode
         z: 10
         anchors.top: parent.top
-        anchors.left: parent.left
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 }
 

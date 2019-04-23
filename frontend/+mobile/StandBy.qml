@@ -109,9 +109,11 @@ Rectangle {
                     pincodeTracker = 1
                 }
                 else if (userSettings.pinlock === false) {
+                    if (standBy == 1) {
                     standBy = 0
                     selectedPage = "home"
-                    mainRoot.pop("../DashboardForm.qml")
+                    mainRoot.pop()
+                    }
                 }
             }
         }
@@ -125,7 +127,7 @@ Rectangle {
                     pincodeTracker = 0
                     pinOK = 0
                     selectedPage = "home"
-                    mainRoot.pop("../DashboardForm.qml")
+                    mainRoot.pop()
                 }
             }
         }

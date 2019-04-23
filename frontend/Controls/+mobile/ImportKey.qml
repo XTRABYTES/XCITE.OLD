@@ -390,15 +390,10 @@ Rectangle {
                                 && addressExists == 0
                                 && labelExists == 0) {
                             selectedAddress = ""
-                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY") {
+                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY" || coinList.get(coinIndex).name === "XTEST") {
                                 importInitiated = true
                                 importPrivateKey((coinList.get(coinIndex).fullname), newAddress.text)
                             }
-                            else if (coinList.get(coinIndex).name === "XFUEL-TEST") {
-                                importInitiated = true
-                                importPrivateKey("testnet", newAddress.text)
-                            }
-
                             else {
                                 importWalletFailed = 1
                                 walletError = error2

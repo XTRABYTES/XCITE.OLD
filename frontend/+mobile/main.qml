@@ -97,10 +97,9 @@ ApplicationWindow {
         coinList.setProperty(0, "xby", 1);
         coinList.setProperty(0, "coinID", 0);
         coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "testnet" : false, "xby": 1,"coinID": 1});
-        coinList.append({"name": "XFUEL-TEST", "fullname": "xfuel", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 2});
-        coinList.append({"name": "XBY-TEST", "fullname": "xtrabytes", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 3});
-        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
-        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 5});
+        coinList.append({"name": "XTEST", "fullname": "testnet", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 2});
+        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 3});
+        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
 
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
@@ -398,8 +397,7 @@ ApplicationWindow {
                             sumBalance()
                             sumXBY()
                             sumXFUEL()
-                            sumXBYTest()
-                            sumXFUELTest()
+                            sumXTest()
                             sumBTC()
                             sumETH()
                         }
@@ -515,20 +513,10 @@ ApplicationWindow {
         return totalXFUEL
     }
 
-    function sumXBYTest() {
-        totalXBYTest =0
-        for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === "XBY-TEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
-                totalXBYTest += walletList.get(i).balance
-            }
-        }
-        return totalXBYTest
-    }
-
-    function sumXFUELTest() {
+    function sumXTest() {
         totalXFUELTest = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === "XFUEL-TEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+            if (walletList.get(i).name === "XTEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXFUELTest += walletList.get(i).balance
             }
         }
@@ -653,6 +641,18 @@ ApplicationWindow {
             }
         }
         return value
+    }
+
+    function getPrivKey(coin, label) {
+        var privKey = ""
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === coin) {
+                if (walletList.get(i).label === label) {
+                    privKey = walletList.get(i).privatekey
+                }
+            }
+        }
+        return privKey
     }
 
     function getAddress(coin, label) {
@@ -836,8 +836,7 @@ ApplicationWindow {
             sumBalance()
             sumXBY()
             sumXFUEL()
-            sumXBYTest()
-            sumXFUELTest()
+            sumXTest()
             sumBTC()
             sumETH()
         }
@@ -887,8 +886,7 @@ ApplicationWindow {
             userSettings.localKeys = settingsLoaded.localKeys === "true";
             userSettings.xby = settingsLoaded.xby === "true";
             userSettings.xfuel = settingsLoaded.xfuel === "true";
-            userSettings.xbytest = settingsLoaded.xbytest === "true";
-            userSettings.xfueltest = settingsLoaded.xfueltest === "true";
+            userSettings.xfueltest = settingsLoaded.xtest === "true";
             userSettings.xby = settingsLoaded.btc === "true";
             userSettings.xfuel = settingsLoaded.eth === "true";
             userSettings.sound = settingsLoaded.sound;
@@ -896,10 +894,9 @@ ApplicationWindow {
             userSettings.systemVolume = settingsLoaded.systemVolume;
             coinList.setProperty(0, "active", userSettings.xfuel);
             coinList.setProperty(1, "active", userSettings.xby);
-            coinList.setProperty(2, "active", userSettings.xfueltest);
-            coinList.setProperty(3, "active", userSettings.xbytest);
-            coinList.setProperty(4, "active", userSettings.btc);
-            coinList.setProperty(5, "active", userSettings.eth);
+            coinList.setProperty(2, "active", userSettings.xtest);
+            coinList.setProperty(3, "active", userSettings.btc);
+            coinList.setProperty(4, "active", userSettings.eth);
         }
     }
 
@@ -1084,8 +1081,7 @@ ApplicationWindow {
         userSettings.localKeys = false;
         userSettings.xby = true;
         userSettings.xfuel = true;
-        userSettings.xbytest = true;
-        userSettings.xfueltest = true;
+        userSettings.xtest = true;
         userSettings.btc = true;
         userSettings.eth = true;
         userSettings.sound = 0
@@ -1244,11 +1240,8 @@ ApplicationWindow {
         ListElement {
             coinName: ""
             walletLabel: ""
-            date: ""
-            amount: 0
-            txPartner: ""
             reference: ""
-            txid: 0
+            txid: ""
             txNR: 0
         }
     }
@@ -1329,8 +1322,7 @@ ApplicationWindow {
         property bool localKeys
         property bool xby
         property bool xfuel
-        property bool xbytest
-        property bool xfueltest
+        property bool xtest
         property bool btc
         property bool eth
         property int sound: 0

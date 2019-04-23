@@ -453,8 +453,7 @@ Rectangle {
                             userSettings.pinlock = false
                             userSettings.xby = true
                             userSettings.xfuel = true
-                            userSettings.xbytest = true
-                            userSettings.xfueltest = true
+                            userSettings.xtest = true
                             userSettings.btc = true
                             userSettings.eth = true
                             userSettings.sound = 0
