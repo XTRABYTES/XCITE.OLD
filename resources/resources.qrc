@@ -277,5 +277,8 @@
         <file>icons/XFUEL_card_logo_01.svg</file>
         <file>icons/XBY_card_logo_01.svg</file>
         <file>videos/XCITE_screensaver_01.mp4</file>
+        <file>ios/xcite120px.png</file>
+        <file>ios/xcite152px.png</file>
+        <file>ios/xcite180px.png</file>
     </qresource>
 </RCC>
