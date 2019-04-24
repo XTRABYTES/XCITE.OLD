@@ -1432,7 +1432,7 @@ ApplicationWindow {
         id: loginTimer
         interval: 30000
         repeat: true
-        running: sessionStart == 1
+        running: false //sessionStart == 1
 
         onTriggered: {
             if (interactionTracker == 1) {

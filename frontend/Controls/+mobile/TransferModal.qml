@@ -1262,6 +1262,7 @@ Rectangle {
             color: "transparent"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1276,6 +1277,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1288,6 +1290,7 @@ Rectangle {
             anchors.rightMargin: 28
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1301,6 +1304,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1318,6 +1322,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1333,6 +1338,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1348,6 +1354,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1363,6 +1370,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1379,6 +1387,7 @@ Rectangle {
             visible: addressName != ""
                      && transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1395,6 +1404,7 @@ Rectangle {
             visible: referenceInput.text !== ""
                      && transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1410,6 +1420,7 @@ Rectangle {
             visible: referenceInput.text !== ""
                      && transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1425,6 +1436,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1437,6 +1449,7 @@ Rectangle {
             anchors.rightMargin: 28
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1450,6 +1463,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1465,6 +1479,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1478,6 +1493,7 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1493,6 +1509,7 @@ Rectangle {
             opacity: darktheme == true? 0.25 : 0.5
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
 
             MouseArea {
@@ -1560,8 +1577,10 @@ Rectangle {
                 }
 
                 onSendCoinsFailure : {
+                    if (transferTracker == 1 && requestSend == 1) {
                     requestSend = 0
                     failedSend = 1
+                    }
                 }
             }
         }
@@ -1577,6 +1596,7 @@ Rectangle {
             anchors.verticalCenter: confirmationSendButton.verticalCenter
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1591,6 +1611,7 @@ Rectangle {
             opacity: darktheme == true? 0.5 : 0.75
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1606,6 +1627,7 @@ Rectangle {
             anchors.leftMargin: 5
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
 
             MouseArea {
@@ -1640,6 +1662,7 @@ Rectangle {
             anchors.verticalCenter: cancelSendButton.verticalCenter
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
@@ -1654,6 +1677,7 @@ Rectangle {
             anchors.verticalCenter: cancelSendButton.verticalCenter
             visible: transactionSend == 1
                      && confirmationSend == 0
+                     && failedSend == 0
                      &&requestSend == 0
         }
 
