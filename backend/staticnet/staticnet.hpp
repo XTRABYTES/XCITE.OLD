@@ -78,7 +78,7 @@ private:
     std::string sender_address;
     std::string target_address;
     std::string value_str;
-    QString req_id;
+    QString trace_id;
     StaticNetHttpClient *client;
 };
 
@@ -119,15 +119,15 @@ public:
     StaticNet(QObject *parent = 0) : QObject(parent) {}
     ~StaticNet() {}
     void Initialize();
-    bool CheckUserInputForKeyWord(const QString msg);
+    bool CheckUserInputForKeyWord(const QString msg, int *traceID);
 
     QString GetConnectStr() {
         return ConnectStr;
     };
 
-    int GetNewRequestID() {
+    int GetNewTraceID() {
         boost::unique_lock<boost::mutex> scoped_lock(mutex);
-        return ++requestID;
+        return ++traceID;
     };
 
 
@@ -142,7 +142,7 @@ signals:
 
 private:
     boost::mutex mutex;
-    int requestID;
+    int traceID;
     QString ConnectStr;
 };
 
