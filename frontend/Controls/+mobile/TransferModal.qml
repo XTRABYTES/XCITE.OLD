@@ -937,7 +937,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && inputAmount > ((walletList.get(selectedWallet).balance) + 1)
+                     && inputAmount > ((walletList.get(selectedWallet).balance) - 1)
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
                      && coinID.text == "XFUEL"
@@ -1186,7 +1186,7 @@ Rectangle {
                             && keyInput.text !== ""
                             && sendAmount.text !== ""
                             && inputAmount !== 0
-                            && inputAmount <= ((walletList.get(selectedWallet).balance) + 1)
+                            && inputAmount <= ((walletList.get(selectedWallet).balance) - 1)
                             && calculatorTracker == 0
                             && (network == "xtrabytes" || network == "xfuel" || network == "testnet")) {
                         selectNetwork = true

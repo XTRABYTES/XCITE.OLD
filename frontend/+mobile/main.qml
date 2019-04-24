@@ -137,19 +137,19 @@ ApplicationWindow {
     }
 
     onValueBTCChanged: {
-        coinList.setProperty(5, "fiatValue", valueBTC);
+        coinList.setProperty(3, "fiatValue", valueBTC);
     }
 
     onPercentageBTCChanged: {
-        coinList.setProperty(4, "percentage", percentageBTC);
+        coinList.setProperty(3, "percentage", percentageBTC);
     }
 
     onBtcValueETHChanged: {
-        coinList.setProperty(5, "coinValueBTC", btcValueETH);
-        coinList.setProperty(5, "fiatValue", btcValueETH * valueBTC);
+        coinList.setProperty(4, "coinValueBTC", btcValueETH);
+        coinList.setProperty(4, "fiatValue", btcValueETH * valueBTC);
     }
     onPercentageETHChanged: {
-        coinList.setProperty(5, "percentage", percentageETH);
+        coinList.setProperty(4, "percentage", percentageETH);
     }
 
     onGoodbeyChanged: {
@@ -886,7 +886,7 @@ ApplicationWindow {
             userSettings.localKeys = settingsLoaded.localKeys === "true";
             userSettings.xby = settingsLoaded.xby === "true";
             userSettings.xfuel = settingsLoaded.xfuel === "true";
-            userSettings.xfueltest = settingsLoaded.xtest === "true";
+            userSettings.xtest = settingsLoaded.xtest === "true";
             userSettings.xby = settingsLoaded.btc === "true";
             userSettings.xfuel = settingsLoaded.eth === "true";
             userSettings.sound = settingsLoaded.sound;

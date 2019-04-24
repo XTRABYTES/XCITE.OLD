@@ -26,8 +26,10 @@ public:
     explicit staticnet_integration(QObject *parent = nullptr);
 
 signals:
-    void sendCoinsSuccess(QString transactionId);
-    void sendCoinsFailure(QString error);
+    void sendCoinsSuccess(QString transactionId, QString traceID);
+    void sendCoinsFailure(QString error, QString traceID);
+    void validParams(QString traceID);
+    void badParams();
 
 public slots:
     void sendCoinsEntry(QString msg);

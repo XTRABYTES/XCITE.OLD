@@ -24,30 +24,47 @@ void staticnet_integration::sendCoinsEntry(QString msg) {
     int _traceID;
     QString sendCoins = "!!staticnet sendcoin " + msg;
     if (staticNet.CheckUserInputForKeyWord(sendCoins, &_traceID)) {
-       qDebug() << "staticnet command accepted";
+        qDebug() << "staticnet command accepted";
     } else {
-       qDebug() << "staticnet command not accepted";
+        qDebug() << "staticnet command not accepted";
     }
     
 }
 
 
 void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
-     qDebug() << "staticnet response recevied:";
+    qDebug() << "staticnet response recevied:";
 
-     QJsonDocument json_doc(response);
-     QJsonValue error = response.value("error");
-     QJsonValue txid = response.value("txid");
+    QJsonDocument json_doc(response);
+    QString error = response.value("error").toString();
+    QString sender = response.value("sender").toString();
+    QJsonValue params = response.value("params");
+    QJsonObject result = json_doc.object().value("params").toObject();
+    QString txid = result.value("txid").toString();
+    QString traceid = response.value("traceID").toString();
 
-    if (error.isNull()){
-        emit sendCoinsSuccess(txid.toString());
-        qDebug() << "transactionId: " + txid.toString();
-    }else{
-        emit sendCoinsFailure(error.toString());
-        qDebug() << "ERROR: " + txid.toString();
-
+    if (sender == "SendcoinWorker::txbroadcast_request") {
+        if (params == true) {
+            emit validParams(traceid);
+            qDebug() << "Valid parameters for sendcoin, traceId: " + traceid;
+        }
+        else {
+            emit badParams();
+            qDebug() << "Invalid parameters for sendcoin";
+        }
     }
 
-     QString json_string = json_doc.toJson();
-     qDebug() << json_string;
+    else if (sender ==  "SendcoinWorker::txbroadcast_onResponse") {
+        if (txid != ""){
+            emit sendCoinsSuccess(txid, traceid);
+            qDebug() << "transactionId: " + txid + " traceId: " + traceid;
+        }else{
+            emit sendCoinsFailure(error, traceid);
+            qDebug() << "ERROR: " + error + " traceId: " + traceid;
+
+        }
+    }
+
+    QString json_string = json_doc.toJson();
+    qDebug() << json_string;
 }
