@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIconFile</key>
-	<string>xcite.icns</string>
-        <string>xcite512x512.png</string>
+	<string>xcite.icns</string>>
         <string>xcite180px.png</string>
+	<string>xcite152px.png</string>
 	<string>xcite120px.png</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
