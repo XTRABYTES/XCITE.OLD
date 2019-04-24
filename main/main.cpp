@@ -33,7 +33,6 @@
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
 #include "../backend/integrations/Explorer.hpp"
-#include "../backend/integrations/wallet.hpp"
 #include "../backend/integrations/xutility_integration.hpp"
 #include "../backend/integrations/staticnet_integration.hpp"
 
@@ -82,10 +81,6 @@ int main(int argc, char *argv[])
     // wire-up Explorer
     Explorer explorer;
     engine.rootContext()->setContextProperty("explorer", &explorer);
-
-    // wire-up wallet
-    Wallet walletFunction;
-    engine.rootContext()->setContextProperty("WalletFunction", &walletFunction);
 
     // wire-up xutility_integration
     xutility_integration xUtil_int;
