@@ -339,7 +339,9 @@ void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
     }
 
     outputs.push_back(target_address + "," + StrFromAmount(send_value));
-    outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + fee_value)));
+    if ((inputs_sum - (send_value + fee_value)) > 0) {
+       outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + fee_value)));
+    }
 
     std::string RawTransaction = CreateRawTransaction( inputs, outputs, secret);
     qDebug() << "Created RAW transaction:" << QString::fromUtf8(RawTransaction.c_str());
