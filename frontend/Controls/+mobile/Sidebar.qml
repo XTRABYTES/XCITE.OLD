@@ -394,7 +394,7 @@ Rectangle {
         width: sidebar.width
         height: standbyText.height + 70
         anchors.bottom: logoutSection.top
-        visible: appsTracker == 1
+        visible: false //appsTracker == 1
 
         Image {
             id: standby
