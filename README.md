@@ -205,9 +205,11 @@ After installing Qt, clone this repository and open xcitedesk.pro (for the deskt
 
 Prerequisites for Android deployment:
 
-- [Java SE Development Kit 8u201 (JDK)](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+- [Java SE Development Kit 8u211 (JDK)](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (Version 8)
 - [Android Software Development Kit (SDK)](https://developer.android.com/studio/#command-tools) (SDK Command Tools)
-- [Android Native Development Kit (NDK)](https://developer.android.com/ndk/downloads/older_releases.html) (Recommended Android NDK r17c version)
+- [Android Native Development Kit (NDK)](https://developer.android.com/ndk/downloads/older_releases.html) 
+  - Recommended Android NDK r17c for Qt 5.11.x
+  - Recommended Android NDK r19c for Qt 5.12.x
 
 *There is no need to download and install Android Studio (SDK). The Android SDK command tools contain all the necessary files.*
 
