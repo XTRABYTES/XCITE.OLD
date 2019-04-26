@@ -343,15 +343,25 @@ void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
        outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + fee_value)));
     }
 
+    qDebug() << "Creating RAW transaction...";
     std::string RawTransaction = CreateRawTransaction( inputs, outputs, secret);
     qDebug() << "Created RAW transaction:" << QString::fromUtf8(RawTransaction.c_str());
+    
+    if (RawTransaction.length()) {
+		   QJsonArray req_params; 
+		   req_params.push_back("!!staticnet");
+		   req_params.push_back("txbroadcast");   
+		   req_params.push_back("rawtx:"+QString::fromUtf8(RawTransaction.c_str()));	
+			txbroadcast_request(&req_params);     
+    } else {
+		  	 QJsonObject response;
+		    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));	 
+			 response.insert("traceID", QJsonValue::fromVariant(trace_id));
+			 response.insert("error", "Invalid RAW transaction.");
+		    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+          emit finished();
+    }
      
-   QJsonArray req_params; 
-   req_params.push_back("!!staticnet");
-   req_params.push_back("txbroadcast");   
-   req_params.push_back("rawtx:"+QString::fromUtf8(RawTransaction.c_str()));
-	
-	txbroadcast_request(&req_params);
     
 	}
 	
