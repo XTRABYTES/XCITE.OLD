@@ -145,7 +145,7 @@ If you use Windows, you will need __MinGW__. You can download the MinGW compiler
 
 ### Compiling (Desktop platforms only)
 Compiling converts source code (in our case, the dependency files) to binary or object code (the files needed for the XCITE app build).
-A compiler is a computer program (or set of programs) that transforms source code written in a programming language (the source  language) into another computer language (the target language, often having a binary form known as object code).
+A compiler is a computer program (or set of programs) that transforms source code written in a programming language (the source language) into another computer language (the target language, often having a binary form known as object code).
 
 Create a folder where you are going to copy the required dependencies, for example, C:\deps.
 
@@ -183,7 +183,7 @@ Edit the xcitedesk.pro file to include the correct paths of the compiled depende
 
 ### Install Qt
 
-XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free. 
+XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free.<br> 
 QT includes Qt Creator, a complete integrated development environment (IDE). Qt Creator comes with a wide range of integrated tools for both developers and designers. 
 
 __macOS NOTE:__ Before installing Qt, you first need to install __Xcode__.
@@ -202,21 +202,25 @@ Our development is currently targeting Qt 5.11.3 and up. When the Qt installer a
 **Windows installer options**
 [![qt-windows-installation](https://github.com/xtrabytes/XCITE/blob/master/documentation/guide5.png)](#install-qt)
 
-Once the Qt installation is complete, you can now clone or download the XCITE repository. <br>
+Once the Qt installation is complete, clone or download the XCITE repository. <br>
 Edit the __.pro__ file accordingly and open the xcitedesk.pro (for the desktop platform) or the xcite.pro (for the mobile platform) using Qt Creator.
 
 
 ### Project Configuration (Android)
 
-This section will help you configure Java, Android SDK and Android NDK in Qt Creator. 
+Configuring Java, Android SDK and Android NDK in Qt Creator. And the versions best suited for development.
+
+Java is a widely used programming language, designed to be used in a distributed environment, as is often the case with the Android platform.
+The Android SDK (software development kit) is a set of development tools used to develop applications for the Android platform.
+The Android NDK (Native Development Kit) is a companion tool to the Android SDK that lets developers build performance-critical portions of apps in native code. It provides headers and libraries that allow developers to build activities, handle user input, use hardware sensors, access application resources, and more, when programming in C or C++.
 
 Prerequisites for Android deployment:
 
 - [Java SE Development Kit 8u211 (JDK)](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (Version 8)
 - [Android Software Development Kit (SDK)](https://developer.android.com/studio/#command-tools) (SDK Command Tools)
-- [Android Native Development Kit (NDK)](https://developer.android.com/ndk/downloads/older_releases.html) 
-  - Recommended Android NDK r17c for Qt 5.11.x
-  - Recommended Android NDK r19c for Qt 5.12.x
+- [Android Native Development Kit (NDK)](https://developer.android.com/ndk) 
+  - [Recommended Android NDK r17c for Qt 5.11.x](https://developer.android.com/ndk/downloads/older_releases.html)
+  - [Recommended Android NDK r19c for Qt 5.12.x](https://developer.android.com/ndk/downloads)
 
 *There is no need to download and install Android Studio (SDK). The Android SDK command tools contain all the necessary files.*
 
@@ -244,7 +248,12 @@ You need to select the correct kit for the mobile version in Qt Creator:
 
 - Qt (xx version) for iOS --> the mobile version
 
-__Xcode__, developed by Apple, provides a suite of software development tools, similar to the Qt platform, for coding, testing and creating application.  While Qt can be used to create macOS and iOS applications, we recomend using Xcode for iOS project builds. To use Xcode, it is necessary to create a .xcodeproj file to be able to build the iOS XCITE application. Qt will generate the file. Once it is generated, Xcode can use it to make the iOS build. To generate the file:
+__Xcode__, developed by Apple, provides a suite of software development tools, similar to the Qt platform, for coding, testing and creating application.  While Qt can be used to create macOS and iOS applications, we recommend using Xcode for iOS project builds. <br>
+To use Xcode, it is necessary to create a .xcodeproj file to be able to build the iOS XCITE application. Qt will generate the file. Once it is generated, Xcode can use it to make the iOS build.
+
+An Apple ID can be used to obtain the Apple Developer account. The basic privileges of an Apple Developer account are available for free. It will grant access to developer forums, beta updates and the ability to use Xcode to build, deploy and test apps on our own devices.
+
+To generate the .xcodeproj file:
 
 - Open the xcite.pro in QT
 - Go to Build --> Run qmake
