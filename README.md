@@ -138,7 +138,7 @@ Libraries or modules can include configuration data, documentation, message temp
 - The required dependencies are already included and can be found inside the XCITE /dependencies folder. There is no need to compile them.
 
 #### MinGW (Windows only)
-If you use Windows, you will need __MinGW__. You can download the MinGW compiler for Windows [here](https://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download). 
+__MinGW__ is recommended when compiling libraries in Windows. You can download the MinGW compiler for Windows [here](https://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download). 
 
 - __MinGW__ provides a complete open source programming toolset for developers working on the Windows platform. It includes a port of the GNU Compiler Collection (GCC), including C, C++ and other compilers.<br>
 - __MSYS__ is an alternative to Microsoft's cmd.exe. It provides a general purpose command line environment, suited for use with MinGW.
