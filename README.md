@@ -183,7 +183,10 @@ Edit the xcitedesk.pro file to include the correct paths of the compiled depende
 
 ### Install Qt
 
-XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free.
+XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free. 
+QT includes Qt Creator, a complete integrated development environment (IDE). Qt Creator comes with a wide range of integrated tools for both developers and designers. 
+
+__macOS NOTE:__ Before installing Qt, you first need to install __Xcode__.
 
 Our development is currently targeting Qt 5.11.3 and up. When the Qt installer asks which Qt components to install, select the following components and a compiler suitable to your development environment:
 
@@ -195,13 +198,17 @@ Our development is currently targeting Qt 5.11.3 and up. When the Qt installer a
 - Qt 5.11.3 -> Android ARMv7 (Android physical device components)
 - Qt 5.11.3 -> Android x86 (Android virtual device components)
 
+
 **Windows installer options**
 [![qt-windows-installation](https://github.com/xtrabytes/XCITE/blob/master/documentation/guide5.png)](#install-qt)
 
-After installing Qt, clone this repository and open xcitedesk.pro (for the desktop platform) or the xcite.pro (for the mobile platform) using Qt Creator.
+Once the Qt installation is complete, you can now clone or download the XCITE repository. <br>
+Edit the __.pro__ file accordingly and open the xcitedesk.pro (for the desktop platform) or the xcite.pro (for the mobile platform) using Qt Creator.
 
 
 ### Project Configuration (Android)
+
+This section will help you configure Java, Android SDK and Android NDK in Qt Creator. 
 
 Prerequisites for Android deployment:
 
@@ -227,16 +234,17 @@ In Qt Options --> Devices --> Android, confirm that the prerequisite paths are c
 ### Project Configuration (iOS)
 
 Again, if you have not installed the necessary files, please do so.
-The prerequisites for iOS deployment are:
+
+Prerequisites for iOS deployment:
 
 - [Xcode](https://developer.apple.com/xcode/)
 - [Apple Developer Account](https://developer.apple.com/) (Apple ID)
 
-You need to select the correct kit for the mobile version: 
+You need to select the correct kit for the mobile version in Qt Creator: 
 
 - Qt (xx version) for iOS --> the mobile version
 
-XCODE, developed by Apple, provides a suite of software development tools, similar to the Qt platform, for coding, testing and creating application.  While Qt can be used to create macOS and iOS applications, we recomend using XCODE for iOS project builds. To use XCODE, it is necessary to create a .xcodeproj file to be able to build the iOS XCITE application. Qt will generate the file. Once it is generated, XCODE can use it to make the iOS build. To generate the file:
+__Xcode__, developed by Apple, provides a suite of software development tools, similar to the Qt platform, for coding, testing and creating application.  While Qt can be used to create macOS and iOS applications, we recomend using Xcode for iOS project builds. To use Xcode, it is necessary to create a .xcodeproj file to be able to build the iOS XCITE application. Qt will generate the file. Once it is generated, Xcode can use it to make the iOS build. To generate the file:
 
 - Open the xcite.pro in QT
 - Go to Build --> Run qmake
@@ -247,7 +255,7 @@ XCODE, developed by Apple, provides a suite of software development tools, simil
 
 [![mac folder](https://github.com/xtrabytes/XCITE/blob/master/documentation/guide2.png)](#project-configuration-ios)
 
-- Open the .xcodeproj file in XCODE and choose Product --> Build
+- Open the .xcodeproj file in Xcode and choose Product --> Build
 
 [![iOS build](https://github.com/xtrabytes/XCITE/blob/master/documentation/guide3.png)](#project-configuration-ios)
 
