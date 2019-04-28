@@ -125,7 +125,8 @@ Prerequisites for macOS deployment:
 
 --------
 ### Dependencies
-Dependencies are a set of resource files (modules, libraries) needed for the creation of the application. You can compile, from source, by using the correct compiler.
+Dependencies are a set of resource files (modules, libraries) used in the creation of the application. Existing dependencies can be used or they can be compiled, from source, with the correct compiler.<br>
+Libraries or modules can include configuration data, documentation, message templates, subroutines, classes, values or type specifications.
 
 #### Required dependencies for the desktop platform (Windows, macOS, Linux):
 - [Boost 1.60](https://www.boost.org/users/history/version_1_60_0.html) -> C++ libraries
@@ -145,11 +146,11 @@ If you use Windows, you will need __MinGW__. You can download the MinGW compiler
 
 ### Compiling (Desktop platforms only)
 Compiling converts source code (in our case, the dependency files) to binary or object code (the files needed for the XCITE app build).
-A compiler is a computer program (or set of programs) that transforms source code written in a programming language (the source language) into another computer language (the target language, often having a binary form known as object code).
-
-Create a folder where you are going to copy the required dependencies, for example, C:\deps.
+A compiler is a program (or set of programs) that transforms source code written in a programming language (the source language) into another computer language (the target language, often having a binary form known as object code).
 
 *Note that the compiling procedures in the macOS and Linux systems are similar to Windows. Use the Windows example as a reference.*
+
+Create a folder where you are going to copy the required dependencies, for example, C:\deps.
 
 Boost (Windows example)
 
@@ -184,7 +185,7 @@ Edit the xcitedesk.pro file to include the correct paths of the compiled depende
 ### Install Qt
 
 XCITE development requires the Qt cross-platform framework. If you don't have Qt installed you can download it from [here](https://www.qt.io/download-qt-installer) for free.<br> 
-QT includes Qt Creator, a complete integrated development environment (IDE). Qt Creator comes with a wide range of integrated tools for both developers and designers. 
+QT includes Qt Creator, an integrated development environment (IDE). Qt Creator comes with a wide range of integrated tools for both developers and designers. 
 
 __macOS NOTE:__ Before installing Qt, you first need to install __Xcode__.
 
@@ -212,7 +213,7 @@ Configuring Java, Android SDK and Android NDK in Qt Creator. And the versions be
 
 Java is a widely used programming language, designed to be used in a distributed environment, as is often the case with the Android platform.
 The Android SDK (software development kit) is a set of development tools used to develop applications for the Android platform.
-The Android NDK (Native Development Kit) is a companion tool to the Android SDK that lets developers build performance-critical portions of apps in native code. It provides headers and libraries that allow developers to build activities, handle user input, use hardware sensors, access application resources, and more, when programming in C or C++.
+The Android NDK (Native Development Kit) is a companion tool to the Android SDK that lets developers build performance-critical portions of the apps in native code. It provides headers and libraries that allow developers to build activities, handle user input, use hardware sensors, access application resources, and more, when programming in C or C++.
 
 Prerequisites for Android deployment:
 
@@ -248,7 +249,7 @@ You need to select the correct kit for the mobile version in Qt Creator:
 
 - Qt (xx version) for iOS --> the mobile version
 
-__Xcode__, developed by Apple, provides a suite of software development tools, similar to the Qt platform, for coding, testing and creating application.  While Qt can be used to create macOS and iOS applications, we recommend using Xcode for iOS project builds. <br>
+Xcode, developed by Apple, provides a suite of software development tools, similar to the Qt platform, for coding, testing and creating application.  While Qt can be used to create macOS and iOS applications, we recommend using Xcode for iOS project builds. <br>
 To use Xcode, it is necessary to create a .xcodeproj file to be able to build the iOS XCITE application. Qt will generate the file. Once it is generated, Xcode can use it to make the iOS build.
 
 An Apple ID can be used to obtain the Apple Developer account. The basic privileges of an Apple Developer account are available for free. It will grant access to developer forums, beta updates and the ability to use Xcode to build, deploy and test apps on our own devices.
