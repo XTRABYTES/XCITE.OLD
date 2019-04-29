@@ -344,14 +344,14 @@ void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
     }
 
     qDebug() << "Creating RAW transaction...";
-    std::string RawTransaction = CreateRawTransaction( inputs, outputs, secret);
+    std::string RawTransaction = CreateRawTransaction( xUtility.getSelectedNetworkid(), inputs, outputs, secret);
     qDebug() << "Created RAW transaction:" << QString::fromUtf8(RawTransaction.c_str());
     
     if (RawTransaction.length()) {
 		   QJsonArray req_params; 
 		   req_params.push_back("!!staticnet");
 		   req_params.push_back("txbroadcast");   
-		   req_params.push_back("rawtx:"+QString::fromUtf8(RawTransaction.c_str()));	
+		   req_params.push_back(QString::fromUtf8(xUtility.getSelectedNetworkName().c_str())+"_rawtx:"+QString::fromUtf8(RawTransaction.c_str()));	
 			txbroadcast_request(&req_params);     
     } else {
 		  	 QJsonObject response;
@@ -371,18 +371,18 @@ void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
 void SendcoinWorker::process() { 
                   
       //	!!staticnet sendcoin [target-address] [sending-amount] [sender-privatekey]
-      // example:
+
+      // examples:
+
+      // !!xutil network xfuel
       // !!staticnet sendcoin FBCMNhonjRxELB2UrxNGHgAusPnNHvsMUi 1.23456789 R9fXvzTuqz9BqgyiV4tmiY2LkioUq7GxKGTcJibruKpNYitutbft
-
-      // FIXMEE!! need remove this temporary network selection !
-      //xUtility.CheckUserInputForKeyWord("!!xutil network xfuel");
-
+      
+      // !!xutil network testnet
+      // !!staticnet sendcoin GQufCtACUjYdBycKb9kaJXF8bbV9aHryJ2 9.87654321 RgeFarE5WTUMmuHtHfGt7B23sL7VoWGeyiGJ1Yrzrz6Jc3zMN1rU
 
 
       if (xUtility.getSelectedNetworkid() != 0) {
-     	
-        //xchatRobot.SubmitMsg(QString::fromUtf8(secret.c_str()));
-        
+     	       
         CXCiteSecret xciteSecret;
         bool fGood = xciteSecret.SetString(secret,xUtility.getSelectedNetworkid());
         if (fGood) {
@@ -399,7 +399,7 @@ void SendcoinWorker::process() {
    QJsonArray req_params; 
    req_params.push_back("!!staticnet");
    req_params.push_back("getunspents");   
-   req_params.push_back("address:"+QString::fromUtf8(sender_address.c_str()));
+   req_params.push_back(QString::fromUtf8(xUtility.getSelectedNetworkName().c_str())+"_address:"+QString::fromUtf8(sender_address.c_str()));
 	
 	unspent_request(&req_params);
          

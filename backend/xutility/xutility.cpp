@@ -50,6 +50,10 @@ unsigned char Xutility::getSelectedNetworkid() const {
 }
 
 
+std::string Xutility::getSelectedNetworkName() const {
+	return *network; 
+}
+
 bool Xutility::CheckUserInputForKeyWord(const QString msg) {
 
     QStringList args = msg.split(" ");

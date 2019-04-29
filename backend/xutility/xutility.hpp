@@ -51,6 +51,7 @@ public slots:
     void helpEntry();
     unsigned char getNetworkid(std::vector<std::string>::iterator network_iterator ) const;
     unsigned char getSelectedNetworkid() const;
+    std::string getSelectedNetworkName() const;
 
 private:
     bool xutility_initialised = false;
