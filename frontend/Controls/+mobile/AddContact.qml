@@ -148,7 +148,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newLastname
-            z: 1.5
             height: 34
             placeholder: "LAST NAME"
             anchors.left: newFirstname.left
@@ -170,7 +169,6 @@ Rectangle {
 
         Label {
             id: nameWarning1
-            z: 1.5
             text: "Contact already exists!"
             color: "#FD2E2E"
             anchors.horizontalCenter: newLastname.horizontalCenter
@@ -188,7 +186,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newTel
-            z: 1.4
             height: 34
             placeholder: "TELEPHONE NUMBER"
             anchors.left: newPhoto.left
@@ -209,7 +206,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newCell
-            z: 1.3
             height: 34
             placeholder: "CELLPHONE NUMBER"
             anchors.left: newTel.left
@@ -230,7 +226,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newMail
-            z: 1.2
             height: 34
             placeholder: "EMAIL ADDRESS"
             anchors.left: newCell.left
@@ -250,7 +245,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newChat
-            z: 1.1
             height: 34
             placeholder: "X-CHAT ID"
             anchors.left: newMail.left
@@ -270,7 +264,6 @@ Rectangle {
 
         Rectangle {
             id: saveButton
-            z: 1
             width: parent.width - 56
             height: 34
             color: ((newFirstname.text !== ""
@@ -367,7 +360,6 @@ Rectangle {
         }
 
         Text {
-            z: 1
             text: "SAVE"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -383,7 +375,6 @@ Rectangle {
         }
 
         Rectangle {
-            z: 1
             width: newTel.width
             height: 34
             anchors.bottom: saveButton.bottom
@@ -401,7 +392,6 @@ Rectangle {
 
         AnimatedImage  {
             id: waitingDots
-            z: 1
             source: 'qrc:/gifs/loading-gif_01.gif'
             width: 90
             height: 60
@@ -590,6 +580,7 @@ Rectangle {
                     newChat.text = "";
                     contactExists = 0;
                     editSaved = 0
+                    closeAllClipboard = true
                 }
             }
         }

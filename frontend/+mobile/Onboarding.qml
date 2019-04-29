@@ -194,7 +194,7 @@ Item {
 
     Label {
         id: closeButtonLabel
-        text: loginTracker == 1? "CLOSE" : "BACK"
+        text: loginTracker == 0 && importTracker == 0? "CLOSE" : (loginTracker == 0? "BACK" : "CLOSE")
         anchors.bottom: combinationMark.top
         anchors.bottomMargin: 25
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
@@ -205,7 +205,7 @@ Item {
         Rectangle{
             id: closeButton
             height: 34
-            width: doubbleButtonWidth
+            width: closeButtonLabel.width + 20
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
@@ -215,7 +215,7 @@ Item {
             anchors.fill: closeButton
 
             onClicked: {
-                if (loginTracker == 1) {
+                if (loginTracker == 1 || (loginTracker == 0 && importTracker == 0)) {
                 Qt.quit()
                 }
                 if (importTracker == 1) {

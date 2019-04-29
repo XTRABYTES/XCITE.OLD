@@ -330,6 +330,7 @@ ApplicationWindow {
     property int oldSystemVolume: 1
     property int systemVolumeChangeFailed: 0
     property int selectedSystemVolume: userSettings.systemVolume
+    property bool closeAllClipboard: false
 
     // Signals
     signal checkOS()

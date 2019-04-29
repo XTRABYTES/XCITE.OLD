@@ -77,7 +77,6 @@ Item {
 
         Rectangle {
             id: loginModalBody
-            z: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             width: parent.width
@@ -97,9 +96,19 @@ Item {
             }
         }
 
+        Rectangle {
+            anchors.horizontalCenter: loginModalBody.horizontalCenter
+            anchors.bottom: loginModalBody.bottom
+            width: loginModalBody.width
+            height: loginModalBody.height
+            color: "transparent"
+            border.color: maincolor
+            border.width: 1
+            opacity: 0.25
+        }
+
         Controls.TextInput {
             id: userName
-            z: 1.3
             height: 34
             placeholder: "USERNAME"
             text: ""
@@ -122,7 +131,6 @@ Item {
 
         Controls.TextInput {
             id: passWord
-            z: 1.2
             height: 34
             placeholder: "PASSWORD"
             text: ""
@@ -147,7 +155,6 @@ Item {
 
         Text {
             id: passWordError
-            z: 1.1
             text: "Username & Password combination is not correct!"
             color: "#FD2E2E"
             anchors.left: passWord.left
@@ -162,7 +169,6 @@ Item {
 
         Rectangle {
             id: logInButton
-            z: 1.1
             height: 34
             anchors.bottom: loginModalBody.bottom
             anchors.bottomMargin: 20
@@ -199,6 +205,7 @@ Item {
                 }
 
                 onReleased: {
+                    closeAllClipboard = true
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
                         loginInitiated = true
                         checkUsername = 1
@@ -314,7 +321,6 @@ Item {
 
         Text {
             id: logInButtonText
-            z: 1.1
             text: "LOG IN"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -326,7 +332,6 @@ Item {
         }
 
         Rectangle {
-            z: 1.1
             height: 34
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
@@ -342,7 +347,6 @@ Item {
 
         Label {
             id: loginRespons
-            z: 1.1
             text: "Checking username ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -355,7 +359,6 @@ Item {
 
         Label {
             id: loginRespons1
-            z: 1.1
             text: "Creating keypair for session ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -368,7 +371,6 @@ Item {
 
         Label {
             id: loginRespons2
-            z: 1.1
             text: "Checking identity ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -381,7 +383,6 @@ Item {
 
         Label {
             id: loginRespons3
-            z: 1.1
             text: "Retrieving session encryption key ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -394,7 +395,6 @@ Item {
 
         Label {
             id: loginRespons4
-            z: 1.1
             text: "Retrieving session ID ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -407,7 +407,6 @@ Item {
 
         Label {
             id: loginRespons5
-            z: 1.1
             text: "Loading account settings ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -420,7 +419,6 @@ Item {
 
         Label {
             id: loginRespons6
-            z: 1.1
             text: "Verifying wallet balances ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -429,18 +427,6 @@ Item {
             font.family: xciteMobile.name
             font.italic: true
             visible: verifyingBalances == 1
-        }
-
-        Rectangle {
-            z: 1
-            anchors.horizontalCenter: loginModalBody.horizontalCenter
-            anchors.bottom: loginModalBody.bottom
-            width: loginModalBody.width
-            height: loginModalBody.height
-            color: "transparent"
-            border.color: maincolor
-            border.width: 1
-            opacity: 0.25
         }
 
         Label {
@@ -478,7 +464,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: importAccount.bottom
                 anchors.topMargin: 5
-                color: "#F2F2F2"
+                color: "#0ED8D2"
             }
         }
 
@@ -531,7 +517,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: createAccount.bottom
             anchors.topMargin: 5
-            color: "#F2F2F2"
+            color: "#0ED8D2"
         }
     }
 }

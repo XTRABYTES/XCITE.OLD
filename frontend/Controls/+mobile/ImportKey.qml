@@ -384,6 +384,7 @@ Rectangle {
                     }
 
                     onReleased: {
+                        closeAllClipboard = true
                         if (newName.text != ""
                                 && newAddress.text != ""
                                 && invalidAddress == 0

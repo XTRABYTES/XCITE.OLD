@@ -252,7 +252,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newName
-            z: 1.2
             height: 34
             placeholder: "ADDRESS LABEL"
             text: ""
@@ -279,7 +278,6 @@ Rectangle {
 
         Label {
             id: nameWarning
-            z: 1.1
             text: "Already an address with this label!"
             color: "#FD2E2E"
             anchors.left: newName.left
@@ -298,7 +296,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newAddress
-            z: 1.1
             height: 34
             width: newName.width
             placeholder: "ADDRESS"
@@ -325,7 +322,6 @@ Rectangle {
 
         Label {
             id: addressWarning1
-            z: 1
             text: "Already a contact for this address!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -344,7 +340,6 @@ Rectangle {
 
         Label {
             id: addressWarning2
-            z: 1
             text: "Invalid address format!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -377,7 +372,6 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
-            z: 1
             width: newAddress.width
             height: 34
             anchors.top: newAddress.bottom
@@ -431,7 +425,6 @@ Rectangle {
 
         DropShadow {
             id: shadowTransferPicklist
-            z: 2
             anchors.fill: newPicklist
             source: newPicklist
             horizontalOffset: 0
@@ -450,7 +443,6 @@ Rectangle {
 
         Rectangle {
             id: newPicklist
-            z: 2
             width: 100
             height: ((totalLines + 1) * 35)-10
             color: "#2A2C31"
@@ -469,7 +461,6 @@ Rectangle {
 
         Rectangle {
             id: picklistClose
-            z: 2
             width: 100
             height: 25
             color: "#2A2C31"
@@ -504,7 +495,6 @@ Rectangle {
 
         Rectangle {
             id: saveButton
-            z: 1
             width: newAddress.width
             height: 34
             color: (newName.text != ""
@@ -605,7 +595,6 @@ Rectangle {
         }
 
         Text {
-            z: 1
             text: "SAVE"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -623,7 +612,6 @@ Rectangle {
         }
 
         Rectangle {
-            z: 1
             width: newAddress.width
             height: 34
             anchors.bottom: saveButton.bottom
@@ -643,7 +631,6 @@ Rectangle {
 
         AnimatedImage {
             id: waitingDots2
-            z: 1
             source: 'qrc:/gifs/loading-gif_01.gif'
             width: 90
             height: 60
@@ -916,6 +903,7 @@ Rectangle {
                     scanQRTracker = 0
                     selectedAddress = ""
                     scanning = "scanning..."
+                    closeAllClipboard = true
                 }
             }
 

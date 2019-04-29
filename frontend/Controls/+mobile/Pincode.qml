@@ -133,7 +133,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: newPin1
-                z: 1.2
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -148,7 +147,7 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (newPin1.text).length >= 4
                 mobile: 1
                 calculator: 0
                 onTextChanged: detectInteraction()
@@ -156,7 +155,6 @@ Rectangle {
 
             Label {
                 id: createPinText2
-                z: 1.1
                 text: "Retype your 4-digit pincode"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: newPin1.bottom
@@ -168,7 +166,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: newPin2
-                z: 1.1
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -183,7 +180,7 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (newPin2.text).length >= 4
                 mobile: 1
                 calculator: 0
 
@@ -201,7 +198,6 @@ Rectangle {
 
             Label {
                 id: noMatch
-                z: 1
                 text: "The pincodes you entered don't match!"
                 color: "#FD2E2E"
                 anchors.left: newPin2.left
@@ -216,7 +212,6 @@ Rectangle {
 
             Rectangle {
                 id: savePin
-                z: 1
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? maincolor : "#727272"
@@ -327,7 +322,6 @@ Rectangle {
                 }
             }
             Text {
-                z: 1
                 text: "SAVE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
@@ -338,7 +332,6 @@ Rectangle {
             }
 
             Rectangle {
-                z: 1
                 width: savePin.width
                 height: 34
                 anchors.bottom: savePin.bottom
@@ -373,7 +366,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: currentPin
-                z: 1.3
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -388,7 +380,7 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (currentPin.text).length >= 4
                 mobile: 1
                 calculator: 0
 
@@ -452,7 +444,6 @@ Rectangle {
 
             Label {
                 id: newPinText1
-                z: 1.2
                 text: "Choose a new 4-digit pincode"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: currentPin.bottom
@@ -464,7 +455,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: changePin1
-                z: 1.2
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -479,7 +469,7 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (changePin1.text).length >= 4
                 mobile: 1
                 calculator: 0
                 onTextChanged: detectInteraction()
@@ -487,7 +477,6 @@ Rectangle {
 
             Label {
                 id: newPinText2
-                z: 1.1
                 text: "Choose a new 4-digit pincode"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: changePin1.bottom
@@ -499,7 +488,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: changePin2
-                z: 1.1
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -514,7 +502,7 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (changePin2.text).length >= 4
                 mobile: 1
                 calculator: 0
 
@@ -532,7 +520,6 @@ Rectangle {
 
             Label {
                 id: noMatch2
-                z: 1
                 text: "The new pincodes you entered don't match!"
                 color: "#FD2E2E"
                 anchors.left: changePin2.left
@@ -547,7 +534,6 @@ Rectangle {
 
             Rectangle {
                 id: editPin
-                z: 1
                 width: doubbleButtonWidth / 2
                 height: 34
                 color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? maincolor : "#727272"
@@ -656,7 +642,6 @@ Rectangle {
             }
 
             Text {
-                z: 1
                 text: "SAVE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
@@ -667,7 +652,6 @@ Rectangle {
             }
 
             Rectangle {
-                z: 1
                 width: editPin.width
                 height: 34
                 anchors.bottom: editPin.bottom

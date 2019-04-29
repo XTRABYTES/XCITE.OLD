@@ -27,6 +27,13 @@ TextField {
     property int textboxHeight: textInputComponent.height
     property int clipBoard: 0
     property int textCopied: 0
+    property bool closeLocalClipboard: closeAllClipboard
+
+    onCloseLocalClipboardChanged: {
+        if (closeLocalClipboard == true) {
+            clipBoard = 0
+        }
+    }
 
     id: textInputComponent
     color: "white"
@@ -60,7 +67,9 @@ TextField {
     }
 
     onPressAndHold: {
+        closeAllClipboard = true
         clipBoard = 1
+        closeAllClipboard = false
     }
 
 

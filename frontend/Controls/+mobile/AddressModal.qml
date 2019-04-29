@@ -490,7 +490,7 @@ Rectangle {
                            && invalidAddress == 0) ? maincolor : "#727272"
             border.width: 1
             opacity: 0.25
-            anchors.top: saveEditButton.bottom
+            anchors.bottom: saveEditButton.bottom
             anchors.horizontalCenter: saveEditButton.horizontalCenter
             visible: editSaved == 0
                      && editFailed == 0
@@ -990,6 +990,7 @@ Rectangle {
                         scanQRTracker = 0
                         selectedAddress = ""
                         scanning = "scanning..."
+                        closeAllClipboard = true
                     }
                 }
 
@@ -1436,6 +1437,7 @@ Rectangle {
                         scanQRTracker = 0
                         selectedAddress = ""
                         scanning = "scanning..."
+                        closeAllClipboard = true
                     }
                 }
 
@@ -1546,6 +1548,7 @@ Rectangle {
                     scanQRTracker = 0
                     selectedAddress = ""
                     scanning = "scanning..."
+                    closeAllClipboard = true
                 }
             }
 
