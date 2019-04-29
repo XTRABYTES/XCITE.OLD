@@ -52,11 +52,11 @@ TextField {
                else
                    "#34363D"
         radius: mobile == 0? 4 : 0
-        border.width: parent.activeFocus ? 2 : 0
+        border.width: parent.activeFocus ? 2 : 0.5
         border.color: if(mobile == 0)
                           Theme.secondaryHighlight
                       else
-                          maincolor //"#34363D"
+                          parent.activeFocus ? maincolor : "#979797"
 
         width: parent.width
     }

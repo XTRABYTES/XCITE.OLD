@@ -52,11 +52,27 @@ Rectangle {
         id: logoutTimer
         interval: 1000
         repeat: true
-        running: (autoLogout == 1 || requestedLogout == 1  || sessionClosed == 1) && logoutTracker == 1 && manualLogout == 0 && goodbey == 0
+        running: (autoLogout == 1 || sessionClosed == 1) && logoutTracker == 1 && manualLogout == 0 && goodbey == 0
 
         onTriggered: {
             logoutTimeout = logoutTimeout + 1
             if (logoutTimeout == 15) {
+                goodbey = 1
+                logoutTimeout = 0
+                logoutTracker = 0
+            }
+        }
+    }
+
+    Timer {
+        id: pinTimer
+        interval: 1000
+        repeat: true
+        running: pinLogout == 1 && logoutTracker == 1 && manualLogout == 0 && goodbey == 0
+
+        onTriggered: {
+            logoutTimeout = logoutTimeout + 1
+            if (logoutTimeout == 5) {
                 goodbey = 1
                 logoutTimeout = 0
                 logoutTracker = 0
@@ -90,7 +106,7 @@ Rectangle {
 
     Item {
         width: parent.width
-        height: (requestedLogout == 1 && autoLogout == 0 && sessionClosed == 0 && networkLogout == 0 && manualLogout == 0)? (logoutLabel.height + logoutLabel2.height + 124) : (logoutLabel.height + 84)
+        height: (pinLogout == 1 && autoLogout == 0 && sessionClosed == 0 && networkLogout == 0 && manualLogout == 0)? (logoutLabel.height + logoutLabel2.height + 25) : (logoutLabel.height + 84)
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
@@ -102,7 +118,7 @@ Rectangle {
                                      (networkLogout == 1? ("Your session ID is no longer valid, someone else logged in using your account. You will be logged out automatically.") :
                                                           (sessionClosed == 1? ("Your session was closed by the server. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s). Do you wish to reconnect?") :
                                                                                (autoLogout == 1? ("You have not interacted for 5 minutes. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s)") :
-                                                                                                 (requestedLogout == 1? ("Someone requested you to log out.") : ""))))
+                                                                                                 (pinLogout == 1? ("Your gave 3 wrong pin numbers.") : ""))))
             maximumLineCount: 3
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -117,7 +133,7 @@ Rectangle {
         Label {
             id: logoutLabel2
             width: parent.width - 56
-            text:"You will be logged out automatically after " + (15 - logoutTimeout) + " second(s) if you don't react."
+            text:"You will be logged out automatically after " + (5 - logoutTimeout) + " second(s)."
             maximumLineCount: 3
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
@@ -126,7 +142,7 @@ Rectangle {
             color: themecolor
             font.pixelSize: 18
             font.family: xciteMobile.name
-            visible: requestedLogout == 1 && autoLogout == 0 && sessionClosed == 0 && networkLogout == 0 && manualLogout == 0
+            visible: pinLogout == 1 && autoLogout == 0 && sessionClosed == 0 && networkLogout == 0 && manualLogout == 0
         }
 
         Item {
@@ -320,119 +336,6 @@ Rectangle {
                     height: 34
                     anchors.bottom: no.bottom
                     anchors.left: no.left
-                    color: "transparent"
-                    opacity: 0.75
-                    border.color: "#E55541"
-                    border.width: 1
-                }
-            }
-
-            Item {
-                id: requestedLogoutButtons
-                width: parent.width
-                height: parent.height
-                visible: requestedLogout == 1 && manualLogout == 0 && networkLogout == 0 && sessionClosed == 0 && autoLogout == 0
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-
-                Rectangle {
-                    id: accept
-                    width: (doubbleButtonWidth - 10) / 2
-                    height: 34
-                    color: "#4BBE2E"
-                    opacity: 0.5
-                    anchors.top: parent.bottom
-                    anchors.left: parent.left
-
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onPressed: {
-                            parent.opacity = 1
-                            click01.play()
-                        }
-
-                        onCanceled: {
-                            parent.opacity = 0.5
-                        }
-
-                        onReleased: {
-                            parent.opacity = 0.5
-                            goodbey = 1
-                            requestedLogout = 0
-                            logoutTracker = 0
-                        }
-                    }
-                }
-
-                Text {
-                    text: "ACCEPT"
-                    font.family: "Brandon Grotesque"
-                    font.pointSize: 14
-                    font.bold: true
-                    color: "#4BBE2E"
-                    opacity: 0.75
-                    anchors.horizontalCenter: accept.horizontalCenter
-                    anchors.verticalCenter: accept.verticalCenter
-                }
-
-                Rectangle {
-                    width: accept.width
-                    height: 34
-                    anchors.bottom: accept.bottom
-                    anchors.left: accept.left
-                    color: "transparent"
-                    opacity: 0.75
-                    border.color: "#4BBE2E"
-                    border.width: 1
-                }
-
-                Rectangle {
-                    id: decline
-                    width: (doubbleButtonWidth - 10) / 2
-                    height: 34
-                    color: "#E55541"
-                    opacity: 0.5
-                    anchors.top: parent.bottom
-                    anchors.right: parent.right
-
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onPressed: {
-                            parent.opacity = 1
-                            click01.play()
-                            detectInteraction()
-                        }
-
-                        onCanceled: {
-                            parent.opacity = 0.5
-                        }
-
-                        onReleased: {
-                            parent.opacity = 0.5
-                            requestedLogout = 0
-                            logoutTracker = 0
-                        }
-                    }
-                }
-
-                Text {
-                    text: "DECLINE"
-                    font.family: "Brandon Grotesque"
-                    font.pointSize: 14
-                    font.bold: true
-                    color: "#E55541"
-                    opacity: 0.75
-                    anchors.horizontalCenter: decline.horizontalCenter
-                    anchors.verticalCenter: decline.verticalCenter
-                }
-
-                Rectangle {
-                    width: decline.width
-                    height: 34
-                    anchors.bottom: decline.bottom
-                    anchors.left: decline.left
                     color: "transparent"
                     opacity: 0.75
                     border.color: "#E55541"

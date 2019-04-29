@@ -184,7 +184,7 @@ Rectangle {
                     requestText.text = ""
                 }
                 else if (deBugArray[0] === "!!xutil" && deBugArray[1] === "network") {
-                    setNetwork("network")
+                    setNetwork(deBugArray[2])
                     requestText.text = ""
                 }
                 else if ((deBugArray[0] === "!!xutil" && deBugArray[1] === "createkeypair" && deBugArray[2] !== "")) {
@@ -209,7 +209,7 @@ Rectangle {
         }
 
         Connections {
-            target: xUtil
+            target: xUtility
             onHelpReply: {
                 if (debugTracker == 1) {
                     replyText.text = replyText.text + "<br/>" +
@@ -259,7 +259,7 @@ Rectangle {
             onBadKey: {
                 if (debugTracker == 1 && debugError == 0) {
                     replyText.text = replyText.text + "<br>" +
-                            "We could not extract an address from this key.<br>"
+                            "We could not extract an address from this key.<br >"
                 }
             }
             onNetworkStatus: {
@@ -275,12 +275,6 @@ Rectangle {
                     debugError = 1
                 }
             }
-            //onRawTxTestResult: {
-            //    if (debugTracker == 1 && debugError == 0) {
-            //        replyText.text = replyText.text + "<br/>" +
-            //                testResult + "<br>"
-            //    }
-            //}
         }
 
         Connections {

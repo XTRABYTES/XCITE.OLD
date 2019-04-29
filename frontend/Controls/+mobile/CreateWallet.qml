@@ -245,7 +245,7 @@ Rectangle {
                     }
 
                     Connections {
-                        target: xUtil
+                        target: xUtility
 
                         onKeyPairCreated: {
                             if (createWalletTracker == 1 && createInitiated == true) {

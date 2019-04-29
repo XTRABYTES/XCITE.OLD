@@ -77,7 +77,7 @@ Rectangle {
 
         onTriggered: {
             autoLogout = 0
-            requestedLogout = 0
+            pinLogout = 0
             networkLogout = 0
             sessionStart = 0
             sessionClosed = 1
