@@ -54,6 +54,11 @@ void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
         }
     }
 
+    else if (sender == "SendcoinWorker::unspent_onResponse") {
+        emit badRawTX(traceid);
+        qDebug() << "bad raw transaction, traceid: " + traceid;
+    }
+
     else if (sender ==  "SendcoinWorker::txbroadcast_onResponse") {
         if (txid != ""){
             emit sendCoinsSuccess(txid, traceid);

@@ -293,6 +293,7 @@ Item {
                                 sessionStart = 1
                                 selectedPage = "home"
                                 gotoWallet = 0
+                                closeAllClipboard = true
                             }
                         }
                     }

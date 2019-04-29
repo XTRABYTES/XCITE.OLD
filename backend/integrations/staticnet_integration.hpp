@@ -28,6 +28,7 @@ public:
 signals:
     void sendCoinsSuccess(QString transactionId, QString traceID);
     void sendCoinsFailure(QString error, QString traceID);
+    void badRawTX(QString traceID);
     void validParams(QString traceID);
     void badParams();
 

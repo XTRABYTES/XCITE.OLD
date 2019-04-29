@@ -470,6 +470,7 @@ Rectangle {
                             networkError = 0
                             signUpError = 0
                             createAccountInitiated = false
+                            closeAllClipboard = true
                         }
                     }
 

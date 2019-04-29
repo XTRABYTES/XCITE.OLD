@@ -77,7 +77,6 @@ Item {
 
         Rectangle {
             id: importModalBody
-            z: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             width: parent.width
@@ -99,7 +98,6 @@ Item {
 
         Controls.TextInput {
             id: userName
-            z: 1.3
             height: 34
             placeholder: "USERNAME"
             text: ""
@@ -122,7 +120,6 @@ Item {
 
         Controls.TextInput {
             id: passWord
-            z: 1.2
             height: 34
             placeholder: "PASSWORD"
             text: ""
@@ -147,7 +144,6 @@ Item {
 
         Text {
             id: passWordError
-            z: 1.1
             text: "Username & Password combination is not correct!"
             color: "#FD2E2E"
             anchors.left: passWord.left
@@ -162,7 +158,6 @@ Item {
 
         Rectangle {
             id: importButton
-            z: 1.1
             height: 34
             anchors.bottom: importModalBody.bottom
             anchors.bottomMargin: 20
@@ -199,6 +194,7 @@ Item {
                 }
 
                 onReleased: {
+                    closeAllClipboard = true
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
                         importInitiated = true
                         checkUsername = 1
@@ -314,7 +310,6 @@ Item {
 
         Text {
             id: importButtonText
-            z: 1.1
             text: "IMPORT ACCOUNT"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -326,7 +321,6 @@ Item {
         }
 
         Rectangle {
-            z: 1.1
             height: 34
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
@@ -342,7 +336,6 @@ Item {
 
         Label {
             id: importRespons
-            z: 1.1
             text: "Checking username ..."
             anchors.horizontalCenter: importButton.horizontalCenter
             anchors.verticalCenter: importButton.verticalCenter
@@ -355,7 +348,6 @@ Item {
 
         Label {
             id: importRespons1
-            z: 1.1
             text: "Creating keypair for session ..."
             anchors.horizontalCenter: importButton.horizontalCenter
             anchors.verticalCenter: importButton.verticalCenter
@@ -368,7 +360,6 @@ Item {
 
         Label {
             id: importRespons2
-            z: 1.1
             text: "Checking identity ..."
             anchors.horizontalCenter: importButton.horizontalCenter
             anchors.verticalCenter: importButton.verticalCenter
@@ -381,7 +372,6 @@ Item {
 
         Label {
             id: importRespons3
-            z: 1.1
             text: "Retrieving session encryption key ..."
             anchors.horizontalCenter: importButton.horizontalCenter
             anchors.verticalCenter: importButton.verticalCenter
@@ -394,7 +384,6 @@ Item {
 
         Label {
             id: importRespons4
-            z: 1.1
             text: "Retrieving session ID ..."
             anchors.horizontalCenter: importButton.horizontalCenter
             anchors.verticalCenter: importButton.verticalCenter
@@ -407,7 +396,6 @@ Item {
 
         Label {
             id: importRespons5
-            z: 1.1
             text: "Loading account settings ..."
             anchors.horizontalCenter: importButton.horizontalCenter
             anchors.verticalCenter: importButton.verticalCenter
@@ -420,7 +408,6 @@ Item {
 
         Label {
             id: importRespons6
-            z: 1.1
             text: "Verifying wallet balances ..."
             anchors.horizontalCenter: importButton.horizontalCenter
             anchors.verticalCenter: importButton.verticalCenter
@@ -432,7 +419,6 @@ Item {
         }
 
         Rectangle {
-            z: 1
             anchors.horizontalCenter: importModalBody.horizontalCenter
             anchors.bottom: importModalBody.bottom
             width: importModalBody.width

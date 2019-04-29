@@ -76,6 +76,12 @@ Rectangle {
     property int badNetwork: 0
     property bool selectNetwork: false
 
+    property var commaArray
+    property int detectComma
+    property string replaceComma
+    property var transferArray
+    property int precision: 0
+
     function compareAddress(){
         var fromto = ""
         for(var i = 0; i < addressList.count; i++) {
@@ -884,7 +890,6 @@ Rectangle {
 
         Mobile.AmountInput {
             id: sendAmount
-            z: 1.4
             height: 34
             anchors.right: parent.right
             anchors.rightMargin: 28
@@ -907,7 +912,44 @@ Rectangle {
                      && coinID.text == "XFUEL"
             mobile: 1
             calculator: getTestnet(coinID.text) === true? 0 : 1
-            onTextChanged: detectInteraction()
+            onTextChanged: {
+                commaArray = sendAmount.text.split(',')
+                console.log("first part: " + commaArray[0])
+                if (commaArray.count > 1) {
+                    detectComma = 1
+                    console.log("comma detected")
+                }
+                else {
+                    detectComma = 0
+                    console.log("no comma detected")
+                }
+                if (detectComma == 1){
+                    replaceComma = sendAmount.text.replace(",",".")
+                    console.log("formatted number: " + replaceComma)
+                    transferArray = replaceComma.split('.')
+                    if (transferArray[1] !== undefined) {
+                        precision = transferArray[1].length
+                    }
+                    else {
+                        precision = 0
+                    }
+                }
+                else {
+                    console.log("formatted number: " + sendAmount.text)
+                    transferArray = sendAmount.text.split('.')
+                    console.log("second part: " + transferArray[1])
+                    if (transferArray[1] !== undefined) {
+                        precision = transferArray[1].length
+                    }
+                    else {
+                        precision = 0
+                    }
+                }
+
+
+                console.log("number of decimals: " + precision)
+                detectInteraction()
+            }
         }
 
         Text {
@@ -924,7 +966,6 @@ Rectangle {
 
         Label {
             text: "Insufficient funds"
-            z: 1.3
             color: "#FD2E2E"
             anchors.left: sendAmount.left
             anchors.leftMargin: 5
@@ -943,9 +984,28 @@ Rectangle {
                      && coinID.text == "XFUEL"
         }
 
+        Label {
+            text: "Too many decimals"
+            color: "#FD2E2E"
+            anchors.left: sendAmount.left
+            anchors.leftMargin: 5
+            anchors.top: sendAmount.bottom
+            anchors.topMargin: 1
+            font.pixelSize: 11
+            font.family: xciteMobile.name
+            visible: transferSwitch.on == true
+                     && transactionSend == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+                     && precision > 8
+                     && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
+                     && coinID.text == "XFUEL"
+        }
+
         Controls.TextInput {
             id: keyInput
-            z: 1.3
             text: sendAddress.text
             height: 34
             width: sendAmount.width
@@ -988,7 +1048,6 @@ Rectangle {
 
         Label {
             id: addressWarning
-            z: 1.2
             text: "Invalid address format!"
             color: "#FD2E2E"
             anchors.left: keyInput.left
@@ -1010,7 +1069,6 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
-            z: 1.2
             width: (sendAmount.width - 14) / 2
             height: 34
             anchors.top: keyInput.bottom
@@ -1065,7 +1123,6 @@ Rectangle {
 
         Rectangle {
             id: addressBookButton
-            z: 1.2
             width: (sendAmount.width - 14) / 2
             height: 34
             border.color: maincolor
@@ -1121,7 +1178,6 @@ Rectangle {
 
         Controls.TextInput {
             id: referenceInput
-            z: 1.1
             height: 34
             width: keyInput.width
             placeholder: referenceTransfer
@@ -1145,13 +1201,13 @@ Rectangle {
 
         Rectangle {
             id: sendButton
-            z: 1
             width: keyInput.width
             height: 34
             color: (invalidAddress == 0
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
                     && inputAmount !== 0
+                    && precision <= 8
                     && inputAmount <= (walletList.get(selectedWallet).balance)) ? maincolor : "#727272"
             opacity: darktheme == true? 0.25 : 0.5
             anchors.top: referenceInput.bottom
@@ -1186,6 +1242,7 @@ Rectangle {
                             && keyInput.text !== ""
                             && sendAmount.text !== ""
                             && inputAmount !== 0
+                            && precision <= 8
                             && inputAmount <= ((walletList.get(selectedWallet).balance) - 1)
                             && calculatorTracker == 0
                             && (network == "xtrabytes" || network == "xfuel" || network == "testnet")) {
@@ -1200,16 +1257,16 @@ Rectangle {
 
                     onNewNetwork: {
                         if (transferTracker == 1 && selectNetwork == true) {
-                        transactionSend = 1
-                        coinListTracker = 0
-                        walletListTracker = 0
-                        selectNetwork = false
+                            transactionSend = 1
+                            coinListTracker = 0
+                            walletListTracker = 0
+                            selectNetwork = false
                         }
                     }
 
                     onBadNetwork: {
                         if (transferTracker == 1 && selectNetwork == true) {
-                        badNetwork = 1
+                            badNetwork = 1
                             selectNetwork = false
                         }
                     }
@@ -1218,7 +1275,6 @@ Rectangle {
         }
 
         Text {
-            z: 1
             text: "SEND"
             font.family: xciteMobile.name
             font.pointSize: 14
@@ -1227,6 +1283,7 @@ Rectangle {
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
                     && inputAmount !== 0
+                    && precision <= 8
                     && inputAmount <= (walletList.get(selectedWallet).balance)) ? (darktheme == false? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: sendButton.horizontalCenter
             anchors.verticalCenter: sendButton.verticalCenter
@@ -1234,7 +1291,6 @@ Rectangle {
         }
 
         Rectangle {
-            z: 1
             width: keyInput.width
             height: 34
             color: "transparent"
@@ -1242,6 +1298,7 @@ Rectangle {
                            && keyInput.text !== ""
                            && sendAmount.text !== ""
                            && inputAmount !== 0
+                           && precision <= 8
                            && inputAmount <= (walletList.get(selectedWallet).balance)) ? maincolor : "#979797"
             border.width: 1
             opacity: darktheme == true? 0.5 : 0.75
@@ -1531,8 +1588,8 @@ Rectangle {
                         pincodeTracker = 1
                     }
                     else {
-                        console.log(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
-                        sendCoins(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
+                        console.log(keyInput.text + " " +  replaceComma.text + " " +  getPrivKey(coinID.text, walletLabel.text))
+                        sendCoins(keyInput.text + " " +  replaceComma.text + " " +  getPrivKey(coinID.text, walletLabel.text))
                         failedSend = 0
                         requestSend = 1
                     }
@@ -1568,8 +1625,8 @@ Rectangle {
 
                 onSendCoinsSuccess : {
                     if (transferTracker == 1 && requestSend == 1) {
-                    confirmationSend = 1
-                    requestSend = 0
+                        confirmationSend = 1
+                        requestSend = 0
                         // provisional TX info
                         transactionList.append ({"coinName": coinID.text, "walletLabel": walletLabel.text, "reference": referenceText.text, "txid": transactionId, "txNR": txID })
                         txID = txID + 1
@@ -1578,8 +1635,8 @@ Rectangle {
 
                 onSendCoinsFailure : {
                     if (transferTracker == 1 && requestSend == 1) {
-                    requestSend = 0
-                    failedSend = 1
+                        requestSend = 0
+                        failedSend = 1
                     }
                 }
             }
@@ -1783,6 +1840,8 @@ Rectangle {
                     invalidAddress = 0
                     transactionDate = ""
                     timestamp = 0
+                    precision = 0
+
                 }
             }
         }
@@ -1888,7 +1947,7 @@ Rectangle {
                     invalidAddress = 0
                     transactionDate = ""
                     timestamp = 0
-                    // update wallet balance
+                    precision = 0
                 }
             }
         }
@@ -2284,6 +2343,7 @@ Rectangle {
                     scanning = "scanning..."
                     networkError = 0
                     screenShot = 0
+                    precision = 0
                 }
             }
 

@@ -375,7 +375,7 @@ void SendcoinWorker::process() {
       // !!staticnet sendcoin FBCMNhonjRxELB2UrxNGHgAusPnNHvsMUi 1.23456789 R9fXvzTuqz9BqgyiV4tmiY2LkioUq7GxKGTcJibruKpNYitutbft
 
       // FIXMEE!! need remove this temporary network selection !
-      xUtility.CheckUserInputForKeyWord("!!xutil network xfuel");
+      //xUtility.CheckUserInputForKeyWord("!!xutil network xfuel");
 
 
 

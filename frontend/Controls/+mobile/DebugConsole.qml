@@ -356,6 +356,7 @@ Rectangle {
                 onTriggered: {
                     replyText.text = ""
                     requestText.text = ""
+                    closeAllClipboard = true
                 }
             }
 
