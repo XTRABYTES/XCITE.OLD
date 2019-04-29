@@ -476,7 +476,7 @@ bool SignSignature(const CScript& fromPubKey, CTransaction& txTo, unsigned int n
 uint256 SignatureHash(CScript scriptCode, const CTransaction& txTo, unsigned int nIn);
 bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, const std::string &privkey);
 bool PubkeyHashSolver(const CScript& scriptPubKey, std::vector<valtype>& vSolutionsRet);
-std::string CreateRawTransaction(const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey );
+std::string CreateRawTransaction(const unsigned char network_id, const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey );
 
 extern int64 AmountFromStr(const char *value);		
 extern int IntFromStr(const char *value);		

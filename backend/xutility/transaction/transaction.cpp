@@ -26,8 +26,7 @@ int64 AmountFromStr(const char *value) {
      double dAmount;
      std::stringstream ss(value);
      ss >> dAmount;		
-     dAmount = dAmount * COIN ;
-     int64 iAmount = dAmount;   
+     dAmount = dAmount * COIN ;  
      return (int64)(dAmount > 0 ? dAmount + 0.5 : dAmount - 0.5) ;
 }        
 
@@ -165,7 +164,7 @@ bool PubkeyHashSolver(const CScript& scriptPubKey, std::vector<valtype>& vSoluti
     
 }
 
-std::string CreateRawTransaction(const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey ) {
+std::string CreateRawTransaction(const unsigned char network_id, const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey ) {
 
   try {
   	
@@ -191,7 +190,7 @@ std::string CreateRawTransaction(const std::vector<std::string> &inputs, const s
          std::vector<std::string> output_details;
          boost::split(output_details, output, [](char c){return c == ',';});
       	
-         CXCiteAddress address(output_details.at(0),35);  // 35 = XFUEL network   
+         CXCiteAddress address(output_details.at(0),network_id);     
          if (address.IsValid()) {
 	      	CScript scriptPubKey;
 	         scriptPubKey.SetDestination(address.Get());

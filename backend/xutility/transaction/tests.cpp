@@ -43,9 +43,14 @@ int main(int argc, char *argv[])
 
       std::string privkey="R9fXvzTuqz9BqgyiV4tmiY2LkioUq7GxKGTcJibruKpNYitutbft";
 
-      std::string RawTransaction = CreateRawTransaction( inputs, outputs, privkey);
+      unsigned char network_id = 35; // 35 = XFUEL network
+      std::string RawTransaction = CreateRawTransaction( network_id, inputs, outputs, privkey);
       
       std::cout << "Raw transaction: " << RawTransaction << std::endl;
+
+      network_id = 33; // Invalid network      
+      RawTransaction = CreateRawTransaction( network_id, inputs, outputs, privkey);
+      std::cout << "Invalid raw transaction: [" << RawTransaction << "]" << std::endl;
      
 	}
 	catch (std::exception& e) {
