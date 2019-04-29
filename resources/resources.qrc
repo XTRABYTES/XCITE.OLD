@@ -280,5 +280,6 @@
         <file>ios/xcite120px.png</file>
         <file>ios/xcite152px.png</file>
         <file>ios/xcite180px.png</file>
+        <file>ios/xcite.icns</file>
     </qresource>
 </RCC>

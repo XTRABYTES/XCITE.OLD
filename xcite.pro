@@ -131,7 +131,11 @@ DISTFILES += \
     android/res/drawable-hdpi/splash.png \
     android/res/drawable-xhdpi/splash.png \
     android/res/drawable-xxhdpi/splash.png \
-    android/res/drawable-xxxhdpi/splash.png
+    android/res/drawable-xxxhdpi/splash.png \
+    resources/ios/xcite.icns \
+    resources/ios/xcite152px.png \
+    resources/ios/xcite120px.png \
+    resources/ios/xcite180px.png
 
 RC_ICONS = xcite.ico
 CONFIG(debug, debug|release) {
@@ -159,10 +163,12 @@ win32 {
         INCLUDEPATH += $$PWD/dependencies/ios/arm64-v8a/openssl/include
         INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
         LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
+        QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
+        QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
     }
 
 mac {
-    ICON = resources/ios/xcite.icns
+    ICON = $$PWD/resources/ios/xcite.icns
 
     mac!ios {
     }
@@ -177,6 +183,8 @@ mac {
         INCLUDEPATH += $$PWD/dependencies/ios/x86_64/openssl/include
         INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
         LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
+        QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
+        QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
     }
 }
 

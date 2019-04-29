@@ -167,6 +167,8 @@ bool PubkeyHashSolver(const CScript& scriptPubKey, std::vector<valtype>& vSoluti
 
 std::string CreateRawTransaction(const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey ) {
 
+  try {
+  	
       CTransaction rawTx;       
  
       BOOST_FOREACH(const std::string input, inputs) {
@@ -189,13 +191,17 @@ std::string CreateRawTransaction(const std::vector<std::string> &inputs, const s
          std::vector<std::string> output_details;
          boost::split(output_details, output, [](char c){return c == ',';});
       	
-         CXCiteAddress address(output_details.at(0),35);  // 35 = XFUEL network    	
-      	CScript scriptPubKey;
-         scriptPubKey.SetDestination(address.Get());
-         int64 nAmount = AmountFromStr(output_details.at(1).c_str());         
-
-         CTxOut out(nAmount, scriptPubKey);
-         rawTx.vout.push_back(out);
+         CXCiteAddress address(output_details.at(0),35);  // 35 = XFUEL network   
+         if (address.IsValid()) {
+	      	CScript scriptPubKey;
+	         scriptPubKey.SetDestination(address.Get());
+	         int64 nAmount = AmountFromStr(output_details.at(1).c_str());         
+	
+	         CTxOut out(nAmount, scriptPubKey);
+	         rawTx.vout.push_back(out);         
+         } else {
+            return "";
+         }	
       }     
                   
       std::vector<CTransaction> txVariants;
@@ -221,5 +227,5 @@ std::string CreateRawTransaction(const std::vector<std::string> &inputs, const s
       CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
       ssTx << mergedTx;
       return HexStr(ssTx.begin(), ssTx.end());
-
+  } catch (...) { return "";  }
 }
