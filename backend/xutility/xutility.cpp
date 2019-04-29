@@ -18,7 +18,7 @@
 #include "./crypto/ctools.h"
 #include "./transaction/transaction.h"
 
-//Xutility xUtility;
+Xutility xUtility;
 
 Xutility::Xutility(QObject *parent) : QObject(parent) {
     this->Initialize();

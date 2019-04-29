@@ -84,9 +84,8 @@ int main(int argc, char *argv[])
 
     // wire-up xutility_integration
     xutility_integration xUtil_int;
-    engine.rootContext()->setContextProperty("xUtil_int", &xUtil_int);
-    Xutility xUtil;
-    engine.rootContext()->setContextProperty("xUtil", &xUtil);
+    engine.rootContext()->setContextProperty("xUtil_int", &xUtil_int);    
+    engine.rootContext()->setContextProperty("xUtility", &xUtility);
 
     // wire-up staticnet_integration
     staticNet.Initialize();
@@ -152,12 +151,12 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));
 
     // connect QML signals for walletFunctions
-    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeypairEntry(QString)));
-    QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
-    QObject::connect(rootObject, SIGNAL(helpMe()), &xUtil, SLOT(helpEntry()));
+    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtility, SLOT(createKeypairEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtility, SLOT(importPrivateKeyEntry(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(helpMe()), &xUtility, SLOT(helpEntry()));
     QObject::connect(rootObject, SIGNAL(sendCoins(QString)), &static_int, SLOT(sendCoinsEntry(QString)));
     QObject::connect(&staticNet, SIGNAL(ResponseFromStaticnet(QJsonObject)), &static_int, SLOT(onResponseFromStaticnetEntry(QJsonObject)),Qt::QueuedConnection);      
-    QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtility, SLOT(networkEntry(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

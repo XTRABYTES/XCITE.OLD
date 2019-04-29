@@ -16,8 +16,6 @@
 #include "../testnet/xchattestnetclient.hpp"
 
 XchatObject xchatRobot;
-Xutility xUtility;
-
 
 Xchat::Xchat(QObject *parent) :
     QObject(parent)
