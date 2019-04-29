@@ -105,6 +105,7 @@ signals:
     void saveFailedAPIError();
     void saveFailedInputError();
     void saveFailedUnknownError();
+    void walletNotFound();
 
 
 
