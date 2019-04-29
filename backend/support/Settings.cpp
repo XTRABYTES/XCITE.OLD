@@ -670,12 +670,17 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     if (localKeys){
         qDebug().noquote() << "local wallet";
         QString walletFile = LoadFile(m_username.toLower() + ".wallet", fileLocation);
-        QByteArray decodedWallet = encryption.decode(walletFile.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
-        qDebug().noquote() << "Decoded Wallet " + decodedWallet;
-        int pos = decodedWallet.lastIndexOf(QChar(']')); // find last bracket to mark the end of the json
-        decodedWallet = decodedWallet.left(pos+1); //remove everything after the valid json
-        walletArray = QJsonDocument::fromJson(decodedWallet).array();
-        qDebug().noquote() << walletArray;
+        if (walletFile != "ERROR"){
+            QByteArray decodedWallet = encryption.decode(walletFile.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+            qDebug().noquote() << "Decoded Wallet " + decodedWallet;
+            int pos = decodedWallet.lastIndexOf(QChar(']')); // find last bracket to mark the end of the json
+            decodedWallet = decodedWallet.left(pos+1); //remove everything after the valid json
+            walletArray = QJsonDocument::fromJson(decodedWallet).array();
+            qDebug().noquote() << walletArray;
+        }else{
+            emit walletNotFound();
+            return;
+        }
     }else{
         qDebug().noquote() << "DB wallet";
         walletArray = json["walletList"].toArray(); //get walletList from settings from DB
