@@ -58,7 +58,7 @@ Rectangle {
     property int failedSend: 0
     property int invalidAddress: 0
     property int decimals: (coinID.text) == "BTC" ? 8 : 4
-    property var inputAmount: Number.fromLocaleString(Qt.locale("en_US"),sendAmount.text)
+    property var inputAmount: Number.fromLocaleString(Qt.locale("en_US"),replaceComma)
     property string amountTransfer: "AMOUNT (" + coinID.text + ")"
     property string keyTransfer: "SEND TO (ADDRESS)"
     property string referenceTransfer: "REFERENCE"
@@ -915,7 +915,7 @@ Rectangle {
             onTextChanged: {
                 commaArray = sendAmount.text.split(',')
                 console.log("first part: " + commaArray[0])
-                if (commaArray.count > 1) {
+                if (commaArray[1] !== undefined) {
                     detectComma = 1
                     console.log("comma detected")
                 }
@@ -935,7 +935,8 @@ Rectangle {
                     }
                 }
                 else {
-                    console.log("formatted number: " + sendAmount.text)
+                    replaceComma = sendAmount.text
+                    console.log("formatted number: " + replaceComma)
                     transferArray = sendAmount.text.split('.')
                     console.log("second part: " + transferArray[1])
                     if (transferArray[1] !== undefined) {
@@ -1253,7 +1254,7 @@ Rectangle {
                 }
 
                 Connections {
-                    target: xUtil
+                    target: xUtility
 
                     onNewNetwork: {
                         if (transferTracker == 1 && selectNetwork == true) {
@@ -1588,8 +1589,8 @@ Rectangle {
                         pincodeTracker = 1
                     }
                     else {
-                        console.log(keyInput.text + " " +  replaceComma.text + " " +  getPrivKey(coinID.text, walletLabel.text))
-                        sendCoins(keyInput.text + " " +  replaceComma.text + " " +  getPrivKey(coinID.text, walletLabel.text))
+                        console.log(keyInput.text + " " +  replaceComma + " " +  getPrivKey(coinID.text, walletLabel.text))
+                        sendCoins(keyInput.text + " " +  replaceComma + " " +  getPrivKey(coinID.text, walletLabel.text))
                         failedSend = 0
                         requestSend = 1
                     }

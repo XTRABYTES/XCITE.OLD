@@ -403,7 +403,7 @@ Rectangle {
                     }
 
                     Connections {
-                        target: xUtil
+                        target: xUtility
 
                         onAddressExtracted: {
                             if (importKeyTracker == 1 && importInitiated == true) {

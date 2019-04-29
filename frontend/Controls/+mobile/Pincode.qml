@@ -87,6 +87,8 @@ Rectangle {
     property int passError3: 0
     property int failToSave: 0
 
+    property int currentPinCorrect: 0
+
     property string failError: ""
 
     Flickable {
@@ -186,8 +188,8 @@ Rectangle {
 
                 onTextChanged: {
                     detectInteraction()
+                    passError3 = 0
                     if ((newPin2.text).length === 4){
-                        passError3 = 0
                         if (newPin2.text !== newPin1.text) {
                             passError3 = 1
                             newPin2.text = ""
@@ -214,7 +216,11 @@ Rectangle {
                 id: savePin
                 width: doubbleButtonWidth / 2
                 height: 34
-                color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? maincolor : "#727272"
+                color: (newPin1.text !== ""
+                        && newPin1.text.length === 4
+                        && newPin2.text !== ""
+                        && newPin2.text.length === 4
+                        && passError3 == 0)? maincolor : "#727272"
                 opacity: 0.25
                 anchors.top: newPin2.bottom
                 anchors.topMargin: 25
@@ -251,7 +257,11 @@ Rectangle {
                     }
 
                     onClicked: {
-                        if (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0) {
+                        if (newPin1.text !== ""
+                                && newPin1.text.length === 4
+                                && newPin2.text !== ""
+                                && newPin2.text.length === 4
+                                && passError3 == 0) {
                             console.log("attempting to save pincode");
                             newPinSaved = 0;
                             userSettings.pinlock = true;
@@ -326,7 +336,11 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                color: (newPin1.text !== ""
+                        && newPin1.text.length === 4
+                        && newPin2.text !== ""
+                        && newPin2.text.length === 4
+                        && passError3 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
                 anchors.horizontalCenter: savePin.horizontalCenter
                 anchors.verticalCenter: savePin.verticalCenter
             }
@@ -338,7 +352,11 @@ Rectangle {
                 anchors.left: savePin.left
                 color: "transparent"
                 opacity: 0.5
-                border.color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? maincolor : "#979797"
+                border.color: (newPin1.text !== ""
+                               && newPin1.text.length === 4
+                               && newPin2.text !== ""
+                               && newPin2.text.length === 4
+                               && passError3 == 0)? maincolor : "#979797"
                 border.width: 1
             }
         }
@@ -380,29 +398,31 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (currentPin.text).length >= 4
+                readOnly: (currentPin.text).length >= 4 && passError2 == 0
                 mobile: 1
                 calculator: 0
 
+                Image {
+                    id: usernameOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 7
+                    visible: currentPinCorrect == 1
+                }
+
                 Timer {
                     id: timer6
-                    interval: passError2 == 1 ? 5000 : 2000
+                    interval: passError2 == 1 ? 300 : 2000
                     repeat: false
                     running: false
 
                     onTriggered: {
                         if (passError2 == 1) {
-                            passError2 = 0
-                            passTry = 0
                             pincodeTracker = 0
                             changePin = 0
-                            pinError = 0
-                            coinList.clear()
-                            walletList.clear()
-                            contactList.clear()
-                            addressList.clear()
-                            transactionList.clear()
-                            Qt.quit()
                         }
                         else {
                             pinError = 0
@@ -412,6 +432,7 @@ Rectangle {
 
                 onTextChanged: {
                     detectInteraction()
+                    currentPinCorrect = 0
                     if ((currentPin.text).length === 4){
                         passError1 = 0
                         passError2 = 0
@@ -425,6 +446,7 @@ Rectangle {
 
                     onPincodeCorrect: {
                         passTry = 0
+                        currentPinCorrect = 1
                     }
 
                     onPincodeFalse: {
@@ -432,6 +454,8 @@ Rectangle {
                         currentPin.text = ""
                         if (passTry == 3) {
                             passError2 = 1
+                            pinLogout = 1
+                            logoutTracker = 1
                             timer6.start()
                         }
                         else {
@@ -508,8 +532,8 @@ Rectangle {
 
                 onTextChanged: {
                     detectInteraction()
+                    passError3 = 0
                     if ((changePin2.text).length === 4){
-                        passError3 = 0
                         if (changePin2.text !== changePin1.text) {
                             passError3 = 1
                             changePin2.text = ""
@@ -536,7 +560,14 @@ Rectangle {
                 id: editPin
                 width: doubbleButtonWidth / 2
                 height: 34
-                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? maincolor : "#727272"
+                color: (currentPin.text !== ""
+                        && currentPin.text.length === 4
+                        && changePin1.text !== ""
+                        && changePin1.text.length === 4
+                        && changePin2.text !== ""
+                        && changePin2.text.length === 4
+                        && passError3 == 0
+                        && passError1 == 0)? maincolor : "#727272"
                 opacity: 0.25
                 anchors.top: changePin2.bottom
                 anchors.topMargin: 25
@@ -573,7 +604,14 @@ Rectangle {
                     }
 
                     onClicked: {
-                        if (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0) {
+                        if (currentPin.text !== ""
+                                && currentPin.text.length === 4
+                                && changePin1.text !== ""
+                                && changePin1.text.length === 4
+                                && changePin2.text !== ""
+                                && changePin2.text.length === 4
+                                && passError3 == 0
+                                && passError1 == 0) {
                             savePincode(changePin1.text)
                         }
                     }
@@ -646,7 +684,14 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                color: (currentPin.text !== ""
+                        && currentPin.text.length === 4
+                        && changePin1.text !== ""
+                        && changePin1.text.length === 4
+                        && changePin2.text !== ""
+                        && changePin2.text.length === 4
+                        && passError3 == 0
+                        && passError1 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
                 anchors.horizontalCenter: editPin.horizontalCenter
                 anchors.verticalCenter: editPin.verticalCenter
             }
@@ -658,7 +703,14 @@ Rectangle {
                 anchors.left: editPin.left
                 color: "transparent"
                 opacity: 0.5
-                border.color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? maincolor : "#979797"
+                border.color: (currentPin.text !== ""
+                               && currentPin.text.length === 4
+                               && changePin1.text !== ""
+                               && changePin1.text.length === 4
+                               && changePin2.text !== ""
+                               && changePin2.text.length === 4
+                               && passError3 == 0
+                               && passError1 == 0)? maincolor : "#979797"
                 border.width: 1
             }
         }
@@ -721,19 +773,15 @@ Rectangle {
 
                 Timer {
                     id: timer4
-                    interval: passError2 == 1 ? 5000 : 2000
+                    interval: passError2 == 1 ? 300 : 2000
                     repeat: false
                     running: false
 
                     onTriggered: {
                         if (passError2 == 1) {
                             pincodeTracker = 0
-                            passError2 = 0
-                            passTry = 0
                             unlockPin = 0
                             clearAll = 0
-                            pinError = 0
-                            goodbey = 1
                         }
                         else {
                             pinError = 0
@@ -768,6 +816,8 @@ Rectangle {
                         pin.text = ""
                         if (passTry == 3) {
                             passError2 = 1
+                            pinLogout = 1
+                            logoutTracker = 1
                             timer4.start()
                         }
                         else {
@@ -959,7 +1009,7 @@ Rectangle {
 
             Label {
                 id: wrongPin1
-                text: passError2 == 0? "The pincodes you entered is incorrect!" : "You had 3 failed attempts!"
+                text: "The pincodes you entered is incorrect!"
                 color: themecolor
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
@@ -970,8 +1020,11 @@ Rectangle {
 
             Label {
                 id: wrongPin2
-                text: passError2 == 0? "You have " + (3 - passTry) + " attempts left before you are logged out automatically!" : "You will be logged out automatically in 5 seconds!"
+                text: passError2 == 0? "You have " + (3 - passTry) + " attempts left before you are logged out automatically!" : ""
                 color: themecolor
+                width: doubbleButtonWidth
+                wrapMode: Text.WordWrap
+                horizontalAlignment: Text.AlignHCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: wrongPin1.bottom
                 anchors.topMargin: 5

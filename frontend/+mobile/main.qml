@@ -243,7 +243,6 @@ ApplicationWindow {
     property int autoLogout: 0
     property int manualLogout: 0
     property int networkLogout: 0
-    property int requestedLogout: 0
     property int pinLogout: 0
     property int goodbey: 0
     property int networkAvailable: 0
@@ -1474,7 +1473,7 @@ ApplicationWindow {
 
         onTriggered: {
             checkNotifications()
-            if (requestedLogout == 1 && transferTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && addressTracker == 0 && editContactTracker == 0 && appsTracker == 0) {
+            if (pinLogout == 1 && transferTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && addressTracker == 0 && editContactTracker == 0 && appsTracker == 0) {
                 logoutTracker = 1
             }
         }

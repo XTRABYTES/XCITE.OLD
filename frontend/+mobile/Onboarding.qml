@@ -126,7 +126,7 @@ Item {
 
         Label {
             id: version
-            text: "V 1.0"
+            text: "V 0.11"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: welcomeText.bottom
             anchors.topMargin: -20

@@ -281,5 +281,7 @@
         <file>ios/xcite152px.png</file>
         <file>ios/xcite180px.png</file>
         <file>ios/xcite.icns</file>
+        <file>icons/mobile/portfolio-icon_01_dark.svg</file>
+        <file>icons/mobile/portfolio-icon_01_light.svg</file>
     </qresource>
 </RCC>

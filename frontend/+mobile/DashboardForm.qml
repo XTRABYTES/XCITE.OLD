@@ -151,7 +151,7 @@ Item {
                         }
 
                         onDoubleClicked: {
-                            portfolioTracker = 1
+
                         }
                     }
 
@@ -206,6 +206,36 @@ Item {
                         font.pixelSize: 40
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
+                    }
+                }
+
+                Image {
+                    id: portfolio
+                    z: 5
+                    source: darktheme == true? 'qrc:/icons/mobile/portfolio-icon_01_light.svg' : 'qrc:/icons/mobile/portfolio-icon_01_dark.svg'
+                    width: 15
+                    fillMode: Image.PreserveAspectFit
+                    anchors.top: totalWalletValue.bottom
+                    anchors.topMargin: 5
+                    anchors.right: parent.right
+                    anchors.rightMargin: 28
+                    visible: coinTracker == 0
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "transparent"
+
+                        MouseArea {
+                            anchors.fill: parent
+
+                            onPressed: {
+                                detectInteraction()
+                            }
+
+                            onClicked: {
+                                portfolioTracker = 1
+                            }
+                        }
                     }
                 }
 
