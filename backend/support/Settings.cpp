@@ -941,3 +941,20 @@ void Settings::NoWalletFile()
     msgBox->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
     msgBox->show();
 }
+
+void Settings::CheckCamera(){
+
+    #ifdef Q_OS_ANDROID //added to get camera permission for Android
+    auto  result = QtAndroid::checkPermission(QString("android.permission.CAMERA"));
+        if(result == QtAndroid::PermissionResult::Denied){
+            QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.CAMERA"}));
+            if(resultHash["android.permission.CAMERA"] == QtAndroid::PermissionResult::Denied){
+                emit cameraCheckFailed();
+                return;
+            }else{
+                emit cameraCheckPassed();
+                return;
+            }
+        }
+    #endif
+}
