@@ -238,8 +238,8 @@ void Xutility::set_network(const QJsonArray *params) {
 
         if (param_valid) {
             xchatRobot.SubmitMsg("New active network: "+QString::fromStdString(*network));
-            currentNetwork = QString::fromStdString(*network);
-            qDebug() << "current network: " + currentNetwork;
+            currentNetwork = ("Current network: "+QString::fromStdString(*network));
+            qDebug() << currentNetwork;
             emit newNetwork(currentNetwork);
 
         } else {

@@ -1,4 +1,4 @@
- /**
+/**
 * Filename: DashboardForm.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -159,10 +159,12 @@ Item {
                         State {
                             name: "up"
                             PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: 0}
+                            PropertyChanges { target: portfolio; opacity:1}
                         },
                         State {
                             name: "down"
                             PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: Screen.width * 1.5}
+                            PropertyChanges { target: portfolio; opacity:0}
                         }
                     ]
 
@@ -171,6 +173,7 @@ Item {
                             from: "*"
                             to: "*"
                             PropertyAnimation { target: totalWalletValue; property: "anchors.horizontalCenterOffset"; duration: 700; easing.type: Easing.InOutCubic}
+                            PropertyAnimation { target: portfolio; property: "opacity"; duration: 700; easing.type: Easing.InOutCubic}
                         }
                     ]
 
@@ -212,17 +215,20 @@ Item {
                 Image {
                     id: portfolio
                     z: 5
-                    source: darktheme == true? 'qrc:/icons/mobile/portfolio-icon_01_light.svg' : 'qrc:/icons/mobile/portfolio-icon_01_dark.svg'
+                    source: darktheme == true? 'qrc:/icons/mobile/portfolio-icon_02_light.svg' : 'qrc:/icons/mobile/portfolio-icon_02_dark.svg'
                     width: 15
                     fillMode: Image.PreserveAspectFit
                     anchors.top: totalWalletValue.bottom
-                    anchors.topMargin: 5
-                    anchors.right: parent.right
-                    anchors.rightMargin: 28
-                    visible: coinTracker == 0
+                    anchors.topMargin: -15
+                    anchors.left: parent.left
+                    anchors.leftMargin: 28
+                    visible: portfolio.opacity > 0
 
                     Rectangle {
-                        anchors.fill: parent
+                        width: 30
+                        height: 30
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
                         color: "transparent"
 
                         MouseArea {
@@ -323,10 +329,9 @@ Item {
                         property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
                         property real totalCoinsSum: totalCoins.text === "XBY"? totalXBY :
                                                                                 (totalCoins.text === "XFUEL"? totalXFUEL:
-                                                                                                              (totalCoins.text === "XBY-TEST"? totalXBYTest :
-                                                                                                                                               (totalCoins.text === "XFUEL-TEST"? totalXFUELTest :
-                                                                                                                                                                                  (totalCoins.text === "BTC"? totalBTC :
-                                                                                                                                                                                                              (totalCoins.text === "ETH"? totalETH : 0)))))
+                                                                                                              (totalCoins.text === "XTEST"? totalXFUELTest :
+                                                                                                                                            (totalCoins.text === "BTC"? totalBTC :
+                                                                                                                                                                        (totalCoins.text === "ETH"? totalETH : 0))))
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total1
                         z: 5
@@ -344,10 +349,9 @@ Item {
                         property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
                         property real totalCoinsSum:  totalCoins.text === "XBY"? totalXBY :
                                                                                  (totalCoins.text === "XFUEL"? totalXFUEL:
-                                                                                                               (totalCoins.text === "XBY-TEST"? totalXBYTest :
-                                                                                                                                                (totalCoins.text === "XFUEL-TEST"? totalXFUELTest :
-                                                                                                                                                                                   (totalCoins.text === "BTC"? totalBTC :
-                                                                                                                                                                                                               (totalCoins.text === "ETH"? totalETH : 0)))))
+                                                                                                               (totalCoins.text === "XTEST"? totalXFUELTest :
+                                                                                                                                             (totalCoins.text === "BTC"? totalBTC :
+                                                                                                                                                                         (totalCoins.text === "ETH"? totalETH : 0))))
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total2
                         z: 5

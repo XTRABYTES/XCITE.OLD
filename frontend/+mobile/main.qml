@@ -329,7 +329,10 @@ ApplicationWindow {
     property int oldSystemVolume: 1
     property int systemVolumeChangeFailed: 0
     property int selectedSystemVolume: userSettings.systemVolume
+    property int copy2clipboard: 0
+    property string address2Copy: ""
     property bool closeAllClipboard: false
+    property bool cameraPermission: true
 
     // Signals
     signal checkOS()
@@ -363,6 +366,7 @@ ApplicationWindow {
     signal walletUpdate(string coin, string label, string message)
     signal copyText2Clipboard(string text)
     signal sendCoins(string message)
+    signal checkCamera()
 
     // functions
     function updateBalance(coin, address, balance) {
@@ -1145,6 +1149,14 @@ ApplicationWindow {
         onOSReturned: {
             myOS = os
         }
+
+        onCameraCheckFailed: {
+            cameraPermission = false
+        }
+
+        onCameraCheckPassed: {
+            cameraPermission = true
+        }
     }
 
     Connections {
@@ -1389,6 +1401,14 @@ ApplicationWindow {
     }
 
     // timers
+    Timer {
+        repeat: false
+        running: copy2clipboard
+        interval: 2000
+
+        onTriggered: copy2clipboard = 0
+    }
+
     Timer {
         id: marketValueTimer
         interval: 60000

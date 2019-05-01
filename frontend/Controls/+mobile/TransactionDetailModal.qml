@@ -387,6 +387,7 @@ Rectangle {
                 transactionDetailTracker = 0;
                 selectedAddressList = "input"
                 myTransactionAdresses.transactionAddresses = "input"
+                address2Copy = ""
             }
         }
     }

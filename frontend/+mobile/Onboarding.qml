@@ -23,6 +23,8 @@ Item {
     width: Screen.width
     clip: true
 
+    property string versionNR: "0.2"
+
     Component.onCompleted: {
         selectedPage = "login"
     }
@@ -126,7 +128,7 @@ Item {
 
         Label {
             id: version
-            text: "V 0.11"
+            text: "V" + versionNR
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: welcomeText.bottom
             anchors.topMargin: -20
@@ -161,9 +163,10 @@ Item {
                 onReleased: {
                     loginTracker = 1
                     clearAllSettings();
+                    console.log("checking OS")
                     checkOS();
-                    console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
-
+                    console.log("requesting state camera permission")
+                    checkCamera();
                 }
             }
         }

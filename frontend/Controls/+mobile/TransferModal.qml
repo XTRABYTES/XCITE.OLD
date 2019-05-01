@@ -70,7 +70,6 @@ Rectangle {
     property real currentBalance: getCurrentBalance()
     property int selectedWallet: getWalletNR(coinID.text, walletLabel.text)
     property string searchCriteria: ""
-    property int copy2clipboard: 0
     property int copyImage2clipboard: 0
     property int screenShot: 0
     property int badNetwork: 0
@@ -185,7 +184,7 @@ Rectangle {
         font.family: "Brandon Grotesque"
         color: "#E55541"
         font.letterSpacing: 2
-        visible: getTestnet(coinID.text)
+        visible: getTestnet(coinID.text) === true
     }
 
     Flickable {
@@ -711,7 +710,7 @@ Rectangle {
 
             Rectangle {
                 width: parent.width
-                height: 20
+                height: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 color: "transparent"
@@ -720,7 +719,7 @@ Rectangle {
                     anchors.fill: parent
 
                     onPressAndHold: {
-                        if(copy2clipboard == 0) {
+                        if(copy2clipboard == 0 && transferTracker == 1) {
                             copyText2Clipboard(publicKey.text)
                             copy2clipboard = 1
                         }
@@ -741,7 +740,7 @@ Rectangle {
             color: "black"
             opacity: 0.4
             transparentBorder: true
-            visible: copy2clipboard == 1
+            visible: copy2clipboard == 1 && transferTracker == 1
         }
 
         Item {
@@ -750,9 +749,8 @@ Rectangle {
             width: popupClipboard.width
             height: popupClipboardText.height + 20
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
-            visible: copy2clipboard == 1
+            anchors.verticalCenter: publicKey.verticalCenter
+            visible: copy2clipboard == 1 && transferTracker == 1
 
             Rectangle {
                 id: popupClipboard
@@ -773,14 +771,6 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-            }
-
-            Timer {
-                repeat: false
-                running: copy2clipboard == 1
-                interval: 2000
-
-                onTriggered: copy2clipboard = 0
             }
         }
 
@@ -838,14 +828,6 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
             }
-
-            Timer {
-                repeat: false
-                running: copyImage2clipboard == 1
-                interval: 2000
-
-                onTriggered: copyImage2clipboard = 0
-            }
         }
 
         // Send state
@@ -868,7 +850,6 @@ Rectangle {
                      && walletList.get(selectedWallet).viewOnly === true
                      && publicKey.text != ""
         }
-
         Label {
             id: invalidCurrency
             text: "NOT POSSIBLE AT THE MOMENT"
@@ -885,7 +866,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text != "XFUEL"
+                     && coinID.text == "XBY"
         }
 
         Mobile.AmountInput {
@@ -909,7 +890,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text == "XFUEL"
+                     && coinID.text != "XBY"
             mobile: 1
             calculator: getTestnet(coinID.text) === true? 0 : 1
             onTextChanged: {
@@ -982,7 +963,7 @@ Rectangle {
                      && inputAmount > ((walletList.get(selectedWallet).balance) - 1)
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text == "XFUEL"
+                     && coinID.text != "XBY"
         }
 
         Label {
@@ -1002,7 +983,7 @@ Rectangle {
                      && precision > 8
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text == "XFUEL"
+                     && coinID.text != "XBY"
         }
 
         Controls.TextInput {
@@ -1024,7 +1005,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text == "XFUEL"
+                     && coinID.text != "XBY"
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
@@ -1065,7 +1046,7 @@ Rectangle {
                      && keyInput.text != ""
                      && invalidAddress == 1
                      && publicKey.text != ""
-                     && coinID.text == "XFUEL"
+                     && coinID.text != "XBY"
         }
 
         Rectangle {
@@ -1085,7 +1066,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text == "XFUEL"
+                     && coinID.text != "XBY"
 
             MouseArea {
                 anchors.fill: scanQrButton
@@ -1139,7 +1120,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text == "XFUEL"
+                     && coinID.text != "XBY"
 
             MouseArea {
                 anchors.fill: addressBookButton
@@ -1195,7 +1176,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text == "XFUEL"
+                     && coinID.text != "XBY"
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -1221,7 +1202,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text == "XFUEL"
+                     && coinID.text != "XBY"
 
             MouseArea {
                 property string network: coinID.text == "XBY"? "xtrabytes" : (coinID.text == "XFUEL"? "xfuel" : (coinID.text == "XTEST"? "testnet" : "nothing"))

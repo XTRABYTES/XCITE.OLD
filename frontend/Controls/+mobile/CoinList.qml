@@ -113,7 +113,7 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XTEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0))))
                     property int decimals: name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4)
                     property var amountArray: (sumBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel1
@@ -127,7 +127,7 @@ Rectangle {
                 }
 
                 Text {
-                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XBY-TEST"? totalXBYTest :(name === "XFUEL-TEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0)))))
+                    property real sumBalance: name === "XBY"? totalXBY : (name === "XFUEL"? totalXFUEL : (name === "XTEST"? totalXFUELTest : (name === "BTC"? totalBTC : (name === "ETH"? totalETH : 0))))
                     property int decimals: name == "BTC" ? 8 : (sumBalance >= 100000 ? 2 : 4)
                     property var amountArray: (sumBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel2

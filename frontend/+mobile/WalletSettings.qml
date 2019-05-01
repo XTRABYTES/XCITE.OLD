@@ -128,7 +128,9 @@ Rectangle {
             }
 
             onClicked: {
+                if (soundTracker == 0) {
                 currencyTracker = 1
+                }
             }
         }
     }
@@ -260,11 +262,11 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (userSettings.pinlock === false) {
+                    if (userSettings.pinlock === false && currencyTracker == 0 && soundTracker == 0) {
                         pincodeTracker = 1
                         createPin =1
                     }
-                    else {
+                    else if (currencyTracker == 0 && soundTracker == 0) {
                         pincodeTracker = 1
                         unlockPin = 1
                     }
@@ -327,7 +329,7 @@ Rectangle {
             }
 
             onClicked: {
-                if (userSettings.pinlock === true) {
+                if (userSettings.pinlock === true && currencyTracker == 0 && soundTracker == 0) {
                     pincodeTracker = 1
                     changePin =1
                 }
@@ -406,7 +408,9 @@ Rectangle {
             }
 
             onClicked: {
+                if (currencyTracker == 0) {
                 soundTracker = 1
+                }
             }
         }
     }
@@ -531,7 +535,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
-                    if (changeVolumeInitiated == false) {
+                    if (changeVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
                         oldVolume = userSettings.volume
                         userSettings.volume = 0
                         notification.play()
@@ -561,7 +565,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
-                    if (changeVolumeInitiated == false) {
+                    if (changeVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
                         oldVolume = userSettings.volume
                         userSettings.volume = 1
                         notification.play()
@@ -591,7 +595,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
-                    if (changeVolumeInitiated == false) {
+                    if (changeVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
                         oldVolume = userSettings.volume
                         userSettings.volume = 2
                         notification.play()
@@ -621,7 +625,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
-                    if (changeVolumeInitiated == false) {
+                    if (changeVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
                         oldVolume = userSettings.volume
                         userSettings.volume = 3
                         notification.play()
@@ -665,7 +669,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
-                    if (changeSystemVolumeInitiated == false) {
+                    if (changeSystemVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
                         oldSystemVolume = userSettings.systemVolume
                         userSettings.systemVolume = 0
                         changeSystemVolumeInitiated = true
@@ -694,7 +698,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
-                    if (changeSystemVolumeInitiated == false) {
+                    if (changeSystemVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
                         oldSystemVolume = userSettings.systemVolume
                         userSettings.systemVolume = 1
                         changeSystemVolumeInitiated = true
@@ -762,11 +766,11 @@ Rectangle {
             }
 
             onClicked: {
-                if(userSettings.pinlock === true) {
+                if(userSettings.pinlock === true && currencyTracker == 0 && soundTracker == 0) {
                     pincodeTracker = 1
                     clearAll = 1
                 }
-                else {
+                else if (currencyTracker == 0 && soundTracker == 0) {
                     clearAllInitiated = true
                     oldDefaultCurrency = userSettings.defaultCurrency
                     oldLocale = userSettings.locale
