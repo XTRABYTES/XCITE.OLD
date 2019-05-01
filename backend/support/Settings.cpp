@@ -928,8 +928,8 @@ void Settings::CheckSessionId(){
 
 }
 
-void Settings::NoWalletFile()
-{
+void Settings::NoWalletFile(){
+
     qDebug() << "No wallet file found!";
 
     QMessageBox *msgBox = new QMessageBox;
@@ -946,15 +946,22 @@ void Settings::CheckCamera(){
 
     #ifdef Q_OS_ANDROID //added to get camera permission for Android
     auto  result = QtAndroid::checkPermission(QString("android.permission.CAMERA"));
+        qDebug() << "Checking camera permission";
         if(result == QtAndroid::PermissionResult::Denied){
             QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.CAMERA"}));
             if(resultHash["android.permission.CAMERA"] == QtAndroid::PermissionResult::Denied){
+                qDebug() << "No camera permission";
                 emit cameraCheckFailed();
                 return;
             }else{
+                qDebug() << "Camera permission ok";
                 emit cameraCheckPassed();
                 return;
             }
+        }
+        else {
+            qDebug() << "Camera permission ok";
+            emit cameraCheckPassed();
         }
     #endif
 }

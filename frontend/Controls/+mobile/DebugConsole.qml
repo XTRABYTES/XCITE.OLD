@@ -176,7 +176,7 @@ Rectangle {
             }
 
             onClicked: {
-                replyText.text = replyText.text + requestText.text + "<br/>"
+                replyText.text = "<br>" + replyText.text + requestText.text + "<br>"
                 deBugArray = (requestText.text).split(' ')
                 debugError = 0
                 if (deBugArray[0] === "help") {
@@ -212,8 +212,8 @@ Rectangle {
             target: xUtility
             onHelpReply: {
                 if (debugTracker == 1) {
-                    replyText.text = replyText.text + "<br/>" +
-                            "Use one of the following commands:" + "<br/>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
+                            "Use one of the following commands:" + "<br>" +
                             "<b>" + help1 + "</b><br>" +
                             "to know which network is active.<br>" +
                             "<b>" + help2 + "</b><br>" +
@@ -227,7 +227,7 @@ Rectangle {
             }
             onKeyPairCreated: {
                 if (debugTracker == 1 && debugError == 0) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
                             "<b>Public key</b>:<br>" +
                             pubKey + "<br>" +
                             "<b>Private key</b>:<br>" +
@@ -239,7 +239,7 @@ Rectangle {
 
             onAddressExtracted: {
                 if (debugTracker == 1 && debugError == 0) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
                             "<b>Public key</b>:<br>" +
                             pubKey + "<br>" +
                             "<b>Private key</b>:<br>" +
@@ -251,26 +251,33 @@ Rectangle {
             }
             onCreateKeypairFailed: {
                 if (debugTracker == 1 && debugError == 0) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
                             "We could not create a key for you.<br>"
                 }
 
             }
             onBadKey: {
                 if (debugTracker == 1 && debugError == 0) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
                             "We could not extract an address from this key.<br >"
                 }
             }
             onNetworkStatus: {
                 if (debugTracker == 1) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text ="<br>" +  replyText.text + "<br>" +
                             myNetwork + "<br>"
                 }
             }
+            onNewNetwork: {
+                if (debugTracker == 1) {
+                    replyText.text = "<br>" + replyText.text + "<br>" +
+                            currentNetwork + "<br>"
+                }
+            }
+
             onBadNetwork: {
                 if (debugTracker == 1) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
                             noNetwork + "<br>"
                     debugError = 1
                 }
@@ -281,14 +288,14 @@ Rectangle {
             target: static_int
             onSendCoinsSuccess: {
                 if (debugTracker == 1) {
-                    replyText.text = replyText.text + "<br/>" +
+                    replyText.text = "<br>" + replyText.text + "<br/>" +
                             "Send Success!:" + "<br/>" +
                             "TransactionId:" + transactionId + "<br>"
                 }
             }
             onSendCoinsFailure: {
                 if (debugTracker == 1) {
-                    replyText.text = replyText.text + "<br/>" +
+                    replyText.text = "<br>" + replyText.text + "<br/>" +
                             "Send Failed!:" + "<br/>" +
                             "Error:" + error + "<br>"
                 }
