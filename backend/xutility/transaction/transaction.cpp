@@ -82,11 +82,11 @@ void CScript::SetDestination(const CTxDestination& dest)
     boost::apply_visitor(CScriptVisitor(this), dest);
 }
 
-bool SignSignature(const CScript& fromPubKey, CTransaction& txTo, unsigned int nIn, const std::string &privkey)
+bool SignSignature(const CScript& fromPubKey, CTransaction& txTo, unsigned int nIn, const std::string &privkey, const unsigned char network_id)
 {
 	CTxIn& txin = txTo.vin[nIn];
 	uint256 hash = SignatureHash(fromPubKey, txTo, nIn );
-   return Solver(fromPubKey, hash, txin.scriptSig, privkey);		
+   return Solver(fromPubKey, hash, txin.scriptSig, privkey, network_id);		
 }
 
 uint256 SignatureHash(CScript scriptCode, const CTransaction& txTo, unsigned int nIn )
@@ -106,14 +106,14 @@ uint256 SignatureHash(CScript scriptCode, const CTransaction& txTo, unsigned int
 
 
 
-bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, const std::string &privkey)
+bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, const std::string &privkey, const unsigned char network_id )
 {
 	scriptSigRet.clear();
    std::vector<std::vector<unsigned char>> vSolutions;
    if (!PubkeyHashSolver(scriptPubKey, vSolutions)) return false;
    
    CXCiteSecret xciteSecret;
-   bool fGood = xciteSecret.SetString(privkey,35);
+   bool fGood = xciteSecret.SetString(privkey,network_id);
    if (!fGood) return false;
    CKey key = xciteSecret.GetKey();
    
@@ -218,7 +218,7 @@ std::string CreateRawTransaction(const unsigned char network_id, const std::vect
          std::vector<unsigned char> prevPubKeyBin = ParseHexcstr(input_details.at(2).c_str());                           
          const CScript prevPubKey(prevPubKeyBin.begin(), prevPubKeyBin.end());
       
-         SignSignature(prevPubKey, mergedTx, i, privkey);
+         SignSignature(prevPubKey, mergedTx, i, privkey, network_id);
       
       }
 
