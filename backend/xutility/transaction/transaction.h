@@ -472,9 +472,9 @@ static const valtype vchZero(0);
 static const valtype vchTrue(1, 1);
 
 
-bool SignSignature(const CScript& fromPubKey, CTransaction& txTo, unsigned int nIn, const std::string &privkey);
+bool SignSignature(const CScript& fromPubKey, CTransaction& txTo, unsigned int nIn, const std::string &privkey, const unsigned char network_id);
 uint256 SignatureHash(CScript scriptCode, const CTransaction& txTo, unsigned int nIn);
-bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, const std::string &privkey);
+bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, const std::string &privkey, const unsigned char network_id);
 bool PubkeyHashSolver(const CScript& scriptPubKey, std::vector<valtype>& vSolutionsRet);
 std::string CreateRawTransaction(const unsigned char network_id, const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey );
 
