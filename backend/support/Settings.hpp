@@ -71,6 +71,8 @@ public slots:
     QString RestAPIPostCall(QString apiURL, QByteArray payload);
     QByteArray RestAPIGetCall(QString apiURL);
     void CheckSessionId();
+    void CheckCamera();
+
 
 
 signals:
@@ -106,6 +108,8 @@ signals:
     void saveFailedInputError();
     void saveFailedUnknownError();
     void walletNotFound();
+    void cameraCheckFailed();
+    void cameraCheckPassed();
 
 
 
