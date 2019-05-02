@@ -68,6 +68,21 @@ int main(int argc, char *argv[])
       
       std::cout << "Raw transaction: " << tn_RawTransaction << std::endl;
 
+      std::cout << "Tests #4 create signed raw xtrabytes transaction" << std::endl;
+                     
+      std::vector<std::string> xb_inputs;
+      xb_inputs.push_back("3266fbcf5046ea6bf8be73799958af5d55f7c2e85ed7e0d26880d7e49ad2786e,1,76a91436c0c1ecefb21961b2bdde89c61382f93a44ef5188ac,50.00000000");  
+ 
+      std::vector<std::string> xb_outputs;
+      xb_outputs.push_back("BTSRyjb1kgtqyqwHvJLqBr4nMGjTFpb9ut,1.00000000"); 
+      xb_outputs.push_back("B9Sb26rWm5ejsEmxRqgn3z8yL4Rohm1rj6,48.00000000");
+
+      std::string xb_privkey="6AAY3KtjZF7zP6w4JwtJvhYV4vAPD44QpCDAfS3e6bMaHZsd842";
+
+      unsigned char xb_network_id = 25; // 25 = XTRABYTES network
+      std::string xb_RawTransaction = CreateRawTransaction( xb_network_id, xb_inputs, xb_outputs, xb_privkey);
+      
+      std::cout << "Raw transaction: " << xb_RawTransaction << std::endl;     
      
 	}
 	catch (std::exception& e) {

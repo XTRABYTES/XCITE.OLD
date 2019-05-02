@@ -395,16 +395,22 @@ public:
     std::vector<CTxIn> vin;
     std::vector<CTxOut> vout;
     unsigned int nLockTime;
+    unsigned char network_id;    
 
-    CTransaction()
+    CTransaction( const unsigned char _network_id )
     {
         SetNull();
+        this->network_id = _network_id;
     }
 
     IMPLEMENT_SERIALIZE
     (
         READWRITE(this->nVersion);
         nVersion = this->nVersion;
+        if (this->network_id == 25) {             // 25 = XTRABYTES network
+          unsigned int _nTime = std::time(NULL);
+          READWRITE(_nTime); 
+        } 
         READWRITE(vin);
         READWRITE(vout);
         READWRITE(nLockTime);

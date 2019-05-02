@@ -379,6 +379,9 @@ void SendcoinWorker::process() {
       
       // !!xutil network testnet
       // !!staticnet sendcoin GQufCtACUjYdBycKb9kaJXF8bbV9aHryJ2 9.87654321 RgeFarE5WTUMmuHtHfGt7B23sL7VoWGeyiGJ1Yrzrz6Jc3zMN1rU
+      
+      // !!xutil network xtrabytes
+      // !!staticnet sendcoin BTSRyjb1kgtqyqwHvJLqBr4nMGjTFpb9ut 1.23456789 6AAY3KtjZF7zP6w4JwtJvhYV4vAPD44QpCDAfS3e6bMaHZsd842
 
      qDebug() << xUtility.getSelectedNetworkid();
 
