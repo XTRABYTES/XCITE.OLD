@@ -102,7 +102,7 @@ ApplicationWindow {
         coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
 
         txStatusList.setProperty(0, "type", "confirmed");
-        txStatusList.setProperty(1, "type", "pending");
+        txStatusList.append({"type": "pending"});
 
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
