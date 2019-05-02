@@ -203,8 +203,7 @@ QString Explorer::getBalanceAddressExt(QString coin, QString address){
     return strReply;
 }
 
-void Explorer::WalletUpdate(QString coin, QString label, QString message)
-{
+void Explorer::WalletUpdate(QString coin, QString label, QString message){
     QMessageBox *msgBox = new QMessageBox;
     msgBox->setParent(0);
     msgBox->setWindowTitle(coin + " " + label);
@@ -212,4 +211,27 @@ void Explorer::WalletUpdate(QString coin, QString label, QString message)
     msgBox->setStandardButtons(QMessageBox::Ok);
     msgBox->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
     msgBox->show();
+}
+
+void Explorer::checkTxStatus(QString pendingList) {
+
+    QJsonArray pendingArray = QJsonDocument::fromJson(pendingList.toLatin1()).array();
+    foreach (const QJsonValue & value, pendingArray) {
+        QJsonObject obj = value.toObject();
+        QString coin = obj.value("name").toString().toLower();
+        QString address = obj.value("address").toString();
+        QString transaction = obj.value("txid").toString();
+
+        QString response =  getTransactionDetails(coin,transaction);
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
+        QJsonObject result = jsonResponse.object().value("result").toObject();
+        QString answer = result.value("message").toString();
+
+        if (answer == "not found.") {
+            emit txidExists(coin, address, transaction, "false");
+        }
+        else {
+            emit txidExists(coin, address, transaction, "true");
+        }
+    }
 }

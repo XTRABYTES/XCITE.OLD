@@ -1609,9 +1609,8 @@ Rectangle {
                     if (transferTracker == 1 && requestSend == 1) {
                         confirmationSend = 1
                         requestSend = 0
-                        // provisional TX info
-                        transactionList.append ({"coinName": coinID.text, "walletLabel": walletLabel.text, "reference": referenceText.text, "txid": transactionId, "txNR": txID })
-                        txID = txID + 1
+                        pendingList.append ({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId})
+                        updateToAccount()
                     }
                 }
 

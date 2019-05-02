@@ -36,12 +36,14 @@ signals:
     void updateBalance(const QString &coin, const QString &address, const QString &balance);
     void updateTransactions(const QString &transactions, const QString &totalPages);
     void updateTransactionsDetails(const QString &timestamp, const QString &confirmations, const QString &balance, const QString &inputs, const QString &outputs);
+    void txidExists(const QString &coin, const QString &address, const QString &txid, const QString &result);
 
 public slots:
     void getBalanceEntireWallet(QString);
     void getTransactionList(QString, QString, QString);
     void getDetails(QString, QString);
     void WalletUpdate(QString coin, QString label, QString message);
+    void checkTxStatus(QString);
 private:
     QString explorerValue;
 };
