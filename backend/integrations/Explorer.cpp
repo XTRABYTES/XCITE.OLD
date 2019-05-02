@@ -224,8 +224,8 @@ void Explorer::checkTxStatus(QString pendingList) {
 
         QString response =  getTransactionDetails(coin,transaction);
         QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
-        QJsonObject result = jsonResponse.object().value("result").toObject();
-        QString answer = result.value("message").toString();
+        QString answer = jsonResponse.object().value("message").toString();
+        coin = coin.toUpper();
 
         if (answer == "not found.") {
             emit txidExists(coin, address, transaction, "false");
