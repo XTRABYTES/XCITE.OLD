@@ -168,7 +168,7 @@ std::string CreateRawTransaction(const unsigned char network_id, const std::vect
 
   try {
   	
-      CTransaction rawTx;       
+      CTransaction rawTx(network_id);       
  
       BOOST_FOREACH(const std::string input, inputs) {
       	
