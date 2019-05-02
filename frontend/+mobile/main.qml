@@ -360,7 +360,7 @@ ApplicationWindow {
     signal helpMe()
     signal setNetwork(string network)
     signal testTransaction(string test)
-    signal updateAccount(string addresslist, string contactlist, string walletlist)
+    signal updateAccount(string addresslist, string contactlist, string walletlist, string pendingList)
     signal updateTransactions(string coin, string address, string page)
     signal checkSessionId()
     signal getDetails(string coin, string transaction)
@@ -987,7 +987,7 @@ ApplicationWindow {
         var contactListJson = JSON.stringify(datamodelContact)
         var pendingListJson = JSON.stringify(datamodelPending)
 
-        updateAccount(addressListJson, contactListJson, walletListJson) // add pendingList to function in C++
+        updateAccount(addressListJson, contactListJson, walletListJson, pendingListJson)
     }
 
     function editWalletInAddreslist(coin, address, label, remove) {

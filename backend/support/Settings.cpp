@@ -701,7 +701,7 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     emit loginSucceededChanged();
 }
 
-void Settings::UpdateAccount(QString addresslist, QString contactlist, QString walletlist){
+void Settings::UpdateAccount(QString addresslist, QString contactlist, QString walletlist, QString pendinglist){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
     bool localKeys = m_settings->value("localKeys").toBool();
     m_addresses = addresslist;
