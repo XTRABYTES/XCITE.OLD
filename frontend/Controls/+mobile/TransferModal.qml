@@ -850,6 +850,7 @@ Rectangle {
                      && walletList.get(selectedWallet).viewOnly === true
                      && publicKey.text != ""
         }
+        /**
         Label {
             id: invalidCurrency
             text: "NOT POSSIBLE AT THE MOMENT"
@@ -868,7 +869,7 @@ Rectangle {
                      && publicKey.text != ""
                      && coinID.text == "XBY"
         }
-
+        */
         Mobile.AmountInput {
             id: sendAmount
             height: 34
@@ -890,7 +891,6 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text != "XBY"
             mobile: 1
             calculator: getTestnet(coinID.text) === true? 0 : 1
             onTextChanged: {
@@ -963,7 +963,6 @@ Rectangle {
                      && inputAmount > ((walletList.get(selectedWallet).balance) - 1)
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text != "XBY"
         }
 
         Label {
@@ -983,7 +982,6 @@ Rectangle {
                      && precision > 8
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text != "XBY"
         }
 
         Controls.TextInput {
@@ -1005,7 +1003,6 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text != "XBY"
             mobile: 1
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             onTextChanged: {
@@ -1046,7 +1043,6 @@ Rectangle {
                      && keyInput.text != ""
                      && invalidAddress == 1
                      && publicKey.text != ""
-                     && coinID.text != "XBY"
         }
 
         Rectangle {
@@ -1066,7 +1062,6 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text != "XBY"
 
             MouseArea {
                 anchors.fill: scanQrButton
@@ -1120,7 +1115,6 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text != "XBY"
 
             MouseArea {
                 anchors.fill: addressBookButton
@@ -1176,7 +1170,6 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text != "XBY"
             mobile: 1
             onTextChanged: detectInteraction()
         }
@@ -1202,7 +1195,6 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
-                     && coinID.text != "XBY"
 
             MouseArea {
                 property string network: coinID.text == "XBY"? "xtrabytes" : (coinID.text == "XFUEL"? "xfuel" : (coinID.text == "XTEST"? "testnet" : "nothing"))
@@ -1609,8 +1601,7 @@ Rectangle {
                     if (transferTracker == 1 && requestSend == 1) {
                         confirmationSend = 1
                         requestSend = 0
-                        pendingList.append ({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId})
-                        updateToAccount()
+                        //pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId})
                     }
                 }
 
@@ -1822,7 +1813,6 @@ Rectangle {
                     transactionDate = ""
                     timestamp = 0
                     precision = 0
-
                 }
             }
         }
@@ -1929,6 +1919,7 @@ Rectangle {
                     transactionDate = ""
                     timestamp = 0
                     precision = 0
+                    updateToAccount()
                 }
             }
         }

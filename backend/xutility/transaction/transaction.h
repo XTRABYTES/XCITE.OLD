@@ -402,7 +402,7 @@ public:
     {
         SetNull();
         this->network_id = _network_id;
-        unsigned int this->nTime = std::time(NULL);
+        this->nTime = std::time(NULL);
     }
 
     IMPLEMENT_SERIALIZE

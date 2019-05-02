@@ -360,7 +360,7 @@ ApplicationWindow {
     signal helpMe()
     signal setNetwork(string network)
     signal testTransaction(string test)
-    signal updateAccount(string addresslist, string contactlist, string walletlist, string pendingList)
+    signal updateAccount(string addresslist, string contactlist, string walletlist, string pendinglist)
     signal updateTransactions(string coin, string address, string page)
     signal checkSessionId()
     signal getDetails(string coin, string transaction)
