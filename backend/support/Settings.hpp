@@ -62,7 +62,7 @@ public slots:
     void SaveContacts(QString contactlist);
     void SaveWallet(QString walletlist, QString addresslist);
     void ExportWallet(QString walletlist);
-    void UpdateAccount(QString addresslist, QString contactlist, QString walletlist);
+    void UpdateAccount(QString addresslist, QString contactlist, QString walletlist, QString pendinglist);
 
     void onCheckOS();
     void initialisePincode(QString pincode);
@@ -71,6 +71,8 @@ public slots:
     QString RestAPIPostCall(QString apiURL, QByteArray payload);
     QByteArray RestAPIGetCall(QString apiURL);
     void CheckSessionId();
+    void CheckCamera();
+
 
 
 signals:
@@ -106,6 +108,8 @@ signals:
     void saveFailedInputError();
     void saveFailedUnknownError();
     void walletNotFound();
+    void cameraCheckFailed();
+    void cameraCheckPassed();
 
 
 

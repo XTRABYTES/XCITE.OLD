@@ -153,6 +153,17 @@ Rectangle {
                 mobile: 1
                 calculator: 0
                 onTextChanged: detectInteraction()
+
+                Image {
+                    id: createPinOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 35
+                    visible: (changePin1.text).length === 4
+                }
             }
 
             Label {
@@ -195,6 +206,16 @@ Rectangle {
                             newPin2.text = ""
                         }
                     }
+                }
+                Image {
+                    id: createPinRepeateOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 35
+                    visible: newPin2.text === newPin1.text
                 }
             }
 
@@ -403,13 +424,13 @@ Rectangle {
                 calculator: 0
 
                 Image {
-                    id: usernameOK
+                    id: currentPinOK
                     source: 'qrc:/icons/icon-ok_01.svg'
                     height: 20
                     width: 20
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
-                    anchors.rightMargin: 7
+                    anchors.rightMargin: 35
                     visible: currentPinCorrect == 1
                 }
 
@@ -445,22 +466,26 @@ Rectangle {
                     target: UserSettings
 
                     onPincodeCorrect: {
-                        passTry = 0
-                        currentPinCorrect = 1
+                        if (changePin == 1) {
+                            passTry = 0
+                            currentPinCorrect = 1
+                        }
                     }
 
                     onPincodeFalse: {
-                        pinError = 1
-                        currentPin.text = ""
-                        if (passTry == 3) {
-                            passError2 = 1
-                            pinLogout = 1
-                            logoutTracker = 1
-                            timer6.start()
-                        }
-                        else {
-                            passError1 = 1
-                            timer6.start()
+                        if (changePin ==1) {
+                            pinError = 1
+                            currentPin.text = ""
+                            if (passTry == 3) {
+                                passError2 = 1
+                                pinLogout = 1
+                                logoutTracker = 1
+                                timer6.start()
+                            }
+                            else {
+                                passError1 = 1
+                                timer6.start()
+                            }
                         }
                     }
                 }
@@ -497,6 +522,17 @@ Rectangle {
                 mobile: 1
                 calculator: 0
                 onTextChanged: detectInteraction()
+
+                Image {
+                    id: newPinOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 35
+                    visible: (changePin1.text).length === 4
+                }
             }
 
             Label {
@@ -539,6 +575,16 @@ Rectangle {
                             changePin2.text = ""
                         }
                     }
+                }
+                Image {
+                    id: newPinRepeatOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 35
+                    visible: changePin2.text === changePin1.text && (changePin2.text).length === 4
                 }
             }
 
@@ -803,26 +849,30 @@ Rectangle {
                     target: UserSettings
 
                     onPincodeCorrect: {
-                        pinOK = 1
-                        pin.text = ""
-                        passTry = 0
-                        if (pinOK == 1 && (unlockPin == 1 || transferTracker == 1 || clearAll == 1 || backupTracker == 1)) {
-                            timer3.start()
+                        if (createPin == 0 && changePin == 0) {
+                            pinOK = 1
+                            pin.text = ""
+                            passTry = 0
+                            if (pinOK == 1 && (unlockPin == 1 || transferTracker == 1 || clearAll == 1 || backupTracker == 1)) {
+                                timer3.start()
+                            }
                         }
                     }
 
                     onPincodeFalse: {
-                        pinError = 1
-                        pin.text = ""
-                        if (passTry == 3) {
-                            passError2 = 1
-                            pinLogout = 1
-                            logoutTracker = 1
-                            timer4.start()
-                        }
-                        else {
-                            passError1 = 1
-                            timer4.start()
+                        if (createPin == 0 && changePin == 0) {
+                            pinError = 1
+                            pin.text = ""
+                            if (passTry == 3) {
+                                passError2 = 1
+                                pinLogout = 1
+                                logoutTracker = 1
+                                timer4.start()
+                            }
+                            else {
+                                passError1 = 1
+                                timer4.start()
+                            }
                         }
                     }
                 }
@@ -1175,8 +1225,8 @@ Rectangle {
         font.pixelSize: 14
         font.family: xciteMobile.name
         color: themecolor
-        visible: pinOK == 0
-                 && pinError == 0
+        //visible: pinOK == 0
+        //         && pinError == 0
 
         Rectangle {
             id: backbutton
@@ -1205,6 +1255,9 @@ Rectangle {
                 pin.text = ""
                 newPin1.text = ""
                 newPin2.text = ""
+                currentPin.text = ""
+                changePin1.text = ""
+                changePin2.text = ""
             }
         }
     }

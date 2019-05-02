@@ -783,7 +783,7 @@ Rectangle {
         Camera {
             id: camera
             position: Camera.BackFace
-            cameraState: (viewOnlyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
+            cameraState: cameraPermission === true? ((viewOnlyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState) : Camera.UnloadedState
             focus {
                 focusMode: Camera.FocusContinuous
                 focusPointMode: CameraFocus.FocusPointAuto

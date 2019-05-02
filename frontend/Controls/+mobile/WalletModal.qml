@@ -1309,8 +1309,7 @@ Rectangle {
                     sumBalance()
                     sumXBY()
                     sumXFUEL()
-                    sumXBYTest()
-                    sumXFUELTest()
+                    sumXTest()
                 }
             }
 

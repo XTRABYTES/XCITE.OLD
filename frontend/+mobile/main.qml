@@ -101,6 +101,9 @@ ApplicationWindow {
         coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 3});
         coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
 
+        txStatusList.setProperty(0, "type", "confirmed");
+        txStatusList.append({"type": "pending"});
+
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
         marketValueChangedSignal("btcgbp");
@@ -329,7 +332,11 @@ ApplicationWindow {
     property int oldSystemVolume: 1
     property int systemVolumeChangeFailed: 0
     property int selectedSystemVolume: userSettings.systemVolume
+    property int copy2clipboard: 0
+    property string address2Copy: ""
     property bool closeAllClipboard: false
+    property bool cameraPermission: true
+    property string statusList: ""
 
     // Signals
     signal checkOS()
@@ -344,16 +351,16 @@ ApplicationWindow {
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
     signal saveAppSettings()
-    signal saveWalletList(string walletList, string addresses)
+    signal saveWalletList(string walletlist, string addresses)
     signal importAccount(string username, string password)
-    signal exportAccount(string walletList)
-    signal updateBalanceSignal(string walletList)
+    signal exportAccount(string walletlist)
+    signal updateBalanceSignal(string walletlist)
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
     signal helpMe()
     signal setNetwork(string network)
     signal testTransaction(string test)
-    signal updateAccount(string addresslist, string contactlist, string walletlist)
+    signal updateAccount(string addresslist, string contactlist, string walletlist, string pendingList)
     signal updateTransactions(string coin, string address, string page)
     signal checkSessionId()
     signal getDetails(string coin, string transaction)
@@ -363,6 +370,8 @@ ApplicationWindow {
     signal walletUpdate(string coin, string label, string message)
     signal copyText2Clipboard(string text)
     signal sendCoins(string message)
+    signal checkCamera()
+    signal checkTxStatus(string pendinglist)
 
     // functions
     function updateBalance(coin, address, balance) {
@@ -405,11 +414,20 @@ ApplicationWindow {
                 }
             }
         }
-        var datamodel = []
-        for (var e = 0; e < walletList.count; ++e)
-            datamodel.push(walletList.get(e))
+    }
 
-        var walletListJson = JSON.stringify(datamodel)
+    function updatePending(coin, address, txid, result) {
+        for (var i = 0; i < pendingList.count; ++i){
+            if(pendingList.get(i).coin === coin) {
+                if(pendingList.get(i).address === address) {
+                    if(pendingList.get(i).txid === txid) {
+                        if(result === "true") {
+                            pendingList.remove(i)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     function countWallets() {
@@ -949,6 +967,7 @@ ApplicationWindow {
         var dataModelWallet = []
         var datamodelContact = []
         var datamodelAddress = []
+        var datamodelPending = []
 
         for (var i = 0; i < walletList.count; ++i){
             dataModelWallet.push(walletList.get(i))
@@ -959,12 +978,16 @@ ApplicationWindow {
         for (var o = 0; o < contactList.count; ++o){
             datamodelContact.push(contactList.get(o))
         }
+        for (var u = 0; u < pendingList.count; ++u){
+            datamodelPending.push(pendingList.get(u))
+        }
 
         var walletListJson = JSON.stringify(dataModelWallet)
         var addressListJson = JSON.stringify(datamodelAddress)
         var contactListJson = JSON.stringify(datamodelContact)
+        var pendingListJson = JSON.stringify(datamodelPending)
 
-        updateAccount(addressListJson, contactListJson, walletListJson)
+        updateAccount(addressListJson, contactListJson, walletListJson, pendingListJson)
     }
 
     function editWalletInAddreslist(coin, address, label, remove) {
@@ -1145,6 +1168,14 @@ ApplicationWindow {
         onOSReturned: {
             myOS = os
         }
+
+        onCameraCheckFailed: {
+            cameraPermission = false
+        }
+
+        onCameraCheckPassed: {
+            cameraPermission = true
+        }
     }
 
     Connections {
@@ -1162,6 +1193,10 @@ ApplicationWindow {
 
         onUpdateBalance: {
             updateBalance(coin, address, balance)
+        }
+
+        onTxidExists: {
+            updatePending(coin, address, txid, result)
         }
     }
 
@@ -1236,13 +1271,18 @@ ApplicationWindow {
     }
 
     ListModel {
-        id: transactionList
+        id: pendingList
         ListElement {
-            coinName: ""
-            walletLabel: ""
-            reference: ""
+            coin: ""
+            address: ""
             txid: ""
-            txNR: 0
+        }
+    }
+
+    ListModel {
+        id: txStatusList
+        ListElement {
+            type: ""
         }
     }
 
@@ -1253,6 +1293,7 @@ ApplicationWindow {
             direction: false
             value: ""
             confirmations: 0
+            status: ""
         }
     }
 
@@ -1390,6 +1431,14 @@ ApplicationWindow {
 
     // timers
     Timer {
+        repeat: false
+        running: copy2clipboard
+        interval: 2000
+
+        onTriggered: copy2clipboard = 0
+    }
+
+    Timer {
         id: marketValueTimer
         interval: 60000
         repeat: true
@@ -1417,14 +1466,20 @@ ApplicationWindow {
         running: sessionStart == 1
         onTriggered:  {
             clearWalletList()
-            var datamodel = []
+            var datamodelWallet = []
+            var datamodelPending = []
 
             for (var i = 0; i < walletList.count; ++i)
-                datamodel.push(walletList.get(i))
+                datamodelWallet.push(walletList.get(i))
 
-            var walletListJson = JSON.stringify(datamodel)
+            for (var e = 0; pendingList.count; ++e)
+                datamodelPending.push(pendingList.get(e))
+
+            var walletListJson = JSON.stringify(datamodelWallet)
+            var pendingListJson = JSON.stringify(datamodelPending)
+
+            checkTxStatus(pendingListJson);
             updateBalanceSignal(walletListJson);
-
         }
     }
 
