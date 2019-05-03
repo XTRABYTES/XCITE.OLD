@@ -49,7 +49,7 @@ void Explorer::getBalanceEntireWallet(QString walletList){
                 if (coin == "eth"){
                     double convertFromWei = balanceLong / 1000000000000000000;
                     balance = QString::number(convertFromWei);
-                 }else{
+                }else{
                     double convertFromSAT = balanceLong / 100000000;
                     balance = QString::number(convertFromSAT);
                 }
@@ -81,11 +81,14 @@ void Explorer::getTransactionList(QString coin, QString address, QString page){
 
             emit updateTransactions(transactionString, QString::number(totalPages));
 
-         }
-     }
+        }
+    }
 }
 
 void Explorer::getDetails(QString coin, QString transaction) {
+
+    emit explorerBusy();
+
     QString selectedCoin = coin.toLower();
     if (selectedCoin == "xtest") {
         selectedCoin = "xfuel-testnet";
@@ -116,11 +119,15 @@ void Explorer::getDetails(QString coin, QString transaction) {
 
             emit updateTransactionsDetails(timestamp, QString::number(confirms), balance, inputString, outputString);
 
-         }
-     }
+        }
+    }
+
+    qDebug() << "all details collected";
+    emit detailsCollected();
 }
 
 QString Explorer::getTransactionDetails(QString coin, QString transaction) {
+
     QString url = "https://xtrabytes.global/api/"+ coin + "/transaction/" + transaction;
 
     QUrl Url;
@@ -215,23 +222,43 @@ void Explorer::WalletUpdate(QString coin, QString label, QString message){
 
 void Explorer::checkTxStatus(QString pendingList) {
 
+    emit explorerBusy();
+
     QJsonArray pendingArray = QJsonDocument::fromJson(pendingList.toLatin1()).array();
     foreach (const QJsonValue & value, pendingArray) {
+
         QJsonObject obj = value.toObject();
         QString coin = obj.value("name").toString().toLower();
         QString address = obj.value("address").toString();
         QString transaction = obj.value("txid").toString();
 
-        QString response =  getTransactionDetails(coin,transaction);
-        QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
-        QString answer = jsonResponse.object().value("message").toString();
-        coin = coin.toUpper();
+        if (coin.length() > 0){
+            if (coin == "xtest") {
+                coin = "xfuel-testnet";
+            }
 
-        if (answer == "not found.") {
-            emit txidExists(coin, address, transaction, "false");
-        }
-        else {
-            emit txidExists(coin, address, transaction, "true");
+            QString response =  getTransactionDetails(coin,transaction);
+            QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
+
+            qDebug() << jsonResponse;
+
+            if (coin == "xfuel-testnet") {
+                coin = "xtest";
+            }
+
+            coin = coin.toUpper();
+
+            if ( jsonResponse.object().contains("message")) {
+                qDebug() << "transaction not found";
+                emit txidExists(coin, address, transaction, "false");
+            }
+            else {
+                qDebug() << "transaction found";
+                emit txidExists(coin, address, transaction, "true");
+            }
         }
     }
+
+    qDebug() << "all tx checked";
+    emit allTxChecked();
 }

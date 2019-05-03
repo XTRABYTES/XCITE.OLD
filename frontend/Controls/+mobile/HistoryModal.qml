@@ -265,6 +265,44 @@ Rectangle {
     }
 
     Item {
+        z: 12
+        width: popupExplorerBusy.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: explorerBusy == true && explorerPopup == 1
+
+        Rectangle {
+            id: popupExplorerBusy
+            height: 50
+            width: popupExplorerText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupExplorerText
+            text: "Explorer is busy. Try again"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: explorerPopup == 1
+            interval: 2000
+
+            onTriggered: explorerPopup = 0
+        }
+    }
+
+    Item {
         z: 3
         width: Screen.width
         height: myOS === "android"? 125 : 145

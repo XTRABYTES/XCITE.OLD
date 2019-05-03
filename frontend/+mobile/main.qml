@@ -337,6 +337,8 @@ ApplicationWindow {
     property bool closeAllClipboard: false
     property bool cameraPermission: true
     property string statusList: ""
+    property bool explorerBusy: false
+    property int explorerPopup: 0
 
     // Signals
     signal checkOS()
@@ -417,11 +419,14 @@ ApplicationWindow {
     }
 
     function updatePending(coin, address, txid, result) {
+        console.log("updating pending list")
+        console.log("checking transaction: " + coin + ", " + address + ", " + txid + ", " + result)
         for (var i = 0; i < pendingList.count; ++i){
             if(pendingList.get(i).coin === coin) {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
                         if(result === "true") {
+                            console.log("remove pending transaction")
                             pendingList.remove(i)
                         }
                     }
@@ -894,6 +899,17 @@ ApplicationWindow {
         }
     }
 
+    function loadPendingList(transactions) {
+        if (typeof transactions !== "undefined") {
+            pendingList.clear();
+            var obj = JSON.parse(transactions);
+            for (var i in obj){
+                var data = obj[i];
+                pendingList.append(data);
+            }
+        }
+    }
+
     function loadSettings(settingsLoaded) {
         if (typeof settingsLoaded !== "undefined") {
             userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
@@ -1118,6 +1134,7 @@ ApplicationWindow {
         contactList.append({"firstName": "", "lastName": "", "photo": '', "telNR": "", "cellNR": "", "mailAddress": "", "chatID": "", "favorite": false, "active": false, "contactNR": 0, "remove": true})
 
         walletList.append({"name": "", "label": "", "address": "", "privatekey" : "", "publickey" : "" ,"balance" : 0, "unconfirmedCoins": 0, "active": false, "favorite": false, "viewOnly" : false, "walletNR": 0, "remove": true})
+
     }
 
     // loggin out
@@ -1167,6 +1184,7 @@ ApplicationWindow {
 
         onOSReturned: {
             myOS = os
+            console.log("my OS: " + os)
         }
 
         onCameraCheckFailed: {
@@ -1184,7 +1202,7 @@ ApplicationWindow {
         onUpdateTransactionsDetails: {
             if (historyTracker == 1) {
                 loadTransactionAddresses(inputs, outputs)
-                transactionTimestamp = timestamp // convert to local time?
+                transactionTimestamp = timestamp
                 transactionConfirmations = confirmations
                 transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
                 transactionDetailTracker = 1
@@ -1197,6 +1215,21 @@ ApplicationWindow {
 
         onTxidExists: {
             updatePending(coin, address, txid, result)
+        }
+
+        onExplorerBusy: {
+            explorerBusy = true
+            console.log("explorer is busy")
+        }
+
+        onAllTxChecked: {
+            explorerBusy = false
+            console.log("explorer has finished")
+        }
+
+        onDetailsCollected: {
+            explorerBusy = false
+            console.log("explorer has finished")
         }
     }
 
@@ -1465,20 +1498,25 @@ ApplicationWindow {
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
+            console.log("explorer timer triggered")
             clearWalletList()
             var datamodelWallet = []
             var datamodelPending = []
 
-            for (var i = 0; i < walletList.count; ++i)
+            for (var i = 0; i < walletList.count; ++i) {
                 datamodelWallet.push(walletList.get(i))
-
-            for (var e = 0; pendingList.count; ++e)
+            };
+            for (var e = 0; e < pendingList.count; ++e) {
                 datamodelPending.push(pendingList.get(e))
-
+            };
             var walletListJson = JSON.stringify(datamodelWallet)
             var pendingListJson = JSON.stringify(datamodelPending)
 
-            checkTxStatus(pendingListJson);
+            if (explorerBusy == false) {
+                console.log("check TX status activated")
+                checkTxStatus(pendingListJson);
+            };
+            console.log("update balance activated")
             updateBalanceSignal(walletListJson);
         }
     }
