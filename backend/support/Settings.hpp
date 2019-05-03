@@ -88,6 +88,8 @@ signals:
     void addressesLoaded(const QString &addresses);
     void settingsLoaded(const QVariantMap &settings);
     void walletLoaded(const QString &wallets);
+    void pendingLoaded(const QString &pending);
+
     void clearSettings();
     void pincodeCorrect();
     void pincodeFalse();
@@ -121,6 +123,7 @@ private:
     QString m_addresses;
     QString m_contacts;
     QString m_wallet;
+    QString m_pending;
     QString m_oldPincode;
     QString m_pincode;
     QString m_username;

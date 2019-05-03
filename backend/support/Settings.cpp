@@ -585,7 +585,12 @@ bool Settings::SaveSettings(){
 
     /*      Add addresses to DB       */
     QJsonArray addressesArray = QJsonDocument::fromJson(m_addresses.toLatin1()).array(); //save addresses saves array to m_addresses
-        settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
+    settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
+
+    /*      Add pendingTransactions to DB       */
+    QJsonArray pendingArray = QJsonDocument::fromJson(m_pending.toLatin1()).array();
+    settings.insert("pendingList",pendingArray.toVariantList()); // add pendingTransactions array to our existing settings
+    qDebug().noquote() << pendingArray;
 
     /*      Add wallets to DB       */
     bool localKeys = m_settings->value("localKeys").toBool();
@@ -663,6 +668,15 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     m_addresses = addresses;
     emit addressesLoaded(m_addresses);
 
+    /* Load pendingTransactions from JSON from DB */
+    QJsonArray pendingArray = json["pendingList"].toArray(); //get pending transaction list from settings from DB
+    QJsonDocument docPending;
+    docPending.setArray(pendingArray);
+    QString pending(docPending.toJson(QJsonDocument::Compact));
+    m_pending.clear();
+    m_pending = pending;
+    emit pendingLoaded(m_pending);
+
     /* Load wallets from JSON from Local or DB */
     bool localKeys = m_settings->value("localKeys").toBool();
     QJsonArray walletArray;
@@ -707,6 +721,7 @@ void Settings::UpdateAccount(QString addresslist, QString contactlist, QString w
     m_addresses = addresslist;
     m_contacts = contactlist;
     m_wallet = walletlist;
+    m_pending = pendinglist;
 
     if (localKeys){
         QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
