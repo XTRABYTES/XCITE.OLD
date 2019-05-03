@@ -48,13 +48,15 @@ Item {
             var datamodelWallet = []
             var datamodelPending = []
 
-            for (var i = 0; i < walletList.count; ++i)
+            for (var i = 0; i < walletList.count; ++i) {
                 datamodelWallet.push(walletList.get(i))
-            for (var e = 0; e < pendingList.count; ++e)
+            };
+            for (var e = 0; e < pendingList.count; ++e) {
                 datamodelPending.push(pendingList.get(e))
+            };
 
-            var walletListJson = JSON.stringify(datamodelWallet)
-            var pendingListJson = JSON.stringify(datamodelPending)
+            var walletListJson = JSON.stringify(datamodelWallet);
+            var pendingListJson = JSON.stringify(datamodelPending);
 
             checkTxStatus(pendingListJson);
             updateBalanceSignal(walletListJson);

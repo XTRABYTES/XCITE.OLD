@@ -207,105 +207,111 @@ Item {
 
                 onCreateUniqueKeyPair: {
                     if (importTracker == 1) {
-                    checkUsername = 0
-                    keyPairSend = 1
+                        checkUsername = 0
+                        keyPairSend = 1
                     }
                 }
 
                 onCheckIdentity: {
                     if (importTracker == 1) {
-                    keyPairSend = 0
-                    checkIdentity = 1
+                        keyPairSend = 0
+                        checkIdentity = 1
                     }
                 }
 
                 onReceiveSessionEncryptionKey: {
                     if (importTracker == 1) {
-                    checkIdentity = 0
-                    sessionKey = 1
+                        checkIdentity = 0
+                        sessionKey = 1
                     }
                 }
 
                 onReceiveSessionID: {
                     if (importTracker == 1) {
-                    sessionKey = 0
-                    receiveSessionID = 1
+                        sessionKey = 0
+                        receiveSessionID = 1
                     }
                 }
 
                 onLoadingSettings: {
                     if (importTracker == 1) {
-                    receiveSessionID = 0
-                    loadingSettings = 1
+                        receiveSessionID = 0
+                        loadingSettings = 1
                     }
                 }
 
                 onContactsLoaded: {
                     if (importTracker == 1) {
-                    loadContactList(contacts)
+                        loadContactList(contacts)
                     }
                 }
 
                 onAddressesLoaded: {
                     if (importTracker == 1) {
-                    loadAddressList(addresses)
+                        loadAddressList(addresses)
                     }
                 }
                 onWalletLoaded: {
                     if (importTracker == 1) {
-                    loadWalletList(wallets)
+                        loadWalletList(wallets)
+                    }
+                }
+
+                onPendingLoaded: {
+                    if (importTracker == 1){
+                        loadPendingList(pending)
                     }
                 }
 
                 onClearSettings:{
                     if (importTracker == 1) {
-                    clearSettings();
+                        clearSettings();
                     }
                 }
 
                 onSettingsLoaded: {
                     if (importTracker == 1) {
-                    loadSettings(settings);
-                    loadingSettings = 0
-                    verifyingBalances = 1
+                        loadSettings(settings);
+                        loadingSettings = 0
+                        verifyingBalances = 1
                     }
                 }
 
                 onLoginSucceededChanged: {
                     if (importTracker == 1) {
-                    selectedPage = "home"
-                    mainRoot.pop()
-                    mainRoot.push("../Home.qml")
-                    username = userName.text
-                    importSuccesTimer.start()
-                    loadingSettings = 0
-                    verifyingBalances = 0
+                        selectedPage = "home"
+                        mainRoot.pop()
+                        mainRoot.push("../Home.qml")
+                        username = userName.text
+                        importSuccesTimer.start()
+                        loadingSettings = 0
+                        verifyingBalances = 0
                     }
                 }
 
                 onLoginFailedChanged: {
                     if (importTracker == 1) {
-                    checkUsername = 0
-                    keyPairSend = 0
-                    checkIdentity = 0
-                    sessionKey = 0
-                    receiveSessionID = 0
-                    loadingSettings = 0
-                    passError = 1
-                    passWord.text = ""
-                    importInitiated  = false
+                        checkUsername = 0
+                        keyPairSend = 0
+                        checkIdentity = 0
+                        sessionKey = 0
+                        receiveSessionID = 0
+                        loadingSettings = 0
+                        passError = 1
+                        passWord.text = ""
+                        importInitiated  = false
                     }
                 }
 
                 onUsernameAvailable: {
                     if (importTracker == 1) {
-                    checkUsername = 0
-                    passError = 1
-                    passWord.text = ""
-                    importInitiated  = false
+                        checkUsername = 0
+                        passError = 1
+                        passWord.text = ""
+                        importInitiated  = false
                     }
                 }
-             }
+            }
         }
 
         Text {

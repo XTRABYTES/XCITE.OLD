@@ -218,118 +218,124 @@ Item {
 
                 onCreateUniqueKeyPair: {
                     if (loginTracker == 1){
-                    checkUsername = 0
-                    keyPairSend = 1
+                        checkUsername = 0
+                        keyPairSend = 1
                     }
                 }
 
                 onCheckIdentity: {
                     if (loginTracker == 1){
-                    keyPairSend = 0
-                    checkIdentity = 1
+                        keyPairSend = 0
+                        checkIdentity = 1
                     }
                 }
 
                 onReceiveSessionEncryptionKey: {
                     if (loginTracker == 1){
-                    checkIdentity = 0
-                    sessionKey = 1
+                        checkIdentity = 0
+                        sessionKey = 1
                     }
                 }
 
                 onReceiveSessionID: {
                     if (loginTracker == 1){
-                    sessionKey = 0
-                    receiveSessionID = 1
+                        sessionKey = 0
+                        receiveSessionID = 1
                     }
                 }
 
                 onLoadingSettings: {
                     if (loginTracker == 1){
-                    receiveSessionID = 0
-                    loadingSettings = 1
+                        receiveSessionID = 0
+                        loadingSettings = 1
                     }
                 }
 
                 onContactsLoaded: {
                     if (loginTracker == 1){
-                    loadContactList(contacts)
+                        loadContactList(contacts)
                     }
                 }
 
                 onAddressesLoaded: {
                     if (loginTracker == 1){
-                    loadAddressList(addresses)
+                        loadAddressList(addresses)
                     }
                 }
                 onWalletLoaded: {
                     if (loginTracker == 1){
-                    loadWalletList(wallets)
+                        loadWalletList(wallets)
+                    }
+                }
+
+                onPendingLoaded: {
+                    if (loginTracker == 1){
+                        loadPendingList(pending)
                     }
                 }
 
                 onClearSettings:{
                     if (loginTracker == 1){
-                    clearSettings();
+                        clearSettings();
                     }
                 }
 
                 onSettingsLoaded: {
                     if (loginTracker == 1){
-                    loadSettings(settings);
-                    loadingSettings = 0
-                    verifyingBalances = 1
+                        loadSettings(settings);
+                        loadingSettings = 0
+                        verifyingBalances = 1
                     }
                 }
 
                 onLoginSucceededChanged: {
                     if (loginTracker == 1){
-                    selectedPage = "home"
-                    mainRoot.pop()
-                    mainRoot.push("../Home.qml")
-                    username = userName.text
-                    loginSuccesTimer.start()
-                    loadingSettings = 0
-                    verifyingBalances = 0
+                        selectedPage = "home"
+                        mainRoot.pop()
+                        mainRoot.push("../Home.qml")
+                        username = userName.text
+                        loginSuccesTimer.start()
+                        loadingSettings = 0
+                        verifyingBalances = 0
                     }
                 }
 
                 onLoginFailedChanged: {
                     if (loginTracker == 1){
-                    checkUsername = 0
-                    keyPairSend = 0
-                    checkIdentity = 0
-                    sessionKey = 0
-                    receiveSessionID = 0
-                    loadingSettings = 0
-                    passError = 1
-                    passWord.text = ""
-                    loginInitiated  = false
+                        checkUsername = 0
+                        keyPairSend = 0
+                        checkIdentity = 0
+                        sessionKey = 0
+                        receiveSessionID = 0
+                        loadingSettings = 0
+                        passError = 1
+                        passWord.text = ""
+                        loginInitiated  = false
                     }
                 }
 
                 onUsernameAvailable: {
                     if (loginTracker == 1){
-                    checkUsername = 0
-                    passError = 1
-                    passWord.text = ""
-                    loginInitiated  = false
+                        checkUsername = 0
+                        passError = 1
+                        passWord.text = ""
+                        loginInitiated  = false
                     }
                 }
 
                 onWalletNotFound: {
                     if (loginTracker == 1){
-                    checkUsername = 0
-                    keyPairSend = 0
-                    checkIdentity = 0
-                    sessionKey = 0
-                    receiveSessionID = 0
-                    loadingSettings = 0
-                    passWord.text = ""
-                    loginInitiated  = false
+                        checkUsername = 0
+                        keyPairSend = 0
+                        checkIdentity = 0
+                        sessionKey = 0
+                        receiveSessionID = 0
+                        loadingSettings = 0
+                        passWord.text = ""
+                        loginInitiated  = false
                     }
                 }
-             }
+            }
         }
 
         Text {

@@ -91,7 +91,12 @@ Rectangle {
                     transactionAmount = 0
                     transactionNR = txid
                     transactionDirection = direction
-                    getDetails(amountTicker.text, txid)
+                    if (explorerBusy == false) {
+                        getDetails(amountTicker.text, txid)
+                    }
+                    else {
+                        explorerPopup = 1
+                    }
                 }
             }
 

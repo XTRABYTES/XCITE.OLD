@@ -37,6 +37,9 @@ signals:
     void updateTransactions(const QString &transactions, const QString &totalPages);
     void updateTransactionsDetails(const QString &timestamp, const QString &confirmations, const QString &balance, const QString &inputs, const QString &outputs);
     void txidExists(const QString &coin, const QString &address, const QString &txid, const QString &result);
+    void allTxChecked();
+    void explorerBusy();
+    void detailsCollected();
 
 public slots:
     void getBalanceEntireWallet(QString);

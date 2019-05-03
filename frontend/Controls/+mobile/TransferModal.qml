@@ -662,16 +662,6 @@ Rectangle {
                         screenShot = 0
                     }
                 }
-
-                onPressAndHold: {
-                    if(copyImage2clipboard == 0) {
-                        qrBorder.grabToImage(function(result) {
-                            clipboardProxy.setImage(result.url);
-                            qrCode.source = clipboard.image
-                        });
-                        //copyImage2clipboard = 1
-                    }
-                }
             }
         }
 
@@ -850,26 +840,7 @@ Rectangle {
                      && walletList.get(selectedWallet).viewOnly === true
                      && publicKey.text != ""
         }
-        /**
-        Label {
-            id: invalidCurrency
-            text: "NOT POSSIBLE AT THE MOMENT"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: walletBalance.bottom
-            anchors.topMargin: 40
-            font.pixelSize: 16
-            font.family: "Brandon Grotesque"
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transferSwitch.on == true
-                     && transactionSend == 0
-                     && addressbookTracker == 0
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-                     && walletList.get(selectedWallet).viewOnly === false
-                     && publicKey.text != ""
-                     && coinID.text == "XBY"
-        }
-        */
+
         Mobile.AmountInput {
             id: sendAmount
             height: 34
@@ -1601,7 +1572,8 @@ Rectangle {
                     if (transferTracker == 1 && requestSend == 1) {
                         confirmationSend = 1
                         requestSend = 0
-                        //pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId})
+                        console.log("new transaction: " + coinID.text + ", " + getAddress(coinID.text, walletLabel.text) + ", " + transactionId)
+                        pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId})
                     }
                 }
 
