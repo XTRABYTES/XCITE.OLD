@@ -183,7 +183,7 @@ Item {
                         anchors.left: totalWalletValue.left
                         anchors.bottom: value1.bottom
                         text: fiatTicker
-                        font.pixelSize: 60
+                        font.pixelSize: totalBalance < 1000000? 60 : 40
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
@@ -194,7 +194,7 @@ Item {
                         anchors.left: valueTicker.right
                         anchors.verticalCenter: totalWalletValue.verticalCenter
                         text: balanceArray[0]
-                        font.pixelSize: 60
+                        font.pixelSize: totalBalance < 1000000? 60 : 40
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
@@ -206,7 +206,7 @@ Item {
                         anchors.bottom: value1.bottom
                         anchors.bottomMargin: 6
                         text: "." + balanceArray[1]
-                        font.pixelSize: 40
+                        font.pixelSize: totalBalance < 1000000? 40 : 25
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
@@ -219,7 +219,7 @@ Item {
                     width: 15
                     fillMode: Image.PreserveAspectFit
                     anchors.top: totalWalletValue.bottom
-                    anchors.topMargin: -15
+                    anchors.topMargin: totalBalance > 1000000? -5 : -15
                     anchors.left: parent.left
                     anchors.leftMargin: 28
                     visible: portfolio.opacity > 0
