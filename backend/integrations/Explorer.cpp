@@ -44,17 +44,20 @@ void Explorer::getBalanceEntireWallet(QString walletList){
             } else if((coin == "btc") || (coin == "eth")){
                 QString response =  getBalanceAddressExt(coin,address);
                 QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
-                double balanceLong = jsonResponse.object().value("balance").toDouble();
-                QString balance = "";
-                if (coin == "eth"){
-                    double convertFromWei = balanceLong / 1000000000000000000;
-                    balance = QString::number(convertFromWei);
-                }else{
-                    double convertFromSAT = balanceLong / 100000000;
-                    balance = QString::number(convertFromSAT);
-                }
+                qDebug() << jsonResponse;
+                if(jsonResponse.object().contains("balance")) {
+                    double balanceLong = jsonResponse.object().value("balance").toDouble();
+                    QString balance;
+                    if (coin == "eth"){
+                        double convertFromWei = balanceLong / 1000000000000000000;
+                        balance = QString::number(convertFromWei);
+                    }else{
+                        double convertFromSAT = balanceLong / 100000000;
+                        balance = QString::number(convertFromSAT);
+                    }
 
-                emit updateBalance(coin.toUpper(),address, balance);
+                    emit updateBalance(coin.toUpper(),address, balance);
+                }
             }
         }
     }
@@ -248,7 +251,7 @@ void Explorer::checkTxStatus(QString pendingList) {
 
             coin = coin.toUpper();
 
-            if ( jsonResponse.object().contains("message")) {
+            if (jsonResponse.object().contains("message")) {
                 qDebug() << "transaction not found";
                 emit txidExists(coin, address, transaction, "false");
             }
