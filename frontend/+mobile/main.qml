@@ -339,6 +339,13 @@ ApplicationWindow {
     property string statusList: ""
     property bool explorerBusy: false
     property int explorerPopup: 0
+    property string balanceCheck: "all"
+    property int timerCount: 0
+    property real pendingXBY: 0
+    property real pendingXFUEL: 0
+    property real pendingXTEST: 0
+    property real pendingBTC: 0
+    property real pendingETH: 0
 
     // Signals
     signal checkOS()
@@ -356,7 +363,7 @@ ApplicationWindow {
     signal saveWalletList(string walletlist, string addresses)
     signal importAccount(string username, string password)
     signal exportAccount(string walletlist)
-    signal updateBalanceSignal(string walletlist)
+    signal updateBalanceSignal(string walletlist, string wallets)
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
     signal helpMe()
@@ -514,6 +521,16 @@ ApplicationWindow {
             }
         }
         return totalBalance
+    }
+
+    function pendingCoins(coin, address) {
+        var pending = 0
+        for (var i = 0; i < pendingList.count; i++) {
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address) {
+                pending += pendingList.get(i).amount
+            }
+        }
+        return pending
     }
 
     function sumXBY() {
@@ -1184,7 +1201,6 @@ ApplicationWindow {
 
         onOSReturned: {
             myOS = os
-            console.log("my OS: " + os)
         }
 
         onCameraCheckFailed: {
@@ -1217,19 +1233,20 @@ ApplicationWindow {
             updatePending(coin, address, txid, result)
         }
 
+        onTxidConfirmed: {
+            updatePending(coin, address, txid, result)
+        }
+
         onExplorerBusy: {
             explorerBusy = true
-            console.log("explorer is busy")
         }
 
         onAllTxChecked: {
             explorerBusy = false
-            console.log("explorer has finished")
         }
 
         onDetailsCollected: {
             explorerBusy = false
-            console.log("explorer has finished")
         }
     }
 
@@ -1309,6 +1326,17 @@ ApplicationWindow {
             coin: ""
             address: ""
             txid: ""
+            amount: 0
+            value: ""
+        }
+    }
+
+    ListModel {
+        id: referenceList
+        ListElement {
+            coin: ""
+            txid: ""
+            reference: ""
         }
     }
 
@@ -1498,7 +1526,15 @@ ApplicationWindow {
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
-            console.log("explorer timer triggered")
+            timerCount = timerCount + 1
+            if (timerCount == 4) {
+                balanceCheck = "all"
+                timerCount = 0
+            }
+            else {
+                balanceCheck = "xby"
+            }
+
             clearWalletList()
             var datamodelWallet = []
             var datamodelPending = []
@@ -1513,11 +1549,9 @@ ApplicationWindow {
             var pendingListJson = JSON.stringify(datamodelPending)
 
             if (explorerBusy == false) {
-                console.log("check TX status activated")
                 checkTxStatus(pendingListJson);
             };
-            console.log("update balance activated")
-            updateBalanceSignal(walletListJson);
+            updateBalanceSignal(walletListJson, balanceCheck);
         }
     }
 

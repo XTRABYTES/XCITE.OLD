@@ -20,7 +20,7 @@ Explorer::Explorer(QObject *parent) : QObject(parent)
 {
 }
 
-void Explorer::getBalanceEntireWallet(QString walletList){
+void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
 
     QJsonArray walletArray = QJsonDocument::fromJson(walletList.toLatin1()).array();
     foreach (const QJsonValue & value, walletArray) {
@@ -41,10 +41,10 @@ void Explorer::getBalanceEntireWallet(QString walletList){
                     coin = "xtest";
                 }
                 emit updateBalance(coin.toUpper(),address, balance);
-            } else if((coin == "btc") || (coin == "eth")){
+            } else if(((coin == "btc") || (coin == "eth")) && wallets == "all"){
                 QString response =  getBalanceAddressExt(coin,address);
                 QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
-                qDebug() << jsonResponse;
+                qDebug() << coin << ", " << address << ", " << jsonResponse;
                 if(jsonResponse.object().contains("balance")) {
                     double balanceLong = jsonResponse.object().value("balance").toDouble();
                     QString balance;
@@ -101,6 +101,8 @@ void Explorer::getDetails(QString coin, QString transaction) {
             QString response =  getTransactionDetails(selectedCoin,transaction);
             QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
             QJsonObject result = jsonResponse.object().value("result").toObject();
+
+            qDebug() << jsonResponse;
 
             QString timestamp = result.value("data").toString();
             QLocale::setDefault(QLocale::English);
@@ -231,16 +233,16 @@ void Explorer::checkTxStatus(QString pendingList) {
     foreach (const QJsonValue & value, pendingArray) {
 
         QJsonObject obj = value.toObject();
-        QString coin = obj.value("name").toString().toLower();
+        QString coin = obj.value("coin").toString().toLower();
         QString address = obj.value("address").toString();
         QString transaction = obj.value("txid").toString();
 
-        if (coin.length() > 0){
+        if (coin != ""){
             if (coin == "xtest") {
                 coin = "xfuel-testnet";
             }
 
-            QString response =  getTransactionDetails(coin,transaction);
+            QString response =  getTransactionDetails(coin, transaction);
             QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
 
             qDebug() << jsonResponse;
@@ -255,9 +257,19 @@ void Explorer::checkTxStatus(QString pendingList) {
                 qDebug() << "transaction not found";
                 emit txidExists(coin, address, transaction, "false");
             }
-            else {
+            else if (jsonResponse.object().contains("result")) {
                 qDebug() << "transaction found";
-                emit txidExists(coin, address, transaction, "true");
+
+                QJsonObject result = jsonResponse.object().value("result").toObject();
+                int confirms = result.value("confirmations").toInt();
+                qDebug() << "confirmations: " + confirms;
+
+                if (confirms >= 1 ) {
+                    emit txidConfirmed(coin, address, transaction, "true");
+                }
+                else {
+                    emit txidConfirmed(coin, address, transaction, "false");
+                }
             }
         }
     }

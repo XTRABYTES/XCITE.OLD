@@ -53,6 +53,10 @@ Rectangle {
         }
     ]
 
+    onStateChanged: {
+        switchState = 0
+    }
+
     property int transactionSend: 0
     property int confirmationSend: 0
     property int failedSend: 0
@@ -1572,8 +1576,8 @@ Rectangle {
                     if (transferTracker == 1 && requestSend == 1) {
                         confirmationSend = 1
                         requestSend = 0
-                        console.log("new transaction: " + coinID.text + ", " + getAddress(coinID.text, walletLabel.text) + ", " + transactionId)
-                        pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId})
+                        console.log("new transaction: " + coinID.text + ", " + getAddress(coinID.text, walletLabel.text) + ", " + transactionId + ", " + replaceComma)
+                        pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma})
                     }
                 }
 

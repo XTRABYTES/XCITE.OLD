@@ -48,6 +48,10 @@ Rectangle {
         }
     ]
 
+    onStateChanged: {
+        switchState = 0
+    }
+
     Text {
         id: historyModalLabel
         text: "TRANSACTIONS"
@@ -119,7 +123,42 @@ Rectangle {
 
         onTextChanged: {
             myHistory.searchCriteria = searchForTransaction.text
+            myPending.searchCriteria = searchForTransaction.text
         }
+    }
+
+    Controls.Switch_mobile {
+        id: transactionSwitch
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: searchForTransaction.bottom
+        anchors.topMargin: 15
+        state: switchState == 0 ? "off" : "on"
+        onStateChanged: {
+            detectInteraction()
+            searchForTransaction.text = ""
+        }
+    }
+
+    Text {
+        id: confirmedText
+        text: "CONFIRMED"
+        anchors.right: transactionSwitch.left
+        anchors.rightMargin: 7
+        anchors.verticalCenter: transactionSwitch.verticalCenter
+        font.pixelSize: 14
+        font.family: xciteMobile.name
+        color: transactionSwitch.on ? "#757575" : maincolor
+    }
+
+    Text {
+        id: pendingText
+        text: "PENDING"
+        anchors.left: transactionSwitch.right
+        anchors.leftMargin: 7
+        anchors.verticalCenter: transactionSwitch.verticalCenter
+        font.pixelSize: 14
+        font.family: xciteMobile.name
+        color: transactionSwitch.on ? maincolor : "#757575"
     }
 
     Label {
@@ -127,13 +166,13 @@ Rectangle {
         text: "PREVIOUS"
         anchors.left: parent.left
         anchors.leftMargin: 28
-        anchors.top: searchForTransaction.bottom
+        anchors.top: transactionSwitch.bottom
         anchors.topMargin: 15
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
-        visible: currentPage !== 1
+        visible: currentPage !== 1 && transactionSwitch.state == "off"
 
         Rectangle {
             anchors.left: historyPrevious.left
@@ -171,12 +210,12 @@ Rectangle {
         id: pageCount
         text: "page " + currentPage + " of " + transactionPages
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: searchForTransaction.bottom
+        anchors.top: transactionSwitch.bottom
         anchors.topMargin: 15
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: transactionPages > 0
+        visible: transactionPages > 0 && transactionSwitch.state == "off"
     }
 
     Label {
@@ -184,13 +223,13 @@ Rectangle {
         text: "NEXT"
         anchors.right: parent.right
         anchors.rightMargin: 28
-        anchors.top: searchForTransaction.bottom
+        anchors.top: transactionSwitch.bottom
         anchors.topMargin: 15
         font.pixelSize: 12
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
-        visible: currentPage < transactionPages
+        visible: currentPage < transactionPages && transactionSwitch.state == "off"
 
         Rectangle {
             anchors.left: historyNext.left
@@ -234,6 +273,7 @@ Rectangle {
         color: "transparent"
         state: (newHistory == 0)? "down" : "up"
         clip: true
+        visible: transactionSwitch.state == "off"
 
         states: [
             State {
@@ -261,6 +301,22 @@ Rectangle {
 
         Controls.HistoryList {
             id: myHistory
+        }
+    }
+
+    Rectangle {
+        id: pending
+        width: parent.width
+        anchors.top: historyPrevious.bottom
+        anchors.topMargin: 5
+        anchors.bottom: closeHistoryModal.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: "transparent"
+        clip: true
+        visible: transactionSwitch.state == "on"
+
+        Controls.PendingList {
+            id: myPending
         }
     }
 
@@ -353,6 +409,7 @@ Rectangle {
                 running: false
 
                 onTriggered: {
+                    switchState = 0
                     transactionPages = 0
                     currentPage = 0
                     historyList.clear()

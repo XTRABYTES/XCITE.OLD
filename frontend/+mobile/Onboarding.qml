@@ -23,7 +23,7 @@ Item {
     width: Screen.width
     clip: true
 
-    property string versionNR: "0.2"
+    property string versionNR: "0.3"
 
     Component.onCompleted: {
         selectedPage = "login"

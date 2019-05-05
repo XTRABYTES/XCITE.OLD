@@ -59,7 +59,7 @@ Item {
             var pendingListJson = JSON.stringify(datamodelPending);
 
             checkTxStatus(pendingListJson);
-            updateBalanceSignal(walletListJson);
+            updateBalanceSignal(walletListJson, "all");
 
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"
