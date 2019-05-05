@@ -596,7 +596,7 @@ Rectangle {
             height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+            anchors.verticalCenterOffset: -50
             visible: editFailed == 1
 
             Image {
@@ -695,7 +695,7 @@ Rectangle {
             height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+            anchors.verticalCenterOffset: -50
             visible: editSaved == 1
 
             Image {
@@ -779,7 +779,7 @@ Rectangle {
         width: parent.width
         height: deleteText.height + deleteWalletName.height + deleteWalletHash.height + deleteWarning.height + confirmationDeleteButton.height + 94
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
+        anchors.verticalCenterOffset: -50
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         visible: deleteWalletTracker == 1
@@ -1055,7 +1055,7 @@ Rectangle {
         height: failedIcon.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 70
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
+        anchors.verticalCenterOffset: -50
         visible: deleteFailed == 1
 
         Image {
@@ -1156,7 +1156,7 @@ Rectangle {
         color: "transparent"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
+        anchors.verticalCenterOffset: -50
         visible: deleteConfirmed == 1
     }
 

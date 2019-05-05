@@ -136,7 +136,7 @@ TextField {
         width: 190
         height: 40
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.top
+        anchors.verticalCenter: parent.verticalCenter
         anchors.bottomMargin: 10
         visible: clipBoard == 1
 
@@ -264,7 +264,7 @@ TextField {
         width: popupCopied.width
         height: 40
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.bottom
+        anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: 10
         visible: textCopied == 1
 
