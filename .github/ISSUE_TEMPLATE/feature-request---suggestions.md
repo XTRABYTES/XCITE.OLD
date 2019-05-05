@@ -1,5 +1,5 @@
 ---
-name: Feature & Suggestions
+name: Feature request & Suggestions
 about: Suggest an idea for this project
 title: ''
 labels: 'enhancement :rocket:'
