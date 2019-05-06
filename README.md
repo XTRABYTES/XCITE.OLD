@@ -125,7 +125,7 @@ Prerequisites for macOS deployment:
 
 --------
 ### Dependencies
-Dependencies are a set of resource files (modules, libraries) used in the creation of the application. Pre-existing dependencies can be used or they can be compiled, from source, with the correct compiler.<br>
+Dependencies are a set of resource files (modules, libraries) used in the creation of the application. Pre-compiled dependencies can be used or they can be compiled, from source, with the correct compiler.<br>
 Libraries or modules can include configuration data, documentation, message templates, subroutines, classes, values or type specifications.
 
 #### Required dependencies for the desktop platform (Windows, macOS, Linux):
