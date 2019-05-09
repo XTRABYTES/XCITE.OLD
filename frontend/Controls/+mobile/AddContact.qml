@@ -136,7 +136,7 @@ Rectangle {
             color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /[0-9A-Za-z]+ / }
+            validator: RegExpValidator { regExp: /[\w+\s+]+/ }
             visible: editSaved == 0
                      && editFailed == 0
             mobile: 1
@@ -157,7 +157,7 @@ Rectangle {
             color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
+            validator: RegExpValidator { regExp: /[\w+\s+]+/ }
             visible: editSaved == 0
                      && editFailed == 0
             mobile: 1
@@ -235,12 +235,31 @@ Rectangle {
             color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
+            validator: RegExpValidator { regExp: /^[0-9A-Za-z._%+-]+@(?:[0-9A-Za-z-]+\.)+[a-z]{2,}$/ }
             visible: editSaved == 0
                      && editFailed == 0
             mobile: 1
             onTextChanged: {
                 detectInteraction()
             }
+
+            onTextEdited: {
+                          checkEmail()
+                          }
+
+            // check whether the email input is correct or not
+            // has to be either empty or 4+ symbols with one of them being @
+            function checkEmail(){
+              if (!text || (text.match(/[@]/i) && text.length >= 4)){
+                 // @ found
+                 hintText.text = originalHintText
+                   return true
+                 } else {
+                   hintText.text = "Invalid email address!"
+                    return false
+                         }
+                 }
+
         }
 
         Controls.TextInput {
