@@ -63,6 +63,7 @@ Rectangle {
     property bool editingContact: false
     property bool deletingContact: false
     property int contactExists: 0
+    property int validEmail: 1
     property int deleteContactTracker: 0
     property int deleteConfirmed: 0
     property int deleteFailed: 0
@@ -109,6 +110,16 @@ Rectangle {
                     }
                 }
             }
+        }
+    }
+
+    function validation(text){
+        var regExp = /^[0-9A-Za-z._%+-]+@(?:[0-9A-Za-z-]+\.)+[a-z]{2,}$/;
+        if(regExp.test(text) || text === "") {
+            validEmail = 1;
+        }
+        else {
+            validEmail = 0;
         }
     }
 
@@ -243,6 +254,7 @@ Rectangle {
             color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
+            validator: RegExpValidator { regExp: /[\w+\s+]+/ }
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteContactTracker == 0
@@ -266,6 +278,7 @@ Rectangle {
             color: themecolor
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
+            validator: RegExpValidator { regExp: /[\w+\s+]+/ }
             visible: editSaved == 0
                      && editFailed == 0
                      && deleteContactTracker == 0
@@ -344,14 +357,18 @@ Rectangle {
             anchors.right: newCell.right
             anchors.top: newCell.bottom
             anchors.topMargin: 10
-            color: themecolor
+            color: validEmail == 1? themecolor : "#FD2E2E"
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
+            //validator: RegExpValidator { regExp: /^[0-9A-Za-z._%+-]+@(?:[0-9A-Za-z-]+\.)+[a-z]{2,}$/ }
             visible: editSaved == 0
                      && deleteContactTracker == 0
                      && editFailed == 0
             mobile: 1
-            onTextChanged: detectInteraction()
+            onTextChanged: {
+                detectInteraction()
+                validation(newMail.text)
+            }
         }
 
         Controls.TextInput {
@@ -377,7 +394,7 @@ Rectangle {
             id: saveButton
             width: newTel.width
             height: 34
-            color: (contactExists == 0)? maincolor : "#727272"
+            color: (contactExists == 0 && validEmail == 1)? maincolor : "#727272"
             opacity: 0.25
             anchors.top: newChat.bottom
             anchors.topMargin: 50
@@ -405,7 +422,7 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (contactExists == 0) {
+                    if (contactExists == 0 && validEmail == 1) {
                         if (newFirstname.text !== "") {
                             contactList.setProperty(contactIndex, "firstName", newFirstname.text)
                             newFirst = newFirstname.text
@@ -483,7 +500,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: (contactExists == 0)? "#F2F2F2" : "#979797"
+            color: (contactExists == 0 && validEmail == 1)? "#F2F2F2" : "#979797"
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             visible: editSaved == 0
@@ -692,6 +709,7 @@ Rectangle {
                 onClicked: {
                     editContactTracker = 0;
                     contactExists = 0;
+                    validEmail = 1;
                     contactIndex = 0;
                     editSaved = 0
                     closeAllClipboard = true
@@ -809,6 +827,7 @@ Rectangle {
                         if (editContactTracker == 1 && deletingContact == true) {
                             deleteConfirmed = 1
                             contactExists = 0
+                            validEmail = 1
                             deletingContact = false
                         }
                     }
@@ -1191,6 +1210,7 @@ Rectangle {
             onClicked: {
                 editContactTracker = 0;
                 contactExists = 0;
+                validEmail = 1;
                 contactIndex = 0;
             }
         }
