@@ -50,6 +50,7 @@ Rectangle {
     property int editFailed: 0
     property bool addingContact: false
     property int contactExists: 0
+    property int validEmail: 1
     property string failError: ""
 
     function compareName() {
@@ -58,6 +59,16 @@ Rectangle {
             if (contactList.get(i).firstName === newFirstname.text && contactList.get(i).lastName === newLastname.text  && contactList.get(i).remove === false) {
                 contactExists = 1
             }
+        }
+    }
+
+    function validation(text){
+        var regExp = /^[0-9A-Za-z._%+-]+@(?:[0-9A-Za-z-]+\.)+[a-z]{2,}$/;
+        if(regExp.test(text) || text === "") {
+            validEmail = 1;
+        }
+        else {
+            validEmail = 0;
         }
     }
 
@@ -232,34 +243,16 @@ Rectangle {
             anchors.right: newCell.right
             anchors.top: newCell.bottom
             anchors.topMargin: 10
-            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
+            color: validEmail == 1? themecolor : "#FD2E2E"
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /^[0-9A-Za-z._%+-]+@(?:[0-9A-Za-z-]+\.)+[a-z]{2,}$/ }
             visible: editSaved == 0
                      && editFailed == 0
             mobile: 1
             onTextChanged: {
                 detectInteraction()
+                validation(newMail.text)
             }
-
-            onTextEdited: {
-                          checkEmail()
-                          }
-
-            // check whether the email input is correct or not
-            // has to be either empty or 4+ symbols with one of them being @
-            function checkEmail(){
-              if (!text || (text.match(/[@]/i) && text.length >= 4)){
-                 // @ found
-                 hintText.text = originalHintText
-                   return true
-                 } else {
-                   hintText.text = "Invalid email address!"
-                    return false
-                         }
-                 }
-
         }
 
         Controls.TextInput {
@@ -287,7 +280,7 @@ Rectangle {
             height: 34
             color: ((newFirstname.text !== ""
                      || newLastname.text !== "")
-                    && contactExists == 0) ? maincolor : "#727272"
+                    && contactExists == 0 && validEmail == 1) ? maincolor : "#727272"
             opacity: 0.25
             anchors.top: newChat.bottom
             anchors.topMargin: 50
@@ -315,7 +308,7 @@ Rectangle {
 
                 onClicked: {
                     if ((newFirstname.text !== "" || newLastname.text !== "")
-                            && contactExists == 0) {
+                            && contactExists == 0 && validEmail == 1) {
                         contactID = contactList.count;
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
@@ -385,7 +378,7 @@ Rectangle {
             font.bold: true
             color: ((newFirstname.text !== ""
                      || newLastname.text !== "")
-                    && contactExists == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                    && contactExists == 0 && validEmail == 1) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             visible: editSaved == 0
@@ -598,7 +591,8 @@ Rectangle {
                     newMail.text = "";
                     newChat.text = "";
                     contactExists = 0;
-                    editSaved = 0
+                    validEmail = 1;
+                    editSaved = 0;
                     closeAllClipboard = true
                 }
             }
@@ -686,6 +680,7 @@ Rectangle {
                 newMail.text = "";
                 newChat.text = "";
                 contactExists = 0;
+                validEmail = 1;
             }
         }
     }
