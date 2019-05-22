@@ -38,35 +38,7 @@ Rectangle {
             Controls.CardBody {
 
             }
-            /**
-            Image {
-                id: clearIcon
-                source: darktheme == true? 'qrc:/icons/mobile/delete-icon_01_light.svg' : 'qrc:/icons/mobile/delete-icon_01_dark.svg'
-                height: 12
-                fillMode: Image.PreserveAspectFit
-                anchors.top: parent.top
-                anchors.topMargin: 14
-                anchors.right: parent.right
-                anchors.rightMargin: 8
 
-                MouseArea {
-                    height: 20
-                    width: 20
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    onPressed: {
-                        click01.play()
-                        detectInteraction()
-                    }
-
-                    onClicked: {
-                        alertList.remove(index);
-                        checkNotifications()
-                    }
-                }
-            }
-            */
             Label {
                 id: notificationDate
                 text: date
@@ -98,6 +70,7 @@ Rectangle {
             Label {
                 id: notificationMessage
                 maximumLineCount: 2
+                wrapMode: Text.Wrap
                 text: message
                 anchors.left: parent.left
                 anchors.leftMargin: 28

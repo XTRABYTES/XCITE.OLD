@@ -50,12 +50,20 @@ Rectangle {
     ]
 
     onStateChanged: {
-        oldCoinName = addressList.get(addressIndex).coin
-        oldLogo = getLogo(oldCoinName)
-        oldAddressName = addressList.get(addressIndex).label
-        oldAddressHash = addressList.get(addressIndex).address
-        oldFavorite = addressList.get(addressIndex).favorite
-        oldRemove = addressList.get(addressIndex).remove
+        if (addressModal.state === "up") {
+            oldCoinName = addressList.get(addressIndex).coin
+            oldLogo = getLogo(oldCoinName)
+            oldAddressName = addressList.get(addressIndex).label
+            oldAddressHash = addressList.get(addressIndex).address
+            oldFavorite = addressList.get(addressIndex).favorite
+            oldRemove = addressList.get(addressIndex).remove
+        }
+        else {
+            oldAddressName = ""
+            oldAddressHash = ""
+        }
+        newName.text = oldAddressName
+        newAddress.text = oldAddressHash
     }
 
     property string coinName: addressList.get(addressIndex).coin
@@ -1428,8 +1436,8 @@ Rectangle {
                         newCoinPicklist = 0
                         newCoinSelect = 0
                         coinListTracker = 0
-                        newName.text = ""
-                        newAddress.text = ""
+                        newName.text = oldAddressName
+                        newAddress.text = oldAddressHash
                         invalidAddress = 0
                         editSaved = 0
                         deleteAddressTracker = 0
@@ -1539,8 +1547,8 @@ Rectangle {
                     newCoinPicklist = 0
                     newCoinSelect = 0
                     coinListTracker = 0
-                    newName.text = ""
-                    newAddress.text = ""
+                    newName.text = oldAddressName
+                    newAddress.text = oldAddressHash
                     invalidAddress = 0
                     editSaved = 0
                     deleteAddressTracker = 0

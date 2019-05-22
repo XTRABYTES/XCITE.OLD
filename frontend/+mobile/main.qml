@@ -334,6 +334,7 @@ ApplicationWindow {
     property int selectedSystemVolume: userSettings.systemVolume
     property int copy2clipboard: 0
     property string address2Copy: ""
+    property string txid2Copy: ""
     property bool closeAllClipboard: false
     property bool cameraPermission: true
     property string statusList: ""
@@ -435,6 +436,26 @@ ApplicationWindow {
                         if(result === "true") {
                             console.log("remove pending transaction")
                             pendingList.remove(i)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function pendingNotFound(coin, address, txid, result) {
+        for (var i = 0; i < pendingList.count; ++i){
+            if(pendingList.get(i).coin === coin) {
+                if(pendingList.get(i).address === address) {
+                    if(pendingList.get(i).txid === txid) {
+                        if(pendingList.get(i).check >= 20) {
+                            console.log("pending transaction canceled")
+                            console.log("canceled transaction: " + coin + ", " + address + ", " + txid)
+                            var addressname = getLabelAddress(coin, address)
+                            var cancelAlert = "transaction canceled: " + txid
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname})
+                            alert = true
+                            updatePending(coin, address, txid, result)
                         }
                     }
                 }
@@ -1237,6 +1258,10 @@ ApplicationWindow {
             updatePending(coin, address, txid, result)
         }
 
+        onTxidNotFound: {
+            pendingNotFound(coin, address, txid, result)
+        }
+
         onExplorerBusy: {
             explorerBusy = true
         }
@@ -1328,6 +1353,7 @@ ApplicationWindow {
             txid: ""
             amount: 0
             value: ""
+            check: 0
         }
     }
 
@@ -1533,6 +1559,12 @@ ApplicationWindow {
             }
             else {
                 balanceCheck = "xby"
+            }
+            if (pendingList.Count > 1) {
+                for (var o = 0; 0 < pendingList.count; ++o) {
+                    var times = pendingList.get(o).check
+                    pendingList.setProperty(o, "check", times + 1)
+                }
             }
 
             clearWalletList()

@@ -54,7 +54,7 @@ Rectangle {
     ]
 
     onStateChanged: {
-        switchState = 0
+
     }
 
     property int transactionSend: 0
@@ -273,7 +273,7 @@ Rectangle {
 
         Label {
             id: coinID
-            text: coinTracker == 1? (newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : walletList.get(walletIndex).name) : (newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : coinList.get(0).name)
+            text: coinTracker == 1? (newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : walletList.get(walletIndex).name) : (newCoinSelect == 1 ? coinList.get(newCoinPicklist).name : selectedCoin)
             anchors.left: coinIcon.right
             anchors.leftMargin: 7
             anchors.verticalCenter: coinIcon.verticalCenter
@@ -922,6 +922,25 @@ Rectangle {
         }
 
         Label {
+            text: "Input amount too low"
+            color: "#FD2E2E"
+            anchors.left: sendAmount.left
+            anchors.leftMargin: 5
+            anchors.top: sendAmount.bottom
+            anchors.topMargin: 1
+            font.pixelSize: 11
+            font.family: xciteMobile.name
+            visible: transferSwitch.on == true
+                     && transactionSend == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+                     && (coinID.text === "XBY"? inputAmount < 1 : (coinID.text === "XFUEL"? inputAmount < 1 : (coinID.text === "XTEST"? inputAmount < 1 : inputAmount < 0)))
+                     && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
+        }
+
+        Label {
             text: "Insufficient funds"
             color: "#FD2E2E"
             anchors.left: sendAmount.left
@@ -936,6 +955,8 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && inputAmount > ((walletList.get(selectedWallet).balance) - 1)
+                     && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
+                     && precision <= 8
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
         }
@@ -955,6 +976,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && precision > 8
+                     && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
         }
@@ -1156,7 +1178,7 @@ Rectangle {
             color: (invalidAddress == 0
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
-                    && inputAmount !== 0
+                    && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                     && precision <= 8
                     && inputAmount <= (walletList.get(selectedWallet).balance)) ? maincolor : "#727272"
             opacity: darktheme == true? 0.25 : 0.5
@@ -1190,7 +1212,7 @@ Rectangle {
                     if (invalidAddress == 0
                             && keyInput.text !== ""
                             && sendAmount.text !== ""
-                            && inputAmount !== 0
+                            && inputAmount >= 1
                             && precision <= 8
                             && inputAmount <= ((walletList.get(selectedWallet).balance) - 1)
                             && calculatorTracker == 0
@@ -1231,7 +1253,7 @@ Rectangle {
             color: (invalidAddress == 0
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
-                    && inputAmount !== 0
+                    && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                     && precision <= 8
                     && inputAmount <= (walletList.get(selectedWallet).balance)) ? (darktheme == false? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: sendButton.horizontalCenter
@@ -1246,7 +1268,7 @@ Rectangle {
             border.color: (invalidAddress == 0
                            && keyInput.text !== ""
                            && sendAmount.text !== ""
-                           && inputAmount !== 0
+                           && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                            && precision <= 8
                            && inputAmount <= (walletList.get(selectedWallet).balance)) ? maincolor : "#979797"
             border.width: 1
@@ -1577,7 +1599,7 @@ Rectangle {
                         confirmationSend = 1
                         requestSend = 0
                         console.log("new transaction: " + coinID.text + ", " + getAddress(coinID.text, walletLabel.text) + ", " + transactionId + ", " + replaceComma)
-                        pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma})
+                        pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
                     }
                 }
 

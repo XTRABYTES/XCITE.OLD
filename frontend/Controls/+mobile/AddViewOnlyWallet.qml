@@ -422,7 +422,6 @@ Rectangle {
                 onSaveSucceeded: {
                     if (viewOnlyTracker == 1 && addingWallet == true) {
                         walletAdded = true
-                        editSaved = 1
                         viewOnlyTracker = 0
                         newName.text = ""
                         newAddress.text = ""
@@ -646,94 +645,6 @@ Rectangle {
             height: 34
             anchors.bottom: closeFail.bottom
             anchors.left: closeFail.left
-            color: "transparent"
-            opacity: 0.5
-            border.color: maincolor
-            border.width: 1
-        }
-    }
-
-    // Save succes state
-    Item {
-        id: addWalletSucces
-        width: parent.width
-        height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
-        visible: editSaved == 1
-
-        Image {
-            id: saveSuccess
-            source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
-            height: 100
-            width: 100
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-        }
-
-        Label {
-            id: saveSuccessLabel
-            text: "Wallet added!"
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: maincolor
-            font.pixelSize: 14
-            font.family: "Brandon Grotesque"
-            font.bold: true
-        }
-
-        Rectangle {
-            id: closeSave
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: maincolor
-            opacity: 0.25
-            anchors.top: saveSuccessLabel.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            MouseArea {
-                anchors.fill: closeSave
-
-                onPressed: {
-                    click01.play()
-                    detectInteraction()
-                }
-
-                onClicked: {
-                    walletAdded = true
-                    editSaved = 0
-                    viewOnlyTracker = 0
-                    newName.text = ""
-                    newAddress.text = ""
-                    addressExists = 0
-                    labelExists = 0
-                    invalidAddress = 0
-                    scanQRTracker = 0
-                    selectedAddress = ""
-                    scanning = "scanning..."
-                    closeAllClipboard = true
-                }
-            }
-        }
-
-        Text {
-            text: "OK"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: "#F2F2F2"
-            anchors.horizontalCenter: closeSave.horizontalCenter
-            anchors.verticalCenter: closeSave.verticalCenter
-        }
-
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.bottom: closeSave.bottom
-            anchors.left: closeSave.left
             color: "transparent"
             opacity: 0.5
             border.color: maincolor

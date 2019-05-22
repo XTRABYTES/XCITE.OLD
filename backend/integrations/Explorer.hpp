@@ -38,6 +38,7 @@ signals:
     void updateTransactionsDetails(const QString &timestamp, const QString &confirmations, const QString &balance, const QString &inputs, const QString &outputs);
     void txidConfirmed(const QString &coin, const QString &address, const QString &txid, const QString &result);
     void txidExists(const QString &coin, const QString &address, const QString &txid, const QString &result);
+    void txidNotFound(const QString &coin, const QString &address, const QString &txid, const QString &result);
     void allTxChecked();
     void explorerBusy();
     void detailsCollected();

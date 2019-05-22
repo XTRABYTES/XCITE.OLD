@@ -704,6 +704,7 @@ Item {
 
                                     onClicked: {
                                         if (transferTracker == 0 && addCoinTracker == 0) {
+                                            selectedCoin = "XFUEL"
                                             switchState = 0
                                             transferTracker = 1
                                         }

@@ -255,7 +255,7 @@ void Explorer::checkTxStatus(QString pendingList) {
 
             if (jsonResponse.object().contains("message")) {
                 qDebug() << "transaction not found";
-                emit txidExists(coin, address, transaction, "false");
+                emit txidNotFound(coin, address, transaction, "true");
             }
             else if (jsonResponse.object().contains("result")) {
                 qDebug() << "transaction found";

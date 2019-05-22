@@ -24,6 +24,10 @@ Rectangle {
     height: Screen.height
     color: bgcolor
 
+    MouseArea {
+        anchors.fill: parent
+    }
+
     Text {
         id: applicationModalLabel
         text: "APPLICATIONS"

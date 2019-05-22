@@ -119,7 +119,7 @@ Rectangle {
         id: pickList
         model: filteredWallets
         delegate: picklistEntry
-        interactive: (totalCoinWallets) > 175
+        interactive: (totalCoinWallets * 35) > 175
         onDraggingChanged: detectInteraction()
 
         ScrollBar.vertical: ScrollBar {
@@ -130,7 +130,7 @@ Rectangle {
             width: 5
             opacity: 1
             policy: ScrollBar.AlwaysOn
-            visible: (totalCoinWallets) > 175
+            visible: (totalCoinWallets * 35) > 175
         }
     }
 }
