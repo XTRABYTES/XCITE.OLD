@@ -126,7 +126,7 @@ Rectangle {
                 color: "#5F5F5F"
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                visible: index < totalLines ? true : false
+                visible: index < (fiatCurrencies.count - 1) ? true : false
             }
         }
     }

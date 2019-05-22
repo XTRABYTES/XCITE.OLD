@@ -28,14 +28,30 @@ Rectangle {
     anchors.top: parent.top
 
     onStateChanged: {
-        contactName.text = contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName;
-        oldFirstName = contactList.get(contactIndex).firstName;
-        oldLastName = contactList.get(contactIndex).lastName;
-        oldTel = contactList.get(contactIndex).telNR;
-        oldText = contactList.get(contactIndex).cellNR;
-        oldMail = contactList.get(contactIndex).mailAddress;
-        oldChat = contactList.get(contactIndex).chatID;
-
+        if (editContactModal.state === "up") {
+            contactName.text = contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName;
+            oldFirstName = contactList.get(contactIndex).firstName;
+            oldLastName = contactList.get(contactIndex).lastName;
+            oldTel = contactList.get(contactIndex).telNR;
+            oldText = contactList.get(contactIndex).cellNR;
+            oldMail = contactList.get(contactIndex).mailAddress;
+            oldChat = contactList.get(contactIndex).chatID;
+        }
+        else {
+            contactName.text = "";
+            oldFirstName = "";
+            oldLastName = "";
+            oldTel = "";
+            oldText = "";
+            oldMail = "";
+            oldChat = "";
+        }
+        newFirstname.text = oldFirstName
+        newLastname.text = oldLastName
+        newTel.text = oldTel
+        newCell.text = oldText
+        newMail.text = oldMail
+        newChat.text = oldChat
         contactExists = 0
     }
 
@@ -709,6 +725,12 @@ Rectangle {
                 onClicked: {
                     editContactTracker = 0;
                     contactExists = 0;
+                    newFirstname.text = oldFirstName;
+                    newLastname.text = oldLastName;
+                    newTel.text = oldTel;
+                    newCell.text = oldText;
+                    newMail.text = oldMail;
+                    newChat.text = oldChat;
                     validEmail = 1;
                     contactIndex = 0;
                     editSaved = 0
@@ -1210,6 +1232,12 @@ Rectangle {
             onClicked: {
                 editContactTracker = 0;
                 contactExists = 0;
+                newFirstname.text = oldFirstName;
+                newLastname.text = oldLastName;
+                newTel.text = oldTel;
+                newCell.text = oldText;
+                newMail.text = oldMail;
+                newChat.text = oldChat;
                 validEmail = 1;
                 contactIndex = 0;
             }

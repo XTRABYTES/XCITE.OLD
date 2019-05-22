@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<manifest package="global.xtrabytes.xcite" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0" android:versionCode="1" android:installLocation="auto">
+<manifest package="global.xtrabytes.xcite" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.3.1" android:versionCode="1" android:installLocation="auto">
     <application android:hardwareAccelerated="false" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="XCITE" android:icon="@drawable/icon">
         <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:label="XCITE" android:screenOrientation="portrait" android:launchMode="singleTop">
             <intent-filter>
@@ -65,7 +65,7 @@
 
     </application>
 
-    <uses-sdk android:minSdkVersion="22" android:targetSdkVersion="28"/>
+    <uses-sdk android:minSdkVersion="22" android:targetSdkVersion="26"/>
     <supports-screens android:largeScreens="true" android:normalScreens="true" android:anyDensity="true" android:smallScreens="true"/>
 
     <!-- The following comment will be replaced upon deployment with default permissions based on the dependencies of the application.
@@ -83,5 +83,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <uses-feature android:name="android.hardware.microphone" android:required="false"/>
     <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+
+
 
 </manifest>
