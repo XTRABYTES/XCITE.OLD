@@ -129,18 +129,19 @@ Rectangle {
     Rectangle {
         id: qrBorder1
         radius: 4
-        width: 100
-        height: 100
+        width: height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: addressTextLabel.bottom
         anchors.topMargin: 5
+        anchors.bottom: addressLabel.top
+        anchors.bottomMargin: 10
         color: "#FFFFFF"
     }
 
     Item {
         id: qrPlaceholder1
-        width: 90
-        height: 90
+        width: qrBorder1.width*0.9
+        height: qrBorder1.height*0.9
         anchors.horizontalCenter: qrBorder1.horizontalCenter
         anchors.verticalCenter: qrBorder1.verticalCenter
 
@@ -155,8 +156,8 @@ Rectangle {
         id:addressLabel
         text: walletList.get(walletIndex).address
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: qrBorder1.bottom
-        anchors.topMargin: 10
+        anchors.bottom: privateKeyTextLabel.top
+        anchors.bottomMargin: 20
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -166,8 +167,7 @@ Rectangle {
         id:privateKeyTextLabel
         text: "Your wallet PRIVATE KEY:"
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: addressLabel.bottom
-        anchors.topMargin: 30
+        anchors.bottom: parent.verticalCenter
         font.pixelSize: 18
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -176,9 +176,10 @@ Rectangle {
     Rectangle {
         id: qrBorder2
         radius: 4
-        width: 150
-        height: 150
+        width: height
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: privateKeyLabel.top
+        anchors.bottomMargin: 10
         anchors.top: privateKeyTextLabel.bottom
         anchors.topMargin: 5
         color: "#FFFFFF"
@@ -186,8 +187,8 @@ Rectangle {
 
     Item {
         id: qrPlaceholder2
-        width: 135
-        height: 135
+        width: qrBorder2.width * 0.9
+        height: qrBorder2.height *0.9
         anchors.horizontalCenter: qrBorder2.horizontalCenter
         anchors.verticalCenter: qrBorder2.verticalCenter
 
@@ -203,8 +204,8 @@ Rectangle {
         width: doubbleButtonWidth
         text: walletList.get(walletIndex).privatekey
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: qrBorder2.bottom
-        anchors.topMargin: 10
+        anchors.bottom: closeScreenshotModal.top
+        anchors.bottomMargin: 40
         maximumLineCount: 3
         horizontalAlignment: Text.AlignLeft
         wrapMode: Text.WrapAnywhere
