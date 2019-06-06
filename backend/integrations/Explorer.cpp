@@ -34,6 +34,7 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
             if ((coin == "xby") || (coin == "xfuel") || (coin == "xfuel-testnet")){
                 QString response =  getBalanceAddressXBY(coin,address, "1");
                 QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
+                qDebug() << coin << ", " << address << ", " << jsonResponse;
                 QJsonObject result = jsonResponse.object().value("result").toObject();
                 QString balance = result.value("balance_current").toString();
                 balance = balance.insert(balance.length() - 8, ".");
@@ -264,11 +265,11 @@ void Explorer::checkTxStatus(QString pendingList) {
                 int confirms = result.value("confirmations").toInt();
                 qDebug() << "confirmations: " + confirms;
 
-                if (confirms >= 1 ) {
+                if (confirms >= 1) {
                     emit txidConfirmed(coin, address, transaction, "true");
                 }
                 else {
-                    emit txidConfirmed(coin, address, transaction, "false");
+                    emit txidExists(coin, address, transaction, "false");
                 }
             }
         }

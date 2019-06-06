@@ -45,7 +45,7 @@ Item {
             marketValueChangedSignal("ethbtc");
             marketValueChangedSignal("ethcha");
 
-            var datamodelWallet = []
+           var datamodelWallet = []
             var datamodelPending = []
 
             for (var i = 0; i < walletList.count; ++i) {
@@ -58,8 +58,8 @@ Item {
             var walletListJson = JSON.stringify(datamodelWallet);
             var pendingListJson = JSON.stringify(datamodelPending);
 
-            checkTxStatus(pendingListJson);
             updateBalanceSignal(walletListJson, "all");
+            checkTxStatus(pendingListJson);
 
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"

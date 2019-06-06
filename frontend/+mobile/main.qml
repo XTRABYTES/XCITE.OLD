@@ -443,19 +443,19 @@ ApplicationWindow {
         }
     }
 
-    function pendingNotFound(coin, address, txid, result) {
+    function pendingUnconfirmed(coin, address, txid, result) {
         for (var i = 0; i < pendingList.count; ++i){
             if(pendingList.get(i).coin === coin) {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
-                        if(pendingList.get(i).check >= 20) {
+                        if(pendingList.get(i).check >= 40) {
                             console.log("pending transaction canceled")
                             console.log("canceled transaction: " + coin + ", " + address + ", " + txid)
                             var addressname = getLabelAddress(coin, address)
                             var cancelAlert = "transaction canceled: " + txid
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname})
                             alert = true
-                            updatePending(coin, address, txid, result)
+                            updatePending(coin, address, txid, "true")
                         }
                     }
                 }
@@ -1251,7 +1251,7 @@ ApplicationWindow {
         }
 
         onTxidExists: {
-            updatePending(coin, address, txid, result)
+            pendingUnconfirmed(coin, address, txid, result)
         }
 
         onTxidConfirmed: {
@@ -1259,7 +1259,7 @@ ApplicationWindow {
         }
 
         onTxidNotFound: {
-            pendingNotFound(coin, address, txid, result)
+            pendingUnconfirmed(coin, address, txid, result)
         }
 
         onExplorerBusy: {
@@ -1560,12 +1560,6 @@ ApplicationWindow {
             else {
                 balanceCheck = "xby"
             }
-            if (pendingList.Count > 1) {
-                for (var o = 0; 0 < pendingList.count; ++o) {
-                    var times = pendingList.get(o).check
-                    pendingList.setProperty(o, "check", times + 1)
-                }
-            }
 
             clearWalletList()
             var datamodelWallet = []
@@ -1580,10 +1574,25 @@ ApplicationWindow {
             var walletListJson = JSON.stringify(datamodelWallet)
             var pendingListJson = JSON.stringify(datamodelPending)
 
+            updateBalanceSignal(walletListJson, balanceCheck);
+
             if (explorerBusy == false) {
                 checkTxStatus(pendingListJson);
             };
-            updateBalanceSignal(walletListJson, balanceCheck);
+
+            if (pendingList.count > 1) {
+                for (var o = 0; 0 < pendingList.count; ++o) {
+                    var times = 0
+                    if (pendingList.get(o).check >= 0) {
+                        times = pendingList.get(o).check
+                    }
+                    else {
+                        pendingList.setProperty(o, "check", 0)
+                        times = 0
+                    }
+                pendingList.setProperty(o, "check", (times + 1))
+                }
+            }
         }
     }
 
