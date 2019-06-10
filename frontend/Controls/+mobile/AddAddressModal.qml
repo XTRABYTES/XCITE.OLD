@@ -570,25 +570,25 @@ Rectangle {
 
                 onSaveFailedDBError: {
                     if (addAddressTracker == 1 && addingAddress == true) {
-                    failError = "Database ERROR"
+                        failError = "Database ERROR"
                     }
                 }
 
                 onSaveFailedAPIError: {
                     if (addAddressTracker == 1 && addingAddress == true) {
-                    failError = "Network ERROR"
+                        failError = "Network ERROR"
                     }
                 }
 
                 onSaveFailedInputError: {
                     if (addAddressTracker == 1 && addingAddress == true) {
-                    failError = "Input ERROR"
+                        failError = "Input ERROR"
                     }
                 }
 
                 onSaveFailedUnknownError: {
                     if (addAddressTracker == 1 && addingAddress == true) {
-                    failError = "Unknown ERROR"
+                        failError = "Unknown ERROR"
                     }
                 }
             }
@@ -644,22 +644,19 @@ Rectangle {
         }
 
         // save failed state
-        Item {
+        Controls.ReplyModal {
             id: addAddressFailed
-            width: parent.width
-            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
 
             Image {
                 id: saveFailed
                 source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: addAddressFailed.modalTop
+                anchors.topMargin: 20
             }
 
             Label {
@@ -693,7 +690,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveFailedError.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -735,108 +732,103 @@ Rectangle {
 
         // save success state
 
-        Rectangle {
-            id: saveConfirmed
-            width: parent.width
-            height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
-            color: "transparent"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
-            visible: editSaved == 1
-        }
-
-        Image {
-            id: saveSuccess
-            source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
-            height: 100
-            width: 100
-            fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: saveConfirmed.top
-            visible: editSaved == 1
-        }
-
-        Label {
-            id: saveSuccessLabel
-            text: "Address saved!"
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: maincolor
-            font.pixelSize: 14
-            font.family: "Brandon Grotesque"
-            font.bold: true
-            visible: editSaved == 1
-        }
-
-        Rectangle {
-            id: closeSave
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: maincolor
-            opacity: 0.25
-            anchors.top: saveSuccessLabel.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
+        Controls.ReplyModal {
+            id: addAddressSucceed
+            modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
 
-            MouseArea {
-                anchors.fill: closeSave
+            Image {
+                id: saveSuccess
+                source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
+                height: 75
+                fillMode: Image.PreserveAspectFit
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: addAddressSucceed.modalTop
+                anchors.topMargin: 20
+                visible: editSaved == 1
+            }
 
-                onPressed: {
-                    parent.opacity = 0.5
-                    click01.play()
-                    detectInteraction()
-                }
+            Label {
+                id: saveSuccessLabel
+                text: "Address saved!"
+                anchors.top: saveSuccess.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveSuccess.horizontalCenter
+                color: maincolor
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                visible: editSaved == 1
+            }
 
-                onCanceled: {
-                    parent.opacity = 0.25
-                }
+            Rectangle {
+                id: closeSave
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveSuccessLabel.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: editSaved == 1
 
-                onReleased: {
-                    parent.opacity = 0.25
-                }
+                MouseArea {
+                    anchors.fill: closeSave
 
-                onClicked: {
-                    addAddressTracker = 0;
-                    editSaved = 0;
-                    coinListTracker = 0
-                    newCoinPicklist = 0
-                    newCoinSelect = 0
-                    newName.text = ""
-                    newAddress.text = ""
-                    addressExists = 0
-                    labelExists = 0
-                    invalidAddress = 0
-                    scanQRTracker = 0
-                    selectedAddress = ""
-                    scanning = "scanning..."
+                    onPressed: {
+                        parent.opacity = 0.5
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 0.25
+                    }
+
+                    onReleased: {
+                        parent.opacity = 0.25
+                    }
+
+                    onClicked: {
+                        addAddressTracker = 0;
+                        editSaved = 0;
+                        coinListTracker = 0
+                        newCoinPicklist = 0
+                        newCoinSelect = 0
+                        newName.text = ""
+                        newAddress.text = ""
+                        addressExists = 0
+                        labelExists = 0
+                        invalidAddress = 0
+                        scanQRTracker = 0
+                        selectedAddress = ""
+                        scanning = "scanning..."
+                    }
                 }
             }
-        }
 
-        Text {
-            text: "OK"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: darktheme == true? "#F2F2F2" : maincolor
-            anchors.horizontalCenter: closeSave.horizontalCenter
-            anchors.verticalCenter: closeSave.verticalCenter
-            visible: editSaved == 1
-        }
+            Text {
+                text: "OK"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: darktheme == true? "#F2F2F2" : maincolor
+                anchors.horizontalCenter: closeSave.horizontalCenter
+                anchors.verticalCenter: closeSave.verticalCenter
+                visible: editSaved == 1
+            }
 
-        Rectangle {
-            width: closeSave.width
-            height: 34
-            anchors.bottom: closeSave.bottom
-            anchors.left: closeSave.left
-            color: "transparent"
-            opacity: 0.5
-            border.color: maincolor
-            border.width: 1
-            visible: editSaved == 1
+            Rectangle {
+                width: closeSave.width
+                height: 34
+                anchors.bottom: closeSave.bottom
+                anchors.left: closeSave.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+                visible: editSaved == 1
+            }
         }
     }
 

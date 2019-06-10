@@ -1279,27 +1279,20 @@ Rectangle {
         }
 
         // Transfer confirm state
-
-        Rectangle {
+        Controls.ReplyModal {
             id: sendConfirmation
-            width: parent.width
-            height: sendingLabel.height + to.height + confirmationAddressName.height + reference.height + feeLabel.height + cancelSendButton.height + 70
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
+            modalHeight: sendingLabel.height + to.height + confirmationAddressName.height + reference.height + feeLabel.height + cancelSendButton.height + 105
             visible: transactionSend == 1
                      && confirmationSend == 0
                      && failedSend == 0
                      &&requestSend == 0
-        }
 
-        Text {
+            Text {
             id: sendingLabel
             text: "SENDING:"
-            anchors.left: parent.left
-            anchors.leftMargin: 28
-            anchors.top: sendConfirmation.top
+            anchors.left: confirmationSendButton.left
+            anchors.top: sendConfirmation.modalTop
+            anchors.topMargin: 20
             font.family: xciteMobile.name
             font.pixelSize: 16
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -1314,8 +1307,8 @@ Rectangle {
             implicitWidth: confirmationAmount.implicitWidth + confirmationAmount1.implicitWidth + confirmationAmount2.implicitWidth + 7
             implicitHeight: confirmationAmount.implicitHeight
             anchors.bottom: sendingLabel.bottom
-            anchors.right: parent.right
-            anchors.rightMargin: 28
+            anchors.right: cancelSendButton.right
+            anchors.rightMargin: 10
             visible: transactionSend == 1
                      && confirmationSend == 0
                      && failedSend == 0
@@ -1373,8 +1366,7 @@ Rectangle {
         Text {
             id: to
             text: "TO:"
-            anchors.left: parent.left
-            anchors.leftMargin: 28
+            anchors.left: confirmationSendButton.left
             anchors.top: sendingLabel.bottom
             anchors.topMargin: 15
             font.family: xciteMobile.name
@@ -1391,8 +1383,8 @@ Rectangle {
             text: addressName != ""? addressName : keyInput.text
             anchors.bottom: to.bottom
             anchors.bottomMargin: 2
-            anchors.right: parent.right
-            anchors.rightMargin: 28
+            anchors.right: cancelSendButton.right
+            anchors.rightMargin: 10
             font.family: xciteMobile.name
             font.pixelSize: addressName != ""? 16 : 10
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -1407,8 +1399,8 @@ Rectangle {
             text: "(" + keyInput.text + ")"
             anchors.top: confirmationAddress.bottom
             anchors.topMargin: 5
-            anchors.right: parent.right
-            anchors.rightMargin: 25
+            anchors.right: cancelSendButton.right
+            anchors.rightMargin: 10
             font.family: xciteMobile.name
             font.pixelSize: 10
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -1422,8 +1414,7 @@ Rectangle {
         Text {
             id: reference
             text: "REF.:"
-            anchors.left: parent.left
-            anchors.leftMargin: 28
+            anchors.left: confirmationSendButton.left
             anchors.top: confirmationAddressName.bottom
             anchors.topMargin: 5
             font.family: xciteMobile.name
@@ -1440,8 +1431,8 @@ Rectangle {
             id: referenceText
             text: referenceInput.text
             anchors.bottom: reference.bottom
-            anchors.right: parent.right
-            anchors.rightMargin: 28
+            anchors.right: cancelSendButton.right
+            anchors.rightMargin: 10
             font.family: xciteMobile.name
             font.pixelSize: 16
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -1455,8 +1446,7 @@ Rectangle {
         Text {
             id: feeLabel
             text: "TRANSACTION FEE:"
-            anchors.left: parent.left
-            anchors.leftMargin: 28
+            anchors.left: confirmationSendButton.left
             anchors.top: reference.bottom
             anchors.topMargin: 15
             font.family: xciteMobile.name
@@ -1473,8 +1463,8 @@ Rectangle {
             implicitWidth: confirmationFeeAmount.implicitWidth + confirmationFeeAmount1.implicitWidth + confirmationFeeAmount2.implicitWidth + 7
             implicitHeight: confirmationAmount.implicitHeight
             anchors.bottom: feeLabel.bottom
-            anchors.right: parent.right
-            anchors.rightMargin: 28
+            anchors.right: cancelSendButton.right
+            anchors.rightMargin: 10
             visible: transactionSend == 1
                      && confirmationSend == 0
                      && failedSend == 0
@@ -1527,10 +1517,10 @@ Rectangle {
 
         Rectangle {
             id: confirmationSendButton
-            width: (Screen.width - 66) / 2
+            width: (doubbleButtonWidth - 30) / 2
             height: 34
             anchors.top: feeLabel.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 25
             anchors.right: parent.horizontalCenter
             anchors.rightMargin: 5
             color: "#4BBE2E"
@@ -1628,7 +1618,7 @@ Rectangle {
         }
 
         Rectangle {
-            width: (Screen.width - 66) / 2
+            width: (doubbleButtonWidth - 30) / 2
             height: 34
             anchors.horizontalCenter: confirmationSendButton.horizontalCenter
             anchors.verticalCenter: confirmationSendButton.verticalCenter
@@ -1644,12 +1634,12 @@ Rectangle {
 
         Rectangle {
             id: cancelSendButton
-            width: (Screen.width - 66) / 2
+            width: (doubbleButtonWidth - 30) / 2
             height: 34
             color: "#E55541"
             opacity: darktheme == true? 0.25 : 0.5
             anchors.top: feeLabel.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 25
             anchors.left: parent.horizontalCenter
             anchors.leftMargin: 5
             visible: transactionSend == 1
@@ -1694,7 +1684,7 @@ Rectangle {
         }
 
         Rectangle {
-            width: (Screen.width - 66) / 2
+            width: (doubbleButtonWidth - 30) / 2
             height: 34
             color: "transparent"
             border.color: "#E55541"
@@ -1706,6 +1696,7 @@ Rectangle {
                      && confirmationSend == 0
                      && failedSend == 0
                      &&requestSend == 0
+        }
         }
 
         // Wait for feedback
@@ -1736,216 +1727,206 @@ Rectangle {
         }
 
         // Transfer failed state
-
-        Rectangle {
+        Controls.ReplyModal {
             id: transferFailed
-            width: parent.width
-            height: failedIcon.height + failedIconLabel.height + closeFail.height + 60
-            color: "transparent"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
-            visible: transactionSend == 1
-                     && failedSend == 1
-        }
-
-        Image {
-            id: failedIcon
-            source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
-            width: 120
-            height: 120
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: transferFailed.top
-            visible: transactionSend == 1
-                     && failedSend == 1
-        }
-
-        Label {
-            id: failedIconLabel
-            text: "Transaction failed!"
-            anchors.top: confirmedIcon.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: failedIcon.horizontalCenter
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            font.pixelSize: 14
-            font.family: xciteMobile.name
-            font.bold: true
-            visible: transactionSend == 1
-                     && failedSend == 1
-        }
-
-        Rectangle {
-            id: closeFail
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: maincolor
-            opacity: darktheme == true? 0.25 : 0.5
-            anchors.top: failedIconLabel.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
+            modalHeight: failedIcon.height + failedIconLabel.height + closeFail.height + 75
             visible: transactionSend == 1
                      && failedSend == 1
 
-            MouseArea {
-                anchors.fill: closeFail
+            Image {
+                id: failedIcon
+                source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                width: 75
+                fillMode: Image.PreserveAspectFit
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: transferFailed.modalTop
+                anchors.topMargin: 20
+                visible: transactionSend == 1
+                         && failedSend == 1
+            }
 
-                onPressed: {
-                    click01.play()
-                    detectInteraction()
-                }
+            Label {
+                id: failedIconLabel
+                text: "Transaction failed!"
+                anchors.top: failedIcon.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: failedIcon.horizontalCenter
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.bold: true
+                visible: transactionSend == 1
+                         && failedSend == 1
+            }
 
-                onCanceled: {
-                }
+            Rectangle {
+                id: closeFail
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: darktheme == true? 0.25 : 0.5
+                anchors.top: failedIconLabel.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: transactionSend == 1
+                         && failedSend == 1
 
-                onReleased: {
-                }
+                MouseArea {
+                    anchors.fill: closeFail
 
-                onClicked: {
-                    sendAmount.text = ""
-                    keyInput.text = ""
-                    referenceInput.text = ""
-                    selectedAddress = ""
-                    failedSend = 0
-                    transactionSend = 0
-                    invalidAddress = 0
-                    transactionDate = ""
-                    timestamp = 0
-                    precision = 0
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onCanceled: {
+                    }
+
+                    onReleased: {
+                    }
+
+                    onClicked: {
+                        sendAmount.text = ""
+                        keyInput.text = ""
+                        referenceInput.text = ""
+                        selectedAddress = ""
+                        failedSend = 0
+                        transactionSend = 0
+                        invalidAddress = 0
+                        transactionDate = ""
+                        timestamp = 0
+                        precision = 0
+                    }
                 }
             }
-        }
 
-        Text {
-            text: "OK"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            font.bold: true
-            color: darktheme == true? "#F2F2F2" : maincolor
-            opacity: darktheme == true? 0.5 : 0.75
-            anchors.horizontalCenter: closeFail.horizontalCenter
-            anchors.verticalCenter: closeFail.verticalCenter
-            visible: transactionSend == 1
-                     && failedSend == 1
-        }
+            Text {
+                text: "OK"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                font.bold: true
+                color: darktheme == true? "#F2F2F2" : maincolor
+                opacity: darktheme == true? 0.5 : 0.75
+                anchors.horizontalCenter: closeFail.horizontalCenter
+                anchors.verticalCenter: closeFail.verticalCenter
+                visible: transactionSend == 1
+                         && failedSend == 1
+            }
 
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: "transparent"
-            border.color: maincolor
-            border.width: 1
-            opacity: darktheme == true? 0.5 : 0.75
-            anchors.horizontalCenter: closeFail.horizontalCenter
-            anchors.verticalCenter: closeFail.verticalCenter
-            visible: transactionSend == 1
-                     && failedSend == 1
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: "transparent"
+                border.color: maincolor
+                border.width: 1
+                opacity: darktheme == true? 0.5 : 0.75
+                anchors.horizontalCenter: closeFail.horizontalCenter
+                anchors.verticalCenter: closeFail.verticalCenter
+                visible: transactionSend == 1
+                         && failedSend == 1
+            }
         }
 
         // Transfer sent state
-
-        Rectangle {
+        Controls.ReplyModal {
             id: transferConfirmed
-            width: parent.width
-            height: confirmedIcon.height + confirmedIconLabel.height + closeConfirm.height + 60
-            color: "transparent"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
-            visible: transactionSend == 1
-                     && confirmationSend == 1
-        }
-
-        Image {
-            id: confirmedIcon
-            source: darktheme == true? 'qrc:/icons/mobile/transaction_send-icon_01_light.svg' : 'qrc:/icons/mobile/transaction_send-icon_01_dark.svg'
-            height: 120
-            fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: transferConfirmed.top
-            visible: transactionSend == 1
-                     && confirmationSend == 1
-        }
-
-        Label {
-            id: confirmedIconLabel
-            text: "Transaction sent!"
-            anchors.top: confirmedIcon.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: confirmedIcon.horizontalCenter
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            font.pixelSize: 14
-            font.family: xciteMobile.name
-            font.bold: true
-            visible: transactionSend == 1
-                     && confirmationSend == 1
-        }
-
-        Rectangle {
-            id: closeConfirm
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: maincolor
-            opacity: darktheme == true? 0.25 : 0.5
-            anchors.top: confirmedIconLabel.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
+            modalHeight: confirmedIcon.height + confirmedIconLabel.height + closeConfirm.height + 75
             visible: transactionSend == 1
                      && confirmationSend == 1
 
-            MouseArea {
-                anchors.fill: closeConfirm
+            Image {
+                id: confirmedIcon
+                source: darktheme == true? 'qrc:/icons/mobile/transaction_send-icon_01_light.svg' : 'qrc:/icons/mobile/transaction_send-icon_01_dark.svg'
+                height: 75
+                fillMode: Image.PreserveAspectFit
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: transferConfirmed.modalTop
+                anchors.topMargin: 20
+                visible: transactionSend == 1
+                         && confirmationSend == 1
+            }
 
-                onPressed: {
-                    click01.play()
-                    detectInteraction()
-                }
+            Label {
+                id: confirmedIconLabel
+                text: "Transaction sent!"
+                anchors.top: confirmedIcon.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: confirmedIcon.horizontalCenter
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.bold: true
+                visible: transactionSend == 1
+                         && confirmationSend == 1
+            }
 
-                onCanceled: {
-                }
+            Rectangle {
+                id: closeConfirm
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: darktheme == true? 0.25 : 0.5
+                anchors.top: confirmedIconLabel.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: transactionSend == 1
+                         && confirmationSend == 1
 
-                onReleased: {
-                }
+                MouseArea {
+                    anchors.fill: closeConfirm
 
-                onClicked: {
-                    sendAmount.text = ""
-                    keyInput.text = ""
-                    referenceInput.text = ""
-                    selectedAddress = ""
-                    confirmationSend = 0
-                    transactionSend = 0
-                    invalidAddress = 0
-                    transactionDate = ""
-                    timestamp = 0
-                    precision = 0
-                    updateToAccount()
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onCanceled: {
+                    }
+
+                    onReleased: {
+                    }
+
+                    onClicked: {
+                        sendAmount.text = ""
+                        keyInput.text = ""
+                        referenceInput.text = ""
+                        selectedAddress = ""
+                        confirmationSend = 0
+                        transactionSend = 0
+                        invalidAddress = 0
+                        transactionDate = ""
+                        timestamp = 0
+                        precision = 0
+                        updateToAccount()
+                    }
                 }
             }
-        }
 
-        Text {
-            text: "OK"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            font.bold: true
-            color: darktheme == true? "#F2F2F2" : maincolor
-            opacity: darktheme == true? 0.5 : 0.75
-            anchors.horizontalCenter: closeConfirm.horizontalCenter
-            anchors.verticalCenter: closeConfirm.verticalCenter
-            visible: transactionSend == 1
-                     && confirmationSend == 1
-        }
+            Text {
+                text: "OK"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                font.bold: true
+                color: darktheme == true? "#F2F2F2" : maincolor
+                opacity: darktheme == true? 0.5 : 0.75
+                anchors.horizontalCenter: closeConfirm.horizontalCenter
+                anchors.verticalCenter: closeConfirm.verticalCenter
+                visible: transactionSend == 1
+                         && confirmationSend == 1
+            }
 
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: "transparent"
-            border.color: maincolor
-            border.width: 1
-            opacity: darktheme == true? 0.5 : 0.75
-            anchors.horizontalCenter: closeConfirm.horizontalCenter
-            anchors.verticalCenter: closeConfirm.verticalCenter
-            visible: transactionSend == 1
-                     && confirmationSend == 1
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: "transparent"
+                border.color: maincolor
+                border.width: 1
+                opacity: darktheme == true? 0.5 : 0.75
+                anchors.horizontalCenter: closeConfirm.horizontalCenter
+                anchors.verticalCenter: closeConfirm.verticalCenter
+                visible: transactionSend == 1
+                         && confirmationSend == 1
+            }
         }
     }
 

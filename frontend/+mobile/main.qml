@@ -407,7 +407,7 @@ ApplicationWindow {
 
                             walletList.setProperty(i, "balance", newBalance)
                             balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
                             alert = true
                             if (standBy == 1) {
                                 walletUpdate(walletList.get(i).name, walletList.get(i).label, balanceAlert)
@@ -453,7 +453,7 @@ ApplicationWindow {
                             console.log("canceled transaction: " + coin + ", " + address + ", " + txid)
                             var addressname = getLabelAddress(coin, address)
                             var cancelAlert = "transaction canceled: " + txid
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname})
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname})
                             alert = true
                             updatePending(coin, address, txid, "true")
                         }

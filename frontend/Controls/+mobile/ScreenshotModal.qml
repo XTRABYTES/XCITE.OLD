@@ -56,6 +56,9 @@ Rectangle {
         anchors.fill: parent
     }
 
+    property string textForPopup: ""
+    property string keyType: ""
+
     Text {
         id: screenshotModalLabel
         text: "TAKE A SCREENSHOT TO BACK UP"
@@ -161,6 +164,27 @@ Rectangle {
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+
+        Rectangle {
+            width: parent.width
+            height: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressAndHold: {
+                    if(copy2clipboard == 0 && screenshotTracker == 1) {
+                        copyText2Clipboard(addressLabel.text)
+                        textForPopup = addressLabel.text
+                        keyType = "address"
+                        copy2clipboard = 1
+                    }
+                }
+            }
+        }
     }
 
     Label {
@@ -201,7 +225,7 @@ Rectangle {
 
     Label {
         id:privateKeyLabel
-        width: doubbleButtonWidth
+        width: (implicitWidth/2) + 5
         text: walletList.get(walletIndex).privatekey
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: closeScreenshotModal.top
@@ -212,6 +236,75 @@ Rectangle {
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+
+        Rectangle {
+            width: parent.width
+            height: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressAndHold: {
+                    if(copy2clipboard == 0 && screenshotTracker == 1) {
+                        copyText2Clipboard(privateKeyLabel.text)
+                        textForPopup = privateKeyLabel.text
+                        keyType = "private"
+                        copy2clipboard = 1
+                    }
+                }
+            }
+        }
+    }
+
+    DropShadow {
+        z: 12
+        anchors.fill: textPopup
+        source: textPopup
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.4
+        transparentBorder: true
+        visible: copy2clipboard == 1 && screenshotTracker == 1
+    }
+
+    Item {
+        id: textPopup
+        z: 12
+        width: popupClipboard.width
+        height: popupClipboardText.height + 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        visible: copy2clipboard == 1 && screenshotTracker == 1
+
+        Rectangle {
+            id: popupClipboard
+            height: popupClipboardText.height + 10
+            width: popupClipboardText.width + 20
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupClipboardText
+            width: keyType == "address"? addressLabel.width : privateKeyLabel.width
+            text: textForPopup + "<br>Copied to clipboard!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            wrapMode: Text.WrapAnywhere
+            color: "#F2F2F2"
+            horizontalAlignment: Text.AlignHCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
     }
 
     Item {
@@ -265,6 +358,8 @@ Rectangle {
 
             onClicked: {
                 screenshotTracker = 0
+                keyType = ""
+                textForPopup = ""
             }
         }
     }

@@ -708,22 +708,19 @@ Rectangle {
         }
 
         // Save succes state
-        Item {
-            id: createWalletSucces
-            width: parent.width
-            height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+        Controls.ReplyModal {
+            id: createWalletSuccess
+            modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
 
             Image {
                 id: saveSuccess
                 source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: createWalletSuccess.modalTop
+                anchors.topMargin: 20
             }
 
             Label {
@@ -745,7 +742,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveSuccessLabel.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -792,13 +789,9 @@ Rectangle {
         }
 
         // Create wallet failed
-        Item {
+        Controls.ReplyModal {
             id: createWalletError
-            width: parent.width
-            height: saveError.height + errorLabel.height + closeError.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+            modalHeight: saveError.height + errorLabel.height + closeError.height + 75
             visible: createFailed == 1
 
             Image {
@@ -807,7 +800,8 @@ Rectangle {
                 height: 100
                 width: 100
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: createWalletError.modalTop
+                anchors.topMargin: 20
             }
 
             Text {
@@ -832,7 +826,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: errorLabel.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {

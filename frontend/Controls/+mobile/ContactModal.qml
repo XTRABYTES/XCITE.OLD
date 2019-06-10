@@ -555,22 +555,19 @@ Rectangle {
         }
 
         // save failed state
-        Item {
+        Controls.ReplyModal {
             id: editAddressFailed
-            width: parent.width
-            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
 
             Image {
                 id: saveFailed
                 source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: editAddressFailed.modalTop
+                anchors.topMargin: 20
             }
 
             Label {
@@ -604,7 +601,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveFailedError.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -645,134 +642,122 @@ Rectangle {
         }
 
         // save succes state
-
-        Rectangle {
+        Controls.ReplyModal {
             id: saveConfirmed
-            width: parent.width
-            height: saveSuccess.height + saveSuccessName.height + saveSuccessLabel.height + closeSave.height + 100
-            color: "transparent"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
-            visible: editSaved == 1
-        }
-
-        Image {
-            id: saveSuccess
-            source: darktheme == true? 'qrc:/icons/mobile/succes_icon_01_light.svg' : 'qrc:/icons/mobile/succes_icon_01_dark.svg'
-            height: 100
-            width: 100
-            fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: saveConfirmed.top
-            visible: editSaved == 1
-        }
-
-        Label {
-            id: saveSuccessName
-            text: contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.bold: true
-            visible: editSaved == 1
-        }
-
-        Label {
-            id: saveSuccessLabel
-            text: "Changed!"
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 40
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: maincolor
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.bold: true
-            visible: editSaved == 1
-        }
-
-        Rectangle {
-            id: closeSave
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: maincolor
-            opacity: 0.25
-            anchors.top: saveSuccessLabel.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
+            modalHeight: saveSuccess.height + saveSuccessName.height + saveSuccessLabel.height + closeSave.height + 105
             visible: editSaved == 1
 
-            MouseArea {
-                anchors.fill: closeSave
+            Image {
+                id: saveSuccess
+                source: darktheme == true? 'qrc:/icons/mobile/succes_icon_01_light.svg' : 'qrc:/icons/mobile/succes_icon_01_dark.svg'
+                height: 75
+                fillMode: Image.PreserveAspectFit
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: saveConfirmed.modalTop
+                anchors.topMargin: 20
+                visible: editSaved == 1
+            }
 
-                onPressed: {
-                    click01.play()
-                    parent.opacity = 0.5
-                    detectInteraction()
+            Label {
+                id: saveSuccessName
+                text: contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName
+                anchors.top: saveSuccess.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveSuccess.horizontalCenter
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                visible: editSaved == 1
+            }
+
+            Label {
+                id: saveSuccessLabel
+                text: "Changed!"
+                anchors.top: saveSuccess.bottom
+                anchors.topMargin: 40
+                anchors.horizontalCenter: saveSuccess.horizontalCenter
+                color: maincolor
+                font.pixelSize: 18
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                visible: editSaved == 1
+            }
+
+            Rectangle {
+                id: closeSave
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveSuccessLabel.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: editSaved == 1
+
+                MouseArea {
+                    anchors.fill: closeSave
+
+                    onPressed: {
+                        click01.play()
+                        parent.opacity = 0.5
+                        detectInteraction()
+                    }
+
+                    onReleased: {
+                        parent.opacity = 0.25
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 0.25
+                    }
+
+                    onClicked: {
+                        editContactTracker = 0;
+                        contactExists = 0;
+                        newFirstname.text = oldFirstName;
+                        newLastname.text = oldLastName;
+                        newTel.text = oldTel;
+                        newCell.text = oldText;
+                        newMail.text = oldMail;
+                        newChat.text = oldChat;
+                        validEmail = 1;
+                        contactIndex = 0;
+                        editSaved = 0
+                        closeAllClipboard = true
+                    }
                 }
+            }
 
-                onReleased: {
-                    parent.opacity = 0.25
-                }
+            Text {
+                text: "OK"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeSave.horizontalCenter
+                anchors.verticalCenter: closeSave.verticalCenter
+                visible: editSaved == 1
 
-                onCanceled: {
-                    parent.opacity = 0.25
-                }
+            }
 
-                onClicked: {
-                    editContactTracker = 0;
-                    contactExists = 0;
-                    newFirstname.text = oldFirstName;
-                    newLastname.text = oldLastName;
-                    newTel.text = oldTel;
-                    newCell.text = oldText;
-                    newMail.text = oldMail;
-                    newChat.text = oldChat;
-                    validEmail = 1;
-                    contactIndex = 0;
-                    editSaved = 0
-                    closeAllClipboard = true
-                }
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: "transparent"
+                border.color: maincolor
+                border.width: 1
+                opacity: 0.50
+                anchors.top: closeSave.top
+                anchors.horizontalCenter: closeSave.horizontalCenter
+                visible: editSaved == 1
             }
         }
 
-        Text {
-            text: "OK"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: "#F2F2F2"
-            anchors.horizontalCenter: closeSave.horizontalCenter
-            anchors.verticalCenter: closeSave.verticalCenter
-            visible: editSaved == 1
-
-        }
-
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: "transparent"
-            border.color: maincolor
-            border.width: 1
-            opacity: 0.50
-            anchors.top: closeSave.top
-            anchors.horizontalCenter: closeSave.horizontalCenter
-            visible: editSaved == 1
-        }
-
         // Delete confirm state
-
-        Rectangle {
+        Controls.ReplyModal {
             id: deleteConfirmation
-            width: parent.width
-            height: deleteText.height + deleteContactName.height + confirmationDeleteButton.height + 57
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
+            modalHeight: deleteText.height + deleteContactName.height + confirmationDeleteButton.height + 72
             visible: deleteContactTracker == 1
                      && deleteConfirmed == 0
                      && deleteFailed == 0
@@ -780,7 +765,8 @@ Rectangle {
             Text {
                 id: deleteText
                 text: "You are about to delete:"
-                anchors.top: parent.top
+                anchors.top: deleteConfirmation.modalTop
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.family: xciteMobile.name
                 font.pixelSize: 16
@@ -790,6 +776,10 @@ Rectangle {
             Text {
                 id: deleteContactName
                 text: contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName
+                width: doubbleButtonWidth - 20
+                wrapMode: Text.Wrap
+                maximumLineCount: 2
+                horizontalAlignment: Text.AlignHCenter
                 anchors.top: deleteText.bottom
                 anchors.topMargin: 7
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -801,10 +791,10 @@ Rectangle {
 
             Rectangle {
                 id: confirmationDeleteButton
-                width: (doubbleButtonWidth - 10) / 2
+                width: (doubbleButtonWidth - 30) / 2
                 height: 34
                 anchors.top: deleteContactName.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.right: parent.horizontalCenter
                 anchors.rightMargin: 5
                 color: "#4BBE2E"
@@ -901,7 +891,7 @@ Rectangle {
             }
 
             Rectangle {
-                width: (doubbleButtonWidth - 10) / 2
+                width: (doubbleButtonWidth - 30) / 2
                 height: 34
                 anchors.top: confirmationDeleteButton.top
                 anchors.right: confirmationDeleteButton.right
@@ -913,10 +903,10 @@ Rectangle {
 
             Rectangle {
                 id: cancelDeleteButton
-                width: (doubbleButtonWidth - 10) / 2
+                width: (doubbleButtonWidth - 30) / 2
                 height: 34
                 anchors.top: deleteContactName.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.left: parent.horizontalCenter
                 anchors.leftMargin: 5
                 color: "#E55541"
@@ -958,7 +948,7 @@ Rectangle {
             }
 
             Rectangle {
-                width: (doubbleButtonWidth - 10) / 2
+                width: (doubbleButtonWidth - 30) / 2
                 height: 34
                 anchors.top: cancelDeleteButton.top
                 anchors.left: cancelDeleteButton.left
@@ -981,22 +971,19 @@ Rectangle {
         }
 
         // Delete failed state
-        Item {
+        Controls.ReplyModal {
             id: deleteContactFailed
-            width: parent.width
-            height: saveFailed.height + deleteFailedLabel.height + closeDeleteFail.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            modalHeight: saveFailed.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 85
             visible: deleteFailed == 1
 
             Image {
                 id: failedIcon
                 source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: deleteContactFailed.modalTop
+                anchors.topMargin: 20
             }
 
             Label {
@@ -1030,7 +1017,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: deleteFailedError.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -1072,111 +1059,105 @@ Rectangle {
         }
 
         // Delete success state
-
-        Rectangle {
+        Controls.ReplyModal {
             id: deleted
-            width: parent.width
-            height: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 60
-            color: "transparent"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
-            visible: deleteConfirmed == 1
-        }
-
-        Image {
-            id: deleteSuccess
-            source: darktheme == true? 'qrc:/icons/mobile/delete_contact-icon_01_light.svg' : 'qrc:/icons/mobile/delete_contact-icon_01_dark.svg'
-            height: 100
-            width: 100
-            fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: deleted.top
-            visible: deleteConfirmed == 1
-        }
-
-        Label {
-            id: deleteSuccessLabel
-            text: "Address removed!"
-            anchors.top: deleteSuccess.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: deleteSuccess.horizontalCenter
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            font.pixelSize: 14
-            font.family: xciteMobile.name
-            font.bold: true
-            visible: deleteConfirmed == 1
-        }
-
-        Rectangle {
-            id: closeDelete
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: maincolor
-            opacity: 0.25
-            anchors.top: deleteSuccessLabel.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
+            modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 75
             visible: deleteConfirmed == 1
 
-            MouseArea {
-                anchors.fill: closeDelete
+            Image {
+                id: deleteSuccess
+                source: darktheme == true? 'qrc:/icons/mobile/delete_contact-icon_01_light.svg' : 'qrc:/icons/mobile/delete_contact-icon_01_dark.svg'
+                height: 75
+                fillMode: Image.PreserveAspectFit
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: deleted.ModalTop
+                anchors.topMargin: 20
+                visible: deleteConfirmed == 1
+            }
 
-                Timer {
-                    id: timerDelete
-                    interval: 300
-                    repeat: false
-                    running: false
+            Label {
+                id: deleteSuccessLabel
+                text: "Address removed!"
+                anchors.top: deleteSuccess.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: deleteSuccess.horizontalCenter
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.bold: true
+                visible: deleteConfirmed == 1
+            }
 
-                    onTriggered: {
-                        deleteContactTracker = 0
-                        deleteConfirmed = 0
-                        closeAllClipboard = true
+            Rectangle {
+                id: closeDelete
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: deleteSuccessLabel.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: deleteConfirmed == 1
+
+                MouseArea {
+                    anchors.fill: closeDelete
+
+                    Timer {
+                        id: timerDelete
+                        interval: 300
+                        repeat: false
+                        running: false
+
+                        onTriggered: {
+                            deleteContactTracker = 0
+                            deleteConfirmed = 0
+                            closeAllClipboard = true
+                        }
+                    }
+
+                    onPressed: {
+                        closeDelete.opacity = 0.5
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onCanceled: {
+                        closeDelete.opacity = 0.25
+                    }
+
+                    onReleased: {
+                        closeDelete.opacity = 0.25
+                    }
+
+                    onClicked: {
+                        editContactTracker = 0;
+                        timerDelete.start()
                     }
                 }
-
-                onPressed: {
-                    closeDelete.opacity = 0.5
-                    click01.play()
-                    detectInteraction()
-                }
-
-                onCanceled: {
-                    closeDelete.opacity = 0.25
-                }
-
-                onReleased: {
-                    closeDelete.opacity = 0.25
-                }
-
-                onClicked: {
-                    editContactTracker = 0;
-                    timerDelete.start()
-                }
             }
-        }
 
-        Text {
-            text: "OK"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            font.bold: true
-            color: darktheme == true? "#F2F2F2" : maincolor
-            anchors.horizontalCenter: closeDelete.horizontalCenter
-            anchors.verticalCenter: closeDelete.verticalCenter
-            visible: deleteConfirmed == 1
-        }
+            Text {
+                text: "OK"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                font.bold: true
+                color: darktheme == true? "#F2F2F2" : maincolor
+                anchors.horizontalCenter: closeDelete.horizontalCenter
+                anchors.verticalCenter: closeDelete.verticalCenter
+                visible: deleteConfirmed == 1
+            }
 
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.bottom: closeDelete.bottom
-            anchors.horizontalCenter: closeDelete.horizontalCenter
-            color: "transparent"
-            border.color: maincolor
-            border.width: 1
-            opacity: 0.5
-            visible: deleteConfirmed == 1
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeDelete.bottom
+                anchors.horizontalCenter: closeDelete.horizontalCenter
+                color: "transparent"
+                border.color: maincolor
+                border.width: 1
+                opacity: 0.5
+                visible: deleteConfirmed == 1
+            }
         }
     }
 

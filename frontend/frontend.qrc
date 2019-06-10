@@ -176,5 +176,6 @@
         <file>Controls/+mobile/SoundPicklist.qml</file>
         <file>+mobile/ImportAccount.qml</file>
         <file>Controls/+mobile/PendingList.qml</file>
+        <file>Controls/+mobile/ReplyModal.qml</file>
     </qresource>
 </RCC>

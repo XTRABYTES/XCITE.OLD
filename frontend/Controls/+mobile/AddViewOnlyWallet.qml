@@ -546,22 +546,19 @@ Rectangle {
     }
 
     // Save failed state
-    Item {
+    Controls.ReplyModal {
         id: addWalletFailed
-        width: parent.width
-        height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
+        modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
         visible: editFailed == 1
 
         Image {
             id: saveFailed
             source: saveErrorNR === 0? (darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg') : ('qrc:/icons/mobile/warning-icon_01.svg')
-            height: 100
+            height: 75
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
+            anchors.top: addWalletFailed.modalTop
+            anchors.topMargin: 20
         }
 
         Label {
@@ -599,7 +596,7 @@ Rectangle {
             color: maincolor
             opacity: 0.25
             anchors.top: saveFailedError.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter
 
             MouseArea {
