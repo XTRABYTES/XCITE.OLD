@@ -416,22 +416,19 @@ Rectangle {
         }
 
         // save failed state
-        Item {
+        Controls.ReplyModal {
             id: addContactFailed
-            width: parent.width
-            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
 
             Image {
                 id: saveFailed
                 source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: addContactFailed.modalTop
+                anchors.topMargin: 20
             }
 
             Label {
@@ -465,7 +462,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveFailedError.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -506,119 +503,114 @@ Rectangle {
 
         // save success state
 
-        Rectangle {
-            id: saveConfirmed
-            width: parent.width
-            height: saveSuccess.height + saveSuccessName.height + saveSuccessLabel.height + closeSave.height + 100
-            color: "transparent"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
-            visible: editSaved == 1
-        }
-
-        Image {
-            id: saveSuccess
-            source: darktheme == true? 'qrc:/icons/mobile/add_contact-icon_01_light.svg' : 'qrc:/icons/mobile/add_contact-icon_01_dark.svg'
-            height: 100
-            width: 100
-            fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: saveConfirmed.top
-            visible: editSaved == 1
-        }
-
-        Label {
-            id: saveSuccessName
-            text: newFirstname.text + " " + newLastname.text
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.bold: true
-            visible: editSaved == 1
-        }
-
-        Label {
-            id: saveSuccessLabel
-            text: "Saved!"
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 40
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.bold: true
-            visible: editSaved == 1
-        }
-
-        Rectangle {
-            id: closeSave
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: maincolor
-            opacity: 0.25
-            anchors.top: saveSuccessLabel.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
+        Controls.ReplyModal {
+            id: addContactSucceed
+            modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 105
             visible: editSaved == 1
 
-            MouseArea {
-                anchors.fill: closeSave
+            Image {
+                id: saveSuccess
+                source: darktheme == true? 'qrc:/icons/mobile/add_contact-icon_01_light.svg' : 'qrc:/icons/mobile/add_contact-icon_01_dark.svg'
+                height: 75
+                fillMode: Image.PreserveAspectFit
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: addContactSucceed.modalTop
+                anchors.topMargin: 20
+                visible: editSaved == 1
+            }
 
-                onPressed: {
-                    parent.opacity = 0.5
-                    click01.play()
-                    detectInteraction()
-                }
+            Label {
+                id: saveSuccessName
+                text: newFirstname.text + " " + newLastname.text
+                anchors.top: saveSuccess.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveSuccess.horizontalCenter
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                visible: editSaved == 1
+            }
 
-                onCanceled: {
-                    parent.opacity = 0.25
-                }
+            Label {
+                id: saveSuccessLabel
+                text: "Saved!"
+                anchors.top: saveSuccess.bottom
+                anchors.topMargin: 40
+                anchors.horizontalCenter: saveSuccess.horizontalCenter
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                visible: editSaved == 1
+            }
 
-                onReleased: {
-                    parent.opacity = 0.25
-                }
+            Rectangle {
+                id: closeSave
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveSuccessLabel.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: editSaved == 1
 
-                onClicked: {
-                    addContactTracker = 0;
-                    newFirstname.text = "";
-                    newLastname.text = "";
-                    newTel.text = "";
-                    newCell.text = "";
-                    newMail.text = "";
-                    newChat.text = "";
-                    contactExists = 0;
-                    validEmail = 1;
-                    editSaved = 0;
-                    closeAllClipboard = true
+                MouseArea {
+                    anchors.fill: closeSave
+
+                    onPressed: {
+                        parent.opacity = 0.5
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 0.25
+                    }
+
+                    onReleased: {
+                        parent.opacity = 0.25
+                    }
+
+                    onClicked: {
+                        addContactTracker = 0;
+                        newFirstname.text = "";
+                        newLastname.text = "";
+                        newTel.text = "";
+                        newCell.text = "";
+                        newMail.text = "";
+                        newChat.text = "";
+                        contactExists = 0;
+                        validEmail = 1;
+                        editSaved = 0;
+                        closeAllClipboard = true
+                    }
                 }
             }
-        }
 
-        Text {
-            text: "OK"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: "#F2F2F2"
-            anchors.horizontalCenter: closeSave.horizontalCenter
-            anchors.verticalCenter: closeSave.verticalCenter
-            visible: editSaved == 1
-        }
+            Text {
+                text: "OK"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeSave.horizontalCenter
+                anchors.verticalCenter: closeSave.verticalCenter
+                visible: editSaved == 1
+            }
 
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.bottom: closeSave.bottom
-            anchors.left: closeSave.left
-            color: "transparent"
-            opacity: 0.5
-            border.color: maincolor
-            border.width: 1
-            visible: editSaved == 1
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeSave.bottom
+                anchors.left: closeSave.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+                visible: editSaved == 1
+            }
         }
     }
 

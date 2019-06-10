@@ -864,29 +864,19 @@ Rectangle {
         }
 
         // Save success state
-        Item {
-            id: addSucces
-            width: parent.width
-            height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+        Controls.ReplyModal {
+            id: addSuccess
+            modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
 
             Image {
                 id: saveSuccess
                 source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
                 fillMode: Image.PreserveAspectFit
-                anchors.top: parent.top
+                anchors.top: addSuccess.modalTop
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
-
-                ColorOverlay {
-                    anchors.fill: parent
-                    source: parent
-                    color: maincolor
-                }
             }
 
             Label {
@@ -908,7 +898,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveSuccessLabel.bottom
-                anchors.bottomMargin: 50
+                anchors.bottomMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -962,23 +952,19 @@ Rectangle {
         }
 
         // Import key failed
-        Item {
-            id: addError
-            width: parent.width
-            height: saveError.height + errorLabel.height + closeError.height + 40
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+        Controls.ReplyModal {
+            id: createWalletFailed
+            modalHeight: saveError.height + errorLabel.height + closeError.height + 75
             visible: importWalletFailed == 1
 
             Image {
                 id: saveError
                 source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: createWalletSuccess.modalTop
+                anchors.topMargin: 20
             }
 
             Text {
@@ -986,7 +972,7 @@ Rectangle {
                 width: doubbleButtonWidth
                 text: "<b>ERROR</b>:" + walletError
                 anchors.top: saveError.bottom
-                anchors.topMargin: 20
+                anchors.topMargin: 10
                 maximumLineCount: 3
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
@@ -1003,7 +989,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: errorLabel.bottom
-                anchors.bottomMargin: 50
+                anchors.bottomMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {

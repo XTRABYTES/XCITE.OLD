@@ -590,22 +590,19 @@ Rectangle {
         }
 
         // Save failed state
-        Item {
+        Controls.ReplyModal {
             id: createWalletFailed
-            width: parent.width
-            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            modalHeight: saveFailed.height + saveFailedLabel.height + closeFail.height + 85
             visible: editFailed == 1
 
             Image {
                 id: saveFailed
                 source: saveErrorNR == 0? (darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg') : ('qrc:/icons/mobile/warning-icon_01.svg')
-                height: 100
-                width: 100
+                height: 75
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: createWalletFailed.modalTop
+                anchors.topMargin: 20
             }
 
             Label {
@@ -643,7 +640,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveFailedError.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -689,22 +686,19 @@ Rectangle {
         }
 
         // Save succes state
-        Item {
+        Controls.ReplyModal {
             id: editWalletSucces
-            width: parent.width
-            height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
 
             Image {
                 id: saveSuccess
                 source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: editWalletSucces.modalTop
+                anchors.topMargin: 20
             }
 
             Label {
@@ -726,7 +720,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveSuccessLabel.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -773,15 +767,9 @@ Rectangle {
     }
 
     // Delete confirm state
-
-    Rectangle {
+    Controls.ReplyModal {
         id: deleteConfirmation
-        width: parent.width
-        height: deleteText.height + deleteWalletName.height + deleteWalletHash.height + deleteWarning.height + confirmationDeleteButton.height + 94
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
-        anchors.horizontalCenter: parent.horizontalCenter
-        color: "transparent"
+        modalHeight: deleteText.height + deleteWalletName.height + deleteWalletHash.height + deleteWarning.height + confirmationDeleteButton.height + 99
         visible: deleteWalletTracker == 1
                  && deleteConfirmed == 0
                  && deleteFailed == 0
@@ -789,7 +777,8 @@ Rectangle {
         Text {
             id: deleteText
             text: "You are about to delete:"
-            anchors.top: parent.top
+            anchors.top: deleteConfirmation.modalTop
+            anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
             font.family: xciteMobile.name
             font.pixelSize: 20
@@ -799,6 +788,10 @@ Rectangle {
         Text {
             id: deleteWalletName
             text: oldLabel + " (" + coinName.text + ")"
+            width: doubbleButtonWidth - 20
+            wrapMode: Text.Wrap
+            maximumLineCount: 2
+            horizontalAlignment: Text.AlignHCenter
             anchors.top: deleteText.bottom
             anchors.topMargin: 7
             anchors.horizontalCenter: parent.horizontalCenter
@@ -811,7 +804,7 @@ Rectangle {
         Text {
             id: deleteWalletHash
             text: addressHash.text
-            width: doubbleButtonWidth
+            width: doubbleButtonWidth - 20
             wrapMode: Text.WrapAnywhere
             maximumLineCount: 2
             anchors.top: deleteWalletName.bottom
@@ -824,12 +817,12 @@ Rectangle {
 
         Text {
             id: deleteWarning
-            width: doubbleButtonWidth
+            width: doubbleButtonWidth - 20
             text: "If you still have coins in this wallet make sure you make a backup of your private key before deleting this wallet!"
             maximumLineCount: 3
             wrapMode: Text.WordWrap
             anchors.top: deleteWalletHash.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
             font.family: xciteMobile.name
             font.pixelSize: 16
@@ -839,10 +832,10 @@ Rectangle {
 
         Rectangle {
             id: confirmationDeleteButton
-            width: (doubbleButtonWidth - 10) / 2
+            width: (doubbleButtonWidth - 30) / 2
             height: 34
             anchors.top: deleteWarning.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 25
             anchors.right: parent.horizontalCenter
             anchors.rightMargin: 5
             color: "#4BBE2E"
@@ -874,7 +867,7 @@ Rectangle {
                     walletList.setProperty(walletIndex, "remove", true)
                     editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, true)
                     updateToAccount()
-                 }
+                }
             }
 
             Connections {
@@ -895,11 +888,11 @@ Rectangle {
                 onSaveFailed: {
                     if (deleteWalletTracker == 1 && deletingWallet == true) {
                         if (userSettings.localKeys === false) {
-                        walletList.setProperty(walletIndex, "remove", false)
-                        editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
-                        deleteFailed = 1
-                        coinListTracker = 0
-                        deletingAddress = false
+                            walletList.setProperty(walletIndex, "remove", false)
+                            editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
+                            deleteFailed = 1
+                            coinListTracker = 0
+                            deletingAddress = false
                         }
                         else if (usersettings.localKeys === true && walletDeleted == true) {
                             editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
@@ -965,10 +958,10 @@ Rectangle {
         }
 
         Rectangle {
-            width: (doubbleButtonWidth - 10) / 2
+            width: (doubbleButtonWidth - 30) / 2
             height: 34
             anchors.top: deleteWarning.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 25
             anchors.right: parent.horizontalCenter
             anchors.rightMargin: 5
             color: "transparent"
@@ -979,10 +972,10 @@ Rectangle {
 
         Rectangle {
             id: cancelDeleteButton
-            width: (doubbleButtonWidth - 10) / 2
+            width: (doubbleButtonWidth - 30) / 2
             height: 34
             anchors.top: deleteWarning.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 25
             anchors.left: parent.horizontalCenter
             anchors.leftMargin: 5
             color: "#E55541"
@@ -1024,10 +1017,10 @@ Rectangle {
         }
 
         Rectangle {
-            width: (doubbleButtonWidth - 10) / 2
+            width: (doubbleButtonWidth - 30) / 2
             height: 34
             anchors.top: deleteWarning.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 25
             anchors.left: parent.horizontalCenter
             anchors.leftMargin: 5
             color: "transparent"
@@ -1049,22 +1042,19 @@ Rectangle {
     }
 
     // Delete failed state
-    Item {
+    Controls.ReplyModal {
         id: deleteAddresFailed
-        width: parent.width
-        height: failedIcon.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        modalHeight: failedIcon.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 85
         visible: deleteFailed == 1
 
         Image {
             id: failedIcon
             source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
-            height: 100
+            height: 75
             width: 100
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
+            anchors.top: deleteAddresFailed.modalTop
+            anchors.topMargin: 20
         }
 
         Label {
@@ -1101,7 +1091,7 @@ Rectangle {
             color: maincolor
             opacity: 0.25
             anchors.top: deleteFailedError.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter
 
             MouseArea {
@@ -1148,111 +1138,105 @@ Rectangle {
     }
 
     // Delete success state
-
-    Rectangle {
+    Controls.ReplyModal {
         id: deleted
-        width: parent.width
-        height: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 60
-        color: "transparent"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
-        visible: deleteConfirmed == 1
-    }
-
-    Image {
-        id: deleteSuccess
-        source: darktheme == true? 'qrc:/icons/mobile/delete_address-icon_01_light.svg' : 'qrc:/icons/mobile/delete_address-icon_01_dark.svg'
-        height: 100
-        width: 100
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: deleted.top
-        visible: deleteConfirmed == 1
-    }
-
-    Label {
-        id: deleteSuccessLabel
-        text: "Wallet removed!"
-        anchors.top: deleteSuccess.bottom
-        anchors.topMargin: 10
-        anchors.horizontalCenter: deleteSuccess.horizontalCenter
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        font.pixelSize: 14
-        font.family: xciteMobile.name
-        font.bold: true
-        visible: deleteConfirmed == 1
-    }
-
-    Rectangle {
-        id: closeDelete
-        width: doubbleButtonWidth / 2
-        height: 34
-        color: maincolor
-        opacity: 0.25
-        anchors.top: deleteSuccessLabel.bottom
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
+        modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 75
         visible: deleteConfirmed == 1
 
-        MouseArea {
-            anchors.fill: closeDelete
+        Image {
+            id: deleteSuccess
+            source: darktheme == true? 'qrc:/icons/mobile/delete_address-icon_01_light.svg' : 'qrc:/icons/mobile/delete_address-icon_01_dark.svg'
+            height: 75
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: deleted.modalTop
+            anchors.topMargin: 20
+            visible: deleteConfirmed == 1
+        }
 
-            Timer {
-                id: timerDelete
-                interval: 300
-                repeat: false
-                running: false
+        Label {
+            id: deleteSuccessLabel
+            text: "Wallet removed!"
+            anchors.top: deleteSuccess.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: deleteSuccess.horizontalCenter
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+            font.bold: true
+            visible: deleteConfirmed == 1
+        }
 
-                onTriggered: {
-                    newLabel.text = ""
-                    deleteWalletTracker = 0
-                    deleteConfirmed = 0
+        Rectangle {
+            id: closeDelete
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: maincolor
+            opacity: 0.25
+            anchors.top: deleteSuccessLabel.bottom
+            anchors.topMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: deleteConfirmed == 1
+
+            MouseArea {
+                anchors.fill: closeDelete
+
+                Timer {
+                    id: timerDelete
+                    interval: 300
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        newLabel.text = ""
+                        deleteWalletTracker = 0
+                        deleteConfirmed = 0
+                    }
+                }
+
+                onPressed: {
+                    closeDelete.opacity = 0.5
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onCanceled: {
+                    closeDelete.opacity = 0.25
+                }
+
+                onReleased: {
+                    closeDelete.opacity = 0.25
+                }
+
+                onClicked: {
+                    walletDetailTracker = 0;
+                    timerDelete.start()
                 }
             }
-
-            onPressed: {
-                closeDelete.opacity = 0.5
-                click01.play()
-                detectInteraction()
-            }
-
-            onCanceled: {
-                closeDelete.opacity = 0.25
-            }
-
-            onReleased: {
-                closeDelete.opacity = 0.25
-            }
-
-            onClicked: {
-                walletDetailTracker = 0;
-                timerDelete.start()
-            }
         }
-    }
 
-    Text {
-        text: "OK"
-        font.family: xciteMobile.name
-        font.pointSize: 14
-        font.bold: true
-        color: darktheme == true? "#F2F2F2" : maincolor
-        anchors.horizontalCenter: closeDelete.horizontalCenter
-        anchors.verticalCenter: closeDelete.verticalCenter
-        visible: deleteConfirmed == 1
-    }
+        Text {
+            text: "OK"
+            font.family: xciteMobile.name
+            font.pointSize: 14
+            font.bold: true
+            color: darktheme == true? "#F2F2F2" : maincolor
+            anchors.horizontalCenter: closeDelete.horizontalCenter
+            anchors.verticalCenter: closeDelete.verticalCenter
+            visible: deleteConfirmed == 1
+        }
 
-    Rectangle {
-        width: doubbleButtonWidth / 2
-        height: 34
-        anchors.bottom: closeDelete.bottom
-        anchors.horizontalCenter: closeDelete.horizontalCenter
-        color: "transparent"
-        border.color: maincolor
-        border.width: 1
-        opacity: 0.5
-        visible: deleteConfirmed == 1
+        Rectangle {
+            width: doubbleButtonWidth / 2
+            height: 34
+            anchors.bottom: closeDelete.bottom
+            anchors.horizontalCenter: closeDelete.horizontalCenter
+            color: "transparent"
+            border.color: maincolor
+            border.width: 1
+            opacity: 0.5
+            visible: deleteConfirmed == 1
+        }
     }
 
     Item {
