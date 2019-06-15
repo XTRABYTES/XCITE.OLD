@@ -500,6 +500,156 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
 }
 
 
+void Settings::changePassword(QString oldPassword, QString newPassword){
+    QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+    QByteArray pubKey = keyPair.first;
+    QByteArray privKey = keyPair.second;
+
+    int padding = RSA_PKCS1_OAEP_PADDING;
+    unsigned char decrypted[32];
+
+    QString pubKeyString = QString::fromLatin1(pubKey,pubKey.size());
+    QVariantMap feed1;
+     feed1.insert("pubKey", pubKeyString);
+     feed1.insert("username",m_username);
+
+    QByteArray payload =  QJsonDocument::fromVariant(feed1).toJson(QJsonDocument::Compact);
+    payload = payload.toBase64();
+
+    //  Send Pub Key to API.  Backend returns AES key and randNum encrypted with password
+    QString response2 = RestAPIPostCall("/v1/login", payload);
+    if (response2.isEmpty()){
+        return;
+    }
+
+    QJsonDocument jsonResponse = QJsonDocument::fromJson(response2.toLatin1());
+    QJsonValue encryptedText = jsonResponse.object().value("aeskey");
+    QByteArray aeskeyEncrypted = encryptedText.toString().toLatin1();
+
+    // Get IV from API to use in future encryptions
+    QJsonValue ivValue = jsonResponse.object().value("iv");
+    QByteArray iv = ivValue.toString().toLatin1();
+
+     // Check encrypted randNr
+     QJsonValue randNumEnc = jsonResponse.object().value("randNum");
+     QByteArray randNumBa = randNumEnc.toString().toLatin1();
+
+     unsigned char* privKey2 = new unsigned char[privKey.size()];
+     std::memcpy(privKey2,privKey.data(),privKey.size());
+
+     RSA * privRSAKey = createRSA(privKey2,0);
+
+     delete [] privKey2;
+     const std::size_t randNumBaSize = randNumBa.size();
+     unsigned char* encryptedRandNum = new unsigned char[randNumBaSize];
+     std::memcpy(encryptedRandNum,randNumBa.constData(),randNumBaSize);
+
+     // Decrypt rand Number sent from DB
+     int  decryptedSize = RSA_private_decrypt(randNumBaSize,encryptedRandNum,decrypted,privRSAKey,padding);
+
+     QByteArray randNumDec1;
+     randNumDec1 = QByteArray(reinterpret_cast<char*>(decrypted), decryptedSize);
+
+     //Decrypt decrypted randNum with password
+    QByteArray decodedRandNum = encryption.decode(randNumDec1, (oldPassword + "xtrabytesxtrabytes").toLatin1());
+    QString randNumDec = QString::fromLatin1(decodedRandNum);
+    randNumDec = randNumDec.chopped(randNumDec.length() - 9); //ensure value is 9 characters
+
+    //Decrypt the AES key with local private key
+    const std::size_t aesKeySize = aeskeyEncrypted.size();
+    unsigned char* aeskeyEncryptedChar = new unsigned char[aesKeySize];
+    std::memcpy(aeskeyEncryptedChar,aeskeyEncrypted.constData(),aesKeySize);
+    int  decryptedSize1 = RSA_private_decrypt(aesKeySize,aeskeyEncryptedChar,backendKey,privRSAKey,padding);
+
+    std::memcpy(iiiv,iv.constData(),iv.size());
+
+    // encrypt decrypted randNum with backendKey
+    std::pair<int, QByteArray> cipher = encryptAes(randNumDec, backendKey, iiiv);
+    cipher.second = cipher.second.toBase64();
+
+    QVariantMap feed2;
+     feed2.insert("randNumDec", cipher.second);
+     feed2.insert("username",m_username);
+     feed2.insert("iv",iv);
+
+    QByteArray payload2 =  QJsonDocument::fromVariant(feed2).toJson(QJsonDocument::Compact);
+     payload2 = payload2.toBase64();
+
+     //  Send Decrypted randNum back to backend (checks if user is right user)
+     QString response3 = RestAPIPostCall("/v1/checkUser", payload2);
+     if (response3.isEmpty()){
+         return;
+     }
+     QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
+     QJsonValue encryptedSettings = jsonResponse2.object().value("settings");
+     QString settings = encryptedSettings.toString();
+
+     QJsonValue encryptedSessionId = jsonResponse2.object().value("sessionId");
+     QByteArray sessionIdEncrypted = encryptedSessionId.toString().toLatin1();
+
+     const std::size_t sessionIdSize = sessionIdEncrypted.size();
+     unsigned char* encryptedSess = new unsigned char[sessionIdSize];
+     std::memcpy(encryptedSess,sessionIdEncrypted.constData(),sessionIdSize);
+
+     // Decrypt sessionId
+     int  decryptedSize2 = RSA_private_decrypt(sessionIdSize,encryptedSess,decrypted,privRSAKey,padding);
+
+     QByteArray sessionIdBa = QByteArray(reinterpret_cast<char*>(decrypted), decryptedSize2);
+     sessionId = QString::fromLatin1(sessionIdBa, sessionIdBa.size());
+
+    QByteArray decodedSettings = encryption.decode(settings.toLatin1(), (oldPassword + "xtrabytesxtrabytes").toLatin1());
+    int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
+    decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
+    QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
+
+
+    if(decodedJson.value("app").toString().startsWith("xtrabytes")){
+        // Create new rand Num.
+        QString randNum = createRandNum();
+
+        QByteArray encodedRandNr = encryption.encode(randNum.toLatin1(), (newPassword + "xtrabytesxtrabytes").toLatin1());
+        QString encodedRandNrStr = QString::fromLatin1(encodedRandNr, encodedRandNr.length());
+
+        std::pair<int, QByteArray> randNumAes = encryptAes(randNum, backendKey, iiiv);
+
+        randNumAes.second = randNumAes.second.toBase64();
+
+        std::pair<int, QByteArray> sessionIdAes = encryptAes(sessionId, backendKey, iiiv);
+
+        sessionIdAes.second = sessionIdAes.second.toBase64();
+
+        QVariantMap feed3;
+         feed3.insert("randNumAes", randNumAes.second);
+         feed3.insert("randNumPass", encodedRandNrStr);
+         feed3.insert("sessionIdAes", sessionIdAes.second);
+         feed3.insert("username",m_username);
+
+         QByteArray finalLogin =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
+
+         finalLogin = finalLogin.toBase64();
+
+         // Send new encrypted Rand Nums to backend
+         QString finalLoginResponse = RestAPIPostCall("/v1/finalLogin", finalLogin);
+         if (finalLoginResponse.isEmpty()){
+             return;
+         }
+         QJsonDocument jsonResponseSave = QJsonDocument::fromJson(finalLoginResponse.toLatin1());
+         QJsonValue encryptedTextLogin = jsonResponseSave.object().value("login");
+
+         bool loginSavedSuccess = encryptedTextLogin.toString() == "success" ? true:false;
+
+         if (loginSavedSuccess){
+             m_password = newPassword;
+
+             SaveSettings();
+         }
+
+
+    }else{
+        emit loginFailedChanged(); // if update fails -- CHANGE this
+    }
+}
+
 std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *key,  unsigned char *iv) {
   EVP_CIPHER_CTX *ctx;
   std::pair<int,QByteArray>  returnVals;
