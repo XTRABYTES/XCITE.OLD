@@ -47,6 +47,8 @@ public:
     RSA * createRSA(unsigned char * key,int public1);
     QString createRandNum();
     void loginFile(QString username, QString password, QString fileLocation);
+    void changePassword(QString oldPassword, QString newPassword);
+
     void NoWalletFile();
 
 public slots:
