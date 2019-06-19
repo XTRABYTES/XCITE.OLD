@@ -642,6 +642,7 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
              m_password = newPassword;
 
              SaveSettings();
+             emit passwordChanged();
          }
 
 

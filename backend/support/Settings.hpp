@@ -47,14 +47,14 @@ public:
     RSA * createRSA(unsigned char * key,int public1);
     QString createRandNum();
     void loginFile(QString username, QString password, QString fileLocation);
-    void changePassword(QString oldPassword, QString newPassword);
-
     void NoWalletFile();
 
 public slots:
     void onLocaleChange(QString);
     void onClearAllSettings();
     void login(QString username, QString password);
+    void changePassword(QString oldPassword, QString newPassword);
+
     bool SaveSettings();
     void ImportWallet(QString, QString);
     void LoadSettings(QByteArray settings, QString location);
@@ -114,6 +114,7 @@ signals:
     void walletNotFound();
     void cameraCheckFailed();
     void cameraCheckPassed();
+    void passwordChanged();
 
 
 
