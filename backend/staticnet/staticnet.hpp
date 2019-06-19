@@ -62,12 +62,15 @@ public slots:
 
 signals:
     void finished();
+    void confirmed();
     void error(QString err);
     void sendcoinFailed();
 
 public Q_SLOTS:
     void unspent_request(const QJsonArray *params);
     void unspent_onResponse(QJsonArray params, QJsonObject );
+    void confirm_request(const QJsonArray *params);
+    void confirm_onResponse(QJsonArray params, QJsonObject );
     void txbroadcast_request(const QJsonArray *params);
     void txbroadcast_onResponse(QJsonArray params, QJsonObject );
 

@@ -223,16 +223,20 @@ void SnetKeyWordWorker::sendcoin(const QJsonArray *params) {
 
 SendcoinWorker::SendcoinWorker(const QJsonArray *params) { 
 
+      qDebug() << "Sendcoin worker params:" << params;      
       // FIXMEE need validate each params 
       target_address = params->at(2).toString().toStdString();
       value_str = params->at(3).toString().toStdString();
       secret = params->at(4).toString().toStdString();      
-      trace_id = params->at(5).toString();      
+      trace_id = params->at(5).toString();
+            
 }
 
 SendcoinWorker::~SendcoinWorker() {	
 }
 
+void SendcoinWorker::confirm_request(const QJsonArray *params) {
+}
 
 void SendcoinWorker::unspent_request(const QJsonArray *params) {
 		 
@@ -284,6 +288,10 @@ void SendcoinWorker::txbroadcast_onResponse( QJsonArray params, QJsonObject res)
     qDebug() << formattedJsonString;
     }    
     emit finished();
+}
+
+void SendcoinWorker::confirm_onResponse( QJsonArray params, QJsonObject res)
+{
 }
 
 void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
