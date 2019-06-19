@@ -129,7 +129,7 @@ public:
     };
 
     int GetNewTraceID() {
-        boost::unique_lock<boost::mutex> scoped_lock(mutex);
+        boost::unique_lock<boost::mutex> scoped_lock(m_traceid);
         return ++traceID;
     };
 
@@ -144,7 +144,7 @@ signals:
 	 void ResponseFromStaticnet(QJsonObject);
 
 private:
-    boost::mutex mutex;
+    boost::mutex m_traceid;
     int traceID;
     QString ConnectStr;
 };

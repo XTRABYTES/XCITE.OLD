@@ -13,6 +13,7 @@
 #include "xchat.hpp"
 #include "../staticnet/staticnet.hpp"
 #include "../xutility/xutility.hpp"
+#include "../interaction/interaction.hpp"
 #include "../testnet/xchattestnetclient.hpp"
 
 XchatObject xchatRobot;
@@ -51,7 +52,10 @@ void XchatObject::SubmitMsgCall(const QString &msg) {
     xUtility.Initialize();
     
     int staticNet_traceID;
-    if (!((staticNet.CheckUserInputForKeyWord(msg,&staticNet_traceID)) || (xUtility.CheckUserInputForKeyWord(msg)))) {
+    int interaction_traceID;
+    if (!( (staticNet.CheckUserInputForKeyWord(msg,&staticNet_traceID)) || 
+           (interaction.CheckUserInputForKeyWord(msg,&interaction_traceID)) ||
+           (xUtility.CheckUserInputForKeyWord(msg)) )) {
     
         bool keyWordUsedUserInput = this->CheckUserInputForKeyWord(msg);
         bool keyWordUsedAIInput = this->CheckAIInputForKeyWord(m_pXchatAiml->getResponse(msg));
