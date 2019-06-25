@@ -382,6 +382,7 @@ ApplicationWindow {
     signal sendCoins(string message)
     signal checkCamera()
     signal checkTxStatus(string pendinglist)
+    signal changePassword(string oldPassword, string newPassword)
 
     // functions
     function updateBalance(coin, address, balance) {
