@@ -177,5 +177,6 @@
         <file>+mobile/ImportAccount.qml</file>
         <file>Controls/+mobile/PendingList.qml</file>
         <file>Controls/+mobile/ReplyModal.qml</file>
+        <file>Controls/+mobile/ChangePassword.qml</file>
     </qresource>
 </RCC>

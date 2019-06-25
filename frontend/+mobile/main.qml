@@ -236,6 +236,7 @@ ApplicationWindow {
     property int portfolioTracker: 0
     property int transactionDetailTracker: 0
     property int soundTracker: 0
+    property int changePasswordTracker: 0
 
     // Global variables
     property int sessionStart: 0
