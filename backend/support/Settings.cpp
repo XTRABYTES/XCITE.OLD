@@ -639,15 +639,26 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
          bool loginSavedSuccess = encryptedTextLogin.toString() == "success" ? true:false;
 
          if (loginSavedSuccess){
+
+             QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+             dec_pincode.chop(1);
+
+             qDebug() << dec_pincode;
+
              m_password = newPassword;
 
+             QByteArray enc_pincode = encryption.encode((dec_pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+             m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length());
+
              SaveSettings();
-             emit passwordChanged();
+         }
+         else {
+             emit passwordChangedFailed();
          }
 
 
     }else{
-        emit loginFailedChanged(); // if update fails -- CHANGE this
+        emit passwordChangedFailed(); // if update fails -- CHANGE this
     }
 }
 

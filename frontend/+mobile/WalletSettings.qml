@@ -81,7 +81,7 @@ Rectangle {
     Flickable {
         id: scrollArea
         width: parent.width
-        contentHeight: currencyLabel.height + pincodeLabel.height + changePinButton.height + notificationLabel.height + volumeLabel.height + systemVolumeLabel.height + 310
+        contentHeight: currencyLabel.height + pincodeLabel.height + changePinButton.height + passwordLabel.height + changePasswordButton.height + notificationLabel.height + volumeLabel.height + systemVolumeLabel.height + 360
         anchors.left: parent.left
         anchors.top: welcomeText.bottom
         anchors.topMargin: 30
@@ -370,6 +370,75 @@ Rectangle {
         }
 
         Label {
+            id: passwordLabel
+            z: 1
+            text: "ACCOUNT PASSWORD:"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.bold: true
+            color: themecolor
+            anchors.top: changePinButton.bottom
+            anchors.topMargin: 25
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+        }
+
+        Rectangle {
+            id: changePasswordButton
+            width: changePasswordButtonLabel.implicitWidth + 56
+            height: 34
+            color: maincolor
+            opacity: 0.25
+            anchors.top: passwordLabel.bottom
+            anchors.topMargin: 25
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            MouseArea {
+                anchors.fill: changePasswordButton
+
+                onPressed: {
+                    parent.opacity = 0.5
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
+
+                onReleased: {
+                    parent.opacity = 0.25
+                }
+
+                onClicked: {
+                    changePasswordTracker = 1
+                }
+            }
+        }
+
+        Text {
+            id: changePasswordButtonLabel
+            text: "CHANGE PASSWORD"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: maincolor
+            anchors.horizontalCenter: changePasswordButton.horizontalCenter
+            anchors.verticalCenter: changePasswordButton.verticalCenter
+        }
+
+        Rectangle {
+            width: changePasswordButton.width
+            height: 34
+            anchors.bottom: changePasswordButton.bottom
+            anchors.left: changePasswordButton.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: maincolor
+            border.width: 1
+        }
+
+        Label {
             id: notificationLabel
             z: 1
             text: "NOTIFICATION SOUND:"
@@ -377,7 +446,7 @@ Rectangle {
             font.family: xciteMobile.name
             font.bold: true
             color: themecolor
-            anchors.top: changePinButton.bottom
+            anchors.top: changePasswordButton.bottom
             anchors.topMargin: 25
             anchors.left: parent.left
             anchors.leftMargin: 28
@@ -748,7 +817,6 @@ Rectangle {
         }
     }
 
-
     Rectangle {
         z: 4
         id: clearButton
@@ -1095,7 +1163,7 @@ Rectangle {
     Item {
         z: 3
         width: Screen.width
-        height: myOS === "android"? 195 : 215
+        height: myOS === "android"? 215 : 235
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1105,7 +1173,7 @@ Rectangle {
             end: Qt.point(x, y + height)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                GradientStop { position: 0.3; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
             }
         }
@@ -1147,6 +1215,12 @@ Rectangle {
                 mainRoot.pop()
             }
         }
+    }
+
+    Controls.ChangePassword {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 
     Controls.DebugConsole {

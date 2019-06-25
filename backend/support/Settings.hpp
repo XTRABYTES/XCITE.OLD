@@ -114,8 +114,8 @@ signals:
     void walletNotFound();
     void cameraCheckFailed();
     void cameraCheckPassed();
-    void passwordChanged();
-
+    void passwordChangedSucceeded();
+    void passwordChangedFailed();
 
 
 
