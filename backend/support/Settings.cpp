@@ -578,6 +578,8 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
      //  Send Decrypted randNum back to backend (checks if user is right user)
      QString response3 = RestAPIPostCall("/v1/checkUser", payload2);
      if (response3.isEmpty()){
+         emit passwordChangedFailed();
+
          return;
      }
      QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
@@ -601,7 +603,6 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
     int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
     decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
     QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
-
 
     if(decodedJson.value("app").toString().startsWith("xtrabytes")){
         // Create new rand Num.
@@ -687,6 +688,9 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
 
              QByteArray enc_pincode = encryption.encode((dec_pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
              m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length());
+
+             emit saveSucceeded();
+             return;
          }
          else {
              emit passwordChangedFailed();
@@ -696,6 +700,7 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
     }else{
         emit passwordChangedFailed(); // if update fails -- CHANGE this
     }
+
 }
 
 std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *key,  unsigned char *iv) {
