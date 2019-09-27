@@ -151,6 +151,10 @@ win32 {
     PWD_WIN = $${PWD}
     PWD_WIN ~= s,/,\\,g
     QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*.dll\" \"$${DESTDIR_WIN}\")
+
+    INCLUDEPATH += $$PWD/dependencies/ios/arm64-v8a/openssl/include
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+    LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
 }
 
     ios {
@@ -166,6 +170,11 @@ win32 {
         QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
         QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
     }
+macx {
+        INCLUDEPATH += $$PWD/dependencies/ios/arm64-v8a/openssl/include
+        INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+        LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
+}
 
 mac {
     ICON = $$PWD/resources/ios/xcite.icns
