@@ -25,7 +25,6 @@
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
-#include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 #include "../backend/support/Settings.hpp"
 #include "../backend/support/ReleaseChecker.hpp"
@@ -62,10 +61,6 @@ int main(int argc, char *argv[])
     QQmlFileSelector *selector = new QQmlFileSelector(&engine);
     selector->setExtraSelectors(QStringList() << "mobile");
 #endif
-
-    // wire-up testnet wallet
-    Testnet wallet;
-    engine.rootContext()->setContextProperty("wallet", &wallet);
 
     // wire-up market value
     MarketValue marketValue;
@@ -163,11 +158,6 @@ int main(int argc, char *argv[])
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 #else
-
-    // FauxWallet
-    QObject::connect(&wallet, SIGNAL(response(QVariant)), rootObject, SLOT(testnetResponse(QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletError(QVariant, QVariant)), rootObject, SLOT(walletError(QVariant, QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), rootObject, SLOT(walletSuccess(QVariant)));
 #endif
 
     return app.exec();
