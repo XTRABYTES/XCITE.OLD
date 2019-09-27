@@ -384,21 +384,17 @@ Rectangle {
                     }
 
                     onReleased: {
+                        closeAllClipboard = true
                         if (newName.text != ""
                                 && newAddress.text != ""
                                 && invalidAddress == 0
                                 && addressExists == 0
                                 && labelExists == 0) {
                             selectedAddress = ""
-                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY") {
+                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY" || coinList.get(coinIndex).name === "XTEST") {
                                 importInitiated = true
                                 importPrivateKey((coinList.get(coinIndex).fullname), newAddress.text)
                             }
-                            else if (coinList.get(coinIndex).name === "XFUEL-TEST") {
-                                importInitiated = true
-                                importPrivateKey("testnet", newAddress.text)
-                            }
-
                             else {
                                 importWalletFailed = 1
                                 walletError = error2
@@ -407,7 +403,7 @@ Rectangle {
                     }
 
                     Connections {
-                        target: xUtil
+                        target: xUtility
 
                         onAddressExtracted: {
                             if (importKeyTracker == 1 && importInitiated == true) {
@@ -868,29 +864,19 @@ Rectangle {
         }
 
         // Save success state
-        Item {
-            id: addSucces
-            width: parent.width
-            height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+        Controls.ReplyModal {
+            id: addSuccess
+            modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
 
             Image {
                 id: saveSuccess
                 source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
                 fillMode: Image.PreserveAspectFit
-                anchors.top: parent.top
+                anchors.top: addSuccess.modalTop
+                anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
-
-                ColorOverlay {
-                    anchors.fill: parent
-                    source: parent
-                    color: maincolor
-                }
             }
 
             Label {
@@ -912,7 +898,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveSuccessLabel.bottom
-                anchors.bottomMargin: 50
+                anchors.bottomMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -966,23 +952,19 @@ Rectangle {
         }
 
         // Import key failed
-        Item {
-            id: addError
-            width: parent.width
-            height: saveError.height + errorLabel.height + closeError.height + 40
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+        Controls.ReplyModal {
+            id: createWalletFailed
+            modalHeight: saveError.height + errorLabel.height + closeError.height + 75
             visible: importWalletFailed == 1
 
             Image {
                 id: saveError
                 source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: createWalletSuccess.modalTop
+                anchors.topMargin: 20
             }
 
             Text {
@@ -990,7 +972,7 @@ Rectangle {
                 width: doubbleButtonWidth
                 text: "<b>ERROR</b>:" + walletError
                 anchors.top: saveError.bottom
-                anchors.topMargin: 20
+                anchors.topMargin: 10
                 maximumLineCount: 3
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
@@ -1007,7 +989,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: errorLabel.bottom
-                anchors.bottomMargin: 50
+                anchors.bottomMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -1052,7 +1034,7 @@ Rectangle {
     Item {
         z: 3
         width: Screen.width
-        height: 125
+        height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1073,7 +1055,7 @@ Rectangle {
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"

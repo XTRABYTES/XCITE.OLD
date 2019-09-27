@@ -72,7 +72,8 @@ SOURCES += main/main.cpp \
             backend/support/FileDownloader.cpp \
             backend/support/Settings.cpp \
             backend/support/qaesencryption.cpp \
-            backend/integrations/wallet.cpp
+    backend/integrations/xutility_integration.cpp \
+    backend/integrations/staticnet_integration.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
@@ -102,7 +103,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/MarketValue.hpp \
             backend/integrations/Explorer.hpp \
             backend/support/qaesencryption.h \
-            backend/integrations/wallet.hpp
+    backend/integrations/xutility_integration.hpp \
+    backend/integrations/staticnet_integration.hpp
 
 DISTFILES += \
     xcite.ico \
@@ -129,7 +131,11 @@ DISTFILES += \
     android/res/drawable-hdpi/splash.png \
     android/res/drawable-xhdpi/splash.png \
     android/res/drawable-xxhdpi/splash.png \
-    android/res/drawable-xxxhdpi/splash.png
+    android/res/drawable-xxxhdpi/splash.png \
+    resources/ios/xcite.icns \
+    resources/ios/xcite152px.png \
+    resources/ios/xcite120px.png \
+    resources/ios/xcite180px.png
 
 RC_ICONS = xcite.ico
 CONFIG(debug, debug|release) {
@@ -147,8 +153,22 @@ win32 {
     QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*.dll\" \"$${DESTDIR_WIN}\")
 }
 
+    ios {
+        QT += multimedia
+        xcode_product_bundle_identifier_setting.value = "global.xtrabytes.xcite"
+        QMAKE_INFO_PLIST = resources/ios/Info.plist
+        app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchScreen-logo_01.png
+        QMAKE_BUNDLE_DATA += app_launch_images
+
+        INCLUDEPATH += $$PWD/dependencies/ios/arm64-v8a/openssl/include
+        INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+        LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
+        QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
+        QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
+    }
+
 mac {
-    ICON = resources/ios/xcite.icns
+    ICON = $$PWD/resources/ios/xcite.icns
 
     mac!ios {
     }
@@ -160,9 +180,11 @@ mac {
         app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchScreen-logo_01.png
         QMAKE_BUNDLE_DATA += app_launch_images
 
-        INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
+        INCLUDEPATH += $$PWD/dependencies/ios/x86_64/openssl/include
         INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
         LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
+        QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
+        QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
     }
 }
 
@@ -173,13 +195,14 @@ linux:!android {
 
 android {
     CONFIG += static
-    QT += multimedia
+    QT += multimedia androidextras
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
 }
+
 
 FORMS += \
     packages/global.xtrabytes.xcite/meta/feedbackpage.ui

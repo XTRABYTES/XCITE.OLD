@@ -30,7 +30,7 @@ Rectangle {
 
         MediaPlayer {
             id: mediaplayer
-            source: "qrc:/videos/xby_screensaver_01.mp4"
+            source: "qrc:/videos/XCITE_screensaver_01.mp4"
             loops: MediaPlayer.Infinite
         }
 
@@ -47,9 +47,8 @@ Rectangle {
 
             onClicked: {
                 mediaplayer.pause()
-                standbyTimer.stop()
                 screenSaver = 0
-                standbyTimer.start()
+                standbyTimer.restart()
             }
         }
     }
@@ -110,9 +109,11 @@ Rectangle {
                     pincodeTracker = 1
                 }
                 else if (userSettings.pinlock === false) {
+                    if (standBy == 1) {
                     standBy = 0
                     selectedPage = "home"
-                    mainRoot.pop("../DashboardForm.qml")
+                    mainRoot.pop()
+                    }
                 }
             }
         }
@@ -126,7 +127,7 @@ Rectangle {
                     pincodeTracker = 0
                     pinOK = 0
                     selectedPage = "home"
-                    mainRoot.pop("../DashboardForm.qml")
+                    mainRoot.pop()
                 }
             }
         }

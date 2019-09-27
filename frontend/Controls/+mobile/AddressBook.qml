@@ -184,6 +184,7 @@ Rectangle {
 
                         onClicked: {
                             selectedAddress = addressHash.text
+                            selectedCoin = coin
                             walletIndex = defaultWallet(coin)
                             addressIndex = uniqueNR
                             switchState = 1

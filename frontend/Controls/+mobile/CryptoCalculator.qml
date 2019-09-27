@@ -505,7 +505,7 @@ Item {
             onReleased: {
                 button2.color = "transparent"
                 button2.border.color = maincolor
-                buttonLabel.color = maincolor
+                button2Label.color = maincolor
             }
         }
     }

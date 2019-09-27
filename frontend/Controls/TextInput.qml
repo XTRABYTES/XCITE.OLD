@@ -27,6 +27,13 @@ TextField {
     property int textboxHeight: textInputComponent.height
     property int clipBoard: 0
     property int textCopied: 0
+    property bool closeLocalClipboard: closeAllClipboard
+
+    onCloseLocalClipboardChanged: {
+        if (closeLocalClipboard == true) {
+            clipBoard = 0
+        }
+    }
 
     id: textInputComponent
     color: "white"
@@ -45,11 +52,11 @@ TextField {
                else
                    "#34363D"
         radius: mobile == 0? 4 : 0
-        border.width: parent.activeFocus ? 2 : 0
+        border.width: parent.activeFocus ? 2 : 0.5
         border.color: if(mobile == 0)
                           Theme.secondaryHighlight
                       else
-                          maincolor //"#34363D"
+                          parent.activeFocus ? maincolor : "#979797"
 
         width: parent.width
     }
@@ -60,8 +67,11 @@ TextField {
     }
 
     onPressAndHold: {
+        closeAllClipboard = true
         clipBoard = 1
+        closeAllClipboard = false
     }
+
 
     property alias placeholder: placeholderTextComponent.text
 
@@ -126,7 +136,7 @@ TextField {
         width: 190
         height: 40
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.top
+        anchors.verticalCenter: parent.verticalCenter
         anchors.bottomMargin: 10
         visible: clipBoard == 1
 
@@ -254,7 +264,7 @@ TextField {
         width: popupCopied.width
         height: 40
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.bottom
+        anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: 10
         visible: textCopied == 1
 

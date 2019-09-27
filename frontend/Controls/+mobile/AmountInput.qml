@@ -39,9 +39,12 @@ TextField {
     background: Rectangle {
         id: inputBackground
         color: "#34363D"
-        border.width: parent.activeFocus ? 2 : 0
-        border.color: "#34363D"
-        implicitWidth: 273
+        border.width: parent.activeFocus ? 2 : 0.5
+        border.color: if(mobile == 0)
+                          Theme.secondaryHighlight
+                      else
+                          parent.activeFocus ? maincolor : "#979797"
+        width: parent.width
     }
     onActiveFocusChanged: {
         if (textInputComponent.focus) {

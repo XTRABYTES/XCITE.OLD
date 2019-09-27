@@ -18,7 +18,7 @@ Item {
         walletID = walletList.count
         contactID = contactList.count
         addressID = addressList.count
-        txID = transactionList.count
+        //txID = transactionList.count
 
         // finish account setup
         if (userSettings.accountCreationCompleted === false) {
@@ -30,8 +30,7 @@ Item {
             sumBalance()
             sumXBY()
             sumXFUEL()
-            sumXBYTest()
-            sumXFUELTest()
+            sumXTest()
             sumBTC()
             sumETH()
             checkNotifications()
@@ -45,12 +44,23 @@ Item {
             marketValueChangedSignal("btccha");
             marketValueChangedSignal("ethbtc");
             marketValueChangedSignal("ethcha");
-            var datamodel = []
-            for (var i = 0; i < walletList.count; ++i)
-                datamodel.push(walletList.get(i))
 
-            var walletListJson = JSON.stringify(datamodel)
-            updateBalanceSignal(walletListJson);
+           var datamodelWallet = []
+            var datamodelPending = []
+
+            for (var i = 0; i < walletList.count; ++i) {
+                datamodelWallet.push(walletList.get(i))
+            };
+            for (var e = 0; e < pendingList.count; ++e) {
+                datamodelPending.push(pendingList.get(e))
+            };
+
+            var walletListJson = JSON.stringify(datamodelWallet);
+            var pendingListJson = JSON.stringify(datamodelPending);
+
+            updateBalanceSignal(walletListJson, "all");
+            checkTxStatus(pendingListJson);
+
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"
         }

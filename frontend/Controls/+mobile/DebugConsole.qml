@@ -176,15 +176,15 @@ Rectangle {
             }
 
             onClicked: {
-                replyText.text = replyText.text + requestText.text + "<br/>"
-                deBugArray = (requestText.text).split('-')
+                replyText.text = "<br>" + replyText.text + requestText.text + "<br>"
+                deBugArray = (requestText.text).split(' ')
                 debugError = 0
                 if (deBugArray[0] === "help") {
                     helpMe()
                     requestText.text = ""
                 }
                 else if (deBugArray[0] === "!!xutil" && deBugArray[1] === "network") {
-                    checkNetwork("network")
+                    setNetwork(deBugArray[2])
                     requestText.text = ""
                 }
                 else if ((deBugArray[0] === "!!xutil" && deBugArray[1] === "createkeypair" && deBugArray[2] !== "")) {
@@ -196,8 +196,9 @@ Rectangle {
                     requestText.text = ""
                 }
                 else if (deBugArray[0] === "!!staticnet" && deBugArray[1] === "sendcoin") {
-                    console.log(deBugArray[2] + " - " + (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
-                    sendCoins(deBugArray[2], (deBugArray[3] + " " + deBugArray[4] + " " + deBugArray[5]))
+                    console.log(deBugArray[2] + " " + deBugArray[3] + " " + deBugArray[4])
+                    sendCoins(deBugArray[2] + " " + deBugArray[3] + " " + deBugArray[4]);
+
                     requestText.text = ""
                 }
                 else {
@@ -208,11 +209,11 @@ Rectangle {
         }
 
         Connections {
-            target: xUtil
+            target: xUtility
             onHelpReply: {
                 if (debugTracker == 1) {
-                    replyText.text = replyText.text + "<br/>" +
-                            "Use one of the following commands:" + "<br/>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
+                            "Use one of the following commands:" + "<br>" +
                             "<b>" + help1 + "</b><br>" +
                             "to know which network is active.<br>" +
                             "<b>" + help2 + "</b><br>" +
@@ -226,7 +227,7 @@ Rectangle {
             }
             onKeyPairCreated: {
                 if (debugTracker == 1 && debugError == 0) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
                             "<b>Public key</b>:<br>" +
                             pubKey + "<br>" +
                             "<b>Private key</b>:<br>" +
@@ -238,7 +239,7 @@ Rectangle {
 
             onAddressExtracted: {
                 if (debugTracker == 1 && debugError == 0) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
                             "<b>Public key</b>:<br>" +
                             pubKey + "<br>" +
                             "<b>Private key</b>:<br>" +
@@ -250,36 +251,55 @@ Rectangle {
             }
             onCreateKeypairFailed: {
                 if (debugTracker == 1 && debugError == 0) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
                             "We could not create a key for you.<br>"
                 }
 
             }
             onBadKey: {
                 if (debugTracker == 1 && debugError == 0) {
-                    replyText.text = replyText.text + "<br>" +
-                            "We could not extract an address from this key.<br>"
+                    replyText.text = "<br>" + replyText.text + "<br>" +
+                            "We could not extract an address from this key.<br >"
                 }
             }
             onNetworkStatus: {
                 if (debugTracker == 1) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text ="<br>" +  replyText.text + "<br>" +
                             myNetwork + "<br>"
                 }
             }
+            onNewNetwork: {
+                if (debugTracker == 1) {
+                    replyText.text = "<br>" + replyText.text + "<br>" +
+                            currentNetwork + "<br>"
+                }
+            }
+
             onBadNetwork: {
                 if (debugTracker == 1) {
-                    replyText.text = replyText.text + "<br>" +
+                    replyText.text = "<br>" + replyText.text + "<br>" +
                             noNetwork + "<br>"
                     debugError = 1
                 }
             }
-            //onRawTxTestResult: {
-            //    if (debugTracker == 1 && debugError == 0) {
-            //        replyText.text = replyText.text + "<br/>" +
-            //                testResult + "<br>"
-            //    }
-            //}
+        }
+
+        Connections {
+            target: static_int
+            onSendCoinsSuccess: {
+                if (debugTracker == 1) {
+                    replyText.text = "<br>" + replyText.text + "<br/>" +
+                            "Send Success!:" + "<br/>" +
+                            "TransactionId:" + transactionId + "<br>"
+                }
+            }
+            onSendCoinsFailure: {
+                if (debugTracker == 1) {
+                    replyText.text = "<br>" + replyText.text + "<br/>" +
+                            "Send Failed!:" + "<br/>" +
+                            "Error:" + error + "<br>"
+                }
+            }
         }
 
     }
@@ -309,7 +329,7 @@ Rectangle {
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -337,6 +357,7 @@ Rectangle {
                 onTriggered: {
                     replyText.text = ""
                     requestText.text = ""
+                    closeAllClipboard = true
                 }
             }
 

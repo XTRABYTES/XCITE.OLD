@@ -42,6 +42,7 @@ public Q_SLOTS:
 
 signals:
     void response(QJsonArray params, QJsonObject res);
+    void error(QNetworkReply::NetworkError); // FIXMEEE
 
 private:
     QNetworkRequest req;
@@ -77,7 +78,7 @@ private:
     std::string sender_address;
     std::string target_address;
     std::string value_str;
-    QString req_id;
+    QString trace_id;
     StaticNetHttpClient *client;
 };
 
@@ -86,7 +87,7 @@ class SnetKeyWordWorker : public QObject {
     Q_OBJECT
 
 public:
-    SnetKeyWordWorker(const QString *msg);
+    SnetKeyWordWorker(const QString *_msg);
     ~SnetKeyWordWorker();
 
 public slots:
@@ -100,9 +101,10 @@ signals:
 public Q_SLOTS:
     void request(const QJsonArray *params);
     void onResponse(QJsonArray params, QJsonObject );
+    int errorString(QString errorstr);
 
 private:
-    const QString *msg;
+    QString msg;
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
     void help();
@@ -117,20 +119,30 @@ public:
     StaticNet(QObject *parent = 0) : QObject(parent) {}
     ~StaticNet() {}
     void Initialize();
-    bool CheckUserInputForKeyWord(const QString msg);
+    bool CheckUserInputForKeyWord(const QString msg, int *traceID);
 
     QString GetConnectStr() {
         return ConnectStr;
     };
 
-    int GetNewRequestID() {
+    int GetNewTraceID() {
         boost::unique_lock<boost::mutex> scoped_lock(mutex);
-        return ++requestID;
+        return ++traceID;
     };
+
+
+public slots:
+    void errorString(const QString error);
+    void onResponseFromStaticnet(QJsonObject response) {
+        qDebug() << "staticnet response recevied";       
+    }
+
+signals:
+	 void ResponseFromStaticnet(QJsonObject);
 
 private:
     boost::mutex mutex;
-    int requestID;
+    int traceID;
     QString ConnectStr;
 };
 

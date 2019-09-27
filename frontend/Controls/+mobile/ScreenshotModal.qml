@@ -56,6 +56,9 @@ Rectangle {
         anchors.fill: parent
     }
 
+    property string textForPopup: ""
+    property string keyType: ""
+
     Text {
         id: screenshotModalLabel
         text: "TAKE A SCREENSHOT TO BACK UP"
@@ -129,18 +132,19 @@ Rectangle {
     Rectangle {
         id: qrBorder1
         radius: 4
-        width: 100
-        height: 100
+        width: height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: addressTextLabel.bottom
         anchors.topMargin: 5
+        anchors.bottom: addressLabel.top
+        anchors.bottomMargin: 10
         color: "#FFFFFF"
     }
 
     Item {
         id: qrPlaceholder1
-        width: 90
-        height: 90
+        width: qrBorder1.width*0.9
+        height: qrBorder1.height*0.9
         anchors.horizontalCenter: qrBorder1.horizontalCenter
         anchors.verticalCenter: qrBorder1.verticalCenter
 
@@ -155,19 +159,39 @@ Rectangle {
         id:addressLabel
         text: walletList.get(walletIndex).address
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: qrBorder1.bottom
-        anchors.topMargin: 10
+        anchors.bottom: privateKeyTextLabel.top
+        anchors.bottomMargin: 20
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+
+        Rectangle {
+            width: parent.width
+            height: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressAndHold: {
+                    if(copy2clipboard == 0 && screenshotTracker == 1) {
+                        copyText2Clipboard(addressLabel.text)
+                        textForPopup = addressLabel.text
+                        keyType = "address"
+                        copy2clipboard = 1
+                    }
+                }
+            }
+        }
     }
 
     Label {
         id:privateKeyTextLabel
         text: "Your wallet PRIVATE KEY:"
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: addressLabel.bottom
-        anchors.topMargin: 30
+        anchors.bottom: parent.verticalCenter
         font.pixelSize: 18
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -176,9 +200,10 @@ Rectangle {
     Rectangle {
         id: qrBorder2
         radius: 4
-        width: 150
-        height: 150
+        width: height
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: privateKeyLabel.top
+        anchors.bottomMargin: 10
         anchors.top: privateKeyTextLabel.bottom
         anchors.topMargin: 5
         color: "#FFFFFF"
@@ -186,8 +211,8 @@ Rectangle {
 
     Item {
         id: qrPlaceholder2
-        width: 135
-        height: 135
+        width: qrBorder2.width * 0.9
+        height: qrBorder2.height *0.9
         anchors.horizontalCenter: qrBorder2.horizontalCenter
         anchors.verticalCenter: qrBorder2.verticalCenter
 
@@ -200,23 +225,92 @@ Rectangle {
 
     Label {
         id:privateKeyLabel
-        width: doubbleButtonWidth
+        width: (implicitWidth/2) + 5
         text: walletList.get(walletIndex).privatekey
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: qrBorder2.bottom
-        anchors.topMargin: 10
+        anchors.bottom: closeScreenshotModal.top
+        anchors.bottomMargin: 40
         maximumLineCount: 3
         horizontalAlignment: Text.AlignLeft
         wrapMode: Text.WrapAnywhere
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+
+        Rectangle {
+            width: parent.width
+            height: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressAndHold: {
+                    if(copy2clipboard == 0 && screenshotTracker == 1) {
+                        copyText2Clipboard(privateKeyLabel.text)
+                        textForPopup = privateKeyLabel.text
+                        keyType = "private"
+                        copy2clipboard = 1
+                    }
+                }
+            }
+        }
+    }
+
+    DropShadow {
+        z: 12
+        anchors.fill: textPopup
+        source: textPopup
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.4
+        transparentBorder: true
+        visible: copy2clipboard == 1 && screenshotTracker == 1
+    }
+
+    Item {
+        id: textPopup
+        z: 12
+        width: popupClipboard.width
+        height: popupClipboardText.height + 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        visible: copy2clipboard == 1 && screenshotTracker == 1
+
+        Rectangle {
+            id: popupClipboard
+            height: popupClipboardText.height + 10
+            width: popupClipboardText.width + 20
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupClipboardText
+            width: keyType == "address"? addressLabel.width : privateKeyLabel.width
+            text: textForPopup + "<br>Copied to clipboard!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            wrapMode: Text.WrapAnywhere
+            color: "#F2F2F2"
+            horizontalAlignment: Text.AlignHCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
     }
 
     Item {
         z: 3
         width: Screen.width
-        height: 125
+        height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -237,7 +331,7 @@ Rectangle {
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -264,6 +358,8 @@ Rectangle {
 
             onClicked: {
                 screenshotTracker = 0
+                keyType = ""
+                textForPopup = ""
             }
         }
     }

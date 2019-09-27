@@ -37,8 +37,8 @@ public:
     Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent = 0);
     void setLocale(QString);
     QString CheckStatusCode(QString);
-    void SaveFile(QString, QString);
-    QString LoadFile(QString);
+    void SaveFile(QString, QString, QString);
+    QString LoadFile(QString, QString);
     std::pair<QByteArray, QByteArray> createKeyPair();
     int rsaEncrypt(const unsigned char *message, size_t messageLength, unsigned char **encryptedMessage, unsigned char **encryptedKey,
           size_t *encryptedKeyLength, unsigned char **iv, size_t *ivLength);
@@ -46,35 +46,39 @@ public:
     std::pair<int, QByteArray> encryptAes(QString text, unsigned char *key, unsigned char *iv);
     RSA * createRSA(unsigned char * key,int public1);
     QString createRandNum();
-
-
-
-
-
-
+    void loginFile(QString username, QString password, QString fileLocation);
+    void NoWalletFile();
 
 public slots:
     void onLocaleChange(QString);
     void onClearAllSettings();
     void login(QString username, QString password);
+    void changePassword(QString oldPassword, QString newPassword);
+
     bool SaveSettings();
-    void LoadSettings(QByteArray settings);
+    void ImportWallet(QString, QString);
+    void LoadSettings(QByteArray settings, QString location);
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
     void SaveAddresses(QString addresslist);
     void SaveContacts(QString contactlist);
     void SaveWallet(QString walletlist, QString addresslist);
-    void UpdateAccount(QString addresslist, QString contactlist, QString walletlist);
+    void ExportWallet(QString walletlist);
+    void UpdateAccount(QString addresslist, QString contactlist, QString walletlist, QString pendinglist);
 
+    void onCheckOS();
     void initialisePincode(QString pincode);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
     QString RestAPIPostCall(QString apiURL, QByteArray payload);
     QByteArray RestAPIGetCall(QString apiURL);
     void CheckSessionId();
+    void CheckCamera();
+
 
 
 signals:
+    void oSReturned(const QString os);
     void loginSucceededChanged();
     void loginFailedChanged();
     void userCreationSucceeded();
@@ -86,6 +90,8 @@ signals:
     void addressesLoaded(const QString &addresses);
     void settingsLoaded(const QVariantMap &settings);
     void walletLoaded(const QString &wallets);
+    void pendingLoaded(const QString &pending);
+
     void clearSettings();
     void pincodeCorrect();
     void pincodeFalse();
@@ -105,7 +111,11 @@ signals:
     void saveFailedAPIError();
     void saveFailedInputError();
     void saveFailedUnknownError();
-
+    void walletNotFound();
+    void cameraCheckFailed();
+    void cameraCheckPassed();
+    void passwordChangedSucceeded();
+    void passwordChangedFailed();
 
 
 
@@ -116,6 +126,7 @@ private:
     QString m_addresses;
     QString m_contacts;
     QString m_wallet;
+    QString m_pending;
     QString m_oldPincode;
     QString m_pincode;
     QString m_username;

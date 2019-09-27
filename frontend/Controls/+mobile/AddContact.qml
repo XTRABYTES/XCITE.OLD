@@ -50,6 +50,7 @@ Rectangle {
     property int editFailed: 0
     property bool addingContact: false
     property int contactExists: 0
+    property int validEmail: 1
     property string failError: ""
 
     function compareName() {
@@ -58,6 +59,16 @@ Rectangle {
             if (contactList.get(i).firstName === newFirstname.text && contactList.get(i).lastName === newLastname.text  && contactList.get(i).remove === false) {
                 contactExists = 1
             }
+        }
+    }
+
+    function validation(text){
+        var regExp = /^[0-9A-Za-z._%+-]+@(?:[0-9A-Za-z-]+\.)+[a-z]{2,}$/;
+        if(regExp.test(text) || text === "") {
+            validEmail = 1;
+        }
+        else {
+            validEmail = 0;
         }
     }
 
@@ -136,7 +147,7 @@ Rectangle {
             color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /[0-9A-Za-z]+ / }
+            validator: RegExpValidator { regExp: /[\w+\s+]+/ }
             visible: editSaved == 0
                      && editFailed == 0
             mobile: 1
@@ -148,7 +159,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newLastname
-            z: 1.5
             height: 34
             placeholder: "LAST NAME"
             anchors.left: newFirstname.left
@@ -158,7 +168,7 @@ Rectangle {
             color: (darktheme == false? "#2A2C31" : "#F2F2F2")
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
-            validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
+            validator: RegExpValidator { regExp: /[\w+\s+]+/ }
             visible: editSaved == 0
                      && editFailed == 0
             mobile: 1
@@ -170,7 +180,6 @@ Rectangle {
 
         Label {
             id: nameWarning1
-            z: 1.5
             text: "Contact already exists!"
             color: "#FD2E2E"
             anchors.horizontalCenter: newLastname.horizontalCenter
@@ -188,7 +197,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newTel
-            z: 1.4
             height: 34
             placeholder: "TELEPHONE NUMBER"
             anchors.left: newPhoto.left
@@ -209,7 +217,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newCell
-            z: 1.3
             height: 34
             placeholder: "CELLPHONE NUMBER"
             anchors.left: newTel.left
@@ -230,14 +237,13 @@ Rectangle {
 
         Controls.TextInput {
             id: newMail
-            z: 1.2
             height: 34
             placeholder: "EMAIL ADDRESS"
             anchors.left: newCell.left
             anchors.right: newCell.right
             anchors.top: newCell.bottom
             anchors.topMargin: 10
-            color: (darktheme == false? "#2A2C31" : "#F2F2F2")
+            color: validEmail == 1? themecolor : "#FD2E2E"
             textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
             font.pixelSize: 14
             visible: editSaved == 0
@@ -245,12 +251,12 @@ Rectangle {
             mobile: 1
             onTextChanged: {
                 detectInteraction()
+                validation(newMail.text)
             }
         }
 
         Controls.TextInput {
             id: newChat
-            z: 1.1
             height: 34
             placeholder: "X-CHAT ID"
             anchors.left: newMail.left
@@ -270,12 +276,11 @@ Rectangle {
 
         Rectangle {
             id: saveButton
-            z: 1
             width: parent.width - 56
             height: 34
             color: ((newFirstname.text !== ""
                      || newLastname.text !== "")
-                    && contactExists == 0) ? maincolor : "#727272"
+                    && contactExists == 0 && validEmail == 1) ? maincolor : "#727272"
             opacity: 0.25
             anchors.top: newChat.bottom
             anchors.topMargin: 50
@@ -303,7 +308,7 @@ Rectangle {
 
                 onClicked: {
                     if ((newFirstname.text !== "" || newLastname.text !== "")
-                            && contactExists == 0) {
+                            && contactExists == 0 && validEmail == 1) {
                         contactID = contactList.count;
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
@@ -367,14 +372,13 @@ Rectangle {
         }
 
         Text {
-            z: 1
             text: "SAVE"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
             color: ((newFirstname.text !== ""
                      || newLastname.text !== "")
-                    && contactExists == 0) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                    && contactExists == 0 && validEmail == 1) ? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
             visible: editSaved == 0
@@ -383,7 +387,6 @@ Rectangle {
         }
 
         Rectangle {
-            z: 1
             width: newTel.width
             height: 34
             anchors.bottom: saveButton.bottom
@@ -401,7 +404,6 @@ Rectangle {
 
         AnimatedImage  {
             id: waitingDots
-            z: 1
             source: 'qrc:/gifs/loading-gif_01.gif'
             width: 90
             height: 60
@@ -414,22 +416,19 @@ Rectangle {
         }
 
         // save failed state
-        Item {
+        Controls.ReplyModal {
             id: addContactFailed
-            width: parent.width
-            height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
+            modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
 
             Image {
                 id: saveFailed
                 source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: addContactFailed.modalTop
+                anchors.topMargin: 20
             }
 
             Label {
@@ -463,7 +462,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveFailedError.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -504,124 +503,121 @@ Rectangle {
 
         // save success state
 
-        Rectangle {
-            id: saveConfirmed
-            width: parent.width
-            height: saveSuccess.height + saveSuccessName.height + saveSuccessLabel.height + closeSave.height + 100
-            color: "transparent"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -50
-            visible: editSaved == 1
-        }
-
-        Image {
-            id: saveSuccess
-            source: darktheme == true? 'qrc:/icons/mobile/add_contact-icon_01_light.svg' : 'qrc:/icons/mobile/add_contact-icon_01_dark.svg'
-            height: 100
-            width: 100
-            fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: saveConfirmed.top
-            visible: editSaved == 1
-        }
-
-        Label {
-            id: saveSuccessName
-            text: newFirstname.text + " " + newLastname.text
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.bold: true
-            visible: editSaved == 1
-        }
-
-        Label {
-            id: saveSuccessLabel
-            text: "Saved!"
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 40
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: darktheme == false? "#2A2C31" : "#F2F2F2"
-            font.pixelSize: 18
-            font.family: "Brandon Grotesque"
-            font.bold: true
-            visible: editSaved == 1
-        }
-
-        Rectangle {
-            id: closeSave
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: maincolor
-            opacity: 0.25
-            anchors.top: saveSuccessLabel.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
+        Controls.ReplyModal {
+            id: addContactSucceed
+            modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 105
             visible: editSaved == 1
 
-            MouseArea {
-                anchors.fill: closeSave
+            Image {
+                id: saveSuccess
+                source: darktheme == true? 'qrc:/icons/mobile/add_contact-icon_01_light.svg' : 'qrc:/icons/mobile/add_contact-icon_01_dark.svg'
+                height: 75
+                fillMode: Image.PreserveAspectFit
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: addContactSucceed.modalTop
+                anchors.topMargin: 20
+                visible: editSaved == 1
+            }
 
-                onPressed: {
-                    parent.opacity = 0.5
-                    click01.play()
-                    detectInteraction()
-                }
+            Label {
+                id: saveSuccessName
+                text: newFirstname.text + " " + newLastname.text
+                anchors.top: saveSuccess.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: saveSuccess.horizontalCenter
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                visible: editSaved == 1
+            }
 
-                onCanceled: {
-                    parent.opacity = 0.25
-                }
+            Label {
+                id: saveSuccessLabel
+                text: "Saved!"
+                anchors.top: saveSuccess.bottom
+                anchors.topMargin: 40
+                anchors.horizontalCenter: saveSuccess.horizontalCenter
+                color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                font.pixelSize: 18
+                font.family: "Brandon Grotesque"
+                font.bold: true
+                visible: editSaved == 1
+            }
 
-                onReleased: {
-                    parent.opacity = 0.25
-                }
+            Rectangle {
+                id: closeSave
+                width: doubbleButtonWidth / 2
+                height: 34
+                color: maincolor
+                opacity: 0.25
+                anchors.top: saveSuccessLabel.bottom
+                anchors.topMargin: 25
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: editSaved == 1
 
-                onClicked: {
-                    addContactTracker = 0;
-                    newFirstname.text = "";
-                    newLastname.text = "";
-                    newTel.text = "";
-                    newCell.text = "";
-                    newMail.text = "";
-                    newChat.text = "";
-                    contactExists = 0;
-                    editSaved = 0
+                MouseArea {
+                    anchors.fill: closeSave
+
+                    onPressed: {
+                        parent.opacity = 0.5
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 0.25
+                    }
+
+                    onReleased: {
+                        parent.opacity = 0.25
+                    }
+
+                    onClicked: {
+                        addContactTracker = 0;
+                        newFirstname.text = "";
+                        newLastname.text = "";
+                        newTel.text = "";
+                        newCell.text = "";
+                        newMail.text = "";
+                        newChat.text = "";
+                        contactExists = 0;
+                        validEmail = 1;
+                        editSaved = 0;
+                        closeAllClipboard = true
+                    }
                 }
             }
-        }
 
-        Text {
-            text: "OK"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: "#F2F2F2"
-            anchors.horizontalCenter: closeSave.horizontalCenter
-            anchors.verticalCenter: closeSave.verticalCenter
-            visible: editSaved == 1
-        }
+            Text {
+                text: "OK"
+                font.family: "Brandon Grotesque"
+                font.pointSize: 14
+                font.bold: true
+                color: "#F2F2F2"
+                anchors.horizontalCenter: closeSave.horizontalCenter
+                anchors.verticalCenter: closeSave.verticalCenter
+                visible: editSaved == 1
+            }
 
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.bottom: closeSave.bottom
-            anchors.left: closeSave.left
-            color: "transparent"
-            opacity: 0.5
-            border.color: maincolor
-            border.width: 1
-            visible: editSaved == 1
+            Rectangle {
+                width: doubbleButtonWidth / 2
+                height: 34
+                anchors.bottom: closeSave.bottom
+                anchors.left: closeSave.left
+                color: "transparent"
+                opacity: 0.5
+                border.color: maincolor
+                border.width: 1
+                visible: editSaved == 1
+            }
         }
     }
 
     Item {
         z: 3
         width: Screen.width
-        height: 125
+        height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -642,7 +638,7 @@ Rectangle {
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -676,6 +672,7 @@ Rectangle {
                 newMail.text = "";
                 newChat.text = "";
                 contactExists = 0;
+                validEmail = 1;
             }
         }
     }

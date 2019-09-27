@@ -26,8 +26,7 @@ int64 AmountFromStr(const char *value) {
      double dAmount;
      std::stringstream ss(value);
      ss >> dAmount;		
-     dAmount = dAmount * COIN ;
-     int64 iAmount = dAmount;   
+     dAmount = dAmount * COIN ;  
      return (int64)(dAmount > 0 ? dAmount + 0.5 : dAmount - 0.5) ;
 }        
 
@@ -83,11 +82,11 @@ void CScript::SetDestination(const CTxDestination& dest)
     boost::apply_visitor(CScriptVisitor(this), dest);
 }
 
-bool SignSignature(const CScript& fromPubKey, CTransaction& txTo, unsigned int nIn, const std::string &privkey)
+bool SignSignature(const CScript& fromPubKey, CTransaction& txTo, unsigned int nIn, const std::string &privkey, const unsigned char network_id)
 {
 	CTxIn& txin = txTo.vin[nIn];
 	uint256 hash = SignatureHash(fromPubKey, txTo, nIn );
-   return Solver(fromPubKey, hash, txin.scriptSig, privkey);		
+   return Solver(fromPubKey, hash, txin.scriptSig, privkey, network_id);		
 }
 
 uint256 SignatureHash(CScript scriptCode, const CTransaction& txTo, unsigned int nIn )
@@ -107,14 +106,14 @@ uint256 SignatureHash(CScript scriptCode, const CTransaction& txTo, unsigned int
 
 
 
-bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, const std::string &privkey)
+bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, const std::string &privkey, const unsigned char network_id )
 {
 	scriptSigRet.clear();
    std::vector<std::vector<unsigned char>> vSolutions;
    if (!PubkeyHashSolver(scriptPubKey, vSolutions)) return false;
    
    CXCiteSecret xciteSecret;
-   bool fGood = xciteSecret.SetString(privkey,35);
+   bool fGood = xciteSecret.SetString(privkey,network_id);
    if (!fGood) return false;
    CKey key = xciteSecret.GetKey();
    
@@ -165,9 +164,11 @@ bool PubkeyHashSolver(const CScript& scriptPubKey, std::vector<valtype>& vSoluti
     
 }
 
-std::string CreateRawTransaction(const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey ) {
+std::string CreateRawTransaction(const unsigned char network_id, const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey ) {
 
-      CTransaction rawTx;       
+  try {
+  	
+      CTransaction rawTx(network_id);       
  
       BOOST_FOREACH(const std::string input, inputs) {
       	
@@ -189,13 +190,17 @@ std::string CreateRawTransaction(const std::vector<std::string> &inputs, const s
          std::vector<std::string> output_details;
          boost::split(output_details, output, [](char c){return c == ',';});
       	
-         CXCiteAddress address(output_details.at(0),35);  // 35 = XFUEL network    	
-      	CScript scriptPubKey;
-         scriptPubKey.SetDestination(address.Get());
-         int64 nAmount = AmountFromStr(output_details.at(1).c_str());         
-
-         CTxOut out(nAmount, scriptPubKey);
-         rawTx.vout.push_back(out);
+         CXCiteAddress address(output_details.at(0),network_id);     
+         if (address.IsValid()) {
+	      	CScript scriptPubKey;
+	         scriptPubKey.SetDestination(address.Get());
+	         int64 nAmount = AmountFromStr(output_details.at(1).c_str());         
+	
+	         CTxOut out(nAmount, scriptPubKey);
+	         rawTx.vout.push_back(out);         
+         } else {
+            return "";
+         }	
       }     
                   
       std::vector<CTransaction> txVariants;
@@ -213,7 +218,7 @@ std::string CreateRawTransaction(const std::vector<std::string> &inputs, const s
          std::vector<unsigned char> prevPubKeyBin = ParseHexcstr(input_details.at(2).c_str());                           
          const CScript prevPubKey(prevPubKeyBin.begin(), prevPubKeyBin.end());
       
-         SignSignature(prevPubKey, mergedTx, i, privkey);
+         SignSignature(prevPubKey, mergedTx, i, privkey, network_id);
       
       }
 
@@ -221,5 +226,5 @@ std::string CreateRawTransaction(const std::vector<std::string> &inputs, const s
       CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
       ssTx << mergedTx;
       return HexStr(ssTx.begin(), ssTx.end());
-
+  } catch (...) { return "";  }
 }

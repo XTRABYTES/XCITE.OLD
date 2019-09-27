@@ -395,16 +395,23 @@ public:
     std::vector<CTxIn> vin;
     std::vector<CTxOut> vout;
     unsigned int nLockTime;
+    unsigned int nTime;
+    unsigned char network_id;    
 
-    CTransaction()
+    CTransaction( const unsigned char _network_id )
     {
         SetNull();
+        this->network_id = _network_id;
+        this->nTime = std::time(NULL);
     }
 
     IMPLEMENT_SERIALIZE
     (
         READWRITE(this->nVersion);
         nVersion = this->nVersion;
+        if (this->network_id == 25) {             // 25 = XTRABYTES network          
+          READWRITE(nTime); 
+        } 
         READWRITE(vin);
         READWRITE(vout);
         READWRITE(nLockTime);
@@ -472,11 +479,11 @@ static const valtype vchZero(0);
 static const valtype vchTrue(1, 1);
 
 
-bool SignSignature(const CScript& fromPubKey, CTransaction& txTo, unsigned int nIn, const std::string &privkey);
+bool SignSignature(const CScript& fromPubKey, CTransaction& txTo, unsigned int nIn, const std::string &privkey, const unsigned char network_id);
 uint256 SignatureHash(CScript scriptCode, const CTransaction& txTo, unsigned int nIn);
-bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, const std::string &privkey);
+bool Solver(const CScript& scriptPubKey, uint256 hash, CScript& scriptSigRet, const std::string &privkey, const unsigned char network_id);
 bool PubkeyHashSolver(const CScript& scriptPubKey, std::vector<valtype>& vSolutionsRet);
-std::string CreateRawTransaction(const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey );
+std::string CreateRawTransaction(const unsigned char network_id, const std::vector<std::string> &inputs, const std::vector<std::string> &outputs, const std::string &privkey );
 
 extern int64 AmountFromStr(const char *value);		
 extern int IntFromStr(const char *value);		

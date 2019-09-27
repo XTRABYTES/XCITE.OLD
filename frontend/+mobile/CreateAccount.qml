@@ -453,8 +453,7 @@ Rectangle {
                             userSettings.pinlock = false
                             userSettings.xby = true
                             userSettings.xfuel = true
-                            userSettings.xbytest = true
-                            userSettings.xfueltest = true
+                            userSettings.xtest = true
                             userSettings.btc = true
                             userSettings.eth = true
                             userSettings.sound = 0
@@ -471,6 +470,7 @@ Rectangle {
                             networkError = 0
                             signUpError = 0
                             createAccountInitiated = false
+                            closeAllClipboard = true
                         }
                     }
 
@@ -1101,7 +1101,7 @@ Rectangle {
         width: 150
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
     }
 }
 

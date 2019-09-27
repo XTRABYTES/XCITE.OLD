@@ -111,7 +111,7 @@ Rectangle {
                     invalidAddress = 1
                 }
             }
-            else if (newCoinName.text == "XFUEL-TEST") {
+            else if (newCoinName.text == "XTEST") {
                 if (newAddress.length == 34 && newAddress.text.substring(0,1) == "G" && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
@@ -213,7 +213,6 @@ Rectangle {
 
         Controls.TextInput {
             id: newName
-            z: 1.2
             height: 34
             placeholder: "ADDRESS LABEL"
             text: ""
@@ -237,7 +236,6 @@ Rectangle {
 
         Label {
             id: nameWarning
-            z: 1.1
             text: "Already an address with this label!"
             color: "#FD2E2E"
             anchors.left: newName.left
@@ -279,7 +277,6 @@ Rectangle {
 
         Label {
             id: addressWarning1
-            z: 1
             text: "This address is already in your account!"
             color: "#FD2E2E"
             anchors.left: newAddress.left
@@ -327,7 +324,6 @@ Rectangle {
 
         Rectangle {
             id: scanQrButton
-            z: 1
             width: newAddress.width
             height: 34
             anchors.top: newAddress.bottom
@@ -379,7 +375,6 @@ Rectangle {
 
         Rectangle {
             id: saveButton
-            z: 1
             width: newAddress.width
             height: 34
             color: (newName.text != ""
@@ -427,7 +422,6 @@ Rectangle {
                 onSaveSucceeded: {
                     if (viewOnlyTracker == 1 && addingWallet == true) {
                         walletAdded = true
-                        editSaved = 1
                         viewOnlyTracker = 0
                         newName.text = ""
                         newAddress.text = ""
@@ -438,6 +432,7 @@ Rectangle {
                         selectedAddress = ""
                         scanning = "scanning..."
                         addingWallet = false
+                        closeAllClipboard = true
                     }
                 }
 
@@ -507,7 +502,6 @@ Rectangle {
         }
 
         Text {
-            z: 1
             text: "SAVE"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -523,7 +517,6 @@ Rectangle {
         }
 
         Rectangle {
-            z: 1
             width: newAddress.width
             height: 34
             anchors.bottom: saveButton.bottom
@@ -541,7 +534,6 @@ Rectangle {
 
         AnimatedImage  {
             id: waitingDots
-            z: 1
             source: 'qrc:/gifs/loading-gif_01.gif'
             width: 90
             height: 60
@@ -554,22 +546,19 @@ Rectangle {
     }
 
     // Save failed state
-    Item {
+    Controls.ReplyModal {
         id: addWalletFailed
-        width: parent.width
-        height: saveFailed.height + saveFailedLabel.height + closeFail.height + 60
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
+        modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
         visible: editFailed == 1
 
         Image {
             id: saveFailed
             source: saveErrorNR === 0? (darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg') : ('qrc:/icons/mobile/warning-icon_01.svg')
-            height: 100
+            height: 75
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
+            anchors.top: addWalletFailed.modalTop
+            anchors.topMargin: 20
         }
 
         Label {
@@ -607,7 +596,7 @@ Rectangle {
             color: maincolor
             opacity: 0.25
             anchors.top: saveFailedError.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter
 
             MouseArea {
@@ -630,6 +619,7 @@ Rectangle {
                         scanQRTracker = 0
                         selectedAddress = ""
                         scanning = "scanning..."
+                        closeAllClipboard = true
                     }
                     editFailed = 0
                     failError = ""
@@ -652,93 +642,6 @@ Rectangle {
             height: 34
             anchors.bottom: closeFail.bottom
             anchors.left: closeFail.left
-            color: "transparent"
-            opacity: 0.5
-            border.color: maincolor
-            border.width: 1
-        }
-    }
-
-    // Save succes state
-    Item {
-        id: addWalletSucces
-        width: parent.width
-        height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
-        visible: editSaved == 1
-
-        Image {
-            id: saveSuccess
-            source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
-            height: 100
-            width: 100
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-        }
-
-        Label {
-            id: saveSuccessLabel
-            text: "Wallet added!"
-            anchors.top: saveSuccess.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: saveSuccess.horizontalCenter
-            color: maincolor
-            font.pixelSize: 14
-            font.family: "Brandon Grotesque"
-            font.bold: true
-        }
-
-        Rectangle {
-            id: closeSave
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: maincolor
-            opacity: 0.25
-            anchors.top: saveSuccessLabel.bottom
-            anchors.topMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            MouseArea {
-                anchors.fill: closeSave
-
-                onPressed: {
-                    click01.play()
-                    detectInteraction()
-                }
-
-                onClicked: {
-                    walletAdded = true
-                    editSaved = 0
-                    viewOnlyTracker = 0
-                    newName.text = ""
-                    newAddress.text = ""
-                    addressExists = 0
-                    labelExists = 0
-                    invalidAddress = 0
-                    scanQRTracker = 0
-                    selectedAddress = ""
-                    scanning = "scanning..."
-                }
-            }
-        }
-
-        Text {
-            text: "OK"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: "#F2F2F2"
-            anchors.horizontalCenter: closeSave.horizontalCenter
-            anchors.verticalCenter: closeSave.verticalCenter
-        }
-
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.bottom: closeSave.bottom
-            anchors.left: closeSave.left
             color: "transparent"
             opacity: 0.5
             border.color: maincolor
@@ -788,7 +691,7 @@ Rectangle {
         Camera {
             id: camera
             position: Camera.BackFace
-            cameraState: (viewOnlyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
+            cameraState: cameraPermission === true? ((viewOnlyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState) : Camera.UnloadedState
             focus {
                 focusMode: Camera.FocusContinuous
                 focusPointMode: CameraFocus.FocusPointAuto
@@ -972,7 +875,7 @@ Rectangle {
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -1009,6 +912,7 @@ Rectangle {
                     scanQRTracker = 0
                     selectedAddress = ""
                     scanning = "scanning..."
+                    closeAllClipboard = true
                 }
             }
 

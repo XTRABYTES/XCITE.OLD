@@ -229,7 +229,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.leftMargin: 28
         color: "#F7931A"
-        border.color: coin == 4? themecolor : "transparent"
+        border.color: coin == 3? themecolor : "transparent"
     }
 
     Label {
@@ -250,7 +250,7 @@ Rectangle {
         anchors.horizontalCenter: btcLabel.horizontalCenter
         anchors.top: btcLabel.bottom
         color: themecolor
-        visible: coin == 4
+        visible: coin == 3
     }
 
     MouseArea {
@@ -262,7 +262,7 @@ Rectangle {
         onClicked: {
             click01.play()
             detectInteraction()
-            coin = 4
+            coin = 3
             percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
         }
     }
@@ -275,7 +275,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 28
         color: "#A690FC"
-        border.color: coin == 5? themecolor : "transparent"
+        border.color: coin == 4? themecolor : "transparent"
     }
 
     Label {
@@ -296,7 +296,7 @@ Rectangle {
         anchors.horizontalCenter: ethLabel.horizontalCenter
         anchors.top: ethLabel.bottom
         color: themecolor
-        visible: coin == 5
+        visible: coin == 4
     }
 
     MouseArea {
@@ -308,7 +308,7 @@ Rectangle {
         onClicked: {
             click01.play()
             detectInteraction()
-            coin = 5
+            coin = 4
             percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
         }
     }
@@ -441,7 +441,7 @@ Rectangle {
 
         Label {
             id: coinValue
-            text: coin == 0? valueXFUEL.toLocaleString(Qt.locale("en_US"), "f", 4) : (coin == 1? valueXBY.toLocaleString(Qt.locale("en_US"), "f", 4) : (coin == 4? valueBTC.toLocaleString(Qt.locale("en_US"), "f", 4) : valueETH.toLocaleString(Qt.locale("en_US"), "f", 4)))
+            text: coin == 0? valueXFUEL.toLocaleString(Qt.locale("en_US"), "f", 4) : (coin == 1? valueXBY.toLocaleString(Qt.locale("en_US"), "f", 4) : (coin == 3? valueBTC.toLocaleString(Qt.locale("en_US"), "f", 4) : valueETH.toLocaleString(Qt.locale("en_US"), "f", 4)))
             anchors.right: parent.right
             anchors.rightMargin: 28
             anchors.top: infoLabel.bottom
@@ -553,7 +553,7 @@ Rectangle {
     Item {
         z: 3
         width: Screen.width
-        height: 125
+        height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -574,7 +574,7 @@ Rectangle {
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"

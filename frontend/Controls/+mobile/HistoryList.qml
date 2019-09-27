@@ -13,6 +13,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.3
 import SortFilterProxyModel 0.2
+import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
 
@@ -91,7 +92,12 @@ Rectangle {
                     transactionAmount = 0
                     transactionNR = txid
                     transactionDirection = direction
-                    getDetails(amountTicker.text, txid)
+                    if (explorerBusy == false) {
+                        getDetails(amountTicker.text, txid)
+                    }
+                    else {
+                        explorerPopup = 1
+                    }
                 }
             }
 
@@ -108,6 +114,23 @@ Rectangle {
                 font.pixelSize: 16
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
                 elide: Text.ElideRight
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressAndHold: {
+                            if(copy2clipboard == 0 && historyTracker == 1) {
+                                txid2Copy = txid
+                                copyText2Clipboard(txid)
+                                copy2clipboard = 1
+                            }
+                        }
+                    }
+                }
             }
 
             Rectangle {
@@ -186,6 +209,61 @@ Rectangle {
                 font.pixelSize: 18
                 font.bold: true
                 color: direction == false? "#E55541" : "#4BBE2E"
+            }
+
+            DropShadow {
+                anchors.fill: textPopup
+                source: textPopup
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.4
+                transparentBorder: true
+                visible: copy2clipboard == 1 && historyTracker == 1 && txid2Copy === transactionID.text
+            }
+
+            Rectangle {
+                id: textPopup
+                height: 60
+                width: parent.width - 56
+                color: "#34363D"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                visible: copy2clipboard == 1 && historyTracker == 1 && txid2Copy === transactionID.text
+
+                Label {
+                    id: popupClipboardText1
+                    text: txid
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "#F2F2F2"
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 20
+                    anchors.right: parent.right
+                    anchors.rightMargin: 20
+                    anchors.top: parent.top
+                    anchors.topMargin: 10
+                    elide: Text.ElideRight
+                }
+
+                Label {
+                    id: popupClipboardText2
+                    text: "Txid copied!"
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "#F2F2F2"
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 10
+                    elide: Text.ElideRight
+                }
             }
         }
     }

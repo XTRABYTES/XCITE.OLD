@@ -23,6 +23,8 @@ Item {
     width: Screen.width
     clip: true
 
+    property string versionNR: "0.4"
+
     Component.onCompleted: {
         selectedPage = "login"
     }
@@ -41,7 +43,7 @@ Item {
         width: Screen.width
         height: Screen.height
         color: "#14161B"
-        state: loginTracker == 0? "hidden" : "inView"
+        state: loginTracker == 0? (importTracker == 0? "hidden" : "inView") : "inView"
 
         LinearGradient {
             anchors.fill: parent
@@ -93,7 +95,7 @@ Item {
         anchors.verticalCenterOffset: -50
         color: "transparent"
 
-        state: loginTracker == 0? "inView" : "hidden"
+        state: loginTracker == 0? (importTracker == 0? "inView": "hidden") : "hidden"
 
         states: [
             State {
@@ -126,7 +128,7 @@ Item {
 
         Label {
             id: version
-            text: "V 1.0"
+            text: "V" + versionNR
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: welcomeText.bottom
             anchors.topMargin: -20
@@ -161,8 +163,10 @@ Item {
                 onReleased: {
                     loginTracker = 1
                     clearAllSettings();
-                    console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + " account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
-
+                    console.log("checking OS")
+                    checkOS();
+                    console.log("requesting state camera permission")
+                    checkCamera();
                 }
             }
         }
@@ -193,7 +197,7 @@ Item {
 
     Label {
         id: closeButtonLabel
-        text: "CLOSE"
+        text: loginTracker == 0 && importTracker == 0? "CLOSE" : (loginTracker == 0? "BACK" : "CLOSE")
         anchors.bottom: combinationMark.top
         anchors.bottomMargin: 25
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
@@ -204,7 +208,7 @@ Item {
         Rectangle{
             id: closeButton
             height: 34
-            width: doubbleButtonWidth
+            width: closeButtonLabel.width + 20
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
@@ -214,7 +218,13 @@ Item {
             anchors.fill: closeButton
 
             onClicked: {
+                if (loginTracker == 1 || (loginTracker == 0 && importTracker == 0)) {
                 Qt.quit()
+                }
+                if (importTracker == 1) {
+                    importTracker = 0
+                    loginTracker = 1
+                }
             }
         }
     }
@@ -226,10 +236,14 @@ Item {
         width: 150
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
         anchors.bottom: backgroundSplash.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
     }
 
     Login {
         id: myLogin
+    }
+
+    ImportAccount {
+        id: myImport
     }
 }

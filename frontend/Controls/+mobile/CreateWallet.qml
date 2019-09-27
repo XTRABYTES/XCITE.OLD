@@ -179,7 +179,6 @@ Rectangle {
 
             Controls.TextInput {
                 id: newName
-                z: 1.1
                 height: 34
                 width: doubbleButtonWidth
                 placeholder: "WALLET LABEL"
@@ -200,7 +199,6 @@ Rectangle {
 
             Label {
                 id: nameWarning
-                z: 1
                 text: "Already an address with this label!"
                 color: "#FD2E2E"
                 anchors.left: newName.left
@@ -216,7 +214,6 @@ Rectangle {
 
             Rectangle {
                 id: createWalletButton
-                z: 1
                 width: doubbleButtonWidth
                 height: 34
                 anchors.top: newName.bottom
@@ -235,16 +232,12 @@ Rectangle {
                     }
 
                     onReleased: {
+                        closeAllClipboard = true
                         if (newName.text != "" && labelExists == 0) {
-                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY") {
+                            if (coinList.get(coinIndex).name === "XFUEL" || coinList.get(coinIndex).name === "XBY" || coinList.get(coinIndex).name === "XTEST") {
                                 createInitiated = true
                                 createKeyPair(coinList.get(coinIndex).fullname)
                             }
-                            else if (coinList.get(coinIndex).name === "XFUEL-TEST") {
-                                createInitiated = true
-                                createKeyPair("testnet")
-                            }
-
                             else {
                                 createFailed = 1
                             }
@@ -252,7 +245,7 @@ Rectangle {
                     }
 
                     Connections {
-                        target: xUtil
+                        target: xUtility
 
                         onKeyPairCreated: {
                             if (createWalletTracker == 1 && createInitiated == true) {
@@ -277,7 +270,6 @@ Rectangle {
 
             Text {
                 id: createWalletButtonText
-                z: 1
                 text: "CREATE WALLET"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
@@ -289,7 +281,6 @@ Rectangle {
             }
 
             Rectangle {
-                z: 1
                 width: createWalletButton.width
                 height: 34
                 anchors.bottom: createWalletButton.bottom
@@ -303,7 +294,6 @@ Rectangle {
 
             AnimatedImage {
                 id: waitingDots2
-                z: 1
                 source: 'qrc:/gifs/loading-gif_01.gif'
                 width: 90
                 height: 60
@@ -718,22 +708,19 @@ Rectangle {
         }
 
         // Save succes state
-        Item {
-            id: createWalletSucces
-            width: parent.width
-            height: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+        Controls.ReplyModal {
+            id: createWalletSuccess
+            modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
 
             Image {
                 id: saveSuccess
                 source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
-                height: 100
-                width: 100
+                height: 75
+                fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: createWalletSuccess.modalTop
+                anchors.topMargin: 20
             }
 
             Label {
@@ -755,7 +742,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: saveSuccessLabel.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -802,13 +789,9 @@ Rectangle {
         }
 
         // Create wallet failed
-        Item {
+        Controls.ReplyModal {
             id: createWalletError
-            width: parent.width
-            height: saveError.height + errorLabel.height + closeError.height + 60
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -100
+            modalHeight: saveError.height + errorLabel.height + closeError.height + 75
             visible: createFailed == 1
 
             Image {
@@ -817,7 +800,8 @@ Rectangle {
                 height: 100
                 width: 100
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
+                anchors.top: createWalletError.modalTop
+                anchors.topMargin: 20
             }
 
             Text {
@@ -842,7 +826,7 @@ Rectangle {
                 color: maincolor
                 opacity: 0.25
                 anchors.top: errorLabel.bottom
-                anchors.topMargin: 50
+                anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea {
@@ -885,7 +869,7 @@ Rectangle {
     Item {
         z: 3
         width: Screen.width
-        height: 125
+        height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -906,7 +890,7 @@ Rectangle {
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"

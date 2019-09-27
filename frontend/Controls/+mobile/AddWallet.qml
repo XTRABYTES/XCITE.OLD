@@ -413,23 +413,19 @@ Rectangle {
         }
     }
 
-    Item {
+    Controls.ReplyModal {
         id: addWalletComplete
-        width: parent.width
-        height: saveSuccess.height + saveSuccessLabel.height + moreWallets.height + 60
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
+        modalHeight: saveSuccess.height + saveSuccessLabel.height + moreWallets.height + 75
         visible: selectWallet == 1 && walletAdded == true
 
         Image {
             id: saveSuccess
             source: darktheme == true? 'qrc:/icons/mobile/add_address-icon_01_light.svg' : 'qrc:/icons/mobile/add_address-icon_01_dark.svg'
-            height: 100
-            width: 100
+            height: 75
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
+            anchors.top: addWalletComplete.modalTop
+            anchors.topMargin: 20
         }
 
         Label {
@@ -446,13 +442,13 @@ Rectangle {
 
         Rectangle {
             id: moreWallets
-            width: doubbleButtonWidth
+            width: moreWalletsText.implicitWidth + 20
             height: 34
             color: "transparent"
             border.color: maincolor
             border.width: 1
             anchors.top: saveSuccessLabel.bottom
-            anchors.topMargin: 50
+            anchors.topMargin: 25
             anchors.horizontalCenter: parent.horizontalCenter
 
             MouseArea {
@@ -479,6 +475,7 @@ Rectangle {
             }
         }
         Text {
+            id: moreWalletsText
             text: "ADD ANOTHER WALLET"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -493,7 +490,7 @@ Rectangle {
         id: closeAddWallet
         z: 4
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         text: selectWallet == 1? (walletAdded == true? "CLOSE" : "BACK") : "CLOSE"
         font.pixelSize: 14

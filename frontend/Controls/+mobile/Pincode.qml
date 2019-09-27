@@ -87,6 +87,8 @@ Rectangle {
     property int passError3: 0
     property int failToSave: 0
 
+    property int currentPinCorrect: 0
+
     property string failError: ""
 
     Flickable {
@@ -133,7 +135,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: newPin1
-                z: 1.2
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -148,15 +149,25 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (newPin1.text).length >= 4
                 mobile: 1
                 calculator: 0
                 onTextChanged: detectInteraction()
+
+                Image {
+                    id: createPinOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 35
+                    visible: (changePin1.text).length === 4
+                }
             }
 
             Label {
                 id: createPinText2
-                z: 1.1
                 text: "Retype your 4-digit pincode"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: newPin1.bottom
@@ -168,7 +179,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: newPin2
-                z: 1.1
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -183,25 +193,34 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (newPin2.text).length >= 4
                 mobile: 1
                 calculator: 0
 
                 onTextChanged: {
                     detectInteraction()
+                    passError3 = 0
                     if ((newPin2.text).length === 4){
-                        passError3 = 0
                         if (newPin2.text !== newPin1.text) {
                             passError3 = 1
                             newPin2.text = ""
                         }
                     }
                 }
+                Image {
+                    id: createPinRepeateOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 35
+                    visible: newPin2.text === newPin1.text
+                }
             }
 
             Label {
                 id: noMatch
-                z: 1
                 text: "The pincodes you entered don't match!"
                 color: "#FD2E2E"
                 anchors.left: newPin2.left
@@ -216,10 +235,13 @@ Rectangle {
 
             Rectangle {
                 id: savePin
-                z: 1
                 width: doubbleButtonWidth / 2
                 height: 34
-                color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? maincolor : "#727272"
+                color: (newPin1.text !== ""
+                        && newPin1.text.length === 4
+                        && newPin2.text !== ""
+                        && newPin2.text.length === 4
+                        && passError3 == 0)? maincolor : "#727272"
                 opacity: 0.25
                 anchors.top: newPin2.bottom
                 anchors.topMargin: 25
@@ -256,7 +278,11 @@ Rectangle {
                     }
 
                     onClicked: {
-                        if (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0) {
+                        if (newPin1.text !== ""
+                                && newPin1.text.length === 4
+                                && newPin2.text !== ""
+                                && newPin2.text.length === 4
+                                && passError3 == 0) {
                             console.log("attempting to save pincode");
                             newPinSaved = 0;
                             userSettings.pinlock = true;
@@ -327,25 +353,31 @@ Rectangle {
                 }
             }
             Text {
-                z: 1
                 text: "SAVE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                color: (newPin1.text !== ""
+                        && newPin1.text.length === 4
+                        && newPin2.text !== ""
+                        && newPin2.text.length === 4
+                        && passError3 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
                 anchors.horizontalCenter: savePin.horizontalCenter
                 anchors.verticalCenter: savePin.verticalCenter
             }
 
             Rectangle {
-                z: 1
                 width: savePin.width
                 height: 34
                 anchors.bottom: savePin.bottom
                 anchors.left: savePin.left
                 color: "transparent"
                 opacity: 0.5
-                border.color: (newPin1.text !== "" && newPin2.text !== "" && passError3 == 0)? maincolor : "#979797"
+                border.color: (newPin1.text !== ""
+                               && newPin1.text.length === 4
+                               && newPin2.text !== ""
+                               && newPin2.text.length === 4
+                               && passError3 == 0)? maincolor : "#979797"
                 border.width: 1
             }
         }
@@ -373,7 +405,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: currentPin
-                z: 1.3
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -388,29 +419,31 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (currentPin.text).length >= 4 && passError2 == 0
                 mobile: 1
                 calculator: 0
 
+                Image {
+                    id: currentPinOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 35
+                    visible: currentPinCorrect == 1
+                }
+
                 Timer {
                     id: timer6
-                    interval: passError2 == 1 ? 5000 : 2000
+                    interval: passError2 == 1 ? 300 : 2000
                     repeat: false
                     running: false
 
                     onTriggered: {
                         if (passError2 == 1) {
-                            passError2 = 0
-                            passTry = 0
                             pincodeTracker = 0
                             changePin = 0
-                            pinError = 0
-                            coinList.clear()
-                            walletList.clear()
-                            contactList.clear()
-                            addressList.clear()
-                            transactionList.clear()
-                            Qt.quit()
                         }
                         else {
                             pinError = 0
@@ -420,6 +453,7 @@ Rectangle {
 
                 onTextChanged: {
                     detectInteraction()
+                    currentPinCorrect = 0
                     if ((currentPin.text).length === 4){
                         passError1 = 0
                         passError2 = 0
@@ -432,19 +466,26 @@ Rectangle {
                     target: UserSettings
 
                     onPincodeCorrect: {
-                        passTry = 0
+                        if (changePin == 1) {
+                            passTry = 0
+                            currentPinCorrect = 1
+                        }
                     }
 
                     onPincodeFalse: {
-                        pinError = 1
-                        currentPin.text = ""
-                        if (passTry == 3) {
-                            passError2 = 1
-                            timer6.start()
-                        }
-                        else {
-                            passError1 = 1
-                            timer6.start()
+                        if (changePin ==1) {
+                            pinError = 1
+                            currentPin.text = ""
+                            if (passTry == 3) {
+                                passError2 = 1
+                                pinLogout = 1
+                                logoutTracker = 1
+                                timer6.start()
+                            }
+                            else {
+                                passError1 = 1
+                                timer6.start()
+                            }
                         }
                     }
                 }
@@ -452,7 +493,6 @@ Rectangle {
 
             Label {
                 id: newPinText1
-                z: 1.2
                 text: "Choose a new 4-digit pincode"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: currentPin.bottom
@@ -464,7 +504,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: changePin1
-                z: 1.2
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -479,15 +518,25 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (changePin1.text).length >= 4
                 mobile: 1
                 calculator: 0
                 onTextChanged: detectInteraction()
+
+                Image {
+                    id: newPinOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 35
+                    visible: (changePin1.text).length === 4
+                }
             }
 
             Label {
                 id: newPinText2
-                z: 1.1
                 text: "Choose a new 4-digit pincode"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: changePin1.bottom
@@ -499,7 +548,6 @@ Rectangle {
 
             Controls.AmountInput {
                 id: changePin2
-                z: 1.1
                 height: 70
                 anchors.right: parent.right
                 anchors.rightMargin: 28
@@ -514,25 +562,34 @@ Rectangle {
                 textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
                 font.pixelSize: 28
                 font.letterSpacing: 4
-                readOnly: (pin.text).length >= 4
+                readOnly: (changePin2.text).length >= 4
                 mobile: 1
                 calculator: 0
 
                 onTextChanged: {
                     detectInteraction()
+                    passError3 = 0
                     if ((changePin2.text).length === 4){
-                        passError3 = 0
                         if (changePin2.text !== changePin1.text) {
                             passError3 = 1
                             changePin2.text = ""
                         }
                     }
                 }
+                Image {
+                    id: newPinRepeatOK
+                    source: 'qrc:/icons/icon-ok_01.svg'
+                    height: 20
+                    width: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 35
+                    visible: changePin2.text === changePin1.text && (changePin2.text).length === 4
+                }
             }
 
             Label {
                 id: noMatch2
-                z: 1
                 text: "The new pincodes you entered don't match!"
                 color: "#FD2E2E"
                 anchors.left: changePin2.left
@@ -547,10 +604,16 @@ Rectangle {
 
             Rectangle {
                 id: editPin
-                z: 1
                 width: doubbleButtonWidth / 2
                 height: 34
-                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? maincolor : "#727272"
+                color: (currentPin.text !== ""
+                        && currentPin.text.length === 4
+                        && changePin1.text !== ""
+                        && changePin1.text.length === 4
+                        && changePin2.text !== ""
+                        && changePin2.text.length === 4
+                        && passError3 == 0
+                        && passError1 == 0)? maincolor : "#727272"
                 opacity: 0.25
                 anchors.top: changePin2.bottom
                 anchors.topMargin: 25
@@ -587,7 +650,14 @@ Rectangle {
                     }
 
                     onClicked: {
-                        if (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0) {
+                        if (currentPin.text !== ""
+                                && currentPin.text.length === 4
+                                && changePin1.text !== ""
+                                && changePin1.text.length === 4
+                                && changePin2.text !== ""
+                                && changePin2.text.length === 4
+                                && passError3 == 0
+                                && passError1 == 0) {
                             savePincode(changePin1.text)
                         }
                     }
@@ -656,25 +726,37 @@ Rectangle {
             }
 
             Text {
-                z: 1
                 text: "SAVE"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 font.bold: true
-                color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                color: (currentPin.text !== ""
+                        && currentPin.text.length === 4
+                        && changePin1.text !== ""
+                        && changePin1.text.length === 4
+                        && changePin2.text !== ""
+                        && changePin2.text.length === 4
+                        && passError3 == 0
+                        && passError1 == 0)? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
                 anchors.horizontalCenter: editPin.horizontalCenter
                 anchors.verticalCenter: editPin.verticalCenter
             }
 
             Rectangle {
-                z: 1
                 width: editPin.width
                 height: 34
                 anchors.bottom: editPin.bottom
                 anchors.left: editPin.left
                 color: "transparent"
                 opacity: 0.5
-                border.color: (currentPin.text !== "" &&changePin1.text !== "" && changePin2.text !== "" && passError3 == 0 && passError1 == 0)? maincolor : "#979797"
+                border.color: (currentPin.text !== ""
+                               && currentPin.text.length === 4
+                               && changePin1.text !== ""
+                               && changePin1.text.length === 4
+                               && changePin2.text !== ""
+                               && changePin2.text.length === 4
+                               && passError3 == 0
+                               && passError1 == 0)? maincolor : "#979797"
                 border.width: 1
             }
         }
@@ -737,19 +819,15 @@ Rectangle {
 
                 Timer {
                     id: timer4
-                    interval: passError2 == 1 ? 5000 : 2000
+                    interval: passError2 == 1 ? 300 : 2000
                     repeat: false
                     running: false
 
                     onTriggered: {
                         if (passError2 == 1) {
                             pincodeTracker = 0
-                            passError2 = 0
-                            passTry = 0
                             unlockPin = 0
                             clearAll = 0
-                            pinError = 0
-                            goodbey = 1
                         }
                         else {
                             pinError = 0
@@ -771,24 +849,30 @@ Rectangle {
                     target: UserSettings
 
                     onPincodeCorrect: {
-                        pinOK = 1
-                        pin.text = ""
-                        passTry = 0
-                        if (pinOK == 1 && (unlockPin == 1 || transferTracker == 1 || clearAll == 1 || backupTracker == 1)) {
-                            timer3.start()
+                        if (createPin == 0 && changePin == 0) {
+                            pinOK = 1
+                            pin.text = ""
+                            passTry = 0
+                            if (pinOK == 1 && (unlockPin == 1 || transferTracker == 1 || clearAll == 1 || backupTracker == 1)) {
+                                timer3.start()
+                            }
                         }
                     }
 
                     onPincodeFalse: {
-                        pinError = 1
-                        pin.text = ""
-                        if (passTry == 3) {
-                            passError2 = 1
-                            timer4.start()
-                        }
-                        else {
-                            passError1 = 1
-                            timer4.start()
+                        if (createPin == 0 && changePin == 0) {
+                            pinError = 1
+                            pin.text = ""
+                            if (passTry == 3) {
+                                passError2 = 1
+                                pinLogout = 1
+                                logoutTracker = 1
+                                timer4.start()
+                            }
+                            else {
+                                passError1 = 1
+                                timer4.start()
+                            }
                         }
                     }
                 }
@@ -975,7 +1059,7 @@ Rectangle {
 
             Label {
                 id: wrongPin1
-                text: passError2 == 0? "The pincodes you entered is incorrect!" : "You had 3 failed attempts!"
+                text: "The pincodes you entered is incorrect!"
                 color: themecolor
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
@@ -986,8 +1070,11 @@ Rectangle {
 
             Label {
                 id: wrongPin2
-                text: passError2 == 0? "You have " + (3 - passTry) + " attempts left before you are logged out automatically!" : "You will be logged out automatically in 5 seconds!"
+                text: passError2 == 0? "You have " + (3 - passTry) + " attempts left before you are logged out automatically!" : ""
                 color: themecolor
+                width: doubbleButtonWidth
+                wrapMode: Text.WordWrap
+                horizontalAlignment: Text.AlignHCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: wrongPin1.bottom
                 anchors.topMargin: 5
@@ -1112,7 +1199,7 @@ Rectangle {
         id: bottomGradient
         z: 3
         width: Screen.width
-        height: 125
+        height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1132,14 +1219,14 @@ Rectangle {
         id: closePincode
         z: 10
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         text: "BACK"
         font.pixelSize: 14
         font.family: xciteMobile.name
         color: themecolor
-        visible: pinOK == 0
-                 && pinError == 0
+        //visible: pinOK == 0
+        //         && pinError == 0
 
         Rectangle {
             id: backbutton
@@ -1168,6 +1255,9 @@ Rectangle {
                 pin.text = ""
                 newPin1.text = ""
                 newPin2.text = ""
+                currentPin.text = ""
+                changePin1.text = ""
+                changePin2.text = ""
             }
         }
     }

@@ -148,11 +148,8 @@ Rectangle {
                                     if (name == "XBY") {
                                        userSettings.xby = true
                                     }
-                                    if (name == "XFUEL-TEST") {
-                                       userSettings.xfueltest = true
-                                    }
-                                    if (name == "XBY-TEST") {
-                                       userSettings.xbytest = true
+                                    if (name == "XTEST") {
+                                       userSettings.xtest = true
                                     }
                                     if (name == "BTC") {
                                        userSettings.btc = true
@@ -180,11 +177,8 @@ Rectangle {
                                     if (name == "XBY") {
                                        userSettings.xby = false
                                     }
-                                    if (name == "XFUEL-TEST") {
-                                       userSettings.xfueltest = false
-                                    }
-                                    if (name == "XBY-TEST") {
-                                       userSettings.xbytest = false
+                                    if (name == "XTEST") {
+                                       userSettings.xtest = false
                                     }
                                     if (name == "BTC") {
                                        userSettings.btc = false

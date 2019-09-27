@@ -77,7 +77,6 @@ Item {
 
         Rectangle {
             id: loginModalBody
-            z: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             width: parent.width
@@ -97,9 +96,19 @@ Item {
             }
         }
 
+        Rectangle {
+            anchors.horizontalCenter: loginModalBody.horizontalCenter
+            anchors.bottom: loginModalBody.bottom
+            width: loginModalBody.width
+            height: loginModalBody.height
+            color: "transparent"
+            border.color: maincolor
+            border.width: 1
+            opacity: 0.25
+        }
+
         Controls.TextInput {
             id: userName
-            z: 1.3
             height: 34
             placeholder: "USERNAME"
             text: ""
@@ -122,7 +131,6 @@ Item {
 
         Controls.TextInput {
             id: passWord
-            z: 1.2
             height: 34
             placeholder: "PASSWORD"
             text: ""
@@ -147,7 +155,6 @@ Item {
 
         Text {
             id: passWordError
-            z: 1.1
             text: "Username & Password combination is not correct!"
             color: "#FD2E2E"
             anchors.left: passWord.left
@@ -162,7 +169,6 @@ Item {
 
         Rectangle {
             id: logInButton
-            z: 1.1
             height: 34
             anchors.bottom: loginModalBody.bottom
             anchors.bottomMargin: 20
@@ -199,6 +205,7 @@ Item {
                 }
 
                 onReleased: {
+                    closeAllClipboard = true
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
                         loginInitiated = true
                         checkUsername = 1
@@ -210,86 +217,129 @@ Item {
                 target: UserSettings
 
                 onCreateUniqueKeyPair: {
-                    checkUsername = 0
-                    keyPairSend = 1
+                    if (loginTracker == 1){
+                        checkUsername = 0
+                        keyPairSend = 1
+                    }
                 }
 
                 onCheckIdentity: {
-                    keyPairSend = 0
-                    checkIdentity = 1
+                    if (loginTracker == 1){
+                        keyPairSend = 0
+                        checkIdentity = 1
+                    }
                 }
 
                 onReceiveSessionEncryptionKey: {
-                    checkIdentity = 0
-                    sessionKey = 1
+                    if (loginTracker == 1){
+                        checkIdentity = 0
+                        sessionKey = 1
+                    }
                 }
 
                 onReceiveSessionID: {
-                    sessionKey = 0
-                    receiveSessionID = 1
+                    if (loginTracker == 1){
+                        sessionKey = 0
+                        receiveSessionID = 1
+                    }
                 }
 
                 onLoadingSettings: {
-                    receiveSessionID = 0
-                    loadingSettings = 1
+                    if (loginTracker == 1){
+                        receiveSessionID = 0
+                        loadingSettings = 1
+                    }
                 }
 
                 onContactsLoaded: {
-                    loadContactList(contacts)
+                    if (loginTracker == 1){
+                        loadContactList(contacts)
+                    }
                 }
 
                 onAddressesLoaded: {
-                    loadAddressList(addresses)
+                    if (loginTracker == 1){
+                        loadAddressList(addresses)
+                    }
                 }
                 onWalletLoaded: {
-                    loadWalletList(wallets)
+                    if (loginTracker == 1){
+                        loadWalletList(wallets)
+                    }
+                }
+
+                onPendingLoaded: {
+                    if (loginTracker == 1){
+                        loadPendingList(pending)
+                    }
                 }
 
                 onClearSettings:{
-                    clearSettings();
+                    if (loginTracker == 1){
+                        clearSettings();
+                    }
                 }
 
                 onSettingsLoaded: {
-                    loadSettings(settings);
+                    if (loginTracker == 1){
+                        loadSettings(settings);
+                        loadingSettings = 0
+                        verifyingBalances = 1
+                    }
                 }
-                /** onTransactionsLoaded: {
-                        loadHistoryList(history)
-                    }**/
 
                 onLoginSucceededChanged: {
-                    selectedPage = "home"
-                    mainRoot.pop()
-                    mainRoot.push("../Home.qml")
-                    username = userName.text
-                    loginSuccesTimer.start()
-                    loadingSettings = 0
-                    verifyingBalances = 0
+                    if (loginTracker == 1){
+                        selectedPage = "home"
+                        mainRoot.pop()
+                        mainRoot.push("../Home.qml")
+                        username = userName.text
+                        loginSuccesTimer.start()
+                        loadingSettings = 0
+                        verifyingBalances = 0
+                    }
                 }
 
                 onLoginFailedChanged: {
-                    checkUsername = 0
-                    keyPairSend = 0
-                    checkIdentity = 0
-                    sessionKey = 0
-                    receiveSessionID = 0
-                    loadingSettings = 0
-                    passError = 1
-                    passWord.text = ""
-                    loginInitiated  = false
+                    if (loginTracker == 1){
+                        checkUsername = 0
+                        keyPairSend = 0
+                        checkIdentity = 0
+                        sessionKey = 0
+                        receiveSessionID = 0
+                        loadingSettings = 0
+                        passError = 1
+                        passWord.text = ""
+                        loginInitiated  = false
+                    }
                 }
 
                 onUsernameAvailable: {
-                    passError = 1
-                    passWord.text = ""
-                    loginInitiated  = false
+                    if (loginTracker == 1){
+                        checkUsername = 0
+                        passError = 1
+                        passWord.text = ""
+                        loginInitiated  = false
+                    }
                 }
 
-             }
+                onWalletNotFound: {
+                    if (loginTracker == 1){
+                        checkUsername = 0
+                        keyPairSend = 0
+                        checkIdentity = 0
+                        sessionKey = 0
+                        receiveSessionID = 0
+                        loadingSettings = 0
+                        passWord.text = ""
+                        loginInitiated  = false
+                    }
+                }
+            }
         }
 
         Text {
             id: logInButtonText
-            z: 1.1
             text: "LOG IN"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
@@ -301,7 +351,6 @@ Item {
         }
 
         Rectangle {
-            z: 1.1
             height: 34
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
@@ -317,7 +366,6 @@ Item {
 
         Label {
             id: loginRespons
-            z: 1.1
             text: "Checking username ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -330,7 +378,6 @@ Item {
 
         Label {
             id: loginRespons1
-            z: 1.1
             text: "Creating keypair for session ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -343,7 +390,6 @@ Item {
 
         Label {
             id: loginRespons2
-            z: 1.1
             text: "Checking identity ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -356,7 +402,6 @@ Item {
 
         Label {
             id: loginRespons3
-            z: 1.1
             text: "Retrieving session encryption key ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -369,7 +414,6 @@ Item {
 
         Label {
             id: loginRespons4
-            z: 1.1
             text: "Retrieving session ID ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -382,7 +426,6 @@ Item {
 
         Label {
             id: loginRespons5
-            z: 1.1
             text: "Loading account settings ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -395,7 +438,6 @@ Item {
 
         Label {
             id: loginRespons6
-            z: 1.1
             text: "Verifying wallet balances ..."
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
@@ -406,19 +448,44 @@ Item {
             visible: verifyingBalances == 1
         }
 
-        Rectangle {
-            z: 1
-            anchors.horizontalCenter: loginModalBody.horizontalCenter
-            anchors.bottom: loginModalBody.bottom
-            width: loginModalBody.width
-            height: loginModalBody.height
-            color: "transparent"
-            border.color: maincolor
-            border.width: 1
-            opacity: 0.25
+        Label {
+            id: importAccount
+            text: "Import an existing account?"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: login.bottom
+            anchors.topMargin: 20
+            color: "#F2F2F2"
+            font.pixelSize: 18
+            font.family: xciteMobile.name
+
+            Rectangle {
+                id: importAccountButton
+                width: importAccount.width
+                height: 30
+                anchors.horizontalCenter: importAccount.horizontalCenter
+                anchors.verticalCenter: importAccount.verticalCenter
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: importAccountButton
+
+                    onClicked: {
+                        loginTracker = 0
+                        importTracker = 1
+                    }
+                }
+            }
+
+            Rectangle {
+                id: underlineImport
+                width: importAccount.width
+                height: 1
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: importAccount.bottom
+                anchors.topMargin: 5
+                color: "#0ED8D2"
+            }
         }
-
-
 
         Label {
             id: noAccount
@@ -463,13 +530,13 @@ Item {
         }
 
         Rectangle {
-            id: underline
+            id: underlineCreate
             width: createAccount.width
             height: 1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: createAccount.bottom
             anchors.topMargin: 5
-            color: "#F2F2F2"
+            color: "#0ED8D2"
         }
     }
 }

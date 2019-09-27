@@ -170,10 +170,13 @@
         <file>Controls/+mobile/WalletModal.qml</file>
         <file>Controls/+mobile/PortfolioModal.qml</file>
         <file>Controls/+mobile/HistoryList.qml</file>
-        <file>Controls/+mobile/TransactionModal.qml</file>
         <file>Controls/+mobile/TransactionDetailModal.qml</file>
         <file>Controls/+mobile/TransactionAddressList.qml</file>
         <file>+mobile/StandBy.qml</file>
         <file>Controls/+mobile/SoundPicklist.qml</file>
+        <file>+mobile/ImportAccount.qml</file>
+        <file>Controls/+mobile/PendingList.qml</file>
+        <file>Controls/+mobile/ReplyModal.qml</file>
+        <file>Controls/+mobile/ChangePassword.qml</file>
     </qresource>
 </RCC>

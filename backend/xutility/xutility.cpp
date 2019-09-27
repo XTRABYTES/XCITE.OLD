@@ -18,7 +18,7 @@
 #include "./crypto/ctools.h"
 #include "./transaction/transaction.h"
 
-//Xutility xUtility;
+Xutility xUtility;
 
 Xutility::Xutility(QObject *parent) : QObject(parent) {
     this->Initialize();
@@ -49,6 +49,10 @@ unsigned char Xutility::getSelectedNetworkid() const {
     return getNetworkid(network);
 }
 
+
+std::string Xutility::getSelectedNetworkName() const {
+	return *network; 
+}
 
 bool Xutility::CheckUserInputForKeyWord(const QString msg) {
 
@@ -88,12 +92,12 @@ void Xutility::CmdParser(const QJsonArray *params) {
 void Xutility::help() {
     xchatRobot.SubmitMsg("!!xutil usage informations:");
     xchatRobot.SubmitMsg("!!xutil network [net]");
-    QString help1 = "!!xutil-network";
+    QString help1 = "!!xutil network";
     xchatRobot.SubmitMsg("!!xutil createkeypair");
-    QString help2 = "!!xutil-createkeypair-[xtrabytes/xfuel]";
+    QString help2 = "!!xutil createkeypair [xtrabytes/xfuel]";
     xchatRobot.SubmitMsg("!!xutil privkey2address [privkey]");
-    QString help3 = "!!xutil-privkey2address-[xtrabytes/xfuel]-[privkey]";
-    QString help4 = "!!staticnet-sendcoin-[network]-[target]-[amount]-[privatekey]";
+    QString help3 = "!!xutil privkey2address [xtrabytes/xfuel] [privkey]";
+    QString help4 = "!!staticnet sendcoin [target] [amount] [privatekey]";
 
     emit helpReply(help1, help2, help3, help4);
 
@@ -158,7 +162,8 @@ void Xutility::helpEntry() {
 
 void Xutility::networkEntry(QString netwrk) {
 
-    QString setNetwork = "!!xutil " + netwrk;
+    qDebug() << "accessing xutil";
+    QString setNetwork = "!!xutil network " + netwrk;
     this->CheckUserInputForKeyWord(setNetwork);
 }
 
@@ -233,8 +238,9 @@ void Xutility::set_network(const QJsonArray *params) {
 
         if (param_valid) {
             xchatRobot.SubmitMsg("New active network: "+QString::fromStdString(*network));
-            currentNetwork = QString::fromStdString(*network);
-            qDebug() << "current network: " + currentNetwork;
+            currentNetwork = ("Current network: "+QString::fromStdString(*network));
+            qDebug() << currentNetwork;
+            emit newNetwork(currentNetwork);
 
         } else {
             xchatRobot.SubmitMsg("("+params->at(2).toString()+") is invalid network type. Existing types are:"+networktypes);

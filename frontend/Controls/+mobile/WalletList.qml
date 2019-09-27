@@ -188,7 +188,7 @@ Rectangle {
                 }
 
                 Label {
-                    id: unconfirmedTicker
+                    id: pendingTicker
                     text: name
                     anchors.right: amountSizeLabel.right
                     anchors.top: amountSizeLabel.bottom
@@ -199,12 +199,12 @@ Rectangle {
                 }
 
                 Label {
-                    property int decimals: unconfirmedCoins == 0? 2 : (unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2))
-                    property var unconfirmedArray: (unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
-                    id: unconfirmedTotal1
-                    text: "." + unconfirmedArray[1]
-                    anchors.right: unconfirmedTicker.left
-                    anchors.bottom: unconfirmedTicker.bottom
+                    property int decimals: pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
+                    property string pendingAmount: ((pendingCoins(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                    id: pendingTotal
+                    text: pendingAmount
+                    anchors.right: pendingTicker.left
+                    anchors.bottom: pendingTicker.bottom
                     anchors.rightMargin: 3
                     font.pixelSize: 12
                     font.family: xciteMobile.name
@@ -212,22 +212,10 @@ Rectangle {
                 }
 
                 Label {
-                    property int decimals: unconfirmedCoins == 0? 2 : (unconfirmedCoins <= 1 ? 8 : (unconfirmedCoins <= 1000 ? 4 : 2))
-                    property var unconfirmedArray: (unconfirmedCoins.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
-                    id: unconfirmedTotal2
-                    text: unconfirmedArray[0]
-                    anchors.right: unconfirmedTotal1.left
-                    anchors.top: unconfirmedTotal1.top
-                    font.pixelSize: 12
-                    font.family: xciteMobile.name
-                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
-                }
-
-                Label {
-                    id: unconfirmedLabel
-                    text: "Unconfirmed:"
-                    anchors.right: unconfirmedTotal2.left
-                    anchors.top: unconfirmedTotal2.top
+                    id: pendingLabel
+                    text: "Pending:"
+                    anchors.right: pendingTotal.left
+                    anchors.top: pendingTotal.top
                     anchors.rightMargin: 7
                     font.pixelSize: 12
                     font.family: xciteMobile.name
@@ -238,7 +226,7 @@ Rectangle {
                     id: viewOnlyLabel
                     text: " VIEW ONLY"
                     anchors.left: transfer.left
-                    anchors.bottom:  unconfirmedLabel.bottom
+                    anchors.bottom:  pendingLabel.bottom
                     anchors.bottomMargin: -5
                     font.pixelSize: 14
                     font.family: xciteMobile.name
@@ -333,7 +321,7 @@ Rectangle {
                         }
 
                         onClicked: {
-                            if (coinIndex < 2){
+                            if (coinIndex < 3){
                                 walletIndex = walletNR
                                 transactionPages = 0
                                 currentPage = 1
@@ -360,7 +348,7 @@ Rectangle {
                     font.family: xciteMobile.name
                     font.pointSize: 14
                     font.bold: true
-                    color: coinIndex < 2? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+                    color: coinIndex < 3? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
                     anchors.horizontalCenter: history.horizontalCenter
                     anchors.verticalCenter: history.verticalCenter
                 }
@@ -375,7 +363,7 @@ Rectangle {
                     anchors.leftMargin: 7
                     color: "transparent"
                     opacity: 0.5
-                    border.color: coinIndex < 2? maincolor : "#979797"
+                    border.color: coinIndex < 3? maincolor : "#979797"
                     border.width: 1
                 }
             }

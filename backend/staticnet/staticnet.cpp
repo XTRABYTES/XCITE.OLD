@@ -16,6 +16,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include <QDebug>
+#include <QMetaObject>
 #include "staticnet.hpp"
 #include "../xchat/xchat.hpp"
 #include "../xutility/xutility.hpp"
@@ -33,30 +34,38 @@ void StaticNet::Initialize() {
        sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
        QSslConfiguration::setDefaultConfiguration(sslConf);
 
-       requestID=0;
+       traceID=0;
        //ConnectStr="https://127.0.0.1:8080/v1.0/dicom";
        //ConnectStr="https://87.229.77.126:8443/v1.0/dicom";
        ConnectStr="https://87.229.77.126:8442/v1.0/dicom";
 
 }
 
-bool StaticNet::CheckUserInputForKeyWord(const QString msg) {
+bool StaticNet::CheckUserInputForKeyWord(const QString msg, int *traceID) {
 
-    qDebug() << "staticnet accessed!";
+      *traceID = staticNet.GetNewTraceID();
+      qDebug() << "staticnet accessed!" << " traceID=" << *traceID;
       
-      if (!(msg.split(" ").at(0) == "!!staticnet")) return false;
-      
-		QThread* thread = new QThread;
-		SnetKeyWordWorker* worker = new SnetKeyWordWorker(&msg);
-		worker->moveToThread(thread);
-        //connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
-		connect(thread, SIGNAL (started()), worker, SLOT (process()));
-		connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
-		connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
-		connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
-		thread->start();
+      if (!(msg.split(" ").at(0) == "!!staticnet")) {
+         return false;
+      }      
+         QString traced_msg = msg + " " + QString::number(*traceID);
+			QThread* thread = new QThread;
+			SnetKeyWordWorker* worker = new SnetKeyWordWorker(&traced_msg);
+			worker->moveToThread(thread);
+	        connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
+			connect(thread, SIGNAL (started()), worker, SLOT (process()));
+			connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
+			connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
+			connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
+			thread->start();
+	   
       return true;
 	
+}
+
+void StaticNet::errorString(const QString error) {
+    qDebug() << error;
 }
 
 StaticNetHttpClient::StaticNetHttpClient(const QString &endpoint, QObject *parent ): QObject(parent) {
@@ -66,7 +75,8 @@ StaticNetHttpClient::StaticNetHttpClient(const QString &endpoint, QObject *paren
      manager = new QNetworkAccessManager();
 
      connect(manager, SIGNAL (finished(QNetworkReply*)), this, SLOT (onResponse(QNetworkReply*)));
-     connect(manager, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotNetworkError(QNetworkReply::NetworkError)));
+     // FIXMEE!
+     // connect(manager, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotNetworkError(QNetworkReply::NetworkError)));
 }
 
 
@@ -75,8 +85,6 @@ void StaticNetHttpClient::request(const QJsonArray *params) {
      QJsonDocument json;
      QJsonObject obj;
 
-     std::cout << "params->at(1):" << params->at(1).toString().toStdString() << std::endl;
-     std::cout << "params->at(2):" << params->at(2).toString().toStdString() << std::endl;
 
      obj.insert("dicom", QJsonValue::fromVariant("1.0"));
      obj.insert("type", QJsonValue::fromVariant("request"));
@@ -103,24 +111,27 @@ void StaticNetHttpClient::onResponse(QNetworkReply *res) {
 }
 
 
-SnetKeyWordWorker::SnetKeyWordWorker(const QString *msg) { 
-    this->msg = msg;
+SnetKeyWordWorker::SnetKeyWordWorker(const QString *_msg) {
+		
+    this->msg = QString(*_msg);
 }
 
 SnetKeyWordWorker::~SnetKeyWordWorker() {
 	//xchatRobot.SubmitMsg("SnetKeyWordWorker() worker stopped."); 
 }
 
+int SnetKeyWordWorker::errorString(QString errorstr) {
+    qDebug() << "Error string recevied" << errorstr;
+}
+
 void SnetKeyWordWorker::process() {
 
-    qDebug() << "Processing staticnet command";
-
-    const QString _msg = *msg;
-	 QStringList args = msg->split(" ");
+    qDebug() << "Processing staticnet command: [" << msg << "]";
+    
+    QStringList args = msg.split(" ");
     QJsonArray params; 
     
     for (QStringList::const_iterator it = args.constBegin(); it != args.constEnd(); ++it) params.append(QJsonValue(*it));
-    params.push_back(QString::number(staticNet.GetNewRequestID()));
     
     CmdParser(&params);
 
@@ -133,6 +144,12 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
     qDebug() << "reading command";
 
     QString command = params->at(1).toString();
+
+    QJsonObject response;
+    response.insert("sender", QJsonValue::fromVariant("SnetKeyWordWorker::CmdParser"));
+    response.insert("params", QJsonValue::fromVariant(*params));
+    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+
 
     if (command == "help") {
         help();
@@ -193,7 +210,7 @@ void SnetKeyWordWorker::sendcoin(const QJsonArray *params) {
 		QThread* thread = new QThread;
 		SendcoinWorker* worker = new SendcoinWorker(params);
 		worker->moveToThread(thread);
-        //connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
+        connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
 		connect(thread, SIGNAL (started()), worker, SLOT (process()));
 		connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
 		connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
@@ -206,19 +223,25 @@ void SnetKeyWordWorker::sendcoin(const QJsonArray *params) {
 
 SendcoinWorker::SendcoinWorker(const QJsonArray *params) { 
 
+      // FIXMEE need validate each params 
       target_address = params->at(2).toString().toStdString();
       value_str = params->at(3).toString().toStdString();
-      secret = params->at(4).toString().toStdString();
-      req_id = params->at(5).toString();       
+      secret = params->at(4).toString().toStdString();      
+      trace_id = params->at(5).toString();      
 }
 
-SendcoinWorker::~SendcoinWorker() {
-	//xchatRobot.SubmitMsg("SendcoinWorker() worker stopped."); 
+SendcoinWorker::~SendcoinWorker() {	
 }
 
 
 void SendcoinWorker::unspent_request(const QJsonArray *params) {
 		 
+    QJsonObject response;
+    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_request"));	 
+	 response.insert("traceID", QJsonValue::fromVariant(trace_id));
+	 response.insert("params", QJsonValue::fromVariant(params));
+    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+	 
 	 client = new StaticNetHttpClient(staticNet.GetConnectStr());
     connect(client, SIGNAL (response( QJsonArray, QJsonObject)), this, SLOT (unspent_onResponse( QJsonArray, QJsonObject)));
 
@@ -227,6 +250,12 @@ void SendcoinWorker::unspent_request(const QJsonArray *params) {
 
 void SendcoinWorker::txbroadcast_request(const QJsonArray *params) {
 		 
+	 QJsonObject response;
+    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::txbroadcast_request"));	 
+	 response.insert("traceID", QJsonValue::fromVariant(trace_id));
+	 response.insert("params", QJsonValue::fromVariant(params));
+    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+	 
 	 client = new StaticNetHttpClient(staticNet.GetConnectStr());
     connect(client, SIGNAL (response( QJsonArray, QJsonObject)), this, SLOT (txbroadcast_onResponse( QJsonArray, QJsonObject)));
 
@@ -236,7 +265,13 @@ void SendcoinWorker::txbroadcast_request(const QJsonArray *params) {
 
 void SendcoinWorker::txbroadcast_onResponse( QJsonArray params, QJsonObject res)
 {
-    
+  
+  	 QJsonObject response;
+    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::txbroadcast_onResponse"));	 
+	 response.insert("traceID", QJsonValue::fromVariant(trace_id));
+	 response.insert("params", QJsonValue::fromVariant(res));
+    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+  
     if (!res["error"].isNull()) {
     	  xchatRobot.SubmitMsg("STaTiC network(unspent query) error. ID: #"+params.last().toString());
         qDebug() << res;    
@@ -247,13 +282,19 @@ void SendcoinWorker::txbroadcast_onResponse( QJsonArray params, QJsonObject res)
     //xchatRobot.SubmitMsg("Recevied txbroadcast reply from STaTiC network. ID: #"+params.last().toString());
     xchatRobot.SubmitMsg(formattedJsonString);
     qDebug() << formattedJsonString;
-    }
+    }    
     emit finished();
 }
 
 void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
 {
     
+  	 QJsonObject response;
+    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));	 
+	 response.insert("traceID", QJsonValue::fromVariant(trace_id));
+	 response.insert("params", QJsonValue::fromVariant(res));
+    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+
     if (!res["error"].isNull()) {
     	  xchatRobot.SubmitMsg("STaTiC network(unspent query) error. ID: #"+params.last().toString());
         qDebug() << res;
@@ -268,6 +309,7 @@ void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
     int64 send_value = AmountFromStr(value_str.c_str());    
     int64 fee_value = AmountFromStr("1.00000000");    
     
+    qDebug() << res;
     QJsonObject json = res["unspents"].toObject();   
     
     
@@ -297,18 +339,29 @@ void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
     }
 
     outputs.push_back(target_address + "," + StrFromAmount(send_value));
-    outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + fee_value)));
+    if ((inputs_sum - (send_value + fee_value)) > 0) {
+       outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + fee_value)));
+    }
 
-    std::string RawTransaction = CreateRawTransaction( inputs, outputs, secret);
+    qDebug() << "Creating RAW transaction...";
+    std::string RawTransaction = CreateRawTransaction( xUtility.getSelectedNetworkid(), inputs, outputs, secret);
     qDebug() << "Created RAW transaction:" << QString::fromUtf8(RawTransaction.c_str());
+    
+    if (RawTransaction.length()) {
+		   QJsonArray req_params; 
+		   req_params.push_back("!!staticnet");
+		   req_params.push_back("txbroadcast");   
+		   req_params.push_back(QString::fromUtf8(xUtility.getSelectedNetworkName().c_str())+"_rawtx:"+QString::fromUtf8(RawTransaction.c_str()));	
+			txbroadcast_request(&req_params);     
+    } else {
+		  	 QJsonObject response;
+		    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));	 
+			 response.insert("traceID", QJsonValue::fromVariant(trace_id));
+			 response.insert("error", "Invalid RAW transaction.");
+		    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+          emit finished();
+    }
      
-   QJsonArray req_params; 
-   req_params.push_back("!!staticnet");
-   req_params.push_back("txbroadcast");   
-   req_params.push_back("rawtx:"+QString::fromUtf8(RawTransaction.c_str()));
-	req_params.push_back(staticNet.GetNewRequestID()); 
-	
-	txbroadcast_request(&req_params);
     
 	}
 	
@@ -317,19 +370,23 @@ void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
 
 void SendcoinWorker::process() { 
                   
-      //	!!staticnet sendcoin	[target-address] [sending-amount] [sender-privatekey]
-      // example:
+      //	!!staticnet sendcoin [target-address] [sending-amount] [sender-privatekey]
+
+      // examples:
+
+      // !!xutil network xfuel
       // !!staticnet sendcoin FBCMNhonjRxELB2UrxNGHgAusPnNHvsMUi 1.23456789 R9fXvzTuqz9BqgyiV4tmiY2LkioUq7GxKGTcJibruKpNYitutbft
+      
+      // !!xutil network testnet
+      // !!staticnet sendcoin GQufCtACUjYdBycKb9kaJXF8bbV9aHryJ2 9.87654321 RgeFarE5WTUMmuHtHfGt7B23sL7VoWGeyiGJ1Yrzrz6Jc3zMN1rU
+      
+      // !!xutil network xtrabytes
+      // !!staticnet sendcoin BTSRyjb1kgtqyqwHvJLqBr4nMGjTFpb9ut 1.23456789 6AAY3KtjZF7zP6w4JwtJvhYV4vAPD44QpCDAfS3e6bMaHZsd842
 
-      // FIXMEE!! need remove this temporary network selection !
-      xUtility.CheckUserInputForKeyWord("!!xutil network xfuel");
-
-
+     qDebug() << xUtility.getSelectedNetworkid();
 
       if (xUtility.getSelectedNetworkid() != 0) {
-     	
-        //xchatRobot.SubmitMsg(QString::fromUtf8(secret.c_str()));
-        
+     	       
         CXCiteSecret xciteSecret;
         bool fGood = xciteSecret.SetString(secret,xUtility.getSelectedNetworkid());
         if (fGood) {
@@ -346,8 +403,7 @@ void SendcoinWorker::process() {
    QJsonArray req_params; 
    req_params.push_back("!!staticnet");
    req_params.push_back("getunspents");   
-   req_params.push_back("address:"+QString::fromUtf8(sender_address.c_str()));
-	req_params.push_back(req_id); 
+   req_params.push_back(QString::fromUtf8(xUtility.getSelectedNetworkName().c_str())+"_address:"+QString::fromUtf8(sender_address.c_str()));
 	
 	unspent_request(&req_params);
          

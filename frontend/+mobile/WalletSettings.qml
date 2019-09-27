@@ -78,662 +78,747 @@ Rectangle {
         }
     }
 
-    Label {
-        id: currencyLabel
-        z: 1
-        text: "WALLET CURRENCY:"
-        font.pixelSize: 16
-        font.family: xciteMobile.name
-        font.bold: true
-        color: themecolor
+    Flickable {
+        id: scrollArea
+        width: parent.width
+        contentHeight: currencyLabel.height + pincodeLabel.height + changePinButton.height + passwordLabel.height + changePasswordButton.height + notificationLabel.height + volumeLabel.height + systemVolumeLabel.height + 360
+        anchors.left: parent.left
         anchors.top: welcomeText.bottom
         anchors.topMargin: 30
-        anchors.left: parent.left
-        anchors.leftMargin: 28
-    }
-
-    Image {
-        id: picklistArrow
-        z: 1
-        source: 'qrc:/icons/dropdown_icon.svg'
-        height: 20
-        width: 20
-        anchors.right: parent.right
-        anchors.rightMargin: 28
-        anchors.verticalCenter: currencyLabel.verticalCenter
-        visible: currencyTracker == 0
-
-        ColorOverlay {
-            anchors.fill: parent
-            source: parent
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        }
-
-        Rectangle{
-            id: picklistButton
-            height: 20
-            width: 20
-            radius: 15
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: picklistButton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                currencyTracker = 1
-            }
-        }
-    }
-
-    Label {
-        id: selectedCurrency
-        z: 1
-        text: fiatCurrencies.get(userSettings.defaultCurrency).currency + " - " + fiatCurrencies.get(userSettings.defaultCurrency).ticker
-        font.pixelSize: 20
-        font.family: xciteMobile.name
-        color: themecolor
-        anchors.verticalCenter: picklistArrow.verticalCenter
-        anchors.verticalCenterOffset: 1
-        anchors.right: picklistArrow.left
-        anchors.rightMargin: 10
-        visible: currencyTracker == 0
-    }
-
-    DropShadow {
-        id: shadowCurrencyPicklist
-        z:11
-        anchors.fill: currencyPicklist
-        source: currencyPicklist
-        horizontalOffset: 0
-        verticalOffset: 4
-        radius: 12
-        samples: 25
-        spread: 0
-        color: "black"
-        opacity: 0.3
-        transparentBorder: true
-        visible: currencyTracker == 1
-    }
-
-    Rectangle {
-        id: currencyPicklist
-        z: 11
-        width: 120
-        height: fiatCurrencies.count >= 5? 165 : ((fiatCurrencies.count + 1) * 35) -10
-        color: "#2A2C31"
-        anchors.top: picklistArrow.top
-        anchors.topMargin: -5
-        anchors.right: picklistArrow.right
-        visible: currencyTracker == 1
+        anchors.bottom: clearButton.top
+        boundsBehavior: Flickable.StopAtBounds
         clip: true
 
-        Controls.CurrencyPicklist {
-            id: myCurrencyPicklist
+        Label {
+            id: currencyLabel
+            z: 1
+            text: "WALLET CURRENCY:"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.bold: true
+            color: themecolor
+            anchors.top: welcomeText.bottom
+            anchors.topMargin: 30
+            anchors.left: parent.left
+            anchors.leftMargin: 28
         }
-    }
-
-    Rectangle {
-        id: picklistClose
-        z: 11
-        width: 120
-        height: 25
-        color: "#2A2C31"
-        anchors.bottom: currencyPicklist.bottom
-        anchors.horizontalCenter: currencyPicklist.horizontalCenter
-        visible: currencyTracker == 1
 
         Image {
-            id: picklistCloseArrow
-            source: 'qrc:/icons/dropdown-arrow.svg'
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            rotation: 180
-        }
-
-        MouseArea {
-            anchors.fill: parent
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                currencyTracker = 0
-            }
-        }
-    }
-
-    Label {
-        id: pincodeLabel
-        z: 1
-        text: "PINLOCK ACTIVE:"
-        font.pixelSize: 16
-        font.family: xciteMobile.name
-        font.bold: true
-        color: themecolor
-        anchors.top: picklistArrow.bottom
-        anchors.topMargin: 30
-        anchors.left: parent.left
-        anchors.leftMargin: 28
-    }
-
-    Rectangle {
-        id: pincodeSwitch
-        z: 1
-        width: 20
-        height: 20
-        radius: 10
-        anchors.verticalCenter: pincodeLabel.verticalCenter
-        anchors.right: picklistArrow.right
-        color: "transparent"
-        border.color: themecolor
-        border.width: 2
-
-        Rectangle {
-            id: pincodeIndicator
+            id: picklistArrow
             z: 1
-            width: 12
-            height: 12
-            radius: 8
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: userSettings.pinlock === true ? maincolor : "#757575"
+            source: 'qrc:/icons/dropdown_icon.svg'
+            height: 20
+            width: 20
+            anchors.right: parent.right
+            anchors.rightMargin: 28
+            anchors.verticalCenter: currencyLabel.verticalCenter
+            visible: currencyTracker == 0
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Rectangle{
+                id: picklistButton
+                height: 20
+                width: 20
+                radius: 15
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "transparent"
+            }
 
             MouseArea {
-                id: pincodeButton
-                width: 20
-                height: 20
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.fill: picklistButton
 
                 onPressed: {
+                    click01.play()
                     detectInteraction()
                 }
 
                 onClicked: {
-                    if (userSettings.pinlock === false) {
-                        pincodeTracker = 1
-                        createPin =1
-                    }
-                    else {
-                        pincodeTracker = 1
-                        unlockPin = 1
-                    }
-                }
-            }
-
-
-
-            Connections {
-                target: UserSettings
-
-                onPincodeCorrect: {
-                    if (pinOK == 1 && unlockPin == 1) {
-                        userSettings.pinlock = false
-                        saveAppSettings();
-                        savePincode("0000")
+                    if (soundTracker == 0) {
+                        currencyTracker = 1
                     }
                 }
             }
         }
-    }
 
-    Label {
-        id: pincodeSwitchLabel
-        text: userSettings.pinlock === true ? "ACTIVE" : "NOT ACTIVE"
-        anchors.right: pincodeSwitch.left
-        anchors.rightMargin: 7
-        anchors.verticalCenter: pincodeSwitch.verticalCenter
-        anchors.verticalCenterOffset: 1
-        font.pixelSize: 20
-        font.family: xciteMobile.name
-        color: userSettings.pinlock === true ? maincolor : "#757575"
-    }
+        Label {
+            id: selectedCurrency
+            z: 1
+            text: fiatCurrencies.get(userSettings.defaultCurrency).currency + " - " + fiatCurrencies.get(userSettings.defaultCurrency).ticker
+            font.pixelSize: 20
+            font.family: xciteMobile.name
+            color: themecolor
+            anchors.verticalCenter: picklistArrow.verticalCenter
+            anchors.verticalCenterOffset: 1
+            anchors.right: picklistArrow.left
+            anchors.rightMargin: 10
+            visible: currencyTracker == 0
+        }
 
-    Rectangle {
-        id: changePinButton
-        width: doubbleButtonWidth / 2
-        height: 34
-        color: userSettings.pinlock === true? maincolor : "#727272"
-        opacity: 0.25
-        anchors.top: pincodeSwitchLabel.bottom
-        anchors.topMargin: 25
-        anchors.horizontalCenter: parent.horizontalCenter
+        DropShadow {
+            id: shadowCurrencyPicklist
+            z:11
+            anchors.fill: currencyPicklist
+            source: currencyPicklist
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
+            visible: currencyTracker == 1
+        }
 
-        MouseArea {
-            anchors.fill: changePinButton
+        Rectangle {
+            id: currencyPicklist
+            z: 11
+            width: 120
+            height: fiatCurrencies.count >= 5? 165 : ((fiatCurrencies.count + 1) * 35) -10
+            color: "#2A2C31"
+            anchors.top: picklistArrow.top
+            anchors.topMargin: -5
+            anchors.right: picklistArrow.right
+            visible: currencyTracker == 1
+            clip: true
 
-            onPressed: {
-                parent.opacity = 0.5
-                click01.play()
-                detectInteraction()
+            Controls.CurrencyPicklist {
+                id: myCurrencyPicklist
+            }
+        }
+
+        Rectangle {
+            id: picklistClose
+            z: 11
+            width: 120
+            height: 25
+            color: "#2A2C31"
+            anchors.bottom: currencyPicklist.bottom
+            anchors.horizontalCenter: currencyPicklist.horizontalCenter
+            visible: currencyTracker == 1
+
+            Image {
+                id: picklistCloseArrow
+                source: 'qrc:/icons/dropdown-arrow.svg'
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                rotation: 180
             }
 
-            onCanceled: {
-                parent.opacity = 0.25
-            }
+            MouseArea {
+                anchors.fill: parent
 
-            onReleased: {
-                parent.opacity = 0.25
-            }
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
-            onClicked: {
-                if (userSettings.pinlock === true) {
-                    pincodeTracker = 1
-                    changePin =1
+                onClicked: {
+                    currencyTracker = 0
                 }
             }
         }
-    }
 
-    Text {
-        text: "CHANGE PIN"
-        font.family: "Brandon Grotesque"
-        font.pointSize: 14
-        font.bold: true
-        color: userSettings.pinlock === true? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
-        anchors.horizontalCenter: changePinButton.horizontalCenter
-        anchors.verticalCenter: changePinButton.verticalCenter
-    }
-
-    Rectangle {
-        width: changePinButton.width
-        height: 34
-        anchors.bottom: changePinButton.bottom
-        anchors.left: changePinButton.left
-        color: "transparent"
-        opacity: 0.5
-        border.color: userSettings.pinlock === true? maincolor : "#979797"
-        border.width: 1
-    }
-
-    Label {
-        id: notificationLabel
-        z: 1
-        text: "NOTIFICATION SOUND:"
-        font.pixelSize: 16
-        font.family: xciteMobile.name
-        font.bold: true
-        color: themecolor
-        anchors.top: changePinButton.bottom
-        anchors.topMargin: 25
-        anchors.left: parent.left
-        anchors.leftMargin: 28
-    }
-
-    Image {
-        id: picklistArrow2
-        z: 1
-        source: 'qrc:/icons/dropdown_icon.svg'
-        height: 20
-        width: 20
-        anchors.right: parent.right
-        anchors.rightMargin: 28
-        anchors.verticalCenter: notificationLabel.verticalCenter
-        visible: soundTracker == 0
-
-        ColorOverlay {
-            anchors.fill: parent
-            source: parent
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        Label {
+            id: pincodeLabel
+            z: 1
+            text: "PINLOCK ACTIVE:"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.bold: true
+            color: themecolor
+            anchors.top: picklistArrow.bottom
+            anchors.topMargin: 30
+            anchors.left: parent.left
+            anchors.leftMargin: 28
         }
 
-        Rectangle{
-            id: picklistButton2
-            height: 20
+        Rectangle {
+            id: pincodeSwitch
+            z: 1
             width: 20
-            radius: 15
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
+            height: 20
+            radius: 10
+            anchors.verticalCenter: pincodeLabel.verticalCenter
+            anchors.right: picklistArrow.right
             color: "transparent"
-        }
+            border.color: themecolor
+            border.width: 2
 
-        MouseArea {
-            anchors.fill: picklistButton2
+            Rectangle {
+                id: pincodeIndicator
+                z: 1
+                width: 12
+                height: 12
+                radius: 8
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                color: userSettings.pinlock === true ? maincolor : "#757575"
 
-            onPressed: {
-                click01.play()
-                detectInteraction()
+                MouseArea {
+                    id: pincodeButton
+                    width: 20
+                    height: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    onPressed: {
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        if (userSettings.pinlock === false && currencyTracker == 0 && soundTracker == 0) {
+                            pincodeTracker = 1
+                            createPin =1
+                        }
+                        else if (currencyTracker == 0 && soundTracker == 0) {
+                            pincodeTracker = 1
+                            unlockPin = 1
+                        }
+                    }
+                }
+
+
+
+                Connections {
+                    target: UserSettings
+
+                    onPincodeCorrect: {
+                        if (pinOK == 1 && unlockPin == 1) {
+                            userSettings.pinlock = false
+                            saveAppSettings();
+                            savePincode("0000")
+                        }
+                    }
+                }
             }
+        }
 
-            onClicked: {
-                soundTracker = 1
+        Label {
+            id: pincodeSwitchLabel
+            text: userSettings.pinlock === true ? "ACTIVE" : "NOT ACTIVE"
+            anchors.right: pincodeSwitch.left
+            anchors.rightMargin: 7
+            anchors.verticalCenter: pincodeSwitch.verticalCenter
+            anchors.verticalCenterOffset: 1
+            font.pixelSize: 20
+            font.family: xciteMobile.name
+            color: userSettings.pinlock === true ? maincolor : "#757575"
+        }
+
+        Rectangle {
+            id: changePinButton
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: userSettings.pinlock === true? maincolor : "#727272"
+            opacity: 0.25
+            anchors.top: pincodeSwitchLabel.bottom
+            anchors.topMargin: 25
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            MouseArea {
+                anchors.fill: changePinButton
+
+                onPressed: {
+                    parent.opacity = 0.5
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
+
+                onReleased: {
+                    parent.opacity = 0.25
+                }
+
+                onClicked: {
+                    if (userSettings.pinlock === true && currencyTracker == 0 && soundTracker == 0) {
+                        pincodeTracker = 1
+                        changePin =1
+                    }
+                }
             }
         }
-    }
 
-    Label {
-        id: chosenSound
-        z: 1
-        text: soundList.get(selectedSound).name
-        font.pixelSize: 20
-        font.family: xciteMobile.name
-        color: themecolor
-        anchors.verticalCenter: picklistArrow2.verticalCenter
-        anchors.verticalCenterOffset: 1
-        anchors.right: picklistArrow2.left
-        anchors.rightMargin: 10
-        visible: soundTracker == 0
+        Text {
+            text: "CHANGE PIN"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: userSettings.pinlock === true? (darktheme == true? "#F2F2F2" : maincolor) : "#979797"
+            anchors.horizontalCenter: changePinButton.horizontalCenter
+            anchors.verticalCenter: changePinButton.verticalCenter
+        }
 
-        MouseArea {
-            anchors.fill: parent
+        Rectangle {
+            width: changePinButton.width
+            height: 34
+            anchors.bottom: changePinButton.bottom
+            anchors.left: changePinButton.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: userSettings.pinlock === true? maincolor : "#979797"
+            border.width: 1
+        }
 
-            onClicked: {
-                notification.play()
-                detectInteraction()
+        Label {
+            id: passwordLabel
+            z: 1
+            text: "ACCOUNT PASSWORD:"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.bold: true
+            color: themecolor
+            anchors.top: changePinButton.bottom
+            anchors.topMargin: 25
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+        }
+
+        Rectangle {
+            id: changePasswordButton
+            width: changePasswordButtonLabel.implicitWidth + 56
+            height: 34
+            color: maincolor
+            opacity: 0.25
+            anchors.top: passwordLabel.bottom
+            anchors.topMargin: 25
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            MouseArea {
+                anchors.fill: changePasswordButton
+
+                onPressed: {
+                    parent.opacity = 0.5
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onCanceled: {
+                    parent.opacity = 0.25
+                }
+
+                onReleased: {
+                    parent.opacity = 0.25
+                }
+
+                onClicked: {
+                    changePasswordTracker = 1
+                }
             }
         }
-    }
 
-    DropShadow {
-        id: shadowSoundPicklist
-        z:11
-        anchors.fill: soundPicklist
-        source: soundPicklist
-        horizontalOffset: 0
-        verticalOffset: 4
-        radius: 12
-        samples: 25
-        spread: 0
-        color: "black"
-        opacity: 0.3
-        transparentBorder: true
-        visible: soundTracker == 1
-    }
-
-    Rectangle {
-        id: soundPicklist
-        z: 11
-        width: 120
-        height: 165
-        color: "#2A2C31"
-        anchors.top: picklistArrow2.top
-        anchors.topMargin: -5
-        anchors.right: picklistArrow2.right
-        visible: soundTracker == 1
-        clip: true
-
-        Controls.SoundPicklist {
-            id: mySoundPicklist
+        Text {
+            id: changePasswordButtonLabel
+            text: "CHANGE PASSWORD"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: maincolor
+            anchors.horizontalCenter: changePasswordButton.horizontalCenter
+            anchors.verticalCenter: changePasswordButton.verticalCenter
         }
-    }
 
-    Rectangle {
-        id: picklistClose2
-        z: 11
-        width: 120
-        height: 25
-        color: "#2A2C31"
-        anchors.bottom: soundPicklist.bottom
-        anchors.horizontalCenter: soundPicklist.horizontalCenter
-        visible:soundTracker == 1
+        Rectangle {
+            width: changePasswordButton.width
+            height: 34
+            anchors.bottom: changePasswordButton.bottom
+            anchors.left: changePasswordButton.left
+            color: "transparent"
+            opacity: 0.5
+            border.color: maincolor
+            border.width: 1
+        }
+
+        Label {
+            id: notificationLabel
+            z: 1
+            text: "NOTIFICATION SOUND:"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.bold: true
+            color: themecolor
+            anchors.top: changePasswordButton.bottom
+            anchors.topMargin: 25
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+        }
 
         Image {
-            id: picklistCloseArrow2
-            source: 'qrc:/icons/dropdown-arrow.svg'
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            rotation: 180
-        }
+            id: picklistArrow2
+            z: 1
+            source: 'qrc:/icons/dropdown_icon.svg'
+            height: 20
+            width: 20
+            anchors.right: parent.right
+            anchors.rightMargin: 28
+            anchors.verticalCenter: notificationLabel.verticalCenter
+            visible: soundTracker == 0
 
-        MouseArea {
-            anchors.fill: parent
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            onClicked: {
-                soundTracker = 0
+            Rectangle{
+                id: picklistButton2
+                height: 20
+                width: 20
+                radius: 15
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "transparent"
+            }
+
+            MouseArea {
+                anchors.fill: picklistButton2
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    if (currencyTracker == 0) {
+                        soundTracker = 1
+                    }
+                }
             }
         }
-    }
 
-    Label {
-        id: volumeLabel
-        z: 1
-        text: "NOTIFICATION VOLUME:"
-        font.pixelSize: 16
-        font.family: xciteMobile.name
-        font.bold: true
-        color: themecolor
-        anchors.top: picklistArrow2.bottom
-        anchors.topMargin: 30
-        anchors.left: parent.left
-        anchors.leftMargin: 28
-    }
-
-    Image {
-        id: volumeLevel0
-        source: selectedVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
-        height: selectedVolume == 0? 40 : 30
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: parent.left
-        anchors.horizontalCenterOffset: 58
-        anchors.verticalCenter: volumeLabel.bottom
-        anchors.verticalCenterOffset: 30
-
-        Rectangle {
-            anchors.fill: parent
-            color: "transparent"
+        Label {
+            id: chosenSound
+            z: 1
+            text: soundList.get(selectedSound).name
+            font.pixelSize: 20
+            font.family: xciteMobile.name
+            color: themecolor
+            anchors.verticalCenter: picklistArrow2.verticalCenter
+            anchors.verticalCenterOffset: 1
+            anchors.right: picklistArrow2.left
+            anchors.rightMargin: 10
+            visible: soundTracker == 0
 
             MouseArea {
                 anchors.fill: parent
 
                 onClicked: {
-                    if (changeVolumeInitiated == false) {
-                        oldVolume = userSettings.volume
-                        userSettings.volume = 0
-                        notification.play()
-                        changeVolumeInitiated = true
-                        updateToAccount()
-                    }
+                    notification.play()
+                    detectInteraction()
                 }
             }
         }
-    }
 
-    Image {
-        id: volumeLevel1
-        source: selectedVolume == 1? 'qrc:/icons/mobile/volume_level_1-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_1-icon_light.svg' : 'qrc:/icons/mobile/volume_level_1-icon_dark.svg')
-        height: selectedVolume == 1? 40 : 30
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: volumeLevel0.right
-        anchors.horizontalCenterOffset: 60
-        anchors.verticalCenter: volumeLabel.bottom
-        anchors.verticalCenterOffset: 30
+        DropShadow {
+            id: shadowSoundPicklist
+            z:11
+            anchors.fill: soundPicklist
+            source: soundPicklist
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
+            visible: soundTracker == 1
+        }
 
         Rectangle {
-            anchors.fill: parent
-            color: "transparent"
+            id: soundPicklist
+            z: 11
+            width: 120
+            height: 165
+            color: "#2A2C31"
+            anchors.top: picklistArrow2.top
+            anchors.topMargin: -5
+            anchors.right: picklistArrow2.right
+            visible: soundTracker == 1
+            clip: true
+
+            Controls.SoundPicklist {
+                id: mySoundPicklist
+            }
+        }
+
+        Rectangle {
+            id: picklistClose2
+            z: 11
+            width: 120
+            height: 25
+            color: "#2A2C31"
+            anchors.bottom: soundPicklist.bottom
+            anchors.horizontalCenter: soundPicklist.horizontalCenter
+            visible:soundTracker == 1
+
+            Image {
+                id: picklistCloseArrow2
+                source: 'qrc:/icons/dropdown-arrow.svg'
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                rotation: 180
+            }
 
             MouseArea {
                 anchors.fill: parent
 
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
                 onClicked: {
-                    if (changeVolumeInitiated == false) {
-                        oldVolume = userSettings.volume
-                        userSettings.volume = 1
-                        notification.play()
-                        changeVolumeInitiated = true
-                        updateToAccount()
-                    }
+                    soundTracker = 0
                 }
             }
         }
-    }
 
-    Image {
-        id: volumeLevel2
-        source: selectedVolume == 2? 'qrc:/icons/mobile/volume_level_2-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_2-icon_light.svg' : 'qrc:/icons/mobile/volume_level_2-icon_dark.svg')
-        height: selectedVolume == 2? 40 : 30
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: volumeLevel3.left
-        anchors.horizontalCenterOffset: -60
-        anchors.verticalCenter: volumeLabel.bottom
-        anchors.verticalCenterOffset: 30
+        Label {
+            id: volumeLabel
+            z: 1
+            text: "NOTIFICATION VOLUME:"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.bold: true
+            color: themecolor
+            anchors.top: picklistArrow2.bottom
+            anchors.topMargin: 30
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+        }
 
-        Rectangle {
-            anchors.fill: parent
-            color: "transparent"
+        Image {
+            id: volumeLevel0
+            source: selectedVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
+            height: selectedVolume == 0? 40 : 30
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.left
+            anchors.horizontalCenterOffset: 58
+            anchors.verticalCenter: volumeLabel.bottom
+            anchors.verticalCenterOffset: 30
 
-            MouseArea {
+            Rectangle {
                 anchors.fill: parent
+                color: "transparent"
 
-                onClicked: {
-                    if (changeVolumeInitiated == false) {
-                        oldVolume = userSettings.volume
-                        userSettings.volume = 2
-                        notification.play()
-                        changeVolumeInitiated = true
-                        updateToAccount()
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        if (changeVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
+                            oldVolume = userSettings.volume
+                            userSettings.volume = 0
+                            notification.play()
+                            changeVolumeInitiated = true
+                            updateToAccount()
+                        }
                     }
                 }
             }
         }
-    }
 
-    Image {
-        id: volumeLevel3
-        source: selectedVolume == 3? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
-        height: selectedVolume == 3? 40 : 30
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: parent.right
-        anchors.horizontalCenterOffset: -58
-        anchors.verticalCenter: volumeLabel.bottom
-        anchors.verticalCenterOffset: 30
+        Image {
+            id: volumeLevel1
+            source: selectedVolume == 1? 'qrc:/icons/mobile/volume_level_1-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_1-icon_light.svg' : 'qrc:/icons/mobile/volume_level_1-icon_dark.svg')
+            height: selectedVolume == 1? 40 : 30
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: volumeLevel0.right
+            anchors.horizontalCenterOffset: 60
+            anchors.verticalCenter: volumeLabel.bottom
+            anchors.verticalCenterOffset: 30
 
-        Rectangle {
-            anchors.fill: parent
-            color: "transparent"
-
-            MouseArea {
+            Rectangle {
                 anchors.fill: parent
+                color: "transparent"
 
-                onClicked: {
-                    if (changeVolumeInitiated == false) {
-                        oldVolume = userSettings.volume
-                        userSettings.volume = 3
-                        notification.play()
-                        changeVolumeInitiated = true
-                        updateToAccount()
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        if (changeVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
+                            oldVolume = userSettings.volume
+                            userSettings.volume = 1
+                            notification.play()
+                            changeVolumeInitiated = true
+                            updateToAccount()
+                        }
                     }
                 }
             }
         }
-    }
 
-    Label {
-        id: systemVolumeLabel
-        z: 1
-        text: "APP SYSTEM SOUND VOLUME:"
-        font.pixelSize: 16
-        font.family: xciteMobile.name
-        font.bold: true
-        color: themecolor
-        anchors.top: volumeLevel3.bottom
-        anchors.topMargin: 30
-        anchors.left: parent.left
-        anchors.leftMargin: 28
-    }
+        Image {
+            id: volumeLevel2
+            source: selectedVolume == 2? 'qrc:/icons/mobile/volume_level_2-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_2-icon_light.svg' : 'qrc:/icons/mobile/volume_level_2-icon_dark.svg')
+            height: selectedVolume == 2? 40 : 30
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: volumeLevel3.left
+            anchors.horizontalCenterOffset: -60
+            anchors.verticalCenter: volumeLabel.bottom
+            anchors.verticalCenterOffset: 30
 
-    Image {
-        id: systemVolumeLevel0
-        source: selectedSystemVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
-        height: selectedSystemVolume == 0? 40 : 30
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: parent.left
-        anchors.horizontalCenterOffset: 58
-        anchors.verticalCenter: systemVolumeLabel.bottom
-        anchors.verticalCenterOffset: 30
-
-        Rectangle {
-            anchors.fill: parent
-            color: "transparent"
-
-            MouseArea {
+            Rectangle {
                 anchors.fill: parent
+                color: "transparent"
 
-                onClicked: {
-                    if (changeSystemVolumeInitiated == false) {
-                        oldSystemVolume = userSettings.systemVolume
-                        userSettings.systemVolume = 0
-                        changeSystemVolumeInitiated = true
-                        updateToAccount()
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        if (changeVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
+                            oldVolume = userSettings.volume
+                            userSettings.volume = 2
+                            notification.play()
+                            changeVolumeInitiated = true
+                            updateToAccount()
+                        }
                     }
                 }
             }
         }
-    }
 
-    Image {
-        id: systemVolumeLevel1
-        source: selectedSystemVolume == 1? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
-        height: selectedSystemVolume == 1? 40 : 30
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: systemVolumeLevel0.right
-        anchors.horizontalCenterOffset: 60
-        anchors.verticalCenter: systemVolumeLabel.bottom
-        anchors.verticalCenterOffset: 30
+        Image {
+            id: volumeLevel3
+            source: selectedVolume == 3? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
+            height: selectedVolume == 3? 40 : 30
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.right
+            anchors.horizontalCenterOffset: -58
+            anchors.verticalCenter: volumeLabel.bottom
+            anchors.verticalCenterOffset: 30
 
-        Rectangle {
-            anchors.fill: parent
-            color: "transparent"
-
-            MouseArea {
+            Rectangle {
                 anchors.fill: parent
+                color: "transparent"
 
-                onClicked: {
-                    if (changeSystemVolumeInitiated == false) {
-                        oldSystemVolume = userSettings.systemVolume
-                        userSettings.systemVolume = 1
-                        changeSystemVolumeInitiated = true
-                        updateToAccount()
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        if (changeVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
+                            oldVolume = userSettings.volume
+                            userSettings.volume = 3
+                            notification.play()
+                            changeVolumeInitiated = true
+                            updateToAccount()
+                        }
                     }
                 }
             }
         }
-    }
 
+        Label {
+            id: systemVolumeLabel
+            z: 1
+            text: "APP SYSTEM SOUND VOLUME:"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.bold: true
+            color: themecolor
+            anchors.top: volumeLabel.bottom
+            anchors.topMargin: 60
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+        }
 
-    Connections {
-        target: UserSettings
+        Image {
+            id: systemVolumeLevel0
+            source: selectedSystemVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
+            height: selectedSystemVolume == 0? 40 : 30
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.left
+            anchors.horizontalCenterOffset: 58
+            anchors.verticalCenter: systemVolumeLabel.bottom
+            anchors.verticalCenterOffset: 30
 
-        onSaveSucceeded: {
-            if (changeVolumeInitiated == true) {
-                changeVolumeInitiated = false
-            }
-            if (changeSystemVolumeInitiated == true) {
-                changeSystemVolumeInitiated = false
+            Rectangle {
+                anchors.fill: parent
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        if (changeSystemVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
+                            oldSystemVolume = userSettings.systemVolume
+                            userSettings.systemVolume = 0
+                            changeSystemVolumeInitiated = true
+                            updateToAccount()
+                        }
+                    }
+                }
             }
         }
 
-        onSaveFailed: {
-            if (changeVolumeInitiated == true) {
-                userSettings.volume = oldVolume
-                changeVolumeFailed = 1
-                changeVolumeInitiated = false
+        Image {
+            id: systemVolumeLevel1
+            source: selectedSystemVolume == 1? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
+            height: selectedSystemVolume == 1? 40 : 30
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: systemVolumeLevel0.right
+            anchors.horizontalCenterOffset: 60
+            anchors.verticalCenter: systemVolumeLabel.bottom
+            anchors.verticalCenterOffset: 30
+
+            Rectangle {
+                anchors.fill: parent
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        if (changeSystemVolumeInitiated == false && currencyTracker == 0 && soundTracker == 0) {
+                            oldSystemVolume = userSettings.systemVolume
+                            userSettings.systemVolume = 1
+                            changeSystemVolumeInitiated = true
+                            updateToAccount()
+                        }
+                    }
+                }
             }
-            if (changeSystemVolumeInitiated == true) {
-                userSettings.systemVolume = oldSystemVolume
-                changeSystemVolumeFailed = 1
-                changeSystemVolumeInitiated = false
+        }
+
+
+        Connections {
+            target: UserSettings
+
+            onSaveSucceeded: {
+                if (changeVolumeInitiated == true) {
+                    changeVolumeInitiated = false
+                }
+                if (changeSystemVolumeInitiated == true) {
+                    changeSystemVolumeInitiated = false
+                }
+            }
+
+            onSaveFailed: {
+                if (changeVolumeInitiated == true) {
+                    userSettings.volume = oldVolume
+                    changeVolumeFailed = 1
+                    changeVolumeInitiated = false
+                }
+                if (changeSystemVolumeInitiated == true) {
+                    userSettings.systemVolume = oldSystemVolume
+                    changeSystemVolumeFailed = 1
+                    changeSystemVolumeInitiated = false
+                }
             }
         }
     }
-
 
     Rectangle {
+        z: 4
         id: clearButton
         width: doubbleButtonWidth / 2
         height: 34
@@ -762,11 +847,11 @@ Rectangle {
             }
 
             onClicked: {
-                if(userSettings.pinlock === true) {
+                if(userSettings.pinlock === true && currencyTracker == 0 && soundTracker == 0) {
                     pincodeTracker = 1
                     clearAll = 1
                 }
-                else {
+                else if (currencyTracker == 0 && soundTracker == 0) {
                     clearAllInitiated = true
                     oldDefaultCurrency = userSettings.defaultCurrency
                     oldLocale = userSettings.locale
@@ -843,6 +928,7 @@ Rectangle {
         }
     }
     Text {
+        z: 4
         text: "RESET"
         font.family: "Brandon Grotesque"
         font.pointSize: 14
@@ -854,6 +940,7 @@ Rectangle {
     }
 
     Rectangle {
+        z: 4
         width: clearButton.width
         height: 34
         anchors.bottom: clearButton.bottom
@@ -1076,7 +1163,7 @@ Rectangle {
     Item {
         z: 3
         width: Screen.width
-        height: 125
+        height: myOS === "android"? 215 : 235
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1086,7 +1173,7 @@ Rectangle {
             end: Qt.point(x, y + height)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
+                GradientStop { position: 0.3; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
             }
         }
@@ -1096,7 +1183,7 @@ Rectangle {
         id: closeSettings
         z: 4
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         text: "BACK"
         font.pixelSize: 14
@@ -1128,6 +1215,12 @@ Rectangle {
                 mainRoot.pop()
             }
         }
+    }
+
+    Controls.ChangePassword {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 
     Controls.DebugConsole {

@@ -13,6 +13,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.3
 import SortFilterProxyModel 0.2
+import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
 
@@ -54,6 +55,23 @@ Rectangle {
                 font.pixelSize: 16
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
                 elide: Text.ElideRight
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressAndHold: {
+                            if(copy2clipboard == 0 && transactionDetailTracker == 1) {
+                                address2Copy = address
+                                copyText2Clipboard(address)
+                                copy2clipboard = 1
+                            }
+                        }
+                    }
+                }
             }
 
             Label {
@@ -99,8 +117,44 @@ Rectangle {
                 font.bold: true
                 color: walletList.get(walletIndex).address === address? (transactionAddresses == "input"? "#E55541" : "#4BBE2E") : (darktheme == true? "#F2F2F2" : "#2A2C31")
             }
+
+            DropShadow {
+                anchors.fill: textPopup
+                source: textPopup
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.4
+                transparentBorder: true
+                visible: copy2clipboard == 1 && transactionDetailTracker == 1 && address2Copy === addressHash.text
+            }
+
+            Rectangle {
+                id: textPopup
+                height: 50
+                width: popupClipboardText.width + 20
+                color: "#34363D"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                visible: copy2clipboard == 1 && transactionDetailTracker == 1 && address2Copy === addressHash.text
+
+                Label {
+                    id: popupClipboardText
+                    text: address + "<br>Address copied!"
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "#F2F2F2"
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
         }
-    }
+     }
 
     ListView {
         anchors.fill: parent

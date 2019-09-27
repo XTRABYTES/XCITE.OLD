@@ -1,4 +1,4 @@
- /**
+/**
 * Filename: DashboardForm.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -151,7 +151,7 @@ Item {
                         }
 
                         onDoubleClicked: {
-                            portfolioTracker = 1
+
                         }
                     }
 
@@ -159,10 +159,12 @@ Item {
                         State {
                             name: "up"
                             PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: 0}
+                            PropertyChanges { target: portfolio; opacity:1}
                         },
                         State {
                             name: "down"
                             PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: Screen.width * 1.5}
+                            PropertyChanges { target: portfolio; opacity:0}
                         }
                     ]
 
@@ -171,6 +173,7 @@ Item {
                             from: "*"
                             to: "*"
                             PropertyAnimation { target: totalWalletValue; property: "anchors.horizontalCenterOffset"; duration: 700; easing.type: Easing.InOutCubic}
+                            PropertyAnimation { target: portfolio; property: "opacity"; duration: 700; easing.type: Easing.InOutCubic}
                         }
                     ]
 
@@ -180,7 +183,7 @@ Item {
                         anchors.left: totalWalletValue.left
                         anchors.bottom: value1.bottom
                         text: fiatTicker
-                        font.pixelSize: 60
+                        font.pixelSize: totalBalance < 1000000? 60 : 40
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
@@ -191,7 +194,7 @@ Item {
                         anchors.left: valueTicker.right
                         anchors.verticalCenter: totalWalletValue.verticalCenter
                         text: balanceArray[0]
-                        font.pixelSize: 60
+                        font.pixelSize: totalBalance < 1000000? 60 : 40
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
                     }
@@ -203,9 +206,42 @@ Item {
                         anchors.bottom: value1.bottom
                         anchors.bottomMargin: 6
                         text: "." + balanceArray[1]
-                        font.pixelSize: 40
+                        font.pixelSize: totalBalance < 1000000? 40 : 25
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
+                    }
+                }
+
+                Image {
+                    id: portfolio
+                    z: 5
+                    source: darktheme == true? 'qrc:/icons/mobile/portfolio-icon_02_light.svg' : 'qrc:/icons/mobile/portfolio-icon_02_dark.svg'
+                    width: 15
+                    fillMode: Image.PreserveAspectFit
+                    anchors.top: totalWalletValue.bottom
+                    anchors.topMargin: totalBalance > 1000000? -5 : -15
+                    anchors.left: parent.left
+                    anchors.leftMargin: 28
+                    visible: portfolio.opacity > 0
+
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "transparent"
+
+                        MouseArea {
+                            anchors.fill: parent
+
+                            onPressed: {
+                                detectInteraction()
+                            }
+
+                            onClicked: {
+                                portfolioTracker = 1
+                            }
+                        }
                     }
                 }
 
@@ -293,10 +329,9 @@ Item {
                         property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
                         property real totalCoinsSum: totalCoins.text === "XBY"? totalXBY :
                                                                                 (totalCoins.text === "XFUEL"? totalXFUEL:
-                                                                                                              (totalCoins.text === "XBY-TEST"? totalXBYTest :
-                                                                                                                                               (totalCoins.text === "XFUEL-TEST"? totalXFUELTest :
-                                                                                                                                                                                  (totalCoins.text === "BTC"? totalBTC :
-                                                                                                                                                                                                              (totalCoins.text === "ETH"? totalETH : 0)))))
+                                                                                                              (totalCoins.text === "XTEST"? totalXFUELTest :
+                                                                                                                                            (totalCoins.text === "BTC"? totalBTC :
+                                                                                                                                                                        (totalCoins.text === "ETH"? totalETH : 0))))
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total1
                         z: 5
@@ -314,10 +349,9 @@ Item {
                         property int decimals: totalCoinsSum == 0? 2 : (totalCoinsSum <= 1000? 8 : (totalCoinsSum <= 1000000? 4 : 2))
                         property real totalCoinsSum:  totalCoins.text === "XBY"? totalXBY :
                                                                                  (totalCoins.text === "XFUEL"? totalXFUEL:
-                                                                                                               (totalCoins.text === "XBY-TEST"? totalXBYTest :
-                                                                                                                                                (totalCoins.text === "XFUEL-TEST"? totalXFUELTest :
-                                                                                                                                                                                   (totalCoins.text === "BTC"? totalBTC :
-                                                                                                                                                                                                               (totalCoins.text === "ETH"? totalETH : 0)))))
+                                                                                                               (totalCoins.text === "XTEST"? totalXFUELTest :
+                                                                                                                                             (totalCoins.text === "BTC"? totalBTC :
+                                                                                                                                                                         (totalCoins.text === "ETH"? totalETH : 0))))
                         property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                         id: total2
                         z: 5
@@ -670,6 +704,7 @@ Item {
 
                                     onClicked: {
                                         if (transferTracker == 0 && addCoinTracker == 0) {
+                                            selectedCoin = "XFUEL"
                                             switchState = 0
                                             transferTracker = 1
                                         }
@@ -1809,6 +1844,7 @@ Item {
                         anchors.fill: parent
 
                         onClicked: {
+                            swipe.play()
                             view.currentIndex = 0
                         }
                     }
@@ -1827,6 +1863,7 @@ Item {
                         anchors.fill: parent
 
                         onClicked: {
+                            swipe.play()
                             if (addCoinTracker == 0)
                                 view.currentIndex = 1
                         }

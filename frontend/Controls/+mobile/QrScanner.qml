@@ -29,7 +29,7 @@ Item {
     Camera {
         id: camera
         position: Camera.BackFace
-        cameraState: (transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || importKeyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState
+        cameraState: cameraPermission === true? ((transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || importKeyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState) : Camera.UnloadedState
         focus {
             focusMode: Camera.FocusContinuous
             focusPointMode: CameraFocus.FocusPointAuto
@@ -147,7 +147,7 @@ Item {
         height: 34
         color: "transparent"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: myOS === "android"? 50 : 70
         anchors.horizontalCenter: parent.horizontalCenter
         visible: scanQRTracker == 1
 

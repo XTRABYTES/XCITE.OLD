@@ -259,10 +259,8 @@
         <file>sounds/intro_01.wav</file>
         <file>sounds/outro_01.wav</file>
         <file>sounds/succes_01.wav</file>
-        <file>logos/xby_logo_tm.png</file>
         <file>gifs/screensaver_01.gif</file>
         <file>gifs/xby_screensaver_01.gif</file>
-        <file>videos/xby_screensaver_01.mp4</file>
         <file>sounds/Bonjour.wav</file>
         <file>sounds/Fail.wav</file>
         <file>sounds/Hello.wav</file>
@@ -277,5 +275,15 @@
         <file>icons/mobile/favorite-icon_01_light.svg</file>
         <file>icons/XFUEL_card_logo_01.svg</file>
         <file>icons/XBY_card_logo_01.svg</file>
+        <file>videos/XCITE_screensaver_01.mp4</file>
+        <file>ios/xcite120px.png</file>
+        <file>ios/xcite152px.png</file>
+        <file>ios/xcite180px.png</file>
+        <file>ios/xcite.icns</file>
+        <file>icons/mobile/portfolio-icon_01_dark.svg</file>
+        <file>icons/mobile/portfolio-icon_01_light.svg</file>
+        <file>icons/mobile/portfolio-icon_02_dark.svg</file>
+        <file>icons/mobile/portfolio-icon_02_light.svg</file>
+        <file>logos/xby_logo_tm.png</file>
     </qresource>
 </RCC>

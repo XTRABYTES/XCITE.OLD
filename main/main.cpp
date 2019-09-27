@@ -33,7 +33,8 @@
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
 #include "../backend/integrations/Explorer.hpp"
-#include "../backend/integrations/Wallet.hpp"
+#include "../backend/integrations/xutility_integration.hpp"
+#include "../backend/integrations/staticnet_integration.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -69,12 +70,6 @@ int main(int argc, char *argv[])
     xchatRobot.Initialize();
     engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
 
-    staticNet.Initialize();
-    engine.rootContext()->setContextProperty("StaticNet", &staticNet);
-
-    Xutility xUtil;
-    engine.rootContext()->setContextProperty("xUtil", &xUtil);
-
     // wire-up testnet wallet
     Testnet wallet;
     engine.rootContext()->setContextProperty("wallet", &wallet);
@@ -87,9 +82,17 @@ int main(int argc, char *argv[])
     Explorer explorer;
     engine.rootContext()->setContextProperty("explorer", &explorer);
 
-    // wire-up wallet
-    Wallet walletFunction;
-    engine.rootContext()->setContextProperty("WalletFunction", &walletFunction);
+    // wire-up xutility_integration
+    xutility_integration xUtil_int;
+    engine.rootContext()->setContextProperty("xUtil_int", &xUtil_int);    
+    engine.rootContext()->setContextProperty("xUtility", &xUtility);
+
+    // wire-up staticnet_integration
+    staticNet.Initialize();
+    engine.rootContext()->setContextProperty("StaticNet", &staticNet);
+    staticnet_integration static_int;
+    engine.rootContext()->setContextProperty("static_int", &static_int);
+
 
     // wire-up ClipboardProxy
     ClipboardProxy clipboardProxy;
@@ -117,6 +120,7 @@ int main(int argc, char *argv[])
 
     QObject *rootObject = engine.rootObjects().first();
 
+    QObject::connect(rootObject, SIGNAL(checkOS()), &settings, SLOT(onCheckOS()));
     QObject::connect(rootObject, SIGNAL(userLogin(QString, QString)), &settings, SLOT(login(QString, QString)));
     QObject::connect(rootObject, SIGNAL(createUser(QString, QString)), &settings, SLOT(CreateUser(QString, QString)));
     QObject::connect(rootObject, SIGNAL(userExists(QString)), &settings, SLOT(UserExists(QString)));
@@ -129,27 +133,34 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(saveContactList(QString)), &settings, SLOT(SaveContacts(QString)));
     QObject::connect(rootObject, SIGNAL(saveAppSettings()), &settings, SLOT(SaveSettings()));
     QObject::connect(rootObject, SIGNAL(saveWalletList(QString, QString)), &settings, SLOT(SaveWallet(QString, QString)));
-    QObject::connect(rootObject, SIGNAL(updateAccount(QString, QString, QString)), &settings, SLOT(UpdateAccount(QString, QString, QString)));
+    QObject::connect(rootObject, SIGNAL(updateAccount(QString, QString, QString, QString)), &settings, SLOT(UpdateAccount(QString, QString, QString, QString)));
+    QObject::connect(rootObject, SIGNAL(importAccount(QString, QString)), &settings, SLOT(ImportWallet(QString,QString)));
+    QObject::connect(rootObject, SIGNAL(exportAccount(QString)), &settings, SLOT(ExportWallet(QString)));
     QObject::connect(rootObject, SIGNAL(checkSessionId()), &settings, SLOT(CheckSessionId()));
+    QObject::connect(rootObject, SIGNAL(checkCamera()), &settings, SLOT(CheckCamera()));
+    QObject::connect(rootObject, SIGNAL(changePassword(QString, QString)), &settings, SLOT(changePassword(QString, QString)));
+
 
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
 
     // connect QML signals for Explorer
-    QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString)), &explorer, SLOT(getBalanceEntireWallet(QString)));
+    QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString, QString)), &explorer, SLOT(getBalanceEntireWallet(QString, QString)));
     QObject::connect(rootObject, SIGNAL(updateTransactions(QString, QString, QString)), &explorer, SLOT(getTransactionList(QString, QString, QString)));
     QObject::connect(rootObject, SIGNAL(getDetails(QString, QString)), &explorer, SLOT(getDetails(QString, QString)));
     QObject::connect(rootObject, SIGNAL(walletUpdate(QString, QString, QString)), &explorer, SLOT(WalletUpdate(QString, QString, QString)));
+    QObject::connect(rootObject, SIGNAL(checkTxStatus(QString)), &explorer, SLOT(checkTxStatus(QString)));
 
     // connect QML signal for ClipboardProxy
     QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));
 
     // connect QML signals for walletFunctions
-    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtil, SLOT(createKeypairEntry(QString)));
-    QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtil, SLOT(importPrivateKeyEntry(QString, QString)));
-    QObject::connect(rootObject, SIGNAL(helpMe()), &xUtil, SLOT(helpEntry()));
-    QObject::connect(rootObject, SIGNAL(sendCoins(QString, QString)), &walletFunction, SLOT(sendCoinsEntry(QString, QString)));
-    QObject::connect(rootObject, SIGNAL(checkNetwork(QString)), &xUtil, SLOT(networkEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(createKeyPair(QString)), &xUtility, SLOT(createKeypairEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(importPrivateKey(QString, QString)), &xUtility, SLOT(importPrivateKeyEntry(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(helpMe()), &xUtility, SLOT(helpEntry()));
+    QObject::connect(rootObject, SIGNAL(sendCoins(QString)), &static_int, SLOT(sendCoinsEntry(QString)));
+    QObject::connect(&staticNet, SIGNAL(ResponseFromStaticnet(QJsonObject)), &static_int, SLOT(onResponseFromStaticnetEntry(QJsonObject)),Qt::QueuedConnection);      
+    QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtility, SLOT(networkEntry(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

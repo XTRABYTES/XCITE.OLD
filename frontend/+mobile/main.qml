@@ -50,8 +50,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        clearAllSettings()
-
         goodbey = 0
         standBy = 0
 
@@ -99,10 +97,12 @@ ApplicationWindow {
         coinList.setProperty(0, "xby", 1);
         coinList.setProperty(0, "coinID", 0);
         coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "testnet" : false, "xby": 1,"coinID": 1});
-        coinList.append({"name": "XFUEL-TEST", "fullname": "xfuel", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 2});
-        coinList.append({"name": "XBY-TEST", "fullname": "xtrabytes", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 3});
-        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
-        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 5});
+        coinList.append({"name": "XTEST", "fullname": "testnet", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 2});
+        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 3});
+        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
+
+        txStatusList.setProperty(0, "type", "confirmed");
+        txStatusList.append({"type": "pending"});
 
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
@@ -140,19 +140,19 @@ ApplicationWindow {
     }
 
     onValueBTCChanged: {
-        coinList.setProperty(5, "fiatValue", valueBTC);
+        coinList.setProperty(3, "fiatValue", valueBTC);
     }
 
     onPercentageBTCChanged: {
-        coinList.setProperty(4, "percentage", percentageBTC);
+        coinList.setProperty(3, "percentage", percentageBTC);
     }
 
     onBtcValueETHChanged: {
-        coinList.setProperty(5, "coinValueBTC", btcValueETH);
-        coinList.setProperty(5, "fiatValue", btcValueETH * valueBTC);
+        coinList.setProperty(4, "coinValueBTC", btcValueETH);
+        coinList.setProperty(4, "fiatValue", btcValueETH * valueBTC);
     }
     onPercentageETHChanged: {
-        coinList.setProperty(5, "percentage", percentageETH);
+        coinList.setProperty(4, "percentage", percentageETH);
     }
 
     onGoodbeyChanged: {
@@ -189,6 +189,7 @@ ApplicationWindow {
     property color themecolor: darktheme == true? "#F2F2F2" : "#2A2C31"
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
     property real doubbleButtonWidth: Screen.width - 56
+    property string myOS: "android"
 
     // Global setting, editable
     property bool darktheme: userSettings.theme == "dark"? true : false
@@ -199,6 +200,7 @@ ApplicationWindow {
     // Trackers
     property int interactionTracker: 0
     property int loginTracker: 0
+    property int importTracker: 0
     property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
@@ -234,6 +236,7 @@ ApplicationWindow {
     property int portfolioTracker: 0
     property int transactionDetailTracker: 0
     property int soundTracker: 0
+    property int changePasswordTracker: 0
 
     // Global variables
     property int sessionStart: 0
@@ -244,7 +247,6 @@ ApplicationWindow {
     property int autoLogout: 0
     property int manualLogout: 0
     property int networkLogout: 0
-    property int requestedLogout: 0
     property int pinLogout: 0
     property int goodbey: 0
     property int networkAvailable: 0
@@ -331,8 +333,24 @@ ApplicationWindow {
     property int oldSystemVolume: 1
     property int systemVolumeChangeFailed: 0
     property int selectedSystemVolume: userSettings.systemVolume
+    property int copy2clipboard: 0
+    property string address2Copy: ""
+    property string txid2Copy: ""
+    property bool closeAllClipboard: false
+    property bool cameraPermission: true
+    property string statusList: ""
+    property bool explorerBusy: false
+    property int explorerPopup: 0
+    property string balanceCheck: "all"
+    property int timerCount: 0
+    property real pendingXBY: 0
+    property real pendingXFUEL: 0
+    property real pendingXTEST: 0
+    property real pendingBTC: 0
+    property real pendingETH: 0
 
     // Signals
+    signal checkOS()
     signal loginSuccesfulSignal(string username, string password)
     signal loginFailed()
     signal marketValueChangedSignal(string currency)
@@ -344,14 +362,16 @@ ApplicationWindow {
     signal saveAddressBook(string addresses)
     signal saveContactList(string contactList)
     signal saveAppSettings()
-    signal saveWalletList(string walletList, string addresses)
-    signal updateBalanceSignal(string walletList)
+    signal saveWalletList(string walletlist, string addresses)
+    signal importAccount(string username, string password)
+    signal exportAccount(string walletlist)
+    signal updateBalanceSignal(string walletlist, string wallets)
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
     signal helpMe()
-    signal checkNetwork(string network)
+    signal setNetwork(string network)
     signal testTransaction(string test)
-    signal updateAccount(string addresslist, string contactlist, string walletlist)
+    signal updateAccount(string addresslist, string contactlist, string walletlist, string pendinglist)
     signal updateTransactions(string coin, string address, string page)
     signal checkSessionId()
     signal getDetails(string coin, string transaction)
@@ -360,10 +380,12 @@ ApplicationWindow {
     signal checkPincode(string pincode)
     signal walletUpdate(string coin, string label, string message)
     signal copyText2Clipboard(string text)
-    signal sendCoins(string network, string message)
+    signal sendCoins(string message)
+    signal checkCamera()
+    signal checkTxStatus(string pendinglist)
+    signal changePassword(string oldPassword, string newPassword)
 
-    // Automated functions
-
+    // functions
     function updateBalance(coin, address, balance) {
         var balanceAlert
         var difference
@@ -387,7 +409,7 @@ ApplicationWindow {
 
                             walletList.setProperty(i, "balance", newBalance)
                             balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale(),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
                             alert = true
                             if (standBy == 1) {
                                 walletUpdate(walletList.get(i).name, walletList.get(i).label, balanceAlert)
@@ -396,8 +418,7 @@ ApplicationWindow {
                             sumBalance()
                             sumXBY()
                             sumXFUEL()
-                            sumXBYTest()
-                            sumXFUELTest()
+                            sumXTest()
                             sumBTC()
                             sumETH()
                         }
@@ -405,14 +426,45 @@ ApplicationWindow {
                 }
             }
         }
-        var datamodel = []
-        for (var e = 0; e < walletList.count; ++e)
-            datamodel.push(walletList.get(e))
-
-        var walletListJson = JSON.stringify(datamodel)
     }
 
-    // Global functions
+    function updatePending(coin, address, txid, result) {
+        console.log("updating pending list")
+        console.log("checking transaction: " + coin + ", " + address + ", " + txid + ", " + result)
+        for (var i = 0; i < pendingList.count; ++i){
+            if(pendingList.get(i).coin === coin) {
+                if(pendingList.get(i).address === address) {
+                    if(pendingList.get(i).txid === txid) {
+                        if(result === "true") {
+                            console.log("remove pending transaction")
+                            pendingList.remove(i)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function pendingUnconfirmed(coin, address, txid, result) {
+        for (var i = 0; i < pendingList.count; ++i){
+            if(pendingList.get(i).coin === coin) {
+                if(pendingList.get(i).address === address) {
+                    if(pendingList.get(i).txid === txid) {
+                        if(pendingList.get(i).check >= 40) {
+                            console.log("pending transaction canceled")
+                            console.log("canceled transaction: " + coin + ", " + address + ", " + txid)
+                            var addressname = getLabelAddress(coin, address)
+                            var cancelAlert = "transaction canceled: " + txid
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname})
+                            alert = true
+                            updatePending(coin, address, txid, "true")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     function countWallets() {
         totalWallets = 0
         if (coinTracker == 0) {
@@ -494,6 +546,16 @@ ApplicationWindow {
         return totalBalance
     }
 
+    function pendingCoins(coin, address) {
+        var pending = 0
+        for (var i = 0; i < pendingList.count; i++) {
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address) {
+                pending += pendingList.get(i).amount
+            }
+        }
+        return pending
+    }
+
     function sumXBY() {
         totalXBY =0
         for(var i = 0; i < walletList.count; i++) {
@@ -514,20 +576,10 @@ ApplicationWindow {
         return totalXFUEL
     }
 
-    function sumXBYTest() {
-        totalXBYTest =0
-        for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === "XBY-TEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
-                totalXBYTest += walletList.get(i).balance
-            }
-        }
-        return totalXBYTest
-    }
-
-    function sumXFUELTest() {
+    function sumXTest() {
         totalXFUELTest = 0
         for(var i = 0; i < walletList.count; i++) {
-            if (walletList.get(i).name === "XFUEL-TEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
+            if (walletList.get(i).name === "XTEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXFUELTest += walletList.get(i).balance
             }
         }
@@ -652,6 +704,18 @@ ApplicationWindow {
             }
         }
         return value
+    }
+
+    function getPrivKey(coin, label) {
+        var privKey = ""
+        for(var i = 0; i < walletList.count; i++) {
+            if (walletList.get(i).name === coin) {
+                if (walletList.get(i).label === label) {
+                    privKey = walletList.get(i).privatekey
+                }
+            }
+        }
+        return privKey
     }
 
     function getAddress(coin, label) {
@@ -799,22 +863,6 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: marketValue
-
-        onMarketValueChanged: {
-            setMarketValue(currency, currencyValue)
-        }
-    }
-
-    Connections {
-        target: explorer
-
-        onUpdateBalance: {
-            updateBalance(coin, address, balance)
-        }
-    }
-
     function setMarketValue(currency, currencyValue) {
         if (!isNaN(currencyValue) && currencyValue !== "") {
             var currencyVal =  Number.fromLocaleString(Qt.locale("en_US"),currencyValue)
@@ -851,14 +899,13 @@ ApplicationWindow {
             sumBalance()
             sumXBY()
             sumXFUEL()
-            sumXBYTest()
-            sumXFUELTest()
+            sumXTest()
             sumBTC()
             sumETH()
         }
     }
 
-    // Start up functions
+    // Start up
     function loadContactList(contacts) {
         if (typeof contacts !== "undefined") {
             contactList.clear();
@@ -892,6 +939,17 @@ ApplicationWindow {
         }
     }
 
+    function loadPendingList(transactions) {
+        if (typeof transactions !== "undefined") {
+            pendingList.clear();
+            var obj = JSON.parse(transactions);
+            for (var i in obj){
+                var data = obj[i];
+                pendingList.append(data);
+            }
+        }
+    }
+
     function loadSettings(settingsLoaded) {
         if (typeof settingsLoaded !== "undefined") {
             userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
@@ -902,17 +960,17 @@ ApplicationWindow {
             userSettings.localKeys = settingsLoaded.localKeys === "true";
             userSettings.xby = settingsLoaded.xby === "true";
             userSettings.xfuel = settingsLoaded.xfuel === "true";
-            userSettings.xbytest = settingsLoaded.xbytest === "true";
-            userSettings.xfueltest = settingsLoaded.xfueltest === "true";
+            userSettings.xtest = settingsLoaded.xtest === "true";
+            userSettings.xby = settingsLoaded.btc === "true";
+            userSettings.xfuel = settingsLoaded.eth === "true";
             userSettings.sound = settingsLoaded.sound;
             userSettings.volume = settingsLoaded.volume;
             userSettings.systemVolume = settingsLoaded.systemVolume;
             coinList.setProperty(0, "active", userSettings.xfuel);
             coinList.setProperty(1, "active", userSettings.xby);
-            coinList.setProperty(2, "active", userSettings.xfueltest);
-            coinList.setProperty(3, "active", userSettings.xbytest);
-            coinList.setProperty(4, "active", userSettings.btc);
-            coinList.setProperty(5, "active", userSettings.eth);
+            coinList.setProperty(2, "active", userSettings.xtest);
+            coinList.setProperty(3, "active", userSettings.btc);
+            coinList.setProperty(4, "active", userSettings.eth);
         }
     }
 
@@ -923,21 +981,6 @@ ApplicationWindow {
             for (var i in obj){
                 var data = obj[i];
                 historyList.append(data);
-            }
-        }
-    }
-
-    Connections {
-        target: explorer
-
-        onUpdateTransactionsDetails: {
-            if (historyTracker == 1) {
-                console.log ("confirmations: " + confirmations)
-                loadTransactionAddresses(inputs, outputs)
-                transactionTimestamp = timestamp
-                transactionConfirmations = confirmations
-                transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
-                transactionDetailTracker = 1
             }
         }
     }
@@ -961,10 +1004,26 @@ ApplicationWindow {
         }
     }
 
+    // export walletList
+    function exportWallets(){
+        var dataModelWallet = []
+
+        for (var i = 0; i < walletList.count; ++i){
+            dataModelWallet.push(walletList.get(i))
+        }
+
+        var walletListJson = JSON.stringify(dataModelWallet)
+
+        exportAccount(walletListJson)
+    }
+
+
+    // edit account
     function updateToAccount(){
         var dataModelWallet = []
         var datamodelContact = []
         var datamodelAddress = []
+        var datamodelPending = []
 
         for (var i = 0; i < walletList.count; ++i){
             dataModelWallet.push(walletList.get(i))
@@ -975,12 +1034,16 @@ ApplicationWindow {
         for (var o = 0; o < contactList.count; ++o){
             datamodelContact.push(contactList.get(o))
         }
+        for (var u = 0; u < pendingList.count; ++u){
+            datamodelPending.push(pendingList.get(u))
+        }
 
         var walletListJson = JSON.stringify(dataModelWallet)
         var addressListJson = JSON.stringify(datamodelAddress)
         var contactListJson = JSON.stringify(datamodelContact)
+        var pendingListJson = JSON.stringify(datamodelPending)
 
-        updateAccount(addressListJson, contactListJson, walletListJson)
+        updateAccount(addressListJson, contactListJson, walletListJson, pendingListJson)
     }
 
     function editWalletInAddreslist(coin, address, label, remove) {
@@ -1086,6 +1149,7 @@ ApplicationWindow {
         saveWalletList(walletListJson, addressListJson)
     }
 
+    // initialise
     function clearSettings(){
         userSettings.accountCreationCompleted = false;
         userSettings.defaultCurrency = 0;
@@ -1096,10 +1160,12 @@ ApplicationWindow {
         userSettings.localKeys = false;
         userSettings.xby = true;
         userSettings.xfuel = true;
-        userSettings.xbytest = true;
-        userSettings.xfueltest = true;
+        userSettings.xtest = true;
+        userSettings.btc = true;
+        userSettings.eth = true;
         userSettings.sound = 0
         userSettings.volume = 1
+        userSettings.systemVolume = 1
     }
 
     function initialiseLists() {
@@ -1108,6 +1174,7 @@ ApplicationWindow {
         contactList.append({"firstName": "", "lastName": "", "photo": '', "telNR": "", "cellNR": "", "mailAddress": "", "chatID": "", "favorite": false, "active": false, "contactNR": 0, "remove": true})
 
         walletList.append({"name": "", "label": "", "address": "", "privatekey" : "", "publickey" : "" ,"balance" : 0, "unconfirmedCoins": 0, "active": false, "favorite": false, "viewOnly" : false, "walletNR": 0, "remove": true})
+
     }
 
     // loggin out
@@ -1115,8 +1182,33 @@ ApplicationWindow {
         updateToAccount()
     }
 
+    // check for user interaction
+    function detectInteraction() {
+        if (interactionTracker == 0) {
+            interactionTracker = 1
+        }
+    }
+
+    // connections
+    Connections {
+        target: marketValue
+
+        onMarketValueChanged: {
+            setMarketValue(currency, currencyValue)
+        }
+    }
+
     Connections {
         target: UserSettings
+
+        onSessionIdCheck: {
+            if (sessionAlive === false && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
+                networkLogout = 1
+                logoutTracker = 1
+                sessionStart = 0
+                sessionClosed = 1
+            }
+        }
 
         onSaveSucceeded: {
             if (goodbey == 1) {
@@ -1129,12 +1221,59 @@ ApplicationWindow {
                 Qt.quit()
             }
         }
+
+        onOSReturned: {
+            myOS = os
+        }
+
+        onCameraCheckFailed: {
+            cameraPermission = false
+        }
+
+        onCameraCheckPassed: {
+            cameraPermission = true
+        }
     }
 
-    // check for user interaction
-    function detectInteraction() {
-        if (interactionTracker == 0) {
-            interactionTracker = 1
+    Connections {
+        target: explorer
+
+        onUpdateTransactionsDetails: {
+            if (historyTracker == 1) {
+                loadTransactionAddresses(inputs, outputs)
+                transactionTimestamp = timestamp
+                transactionConfirmations = confirmations
+                transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
+                transactionDetailTracker = 1
+            }
+        }
+
+        onUpdateBalance: {
+            updateBalance(coin, address, balance)
+        }
+
+        onTxidExists: {
+            pendingUnconfirmed(coin, address, txid, result)
+        }
+
+        onTxidConfirmed: {
+            updatePending(coin, address, txid, result)
+        }
+
+        onTxidNotFound: {
+            pendingUnconfirmed(coin, address, txid, result)
+        }
+
+        onExplorerBusy: {
+            explorerBusy = true
+        }
+
+        onAllTxChecked: {
+            explorerBusy = false
+        }
+
+        onDetailsCollected: {
+            explorerBusy = false
         }
     }
 
@@ -1209,16 +1348,30 @@ ApplicationWindow {
     }
 
     ListModel {
-        id: transactionList
+        id: pendingList
         ListElement {
-            coinName: ""
-            walletLabel: ""
-            date: ""
+            coin: ""
+            address: ""
+            txid: ""
             amount: 0
-            txPartner: ""
+            value: ""
+            check: 0
+        }
+    }
+
+    ListModel {
+        id: referenceList
+        ListElement {
+            coin: ""
+            txid: ""
             reference: ""
-            txid: 0
-            txNR: 0
+        }
+    }
+
+    ListModel {
+        id: txStatusList
+        ListElement {
+            type: ""
         }
     }
 
@@ -1229,6 +1382,7 @@ ApplicationWindow {
             direction: false
             value: ""
             confirmations: 0
+            status: ""
         }
     }
 
@@ -1298,8 +1452,7 @@ ApplicationWindow {
         property bool localKeys
         property bool xby
         property bool xfuel
-        property bool xbytest
-        property bool xfueltest
+        property bool xtest
         property bool btc
         property bool eth
         property int sound: 0
@@ -1322,11 +1475,13 @@ ApplicationWindow {
         source: 'qrc:/fonts/Brandon_reg.otf'
     }
 
+    // need to look into removing this
     Network {
         id: network
         handler: wallet
     }
 
+    // sounds
     SoundEffect {
         id: click01
         source: "qrc:/sounds/click_02.wav"
@@ -1354,7 +1509,22 @@ ApplicationWindow {
     SoundEffect {
         id: outroSound
         source: "qrc:/sounds/Outro.wav"
-        volume: selectedSystemVolume == 0? 0 : 1
+        volume: selectedSystemVolume == 0? 0 : 0.5
+    }
+
+    SoundEffect {
+        id: swipe
+        source: "qrc:/sounds/swipe_01.wav"
+        volume: selectedSystemVolume == 0? 0 : 0.2
+    }
+
+    // timers
+    Timer {
+        repeat: false
+        running: copy2clipboard
+        interval: 2000
+
+        onTriggered: copy2clipboard = 0
     }
 
     Timer {
@@ -1380,19 +1550,51 @@ ApplicationWindow {
 
     Timer {
         id: explorerTimer1
-        interval: standBy == 0? 60000 : 600000
+        interval: 15000
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
+            timerCount = timerCount + 1
+            if (timerCount == 4) {
+                balanceCheck = "all"
+                timerCount = 0
+            }
+            else {
+                balanceCheck = "xby"
+            }
+
             clearWalletList()
-            var datamodel = []
+            var datamodelWallet = []
+            var datamodelPending = []
 
-            for (var i = 0; i < walletList.count; ++i)
-                datamodel.push(walletList.get(i))
+            for (var i = 0; i < walletList.count; ++i) {
+                datamodelWallet.push(walletList.get(i))
+            };
+            for (var e = 0; e < pendingList.count; ++e) {
+                datamodelPending.push(pendingList.get(e))
+            };
+            var walletListJson = JSON.stringify(datamodelWallet)
+            var pendingListJson = JSON.stringify(datamodelPending)
 
-            var walletListJson = JSON.stringify(datamodel)
-            updateBalanceSignal(walletListJson);
+            updateBalanceSignal(walletListJson, balanceCheck);
 
+            if (explorerBusy == false) {
+                checkTxStatus(pendingListJson);
+            };
+
+            if (pendingList.count > 1) {
+                for (var o = 0; 0 < pendingList.count; ++o) {
+                    var times = 0
+                    if (pendingList.get(o).check >= 0) {
+                        times = pendingList.get(o).check
+                    }
+                    else {
+                        pendingList.setProperty(o, "check", 0)
+                        times = 0
+                    }
+                pendingList.setProperty(o, "check", (times + 1))
+                }
+            }
         }
     }
 
@@ -1400,7 +1602,7 @@ ApplicationWindow {
         id: loginTimer
         interval: 30000
         repeat: true
-        running: sessionStart == 1
+        running: false //sessionStart == 1
 
         onTriggered: {
             if (interactionTracker == 1) {
@@ -1433,19 +1635,6 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: UserSettings
-
-        onSessionIdCheck: {
-            if (sessionAlive === false && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
-                networkLogout = 1
-                logoutTracker = 1
-                sessionStart = 0
-                sessionClosed = 1
-            }
-        }
-    }
-
     Timer {
         id: requestTimer
         interval: 5000
@@ -1454,27 +1643,8 @@ ApplicationWindow {
 
         onTriggered: {
             checkNotifications()
-            if (requestedLogout == 1 && transferTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && addressTracker == 0 && editContactTracker == 0 && appsTracker == 0) {
+            if (pinLogout == 1 && transferTracker == 0 && addAddressTracker == 0 && addContactTracker == 0 && addressTracker == 0 && editContactTracker == 0 && appsTracker == 0) {
                 logoutTracker = 1
-            }
-        }
-    }
-
-    Timer {
-        id: timer
-        interval: 15000
-        repeat: true
-        running: sessionStart == 1
-
-        onTriggered: {
-            if (standBy == 0) {
-                sumBalance()
-                sumXBY()
-                sumXFUEL()
-                sumXBYTest()
-                sumXFUELTest()
-                sumBTC()
-                sumETH()
             }
         }
     }
@@ -1486,6 +1656,7 @@ ApplicationWindow {
         anchors.fill: parent
     }
 
+    // native back button
     onClosing: {
         if (mainRoot.depth > 1) {
             close.accepted = false
