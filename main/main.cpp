@@ -20,8 +20,6 @@
 #include <qqmlcontext.h>
 #include <qqml.h>
 #include <QZXing.h>
-#include "../backend/xchat/xchat.hpp"
-#include "../backend/xchat/xchatconversationmodel.hpp"
 #include "../backend/staticnet/staticnet.hpp"
 #include "../backend/xutility/xutility.hpp"
 #include "../backend/XCITE/nodes/nodetransaction.h"
@@ -52,8 +50,6 @@ int main(int argc, char *argv[])
     GlobalEventFilter eventFilter;
     app.installEventFilter(&eventFilter);
 
-    qmlRegisterType<Xchat>("xtrabytes.xcite.xchat", 1, 0, "Xchat");
-    qmlRegisterType<XChatConversationModel>("XChatConversationModel", 0, 1, "XChatConversationModel");
     qmlRegisterType<AddressBookModel>("AddressBookModel", 0, 1, "AddressBookModel");
     qmlRegisterType<ClipboardProxy>("Clipboard", 1, 0, "Clipboard");
     qmlRegisterType<Settings>("xtrabytes.xcite.settings", 1, 0, "XCiteSettings");
@@ -66,9 +62,6 @@ int main(int argc, char *argv[])
     QQmlFileSelector *selector = new QQmlFileSelector(&engine);
     selector->setExtraSelectors(QStringList() << "mobile");
 #endif
-
-    xchatRobot.Initialize();
-    engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
 
     // wire-up testnet wallet
     Testnet wallet;
@@ -170,8 +163,6 @@ int main(int argc, char *argv[])
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 #else
-    // X-Chat
-    wallet.m_xchatobject = &xchatRobot;
 
     // FauxWallet
     QObject::connect(&wallet, SIGNAL(response(QVariant)), rootObject, SLOT(testnetResponse(QVariant)));

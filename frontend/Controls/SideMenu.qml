@@ -135,25 +135,6 @@ Rectangle {
     }
 
     /**
-      * Chat Menu
-      */
-    ColumnLayout {
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.topMargin: moduleMenuHeight + 7
-        spacing: 0
-        visible: selectedModule == 'xChat'
-
-        SideMenuButton {
-            name: "xChat.home"
-            imageSource: "../icons/menu-home.svg"
-            labelText: qsTr("HOME")
-            size: 32
-        }
-    }
-
-    /**
       * Vault Menu
       */
     ColumnLayout {
