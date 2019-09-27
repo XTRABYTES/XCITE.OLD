@@ -107,15 +107,6 @@ Rectangle {
             }
 
             SearchBoxResultsCategoryItem {
-                text: qsTr("X-CHAT")
-                tags: "conversation communication communicate comm speak talk"
-                function onSearchResultClicked() {
-                    selectView("xChat.home")
-                    searchResultsBox.visible = false
-                }
-            }
-
-            SearchBoxResultsCategoryItem {
                 text: qsTr("X-VAULT")
                 tags: "storage memory save file"
                 function onSearchResultClicked() {

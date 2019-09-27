@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>DashboardForm.qml</file>
-        <file>XchatPopup.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>XCITE/Nodes/RegistrationConfirmation.qml</file>
         <file>XCITE/Nodes/RegistrationDetails.qml</file>
@@ -24,8 +23,6 @@
         <file>Controls/ImageLogo.qml</file>
         <file>Controls/BalanceItem.qml</file>
         <file>XCITE/Home/Layout.qml</file>
-        <file>X-Chat/Conversation.qml</file>
-        <file>X-Chat/Header.qml</file>
         <file>XCITE/Home/ChartDiode.qml</file>
         <file>Controls/SideMenu.qml</file>
         <file>Controls/SideMenuButton.qml</file>
@@ -70,17 +67,6 @@
         <file>Controls/Version.qml</file>
         <file>Controls/AddressForm.qml</file>
         <file>Controls/AccountCreateForm.qml</file>
-        <file>X-Chat/Channels.qml</file>
-        <file>X-Chat/Layout.qml</file>
-        <file>X-Chat/Home/ChannelGroup.qml</file>
-        <file>X-Chat/Home/ChannelList.qml</file>
-        <file>X-Chat/Home/ChannelsDiode.qml</file>
-        <file>X-Chat/Home/ChatDiode.qml</file>
-        <file>X-Chat/Home/Layout.qml</file>
-        <file>X-Chat/Home/ChatBox.qml</file>
-        <file>X-Chat/Home/StatusBox.qml</file>
-        <file>X-Chat/Home/ConversationBox.qml</file>
-        <file>X-Chat/Home/StatusGroup.qml</file>
         <file>Controls/ComboBox.qml</file>
         <file>+mobile/DashboardForm.qml</file>
         <file>Theme/Theme.qml</file>

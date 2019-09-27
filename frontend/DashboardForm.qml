@@ -15,12 +15,9 @@ import "Controls" as Controls
 import "Onboarding" as Onboarding
 import "XCITE" as XCITE
 import "X-Change" as XChange
-import "X-Chat" as XChat
 import "X-Vault" as XVault
 import "tools" as Tools
 import "Settings" as Settings
-
-import xtrabytes.xcite.xchat 1.0
 
 
 // TODO: Currently this is a low-performance proof of concept demonstrating scalability.
@@ -73,9 +70,6 @@ Item {
             XChange.Layout {
             }
 
-            XChat.Layout {
-            }
-
             XVault.Layout {
             }
 
@@ -100,10 +94,6 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: sideMenuWidth + layoutGridSpacing
         visible: false
-    }
-
-    XchatPopup {
-        id: xChatPopup
     }
 
     Timer {

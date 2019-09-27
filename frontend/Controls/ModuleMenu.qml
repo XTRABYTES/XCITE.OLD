@@ -49,12 +49,6 @@ Item {
             }
 
             UnfinishedModuleMenuButton {
-                name: "xChat"
-                target: "xChat.home"
-                text: qsTr("X-CHAT")
-            }
-
-            UnfinishedModuleMenuButton {
                 name: "xVault"
                 target: "xVault.TBD"
                 text: qsTr("X-VAULT")

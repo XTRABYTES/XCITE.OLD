@@ -15,7 +15,6 @@ import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
 
-import xtrabytes.xcite.xchat 1.0
 import Clipboard 1.0
 import "Onboarding" as Onboarding
 import "Login" as LoginComponents
@@ -93,10 +92,6 @@ ApplicationWindow {
         }
     }
 
-    Xchat {
-        id: xchat
-    }
-
     Clipboard {
         id: clipboard
     }
@@ -120,30 +115,17 @@ ApplicationWindow {
         property string initialView: "xCite.home"
     }
 
-    Settings {
-        id: xChatSettings
-        category: "xchat"
-        property string sizeState: "minimal"
-        property string activeTab: "robot"
-    }
-
     Network {
         id: network
         handler: wallet
     }
 
     signal marketValueChangedSignal(string currency)
-    signal xchatSubmitMsgSignal(string msg)
-    signal xChatMessageReceived(string message, date datetime)
     signal localeChange(string locale)
     signal clearAllSettings
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
     signal userExists(string username)
-
-    function xchatResponse(response) {
-        xChatMessageReceived(response, new Date())
-    }
 
     function testnetResponse(response) {
         xbyBalance = response

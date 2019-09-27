@@ -20,14 +20,11 @@
 #include <qqmlcontext.h>
 #include <qqml.h>
 #include <QZXing.h>
-#include "../backend/xchat/xchat.hpp"
-#include "../backend/xchat/xchatconversationmodel.hpp"
 #include "../backend/staticnet/staticnet.hpp"
 #include "../backend/xutility/xutility.hpp"
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
-#include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 #include "../backend/support/Settings.hpp"
 #include "../backend/support/ReleaseChecker.hpp"
@@ -52,8 +49,6 @@ int main(int argc, char *argv[])
     GlobalEventFilter eventFilter;
     app.installEventFilter(&eventFilter);
 
-    qmlRegisterType<Xchat>("xtrabytes.xcite.xchat", 1, 0, "Xchat");
-    qmlRegisterType<XChatConversationModel>("XChatConversationModel", 0, 1, "XChatConversationModel");
     qmlRegisterType<AddressBookModel>("AddressBookModel", 0, 1, "AddressBookModel");
     qmlRegisterType<ClipboardProxy>("Clipboard", 1, 0, "Clipboard");
     qmlRegisterType<Settings>("xtrabytes.xcite.settings", 1, 0, "XCiteSettings");
@@ -66,13 +61,6 @@ int main(int argc, char *argv[])
     QQmlFileSelector *selector = new QQmlFileSelector(&engine);
     selector->setExtraSelectors(QStringList() << "mobile");
 #endif
-
-    xchatRobot.Initialize();
-    engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
-
-    // wire-up testnet wallet
-    Testnet wallet;
-    engine.rootContext()->setContextProperty("wallet", &wallet);
 
     // wire-up market value
     MarketValue marketValue;
@@ -170,13 +158,6 @@ int main(int argc, char *argv[])
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 #else
-    // X-Chat
-    wallet.m_xchatobject = &xchatRobot;
-
-    // FauxWallet
-    QObject::connect(&wallet, SIGNAL(response(QVariant)), rootObject, SLOT(testnetResponse(QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletError(QVariant, QVariant)), rootObject, SLOT(walletError(QVariant, QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), rootObject, SLOT(walletSuccess(QVariant)));
 #endif
 
     return app.exec();

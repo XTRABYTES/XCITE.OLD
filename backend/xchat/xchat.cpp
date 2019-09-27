@@ -13,7 +13,6 @@
 #include "xchat.hpp"
 #include "../staticnet/staticnet.hpp"
 #include "../xutility/xutility.hpp"
-#include "../testnet/xchattestnetclient.hpp"
 
 XchatObject xchatRobot;
 
@@ -64,18 +63,17 @@ void XchatObject::SubmitMsgCall(const QString &msg) {
 	
             m_lastUserMessage = harmonizedMessage;
 	
-            XchatTestnetClient client;
             if (harmonizedMessage.contains("$_WALLET_BALANCE_XBY$"))
             {
                 m_BalanceRequested = true;
-                client.WriteBalance(QString(""));
             }
             else if (harmonizedMessage.contains("$_WALLET_DUMPPRIVKEY$"))
             {
                 QStringList stringList = harmonizedMessage.split(" ");
                 int getBlockIndex = stringList.indexOf("$_WALLET_DUMPPRIVKEY$");
-                if (stringList.length()-1 > getBlockIndex)
-                    client.WriteDumpprivkey(QString(stringList[getBlockIndex+1]));
+                if (stringList.length()-1 > getBlockIndex){
+
+                }
                 else
                     emit xchatResponseSignal(m_pXchatAiml->getResponse("PARAMETER MISSING"));
             }
@@ -83,8 +81,9 @@ void XchatObject::SubmitMsgCall(const QString &msg) {
             {
                 QStringList stringList = harmonizedMessage.split(" ");
                 int getBlockIndex = stringList.indexOf("$_WALLET_GETBLOCK$");
-                if (stringList.length()-1 > getBlockIndex)
-                    client.WriteGetBlock(QString(stringList[getBlockIndex+1]));
+                if (stringList.length()-1 > getBlockIndex){
+
+                }
                 else
                     emit xchatResponseSignal(m_pXchatAiml->getResponse("PARAMETER MISSING"));
             }
