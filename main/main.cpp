@@ -46,7 +46,24 @@ int main(int argc, char *argv[])
     app.setOrganizationName("Xtrabytes");
     app.setOrganizationDomain("xtrabytes.global");
     app.setApplicationName("XCITE");
-    app.setFont(QFont("Roboto"));
+
+//    app.setFont(QFont("Roboto")); !!! FIXMEEE need load the font from resources before set
+       
+// load font example       
+    Q_INIT_RESOURCE(resources);
+    QFile file(":/dejavusans"); 
+    if(!file.open(QIODevice::ReadOnly)) {
+       qDebug()<<"filenot opened"<<endl;
+    } else {
+        int fontId = QFontDatabase::addApplicationFontFromData(file.readAll());
+        if (fontId != -1) {
+            QFont font("DefaultFont");
+            app.setFont(font);
+        }
+    }
+    file.close();
+// end example
+
     app.setWindowIcon(QIcon("xcite.ico"));
 
     GlobalEventFilter eventFilter;

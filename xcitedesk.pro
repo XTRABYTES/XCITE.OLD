@@ -15,8 +15,10 @@ VERSION_BUILD=0
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui xml quick svg charts
+QT	+= core gui xml quick svg charts sql mqtt
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
+CONFIG += resources_big
+## CONFIG += static
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
@@ -51,6 +53,10 @@ include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
+	    backend/staticnet/staticnet.cpp \
+	    backend/xutility/xutility.cpp \
+	    backend/xutility/crypto/ctools.cpp \
+	    backend/xutility/transaction/transaction.cpp \
             backend/p2p/p2p.cpp \
             backend/xchat/xchatconversationmodel.cpp \
             backend/XCITE/nodes/nodetransaction.cpp \
@@ -61,18 +67,29 @@ SOURCES += main/main.cpp \
             backend/support/globaleventfilter.cpp \
             backend/testnet/xchattestnetclient.cpp \
             backend/integrations/MarketValue.cpp \
+            backend/integrations/Explorer.cpp \
             backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
-            backend/support/Settings.cpp
+            backend/support/Settings.cpp \
+            backend/support/qaesencryption.cpp \
+    backend/integrations/xutility_integration.cpp \
+    backend/integrations/staticnet_integration.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
 
 HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xchat/xchataiml.hpp \
+	    backend/xutility/crypto/allocators.h \
+	    backend/xutility/crypto/ctools.h \
+	    backend/xutility/crypto/numbers.h \
+	    backend/xutility/transaction/transaction.h \
+	    backend/xutility/transaction/serialize.h \
             backend/p2p/p2p.hpp \
             backend/xchat/xchatconversationmodel.hpp \
             backend/XCITE/nodes/nodetransaction.h \
+	    backend/staticnet/staticnet.hpp \
+	    backend/xutility/xutility.hpp \
             backend/testnet/testnet.hpp \
             backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
@@ -82,8 +99,12 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/MarketValue.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
-    backend/support/Settings.hpp \
-    backend/integrations/MarketValue.hpp
+            backend/support/Settings.hpp \
+            backend/integrations/MarketValue.hpp \
+            backend/integrations/Explorer.hpp \
+            backend/support/qaesencryption.h \
+    backend/integrations/xutility_integration.hpp \
+    backend/integrations/staticnet_integration.hpp
 
 DISTFILES += \
     xcite.ico \
@@ -111,7 +132,7 @@ win32 {
 }
 
 mac {
-    ICON = resources/ios/xcite.icns
+    ICON = $$PWD/resources/ios/xcite.icns
 
     mac!ios {
     }
@@ -126,6 +147,8 @@ mac {
 }
 
 linux:!android {
+  LIBS += -lssl -lcrypto
+  LIBS += -lboost_system
 }
 
 android {
