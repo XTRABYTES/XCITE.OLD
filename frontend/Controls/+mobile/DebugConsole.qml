@@ -201,6 +201,10 @@ Rectangle {
 
                     requestText.text = ""
                 }
+                else if (deBugArray[0] === "@xchat") {
+                    xChatSend(deBugArray)
+                    requestText.text = ""
+                }
                 else {
                     replyText.text = replyText.text + "-- Command does not exist.<br/>Use the command <b>help</b> to get a list of available commands.<br/>"
                     requestText.text = ""
@@ -300,6 +304,14 @@ Rectangle {
                             "Error:" + error + "<br>"
                 }
             }
+        }
+
+        Connections {
+            target: xChat
+            onXchatSuccess: {
+                replyText.text = msg;
+            }
+
         }
 
     }

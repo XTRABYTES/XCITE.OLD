@@ -15,7 +15,7 @@ VERSION_BUILD=0
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui xml quick svg charts sql
+QT	+= core gui xml quick svg charts sql mqtt
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 CONFIG += resources_big
 CONFIG += static

@@ -164,5 +164,6 @@
         <file>Controls/+mobile/PendingList.qml</file>
         <file>Controls/+mobile/ReplyModal.qml</file>
         <file>Controls/+mobile/ChangePassword.qml</file>
+        <file>Controls/+mobile/XChat.qml</file>
     </qresource>
 </RCC>
