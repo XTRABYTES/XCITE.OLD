@@ -22,6 +22,7 @@
 #include <QZXing.h>
 #include "../backend/staticnet/staticnet.hpp"
 #include "../backend/xutility/xutility.hpp"
+#include "../backend/xchat/xchat.hpp"
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
@@ -74,6 +75,12 @@ int main(int argc, char *argv[])
     xutility_integration xUtil_int;
     engine.rootContext()->setContextProperty("xUtil_int", &xUtil_int);    
     engine.rootContext()->setContextProperty("xUtility", &xUtility);
+
+    // wire-up xchat
+  //  XchatObject xChat;
+    xchatRobot.Initialize();
+    engine.rootContext()->setContextProperty("xChat", &xchatRobot);
+
 
     // wire-up staticnet_integration
     staticNet.Initialize();
@@ -149,6 +156,8 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(sendCoins(QString)), &static_int, SLOT(sendCoinsEntry(QString)));
     QObject::connect(&staticNet, SIGNAL(ResponseFromStaticnet(QJsonObject)), &static_int, SLOT(onResponseFromStaticnetEntry(QJsonObject)),Qt::QueuedConnection);      
     QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtility, SLOT(networkEntry(QString)));
+
+    QObject::connect(rootObject, SIGNAL(xChatSend(QString)), &xchatRobot, SLOT(xchatInc(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

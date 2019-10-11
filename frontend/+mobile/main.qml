@@ -230,6 +230,8 @@ ApplicationWindow {
     property int currencyTracker: 0
     property int pincodeTracker: 0
     property int debugTracker: 0
+    property int xchatTracker: 0
+
     property int backupTracker: 0
     property int screenshotTracker: 0
     property int walletDetailTracker: 0
@@ -369,6 +371,7 @@ ApplicationWindow {
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
     signal helpMe()
+    signal xChatSend(string msg)
     signal setNetwork(string network)
     signal testTransaction(string test)
     signal updateAccount(string addresslist, string contactlist, string walletlist, string pendinglist)

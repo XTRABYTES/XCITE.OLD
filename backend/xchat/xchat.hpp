@@ -17,6 +17,8 @@
 #include <QString>
 #include <QVariant>
 
+#include <QtMqtt/QMqttClient>
+
 #include "xchataiml.hpp"
 #include "xchatconversationmodel.hpp"
 
@@ -34,15 +36,17 @@ class XchatObject : public QObject
     Q_OBJECT
 
 public:
-	explicit XchatObject(QObject *parent = 0);
+    explicit XchatObject(QObject *parent = 0);
    ~XchatObject();
-    
+
    void Initialize();
    bool m_BalanceRequested = false;
    QString m_lastUserMessage;
 
 signals:
     void xchatResponseSignal(QVariant text);
+    void xchatSuccess(const QString &msg);
+
 
 public slots:
     void SubmitMsgCall(const QString &msg);
@@ -50,10 +54,18 @@ public slots:
     bool CheckUserInputForKeyWord(const QString msg);
     bool CheckAIInputForKeyWord(const QString msg);
     QString HarmonizeKeyWords(const QString msg);
+    void xchatInc(const QString &msg);
+
+
+private slots:
+    void mqtt_StateChanged();
+
 
 private:
     QObject *window;
     XchatAIML *m_pXchatAiml;
+    QMqttClient *mqtt_client;
+    QString topic = "xcite/xchat";
     bool m_bIsInitialized;
 };
 

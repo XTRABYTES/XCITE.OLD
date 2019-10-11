@@ -16,7 +16,9 @@ import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
-import "qrc:/Controls" as Controls
+//import "qrc:/Controls" as Controls
+import "../Controls" as Controls
+
 
 Rectangle {
     id: applicationModal
@@ -49,6 +51,22 @@ Rectangle {
             font.family: "Brandon Grotesque"
             color: darktheme == true? "#F2F2F2" : "#2A2C31"
             font.letterSpacing: 2
+
+            Rectangle {
+                width: parent.width
+                height: parent.height
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onDoubleClicked: {
+                        xchatTracker = 1
+                    }
+                }
+            }
     }
 
     Item {
@@ -106,5 +124,11 @@ Rectangle {
                 mainRoot.pop()
             }
         }
+    }
+
+    Controls.XChat {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 }
