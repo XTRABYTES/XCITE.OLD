@@ -17,6 +17,8 @@
 #include <QString>
 #include <QVariant>
 
+#include <QtMqtt/QMqttClient>
+
 #include "xchataiml.hpp"
 #include "xchatconversationmodel.hpp"
 
@@ -50,10 +52,16 @@ public slots:
     bool CheckUserInputForKeyWord(const QString msg);
     bool CheckAIInputForKeyWord(const QString msg);
     QString HarmonizeKeyWords(const QString msg);
+    
+private slots:
+    void mqtt_StateChanged(); 
+    
 
 private:
     QObject *window;
     XchatAIML *m_pXchatAiml;
+    QMqttClient *mqtt_client;
+    QString topic = "xcite/xchat";
     bool m_bIsInitialized;
 };
 

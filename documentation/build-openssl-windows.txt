@@ -22,8 +22,27 @@ compilation terminated.
 
 $ tar zxf openssl-1.0.2o.tar.gz
 $ cd openssl-1.0.2o
-$ mkdir dist
+$ mkdir dist - or another directory you might want (eg. C:/openssl)
+
+For 32 bits:
+
+$ perl Configure mingw no-shared no-asm --prefix=/c/OpenSSL
+
+For 64 bits:
+
+$ perl Configure mingw64 no-shared no-asm --prefix=/C/OpenSSL-x64
+
+or
+
+For 32 bits:
+
 $ ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared mingw
+
+For 64 bit:
+
+$ ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared mingw64
+
+
 $ make depend && make && make install
 
 - Copy out dist/bin/libeay32.dll and dist/bin/ssleay32.dll to the xcite build dir

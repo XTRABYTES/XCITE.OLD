@@ -578,6 +578,8 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
      //  Send Decrypted randNum back to backend (checks if user is right user)
      QString response3 = RestAPIPostCall("/v1/checkUser", payload2);
      if (response3.isEmpty()){
+         emit passwordChangedFailed();
+
          return;
      }
      QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
@@ -602,7 +604,6 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
     decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
     QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
 
-
     if(decodedJson.value("app").toString().startsWith("xtrabytes")){
         // Create new rand Num.
         QString randNum = createRandNum();
@@ -618,39 +619,78 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
 
         sessionIdAes.second = sessionIdAes.second.toBase64();
 
+        // create settings file
+        m_password = newPassword;
+
+        QVariantMap settings;
+        foreach (const QString &key, m_settings->childKeys()) {//iterate through m_settings to add everything to settings file we write to DB
+            settings.insert(key,m_settings->value(key).toString());
+            qDebug().noquote() << settings;
+        }
+        QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (oldPassword + "xtrabytesxtrabytes").toLatin1());
+        settings.insert("pincode", dec_pincode); //may be able to remove this
+
+        /*      Add contacts to DB       */
+        QJsonArray contactsArray = QJsonDocument::fromJson(m_contacts.toLatin1()).array();
+        settings.insert("contacts",contactsArray.toVariantList()); // add contacts array to our existing settings
+        qDebug().noquote() << contactsArray;
+
+
+        /*      Add addresses to DB       */
+        QJsonArray addressesArray = QJsonDocument::fromJson(m_addresses.toLatin1()).array(); //save addresses saves array to m_addresses
+        settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
+
+        /*      Add pendingTransactions to DB       */
+        QJsonArray pendingArray = QJsonDocument::fromJson(m_pending.toLatin1()).array();
+        settings.insert("pendingList",pendingArray.toVariantList()); // add pendingTransactions array to our existing settings
+        qDebug().noquote() << pendingArray;
+
+        /*      Add wallets to DB       */
+        bool localKeys = m_settings->value("localKeys").toBool();
+        if (!localKeys){
+            QJsonArray walletArray = QJsonDocument::fromJson(m_wallet.toLatin1()).array(); //savewallet saves array to m_wallet
+            settings.insert("walletList",walletArray.toVariantList()); // add wallet array to our existing settings
+        }
+
+        /*    Convert Settings Variant to QByteArray  and encode it   */
+        QByteArray settingsOutput =  QJsonDocument::fromVariant(QVariant(settings)).toJson(QJsonDocument::Compact); //Convert settings to byteArray/Json
+        QByteArray encodedText = encryption.encode(settingsOutput, (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
+        QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
+
         QVariantMap feed3;
          feed3.insert("randNumAes", randNumAes.second);
          feed3.insert("randNumPass", encodedRandNrStr);
          feed3.insert("sessionIdAes", sessionIdAes.second);
+         feed3.insert("settings",DataAsString);
          feed3.insert("username",m_username);
 
-         QByteArray finalLogin =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
+         QByteArray changePassword =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
 
-         finalLogin = finalLogin.toBase64();
+         changePassword = changePassword.toBase64();
 
          // Send new encrypted Rand Nums to backend
-         QString finalLoginResponse = RestAPIPostCall("/v1/finalLogin", finalLogin);
-         if (finalLoginResponse.isEmpty()){
+         QString changePasswordResponse = RestAPIPostCall("/v1/changePassword", changePassword);
+         if (changePasswordResponse.isEmpty()){
              return;
          }
-         QJsonDocument jsonResponseSave = QJsonDocument::fromJson(finalLoginResponse.toLatin1());
+         QJsonDocument jsonResponseSave = QJsonDocument::fromJson(changePasswordResponse.toLatin1());
          QJsonValue encryptedTextLogin = jsonResponseSave.object().value("login");
 
-         bool loginSavedSuccess = encryptedTextLogin.toString() == "success" ? true:false;
+         bool changePasswordSuccess = encryptedTextLogin.toString() == "success" ? true:false;
 
-         if (loginSavedSuccess){
+         if (changePasswordSuccess){
 
-             QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+             QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (oldPassword + "xtrabytesxtrabytes").toLatin1());
              dec_pincode.chop(1);
 
              qDebug() << dec_pincode;
 
-             m_password = newPassword;
 
              QByteArray enc_pincode = encryption.encode((dec_pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
              m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length());
 
-             SaveSettings();
+             emit saveSucceeded();
+             return;
          }
          else {
              emit passwordChangedFailed();
@@ -660,6 +700,7 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
     }else{
         emit passwordChangedFailed(); // if update fails -- CHANGE this
     }
+
 }
 
 std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *key,  unsigned char *iv) {
