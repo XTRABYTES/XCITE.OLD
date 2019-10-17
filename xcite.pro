@@ -15,7 +15,7 @@ VERSION_BUILD=0
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui xml quick svg charts sql
+QT	+= core gui xml quick svg charts sql mqtt
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 CONFIG += resources_big
 CONFIG += static
@@ -151,6 +151,15 @@ win32 {
     PWD_WIN = $${PWD}
     PWD_WIN ~= s,/,\\,g
     QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*.dll\" \"$${DESTDIR_WIN}\")
+
+    LIBS += -L$$PWD/dependencies/windows/openssl/lib/ -llibssl -llibcrypto
+    INCLUDEPATH += $$PWD/dependencies/windows/openssl/include
+
+    LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
+    INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
+
+    LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
+    INCLUDEPATH += $$PWD/dependencies/windows/boost/include
 }
 
     ios {
@@ -216,3 +225,4 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         $$PWD/dependencies/android/armeabi-v7a/boost/libcomp/libcrypto.so \
         $$PWD/dependencies/android/armeabi-v7a/boost/libcomp/libssl.so
 }
+
