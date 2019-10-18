@@ -207,9 +207,10 @@ android {
     QT += multimedia androidextras
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
-
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system
+
+
 }
 
 
@@ -222,7 +223,7 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         $$PWD/android
 
     ANDROID_EXTRA_LIBS = \
-        $$PWD/dependencies/android/armeabi-v7a/boost/libcomp/libcrypto.so \
-        $$PWD/dependencies/android/armeabi-v7a/boost/libcomp/libssl.so
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libcrypto.so \
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libssl.so
 }
 
