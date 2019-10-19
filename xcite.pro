@@ -169,9 +169,9 @@ win32 {
         app_launch_images.files = resources/ios/LaunchScreen.storyboard resources/backgrounds/launchScreen-logo_01.png
         QMAKE_BUNDLE_DATA += app_launch_images
 
-        INCLUDEPATH += $$PWD/dependencies/ios/arm64-v8a/openssl/include
+        INCLUDEPATH += $$PWD/dependencies/ios/x86_64/openssl/include
         INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-        LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
+        LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
         QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
         QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
     }
