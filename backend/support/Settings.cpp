@@ -287,12 +287,15 @@ std::pair<QByteArray,QByteArray> Settings::createKeyPair(){
     const int kBits = 4096;
       const int kExp = 3;
     char *pem_key, *pem_key_pub;
-
-    RSA *rsa = RSA_generate_key(kBits, kExp, 0, 0);
+      BIGNUM *e;
+      e=BN_new();
+      BN_set_word(e, 17);
+      RSA *rsa_keypair = RSA_new();
+    RSA_generate_key_ex(rsa_keypair, 1024, e, NULL);
 
     //Private key in PEM form:
     BIO *bio = BIO_new(BIO_s_mem());
-    PEM_write_bio_RSAPrivateKey(bio, rsa, NULL, NULL, 0, NULL, NULL);
+    PEM_write_bio_RSAPrivateKey(bio, rsa_keypair, NULL, NULL, 0, NULL, NULL);
     int keylen = BIO_pending(bio);
     pem_key = (char *)malloc(keylen); /* Null-terminate */
     BIO_read(bio, pem_key, keylen);
@@ -300,7 +303,7 @@ std::pair<QByteArray,QByteArray> Settings::createKeyPair(){
 
     //Public key in PEM form:
     BIO *bio2 = BIO_new(BIO_s_mem());
-    PEM_write_bio_RSA_PUBKEY(bio2, rsa);
+    PEM_write_bio_RSA_PUBKEY(bio2, rsa_keypair);
     int keylen2 = BIO_pending(bio2);
     pem_key_pub = (char *)malloc(keylen2); /* Null-terminate */
     BIO_read(bio2, pem_key_pub, keylen2);
