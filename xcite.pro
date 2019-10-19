@@ -57,15 +57,11 @@ SOURCES += main/main.cpp \
 	    backend/xutility/xutility.cpp \
 	    backend/xutility/crypto/ctools.cpp \
 	    backend/xutility/transaction/transaction.cpp \
-            backend/p2p/p2p.cpp \
             backend/xchat/xchatconversationmodel.cpp \
             backend/XCITE/nodes/nodetransaction.cpp \
-            backend/testnet/testnet.cpp \
-            backend/testnet/transactionmodel.cpp \
             backend/addressbook/addressbookmodel.cpp \
             backend/support/ClipboardProxy.cpp \
             backend/support/globaleventfilter.cpp \
-            backend/testnet/xchattestnetclient.cpp \
             backend/integrations/MarketValue.cpp \
             backend/integrations/Explorer.cpp \
             backend/support/ReleaseChecker.cpp \
@@ -85,17 +81,13 @@ HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xutility/crypto/numbers.h \
 	    backend/xutility/transaction/transaction.h \
 	    backend/xutility/transaction/serialize.h \
-            backend/p2p/p2p.hpp \
             backend/xchat/xchatconversationmodel.hpp \
             backend/XCITE/nodes/nodetransaction.h \
 	    backend/staticnet/staticnet.hpp \
 	    backend/xutility/xutility.hpp \
-            backend/testnet/testnet.hpp \
-            backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
             backend/support/ClipboardProxy.hpp \
             backend/support/globaleventfilter.hpp \
-            backend/testnet/xchattestnetclient.hpp \
             backend/integrations/MarketValue.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
@@ -211,6 +203,13 @@ android {
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system
 
 
+}
+
+macx {
+        INCLUDEPATH += $$PWD/dependencies/ios/x86_64/openssl/include
+        INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+        LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
+        LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 }
 
 
