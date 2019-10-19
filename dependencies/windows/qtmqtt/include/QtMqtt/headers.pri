@@ -1,0 +1,6 @@
+SYNCQT.HEADER_FILES = qmqttauthenticationproperties.h qmqttclient.h qmqttconnectionproperties.h qmqttglobal.h qmqttmessage.h qmqttpublishproperties.h qmqttsubscription.h qmqttsubscriptionproperties.h qmqtttopicfilter.h qmqtttopicname.h qmqtttype.h 
+SYNCQT.GENERATED_HEADER_FILES = QMqttAuthenticationProperties QMqttClient QMqttLastWillProperties QMqttConnectionProperties QMqttServerConnectionProperties QMqttMessage QMqttPublishProperties QMqttMessageStatusProperties QMqttSubscription QMqttSubscriptionProperties QMqttUnsubscriptionProperties QMqttTopicFilter QMqttTopicName QMqttStringPair QMqttUserProperties qtmqttversion.h QtMqttVersion QtMqtt 
+SYNCQT.PRIVATE_HEADER_FILES = qmqttclient_p.h qmqttconnection_p.h qmqttconnectionproperties_p.h qmqttcontrolpacket_p.h qmqttmessage_p.h qmqttpublishproperties_p.h qmqttsubscription_p.h 
+SYNCQT.QPA_HEADER_FILES = 
+SYNCQT.CLEAN_HEADER_FILES = qmqttauthenticationproperties.h qmqttclient.h qmqttconnectionproperties.h qmqttglobal.h qmqttmessage.h qmqttpublishproperties.h qmqttsubscription.h qmqttsubscriptionproperties.h qmqtttopicfilter.h qmqtttopicname.h qmqtttype.h 
+SYNCQT.INJECTIONS = 
