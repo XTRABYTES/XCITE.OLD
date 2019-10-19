@@ -57,11 +57,15 @@ SOURCES += main/main.cpp \
 	    backend/xutility/xutility.cpp \
 	    backend/xutility/crypto/ctools.cpp \
 	    backend/xutility/transaction/transaction.cpp \
+            backend/p2p/p2p.cpp \
             backend/xchat/xchatconversationmodel.cpp \
             backend/XCITE/nodes/nodetransaction.cpp \
+            backend/testnet/testnet.cpp \
+            backend/testnet/transactionmodel.cpp \
             backend/addressbook/addressbookmodel.cpp \
             backend/support/ClipboardProxy.cpp \
             backend/support/globaleventfilter.cpp \
+            backend/testnet/xchattestnetclient.cpp \
             backend/integrations/MarketValue.cpp \
             backend/integrations/Explorer.cpp \
             backend/support/ReleaseChecker.cpp \
@@ -81,13 +85,17 @@ HEADERS  += backend/xchat/xchat.hpp \
 	    backend/xutility/crypto/numbers.h \
 	    backend/xutility/transaction/transaction.h \
 	    backend/xutility/transaction/serialize.h \
+            backend/p2p/p2p.hpp \
             backend/xchat/xchatconversationmodel.hpp \
             backend/XCITE/nodes/nodetransaction.h \
 	    backend/staticnet/staticnet.hpp \
 	    backend/xutility/xutility.hpp \
+            backend/testnet/testnet.hpp \
+            backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
             backend/support/ClipboardProxy.hpp \
             backend/support/globaleventfilter.hpp \
+            backend/testnet/xchattestnetclient.hpp \
             backend/integrations/MarketValue.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
@@ -144,9 +152,14 @@ win32 {
     PWD_WIN ~= s,/,\\,g
     QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*.dll\" \"$${DESTDIR_WIN}\")
 
-    INCLUDEPATH += $$PWD/dependencies/ios/arm64-v8a/openssl/include
-    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-    LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
+    LIBS += -L$$PWD/dependencies/windows/openssl/lib/ -llibssl -llibcrypto
+    INCLUDEPATH += $$PWD/dependencies/windows/openssl/include
+
+    LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
+    INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
+
+    LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
+    INCLUDEPATH += $$PWD/dependencies/windows/boost/include
 }
 
     ios {
@@ -162,11 +175,6 @@ win32 {
         QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
         QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
     }
-macx {
-        INCLUDEPATH += $$PWD/dependencies/ios/arm64-v8a/openssl/include
-        INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-        LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
-}
 
 mac {
     ICON = $$PWD/resources/ios/xcite.icns
@@ -199,9 +207,10 @@ android {
     QT += multimedia androidextras
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
-
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system
+
+
 }
 
 
@@ -214,6 +223,7 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         $$PWD/android
 
     ANDROID_EXTRA_LIBS = \
-        $$PWD/dependencies/android/armeabi-v7a/boost/libcomp/libcrypto.so \
-        $$PWD/dependencies/android/armeabi-v7a/boost/libcomp/libssl.so
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libcrypto.so \
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libssl.so
 }
+
