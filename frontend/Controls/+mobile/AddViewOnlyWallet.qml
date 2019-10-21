@@ -857,16 +857,18 @@ Rectangle {
                     selectedAddress = publicKey.text
                     timer.start()
                 }
+                tryHarder: true
+
             }
 
             captureRect: {
-                // setup bindings
-                videoOutput.contentRect;
-                videoOutput.sourceRect;
-                // only scan the central quarter of the area for a barcode
-                return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
-                                                                                           0.22, 0.09, 0.56, 0.82)));
-            }
+                            // setup bindings
+                            videoOutput.contentRect;
+                            videoOutput.sourceRect;
+                            return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
+                                0.25, 0.25, 0.5, 0.5
+                            )));
+                        }
         }
     }
 
