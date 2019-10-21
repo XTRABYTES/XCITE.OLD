@@ -151,7 +151,7 @@ win32 {
     PWD_WIN = $${PWD}
     PWD_WIN ~= s,/,\\,g
     QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*.dll\" \"$${DESTDIR_WIN}\")
-
+    
     LIBS += -L$$PWD/dependencies/windows/openssl/lib/ -llibssl -llibcrypto
     INCLUDEPATH += $$PWD/dependencies/windows/openssl/include
 
