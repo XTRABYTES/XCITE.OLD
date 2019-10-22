@@ -34,7 +34,7 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
             if ((coin == "xby") || (coin == "xfuel") || (coin == "xfuel-testnet")){
                 QString response =  getBalanceAddressXBY(coin,address, "1");
                 QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
-                qDebug() << coin << ", " << address << ", " << jsonResponse;
+           //     qDebug() << coin << ", " << address << ", " << jsonResponse;
                 QJsonObject result = jsonResponse.object().value("result").toObject();
                 QString balance = result.value("balance_current").toString();
                 balance = balance.insert(balance.length() - 8, ".");
@@ -45,7 +45,7 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
             } else if(((coin == "btc") || (coin == "eth")) && wallets == "all"){
                 QString response =  getBalanceAddressExt(coin,address);
                 QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
-                qDebug() << coin << ", " << address << ", " << jsonResponse;
+         //       qDebug() << coin << ", " << address << ", " << jsonResponse;
                 if(jsonResponse.object().contains("balance")) {
                     double balanceLong = jsonResponse.object().value("balance").toDouble();
                     QString balance;
@@ -103,7 +103,7 @@ void Explorer::getDetails(QString coin, QString transaction) {
             QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
             QJsonObject result = jsonResponse.object().value("result").toObject();
 
-            qDebug() << jsonResponse;
+    //        qDebug() << jsonResponse;
 
             QString timestamp = result.value("data").toString();
             QLocale::setDefault(QLocale::English);
@@ -135,7 +135,6 @@ void Explorer::getDetails(QString coin, QString transaction) {
 QString Explorer::getTransactionDetails(QString coin, QString transaction) {
 
     QString url = "https://xtrabytes.global/api/"+ coin + "/transaction/" + transaction;
-
     QUrl Url;
     Url.setPath(url);
 
@@ -184,14 +183,15 @@ QString Explorer::getBalanceAddressXBY(QString coin, QString address, QString pa
     QNetworkReply *reply = mgr.get(request);
     eventLoop.exec();
 
-    QString strReply = (QString)reply->readAll();
+    QByteArray bytes = reply->readAll();
+    QString strReply = QString::fromUtf8(bytes.data(), bytes.size());
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     return strReply;
 }
 
 QString Explorer::getBalanceAddressExt(QString coin, QString address){
     QString balance = "";
     QString url = "https://api.blockcypher.com/v1/"+ coin + "/main/addrs/" + address;
-
     QUrl Url;
     Url.setPath(url);
 
@@ -246,7 +246,7 @@ void Explorer::checkTxStatus(QString pendingList) {
             QString response =  getTransactionDetails(coin, transaction);
             QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
 
-            qDebug() << jsonResponse;
+    //        qDebug() << jsonResponse;
 
             if (coin == "xfuel-testnet") {
                 coin = "xtest";
