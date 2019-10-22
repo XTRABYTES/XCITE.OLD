@@ -222,7 +222,7 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         $$PWD/android
 
     ANDROID_EXTRA_LIBS = \
-        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libcrypto.so \
-        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libssl.so
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libcrypto_1_1.so \
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libssl_1_1.so
 }
 
