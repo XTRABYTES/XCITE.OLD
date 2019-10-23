@@ -963,7 +963,7 @@ Rectangle {
                 height: 75
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: createWalletSuccess.modalTop
+                anchors.top: createWalletFailed.modalTop
                 anchors.topMargin: 20
             }
 

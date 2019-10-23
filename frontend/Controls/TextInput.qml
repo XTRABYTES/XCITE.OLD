@@ -1,4 +1,4 @@
-/**
+ /**
  * Filename: TextInput.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -15,6 +15,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import QtQuick.Layouts 1.11
 
 import "../Theme" 1.0
 

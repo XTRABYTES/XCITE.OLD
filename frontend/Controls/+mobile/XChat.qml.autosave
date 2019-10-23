@@ -71,7 +71,7 @@ Rectangle {
 
     Text {
         id: xchatModalLabel
-        text: "XCHAT"
+        text: "X-CHAT"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 10

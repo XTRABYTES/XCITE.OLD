@@ -165,5 +165,6 @@
         <file>Controls/+mobile/ReplyModal.qml</file>
         <file>Controls/+mobile/ChangePassword.qml</file>
         <file>Controls/+mobile/XChat.qml</file>
+        <file>Controls/+mobile/XChatList.qml</file>
     </qresource>
 </RCC>

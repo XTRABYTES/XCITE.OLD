@@ -350,6 +350,10 @@ ApplicationWindow {
     property real pendingXTEST: 0
     property real pendingBTC: 0
     property real pendingETH: 0
+    property variant xChatDate
+    property variant xChatArray
+    property variant xChatMeta
+    property int xChatID:1
 
     // Signals
     signal checkOS()
@@ -389,6 +393,16 @@ ApplicationWindow {
     signal changePassword(string oldPassword, string newPassword)
 
     // functions
+    function updateXchat(msg) {
+        xChatDate = ""
+        xChatArray = msg.split(':')
+        xChatMeta = xChatArray[0].split(',')
+        xChatDate = new Date().toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm")
+        console.log(xChatDate)
+        xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatArray[1], "ID" : xChatID})
+        xChatID = xChatID + 1
+    }
+
     function updateBalance(coin, address, balance) {
         var balanceAlert
         var difference
@@ -1437,6 +1451,17 @@ ApplicationWindow {
             name: ""
             sound: 'qrc:/sounds/notification_1.wav'
             soundNR: 0
+        }
+    }
+
+    ListModel {
+        id: xChatTread
+        ListElement {
+            message: ""
+            author: ""
+            date: ""
+            device: ""
+            ID:0
         }
     }
 
