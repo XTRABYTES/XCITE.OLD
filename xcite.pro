@@ -4,7 +4,7 @@
 # XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
 # blockchain protocol to host decentralized applications
 #
-# Copyright (c) 2017-2018 Zoltan Szabo & XTRABYTES developers
+# Copyright (c) 2017-2019 Zoltan Szabo & XTRABYTES developers
 #
 # This file is part of an XTRABYTES Ltd. project.
 #
@@ -19,6 +19,7 @@ QT	+= core gui xml quick svg charts sql mqtt
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 CONFIG += resources_big
 CONFIG += static
+
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
@@ -144,7 +145,10 @@ win32 {
     PWD_WIN ~= s,/,\\,g
     QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*.dll\" \"$${DESTDIR_WIN}\")
 
-    LIBS += -L$$PWD/dependencies/windows/openssl/lib/ -llibssl -llibcrypto
+    win32-g++:contains(QT_ARCH, x86_64):{
+    message("Compiling Windows x86_x64 (64-bit)")
+    
+    LIBS += -L$$PWD/dependencies/windows/openssl/lib/lib64 -llibssl -llibcrypto -lcrypt32 -lws2_32
     INCLUDEPATH += $$PWD/dependencies/windows/openssl/include
 
     LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
@@ -152,6 +156,31 @@ win32 {
 
     LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
     INCLUDEPATH += $$PWD/dependencies/windows/boost/include
+} 
+
+    else {
+    message("Compiling Windows x86 (32-bit)")
+    
+    LIBS += -L$$PWD/dependencies/windows/openssl/lib/lib32 -llibssl -llibcrypto -lcrypt32 -lws2_32
+    INCLUDEPATH += $$PWD/dependencies/windows/openssl/include
+    
+    LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
+    INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
+
+    LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
+    INCLUDEPATH += $$PWD/dependencies/windows/boost/include
+}
+
+
+   # LIBS += -L$$PWD/dependencies/windows/openssl/lib/ -llibssl -llibcrypto -lcrypt32 -lws2_32
+   # LIBS += -L$$PWD/dependencies/windows64/openssl/lib/ -llibssl -llibcrypto -lcrypt32 -lws2_32
+   # INCLUDEPATH += $$PWD/dependencies/windows/openssl/include
+
+   # LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
+   # INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
+
+   # LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
+   # INCLUDEPATH += $$PWD/dependencies/windows/boost/include
 }
 
     ios {
@@ -189,6 +218,16 @@ mac {
     }
 }
 
+linux {
+    LIBS += -L$$PWD/dependencies/linux/boost/lib/
+    # INCLUDEPATH += $$PWD/dependencies/windows/boost/include
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
+}
+
+
 linux:!android {
   LIBS += -lssl -lcrypto
   LIBS += -lboost_system
@@ -197,11 +236,28 @@ linux:!android {
 android {
     CONFIG += static
     QT += multimedia androidextras
+    
+    android:contains(QT_ARCH, arm): {
+    message("Compiling Android ARMv7 (32-bit)")
+    
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32 -lssl -lcrypto
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
-    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib -lssl -lcrypto
+    
     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+    
+}
 
+    android:contains(QT_ARCH, arm64): {
+    message("Compiling Android arm64-v8a (64-bit)")
+    
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64 -lssl -lcrypto
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
+    
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system-mgw49-mt-d-1_60
+    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+    
+}
 
 }
 
@@ -222,7 +278,16 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         $$PWD/android
 
     ANDROID_EXTRA_LIBS = \
-        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libcrypto_1_1.so \
-        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/libssl_1_1.so
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32/libcrypto_1_1.so \
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32/libssl_1_1.so
 }
 
+contains(ANDROID_TARGET_ARCH,arm64-v8a) {
+
+    ANDROID_PACKAGE_SOURCE_DIR = \
+        $$PWD/android
+
+    ANDROID_EXTRA_LIBS = \
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64/libcrypto_1_1.so \
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64/libssl_1_1.so
+}
