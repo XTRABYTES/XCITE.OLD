@@ -14,6 +14,7 @@
 #include "../staticnet/staticnet.hpp"
 #include "../xutility/xutility.hpp"
 //#include "../testnet/xchattestnetclient.hpp"
+#include <QString>
 
 XchatObject xchatRobot;
 
@@ -67,8 +68,7 @@ void XchatObject::Initialize() {
 void XchatObject::xchatInc(const QString &msg) {
 
      if (!msg.isEmpty() && msg.front()=="@") {
-         if (mqtt_client->publish(topic, msg.split("@").last().toUtf8()) == -1) {
-
+         if (mqtt_client->publish(topic, msg.mid(2).toUtf8()) == -1) {
             xchatRobot.SubmitMsg("@mqtt-ERROR: Could not publish message.");
          }
        return;

@@ -353,6 +353,7 @@ ApplicationWindow {
     property variant xChatDate
     property variant xChatArray
     property variant xChatMeta
+    property string xChatMessage: ""
     property int xChatID:1
 
     // Signals
@@ -396,10 +397,11 @@ ApplicationWindow {
     function updateXchat(msg) {
         xChatDate = ""
         xChatArray = msg.split(':')
+        xChatMessage = msg.replace( xChatArray[0] + ":", "")
         xChatMeta = xChatArray[0].split(',')
         xChatDate = new Date().toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm")
         console.log(xChatDate)
-        xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatArray[1], "ID" : xChatID})
+        xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID})
         xChatID = xChatID + 1
     }
 

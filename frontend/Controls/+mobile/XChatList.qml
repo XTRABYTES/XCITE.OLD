@@ -45,8 +45,8 @@ Rectangle {
                 width: messageText.width < (senderID.width + deviceID.width)? (senderID.width + deviceID.width > messageDate.width? (senderID.width + deviceID.width + 20): (messageDate.width + 20)) : messageText.width + 20
                 anchors.top: parent.top
                 anchors.bottom: messageText.bottom
-                anchors.left: author==(" " + username)? undefined : parent.left
-                anchors.right: author==(" " + username)? parent.right : undefined
+                anchors.left: author==(username)? undefined : parent.left
+                anchors.right: author==(username)? parent.right : undefined
                 color: "transparent"
             }
 
@@ -83,7 +83,7 @@ Rectangle {
                 anchors.top: senderID.bottom
                 anchors.topMargin: 7
                 width:  messageText.implicitWidth < 0.8 * (Screen.width - 56)? messageText.implicitWidth : (0.7 * (Screen.width - 56))
-                horizontalAlignment: author==(" " + username)? Text.AlignRight : Text.AlignLeft
+                horizontalAlignment: author==(username)? Text.AlignRight : Text.AlignLeft
                 font.family: xciteMobile.name
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
@@ -96,7 +96,7 @@ Rectangle {
                 anchors.right: msgBox.right
                 anchors.rightMargin: 10
                 anchors.top: msgBox.bottom
-                anchors.topMargin: -5
+                anchors.topMargin: -10
 
                 font.family: xciteMobile.name
                 font.pixelSize: 10
