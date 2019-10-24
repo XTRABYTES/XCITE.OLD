@@ -220,10 +220,9 @@ mac {
 
 linux {
     LIBS += -L$$PWD/dependencies/linux/boost/lib/
-    # INCLUDEPATH += $$PWD/dependencies/windows/boost/include
-    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
+    INCLUDEPATH += $$PWD/dependencies/linux/boost/include
 
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib
+    LIBS += -L$$PWD/dependencies/openssl/lib
     INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
 }
 
