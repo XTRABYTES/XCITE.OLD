@@ -146,41 +146,30 @@ win32 {
     QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*.dll\" \"$${DESTDIR_WIN}\")
 
     win32-g++:contains(QT_ARCH, x86_64):{
-    message("Compiling Windows x86_x64 (64-bit)")
+      message("Compiling Windows x86_x64 (64-bit)")
     
-    LIBS += -L$$PWD/dependencies/windows/openssl/lib/lib64 -llibssl -llibcrypto -lcrypt32 -lws2_32
-    INCLUDEPATH += $$PWD/dependencies/windows/openssl/include
+      LIBS += -L$$PWD/dependencies/windows/openssl/lib/lib64 -llibssl -llibcrypto -lcrypt32 -lws2_32
+      INCLUDEPATH += $$PWD/dependencies/include/openssl/include
 
-    LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
-    INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
+      LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
+      INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
 
-    LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
-    INCLUDEPATH += $$PWD/dependencies/windows/boost/include
-} 
+      LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
+      INCLUDEPATH += $$PWD/dependencies/include/boost/include
+    } 
 
     else {
-    message("Compiling Windows x86 (32-bit)")
+      message("Compiling Windows x86 (32-bit)")
     
-    LIBS += -L$$PWD/dependencies/windows/openssl/lib/lib32 -llibssl -llibcrypto -lcrypt32 -lws2_32
-    INCLUDEPATH += $$PWD/dependencies/windows/openssl/include
+      LIBS += -L$$PWD/dependencies/windows/openssl/lib/lib32 -llibssl -llibcrypto -lcrypt32 -lws2_32
+      INCLUDEPATH += $$PWD/dependencies/include/openssl/include
     
-    LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
-    INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
+      LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
+      INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
 
-    LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
-    INCLUDEPATH += $$PWD/dependencies/windows/boost/include
-}
-
-
-   # LIBS += -L$$PWD/dependencies/windows/openssl/lib/ -llibssl -llibcrypto -lcrypt32 -lws2_32
-   # LIBS += -L$$PWD/dependencies/windows64/openssl/lib/ -llibssl -llibcrypto -lcrypt32 -lws2_32
-   # INCLUDEPATH += $$PWD/dependencies/windows/openssl/include
-
-   # LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
-   # INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
-
-   # LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
-   # INCLUDEPATH += $$PWD/dependencies/windows/boost/include
+      LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
+      INCLUDEPATH += $$PWD/dependencies/include/boost/include
+    }
 }
 
     ios {
@@ -218,14 +207,6 @@ mac {
     }
 }
 
-linux {
-    LIBS += -L$$PWD/dependencies/linux/boost/lib/
-    INCLUDEPATH += $$PWD/dependencies/linux/boost/include
-
-    LIBS += -L$$PWD/dependencies/openssl/lib
-    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
-}
-
 
 linux:!android {
   LIBS += -lssl -lcrypto
@@ -236,29 +217,36 @@ android {
     CONFIG += static
     QT += multimedia androidextras
     
-    android:contains(QT_ARCH, arm): {
-    message("Compiling Android ARMv7 (32-bit)")
+    android:contains(ANDROID_TARGET_ARCH,armeabi-v7a): {
+      message("Compiling Android ARMv7 (32-bit)")
     
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32 -lssl -lcrypto
-    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32 -lssl -lcrypto
+      INCLUDEPATH += $$PWD/dependencies/include/openssl/include
+
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system
+      INCLUDEPATH += $$PWD/dependencies/include/boost/include
+   
+    }
+
+    android:contains(ANDROID_TARGET_ARCH,arm64-v8a): {
+      message("Compiling Android arm64-v8a (64-bit)")
     
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system
-    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-    
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64 -lssl -lcrypto
+      INCLUDEPATH += $$PWD/dependencies/include/openssl/include
+
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system-mgw49-mt-d-1_60
+      INCLUDEPATH += $$PWD/dependencies/include/boost/include
+    }
 }
 
-    android:contains(QT_ARCH, arm64): {
-    message("Compiling Android arm64-v8a (64-bit)")
-    
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64 -lssl -lcrypto
-    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/openssl/include
-    
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system-mgw49-mt-d-1_60
-    INCLUDEPATH += $$PWD/dependencies/android/armeabi-v7a/boost/include
-    
+linux {
+      LIBS += -L$$PWD/dependencies/linux/boost/lib/
+      INCLUDEPATH += $$PWD/dependencies/linclude/boost/include
+
+      LIBS += -L$$PWD/dependencies/linux/openssl/lib -lssl -lcrypto
+      INCLUDEPATH += $$PWD/dependencies/include/openssl/include
 }
 
-}
 
 macx {
         INCLUDEPATH += $$PWD/dependencies/ios/x86_64/openssl/include
