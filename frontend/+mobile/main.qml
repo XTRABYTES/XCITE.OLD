@@ -402,42 +402,43 @@ ApplicationWindow {
 
     // functions
     function updateXchat(msg) {
-        xChatDate = ""
-        xChatArray = msg.split(':')
-        xChatMessage = msg.replace( xChatArray[0] + ":", "")
-        xChatMeta = xChatArray[0].split(',')
-        xChatDate = new Date().toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm")
-        console.log(xChatDate)
-        console.log("author: " + xChatMeta[0])
-        messageArray = xChatMessage.split(' ')
-        for(var i = 0; i < (messageArray.length); i++) {
-            console.log(messageArray[i])
-            if(xChatMeta[0] !== username) {
-                if (messageArray[i].toLowerCase() === "@" + username.toLowerCase()) {
-                    console.log("someone mentioned you in X-CHAT")
-                    if (xchatTracker !== 1) {
-                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : xChatMeta[0] + " has mentioned you", "origin" : "X-CHAT"})
-                        alert = true
+            xChatDate = ""
+            xChatArray = msg.split(':')
+            xChatMessage = msg.replace( xChatArray[0] + ":", "")
+            xChatMeta = xChatArray[0].split(',')
+            xChatDate = new Date().toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm")
+            console.log(xChatDate)
+            console.log("author: " + xChatMeta[0])
+            messageArray = xChatMessage.split(' ')
+            for(var i = 0; i < (messageArray.length); i++) {
+                console.log(messageArray[i])
+                if(xChatMeta[0] !== username) {
+                    if (messageArray[i].toLowerCase() === "@" + username.toLowerCase()) {
+                        notification.play()
+                        console.log("someone mentioned you in X-CHAT")
+                        if (xchatTracker !== 1) {
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : xChatMeta[0] + " has mentioned you", "origin" : "X-CHAT"})
+                            alert = true
+                        }
                     }
-                    notification.play()
+                    else if (messageArray[i] === "@everyone") {
+                        notification.play()
+                        console.log("message to everyone in X-CHAT")
+                        if (xchatTracker !== 1) {
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
+                            alert = true
+                        }
+                    }
                 }
+
             }
-            else if (messageArray[i].toLowerCase() === "@everyone") {
-                console.log("message to everyone in X-CHAT")
-                if (xchatTracker !== 1) {
-                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
-                    alert = true
-                }
-                notification.play()
-            }
+            var searchUsername = new RegExp( "@" + username, "i")
+            xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + username + "</b></font>")
+            xChatMessage = xChatMessage.replace("@everyone", "<font color='purple'><b>@everyone</b></font>")
+            console.log(xChatMessage)
+            xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID})
+            xChatID = xChatID + 1
         }
-        var searchUsername = new RegExp( "@" + username, "i")
-        xChatMessage = xChatMessage.replace(searchUsername, "<font color='purple'><b>@" + username + "</b></font>")
-        xChatMessage = xChatMessage.replace("@everyone", "<font color='purple'><b>@everyone</b></font>")
-        console.log(xChatMessage)
-        xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID})
-        xChatID = xChatID + 1
-    }
 
     function xChatTypingRemove(user){
         xChatTypingRemoveSignal(user)

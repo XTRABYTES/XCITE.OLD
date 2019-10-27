@@ -91,6 +91,16 @@ Rectangle {
 
         Mobile.XChatList {
             id: myXchat
+            focus: false
+            onTagChanged: {
+               if (sendText.text == "") {
+
+                   sendText.text = myXchat.tag + " "
+               }
+               else {
+                   sendText.text = sendText.text + " " + myXchat.tag + " "
+               }
+            }
         }
     }
     Label {
@@ -154,6 +164,7 @@ Rectangle {
             sendTyping = false
 
         }
+
     }
 
     Rectangle {
@@ -187,10 +198,11 @@ Rectangle {
             onClicked: {
 
                 xchatError = 0
-                xChatSend("@ " + username + ",XCITE mobile:" +  sendText.text + " <br>")
+                xChatSend("@ " + username + ",XCITE mobile:" +  sendText.text + "<br>")
 
                 sendText.text = "";
                 xChatTypingRemove("%&%& " + username);
+                myXchat.tag = ""
             }
         }
 
@@ -261,6 +273,7 @@ Rectangle {
 
                 onTriggered: {
                     sendText.text = ""
+                    myXchat.tag = ""
                 }
             }
 
@@ -281,6 +294,7 @@ Rectangle {
 
     Component.onDestruction: {
         sendText.text = ""
+        myXchat.tag = ""
         xchatTracker = 0
         xchatError = 0
     }

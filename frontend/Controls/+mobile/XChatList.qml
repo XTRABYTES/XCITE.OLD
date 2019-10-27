@@ -28,6 +28,7 @@ Rectangle {
 
     property bool xChatFocus: true
     property alias xChatList: msgList
+    property string tag: ""
 
     Component {
         id: msgLine
@@ -35,19 +36,21 @@ Rectangle {
         Rectangle {
             id: msgRow
             width: parent.width
-            height: message != ""? senderID.height + messageText.height + messageDate.height + 24 : 0
+            height: message != ""? senderID.height + messageText.height + 12 : 0
             color: "transparent"
             visible: message != ""
             clip: true
 
             Rectangle {
                 id: msgBox
-                width: messageText.width < (senderID.width + deviceID.width)? (senderID.width + deviceID.width > messageDate.width? (senderID.width + deviceID.width + 20): (messageDate.width + 20)) : messageText.width + 20
+                width: (0.7 * (Screen.width - 56))
                 anchors.top: parent.top
                 anchors.bottom: messageText.bottom
                 anchors.left: author==(username)? undefined : parent.left
                 anchors.right: author==(username)? parent.right : undefined
-                color: "transparent"
+                color: author==(username)? (darktheme == true? "#F2F2F2" : "#FFFFFF") : "#2A2C31"
+                border.color: "#14161B"
+                border.width: darktheme == true? 0 : 1
             }
 
             Label {
@@ -57,11 +60,33 @@ Rectangle {
                 font.pixelSize: 12
                 font.bold: true
                 horizontalAlignment: Text.AlignLeft
-                color: darktheme == true? "#F2F2F2" : "#0ED8D2"
+                color: author==(username)? "#14161B" : "#F2F2F2"
                 anchors.left:msgBox.left
                 anchors.leftMargin: 10
                 anchors.top: msgBox.top
                 anchors.topMargin: 5
+
+                MouseArea {
+                    anchors.fill: senderID
+                    focus: false
+
+                    onPressAndHold: {
+                        tag = "@" + author
+                    }
+
+                }
+            }
+
+            Label {
+                id: messageDate
+                text: date
+                anchors.right: msgBox.right
+                anchors.rightMargin: 10
+                anchors.bottom: senderID.bottom
+                font.family: xciteMobile.name
+                font.pixelSize: 10
+                horizontalAlignment: Text.AlignRight
+                color: author==(username)? "#14161B" : "#F2F2F2"
             }
 
             Rectangle {
@@ -72,7 +97,18 @@ Rectangle {
                 anchors.left: senderID.right
                 anchors.leftMargin: 5
                 anchors.verticalCenter: senderID.verticalCenter
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                color: author==(username)? "#2A2C31" : "#F2F2F2"
+            }
+
+            Rectangle {
+                id: msgBoxDivider
+                height: 2
+                anchors.left: msgBox.left
+                anchors.leftMargin: 10
+                anchors.right: msgBox.right
+                anchors.rightMargin: 10
+                anchors.top: senderID.bottom
+                color: "#0ED8D2"
             }
 
             Text {
@@ -80,29 +116,15 @@ Rectangle {
                 text: message
                 anchors.left: msgBox.left
                 anchors.leftMargin: 10
-                anchors.top: senderID.bottom
-                anchors.topMargin: 7
-                width:  messageText.implicitWidth < 0.8 * (Screen.width - 56)? messageText.implicitWidth : (0.7 * (Screen.width - 56))
-                horizontalAlignment: author==(username)? Text.AlignRight : Text.AlignLeft
+                anchors.right: msgBox.right
+                anchors.rightMargin: 10
+                anchors.top: msgBoxDivider.bottom
+                anchors.topMargin: 5
+                horizontalAlignment: Text.AlignLeft
                 font.family: xciteMobile.name
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
-                color: darktheme == true? "#0ED8D2" : "#2A2C31"
-            }
-
-            Label {
-                id: messageDate
-                text: date
-                anchors.right: msgBox.right
-                anchors.rightMargin: 10
-                anchors.top: msgBox.bottom
-                anchors.topMargin: -10
-
-                font.family: xciteMobile.name
-                font.pixelSize: 10
-                font.italic: true
-                horizontalAlignment: Text.AlignRight
-                color: darktheme == true? "#F2F2F2" : "#0ED8D2"
+                color: author==(username)? "#14161B" : "#F2F2F2"
             }
         }
     }
