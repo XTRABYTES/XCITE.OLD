@@ -398,6 +398,7 @@ ApplicationWindow {
     signal changePassword(string oldPassword, string newPassword)
     signal xChatTypingRemoveSignal(string user)
     signal xChatTypingAddSignal(string user)
+    signal checkXChatSignal();
 
     // functions
     function updateXchat(msg) {
@@ -1599,6 +1600,17 @@ ApplicationWindow {
     }
 
     // timers
+    Timer {
+        id: checkXchatConnection
+        interval: 10000
+        repeat: true
+        running: true
+
+        onTriggered: {
+            checkXChatSignal();
+        }
+    }
+
     Timer {
         repeat: false
         running: copy2clipboard

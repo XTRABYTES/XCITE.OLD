@@ -45,12 +45,15 @@ public:
    QString m_lastUserMessage;
    void sendTypingToFront(const QSet<QString> typing);
    void addToTyping(const QString msg);
+   bool checkInternet();
 
 
 signals:
     void xchatResponseSignal(QVariant text);
     void xchatSuccess(const QString &msg);
     void xchatTypingSignal(const QString &msg);
+    void XchatConnectionFail();
+    void XchatConnectionSuccess();
 
 
 public slots:
@@ -63,6 +66,7 @@ public slots:
     void xchatTyping(const QString &msg);
     void removeFromTyping(const QString msg);
     void sendTypingToQueue(const QString msg);
+    void pingReceived();
 
 
 

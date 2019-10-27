@@ -16,6 +16,8 @@
 //#include "../testnet/xchattestnetclient.hpp"
 #include <QString>
 #include <set>
+#include <QtNetwork>
+
 
 
 XchatObject xchatRobot;
@@ -42,14 +44,18 @@ XchatObject::~XchatObject() {
     }
 }
 
+
 void XchatObject::Initialize() {
 
     m_pXchatAiml = new XchatAIML;
     m_pXchatAiml->loadAIMLSet();
 
     mqtt_client = new QMqttClient(this);
+//    mqtt_client->setKeepAlive(10);
     qDebug() << "INITIALIZE XCHAT";
     connect(mqtt_client, &QMqttClient::stateChanged, this, &XchatObject::mqtt_StateChanged);
+    connect(mqtt_client, &QMqttClient::pingResponseReceived, this, &XchatObject::pingReceived);
+
 
     connect(mqtt_client, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
       //  const QString content = topic.name() + QLatin1String(": ") + message + QLatin1Char('\n');
@@ -200,6 +206,9 @@ void XchatObject::SubmitMsg(const QString &msg) {
     emit xchatResponseSignal(msg);
 }
 
+void XchatObject::pingReceived() {
+    qDebug() << "ping received";
+}
 bool XchatObject::CheckUserInputForKeyWord(const QString msg)
 {
     return msg.contains("getbalance")
@@ -222,28 +231,46 @@ QString XchatObject::HarmonizeKeyWords(QString msg)
 }
 
 void XchatObject::mqtt_StateChanged() {
+    if (checkInternet()){
+        //    xchatRobot.SubmitMsg("@mqtt: State Changed");
+            if (mqtt_client->state() == QMqttClient::Disconnected) {
+             //    xchatRobot.SubmitMsg("@mqtt: Server disconnected. Attempt to reconnect.");
+               mqtt_client->setHostname("85.214.78.233");
+               mqtt_client->setPort(1883);
+               mqtt_client->connectToHost();
+            }
 
-    xchatRobot.SubmitMsg("@mqtt: State Changed");
-    if (mqtt_client->state() == QMqttClient::Disconnected) {
-         xchatRobot.SubmitMsg("@mqtt: Server disconnected. Attempt to reconnect.");
-       mqtt_client->setHostname("85.214.78.233");
-       mqtt_client->setPort(1883);
-       mqtt_client->connectToHost();
+            if (mqtt_client->state() == QMqttClient::Connecting) {
+            //   xchatRobot.SubmitMsg("@mqtt: Connecting...");
+            }
+
+            if (mqtt_client->state() == QMqttClient::Connected) {
+         //      xchatRobot.SubmitMsg("@mqtt: Connected.");
+               auto subscription = mqtt_client->subscribe(topic);
+               if (!subscription) {
+               } else {
+
+               }
+            }
+
     }
 
-    if (mqtt_client->state() == QMqttClient::Connecting) {
-       xchatRobot.SubmitMsg("@mqtt: Connecting...");
+
+}
+
+bool XchatObject::checkInternet(){
+    QNetworkAccessManager nam;
+    QNetworkRequest req(QUrl("http://www.google.com"));
+    QNetworkReply* reply = nam.get(req);
+    QEventLoop loop;
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
+    if (reply->bytesAvailable()){
+        emit XchatConnectionSuccess();
+
+        return true;
+    }else{
+        emit XchatConnectionFail();
+        return false;
     }
-
-    if (mqtt_client->state() == QMqttClient::Connected) {
-       xchatRobot.SubmitMsg("@mqtt: Connected.");
-       auto subscription = mqtt_client->subscribe(topic);
-       if (!subscription) {
-       } else {
-
-       }
-    }
-
-
-
 }
