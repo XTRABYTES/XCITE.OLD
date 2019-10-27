@@ -356,7 +356,8 @@ ApplicationWindow {
     property variant xChatArray
     property variant xChatMeta
     property string xChatMessage: ""
-    property int xChatID:1
+    property int xChatID: 1
+    property variant messageArray
 
     // Signals
     signal checkOS()
@@ -405,8 +406,27 @@ ApplicationWindow {
         xChatMeta = xChatArray[0].split(',')
         xChatDate = new Date().toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm")
         console.log(xChatDate)
+        console.log("author: " + xChatMeta[0])
         xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID})
         xChatID = xChatID + 1
+        messageArray = xChatMessage.split(' ')
+        for(var i = 0; i < (messageArray.length); i++) {
+            console.log(messageArray[i])
+            if(xChatMeta[0] !== username) {
+                if (messageArray[i] === "@" + username) {
+                    console.log("someone mentioned you in X-CHAT")
+                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : xChatMeta[0] + " has mentioned you", "origin" : "X-CHAT"})
+                    alert = true
+                    notification.play()
+                }
+            }
+            else if (messageArray[i] === "@everyone") {
+                console.log("message to everyone in X-CHAT")
+                alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
+                alert = true
+                notification.play()
+            }
+        }
     }
 
     function xChatTypingRemove(user){
@@ -1307,6 +1327,15 @@ ApplicationWindow {
             explorerBusy = false
         }
     }
+
+    Connections {
+            target: xChat
+            onXchatSuccess: {
+                console.log(msg)
+                updateXchat(msg)
+            }
+
+        }
 
     // Listmodels
     ListModel {

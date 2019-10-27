@@ -30,9 +30,6 @@ Rectangle {
     anchors.top: parent.top
     onStateChanged: detectInteraction()
 
-    property var chatArray
-    property var chatMeta
-
     LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
@@ -99,7 +96,7 @@ Rectangle {
     Label {
         id: typingLabel
         text: typing
-        anchors.top: myXchat.bottom
+        //anchors.top: myXchat.bottom
         anchors.bottom: sendText.top
         anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
@@ -186,10 +183,6 @@ Rectangle {
         Connections {
             target: xChat
             onXchatSuccess: {
-                console.log(msg)
-                updateXchat(msg)
-                chatArray = msg.split(':')
-                chatMeta = chatArray[0].split(',')
                 myXchat.xChatList.positionViewAtIndex(myXchat.xChatList.count - 1, ListView.End)
             }
             onXchatTypingSignal: {

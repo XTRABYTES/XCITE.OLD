@@ -204,7 +204,7 @@ Rectangle {
 
                             onClicked: {
                                 verifyUsername = 1
-                                userExists(userName.text)
+                                userExists(userName.text.toLocaleLowerCase())
                             }
                         }
 
@@ -417,7 +417,7 @@ Rectangle {
                         if ((usernameWarning == 0 || usernameWarning == 2)  && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
                             createAccountInitiated = true
                             checkUsername = 1
-                            createUser(userName.text, passWord1.text)
+                            createUser(userName.text.toLocaleLowerCase(), passWord1.text)
                         }
                     }
                 }
