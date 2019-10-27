@@ -359,6 +359,8 @@ ApplicationWindow {
     property int xChatID: 1
     property variant messageArray
 
+    property bool sendTyping: true
+
     // Signals
     signal checkOS()
     signal loginSuccesfulSignal(string username, string password)
