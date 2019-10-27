@@ -125,6 +125,8 @@ Rectangle {
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
                 color: author==(username)? "#14161B" : "#F2F2F2"
+
+
             }
         }
     }
@@ -146,6 +148,11 @@ Rectangle {
         onDraggingChanged: {
             xChatFocus = false
             detectInteraction()
-        }
+        }        
+
+    }
+
+    Component.onCompleted: {
+        msgList.positionViewAtEnd()
     }
 }
