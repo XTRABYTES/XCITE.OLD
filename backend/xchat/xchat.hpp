@@ -22,6 +22,7 @@
 #include "xchataiml.hpp"
 #include "xchatconversationmodel.hpp"
 
+
 class Xchat : public QObject
 {
     Q_OBJECT
@@ -42,10 +43,14 @@ public:
    void Initialize();
    bool m_BalanceRequested = false;
    QString m_lastUserMessage;
+   void sendTypingToFront(const QSet<QString> typing);
+   void addToTyping(const QString msg);
+
 
 signals:
     void xchatResponseSignal(QVariant text);
     void xchatSuccess(const QString &msg);
+    void xchatTypingSignal(const QString &msg);
 
 
 public slots:
@@ -55,6 +60,11 @@ public slots:
     bool CheckAIInputForKeyWord(const QString msg);
     QString HarmonizeKeyWords(const QString msg);
     void xchatInc(const QString &msg);
+    void xchatTyping(const QString &msg);
+    void removeFromTyping(const QString msg);
+    void sendTypingToQueue(const QString msg);
+
+
 
 
 private slots:
@@ -67,6 +77,8 @@ private:
     QMqttClient *mqtt_client;
     QString topic = "xcite/xchat";
     bool m_bIsInitialized;
+    QSet<QString> typing;
+
 };
 
 extern XchatObject xchatRobot;

@@ -265,6 +265,8 @@ ApplicationWindow {
     property var calculatedAmount: ""
     property string scanningKey: ""
     property string scanning: "scanning..."
+    property string typing: ""
+
     property string addressbookName: ""
     property string addressbookHash: ""
     property int addressIndex: 0
@@ -392,6 +394,8 @@ ApplicationWindow {
     signal checkCamera()
     signal checkTxStatus(string pendinglist)
     signal changePassword(string oldPassword, string newPassword)
+    signal xChatTypingRemoveSignal(string user)
+    signal xChatTypingAddSignal(string user)
 
     // functions
     function updateXchat(msg) {
@@ -403,6 +407,14 @@ ApplicationWindow {
         console.log(xChatDate)
         xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID})
         xChatID = xChatID + 1
+    }
+
+    function xChatTypingRemove(user){
+        xChatTypingRemoveSignal(user)
+    }
+
+    function xChatTypingAdd(user){
+        xChatTypingAddSignal(user)
     }
 
     function updateBalance(coin, address, balance) {
