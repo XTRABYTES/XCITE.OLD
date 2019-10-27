@@ -42,9 +42,11 @@ void MarketValue::findCurrencyValue(QString currency)
     loop.exec();
 
     QString currencyValue = QString::fromStdString(reply->readAll().toStdString());
-    currencyValue.remove(0, 1).chop(2);
-    setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
-    qDebug() << currency + ":" + currencyValue;
+    if (!currencyValue.isNull() && !currencyValue.isEmpty()){
+        currencyValue.remove(0, 1).chop(2);
+        setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
+        qDebug() << currency + ":" + currencyValue;
+    }
 }
 
 void MarketValue::findAllCurrencyValues(){
