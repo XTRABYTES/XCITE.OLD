@@ -86,7 +86,7 @@ Rectangle {
         width: Screen.width - 56
         anchors.top: xchatModalLabel.bottom
         anchors.topMargin: 30
-        anchors.bottom: sendText.top
+        anchors.bottom: typingLabel.top
         anchors.bottomMargin: 15
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
@@ -95,6 +95,22 @@ Rectangle {
         Mobile.XChatList {
             id: myXchat
         }
+    }
+    Label {
+        id: typingLabel
+        text: typing
+        anchors.top: myXchat.bottom
+        anchors.bottom: sendText.top
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.family: xciteMobile.name
+        font.bold: true
+        font.pixelSize: 10
+        font.letterSpacing: 1
+    }
+    Connections {
+        target: xChat
     }
 
     Controls.TextInput {
@@ -112,6 +128,21 @@ Rectangle {
         textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
         font.pixelSize: 14
         mobile: 1
+
+        Timer {
+            id: typingTimer
+            interval: 6000
+            onTriggered: {
+                console.log("User stopped writing")
+                xChatTypingRemove("%&%& " +username);
+
+            }
+        }
+
+        onTextEdited: {
+            typingTimer.restart();
+            xChatTypingAdd("$#$# " +username);
+        }
     }
 
     Rectangle {
@@ -147,6 +178,7 @@ Rectangle {
                 xchatError = 0
                 xChatSend("@ " + username + ",XCITE mobile:" +  sendText.text)
                 sendText.text = "";
+                xChatTypingRemove("%&%& " + username);
             }
         }
 
@@ -159,6 +191,10 @@ Rectangle {
                 chatArray = msg.split(':')
                 chatMeta = chatArray[0].split(',')
                 myXchat.xChatList.positionViewAtIndex(myXchat.xChatList.count - 1, ListView.End)
+            }
+            onXchatTypingSignal: {
+                console.log(msg)
+                typing = msg
             }
 
         }

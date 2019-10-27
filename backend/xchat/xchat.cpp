@@ -15,6 +15,8 @@
 #include "../xutility/xutility.hpp"
 //#include "../testnet/xchattestnetclient.hpp"
 #include <QString>
+#include <set>
+
 
 XchatObject xchatRobot;
 
@@ -51,11 +53,18 @@ void XchatObject::Initialize() {
 
     connect(mqtt_client, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
       //  const QString content = topic.name() + QLatin1String(": ") + message + QLatin1Char('\n');
-        const QString content = message + QLatin1Char('\n');
+        const QString content = message;
 
      //   xchatRobot.SubmitMsg("@mqtt://" + content);
-        emit xchatSuccess(content);
+        if(content.startsWith("$#$#")){
+            addToTyping(content.toUtf8());
+        }else if(content.startsWith("%&%&")){
+            removeFromTyping(content.toUtf8());
 
+        }else{
+
+            emit xchatSuccess(content + QLatin1Char('\n'));
+        }
     });
 
     qDebug() << "connected to  XCHAT";
@@ -68,6 +77,59 @@ void XchatObject::Initialize() {
 void XchatObject::xchatInc(const QString &msg) {
 
      if (!msg.isEmpty() && msg.front()=="@") {
+         if (mqtt_client->publish(topic, msg.mid(2).toUtf8()) == -1) {
+            xchatRobot.SubmitMsg("@mqtt-ERROR: Could not publish message.");
+         }
+       return;
+    }
+}
+
+void XchatObject::sendTypingToQueue(const QString msg) {
+    mqtt_client->publish(topic, msg.toUtf8());
+}
+
+void XchatObject::addToTyping(const QString msg) {
+
+    QString cutName = msg.right(msg.length() - 5);
+    if(!typing.contains(cutName)){
+        typing.insert(cutName);
+    }
+    sendTypingToFront(typing);
+}
+
+
+void XchatObject::removeFromTyping(const QString msg) {
+
+    QString cutName = msg.right(msg.length() - 5);
+    if(typing.contains(cutName)){
+        typing.remove(cutName);
+    }
+
+    sendTypingToFront(typing);
+}
+
+void XchatObject::sendTypingToFront(const QSet<QString> typing){
+    QString whoIsTyping = "";
+    switch(typing.count()){
+        case 0:
+            break;
+        case 1:
+            whoIsTyping = *typing.begin() + " is typing...";
+            break;
+        case 2:
+
+            whoIsTyping = typing.values().at(0) + " and " + typing.values().at(1) + " are typing...";
+            break;
+        default:
+            whoIsTyping = QString::number(typing.count()) + " others are typing...";
+            break;
+    }
+    emit xchatTypingSignal(whoIsTyping);
+}
+
+void XchatObject::xchatTyping(const QString &msg) {
+
+     if (!msg.isEmpty()) {
          if (mqtt_client->publish(topic, msg.mid(2).toUtf8()) == -1) {
             xchatRobot.SubmitMsg("@mqtt-ERROR: Could not publish message.");
          }
