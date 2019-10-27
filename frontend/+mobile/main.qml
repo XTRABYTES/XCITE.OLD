@@ -413,7 +413,7 @@ ApplicationWindow {
         for(var i = 0; i < (messageArray.length); i++) {
             console.log(messageArray[i])
             if(xChatMeta[0] !== username) {
-                if (messageArray[i] === "@" + username) {
+                if (messageArray[i].toLocaleLowerCase() === "@" + username.toLocaleLowerCase()) {
                     console.log("someone mentioned you in X-CHAT")
                     alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : xChatMeta[0] + " has mentioned you", "origin" : "X-CHAT"})
                     alert = true

@@ -175,6 +175,7 @@ Rectangle {
                 color: themecolor
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
+                validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
 
                 onTextChanged: {
                     usernameLength(userName.text)

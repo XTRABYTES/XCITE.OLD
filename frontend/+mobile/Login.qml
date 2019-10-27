@@ -209,7 +209,7 @@ Item {
                     if (userName.text != "" && passWord.text != "" && networkError == 0) {
                         loginInitiated = true
                         checkUsername = 1
-                        userLogin(userName.text, passWord.text)
+                        userLogin(userName.text.toLocaleLowerCase(), passWord.text)
                     }
                 }
             }
@@ -293,7 +293,7 @@ Item {
                         selectedPage = "home"
                         mainRoot.pop()
                         mainRoot.push("../Home.qml")
-                        username = userName.text
+                        username = userName.text.toLocaleLowerCase()
                         loginSuccesTimer.start()
                         loadingSettings = 0
                         verifyingBalances = 0
