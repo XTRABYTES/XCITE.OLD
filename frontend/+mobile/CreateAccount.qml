@@ -205,7 +205,7 @@ Rectangle {
 
                             onClicked: {
                                 verifyUsername = 1
-                                userExists(userName.text.toLocaleLowerCase())
+                                userExists(userName.text)
                             }
                         }
 

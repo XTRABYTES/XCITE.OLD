@@ -136,13 +136,13 @@ Rectangle {
             }
         }
         Timer {
-            id: sendTypingTimer
-            interval: 5000
-            onTriggered: {
-            //    console.log("Waiting 5 seconds before sending")
-                sendTyping = true
-            }
-        }
+                    id: sendTypingTimer
+                    interval: 5000
+                    onTriggered: {
+                    //    console.log("Waiting 5 seconds before sending")
+                        sendTyping = true
+                    }
+                }
 
         onTextEdited: {
             typingTimer.restart();
@@ -152,6 +152,7 @@ Rectangle {
                 sendTypingTimer.start()
             }
             sendTyping = false
+
         }
     }
 
@@ -186,7 +187,8 @@ Rectangle {
             onClicked: {
 
                 xchatError = 0
-                xChatSend("@ " + username + ",XCITE mobile:" +  sendText.text)
+                xChatSend("@ " + username + ",XCITE mobile:" +  sendText.text + " <br>")
+
                 sendText.text = "";
                 xChatTypingRemove("%&%& " + username);
             }
