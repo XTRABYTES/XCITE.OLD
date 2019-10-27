@@ -146,13 +146,17 @@ Rectangle {
             }
         }
         Timer {
-                    id: sendTypingTimer
-                    interval: 5000
-                    onTriggered: {
-                    //    console.log("Waiting 5 seconds before sending")
-                        sendTyping = true
-                    }
-                }
+            id: sendTypingTimer
+            interval: 5000
+            onTriggered: {
+            //    console.log("Waiting 5 seconds before sending")
+                 sendTyping = true
+            }
+        }
+
+        onTextChanged:  {
+            sendEnabled = text.length > 0 ? true : false
+        }
 
         onTextEdited: {
             typingTimer.restart();
@@ -162,7 +166,6 @@ Rectangle {
                 sendTypingTimer.start()
             }
             sendTyping = false
-
         }
 
     }
@@ -180,11 +183,13 @@ Rectangle {
 
         MouseArea {
             anchors.fill: parent
+            enabled: sendEnabled
 
             onPressed: {
                 click01.play()
                 detectInteraction()
                 parent.opacity = 0.5
+                sendEnabled = false;
             }
 
             onCanceled: {
@@ -222,7 +227,7 @@ Rectangle {
     }
 
     Image {
-        source: 'qrc:/icons/mobile/debug-icon_01_light.svg'
+        source: 'qrc:/icons/mobile/mail-icon_01_light.svg'
         height: 24
         width: 24
         fillMode: Image.PreserveAspectFit
@@ -235,7 +240,7 @@ Rectangle {
         height: 34
         anchors.right: executeButton.right
         anchors.top: executeButton.top
-        color: "transparent"
+        color: sendEnabled == true ?  maincolor : "#727272"
         border.color: maincolor
         border.width: 1
         opacity: 0.50

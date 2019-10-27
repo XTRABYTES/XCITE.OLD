@@ -240,6 +240,7 @@ ApplicationWindow {
     property int soundTracker: 0
     property int changePasswordTracker: 0
 
+    property bool sendEnabled: false
     // Global variables
     property int sessionStart: 0
     property int sessionTime: 0
