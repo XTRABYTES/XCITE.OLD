@@ -135,10 +135,23 @@ Rectangle {
 
             }
         }
+        Timer {
+            id: sendTypingTimer
+            interval: 5000
+            onTriggered: {
+            //    console.log("Waiting 5 seconds before sending")
+                sendTyping = true
+            }
+        }
 
         onTextEdited: {
             typingTimer.restart();
-            xChatTypingAdd("$#$# " +username);
+            if (sendTyping){
+          //      console.log("Sending typing");
+                xChatTypingAdd("$#$# " +username);
+                sendTypingTimer.start()
+            }
+            sendTyping = false
         }
     }
 
