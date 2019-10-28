@@ -36,21 +36,34 @@ Rectangle {
         Rectangle {
             id: msgRow
             width: parent.width
-            height: message != ""? senderID.height + messageText.height + 12 : 0
+            height: message != ""? senderID.height + messageText.height + 1: 0
             color: "transparent"
             visible: message != ""
             clip: true
 
+            DropShadow {
+                anchors.fill: msgBox
+                source: msgBox
+                samples: 9
+                radius: 4
+                color: darktheme == true? "#000000" : "#2A2C31"
+                horizontalOffset:0
+                verticalOffset: 0
+                spread: 0
+            }
+
             Rectangle {
                 id: msgBox
-                width: (0.7 * (Screen.width - 56))
+                width: (0.85 * (Screen.width - 56))
                 anchors.top: parent.top
-                anchors.bottom: messageText.bottom
+                anchors.topMargin: 2
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 2
                 anchors.left: author==(username)? undefined : parent.left
+                anchors.leftMargin: author==(username)? undefined : 0
                 anchors.right: author==(username)? parent.right : undefined
-                color: author==(username)? (darktheme == true? "#F2F2F2" : "#FFFFFF") : "#2A2C31"
-                border.color: "#14161B"
-                border.width: darktheme == true? 0 : 1
+                anchors.rightMargin: author==(username)? 2 : 0
+                color: darktheme == true? "#2A2C31" : "#F2F2F2"
             }
 
             Label {
@@ -60,7 +73,7 @@ Rectangle {
                 font.pixelSize: 12
                 font.bold: true
                 horizontalAlignment: Text.AlignLeft
-                color: author==(username)? "#14161B" : "#F2F2F2"
+                color: darktheme == false? "#14161B" : "#F2F2F2"
                 anchors.left:msgBox.left
                 anchors.leftMargin: 10
                 anchors.top: msgBox.top
@@ -83,10 +96,11 @@ Rectangle {
                 anchors.right: msgBox.right
                 anchors.rightMargin: 10
                 anchors.bottom: senderID.bottom
+                anchors.bottomMargin: 1
                 font.family: xciteMobile.name
                 font.pixelSize: 10
                 horizontalAlignment: Text.AlignRight
-                color: author==(username)? "#14161B" : "#F2F2F2"
+                color: darktheme == false? "#14161B" : "#F2F2F2"
             }
 
             Rectangle {
@@ -97,12 +111,12 @@ Rectangle {
                 anchors.left: senderID.right
                 anchors.leftMargin: 5
                 anchors.verticalCenter: senderID.verticalCenter
-                color: author==(username)? "#2A2C31" : "#F2F2F2"
+                color: darktheme == false? "#14161B" : "#F2F2F2"
             }
 
             Rectangle {
                 id: msgBoxDivider
-                height: 2
+                height: 1
                 anchors.left: msgBox.left
                 anchors.leftMargin: 10
                 anchors.right: msgBox.right
@@ -124,7 +138,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
-                color: author==(username)? "#14161B" : "#F2F2F2"
+                color: darktheme == false? "#14161B" : "#F2F2F2"
 
 
             }
@@ -144,7 +158,7 @@ Rectangle {
         id: msgList
         model: arrangedMsg
         delegate: msgLine
-        spacing: 4
+        spacing: 7
         onDraggingChanged: {
             xChatFocus = false
             detectInteraction()

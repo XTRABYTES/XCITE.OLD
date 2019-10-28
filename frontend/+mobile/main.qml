@@ -360,6 +360,9 @@ ApplicationWindow {
     property int xChatID: 1
     property variant messageArray
     property bool sendTyping: true
+    property bool xChatConnection: false
+    property bool xChatConnecting: false
+    property bool checkingXchat: false
 
     // Signals
     signal checkOS()
@@ -435,7 +438,7 @@ ApplicationWindow {
             }
             var searchUsername = new RegExp( "@" + username, "i")
             xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + username + "</b></font>")
-            xChatMessage = xChatMessage.replace("@everyone", "<font color='purple'><b>@everyone</b></font>")
+            xChatMessage = xChatMessage.replace("@everyone", "<font color='#5E8BFF'><b>@everyone</b></font>")
             console.log(xChatMessage)
             xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID})
             xChatID = xChatID + 1
@@ -1342,12 +1345,36 @@ ApplicationWindow {
 
     Connections {
             target: xChat
+
             onXchatSuccess: {
                 console.log(msg)
                 updateXchat(msg)
             }
+            onXchatConnectionSuccess: {
+                checkingXchat = false
+                console.log("X-CHAT online")
+                xChatConnection = true
+                xChatConnecting = false
+            }
 
-        }
+            onXchatConnectionFail: {
+                checkingXchat = false
+                console.log("X-CHAT offline")
+                xChatConnection = false
+                xChatConnecting = false
+            }
+            onXchatConnecting: {
+                console.log("X-CHAT connecting")
+                xChatConnecting = true
+            }
+            onXchatNoInternet: {
+                networkAvailable = 0
+            }
+            onXchatInternetOk: {
+                networkAvailable = 1
+            }
+
+    }
 
     // Listmodels
     ListModel {
@@ -1609,7 +1636,9 @@ ApplicationWindow {
         running: true
 
         onTriggered: {
-            checkXChatSignal();
+            if (checkingXchat == false) {
+                checkXChatSignal();
+            }
         }
     }
 

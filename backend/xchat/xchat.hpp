@@ -52,8 +52,11 @@ signals:
     void xchatResponseSignal(QVariant text);
     void xchatSuccess(const QString &msg);
     void xchatTypingSignal(const QString &msg);
-    void XchatConnectionFail();
-    void XchatConnectionSuccess();
+    void xchatConnectionFail();
+    void xchatConnectionSuccess();
+    void xchatConnecting();
+    void xchatNoInternet();
+    void xchatInternetOk();
 
 
 public slots:
