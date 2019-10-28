@@ -60,7 +60,7 @@ Rectangle {
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 2
                 anchors.left: author==(username)? undefined : parent.left
-                anchors.leftMargin: author==(username)? undefined : 0
+                anchors.leftMargin: author==(username)? 0 : 2
                 anchors.right: author==(username)? parent.right : undefined
                 anchors.rightMargin: author==(username)? 2 : 0
                 color: darktheme == true? "#2A2C31" : "#F2F2F2"
