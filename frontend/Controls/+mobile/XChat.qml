@@ -78,6 +78,72 @@ Rectangle {
         font.letterSpacing: 2
     }
 
+    Image {
+        id: onlineIndicator
+        source: networkAvailable == 1? (xChatConnection == true? "qrc:/icons/mobile/online_blue_icon.svg" : "qrc:/icons/mobile/online_red_icon.svg") : "qrc:/icons/mobile/no_internet_icon.svg"
+        anchors.verticalCenter: xchatModalLabel.verticalCenter
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        width: 20
+        fillMode: Image.PreserveAspectFit
+
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 30
+            height: 30
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    checkingXchat = true
+                    console.log("Manually reconnect X-CHAT")
+                    checkXChatSignal();
+                }
+
+            }
+        }
+    }
+
+    Label {
+        id: connectingLabel
+        text: "connecting"
+        anchors.horizontalCenter: onlineIndicator.horizontalCenter
+        anchors.top: onlineIndicator.bottom
+        anchors.topMargin: 5
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.pixelSize: 8
+        font.family: "Brandon Grotesque"
+        visible: xChatConnecting == true
+    }
+
+    Image {
+        id: xChatSettingsButton
+        source: "qrc:/icons/mobile/settings-icon_01.svg"
+        anchors.verticalCenter: xchatModalLabel.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        height: 20
+        width: 20
+
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 30
+            height: 30
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    console.log("X-CHAT settings")
+                }
+
+            }
+        }
+    }
+
     Rectangle {
         id: msgWindow
         width: Screen.width - 56

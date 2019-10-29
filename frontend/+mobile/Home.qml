@@ -60,6 +60,7 @@ Item {
 
             updateBalanceSignal(walletListJson, "all");
             checkTxStatus(pendingListJson);
+            //checkXChatSignal();
 
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"

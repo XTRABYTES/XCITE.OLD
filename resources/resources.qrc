@@ -286,5 +286,8 @@
         <file>icons/mobile/portfolio-icon_02_light.svg</file>
         <file>logos/xby_logo_tm.png</file>
         <file alias="dejavusans">fonts/dejavusans.ttf</file>
+        <file>icons/mobile/online_blue_icon.svg</file>
+        <file>icons/mobile/online_red_icon.svg</file>
+        <file>icons/mobile/no_internet_icon.svg</file>
     </qresource>
 </RCC>

@@ -245,17 +245,20 @@ void XchatObject::mqtt_StateChanged() {
         //    xchatRobot.SubmitMsg("@mqtt: State Changed");
             if (mqtt_client->state() == QMqttClient::Disconnected) {
              //    xchatRobot.SubmitMsg("@mqtt: Server disconnected. Attempt to reconnect.");
+               emit xchatConnectionFail();
                mqtt_client->setHostname("85.214.78.233");
                mqtt_client->setPort(1883);
                mqtt_client->connectToHost();
             }
 
             if (mqtt_client->state() == QMqttClient::Connecting) {
+                emit xchatConnecting();
             //   xchatRobot.SubmitMsg("@mqtt: Connecting...");
             }
 
             if (mqtt_client->state() == QMqttClient::Connected) {
          //      xchatRobot.SubmitMsg("@mqtt: Connected.");
+               emit xchatConnectionSuccess();
                auto subscription = mqtt_client->subscribe(topic);
                if (!subscription) {
                } else {
@@ -277,11 +280,13 @@ bool XchatObject::checkInternet(){
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
     if (reply->bytesAvailable()){
-        emit XchatConnectionSuccess();
+        //emit xchatConnectionSuccess();
+        emit xchatInternetOk();
 
         return true;
     }else{
-        emit XchatConnectionFail();
+        emit xchatConnectionFail();
+        emit xchatNoInternet();
         return false;
     }
 }
