@@ -1,5 +1,5 @@
 /**
-* Filename: XChatList.qml
+* Filename: XChatSettings.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
 * blockchain protocol to host decentralized applications
@@ -20,7 +20,7 @@ import QtQuick.Window 2.2
 import "qrc:/Controls" as Controls
 
 Rectangle {
-    id: xchatSeetingsModal
+    id: xchatSettingsModal
     width: Screen.width
     state: xchatSettingsTracker == 1? "up" : "down"
     height: Screen.height
@@ -61,6 +61,18 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
+    }
+
+    Text {
+        id: xchatSettingsModalLabel
+        text: "X-CHAT SETTINGS"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        font.pixelSize: 20
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
     }
 
     Label {
@@ -104,6 +116,7 @@ Rectangle {
 
             onReleased: {
                 if (xchatSettingsTracker == 1) {
+                    xchatSettingsTracker = 0
                     timer.start()
                 }
             }

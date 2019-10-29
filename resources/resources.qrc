@@ -299,5 +299,6 @@
         <file>icons/mobile/xchat-icon_black.svg</file>
         <file>icons/mobile/xchat-icon_white.svg</file>
         <file>icons/mobile/send-icon_02.svg</file>
+        <file>icons/mobile/send_rotated_03.svg</file>
     </qresource>
 </RCC>

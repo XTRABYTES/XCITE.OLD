@@ -86,7 +86,6 @@ Rectangle {
                     onPressAndHold: {
                         tag = "@" + author
                     }
-
                 }
             }
 
@@ -149,8 +148,6 @@ Rectangle {
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
                 color: darktheme == false? "#14161B" : "#F2F2F2"
-
-
             }
         }
     }

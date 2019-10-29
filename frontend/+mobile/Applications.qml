@@ -42,33 +42,6 @@ Rectangle {
         font.letterSpacing: 2
     }
 
-    //Label {
-    //    id:soonLabel
-    //        text: "COMING SOON"
-    //        anchors.horizontalCenter: parent.horizontalCenter
-    //        anchors.verticalCenter: parent.verticalCenter
-    //        font.pixelSize: 20
-    //        font.family: "Brandon Grotesque"
-    //        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-    //        font.letterSpacing: 2
-
-    //        Rectangle {
-    //            width: parent.width
-    //            height: parent.height
-    //            anchors.horizontalCenter: parent.horizontalCenter
-    //            anchors.verticalCenter: parent.verticalCenter
-    //            color: "transparent"
-
-    //            MouseArea {
-    //                anchors.fill: parent
-
-    //                onDoubleClicked: {
-    //                    xchatTracker = 1
-    //                }
-    //            }
-    //        }
-    //}
-
     Rectangle {
         id: appWindow
         width: Screen.width - 56
@@ -142,5 +115,9 @@ Rectangle {
         }
     }
 
-
+    Mobile.XChat {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
 }

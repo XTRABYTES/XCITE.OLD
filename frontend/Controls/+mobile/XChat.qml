@@ -102,7 +102,6 @@ Rectangle {
                     console.log("Manually reconnect X-CHAT")
                     checkXChatSignal();
                 }
-
             }
         }
     }
@@ -139,8 +138,8 @@ Rectangle {
 
                 onClicked: {
                     console.log("X-CHAT settings")
+                    xchatSettingsTracker = 1
                 }
-
             }
         }
     }
@@ -170,6 +169,7 @@ Rectangle {
             }
         }
     }
+
     Label {
         id: typingLabel
         text: typing
@@ -183,6 +183,7 @@ Rectangle {
         font.pixelSize: 10
         font.letterSpacing: 1
     }
+
     Connections {
         target: xChat
     }
@@ -212,6 +213,7 @@ Rectangle {
 
             }
         }
+
         Timer {
             id: sendTypingTimer
             interval: 5000
@@ -234,7 +236,6 @@ Rectangle {
             }
             sendTyping = false
         }
-
     }
 
     Rectangle {
@@ -277,24 +278,24 @@ Rectangle {
             }
         }
 
-
         Connections {
             target: xChat
+
             onXchatSuccess: {
                 myXchat.xChatList.positionViewAtIndex(myXchat.xChatList.count - 1, ListView.End)
             }
+
             onXchatTypingSignal: {
                 console.log(msg)
                 typing = msg
             }
-
         }
-
     }
 
     Image {
-        source: 'qrc:/icons/mobile/send-icon_02.svg'
+        source: 'qrc:/icons/mobile/send_rotated_03.svg'
         width: executeButton.width
+        height: executeButton.height
         fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: executeButton.verticalCenter
         anchors.right: executeButton.right
@@ -349,6 +350,12 @@ Rectangle {
                 }
             }
         }
+    }
+
+    Mobile.XChatSettings {
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 
     Component.onDestruction: {
