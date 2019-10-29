@@ -89,6 +89,7 @@ Rectangle {
 
         Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             width: 30
             height: 30
             color: "transparent"
@@ -238,14 +239,13 @@ Rectangle {
 
     Rectangle {
         id: executeButton
-        width: 34
+        width: 30
         height: 34
         anchors.right: parent.right
         anchors.rightMargin: 28
         anchors.bottom: closeXchatModal.top
         anchors.bottomMargin: 25
-        color: maincolor
-        opacity: 0.25
+        color: "transparent"
 
         MouseArea {
             anchors.fill: parent
@@ -269,7 +269,7 @@ Rectangle {
             onClicked: {
 
                 xchatError = 0
-                xChatSend("@ " + username + ",XCITE mobile:" +  sendText.text + "<br>")
+                xChatSend("@ " + username + ",mobile:" +  sendText.text + "<br>")
 
                 sendText.text = "";
                 xChatTypingRemove("%&%& " + username);
@@ -293,23 +293,11 @@ Rectangle {
     }
 
     Image {
-        source: 'qrc:/icons/mobile/mail-icon_01_light.svg'
-        height: 24
-        width: 24
+        source: 'qrc:/icons/mobile/send-icon_02.svg'
+        width: executeButton.width
         fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: executeButton.verticalCenter
-        anchors.horizontalCenter: executeButton.horizontalCenter
-    }
-
-    Rectangle {
-        width: 34
-        height: 34
         anchors.right: executeButton.right
-        anchors.top: executeButton.top
-        color: sendEnabled == true ?  maincolor : "#727272"
-        border.color: maincolor
-        border.width: 1
-        opacity: 0.50
     }
 
     Label {

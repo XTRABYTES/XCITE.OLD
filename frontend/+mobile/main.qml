@@ -101,6 +101,10 @@ ApplicationWindow {
         coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 3});
         coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
 
+        applicationList.setProperty(0, "name", "X-CHAT")
+        applicationList.setProperty(0, "icon_white", 'qrc:/icons/mobile/xchat-icon_white.svg')
+        applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_black.svg')
+
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
 
@@ -231,6 +235,7 @@ ApplicationWindow {
     property int pincodeTracker: 0
     property int debugTracker: 0
     property int xchatTracker: 0
+    property int xchatSettingsTracker: 0
 
     property int backupTracker: 0
     property int screenshotTracker: 0
@@ -363,6 +368,7 @@ ApplicationWindow {
     property bool xChatConnection: false
     property bool xChatConnecting: false
     property bool checkingXchat: false
+    property string selectedApp: ""
 
     // Signals
     signal checkOS()
@@ -405,6 +411,14 @@ ApplicationWindow {
     signal checkXChatSignal();
 
     // functions
+    function openApplication(app) {
+        console.log("opening application; appname = " + app)
+        if (app === "X-CHAT") {
+            xchatTracker = 1
+            selectedApp = ""
+        }
+    }
+
     function updateXchat(msg) {
             xChatDate = ""
             xChatArray = msg.split(':')
@@ -1377,6 +1391,16 @@ ApplicationWindow {
     }
 
     // Listmodels
+
+    ListModel {
+        id: applicationList
+        ListElement {
+            name: ""
+            icon_white: 'qrc:/icons/mobile/blank_app-icon_white.svg'
+            icon_black: 'qrc:/icons/mobile/blank_app-icon_black.svg'
+        }
+    }
+
     ListModel {
         id: addressList
         ListElement {

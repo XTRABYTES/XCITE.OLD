@@ -46,7 +46,7 @@ Rectangle {
                 source: msgBox
                 samples: 9
                 radius: 4
-                color: darktheme == true? "#000000" : "#2A2C31"
+                color: darktheme == true? "#000000" : "#727272"
                 horizontalOffset:0
                 verticalOffset: 0
                 spread: 0
@@ -104,7 +104,7 @@ Rectangle {
             }
 
             Rectangle {
-                id: deviceID
+                id: online
                 height: 5
                 width: 5
                 radius: 5
@@ -112,6 +112,16 @@ Rectangle {
                 anchors.leftMargin: 5
                 anchors.verticalCenter: senderID.verticalCenter
                 color: darktheme == false? "#14161B" : "#F2F2F2"
+            }
+
+            Image {
+                source: darktheme == true? (device == "mobile"? 'qrc:/icons/mobile/phone-icon_02_white.svg' : 'qrc:/icons/mobile/computer-icon_01_white.svg') : (device == "mobile"? 'qrc:/icons/mobile/phone-icon_02_black.svg' : 'qrc:/icons/mobile/computer-icon_01_black.svg')
+                width: 14
+                height: 14
+                fillMode: Image.PreserveAspectFit
+                anchors.verticalCenter: senderID.verticalCenter
+                anchors.left: online.right
+                anchors.leftMargin: 5
             }
 
             Rectangle {

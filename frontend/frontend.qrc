@@ -166,5 +166,7 @@
         <file>Controls/+mobile/ChangePassword.qml</file>
         <file>Controls/+mobile/XChat.qml</file>
         <file>Controls/+mobile/XChatList.qml</file>
+        <file>Controls/+mobile/ApplicationList.qml</file>
+        <file>Controls/+mobile/XChatSettings.qml</file>
     </qresource>
 </RCC>

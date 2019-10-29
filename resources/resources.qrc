@@ -289,5 +289,15 @@
         <file>icons/mobile/online_blue_icon.svg</file>
         <file>icons/mobile/online_red_icon.svg</file>
         <file>icons/mobile/no_internet_icon.svg</file>
+        <file>icons/mobile/computer-icon_01_black.svg</file>
+        <file>icons/mobile/computer-icon_01_white.svg</file>
+        <file>icons/mobile/phone-icon_02_black.svg</file>
+        <file>icons/mobile/phone-icon_02_white.svg</file>
+        <file>icons/mobile/send-icon_01.svg</file>
+        <file>icons/mobile/blank_app-icon_black.svg</file>
+        <file>icons/mobile/blank_app-icon_white.svg</file>
+        <file>icons/mobile/xchat-icon_black.svg</file>
+        <file>icons/mobile/xchat-icon_white.svg</file>
+        <file>icons/mobile/send-icon_02.svg</file>
     </qresource>
 </RCC>

@@ -16,8 +16,8 @@ import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
-//import "qrc:/Controls" as Controls
 import "../Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 
 Rectangle {
@@ -42,31 +42,47 @@ Rectangle {
         font.letterSpacing: 2
     }
 
-    Label {
-        id:soonLabel
-            text: "COMING SOON"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: 20
-            font.family: "Brandon Grotesque"
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            font.letterSpacing: 2
+    //Label {
+    //    id:soonLabel
+    //        text: "COMING SOON"
+    //        anchors.horizontalCenter: parent.horizontalCenter
+    //        anchors.verticalCenter: parent.verticalCenter
+    //        font.pixelSize: 20
+    //        font.family: "Brandon Grotesque"
+    //        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+    //        font.letterSpacing: 2
 
-            Rectangle {
-                width: parent.width
-                height: parent.height
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                color: "transparent"
+    //        Rectangle {
+    //            width: parent.width
+    //            height: parent.height
+    //            anchors.horizontalCenter: parent.horizontalCenter
+    //            anchors.verticalCenter: parent.verticalCenter
+    //            color: "transparent"
 
-                MouseArea {
-                    anchors.fill: parent
+    //            MouseArea {
+    //                anchors.fill: parent
 
-                    onDoubleClicked: {
-                        xchatTracker = 1
-                    }
-                }
-            }
+    //                onDoubleClicked: {
+    //                    xchatTracker = 1
+    //                }
+    //            }
+    //        }
+    //}
+
+    Rectangle {
+        id: appWindow
+        width: Screen.width - 56
+        anchors.top: applicationModalLabel.bottom
+        anchors.topMargin: 30
+        anchors.bottom: closeApplicationModal.top
+        anchors.bottomMargin: 30
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: "transparent"
+        clip: true
+
+        Mobile.ApplicationList {
+            id: myApplications
+        }
     }
 
     Item {
@@ -126,9 +142,5 @@ Rectangle {
         }
     }
 
-    Controls.XChat {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-    }
+
 }
