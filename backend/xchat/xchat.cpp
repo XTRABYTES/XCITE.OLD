@@ -46,7 +46,6 @@ XchatObject::~XchatObject() {
 
 
 void XchatObject::Initialize() {
-
     m_pXchatAiml = new XchatAIML;
     m_pXchatAiml->loadAIMLSet();
 
@@ -73,7 +72,6 @@ void XchatObject::Initialize() {
         }
     });
 
-    qDebug() << "connected to  XCHAT";
 
 
     m_bIsInitialized = true;
@@ -246,7 +244,7 @@ void XchatObject::mqtt_StateChanged() {
             if (mqtt_client->state() == QMqttClient::Disconnected) {
              //    xchatRobot.SubmitMsg("@mqtt: Server disconnected. Attempt to reconnect.");
                emit xchatConnectionFail();
-               mqtt_client->setHostname("85.214.78.233");
+               mqtt_client->setHostname(findServer());
                mqtt_client->setPort(1883);
                mqtt_client->connectToHost();
             }
@@ -257,6 +255,7 @@ void XchatObject::mqtt_StateChanged() {
             }
 
             if (mqtt_client->state() == QMqttClient::Connected) {
+                qDebug() << "connected to  XCHAT";
          //      xchatRobot.SubmitMsg("@mqtt: Connected.");
                emit xchatConnectionSuccess();
                auto subscription = mqtt_client->subscribe(topic);
@@ -289,4 +288,34 @@ bool XchatObject::checkInternet(){
         emit xchatNoInternet();
         return false;
     }
+}
+
+QString XchatObject::findServer(){
+    QString fastestServer;
+    qint64 fastestTime = 0;
+    QElapsedTimer timer;
+
+    for(QString server : servers){
+
+        QTcpSocket tester;
+        tester.connectToHost(server, 1883);
+        timer.start();
+        bool online = true;
+        if(tester.waitForConnected(500)) {
+            qDebug() << "Server: " + server + " up";
+        } else {
+            online=false;
+        }
+        qint64 timeTaken = timer.nsecsElapsed();
+        qDebug() << server + " timer: " + QString::number(timeTaken);
+        if (!online){
+            qDebug() << "Server: " + server + " down";
+        }else if (fastestTime == 0 || fastestTime > timeTaken){
+            fastestServer = server;
+            fastestTime = timeTaken;
+        }
+    }
+
+    qDebug() << "Connecting to " + fastestServer;
+    return fastestServer;
 }
