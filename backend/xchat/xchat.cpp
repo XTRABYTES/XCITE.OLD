@@ -97,9 +97,8 @@ void XchatObject::sendTypingToQueue(const QString msg) {
 void XchatObject::addToTyping(const QString msg) {
 
     QString cutName = msg.right(msg.length() - 5);
-    if(!typing.contains(cutName)){
-        typing.insert(cutName);
-    }
+    QDateTime now = QDateTime::currentDateTime();
+    typing.insert(cutName, now);
     sendTypingToFront(typing);
 }
 
@@ -114,17 +113,28 @@ void XchatObject::removeFromTyping(const QString msg) {
     sendTypingToFront(typing);
 }
 
-void XchatObject::sendTypingToFront(const QSet<QString> typing){
+void XchatObject::cleanTypingList(){
+    QDateTime now = QDateTime::currentDateTime();
+    for (QString key : typing.keys()){
+        if (typing.value(key).secsTo(now) > 10){
+            typing.remove(key);
+            sendTypingToFront(typing);
+
+        }
+    }
+}
+void XchatObject::sendTypingToFront(const QMap<QString, QDateTime> typing){
     QString whoIsTyping = "";
     switch(typing.count()){
         case 0:
             break;
         case 1:
-            whoIsTyping = *typing.begin() + " is typing...";
+            whoIsTyping = typing.keys().first() + " is typing...";
+
             break;
         case 2:
 
-            whoIsTyping = typing.values().at(0) + " and " + typing.values().at(1) + " are typing...";
+            whoIsTyping = typing.keys().first() + " and " + typing.keys().last() + " are typing...";
             break;
         default:
             whoIsTyping = QString::number(typing.count()) + " others are typing...";
@@ -259,6 +269,7 @@ void XchatObject::mqtt_StateChanged() {
 }
 
 bool XchatObject::checkInternet(){
+    cleanTypingList();
     QNetworkAccessManager nam;
     QNetworkRequest req(QUrl("http://www.google.com"));
     QNetworkReply* reply = nam.get(req);

@@ -43,7 +43,7 @@ public:
    void Initialize();
    bool m_BalanceRequested = false;
    QString m_lastUserMessage;
-   void sendTypingToFront(const QSet<QString> typing);
+   void sendTypingToFront(const QMap<QString, QDateTime> typing);
    void addToTyping(const QString msg);
    bool checkInternet();
 
@@ -81,7 +81,8 @@ private:
     QMqttClient *mqtt_client;
     QString topic = "xcite/xchat";
     bool m_bIsInitialized;
-    QSet<QString> typing;
+    QMap<QString, QDateTime> typing;
+    void cleanTypingList();
 
 };
 
