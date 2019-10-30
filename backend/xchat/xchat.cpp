@@ -339,6 +339,9 @@ bool XchatObject::checkInternet(){
         emit xchatNoInternet();
         return false;
     }
+
+    reply->close();
+    delete reply;
 }
 
 QString XchatObject::findServer(){
@@ -365,6 +368,8 @@ QString XchatObject::findServer(){
             fastestServer = server;
             fastestTime = timeTaken;
         }
+
+        tester.close();
     }
 
     qDebug() << "Connecting to " + fastestServer;
