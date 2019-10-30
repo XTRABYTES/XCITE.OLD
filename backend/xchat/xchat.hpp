@@ -57,7 +57,7 @@ signals:
     void xchatConnecting();
     void xchatNoInternet();
     void xchatInternetOk();
-    void onlineUsersSignal(QByteArray online);
+    void onlineUsersSignal(QString online);
 
 
 public slots:
