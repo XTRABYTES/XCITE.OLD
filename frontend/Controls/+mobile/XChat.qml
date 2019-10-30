@@ -148,7 +148,7 @@ Rectangle {
         id: msgWindow
         width: Screen.width - 56
         anchors.top: xchatModalLabel.bottom
-        anchors.topMargin: 30
+        anchors.topMargin: 20
         anchors.bottom: typingLabel.top
         anchors.bottomMargin: 15
         anchors.horizontalCenter: parent.horizontalCenter
@@ -241,12 +241,11 @@ Rectangle {
 
     Rectangle {
         id: executeButton
-        width: 30
-        height: 34
+        width: 26
+        height: 30
         anchors.right: parent.right
         anchors.rightMargin: 28
-        anchors.bottom: closeXchatModal.top
-        anchors.bottomMargin: 25
+        anchors.verticalCenter: sendText.verticalCenter
         color: "transparent"
 
         MouseArea {

@@ -104,6 +104,7 @@ ApplicationWindow {
         applicationList.setProperty(0, "name", "X-CHAT")
         applicationList.setProperty(0, "icon_white", 'qrc:/icons/mobile/xchat-icon_white.svg')
         applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_black.svg')
+        applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_01_black.svg'})
 
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
@@ -849,7 +850,7 @@ ApplicationWindow {
         var favorite = false
         for(var i = 0; i < walletList.count; i++){
             if (walletList.get(i).name === coin){
-                if (favorite == false) {
+                if (favorite === false) {
                     if (walletList.get(i).favorite === true){
                         balance = walletList.get(i).balance
                         wallet = walletList.get(i).walletNR
@@ -860,7 +861,7 @@ ApplicationWindow {
                             balance = walletList.get(i).balance
                             wallet = walletList.get(i).walletNR
                         }
-                        else if (wallet == 0) {
+                        else if (wallet === 0) {
                             balance = walletList.get(i).balance
                             wallet = walletList.get(i).walletNR
                         }
@@ -1216,7 +1217,7 @@ ApplicationWindow {
     function addWalletToList(coin, label, addr, pubkey, privkey, view){
         var favorite = true
         for(var o = 0; o < walletList.count; o ++) {
-            if (favorite == true) {
+            if (favorite === true) {
                 if (walletList.get(o).name === coin && walletList.get(o).favorite === true) {
                     favorite = false
                 }
@@ -1585,6 +1586,16 @@ ApplicationWindow {
             date: ""
             device: ""
             ID:0
+        }
+    }
+
+    ListModel {
+        id: xChatOnline
+        ListElement {
+            date: ""
+            status: ""
+            time: ""
+            username:""
         }
     }
 

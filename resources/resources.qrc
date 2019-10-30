@@ -300,5 +300,7 @@
         <file>icons/mobile/xchat-icon_white.svg</file>
         <file>icons/mobile/send-icon_02.svg</file>
         <file>icons/mobile/send_rotated_03.svg</file>
+        <file>icons/mobile/xchange-icon_01_black.svg</file>
+        <file>icons/mobile/xchange-icon_01_white.svg</file>
     </qresource>
 </RCC>
