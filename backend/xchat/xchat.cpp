@@ -137,7 +137,7 @@ void XchatObject::cleanTypingList(){
 void XchatObject::cleanOnlineList(){
     QDateTime now = QDateTime::currentDateTime();
     for (QString key : onlineUsers.keys()){
-        if (onlineUsers.value(key).secsTo(now) > 5 * 60){ //remove from online after 5 minutes
+        if (onlineUsers.value(key).secsTo(now) > 10 * 60){ //remove from online after 10 minutes
             onlineUsers.remove(key);
         }
     }
@@ -293,13 +293,29 @@ void XchatObject::mqtt_StateChanged() {
 
 }
 void XchatObject::sendOnlineUsers(){
-    QVariantMap onlineJson;
-    for (QString user : onlineUsers.keys()){
-      onlineJson.insert(user, onlineUsers.value(user));
-    }
+    QJsonArray onlineJson;
+    QDateTime now = QDateTime::currentDateTime();
 
-    QByteArray online =  QJsonDocument::fromVariant(onlineJson).toJson(QJsonDocument::Compact);
-    emit onlineUsersSignal(online);
+    for (QString user : onlineUsers.keys()){
+        QJsonObject userObj ;
+        QDateTime userDateTime = onlineUsers.value(user);
+        userObj.insert("username",user);
+        userObj.insert("date",userDateTime.date().toString());
+        userObj.insert("time",userDateTime.time().toString());
+        if (userDateTime.secsTo(now) > 5 * 60){ //remove from online after 10 minutes
+            userObj.insert("status","idle");
+        }else{
+            userObj.insert("status","online");
+
+        }
+
+
+        onlineJson.append(userObj);
+    }
+    QJsonDocument doc;
+    doc.setArray(onlineJson);
+    QString onlineString(doc.toJson(QJsonDocument::Compact));
+    emit onlineUsersSignal(onlineString);
 }
 
 
