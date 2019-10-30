@@ -230,9 +230,10 @@ Rectangle {
         onTextEdited: {
             typingTimer.restart();
             if (sendTyping){
-          //      console.log("Sending typing");
                 xChatTypingAdd("$#$# " +username);
                 sendTypingTimer.start()
+                sendXchatConnection.restart();
+
             }
             sendTyping = false
         }

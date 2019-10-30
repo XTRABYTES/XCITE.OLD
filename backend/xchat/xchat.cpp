@@ -66,6 +66,9 @@ void XchatObject::Initialize() {
         }else if(content.startsWith("%&%&")){
             removeFromTyping(content.toUtf8());
 
+        }else if(content.startsWith("**#* ")){
+            addToOnline(content.toUtf8());
+
         }else{
 
             emit xchatSuccess(content + QLatin1Char('\n'));
@@ -93,13 +96,22 @@ void XchatObject::sendTypingToQueue(const QString msg) {
 }
 
 void XchatObject::addToTyping(const QString msg) {
-
+    addToOnline(msg);
     QString cutName = msg.right(msg.length() - 5);
     QDateTime now = QDateTime::currentDateTime();
     typing.insert(cutName, now);
     sendTypingToFront(typing);
 }
 
+void XchatObject::addToOnline(const QString msg) {
+
+    QString cutName = msg.right(msg.length() - 5);
+    QDateTime now = QDateTime::currentDateTime();
+    if (cutName.size() > 1){
+         onlineUsers.insert(cutName,now);
+         sendOnlineUsers();
+     }
+}
 
 void XchatObject::removeFromTyping(const QString msg) {
 
@@ -120,6 +132,17 @@ void XchatObject::cleanTypingList(){
 
         }
     }
+}
+
+void XchatObject::cleanOnlineList(){
+    QDateTime now = QDateTime::currentDateTime();
+    for (QString key : onlineUsers.keys()){
+        if (onlineUsers.value(key).secsTo(now) > 5 * 60){ //remove from online after 5 minutes
+            onlineUsers.remove(key);
+        }
+    }
+    sendOnlineUsers();
+
 }
 void XchatObject::sendTypingToFront(const QMap<QString, QDateTime> typing){
     QString whoIsTyping = "";
@@ -269,9 +292,21 @@ void XchatObject::mqtt_StateChanged() {
 
 
 }
+void XchatObject::sendOnlineUsers(){
+    QVariantMap onlineJson;
+    for (QString user : onlineUsers.keys()){
+      onlineJson.insert(user, onlineUsers.value(user));
+    }
+
+    QByteArray online =  QJsonDocument::fromVariant(onlineJson).toJson(QJsonDocument::Compact);
+    emit onlineUsersSignal(online);
+}
+
 
 bool XchatObject::checkInternet(){
     cleanTypingList();
+    cleanOnlineList();
+
     QNetworkAccessManager nam;
     QNetworkRequest req(QUrl("http://www.google.com"));
     QNetworkReply* reply = nam.get(req);
