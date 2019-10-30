@@ -57,6 +57,7 @@ signals:
     void xchatConnecting();
     void xchatNoInternet();
     void xchatInternetOk();
+    void onlineUsersSignal(QByteArray online);
 
 
 public slots:
@@ -86,6 +87,7 @@ private:
     bool m_bIsInitialized;
     QMap<QString, QDateTime> typing;
     void cleanTypingList();
+    void cleanOnlineList();
     QString findServer();
     QString NewYork = "192.227.147.162";
     QString Berlin = "85.214.143.20";
@@ -94,6 +96,11 @@ private:
     QString Germany = "85.214.78.233";
 
     QList<QString> servers{NewYork,Berlin,Buffalo,Germany,France};
+
+    QMap<QString, QDateTime> onlineUsers;
+    void addToOnline(const QString msg);
+    void sendOnlineUsers();
+
 
 };
 

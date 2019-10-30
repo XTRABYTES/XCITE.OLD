@@ -1008,6 +1008,20 @@ ApplicationWindow {
         }
     }
 
+    function loadOnlineUsers(online) {
+        if (typeof online !== "undefined") {
+            console.log("online: " + online)
+//            var obj = JSON.parse(online);
+//            console.log("obj: " + obj);
+//            for (var i in obj){
+//                var data = obj[i];
+//                console.log("ONLINE")
+//                console.log("i: " + i);
+//                console.log("data: " + data);
+//            }
+        }
+    }
+
     function loadWalletList(wallet) {
         if (typeof wallet !== "undefined") {
             walletList.clear();
@@ -1387,6 +1401,9 @@ ApplicationWindow {
             onXchatInternetOk: {
                 networkAvailable = 1
             }
+            onOnlineUsersSignal:{
+                loadOnlineUsers(online)
+            }
 
     }
 
@@ -1663,6 +1680,18 @@ ApplicationWindow {
             if (checkingXchat == false) {
                 checkXChatSignal();
             }
+        }
+    }
+
+    Timer {
+        id: sendXchatConnection
+        interval: 60000
+        repeat: true
+        running: true
+
+        onTriggered: {
+            xChatTypingAdd("**#* " +username);
+
         }
     }
 
