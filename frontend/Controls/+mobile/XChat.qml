@@ -190,10 +190,12 @@ Rectangle {
             onTaggingChanged: {
                if (sendText.text == "") {
 
-                   sendText.text = myXchat.tag + " "
+                   sendText.text = myXchat.tagging + " "
+                   myXchat.tagging = ""
                }
                else {
-                   sendText.text = sendText.text + " " + myXchat.tag + " "
+                   sendText.text = sendText.text + " " + myXchat.tagging + " "
+                   myXchat.tagging = ""
                }
             }
         }
@@ -300,7 +302,7 @@ Rectangle {
                 xChatMessage = sendText.text
                 if (xChatMessage.length != 0 && xChatMessage.length < 251) {
                     xchatError = 0
-                    xChatSend("@ " + username + ",mobile:" +  sendText.text)
+                    xChatSend("@ " + username + ",mobile:" +  sendText.text + "<br>")
                     sendText.text = "";
                     xChatTypingRemove("%&%& " + username);
                     myXchat.tag = ""

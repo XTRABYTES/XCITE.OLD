@@ -461,9 +461,9 @@ ApplicationWindow {
                 }
 
             }
-            //var searchUsername = new RegExp( "@" + username, "i")
-            //xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + username + "</b></font>")
-            //xChatMessage = xChatMessage.replace("@everyone", "<font color='#5E8BFF'><b>@everyone</b></font>")
+            var searchUsername = new RegExp( "@" + username, "i")
+            xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + username + "</b></font>")
+            xChatMessage = xChatMessage.replace("@everyone", "<font color='#5E8BFF'><b>@everyone</b></font>")
             console.log(xChatMessage)
             xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
             xChatID = xChatID + 1

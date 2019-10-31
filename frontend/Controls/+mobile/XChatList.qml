@@ -36,7 +36,7 @@ Rectangle {
         Rectangle {
             id: msgRow
             width: parent.width
-            height: author == "xChatRobot"? ((robotMsgBox.height + 4) > xChatRobotIcon.height?  (robotMsgBox.height + 4): xChatRobotIcon.height) :(message != ""? senderID.height + messageText.height - 10: 0)
+            height: author == "xChatRobot"? ((robotMsgBox.height + 4) > xChatRobotIcon.height?  (robotMsgBox.height + 4): xChatRobotIcon.height) :(message != ""? senderID.height + messageText.height + 1: 0)
             color: "transparent"
             visible: message != ""
             clip: true
@@ -82,12 +82,21 @@ Rectangle {
                 anchors.topMargin: 5
                 visible: author != "xChatRobot"
 
-                MouseArea {
-                    anchors.fill: senderID
-                    focus: false
+                Rectangle {
+                    height: senderID.height
+                    width: senderID.width
+                    anchors.verticalCenter: senderID.verticalCenter
+                    anchors.horizontalCenter: senderID.horizontalCenter
+                    color: "transparent"
 
-                    onClicked: {
-                        tagging = "@" + author
+                    MouseArea {
+                        anchors.fill: parent
+                        //focus: false
+
+                        onClicked: {
+                            console.log("author pushed")
+                            tagging = "@" + senderID.text
+                        }
                     }
                 }
             }
@@ -141,7 +150,7 @@ Rectangle {
                 visible: author != "xChatRobot"
             }
 
-            TextArea {
+            Label {
                 id: messageText
                 text: message
                 anchors.left: msgBox.left
@@ -155,9 +164,8 @@ Rectangle {
                 font.bold: tag === 1 || tag === 2
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
-                color: tag === 0? (darktheme == false? "#14161B" : "#F2F2F2") : (tag === 1? "#0ED8D2" : (tag === 2? "#5E8BFF" : "#000000"))
+                color: darktheme == false? "#14161B" : "#F2F2F2"
                 visible: author != "xChatRobot"
-
             }
 
             Image {
