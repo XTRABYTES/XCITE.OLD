@@ -101,13 +101,18 @@ ApplicationWindow {
         coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 3});
         coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
 
-        applicationList.setProperty(0, "name", "X-CHAT")
-        applicationList.setProperty(0, "icon_white", 'qrc:/icons/mobile/xchat-icon_white.svg')
-        applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_black.svg')
-        applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_01_black.svg'})
+        applicationList.setProperty(0, "name", "X-CHAT");
+        applicationList.setProperty(0, "icon_white", 'qrc:/icons/mobile/xchat-icon_white.svg');
+        applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_black.svg');
+        applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_01_black.svg'});
+        applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_01_black.svg'});
 
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
+
+        xChatOnline.clear();
+
+        xChatUsers.clear();
 
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
@@ -237,6 +242,7 @@ ApplicationWindow {
     property int debugTracker: 0
     property int xchatTracker: 0
     property int xchatSettingsTracker: 0
+    property int xchatUserTracker: 0
 
     property int backupTracker: 0
     property int screenshotTracker: 0
@@ -364,6 +370,7 @@ ApplicationWindow {
     property variant xChatMeta
     property string xChatMessage: ""
     property int xChatID: 1
+    property int xChatTag: 0
     property variant messageArray
     property bool sendTyping: true
     property bool xChatConnection: false
@@ -421,6 +428,7 @@ ApplicationWindow {
     }
 
     function updateXchat(msg) {
+            xChatTag = 0
             xChatDate = ""
             xChatArray = msg.split(':')
             xChatMessage = msg.replace( xChatArray[0] + ":", "")
@@ -434,6 +442,7 @@ ApplicationWindow {
                 if(xChatMeta[0] !== username) {
                     if (messageArray[i].toLowerCase() === "@" + username.toLowerCase()) {
                         notification.play()
+                        xChatTag = 1
                         console.log("someone mentioned you in X-CHAT")
                         if (xchatTracker !== 1) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : xChatMeta[0] + " has mentioned you", "origin" : "X-CHAT"})
@@ -442,6 +451,7 @@ ApplicationWindow {
                     }
                     else if (messageArray[i] === "@everyone") {
                         notification.play()
+                        xChatTag = 2
                         console.log("message to everyone in X-CHAT")
                         if (xchatTracker !== 1) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
@@ -451,11 +461,11 @@ ApplicationWindow {
                 }
 
             }
-            var searchUsername = new RegExp( "@" + username, "i")
-            xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + username + "</b></font>")
-            xChatMessage = xChatMessage.replace("@everyone", "<font color='#5E8BFF'><b>@everyone</b></font>")
+            //var searchUsername = new RegExp( "@" + username, "i")
+            //xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + username + "</b></font>")
+            //xChatMessage = xChatMessage.replace("@everyone", "<font color='#5E8BFF'><b>@everyone</b></font>")
             console.log(xChatMessage)
-            xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID})
+            xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
             xChatID = xChatID + 1
         }
 
@@ -1010,16 +1020,48 @@ ApplicationWindow {
     }
 
     function loadOnlineUsers(online) {
+        xChatOnline.clear()
         if (typeof online !== "undefined") {
             console.log("online: " + online)
-//            var obj = JSON.parse(online);
-//            console.log("obj: " + obj);
-//            for (var i in obj){
-//                var data = obj[i];
-//                console.log("ONLINE")
-//                console.log("i: " + i);
-//                console.log("data: " + data);
-//            }
+            var obj = JSON.parse(online);
+            console.log("obj: " + obj);
+            for (var i in obj){
+                var data = obj[i];
+                xChatOnline.append(data)
+            }
+            for (var a = 0; a < xChatOnline.count; a ++) {
+                xChatOnline.setProperty(a,"newUser",true)
+            }
+            for (var u = 0; u < xChatUsers.count; u ++) {
+                xChatUsers.setProperty(u,"updated",false)
+            }
+            for (var e = 0; e < xChatUsers.count; e ++) {
+                var user = xChatUsers.get(e).username
+                for (var o = 0; o < xChatOnline.count; o ++) {
+                    if (user === xChatOnline.get(o).username) {
+                        xChatUsers.setProperty(e,"date",xChatOnline.get(o).date)
+                        xChatUsers.setProperty(e,"time",xChatOnline.get(o).time)
+                        xChatUsers.setProperty(e,"status",xChatOnline.get(o).status)
+                        xChatUsers.setProperty(e,"updated",true)
+                        xChatOnline.setProperty(o,"newUser",false)
+                        console.log("existing user updated")
+                    }
+                }
+            }
+            for (var y = 0; y < xChatOnline.count; y ++) {
+                var act = xChatOnline.get(y).newUser
+                if (act === true) {
+                    xChatUsers.append({"username":xChatOnline.get(y).username, "date":xChatOnline.get(y).date, "time":xChatOnline.get(y).time, "status":xChatOnline.get(y).status, "active":true, "updated": true})
+                    console.log("new user added")
+                }
+            }
+            for (var b = 0; b < xChatUsers.count; b ++) {
+                var updated = xChatUsers.get(b).updated
+                if (updated === false) {
+                    xChatUsers.setProperty(b,"status","offline")
+                    console.log("existing user off line")
+                }
+            }
         }
     }
 
@@ -1585,6 +1627,7 @@ ApplicationWindow {
             author: ""
             date: ""
             device: ""
+            tag: 0
             ID:0
         }
     }
@@ -1596,6 +1639,18 @@ ApplicationWindow {
             status: ""
             time: ""
             username:""
+            newUser: false
+        }
+    }
+
+    ListModel {
+        id: xChatUsers
+        ListElement {
+            date: ""
+            status: ""
+            time: ""
+            username:""
+            updated: false
         }
     }
 

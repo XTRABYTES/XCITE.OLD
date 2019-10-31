@@ -28,7 +28,7 @@ Rectangle {
 
     property bool xChatFocus: true
     property alias xChatList: msgList
-    property string tag: ""
+    property string tagging: ""
 
     Component {
         id: msgLine
@@ -36,7 +36,7 @@ Rectangle {
         Rectangle {
             id: msgRow
             width: parent.width
-            height: message != ""? senderID.height + messageText.height + 1: 0
+            height: author == "xChatRobot"? ((robotMsgBox.height + 4) > xChatRobotIcon.height?  (robotMsgBox.height + 4): xChatRobotIcon.height) :(message != ""? senderID.height + messageText.height - 10: 0)
             color: "transparent"
             visible: message != ""
             clip: true
@@ -50,6 +50,7 @@ Rectangle {
                 horizontalOffset:0
                 verticalOffset: 0
                 spread: 0
+                visible: author != "xChatRobot"
             }
 
             Rectangle {
@@ -64,6 +65,7 @@ Rectangle {
                 anchors.right: author==(username)? parent.right : undefined
                 anchors.rightMargin: author==(username)? 2 : 0
                 color: darktheme == true? "#2A2C31" : "#F2F2F2"
+                visible: author != "xChatRobot"
             }
 
             Label {
@@ -78,13 +80,14 @@ Rectangle {
                 anchors.leftMargin: 10
                 anchors.top: msgBox.top
                 anchors.topMargin: 5
+                visible: author != "xChatRobot"
 
                 MouseArea {
                     anchors.fill: senderID
                     focus: false
 
-                    onPressAndHold: {
-                        tag = "@" + author
+                    onClicked: {
+                        tagging = "@" + author
                     }
                 }
             }
@@ -100,6 +103,7 @@ Rectangle {
                 font.pixelSize: 10
                 horizontalAlignment: Text.AlignRight
                 color: darktheme == false? "#14161B" : "#F2F2F2"
+                visible: author != "xChatRobot"
             }
 
             Rectangle {
@@ -111,6 +115,7 @@ Rectangle {
                 anchors.leftMargin: 5
                 anchors.verticalCenter: senderID.verticalCenter
                 color: darktheme == false? "#14161B" : "#F2F2F2"
+                visible: author != "xChatRobot"
             }
 
             Image {
@@ -121,6 +126,7 @@ Rectangle {
                 anchors.verticalCenter: senderID.verticalCenter
                 anchors.left: online.right
                 anchors.leftMargin: 5
+                visible: author != "xChatRobot"
             }
 
             Rectangle {
@@ -132,9 +138,10 @@ Rectangle {
                 anchors.rightMargin: 10
                 anchors.top: senderID.bottom
                 color: "#0ED8D2"
+                visible: author != "xChatRobot"
             }
 
-            Text {
+            TextArea {
                 id: messageText
                 text: message
                 anchors.left: msgBox.left
@@ -145,9 +152,62 @@ Rectangle {
                 anchors.topMargin: 5
                 horizontalAlignment: Text.AlignLeft
                 font.family: xciteMobile.name
+                font.bold: tag === 1 || tag === 2
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
-                color: darktheme == false? "#14161B" : "#F2F2F2"
+                color: tag === 0? (darktheme == false? "#14161B" : "#F2F2F2") : (tag === 1? "#0ED8D2" : (tag === 2? "#5E8BFF" : "#000000"))
+                visible: author != "xChatRobot"
+
+            }
+
+            Image {
+                id: xChatRobotIcon
+                source: darktheme == true? 'qrc:/icons/mobile/robot-icon_01_white.svg' : 'qrc:/icons/mobile/robot-icon_01_black.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                visible: author == "xChatRobot"
+            }
+
+            DropShadow {
+                anchors.fill: robotMsgBox
+                source: robotMsgBox
+                samples: 9
+                radius: 4
+                color: darktheme == true? "#000000" : "#727272"
+                horizontalOffset:0
+                verticalOffset: 0
+                spread: 0
+                visible: author == "xChatRobot"
+            }
+
+            Rectangle {
+                id: robotMsgBox
+                height: robotText.height +10
+                anchors.left: xChatRobotIcon.right
+                anchors.leftMargin: 10
+                anchors.right: parent.right
+                color: darktheme == true? "#2A2C31" : "#F2F2F2"
+                visible: author == "xChatRobot"
+            }
+
+            Text {
+                id: robotText
+                text: message
+                anchors.left: robotMsgBox.left
+                anchors.leftMargin: 10
+                anchors.right: robotMsgBox.right
+                anchors.rightMargin: 10
+                anchors.top: robotMsgBox.top
+                anchors.topMargin: 5
+                horizontalAlignment: Text.AlignLeft
+                font.family: xciteMobile.name
+                wrapMode: Text.Wrap
+                font.pixelSize: 16
+                color: "#E55541"
+                visible: author == "xChatRobot"
             }
         }
     }

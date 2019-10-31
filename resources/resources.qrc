@@ -302,5 +302,10 @@
         <file>icons/mobile/send_rotated_03.svg</file>
         <file>icons/mobile/xchange-icon_01_black.svg</file>
         <file>icons/mobile/xchange-icon_01_white.svg</file>
+        <file>icons/mobile/robot-icon_01_black.svg</file>
+        <file>icons/mobile/robot-icon_01_white.svg</file>
+        <file>icons/mobile/users-icon_01.svg</file>
+        <file>icons/mobile/xvault-icon_01_black.svg</file>
+        <file>icons/mobile/xvault-icon_01_white.svg</file>
     </qresource>
 </RCC>

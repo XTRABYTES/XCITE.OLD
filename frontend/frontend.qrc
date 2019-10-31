@@ -168,5 +168,7 @@
         <file>Controls/+mobile/XChatList.qml</file>
         <file>Controls/+mobile/ApplicationList.qml</file>
         <file>Controls/+mobile/XChatSettings.qml</file>
+        <file>Controls/+mobile/XChatUsers.qml</file>
+        <file>Controls/+mobile/XChatUsersList.qml</file>
     </qresource>
 </RCC>

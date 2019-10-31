@@ -30,6 +30,8 @@ Rectangle {
     anchors.top: parent.top
     onStateChanged: detectInteraction()
 
+    property string xChatMessage: ""
+
     LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
@@ -119,16 +121,43 @@ Rectangle {
     }
 
     Image {
-        id: xChatSettingsButton
-        source: "qrc:/icons/mobile/settings-icon_01.svg"
+        id: xChatUsersButton
+        source: "qrc:/icons/mobile/users-icon_01.svg"
         anchors.verticalCenter: xchatModalLabel.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 28
+        height: 20
+        fillMode: Image.PreserveAspectFit
+
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            width: 30
+            height: 30
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    console.log("X-CHAT users")
+                    xchatUserTracker = 1
+                }
+            }
+        }
+    }
+
+    Image {
+        id: xChatSettingsButton
+        source: "qrc:/icons/mobile/settings-icon_01.svg"
+        anchors.verticalCenter: xchatModalLabel.verticalCenter
+        anchors.right: xChatUsersButton.left
+        anchors.rightMargin: 20
         height: 20
         width: 20
 
         Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             width: 30
             height: 30
             color: "transparent"
@@ -158,7 +187,7 @@ Rectangle {
         Mobile.XChatList {
             id: myXchat
             focus: false
-            onTagChanged: {
+            onTaggingChanged: {
                if (sendText.text == "") {
 
                    sendText.text = myXchat.tag + " "
@@ -250,7 +279,7 @@ Rectangle {
 
         MouseArea {
             anchors.fill: parent
-            enabled: sendEnabled
+            //enabled: sendEnabled
 
             onPressed: {
                 click01.play()
@@ -268,13 +297,19 @@ Rectangle {
             }
 
             onClicked: {
-
-                xchatError = 0
-                xChatSend("@ " + username + ",mobile:" +  sendText.text + "<br>")
-
-                sendText.text = "";
-                xChatTypingRemove("%&%& " + username);
-                myXchat.tag = ""
+                xChatMessage = sendText.text
+                if (xChatMessage.length != 0 && xChatMessage.length < 251) {
+                    xchatError = 0
+                    xChatSend("@ " + username + ",mobile:" +  sendText.text)
+                    sendText.text = "";
+                    xChatTypingRemove("%&%& " + username);
+                    myXchat.tag = ""
+                }
+                if (xChatMessage.length >= 251) {
+                    xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages is 250 characters.", "ID" : xChatID})
+                    xChatID = xChatID + 1
+                    sendText.text = ""
+                }
             }
         }
 
@@ -358,6 +393,12 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Mobile.XChatUsers {
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
     Component.onDestruction: {
         sendText.text = ""
         myXchat.tag = ""
@@ -365,3 +406,4 @@ Rectangle {
         xchatError = 0
     }
 }
+
