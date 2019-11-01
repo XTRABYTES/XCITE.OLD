@@ -139,6 +139,9 @@ QString Explorer::getTransactionDetails(QString coin, QString transaction) {
     Url.setPath(url);
 
     QEventLoop eventLoop;
+    QTimer getTimer;
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&eventLoop, SLOT(quit()));
+
     QNetworkAccessManager mgr;
     QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
 
@@ -153,9 +156,12 @@ QString Explorer::getTransactionDetails(QString coin, QString transaction) {
     request.setSslConfiguration(conf);
 
     QNetworkReply *reply = mgr.get(request);
+    getTimer.start(4000);
     eventLoop.exec();
 
     QString strReply = (QString)reply->readAll();
+    reply->close();
+    delete reply;
     return strReply;
 }
 
@@ -167,6 +173,9 @@ QString Explorer::getBalanceAddressXBY(QString coin, QString address, QString pa
     Url.setPath(url);
 
     QEventLoop eventLoop;
+    QTimer getTimer;
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&eventLoop, SLOT(quit()));
+
     QNetworkAccessManager mgr;
     QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
 
@@ -181,11 +190,16 @@ QString Explorer::getBalanceAddressXBY(QString coin, QString address, QString pa
     request.setSslConfiguration(conf);
 
     QNetworkReply *reply = mgr.get(request);
+    getTimer.start(4000); // 4000 milliSeconds wait period for get() method to work properly
+
     eventLoop.exec();
 
     QByteArray bytes = reply->readAll();
     QString strReply = QString::fromUtf8(bytes.data(), bytes.size());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+    reply->close();
+    delete reply;
     return strReply;
 }
 
@@ -196,6 +210,9 @@ QString Explorer::getBalanceAddressExt(QString coin, QString address){
     Url.setPath(url);
 
     QEventLoop eventLoop;
+    QTimer getTimer;
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&eventLoop, SLOT(quit()));
+
     QNetworkAccessManager mgr;
     QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
 
@@ -210,9 +227,13 @@ QString Explorer::getBalanceAddressExt(QString coin, QString address){
     request.setSslConfiguration(conf);
 
     QNetworkReply *reply = mgr.get(request);
+    getTimer.start(4000); // 4000 milliSeconds wait period for get() method to work properly
+
     eventLoop.exec();
 
     QString strReply = (QString)reply->readAll();
+    reply->close();
+    delete reply;
     return strReply;
 }
 
