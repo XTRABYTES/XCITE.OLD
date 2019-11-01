@@ -322,26 +322,33 @@ void XchatObject::sendOnlineUsers(){
 bool XchatObject::checkInternet(){
     cleanTypingList();
     cleanOnlineList();
-
+    bool connected = false;
     QNetworkAccessManager nam;
     QNetworkRequest req(QUrl("http://www.google.com"));
     QNetworkReply* reply = nam.get(req);
     QEventLoop loop;
+    QTimer getTimer;
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
+
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+
+    getTimer.start(4000);
     loop.exec();
     if (reply->bytesAvailable()){
         //emit xchatConnectionSuccess();
         emit xchatInternetOk();
 
-        return true;
+        connected=true;
     }else{
         emit xchatConnectionFail();
         emit xchatNoInternet();
-        return false;
     }
 
     reply->close();
     delete reply;
+
+    return connected;
+
 }
 
 QString XchatObject::findServer(){
@@ -355,7 +362,7 @@ QString XchatObject::findServer(){
         tester.connectToHost(server, 1883);
         timer.start();
         bool online = true;
-        if(tester.waitForConnected(500)) {
+        if(tester.waitForConnected(1000)) {
             qDebug() << "Server: " + server + " up";
         } else {
             online=false;

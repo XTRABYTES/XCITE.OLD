@@ -128,16 +128,24 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
     QNetworkReply *reply = restclient->post(request, payload);
 
     QEventLoop loop;
+    QTimer getTimer;
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
+
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    getTimer.start(4000);
     loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
 
     statusCode = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
 
     bool callSuccess = statusCode == "Success" ? true:false;
+    QString replyMessage = (QString) reply->readAll();
+    reply->close();
+    delete reply;
 
     if (callSuccess){
-        return reply->readAll();
+        return replyMessage;
+
     }else{
         return "";
     }
@@ -1021,11 +1029,17 @@ QByteArray Settings::RestAPIGetCall(QString apiURL){
     qDebug() << bytes;
 
     QEventLoop loop;
+    QTimer getTimer;
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
+
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    getTimer.start(4000);
     loop.exec();
 
     QByteArray bts = reply->readAll();
+    reply->close();
+    delete reply;
 
     return bts;
 }

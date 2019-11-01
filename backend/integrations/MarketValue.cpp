@@ -11,6 +11,7 @@
  */
 
 #include <QEventLoop>
+#include <QTimer>
 #include <QSettings>
 #include "MarketValue.hpp"
 
@@ -35,10 +36,15 @@ void MarketValue::findCurrencyValue(QString currency)
 
     QNetworkReply *reply = restclient->get(request);
     QByteArray bytes = reply->readAll();
+    QTimer getTimer; // let's use a 10 second period for timing out the GET opn
+
 
     QEventLoop loop;
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    getTimer.start(10000); // 10000 milliSeconds wait period for get() method to work properly
+
     loop.exec();
 
     QString currencyValue = QString::fromStdString(reply->readAll().toStdString());
@@ -47,6 +53,9 @@ void MarketValue::findCurrencyValue(QString currency)
         setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
         qDebug() << currency + ":" + currencyValue;
     }
+
+    reply->close();
+    delete reply;
 }
 
 void MarketValue::findAllCurrencyValues(){
