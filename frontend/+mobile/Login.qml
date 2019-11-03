@@ -293,7 +293,7 @@ Item {
                         selectedPage = "home"
                         mainRoot.pop()
                         mainRoot.push("../Home.qml")
-                        username = userName.text
+                        username = userName.text.trim()
                         loginSuccesTimer.start()
                         loadingSettings = 0
                         verifyingBalances = 0
