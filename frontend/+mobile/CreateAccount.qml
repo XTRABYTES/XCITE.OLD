@@ -466,7 +466,7 @@ Rectangle {
                             initialisePincode("0000");
                             contactList.setProperty(0, "firstName", "My addresses");
                             updateToAccount();
-                            username = userName.text
+                            username = userName.text.trim()
                             newAccount = true
                             accountCreated = 1
                             availableUsername = 0
