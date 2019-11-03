@@ -67,7 +67,7 @@ void XchatObject::Initialize() {
             removeFromTyping(content.toUtf8());
 
         }else if(content.startsWith("**#* ")){
-            addToOnline(content.toUtf8());
+            addToOnline(content.toUtf8(), false);
 
         }else{
 
@@ -96,20 +96,35 @@ void XchatObject::sendTypingToQueue(const QString msg) {
 }
 
 void XchatObject::addToTyping(const QString msg) {
-    addToOnline(msg);
+    addToOnline(msg, true);
     QString cutName = msg.right(msg.length() - 5);
     QDateTime now = QDateTime::currentDateTime();
     typing.insert(cutName, now);
     sendTypingToFront(typing);
 }
 
-void XchatObject::addToOnline(const QString msg) {
+void XchatObject::addToOnline(const QString msg, bool typed) {
 
     QString cutName = msg.right(msg.length() - 5);
     QDateTime now = QDateTime::currentDateTime();
     if (cutName.size() > 1){
-         onlineUsers.insert(cutName,now);
-         sendOnlineUsers();
+        OnlineUser user;
+        if (onlineUsers.contains(cutName)){
+            user = onlineUsers.value(cutName);
+
+        }else{
+            user.setUsername(cutName);
+            user.setStatus("online");
+        }
+        user.setDateTime(now);
+
+        if (typed){
+            user.setStatus("online");
+            user.setLastTyped(now);
+        }
+
+        onlineUsers.insert(cutName,user);
+        sendOnlineUsers();
      }
 }
 
@@ -137,9 +152,15 @@ void XchatObject::cleanTypingList(){
 void XchatObject::cleanOnlineList(){
     QDateTime now = QDateTime::currentDateTime();
     for (QString key : onlineUsers.keys()){
-        if (onlineUsers.value(key).secsTo(now) > 10 * 60){ //remove from online after 10 minutes
+        OnlineUser onlineUser = onlineUsers.value(key);
+        if ( onlineUser.getDateTime().secsTo(now) > 10 * 60){ //remove from online after 10 minutes
             onlineUsers.remove(key);
         }
+        if (onlineUser.getLastTyped().secsTo(now) > 5 *60){ // if they haven't typed in 5 minutes, set status to idle
+            onlineUser.setStatus("idle");
+            onlineUsers.insert(key,onlineUser);
+        }
+
     }
     sendOnlineUsers();
 
@@ -298,17 +319,11 @@ void XchatObject::sendOnlineUsers(){
 
     for (QString user : onlineUsers.keys()){
         QJsonObject userObj ;
-        QDateTime userDateTime = onlineUsers.value(user);
+        OnlineUser onlineUser = onlineUsers.value(user);
         userObj.insert("username",user);
-        userObj.insert("date",userDateTime.date().toString());
-        userObj.insert("time",userDateTime.time().toString());
-        if (userDateTime.secsTo(now) > 5 * 60){ //remove from online after 10 minutes
-            userObj.insert("status","idle");
-        }else{
-            userObj.insert("status","online");
-
-        }
-
+        userObj.insert("date",onlineUser.getDate().toString());
+        userObj.insert("time",onlineUser.getTime().toString());
+        userObj.insert("status",onlineUser.getStatus());
 
         onlineJson.append(userObj);
     }
@@ -382,3 +397,6 @@ QString XchatObject::findServer(){
     qDebug() << "Connecting to " + fastestServer;
     return fastestServer;
 }
+
+
+
