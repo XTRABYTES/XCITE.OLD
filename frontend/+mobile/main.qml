@@ -449,7 +449,7 @@ ApplicationWindow {
             xChatArray = msg.split(':')
             xChatMessage = msg.replace( xChatArray[0] + ":", "")
 
-            for(var o; o < notAllowed.length; o++) {
+            for(var o = 0; o < notAllowed.length; o++) {
                 xChatMessage = xChatMessage.replace(notAllowed[o], "")
             }
 
