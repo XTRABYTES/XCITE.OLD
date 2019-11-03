@@ -434,7 +434,7 @@ ApplicationWindow {
 
     function getUserStatus(user) {
         var userStatus = ""
-        for(var i; i < xChatUsers.count; i++) {
+        for(var i = 0; i < xChatUsers.count; i++) {
             if (user === xChatUsers.get(i).username) {
                 userStatus = xChatUsers.get(i).status
             }

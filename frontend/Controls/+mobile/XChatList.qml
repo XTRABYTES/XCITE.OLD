@@ -123,8 +123,8 @@ Rectangle {
                 anchors.left: senderID.right
                 anchors.leftMargin: 5
                 anchors.verticalCenter: senderID.verticalCenter
-                //color: getUserStatus(author) === "online"? "#4BBE2E" : (getUserStatus(author) === "idle"? "#F7931A" : "#E55541")
-                color: darktheme == false? "#14161B" : "#F2F2F2"
+                color: getUserStatus(author) === "online"? "#4BBE2E" : (getUserStatus(author) === "idle"? "#F7931A" : "#E55541")
+                //color: darktheme == false? "#14161B" : "#F2F2F2"
                 visible: author != "xChatRobot"
             }
 
