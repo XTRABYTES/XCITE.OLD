@@ -31,6 +31,49 @@ public:
     explicit Xchat(QObject *parent = nullptr);
 };
 
+class OnlineUser {
+  private:
+    // Private attribute
+    QString status;
+    QString username;
+    QDateTime dateTime;
+    QDateTime lastTyped;
+
+  public:
+    // Setter
+    void setStatus(QString status) {
+      this->status = status;
+    }
+    void setUsername(QString username) {
+      this->username = username;
+    }
+    void setDateTime(QDateTime dateTime) {
+      this->dateTime = dateTime;
+    }
+    void setLastTyped(QDateTime lastTyped) {
+      this->lastTyped = lastTyped;
+    }
+
+    // Getter
+    QString getStatus() {
+      return status;
+    }
+    QString getUsername() {
+      return username;
+    }
+    QDateTime getDateTime() {
+      return dateTime;
+    }
+    QTime getTime() {
+      return dateTime.time();
+    }
+    QDate getDate() {
+        return dateTime.date();
+    }
+    QDateTime getLastTyped() {
+      return lastTyped;
+    }
+};
 
 class XchatObject : public QObject
 {
@@ -97,12 +140,12 @@ private:
 
     QList<QString> servers{NewYork,Berlin,Buffalo,Germany,France};
 
-    QMap<QString, QDateTime> onlineUsers;
-    void addToOnline(const QString msg);
+    QMap<QString, OnlineUser> onlineUsers;
+    void addToOnline(const QString msg, bool typed);
     void sendOnlineUsers();
-
-
 };
+
+
 
 extern XchatObject xchatRobot;
 
