@@ -23,6 +23,8 @@ import QtGraphicalEffects 1.0
 ApplicationWindow {
     property bool isNetworkActive: false
 
+    property variant notAllowed: ["<del>","</del>","<s>","</s>","<strong>","</strong>","<i>","</i>","<u>","</u>","<br>","<p>","</p>","</font>","<h1>","</h1>","<h2>","</h2>","<h3>","</h3>","<h4>","</h4>","<h5>","</h5>","<h6>","</h6>","a href=","img src=","ol type=","ul type=","<li>","</li>","<pre>","</pre>","&gt","&lt","&amp"]
+
     id: xcite
 
     visible: true
@@ -104,8 +106,8 @@ ApplicationWindow {
         applicationList.setProperty(0, "name", "X-CHAT");
         applicationList.setProperty(0, "icon_white", 'qrc:/icons/mobile/xchat-icon_white.svg');
         applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_black.svg');
-        applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_01_black.svg'});
-        applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_01_black.svg'});
+        applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_02_black.svg'});
+        applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_01_black.svg'});
 
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
@@ -243,6 +245,7 @@ ApplicationWindow {
     property int xchatTracker: 0
     property int xchatSettingsTracker: 0
     property int xchatUserTracker: 0
+    property int tagListTracker: 0
 
     property int backupTracker: 0
     property int screenshotTracker: 0
@@ -371,7 +374,9 @@ ApplicationWindow {
     property string xChatMessage: ""
     property int xChatID: 1
     property int xChatTag: 0
+    property int xChatFilterResults: 0
     property variant messageArray
+    property string tagFilter: ""
     property bool sendTyping: true
     property bool xChatConnection: false
     property bool xChatConnecting: false
@@ -427,11 +432,27 @@ ApplicationWindow {
         }
     }
 
+    function getUserStatus(user) {
+        var userStatus = ""
+        for(var i; i < xChatUsers.count; i++) {
+            if (user === xChatUsers.get(i).username) {
+                userStatus = xChatUsers.get(i).status
+            }
+        }
+
+        return userStatus
+    }
+
     function updateXchat(msg) {
             xChatTag = 0
             xChatDate = ""
             xChatArray = msg.split(':')
             xChatMessage = msg.replace( xChatArray[0] + ":", "")
+
+            for(var o; o < notAllowed.length; o++) {
+                xChatMessage = xChatMessage.replace(notAllowed[o], "")
+            }
+
             xChatMeta = xChatArray[0].split(',')
             xChatDate = new Date().toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm")
             console.log(xChatDate)
@@ -440,7 +461,7 @@ ApplicationWindow {
             for(var i = 0; i < (messageArray.length); i++) {
                 console.log(messageArray[i])
                 if(xChatMeta[0] !== username) {
-                    if (messageArray[i].toLowerCase() === "@" + username.toLowerCase()) {
+                    if ((messageArray[i].toLowerCase() === "@" + username.toLowerCase() || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() || messageArray[i].toLowerCase() === "@" + username.toLowerCase() + ">/b>" || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() + "</b>")  && userSettings.tagMe === true) {
                         notification.play()
                         xChatTag = 1
                         console.log("someone mentioned you in X-CHAT")
@@ -449,7 +470,7 @@ ApplicationWindow {
                             alert = true
                         }
                     }
-                    else if (messageArray[i] === "@everyone") {
+                    else if ((messageArray[i] === "@everyone" || messageArray[i] === "<b>@everyone" || messageArray[i] === "@everyone</b>" || messageArray[i] === "<b>@everyone/b>")  && userSettings.tagEveryone === true) {
                         notification.play()
                         xChatTag = 2
                         console.log("message to everyone in X-CHAT")
@@ -1091,7 +1112,7 @@ ApplicationWindow {
         if (typeof settingsLoaded !== "undefined") {
             userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
             userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
-            userSettings.locale = settingsLoaded.locale;
+            userSettings.locale =settingsLoaded.locale;
             userSettings.pinlock = settingsLoaded.pinlock === "true";
             userSettings.theme = settingsLoaded.theme;
             userSettings.localKeys = settingsLoaded.localKeys === "true";
@@ -1103,6 +1124,8 @@ ApplicationWindow {
             userSettings.sound = settingsLoaded.sound;
             userSettings.volume = settingsLoaded.volume;
             userSettings.systemVolume = settingsLoaded.systemVolume;
+            userSettings.tagMe = settingsLoaded.tagMe !== undefined? settingsLoaded.tagMe === "true" : true;
+            userSettings.tagEveryone= settingsLoaded.tagEveryone !== undefined? settingsLoaded.tagEveryone === "true" : true
             coinList.setProperty(0, "active", userSettings.xfuel);
             coinList.setProperty(1, "active", userSettings.xby);
             coinList.setProperty(2, "active", userSettings.xtest);
@@ -1303,6 +1326,8 @@ ApplicationWindow {
         userSettings.sound = 0
         userSettings.volume = 1
         userSettings.systemVolume = 1
+        userSettings.tagMe = true
+        userSettings.tagEveryone = true
     }
 
     function initialiseLists() {
@@ -1675,6 +1700,8 @@ ApplicationWindow {
         property int sound: 0
         property int volume: 1
         property int systemVolume: 1
+        property bool tagMe: true
+        property bool tagEveryone: true
 
         onThemeChanged: {
             darktheme = userSettings.theme == "dark"? true : false

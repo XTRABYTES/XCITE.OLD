@@ -460,6 +460,8 @@ Rectangle {
                             userSettings.sound = 0
                             userSettings.volume = 1
                             userSettings.systemVolume = 1
+                            userSettings.tagMe = true
+                            userSettings.tagEveryone = true
                             userSettings.accountCreationCompleted = false
                             initialisePincode("0000");
                             contactList.setProperty(0, "firstName", "My addresses");

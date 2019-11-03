@@ -76,6 +76,126 @@ Rectangle {
     }
 
     Label {
+        id: tagMeLabel
+        z: 1
+        text: "Mute personal tags:"
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        font.bold: true
+        color: themecolor
+        anchors.top: xchatSettingsModalLabel.bottom
+        anchors.topMargin: 30
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
+
+    Rectangle {
+        id: tagMeswitchSwitch
+        z: 1
+        width: 20
+        height: 20
+        radius: 10
+        anchors.verticalCenter: tagMeLabel.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        color: "transparent"
+        border.color: themecolor
+        border.width: 2
+
+        Rectangle {
+            id: tagMeIndicator
+            z: 1
+            width: 12
+            height: 12
+            radius: 8
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: userSettings.tagMe === false ? maincolor : "#757575"
+
+            MouseArea {
+                id: tagMeButton
+                width: 20
+                height: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+                onPressed: {
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    if (userSettings.tagMe === false) {
+                        userSettings.tagMe = true
+                    }
+                    else {
+                        userSettings.tagMe = false
+                    }
+                }
+            }
+        }
+    }
+
+    Label {
+        id: tagEveryoneLabel
+        z: 1
+        text: "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags:"
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        font.bold: true
+        color: themecolor
+        anchors.top: tagMeLabel.bottom
+        anchors.topMargin: 30
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
+
+    Rectangle {
+        id: tagEveryoneswitchSwitch
+        z: 1
+        width: 20
+        height: 20
+        radius: 10
+        anchors.verticalCenter: tagEveryoneLabel.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        color: "transparent"
+        border.color: themecolor
+        border.width: 2
+
+        Rectangle {
+            id: tagEveryoneIndicator
+            z: 1
+            width: 12
+            height: 12
+            radius: 8
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: userSettings.tagEveryone === false ? maincolor : "#757575"
+
+            MouseArea {
+                id: tagEveryoneButton
+                width: 20
+                height: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+                onPressed: {
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    if (userSettings.tagEveryone === false) {
+                        userSettings.tagEveryone = true
+                    }
+                    else {
+                        userSettings.tagEveryone = false
+                    }
+                }
+            }
+        }
+    }
+
+    Label {
         id: closeXchatSettingsModal
         z: 10
         text: "BACK"

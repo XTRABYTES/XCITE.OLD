@@ -28,6 +28,8 @@ Rectangle {
     anchors.top: parent.top
     onStateChanged: detectInteraction()
 
+    property string usertag: ""
+
     states: [
         State {
             name: "up"
@@ -77,7 +79,7 @@ Rectangle {
 
         Text {
             id: xChatUsersLabel
-            text: "Online"
+            text: "Users"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 10
@@ -93,14 +95,20 @@ Rectangle {
             anchors.topMargin: 25
             anchors.bottom: parent.bottom
             color: "transparent"
-
-            Controls.XChatUsersList {
-                id: myUsersList
-            }
         }
 
-        MouseArea {
-            anchors.fill: parent
+        Controls.XChatUsersList {
+            id: myUsersList
+            width: userNames.width
+            anchors.top: userNames.top
+            anchors.bottom: parent.bottom
+
+            onTaggingChanged: {
+                if (myUsersList.tagging !== "") {
+                    usertag = myUsersList.tagging
+                    console.log("user tagged: " + usertag)
+                }
+            }
         }
     }
 }

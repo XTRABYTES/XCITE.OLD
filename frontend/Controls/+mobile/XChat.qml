@@ -31,6 +31,9 @@ Rectangle {
     onStateChanged: detectInteraction()
 
     property string xChatMessage: ""
+    property var msg : ""
+    property var msgArray : ""
+    property var msgCount : ""
 
     LinearGradient {
         anchors.fill: parent
@@ -255,6 +258,20 @@ Rectangle {
         }
 
         onTextChanged:  {
+            msg = sendText.text
+            msgArray = msg.split(' ')
+            msgCount = msgArray.length
+            if (msgArray[msgCount - 1] === "@") {
+                tagListTracker = 1
+            }
+            else if (msgArray[msgCount - 1] === "") {
+                tagListTracker = 0
+                tagFilter = ""
+            }
+
+            tagFilter = msgArray[msgCount - 1]
+            tagFilter = tagFilter.replace("@","")
+            console.log("tag filter: " + tagFilter)
             sendEnabled = text.length > 0 ? true : false
         }
 
@@ -305,7 +322,7 @@ Rectangle {
                     xChatSend("@ " + username + ",mobile:" +  sendText.text + "<br>")
                     sendText.text = "";
                     xChatTypingRemove("%&%& " + username);
-                    myXchat.tag = ""
+                    myXchat.tagging = ""
                 }
                 if (xChatMessage.length >= 251) {
                     xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages is 250 characters.", "ID" : xChatID})
@@ -370,7 +387,7 @@ Rectangle {
 
                 onTriggered: {
                     sendText.text = ""
-                    myXchat.tag = ""
+                    myXchat.tagging = ""
                 }
             }
 
@@ -389,13 +406,105 @@ Rectangle {
         }
     }
 
-    Mobile.XChatSettings {
+    DropShadow {
+        anchors.fill: userTagArea
+        source: userTagArea
+        samples: 9
+        radius: 4
+        color: darktheme == true? "#000000" : "#727272"
+        horizontalOffset:0
+        verticalOffset: 0
+        spread: 0
+        visible: tagListTracker == 1 && xChatFilterResults > 0
+    }
+
+    Rectangle {
+        id: userTagArea
+        width: Screen.width - 56
+        height: myXchatTaglist.height + 25
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: sendText.top
+        anchors.bottomMargin: 15
+        color: darktheme == false ? "#34363D" : "#2A2C31"
+        visible: tagListTracker == 1 && xChatFilterResults > 0
+
+        Label {
+            id: tagListLabel
+            text: "Users"
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.top: parent.top
+            font.pixelSize: 14
+            font.family: "Brandon Grotesque"
+            font.bold: true
+            color: "#F2F2F2"
+        }
+
+        Image {
+            id: closeTagList
+            source: 'qrc:/icons/mobile/close-icon_01_white.svg'
+            height: 9
+            fillMode: Image.PreserveAspectFit
+            anchors.top: parent.top
+            anchors.topMargin: 8
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+        }
+
+        Rectangle {
+            id: closeTagListButton
+            width: 25
+            height: 25
+            anchors.horizontalCenter: closeTagList.horizontalCenter
+            anchors.verticalCenter: closeTagList.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    tagListTracker = 0
+                    tagFilter = ""
+                }
+            }
+        }
+    }
+
+    Mobile.XChatTagList {
+        id: myXchatTaglist
         z: 10
-        anchors.left: parent.left
-        anchors.top: parent.top
+        width: Screen.width - 56
+        anchors.bottom: userTagArea.bottom
+        anchors.horizontalCenter:parent.horizontalCenter
+        visible: tagListTracker == 1 && xChatFilterResults > 0
+
+
+        onUserTagChanged: {
+            sendText.text = sendText.text.replace(msgArray[msgCount - 1], userTag)
+        }
     }
 
     Mobile.XChatUsers {
+        id: myXchatUsers
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+        onUsertagChanged: {
+            if (sendText.text == "") {
+
+                sendText.text = myXchatUsers.usertag + " "
+                myXchatUsers.usertag = ""
+            }
+            else {
+                sendText.text = sendText.text + " " + myXchatUsers.usertag + " "
+                myXchatUsers.usertag = ""
+            }
+        }
+    }
+
+    Mobile.XChatSettings {
+        id: myXchatSettings
         z: 10
         anchors.left: parent.left
         anchors.top: parent.top
@@ -403,7 +512,7 @@ Rectangle {
 
     Component.onDestruction: {
         sendText.text = ""
-        myXchat.tag = ""
+        myXchat.tagging = ""
         xchatTracker = 0
         xchatError = 0
     }

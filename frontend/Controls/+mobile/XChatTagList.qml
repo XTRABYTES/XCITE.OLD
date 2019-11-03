@@ -1,5 +1,5 @@
 /**
-* Filename: XChatUserslist.qml
+* Filename: XChatTagList.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
 * blockchain protocol to host decentralized applications
@@ -16,22 +16,31 @@ import SortFilterProxyModel 0.2
 
 
 Rectangle {
-    width: 100
-    height: parent.height
+    height: filteredUsers.count < 5? filteredUsers.count * 30 : 150
     color: "transparent"
     clip: true
 
-    property string tagging: ""
+    property string userTag: ""
 
     Component {
         id: userNames
 
         Rectangle {
             id: userRow
-            width: 120
-            height: username != ""? 35 : 0
+            width: parent.width
+            height: username != ""? 30 : 0
             color: "transparent"
             clip: true
+
+            Rectangle {
+                id: divider
+                width: parent.width - 20
+                height: 1
+                color: "#F2F2F2"
+                opacity: 0.15
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
 
             Label {
                 id: pickListUsers
@@ -42,19 +51,6 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 15
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-                elide: Text.ElideRight
-            }
-
-            Rectangle {
-                id: onlineIndicator
-                height: 8
-                width: 8
-                radius: 8
-                anchors.horizontalCenter: parent.left
-                anchors.verticalCenter: pickListUsers.verticalCenter
-                color: status == "online"? "#4BBE2E" : (status == "idle"? "#F7931A" : "#E55541")
             }
 
             Rectangle {
@@ -65,9 +61,11 @@ Rectangle {
                     anchors.fill: parent
 
                     onClicked: {
-                        tagging = ""
+                        userTag = ""
                         console.log("user tagged: " + username)
-                        tagging = "@" + username + " "
+                        userTag = "@" + username + " "
+                        tagListTracker = 0
+                        tagFilter = ""
                     }
                 }
             }
@@ -77,6 +75,14 @@ Rectangle {
     SortFilterProxyModel {
         id: filteredUsers
         sourceModel: xChatUsers
+
+        filters: [
+            RegExpFilter {
+                roleName: "username"
+                pattern: tagFilter
+                caseSensitivity: Qt.CaseInsensitive
+            }
+        ]
 
         sorters: [
             StringSorter {roleName: "username" ; sortOrder: Qt.AscendingOrder}
@@ -89,7 +95,11 @@ Rectangle {
         model: filteredUsers
         delegate: userNames
         onDraggingChanged: detectInteraction()
+        property var userCount: filteredUsers.count
+
+        onUserCountChanged:  {
+            xChatFilterResults = userCount
+            console.log("filter results: " + xChatFilterResults)
+        }
     }
 }
-
-

@@ -123,6 +123,7 @@ Rectangle {
                 anchors.left: senderID.right
                 anchors.leftMargin: 5
                 anchors.verticalCenter: senderID.verticalCenter
+                //color: getUserStatus(author) === "online"? "#4BBE2E" : (getUserStatus(author) === "idle"? "#F7931A" : "#E55541")
                 color: darktheme == false? "#14161B" : "#F2F2F2"
                 visible: author != "xChatRobot"
             }
@@ -161,7 +162,6 @@ Rectangle {
                 anchors.topMargin: 5
                 horizontalAlignment: Text.AlignLeft
                 font.family: xciteMobile.name
-                font.bold: tag === 1 || tag === 2
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
                 color: darktheme == false? "#14161B" : "#F2F2F2"

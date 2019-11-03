@@ -307,5 +307,8 @@
         <file>icons/mobile/users-icon_01.svg</file>
         <file>icons/mobile/xvault-icon_01_black.svg</file>
         <file>icons/mobile/xvault-icon_01_white.svg</file>
+        <file>icons/mobile/close-icon_01_white.svg</file>
+        <file>icons/mobile/xchange-icon_02_black.svg</file>
+        <file>icons/mobile/xvault-icon_02_white.svg</file>
     </qresource>
 </RCC>

@@ -86,6 +86,8 @@ void Settings::onClearAllSettings() {
     m_settings->remove("xfuel");
     m_settings->remove("xbytest");
     m_settings->remove("xfueltest");
+    m_settings->remove("tagMe");
+    m_settings->remove("tagEveryone");
     m_settings->sync();
 
     m_settings->setFallbacksEnabled(fallbacks);
