@@ -79,7 +79,11 @@ Rectangle {
         sourceModel: xChatUsers
 
         sorters: [
-            StringSorter {roleName: "username" ; sortOrder: Qt.AscendingOrder}
+            StringSorter {
+                roleName: "username";
+                sortOrder: Qt.AscendingOrder;
+                caseSensitivity: Qt.CaseInsensitive
+            }
         ]
     }
 

@@ -105,8 +105,10 @@ Rectangle {
 
             onTaggingChanged: {
                 if (myUsersList.tagging !== "") {
-                    usertag = myUsersList.tagging
+                    usertag = ""
                     console.log("user tagged: " + usertag)
+                    usertag = myUsersList.tagging
+                    myUsersList.tagging = ""
                 }
             }
         }

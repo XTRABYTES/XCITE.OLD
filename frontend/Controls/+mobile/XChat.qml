@@ -28,12 +28,23 @@ Rectangle {
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    onStateChanged: detectInteraction()
+    onStateChanged: {
+        detectInteraction()
+        if(xchatTracker === 1) {
+            myXchat.xChatList.positionViewAtEnd()
+        }
+    }
+
 
     property string xChatMessage: ""
     property var msg : ""
-    property var msgArray : ""
-    property var msgCount : ""
+    property int cursorPos: 0
+    property bool isTag: false
+    property int beginTag: 0
+    property int endTag: 0
+    property bool startTagging: false
+    property string beforeTag: ""
+    property string afterTag: ""
 
     LinearGradient {
         anchors.fill: parent
@@ -191,15 +202,17 @@ Rectangle {
             id: myXchat
             focus: false
             onTaggingChanged: {
-               if (sendText.text == "") {
-
-                   sendText.text = myXchat.tagging + " "
-                   myXchat.tagging = ""
-               }
-               else {
-                   sendText.text = sendText.text + " " + myXchat.tagging + " "
-                   myXchat.tagging = ""
-               }
+                if (myXchat.tagging !== "") {
+                    var pos = sendText.cursorPosition
+                    var tag = myXchat.tagging + " "
+                    if (cursorPos == 0 || msg.charAt(cursorPos - 1) == " ") {
+                        sendText.text = sendText.insert(pos, tag)
+                    }
+                    else {
+                        sendText.text = sendText.insert(pos, (" " + tag))
+                    }
+                    myXchat.tagging = ""
+                }
             }
         }
     }
@@ -259,20 +272,36 @@ Rectangle {
 
         onTextChanged:  {
             msg = sendText.text
-            msgArray = msg.split(' ')
-            msgCount = msgArray.length
-            if (msgArray[msgCount - 1] === "@") {
+            cursorPos = sendText.cursorPosition
+            console.log("cursor position: " + cursorPos)
+            console.log("character before cursor: " + msg.charAt(cursorPos - 1))
+            isTag = msg.charAt(cursorPos - 1) === "@" && (cursorPos === 1 || msg.charAt(cursorPos - 2) === " ")
+
+            if (isTag) {
+                console.log("tagging detected")
+                beginTag = cursorPos
+                console.log("beginTag: " + beginTag)
+                endTag = cursorPos
+                startTagging = true
                 tagListTracker = 1
             }
-            else if (msgArray[msgCount - 1] === "") {
-                tagListTracker = 0
-                tagFilter = ""
-            }
 
-            tagFilter = msgArray[msgCount - 1]
-            tagFilter = tagFilter.replace("@","")
-            console.log("tag filter: " + tagFilter)
-            sendEnabled = text.length > 0 ? true : false
+            if (startTagging) {
+                endTag = cursorPos
+                console.log("endTag: " + endTag)
+                console.log("look for tag mark: " + msg.charAt(endTag - (endTag - beginTag) - 1))
+                if (msg.charAt(endTag - (endTag - beginTag) - 1) === "@") {
+                    console.log("tag filter: " + sendText.getText(beginTag, endTag))
+                    tagFilter = sendText.getText(beginTag, endTag)
+                }
+                else {
+                    startTagging = false
+                    tagListTracker = 0
+                    tagFilter = ""
+                    beginTag = 0
+                    endTag = 0
+                }
+            }
         }
 
         onTextEdited: {
@@ -319,7 +348,7 @@ Rectangle {
                 xChatMessage = sendText.text
                 if (xChatMessage.length != 0 && xChatMessage.length < 251) {
                     xchatError = 0
-                    xChatSend("@ " + username + ",mobile:" +  sendText.text + "<br>")
+                    xChatSend("@ " + username + ",mobile:" +  sendText.text)
                     sendText.text = "";
                     xChatTypingRemove("%&%& " + username);
                     myXchat.tagging = ""
@@ -336,7 +365,9 @@ Rectangle {
             target: xChat
 
             onXchatSuccess: {
-                myXchat.xChatList.positionViewAtIndex(myXchat.xChatList.count - 1, ListView.End)
+                if(myXchat.xChatOrderedList.get(myXchat.xChatOrderedList.count - 1).author === username) {
+                    myXchat.xChatList.positionViewAtEnd()
+                }
             }
 
             onXchatTypingSignal: {
@@ -387,6 +418,16 @@ Rectangle {
 
                 onTriggered: {
                     sendText.text = ""
+                    isTag = false
+                    startTagging = false
+                    tagListTracker = 0
+                    tagFilter = ""
+                    beginTag = 0
+                    endTag = 0
+                    beforeTag = ""
+                    afterTag = ""
+                    myXchatTaglist.userTag = ""
+                    myXchatUsers.usertag = ""
                     myXchat.tagging = ""
                 }
             }
@@ -480,7 +521,26 @@ Rectangle {
 
 
         onUserTagChanged: {
-            sendText.text = sendText.text.replace(msgArray[msgCount - 1], userTag)
+            if (myXchatTaglist.userTag !== "" && startTagging == true) {
+                var pos = beginTag
+                var tag = myXchatTaglist.userTag
+                tagListTracker = 0
+                tagFilter = ""
+                startTagging = false
+                beforeTag = sendText.getText(0, beginTag)
+                console.log("before tag: " + beforeTag)
+                afterTag = sendText.getText(endTag, msg.length)
+                console.log("after tag: " + afterTag)
+                sendText.text = beforeTag + " " + afterTag
+                console.log("trimmed text: " + sendText.text)
+                console.log("selected user: " + myXchatTaglist.userTag)
+                sendText.text = sendText.insert(pos, tag)
+                myXchatTaglist.userTag = ""
+                beforeTag = ""
+                afterTag = ""
+                beginTag = 0
+                endTag = 0
+            }
         }
     }
 
@@ -491,13 +551,15 @@ Rectangle {
         anchors.top: parent.top
 
         onUsertagChanged: {
-            if (sendText.text == "") {
-
-                sendText.text = myXchatUsers.usertag + " "
-                myXchatUsers.usertag = ""
-            }
-            else {
-                sendText.text = sendText.text + " " + myXchatUsers.usertag + " "
+            if (myXchatUsers.usertag !== "") {
+                var pos = sendText.cursorPosition
+                var tag = myXchatUsers.usertag + " "
+                if (cursorPos == 0 || msg.charAt(cursorPos - 1) == " ") {
+                    sendText.text = sendText.insert(pos, tag)
+                }
+                else {
+                    sendText.text = sendText.insert(pos,(" " + tag))
+                }
                 myXchatUsers.usertag = ""
             }
         }
@@ -512,9 +574,19 @@ Rectangle {
 
     Component.onDestruction: {
         sendText.text = ""
-        myXchat.tagging = ""
         xchatTracker = 0
         xchatError = 0
+        isTag = false
+        startTagging = false
+        tagListTracker = 0
+        tagFilter = ""
+        beginTag = 0
+        endTag = 0
+        beforeTag = ""
+        afterTag = ""
+        myXchatTaglist.userTag = ""
+        myXchatUsers.usertag = ""
+        myXchat.tagging = ""
     }
 }
 

@@ -63,9 +63,7 @@ Rectangle {
                     onClicked: {
                         userTag = ""
                         console.log("user tagged: " + username)
-                        userTag = "@" + username + " "
-                        tagListTracker = 0
-                        tagFilter = ""
+                        userTag = username
                     }
                 }
             }

@@ -28,6 +28,7 @@ Rectangle {
 
     property bool xChatFocus: true
     property alias xChatList: msgList
+    property alias xChatOrderedList: arrangedMsg
     property string tagging: ""
 
     Component {
@@ -94,6 +95,7 @@ Rectangle {
                         //focus: false
 
                         onClicked: {
+                            tagging = ""
                             console.log("author pushed")
                             tagging = "@" + senderID.text
                         }
@@ -151,9 +153,9 @@ Rectangle {
                 visible: author != "xChatRobot"
             }
 
-            Label {
+            Text {
                 id: messageText
-                text: message
+                text: message + "<br>"
                 anchors.left: msgBox.left
                 anchors.leftMargin: 10
                 anchors.right: msgBox.right
@@ -164,6 +166,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
+                textFormat: Text.StyledText
                 color: darktheme == false? "#14161B" : "#F2F2F2"
                 visible: author != "xChatRobot"
             }
