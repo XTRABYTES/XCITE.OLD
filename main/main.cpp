@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(xChatTypingAddSignal(QString)), &xchatRobot, SLOT(sendTypingToQueue(QString)));
     QObject::connect(rootObject, SIGNAL(xChatTypingRemoveSignal(QString)), &xchatRobot, SLOT(sendTypingToQueue(QString)));
     QObject::connect(rootObject, SIGNAL(checkXChatSignal()), &xchatRobot, SLOT(mqtt_StateChanged()));
-
+    QObject::connect(&settings, SIGNAL(xchatConnectedLogin(QString)), &xchatRobot, SLOT(sendTypingToQueue(QString)));
 
 
     // Fetch currency values
