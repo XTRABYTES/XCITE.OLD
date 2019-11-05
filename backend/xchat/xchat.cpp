@@ -218,19 +218,13 @@ void XchatObject::sendTypingToFront(const QMap<QString, QDateTime> typing){
 }
 
 void XchatObject::sendToFront(QJsonObject obj){
-    QJsonObject outputObj;
         QDateTime dateTime = QDateTime::fromString(obj.value("messageSentTime").toString());
         QDate date = dateTime.date();
         QTime time = dateTime.time();
-        outputObj.insert("author",obj.value("username").toString());
-        outputObj.insert("date",date.toString());
-        outputObj.insert("time",time.toString());
-        outputObj.insert("device",obj.value("platform").toString());
-        outputObj.insert("message",obj.value("message").toString());
-
-    QJsonDocument doc(outputObj);
-    QString strJson(doc.toJson(QJsonDocument::Compact));
-        emit xchatSuccess(strJson);
+        QString author = obj.value("username").toString();
+        QString device = obj.value("platform").toString();
+        QString message = obj.value("message").toString();
+    emit xchatSuccess(author, date.toString(), time.toString(), device, message);
 }
 
 void XchatObject::SubmitMsg(const QString &msg) {
