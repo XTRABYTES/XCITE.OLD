@@ -50,30 +50,14 @@ void XchatObject::Initialize() {
     m_pXchatAiml->loadAIMLSet();
 
     mqtt_client = new QMqttClient(this);
-//    mqtt_client->setKeepAlive(10);
     qDebug() << "INITIALIZE XCHAT";
     connect(mqtt_client, &QMqttClient::stateChanged, this, &XchatObject::mqtt_StateChanged);
     connect(mqtt_client, &QMqttClient::pingResponseReceived, this, &XchatObject::pingReceived);
 
 
     connect(mqtt_client, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
-      //  const QString content = topic.name() + QLatin1String(": ") + message + QLatin1Char('\n');
         const QString content = message;
-
-        if(content.startsWith("$#$#")){  // message when user starts typing
-            addToTyping(content.toUtf8());
-        }else if(content.startsWith("%&%&")){ // message sent when user stops typing
-            removeFromTyping(content.toUtf8());
-
-        }else if(content.startsWith("**#* ")){ //message sent every minute to stay online
-            addToOnline(content.toUtf8(), false);
-
-        }else if(content.startsWith("^^&^ ")){ // message sent when user logs in
-            addToOnline(content.toUtf8(), true);
-
-        }else{
-            emit xchatSuccess(content + QLatin1Char('\n'));
-        }
+        messageRoute(content);
     });
 
 
@@ -81,63 +65,110 @@ void XchatObject::Initialize() {
     m_bIsInitialized = true;
     mqtt_StateChanged();
 }
+unsigned constexpr const_hash(char const *input) {
+    return *input ?
+    static_cast<unsigned int>(*input) + 33 * const_hash(input + 1) :
+    5381;
+}
 
-void XchatObject::xchatInc(const QString &msg) {
-
-     if (!msg.isEmpty() && msg.front()=="@") {
-         if (mqtt_client->publish(topic, msg.mid(2).toUtf8()) == -1) {
-            xchatRobot.SubmitMsg("@mqtt-ERROR: Could not publish message.");
-         }
-       return;
+void XchatObject::messageRoute(QString message){
+    QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
+    QJsonObject obj = doc.object();
+    QString route = obj.value("route").toString();
+    switch(const_hash(route.toStdString().c_str()))
+    {
+    case const_hash("addToTyping"):
+        addToOnline(obj);
+        addToTyping(obj);
+        break;
+    case const_hash("addToOnline"):
+        addToOnline(obj);
+        break;
+    case const_hash("removeFromTyping"):
+        removeFromTyping(obj);
+        break;
+    case const_hash("sendToFront"):
+        sendToFront(obj);
+       break;
+    default:
+        qDebug() << "No Route Found";
+        break;
     }
+
+
+}
+void XchatObject::xchatInc(const QString &user, QString platform, QString status, QString message) {
+    if (!message.isEmpty()) {
+
+        QString username = user;
+        QJsonObject obj;
+            obj.insert("username",user);
+            obj.insert("platform",platform);
+            obj.insert("route","sendToFront");
+            obj.insert("status", status);
+            obj.insert("message",message);
+            obj.insert("messageSentTime", QDateTime::currentDateTime().toString());
+            obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
+
+             QJsonDocument doc(obj);
+             QString strJson(doc.toJson(QJsonDocument::Compact));
+             mqtt_client->publish(topic, strJson.toUtf8());
+           return;
+        }
 }
 
-void XchatObject::sendTypingToQueue(const QString msg) {
-    mqtt_client->publish(topic, msg.toUtf8());
+void XchatObject::sendTypingToQueue(const QString user, QString route, QString status) {
+    QJsonObject obj;
+        obj.insert("username",user);
+        obj.insert("route",route);
+        obj.insert("status",status);
+        obj.insert("message","");
+        obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
+        QJsonDocument doc(obj);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        mqtt_client->publish(topic, strJson.toUtf8());
 }
 
-void XchatObject::addToTyping(const QString msg) {
-    addToOnline(msg, true);
-    QString cutName = msg.right(msg.length() - 5);
+void XchatObject::addToTyping(QJsonObject obj){
+    QString name = obj.value("username").toString().trimmed();
     QDateTime now = QDateTime::currentDateTime();
-    typing.insert(cutName, now);
+    typing.insert(name, now);
     sendTypingToFront(typing);
 }
 
-void XchatObject::addToOnline(const QString msg, bool active) {
+void XchatObject::addToOnline(QJsonObject obj) {
+    QString name = obj.value("username").toString().trimmed();
+    QString status = obj.value("status").toString();
 
-    QString cutName = msg.right(msg.length() - 5);
+    QDateTime lastActiveTime = QDateTime::fromString(obj.value("lastActiveTime").toString(),"yyyy-MM-dd HH:mm:ss");
     QDateTime now = QDateTime::currentDateTime();
-    if (cutName.size() > 1){
+
+    if (name.size() > 1){
         OnlineUser user;
-        if (onlineUsers.contains(cutName)){
-            user = onlineUsers.value(cutName);
+        if (onlineUsers.contains(name)){
+            user = onlineUsers.value(name);
 
         }else{
-            user.setUsername(cutName);
-            user.setStatus("online");
+            user.setUsername(name);
         }
         user.setDateTime(now);
+        user.setStatus(status);
 
-        if (active){
-            user.setStatus("online");
-            user.setLastTyped(now);
-        }
-
-        onlineUsers.insert(cutName,user);
+        onlineUsers.insert(name,user);
         sendOnlineUsers();
-     }
-}
-
-void XchatObject::removeFromTyping(const QString msg) {
-
-    QString cutName = msg.right(msg.length() - 5);
-    if(typing.contains(cutName)){
-        typing.remove(cutName);
     }
-
-    sendTypingToFront(typing);
 }
+
+
+void XchatObject::removeFromTyping(QJsonObject obj) {
+    QString name = obj.value("username").toString().trimmed();
+    if(typing.contains(name)){
+        typing.remove(name);
+    }
+    sendTypingToFront(typing);
+
+}
+
 
 void XchatObject::cleanTypingList(){
     QDateTime now = QDateTime::currentDateTime();
@@ -157,10 +188,10 @@ void XchatObject::cleanOnlineList(){
         if ( onlineUser.getDateTime().secsTo(now) > 10 * 60){ //remove from online after 10 minutes
             onlineUsers.remove(key);
         }
-        if (onlineUser.getLastTyped().secsTo(now) > 5 *60){ // if they haven't typed in 5 minutes, set status to idle
-            onlineUser.setStatus("idle");
-            onlineUsers.insert(key,onlineUser);
-        }
+//        if (onlineUser.getLastTyped().secsTo(now) > 5 *60){ // if they haven't typed in 5 minutes, set status to idle
+//            onlineUser.setStatus("idle");
+//            onlineUsers.insert(key,onlineUser);
+//        }  // Don't think we need this anymore
 
     }
     sendOnlineUsers();
@@ -186,73 +217,20 @@ void XchatObject::sendTypingToFront(const QMap<QString, QDateTime> typing){
     emit xchatTypingSignal(whoIsTyping);
 }
 
-void XchatObject::xchatTyping(const QString &msg) {
+void XchatObject::sendToFront(QJsonObject obj){
+    QJsonObject outputObj;
+        QDateTime dateTime = QDateTime::fromString(obj.value("messageSentTime").toString());
+        QDate date = dateTime.date();
+        QTime time = dateTime.time();
+        outputObj.insert("author",obj.value("username").toString());
+        outputObj.insert("date",date.toString());
+        outputObj.insert("time",time.toString());
+        outputObj.insert("device",obj.value("platform").toString());
+        outputObj.insert("message",obj.value("message").toString());
 
-     if (!msg.isEmpty()) {
-         if (mqtt_client->publish(topic, msg.mid(2).toUtf8()) == -1) {
-            xchatRobot.SubmitMsg("@mqtt-ERROR: Could not publish message.");
-         }
-       return;
-    }
-}
-
-void XchatObject::SubmitMsgCall(const QString &msg) {
-
-
-     if (!msg.isEmpty() && msg.front()=="@") {
-         if (mqtt_client->publish(topic, msg.toUtf8()) == -1) {
-            xchatRobot.SubmitMsg("@mqtt-ERROR: Could not publish message.");
-         }
-       return;
-    }
-
-    QString message;
-    xUtility.Initialize();
-
-    int staticNet_traceID;
-//    if (!((staticNet.CheckUserInputForKeyWord(msg,&staticNet_traceID)) || (xUtility.CheckUserInputForKeyWord(msg)))) {
-
-//        bool keyWordUsedUserInput = this->CheckUserInputForKeyWord(msg);
-//        bool keyWordUsedAIInput = this->CheckAIInputForKeyWord(m_pXchatAiml->getResponse(msg));
-
-//        if (keyWordUsedUserInput || keyWordUsedAIInput)
-//        {
-//            QString harmonizedMessage = this->HarmonizeKeyWords(m_pXchatAiml->getResponse(msg));
-//            if (keyWordUsedUserInput)
-//                harmonizedMessage = this->HarmonizeKeyWords(msg);
-
-//            m_lastUserMessage = harmonizedMessage;
-
-//            XchatTestnetClient client;
-//            if (harmonizedMessage.contains("$_WALLET_BALANCE_XBY$"))
-//            {
-//                m_BalanceRequested = true;
-//                client.WriteBalance(QString(""));
-//            }
-//            else if (harmonizedMessage.contains("$_WALLET_DUMPPRIVKEY$"))
-//            {
-//                QStringList stringList = harmonizedMessage.split(" ");
-//                int getBlockIndex = stringList.indexOf("$_WALLET_DUMPPRIVKEY$");
-//                if (stringList.length()-1 > getBlockIndex)
-//                    client.WriteDumpprivkey(QString(stringList[getBlockIndex+1]));
-//                else
-//                    emit xchatResponseSignal(m_pXchatAiml->getResponse("PARAMETER MISSING"));
-//            }
-//            else if (harmonizedMessage.contains("$_WALLET_GETBLOCK$"))
-//            {
-//                QStringList stringList = harmonizedMessage.split(" ");
-//                int getBlockIndex = stringList.indexOf("$_WALLET_GETBLOCK$");
-//                if (stringList.length()-1 > getBlockIndex)
-//                    client.WriteGetBlock(QString(stringList[getBlockIndex+1]));
-//                else
-//                    emit xchatResponseSignal(m_pXchatAiml->getResponse("PARAMETER MISSING"));
-//            }
-//        }
-//        else
-//        {
-//            emit xchatResponseSignal(m_pXchatAiml->getResponse(msg));
-//        }
-//    }
+    QJsonDocument doc(outputObj);
+    QString strJson(doc.toJson(QJsonDocument::Compact));
+        emit xchatSuccess(strJson);
 }
 
 void XchatObject::SubmitMsg(const QString &msg) {

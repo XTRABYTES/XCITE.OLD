@@ -256,7 +256,9 @@ Rectangle {
             interval: 6000
             onTriggered: {
                 console.log("User stopped writing")
-                xChatTypingRemove("%&%& " +username);
+                status="online"
+                xChatTyping(username,"removeFromTyping",status);
+                checkIfIdle.restart();
 
             }
         }
@@ -307,9 +309,11 @@ Rectangle {
         onTextEdited: {
             typingTimer.restart();
             if (sendTyping){
-                xChatTypingAdd("$#$# " +username);
+                status="online"
+                xChatTyping(username,"addToTyping",status);
                 sendTypingTimer.start()
                 sendXchatConnection.restart();
+                checkIfIdle.restart();
 
             }
             sendTyping = false
@@ -348,9 +352,11 @@ Rectangle {
                 xChatMessage = sendText.text
                 if (xChatMessage.length != 0 && xChatMessage.length < 251) {
                     xchatError = 0
-                    xChatSend("@ " + username + ",mobile:" +  sendText.text)
+                    status="online"
+                    xChatSend(username,"mobile",status,sendText.text)
                     sendText.text = "";
-                    xChatTypingRemove("%&%& " + username);
+                    xChatTyping(username,"removeFromTyping",status);
+                    checkIfIdle.restart();
                     myXchat.tagging = ""
                 }
                 if (xChatMessage.length >= 251) {
