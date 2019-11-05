@@ -127,17 +127,18 @@ private:
     QString topic = "xcite/xchat";
     bool m_bIsInitialized;
     QMap<QString, QDateTime> typing;
+    QMap<QString,QString> nodesOnline;
     void cleanTypingList();
     void cleanOnlineList();
     QString findServer();
     //QString NewYork = "192.227.147.162";
     QString Berlin = "85.214.143.20";
-    QString Buffalo = "23.94.145.219";
-    QString France = "37.187.99.162";
+ //   QString Buffalo = "23.94.145.219";
+ //   QString France = "37.187.99.162";
     QString Germany = "85.214.78.233";
 
     //QList<QString> servers{NewYork,Berlin,Buffalo,Germany,France};
-    QList<QString> servers{Berlin,Buffalo,Germany,France};
+    QList<QString> servers{Berlin,Germany};
 
     QMap<QString, OnlineUser> onlineUsers;
     void addToOnline(const QString msg, bool typed);
@@ -145,6 +146,7 @@ private:
     void addToTyping(QJsonObject);
     void removeFromTyping(QJsonObject);
     void sendToFront(QJsonObject);
+    void getOnlineNodes();
 
 
     void sendOnlineUsers();
