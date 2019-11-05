@@ -404,7 +404,7 @@ ApplicationWindow {
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
     signal helpMe()
-    signal xChatSend(string usr, string platform, string msg)
+    signal xChatSend(string usr, string platform, string status, string msg)
     signal setNetwork(string network)
     signal testTransaction(string test)
     signal updateAccount(string addresslist, string contactlist, string walletlist, string pendinglist)
@@ -1440,8 +1440,8 @@ ApplicationWindow {
             target: xChat
 
             onXchatSuccess: {
-                console.log(msg)
-                updateXchat(msg)
+                console.log(author + " - " +  date + " - " + time + " - " + device + " - " + message)
+                updateXchat(author,date,time,device,message)
             }
             onXchatConnectionSuccess: {
                 checkingXchat = false
