@@ -89,6 +89,7 @@ public:
    void sendTypingToFront(const QMap<QString, QDateTime> typing);
    void addToTyping(const QString msg);
    bool checkInternet();
+   void messageRoute(QString message);
 
 
 signals:
@@ -104,15 +105,12 @@ signals:
 
 
 public slots:
-    void SubmitMsgCall(const QString &msg);
     void SubmitMsg(const QString &msg);
     bool CheckUserInputForKeyWord(const QString msg);
     bool CheckAIInputForKeyWord(const QString msg);
     QString HarmonizeKeyWords(const QString msg);
-    void xchatInc(const QString &msg);
-    void xchatTyping(const QString &msg);
-    void removeFromTyping(const QString msg);
-    void sendTypingToQueue(const QString msg);
+    void xchatInc(const QString &user, QString platform, QString status, QString message);
+    void sendTypingToQueue(const QString user, QString route, QString status);
     void pingReceived();
 
 
@@ -143,6 +141,12 @@ private:
 
     QMap<QString, OnlineUser> onlineUsers;
     void addToOnline(const QString msg, bool typed);
+    void addToOnline(QJsonObject);
+    void addToTyping(QJsonObject);
+    void removeFromTyping(QJsonObject);
+    void sendToFront(QJsonObject);
+
+
     void sendOnlineUsers();
 };
 

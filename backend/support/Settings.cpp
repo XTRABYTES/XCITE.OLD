@@ -929,7 +929,7 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     m_oldPincode = QString::fromLatin1(enc_pincode, enc_pincode.length());
 
     emit loginSucceededChanged();
-    emit xchatConnectedLogin("^^&^ " + m_username);
+    emit xchatConnectedLogin(m_username,"addToOnline","online");
 }
 
 void Settings::UpdateAccount(QString addresslist, QString contactlist, QString walletlist, QString pendinglist){

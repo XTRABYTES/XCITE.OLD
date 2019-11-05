@@ -208,6 +208,7 @@ ApplicationWindow {
     property string fiatTicker: fiatCurrencies.get(userSettings.defaultCurrency).ticker
     property string username: ""
     property string selectedPage: ""
+    property string status: "online"
 
     // Trackers
     property int interactionTracker: 0
@@ -403,7 +404,7 @@ ApplicationWindow {
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
     signal helpMe()
-    signal xChatSend(string msg)
+    signal xChatSend(string usr, string platform, string msg)
     signal setNetwork(string network)
     signal testTransaction(string test)
     signal updateAccount(string addresslist, string contactlist, string walletlist, string pendinglist)
@@ -419,8 +420,7 @@ ApplicationWindow {
     signal checkCamera()
     signal checkTxStatus(string pendinglist)
     signal changePassword(string oldPassword, string newPassword)
-    signal xChatTypingRemoveSignal(string user)
-    signal xChatTypingAddSignal(string user)
+    signal xChatTypingSignal(string user, string route, string status)
     signal checkXChatSignal();
 
     // functions
@@ -491,12 +491,8 @@ ApplicationWindow {
             xChatID = xChatID + 1
         }
 
-    function xChatTypingRemove(user){
-        xChatTypingRemoveSignal(user)
-    }
-
-    function xChatTypingAdd(user){
-        xChatTypingAddSignal(user)
+    function xChatTyping(user, route, status){
+        xChatTypingSignal(user, route, status)
     }
 
     function updateBalance(coin, address, balance) {
@@ -1784,10 +1780,22 @@ ApplicationWindow {
         running: true
 
         onTriggered: {
-            xChatTypingAdd("**#* " +username);
-
+            xChatTypingSignal(username,"addToOnline", status);
         }
     }
+
+    Timer {
+        id: checkIfIdle
+        interval: 300000
+        repeat: true
+        running: true
+
+        onTriggered: {
+            status = "idle"
+            xChatTypingSignal(username,"addToOnline", status);
+        }
+    }
+
 
     Timer {
         repeat: false
