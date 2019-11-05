@@ -60,17 +60,18 @@ void XchatObject::Initialize() {
       //  const QString content = topic.name() + QLatin1String(": ") + message + QLatin1Char('\n');
         const QString content = message;
 
-     //   xchatRobot.SubmitMsg("@mqtt://" + content);
-        if(content.startsWith("$#$#")){
+        if(content.startsWith("$#$#")){  // message when user starts typing
             addToTyping(content.toUtf8());
-        }else if(content.startsWith("%&%&")){
+        }else if(content.startsWith("%&%&")){ // message sent when user stops typing
             removeFromTyping(content.toUtf8());
 
-        }else if(content.startsWith("**#* ")){
+        }else if(content.startsWith("**#* ")){ //message sent every minute to stay online
             addToOnline(content.toUtf8(), false);
 
-        }else{
+        }else if(content.startsWith("^^&^ ")){ // message sent when user logs in
+            addToOnline(content.toUtf8(), true);
 
+        }else{
             emit xchatSuccess(content + QLatin1Char('\n'));
         }
     });
@@ -103,7 +104,7 @@ void XchatObject::addToTyping(const QString msg) {
     sendTypingToFront(typing);
 }
 
-void XchatObject::addToOnline(const QString msg, bool typed) {
+void XchatObject::addToOnline(const QString msg, bool active) {
 
     QString cutName = msg.right(msg.length() - 5);
     QDateTime now = QDateTime::currentDateTime();
@@ -118,7 +119,7 @@ void XchatObject::addToOnline(const QString msg, bool typed) {
         }
         user.setDateTime(now);
 
-        if (typed){
+        if (active){
             user.setStatus("online");
             user.setLastTyped(now);
         }

@@ -116,6 +116,7 @@ signals:
     void cameraCheckPassed();
     void passwordChangedSucceeded();
     void passwordChangedFailed();
+    void xchatConnectedLogin(QString username);
 
 
 
