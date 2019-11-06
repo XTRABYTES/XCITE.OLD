@@ -1,15 +1,17 @@
 buildscript {
     repositories {
+        google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:3.3.2'
     }
 }
 
 allprojects {
     repositories {
+        google()
         jcenter()
     }
 }
@@ -17,7 +19,7 @@ allprojects {
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 android {
@@ -54,4 +56,9 @@ android {
     lintOptions {
         abortOnError false
     }
+    
+    aaptOptions {
+    cruncherEnabled = true
+    }
 }
+
