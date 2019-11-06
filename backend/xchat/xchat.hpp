@@ -101,6 +101,7 @@ signals:
     void xchatConnecting();
     void xchatNoInternet();
     void xchatInternetOk();
+    void xchatStateChanged();
     void onlineUsersSignal(QString online);
     void serverResponseTime(QString server, QString responseTime, QString serverStatus);
     void selectedXchatServer(QString server);

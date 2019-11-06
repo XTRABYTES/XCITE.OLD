@@ -260,29 +260,29 @@ void XchatObject::mqtt_StateChanged() {
     if (checkInternet()){
         //    xchatRobot.SubmitMsg("@mqtt: State Changed");
             if (mqtt_client->state() == QMqttClient::Disconnected) {
-             //    xchatRobot.SubmitMsg("@mqtt: Server disconnected. Attempt to reconnect.");
-               emit xchatConnectionFail();
-               mqtt_client->setHostname(findServer());
-               mqtt_client->setPort(1883);
-               mqtt_client->connectToHost();
+                emit xchatConnectionFail();
+                emit xchatStateChanged();
+                mqtt_client->setHostname(findServer());
+                mqtt_client->setPort(1883);
+                mqtt_client->connectToHost();
             }
 
             if (mqtt_client->state() == QMqttClient::Connecting) {
                 emit xchatConnecting();
-            //   xchatRobot.SubmitMsg("@mqtt: Connecting...");
+                emit xchatStateChanged();
             }
 
             if (mqtt_client->state() == QMqttClient::Connected) {
                 qDebug() << "connected to  XCHAT";
-         //      xchatRobot.SubmitMsg("@mqtt: Connected.");
-               emit xchatConnectionSuccess();
-               auto subscription = mqtt_client->subscribe(topic);
-               if (!subscription) {
-               } else {
+                emit xchatConnectionSuccess();
+                emit xchatStateChanged();
+                pingXchatServers();
+                auto subscription = mqtt_client->subscribe(topic);
+                if (!subscription) {
+                } else {
 
-               }
+                }
             }
-
     }
 
 

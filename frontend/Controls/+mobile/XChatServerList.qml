@@ -54,7 +54,7 @@ Rectangle {
                 horizontalOffset:0
                 verticalOffset: 0
                 spread: 0
-                visible: name == selectedXChatServer
+                visible: name == selectedXChatServer && xChatConnection == true
             }
 
             Image {
@@ -65,7 +65,7 @@ Rectangle {
                 anchors.right: serverStatus == "down"? nodeDownLabel.left : pingTime.left
                 anchors.rightMargin: 15
                 anchors.verticalCenter: serverName.verticalCenter
-                visible: name == selectedXChatServer
+                visible: name == selectedXChatServer && xChatConnection == true
             }
 
             DropShadow {

@@ -490,7 +490,7 @@ ApplicationWindow {
             xChatMessage = xChatMessage.replace("@everyone", "<font color='#5E8BFF'><b>@everyone</b></font>")
             xChatMessage = xChatMessage
             console.log(xChatMessage)
-            xChatTread.append({"author" : author, "device" : device, "date" : date.toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + time.toLocaleTimeString(Qt.locale(),"HH:mm:ss"), "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
+            xChatTread.append({"author" : author, "device" : device, "date" : date.toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + time.toLocaleTimeString("HH:mm:ss"), "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
             xChatID = xChatID + 1
         }
 
@@ -1505,6 +1505,12 @@ ApplicationWindow {
                 console.log("X-CHAT connecting")
                 xChatConnecting = true
             }
+            onXchatStateChanged: {
+                if(!xChatConnection) {
+                    resetServerUpdateStatus();
+                    updateServerStatus();
+                }
+            }
             onXchatNoInternet: {
                 networkAvailable = 0
             }
@@ -1862,6 +1868,10 @@ ApplicationWindow {
                 pingXChatServers();
                 updateServerStatus();
                 pingingXChat = false
+            }
+            if (!xChatConnection) {
+                resetServerUpdateStatus();
+                updateServerStatus();
             }
         }
     }

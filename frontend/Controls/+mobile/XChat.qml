@@ -95,6 +95,7 @@ Rectangle {
     }
 
     Image {
+        z:11
         id: onlineIndicator
         source: networkAvailable == 1? (xChatConnection == true? "qrc:/icons/mobile/online_blue_icon.svg" : "qrc:/icons/mobile/online_red_icon.svg") : "qrc:/icons/mobile/no_internet_icon.svg"
         anchors.verticalCenter: xchatModalLabel.verticalCenter
@@ -123,6 +124,7 @@ Rectangle {
     }
 
     Label {
+        z:11
         id: connectingLabel
         text: "connecting"
         anchors.horizontalCenter: onlineIndicator.horizontalCenter
@@ -346,7 +348,7 @@ Rectangle {
 
             onClicked: {
                 xChatMessage = sendText.text
-                if (xChatMessage.length != 0 && xChatMessage.length < 251) {
+                if (xChatMessage.length != 0 && xChatMessage.length < 251 && xChatConnection) {
                     xchatError = 0
                     status="online"
                     xChatSend(username,"mobile",status,sendText.text)
@@ -359,6 +361,10 @@ Rectangle {
                     xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages is 250 characters.", "ID" : xChatID})
                     xChatID = xChatID + 1
                     sendText.text = ""
+                }
+                if (!xChatConnection) {
+                    xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "You're currently not connected to X-CHAT. Try again later", "ID" : xChatID})
+                    xChatID = xChatID + 1
                 }
             }
         }
