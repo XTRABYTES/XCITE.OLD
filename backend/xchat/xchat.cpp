@@ -224,7 +224,8 @@ void XchatObject::sendToFront(QJsonObject obj){
         QString author = obj.value("username").toString();
         QString device = obj.value("platform").toString();
         QString message = obj.value("message").toString();
-    emit xchatSuccess(author, date.toString(), time.toString(), device, message);
+    //emit xchatSuccess(author, date.toString(), time.toString(), device, message);
+    emit xchatSuccess(author, date, time, device, message);
 }
 
 void XchatObject::SubmitMsg(const QString &msg) {
@@ -323,7 +324,6 @@ bool XchatObject::checkInternet(){
     getTimer.start(4000);
     loop.exec();
     if (reply->bytesAvailable()){
-        //emit xchatConnectionSuccess();
         emit xchatInternetOk();
 
         connected=true;
@@ -382,9 +382,7 @@ void XchatObject::getOnlineNodes(){
     }
 }
 
-QString XchatObject::findServer(){
-    QString fastestServer;
-    qint64 fastestTime = 0;
+void XchatObject::pingXchatServers() {
     QElapsedTimer timer;
 
     getOnlineNodes();
@@ -392,17 +390,75 @@ QString XchatObject::findServer(){
 
         QTcpSocket tester;
         tester.connectToHost(server, 1883);
+        QString pingedServer = matchServer(server);
         timer.start();
         bool online = true;
         if(tester.waitForConnected(1000)) {
-            qDebug() << "Server: " + server + " up";
+            qDebug() << "Server: " + pingedServer + " up";
         } else {
             online=false;
         }
         qint64 timeTaken = timer.nsecsElapsed();
-        qDebug() << server + " timer: " + QString::number(timeTaken);
+        qDebug() << pingedServer + " timer: " + QString::number(timeTaken);
+        QString responseTime = QString::number(timeTaken);
+        emit serverResponseTime(pingedServer, responseTime, "up");
         if (!online){
-            qDebug() << "Server: " + server + " down";
+            qDebug() << "Server: " + pingedServer + " down";
+            emit xChatServerDown(pingedServer, "down");
+        }
+
+        tester.close();
+    }
+    emit selectedXchatServer(selectedServer);
+}
+
+QString XchatObject::matchServer(const QString &server){
+    QString xChatServer;
+    if (server == "192.227.147.162") {
+        xChatServer = "Buffalo (US)";
+    }
+    else if (server == "85.214.143.20") {
+        xChatServer = "Berlin 01 (DE)";
+    }
+    else if (server == "23.94.145.219") {
+        xChatServer = "Los Angeles (US)";
+    }
+    else if (server == "37.187.99.162") {
+        xChatServer = "Roubaix (FR)";
+    }
+    else if (server == "85.214.78.233") {
+        xChatServer = "Berlin 02 (DE)";
+    }
+    return xChatServer;
+}
+
+QString XchatObject::findServer(){
+    QString fastestServer;
+    qint64 fastestTime = 0;
+    QElapsedTimer timer;
+    selectedServer = "";
+    emit selectedXchatServer(selectedServer);
+
+    getOnlineNodes();
+    for(QString server : nodesOnline.values()){
+
+        QTcpSocket tester;
+        tester.connectToHost(server, 1883);
+        QString pingedServer = matchServer(server);
+        timer.start();
+        bool online = true;
+        if(tester.waitForConnected(1000)) {
+            qDebug() << "Server: " + pingedServer + " up";
+        } else {
+            online=false;
+        }
+        qint64 timeTaken = timer.nsecsElapsed();
+        qDebug() << pingedServer + " timer: " + QString::number(timeTaken);
+        QString responseTime = QString::number(timeTaken);
+        emit serverResponseTime(pingedServer, responseTime, "up");
+        if (!online){
+            qDebug() << "Server: " + pingedServer + " down";
+            emit xChatServerDown(pingedServer, "down");
         }else if (fastestTime == 0 || fastestTime > timeTaken){
             fastestServer = server;
             fastestTime = timeTaken;
@@ -411,7 +467,9 @@ QString XchatObject::findServer(){
         tester.close();
     }
 
-    qDebug() << "Connecting to " + fastestServer;
+    selectedServer = matchServer(fastestServer);
+    qDebug() << "Connecting to " + selectedServer;
+    emit selectedXchatServer(selectedServer);
     return fastestServer;
 }
 

@@ -231,10 +231,6 @@ Rectangle {
         font.letterSpacing: 1
     }
 
-    Connections {
-        target: xChat
-    }
-
     Controls.TextInput {
         id: sendText
         height: 34
@@ -373,6 +369,9 @@ Rectangle {
             onXchatSuccess: {
                 if(myXchat.xChatOrderedList.get(myXchat.xChatOrderedList.count - 1).author === username) {
                     myXchat.xChatList.positionViewAtEnd()
+                }
+                if(myXchat.xChatList.atYEnd) {
+
                 }
             }
 

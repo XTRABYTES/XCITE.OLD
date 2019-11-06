@@ -116,6 +116,8 @@ ApplicationWindow {
 
         xChatUsers.clear();
 
+        xChatServers.clear();
+
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
         marketValueChangedSignal("btcgbp");
@@ -369,9 +371,8 @@ ApplicationWindow {
     property real pendingXTEST: 0
     property real pendingBTC: 0
     property real pendingETH: 0
-    property variant xChatDate
-    property variant xChatArray
-    property variant xChatMeta
+    property string selectedXChatServer: ""
+    property bool pingingXChat: false
     property string xChatMessage: ""
     property int xChatID: 1
     property int xChatTag: 0
@@ -421,7 +422,8 @@ ApplicationWindow {
     signal checkTxStatus(string pendinglist)
     signal changePassword(string oldPassword, string newPassword)
     signal xChatTypingSignal(string user, string route, string status)
-    signal checkXChatSignal();
+    signal checkXChatSignal()
+    signal pingXChatServers()
 
     // functions
     function openApplication(app) {
@@ -443,24 +445,24 @@ ApplicationWindow {
         return userStatus
     }
 
-    function updateXchat(msg) {
+    function updateXchat(author,date,time,device,message) {
             xChatTag = 0
-            xChatDate = ""
-            xChatArray = msg.split(':')
-            xChatMessage = msg.replace( xChatArray[0] + ":", "")
+            //xChatDate = ""
+            //xChatArray = msg.split(':')
+            xChatMessage = message
 
-            for(var o = 0; o < notAllowed.length; o++) {
+            for(var o = 0; o < notAllowed.length; o ++) {
                 xChatMessage = xChatMessage.replace(notAllowed[o], "")
             }
 
-            xChatMeta = xChatArray[0].split(',')
-            xChatDate = new Date().toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm")
-            console.log(xChatDate)
-            console.log("author: " + xChatMeta[0])
+            //xChatMeta = xChatArray[0].split(',')
+            //xChatDate = new Date().toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm")
+            //console.log(xChatDate)
+            //console.log("author: " + xChatMeta[0])
             messageArray = xChatMessage.split(' ')
-            for(var i = 0; i < (messageArray.length); i++) {
+            for(var i = 0; i < (messageArray.length); i ++) {
                 console.log(messageArray[i])
-                if(xChatMeta[0] !== username) {
+                if(author !== username) {
                     if ((messageArray[i].toLowerCase() === "@" + username.toLowerCase() || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() || messageArray[i].toLowerCase() === "@" + username.toLowerCase() + ">/b>" || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() + "</b>")  && userSettings.tagMe === true) {
                         notification.play()
                         xChatTag = 1
@@ -487,7 +489,7 @@ ApplicationWindow {
             xChatMessage = xChatMessage.replace("@everyone", "<font color='#5E8BFF'><b>@everyone</b></font>")
             xChatMessage = xChatMessage
             console.log(xChatMessage)
-            xChatTread.append({"author" : xChatMeta[0], "device" : xChatMeta[1], "date" : xChatDate, "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
+            xChatTread.append({"author" : author, "device" : device, "date" : date.toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + time.toLocaleTimeString(Qt.locale(),"HH:mm:ss"), "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
             xChatID = xChatID + 1
         }
 
@@ -501,7 +503,7 @@ ApplicationWindow {
         var newBalance
         changeBalance = 0
 
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).address === address) {
                     newBalance = parseFloat(balance);
@@ -555,7 +557,7 @@ ApplicationWindow {
     }
 
     function pendingUnconfirmed(coin, address, txid, result) {
-        for (var i = 0; i < pendingList.count; ++i){
+        for (var i = 0; i < pendingList.count; i ++){
             if(pendingList.get(i).coin === coin) {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
@@ -577,7 +579,7 @@ ApplicationWindow {
     function countWallets() {
         totalWallets = 0
         if (coinTracker == 0) {
-            for(var i = 0; i < coinList.count; i++) {
+            for(var i = 0; i < coinList.count; i ++) {
                 if (coinList.get(i).active === 1) {
                     totalWallets += 1
                 }
@@ -585,7 +587,7 @@ ApplicationWindow {
         }
         else {
             var name = getName(coinIndex)
-            for(var e = 0; e < walletList.count; e++){
+            for(var e = 0; e < walletList.count; e ++){
                 if (walletList.get(e).name === name) {
                     totalWallets += 1
                 }
@@ -597,7 +599,7 @@ ApplicationWindow {
 
     function coinWalletLines(coin) {
         totalCoinWallets = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).remove === false) {
                     totalCoinWallets += 1
@@ -607,7 +609,7 @@ ApplicationWindow {
     }
 
     function resetFavorites(coin) {
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 walletList.setProperty(i, "favorite", false)
             }
@@ -616,7 +618,7 @@ ApplicationWindow {
 
     function countAddresses() {
         totalAddresses = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             totalAddresses += 1
         }
         return totalAddresses
@@ -624,7 +626,7 @@ ApplicationWindow {
 
     function countAddressesContact(contactID) {
         var contactAddresses = 0
-        for(var i = 0; i < addressList.count; i++) {
+        for(var i = 0; i < addressList.count; i ++) {
             if (addressList.get(i).contact === contactID) {
                 if (addressList.get(i).remove === false) {
                     contactAddresses += 1
@@ -636,7 +638,7 @@ ApplicationWindow {
 
     function sumBalance() {
         totalBalance = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).active === true && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 if (walletList.get(i).name === "XBY") {
                     totalBalance += (walletList.get(i).balance * btcValueXBY * valueBTC)
@@ -657,7 +659,7 @@ ApplicationWindow {
 
     function pendingCoins(coin, address) {
         var pending = 0
-        for (var i = 0; i < pendingList.count; i++) {
+        for (var i = 0; i < pendingList.count; i ++) {
             if (pendingList.get(i).coin === coin && pendingList.get(i).address === address) {
                 pending += pendingList.get(i).amount
             }
@@ -667,7 +669,7 @@ ApplicationWindow {
 
     function sumXBY() {
         totalXBY =0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "XBY" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXBY += walletList.get(i).balance
             }
@@ -677,7 +679,7 @@ ApplicationWindow {
 
     function sumXFUEL() {
         totalXFUEL = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "XFUEL" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXFUEL += walletList.get(i).balance
             }
@@ -687,7 +689,7 @@ ApplicationWindow {
 
     function sumXTest() {
         totalXFUELTest = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "XTEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXFUELTest += walletList.get(i).balance
             }
@@ -697,7 +699,7 @@ ApplicationWindow {
 
     function sumBTC() {
         totalBTC = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "BTC" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalBTC += walletList.get(i).balance
             }
@@ -707,7 +709,7 @@ ApplicationWindow {
 
     function sumETH() {
         totalETH = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "ETH" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalETH += walletList.get(i).balance
             }
@@ -717,7 +719,7 @@ ApplicationWindow {
 
     function sumCoinTotal(coin) {
         var coinTotal = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 coinTotal += walletList.get(i).balance
             }
@@ -727,7 +729,7 @@ ApplicationWindow {
 
     function sumCoinUnconfirmed(coin) {
         var unconfirmedTotal = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 unconfirmedTotal += unconfirmedTotal + walletList.get(i).unconfirmedCoins
             }
@@ -737,7 +739,7 @@ ApplicationWindow {
 
     function coinConversion(coin, quantity) {
         var converted = 0
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 converted = (quantity * coinList.get(i).coinValueBTC * valueBTC)
             }
@@ -747,7 +749,7 @@ ApplicationWindow {
 
     function getLogo(coin) {
         var logo = ''
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 logo = coinList.get(i).logo
             }
@@ -757,7 +759,7 @@ ApplicationWindow {
 
     function getTestnet(coin) {
         testNet = false
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 testNet = coinList.get(i).testnet
             }
@@ -767,7 +769,7 @@ ApplicationWindow {
 
     function getLogoBig(coin) {
         var logo = ''
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 logo = coinList.get(i).logoBig
             }
@@ -777,7 +779,7 @@ ApplicationWindow {
 
     function getName(coin) {
         var name = ""
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).coinID === coin) {
                 name = coinList.get(i).name
             }
@@ -787,7 +789,7 @@ ApplicationWindow {
 
     function getFullName(coin) {
         var name = ""
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).coinID === coin) {
                 name = coinList.get(i).fullname
             }
@@ -797,7 +799,7 @@ ApplicationWindow {
 
     function getPercentage(coin) {
         var percentage = 0
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 percentage = coinList.get(i).percentage
             }
@@ -807,7 +809,7 @@ ApplicationWindow {
 
     function getValue(coin) {
         var value = 0
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 value = coinList.get(i).coinValueBTC
             }
@@ -817,7 +819,7 @@ ApplicationWindow {
 
     function getPrivKey(coin, label) {
         var privKey = ""
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).label === label) {
                     privKey = walletList.get(i).privatekey
@@ -829,7 +831,7 @@ ApplicationWindow {
 
     function getAddress(coin, label) {
         var address = ""
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).label === label) {
                     address = walletList.get(i).address
@@ -841,7 +843,7 @@ ApplicationWindow {
 
     function getWalletNR(coin, label) {
         var walletID = ""
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).label === label) {
                     walletID = walletList.get(i).walletNR
@@ -853,7 +855,7 @@ ApplicationWindow {
 
     function getLabelAddress(coin, address) {
         var label = ""
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).address === address) {
                     label = walletList.get(i).label
@@ -865,7 +867,7 @@ ApplicationWindow {
 
     function getCoinNR(coin) {
         selectedCoin = 0
-        for (var i = 0; coinList.count; i++) {
+        for (var i = 0; coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 selectedCoin= coinList.get(i).coinID
             }
@@ -876,7 +878,7 @@ ApplicationWindow {
         var balance = 0
         var wallet = 0
         var favorite = false
-        for(var i = 0; i < walletList.count; i++){
+        for(var i = 0; i < walletList.count; i ++){
             if (walletList.get(i).name === coin){
                 if (favorite === false) {
                     if (walletList.get(i).favorite === true){
@@ -1014,29 +1016,7 @@ ApplicationWindow {
         }
     }
 
-    // Start up
-    function loadContactList(contacts) {
-        if (typeof contacts !== "undefined") {
-            contactList.clear();
-            var obj = JSON.parse(contacts);
-            for (var i in obj){
-                var data = obj[i];
-                contactList.append(data);
-            }
-        }
-    }
-
-    function loadAddressList(addresses) {
-        if (typeof addresses !== "undefined") {
-            addressList.clear();
-            var obj = JSON.parse(addresses);
-            for (var i in obj){
-                var data = obj[i];
-                addressList.append(data);
-            }
-        }
-    }
-
+    // X-CHAT
     function loadOnlineUsers(online) {
         xChatOnline.clear()
         if (typeof online !== "undefined") {
@@ -1082,6 +1062,70 @@ ApplicationWindow {
             }
         }
     }
+
+    function updateServerResponseTime(server, responseTime, serverStatus) {
+        if(xChatServers.count != 0) {
+            var serverFound = false
+            for (var i = 0; i < xChatServers.count; i ++) {
+                if (server === xChatServers.get(i).name) {
+                    xChatServers.setProperty(i, "responseTime", responseTime)
+                    xChatServers.setProperty(i, "serverStatus", serverStatus)
+                    xChatServers.setProperty(i, "updated", true)
+                    console.log("existing server updated: " + server)
+                    serverFound = true
+                }
+            }
+            if(!serverFound) {
+                xChatServers.append({"name": server, "responseTime": responseTime, "serverStatus": serverStatus, "updated": true})
+                console.log("new server added to list: " + server)
+            }
+        }
+        else {
+            xChatServers.append({"name": server, "responseTime": responseTime, "serverStatus": serverStatus, "updated": true})
+            console.log("new server added to list: " + server)
+        }
+    }
+
+    function updateServerStatus() {
+        for (var i = 0; i < xChatServers.count; i ++) {
+            if (!xChatServers.get(i).updated) {
+                xChatServers.setProperty(i, "serverStatus", "down")
+                xChatServers.setProperty(i, "updated", true)
+                console.log("existing server down: " + xChatServers.get(i).name)
+            }
+        }
+    }
+
+    function resetServerUpdateStatus () {
+        for (var i = 0; i < xChatServers.count; i ++) {
+            xChatServers.setProperty(i, "updated", false)
+        }
+    }
+
+    // Start up
+    function loadContactList(contacts) {
+        if (typeof contacts !== "undefined") {
+            contactList.clear();
+            var obj = JSON.parse(contacts);
+            for (var i in obj){
+                var data = obj[i];
+                contactList.append(data);
+            }
+        }
+    }
+
+    function loadAddressList(addresses) {
+        if (typeof addresses !== "undefined") {
+            addressList.clear();
+            var obj = JSON.parse(addresses);
+            for (var i in obj){
+                var data = obj[i];
+                addressList.append(data);
+            }
+        }
+    }
+
+
 
     function loadWalletList(wallet) {
         if (typeof wallet !== "undefined") {
@@ -1469,6 +1513,25 @@ ApplicationWindow {
             onOnlineUsersSignal:{
                 loadOnlineUsers(online)
             }
+            onClearOnlineNodeList: {
+                xChatServers.clear()
+            }
+            onServerResponseTime: {
+                updateServerResponseTime(server, responseTime, serverStatus)
+                console.log(server + " online: " + responseTime + " ns")
+            }
+            onSelectedXchatServer: {
+                selectedXChatServer = server
+                console.log("X-CHAT connected to: " + server)
+            }
+            onXChatServerDown: {
+                for (var i = 0; i < xChatServers.count; i ++) {
+                    if (server === xChatServers.get(i).name) {
+                        xChatServers.setProperty(i, "serverStatus", serverStatus)
+                        console.log("server down: " + server)
+                    }
+                }
+            }
 
     }
 
@@ -1676,6 +1739,16 @@ ApplicationWindow {
         }
     }
 
+    ListModel {
+        id: xChatServers
+        ListElement {
+            name: ""
+            responseTime: ""
+            serverStatus: "down"
+            updated: false
+        }
+    }
+
     // Global components
     Clipboard {
         id: clipboard
@@ -1760,6 +1833,8 @@ ApplicationWindow {
     }
 
     // timers
+
+
     Timer {
         id: checkXchatConnection
         interval: 10000
@@ -1769,6 +1844,23 @@ ApplicationWindow {
         onTriggered: {
             if (checkingXchat == false) {
                 checkXChatSignal();
+            }
+        }
+    }
+
+    Timer {
+        id: checkXchatPing
+        interval: 60000
+        repeat: true
+        running: true
+
+        onTriggered: {
+            if (xChatConnection && !pingingXChat) {
+                pingingXChat = true
+                resetServerUpdateStatus();
+                pingXChatServers();
+                updateServerStatus();
+                pingingXChat = false
             }
         }
     }

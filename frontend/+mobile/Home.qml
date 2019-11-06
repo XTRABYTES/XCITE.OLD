@@ -60,7 +60,16 @@ Item {
 
             updateBalanceSignal(walletListJson, "all");
             checkTxStatus(pendingListJson);
-            //checkXChatSignal();
+
+            checkXChatSignal();
+
+            if (xChatConnection && !pingingXChat) {
+                pingingXChat = true
+                resetServerUpdateStatus();
+                pingXChatServers();
+                updateServerStatus();
+                pingingXChat = false
+            }
 
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"

@@ -94,7 +94,7 @@ public:
 
 signals:
     void xchatResponseSignal(QVariant text);
-    void xchatSuccess( QString author, QString date, QString time, QString device, QString message);
+    void xchatSuccess( QString author, QDate date, QTime time, QString device, QString message);
     void xchatTypingSignal(const QString &msg);
     void xchatConnectionFail();
     void xchatConnectionSuccess();
@@ -102,6 +102,10 @@ signals:
     void xchatNoInternet();
     void xchatInternetOk();
     void onlineUsersSignal(QString online);
+    void serverResponseTime(QString server, QString responseTime, QString serverStatus);
+    void selectedXchatServer(QString server);
+    void xChatServerDown(QString server, QString serverStatus);
+    void clearOnlineNodeList();
 
 
 public slots:
@@ -112,6 +116,7 @@ public slots:
     void xchatInc(const QString &user, QString platform, QString status, QString message);
     void sendTypingToQueue(const QString user, QString route, QString status);
     void pingReceived();
+    void pingXchatServers();
 
 
 
@@ -125,21 +130,17 @@ private:
     XchatAIML *m_pXchatAiml;
     QMqttClient *mqtt_client;
     QString topic = "xcite/xchat";
+    QString selectedServer = "";
     bool m_bIsInitialized;
     QMap<QString, QDateTime> typing;
     QMap<QString,QString> nodesOnline;
     void cleanTypingList();
     void cleanOnlineList();
     QString findServer();
-    //QString NewYork = "192.227.147.162";
     QString Berlin = "85.214.143.20";
- //   QString Buffalo = "23.94.145.219";
- //   QString France = "37.187.99.162";
     QString Germany = "85.214.78.233";
-
-    //QList<QString> servers{NewYork,Berlin,Buffalo,Germany,France};
+    QString matchServer(const QString &server);
     QList<QString> servers{Berlin,Germany};
-
     QMap<QString, OnlineUser> onlineUsers;
     void addToOnline(const QString msg, bool typed);
     void addToOnline(QJsonObject);
@@ -147,8 +148,6 @@ private:
     void removeFromTyping(QJsonObject);
     void sendToFront(QJsonObject);
     void getOnlineNodes();
-
-
     void sendOnlineUsers();
 };
 

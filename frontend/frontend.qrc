@@ -171,5 +171,6 @@
         <file>Controls/+mobile/XChatUsers.qml</file>
         <file>Controls/+mobile/XChatUsersList.qml</file>
         <file>Controls/+mobile/XChatTagList.qml</file>
+        <file>Controls/+mobile/XChatServerList.qml</file>
     </qresource>
 </RCC>

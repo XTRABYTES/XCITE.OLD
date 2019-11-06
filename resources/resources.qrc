@@ -310,5 +310,12 @@
         <file>icons/mobile/close-icon_01_white.svg</file>
         <file>icons/mobile/xchange-icon_02_black.svg</file>
         <file>icons/mobile/xvault-icon_02_white.svg</file>
+        <file>icons/mobile/info-icon_01_black.svg</file>
+        <file>icons/mobile/info-icon_01_white.svg</file>
+        <file>icons/mobile/not_available-icon_01.svg</file>
+        <file>icons/mobile/portfolio-icon_02_black.svg</file>
+        <file>icons/mobile/portfolio-icon_02_white.svg</file>
+        <file>icons/mobile/connected-icon_01_black.svg</file>
+        <file>icons/mobile/connected-icon_01_white.svg</file>
     </qresource>
 </RCC>

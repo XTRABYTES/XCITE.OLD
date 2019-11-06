@@ -215,7 +215,7 @@ Item {
                 Image {
                     id: portfolio
                     z: 5
-                    source: darktheme == true? 'qrc:/icons/mobile/portfolio-icon_02_light.svg' : 'qrc:/icons/mobile/portfolio-icon_02_dark.svg'
+                    source: darktheme == true? 'qrc:/icons/mobile/portfolio-icon_02_white.svg' : 'qrc:/icons/mobile/portfolio-icon_02_black.svg'
                     width: 15
                     fillMode: Image.PreserveAspectFit
                     anchors.top: totalWalletValue.bottom
