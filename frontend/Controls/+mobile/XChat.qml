@@ -246,6 +246,7 @@ Rectangle {
         textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
         font.pixelSize: 14
         mobile: 1
+        deleteBtn: 0
 
         Timer {
             id: typingTimer
@@ -255,7 +256,6 @@ Rectangle {
                 status="online"
                 xChatTyping(username,"removeFromTyping",status);
                 checkIfIdle.restart();
-
             }
         }
 
@@ -370,8 +370,8 @@ Rectangle {
                 if(myXchat.xChatOrderedList.get(myXchat.xChatOrderedList.count - 1).author === username) {
                     myXchat.xChatList.positionViewAtEnd()
                 }
-                if(myXchat.xChatList.atYEnd) {
-
+                if(!xChatScrolling) {
+                    myXchat.xChatList.positionViewAtEnd()
                 }
             }
 

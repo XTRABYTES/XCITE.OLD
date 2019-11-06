@@ -238,8 +238,18 @@ Rectangle {
         spacing: 7
         onDraggingChanged: {
             xChatFocus = false
+            xChatScrolling = true
             detectInteraction()
-        }        
+        }
+
+        onDragEnded: {
+            if (msgList.atYEnd) {
+                xChatScrolling = false
+            }
+            else {
+                xChatScrolling = true
+            }
+        }
 
     }
 

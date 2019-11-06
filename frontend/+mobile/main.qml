@@ -374,6 +374,7 @@ ApplicationWindow {
     property string selectedXChatServer: ""
     property bool pingingXChat: false
     property string xChatMessage: ""
+    property bool xChatScrolling: false
     property int xChatID: 1
     property int xChatTag: 0
     property int xChatFilterResults: 0
