@@ -101,6 +101,7 @@ void XchatObject::xchatInc(const QString &user, QString platform, QString status
     if (!message.isEmpty()) {
 
         QString username = user;
+        qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
         QJsonObject obj;
             obj.insert("username",user);
             obj.insert("platform",platform);
@@ -109,6 +110,8 @@ void XchatObject::xchatInc(const QString &user, QString platform, QString status
             obj.insert("message",message);
             obj.insert("messageSentTime", QDateTime::currentDateTime().toString());
             obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
+            obj.insert("uctTimeSinceEpoch", QString::number(timeStamp));
+            qDebug() << "Miliseconds since EPoch: " + QString::number(timeStamp);
 
              QJsonDocument doc(obj);
              QString strJson(doc.toJson(QJsonDocument::Compact));
@@ -218,14 +221,21 @@ void XchatObject::sendTypingToFront(const QMap<QString, QDateTime> typing){
 }
 
 void XchatObject::sendToFront(QJsonObject obj){
-        QDateTime dateTime = QDateTime::fromString(obj.value("messageSentTime").toString());
-        QDate date = dateTime.date();
-        QTime time = dateTime.time();
+        //QDateTime dateTime = QDateTime::fromString(obj.value("messageSentTime").toString());
+        qint64 dateTimeMs = (obj.value("uctTimeSinceEpoch").toString()).toLongLong();
+        QDateTime dateTime02 = QDateTime::fromMSecsSinceEpoch(dateTimeMs);
+        dateTime02 = dateTime02.toLocalTime();
+        QDate date02 = dateTime02.date();
+        QTime time02 = dateTime02.time();
+        qDebug() << "local date: " + date02.toString("MMM d") + ", local time: " + time02.toString("H:mm:ss");
+        //QDate date = dateTime.date();
+        //QTime time = dateTime.time();
         QString author = obj.value("username").toString();
         QString device = obj.value("platform").toString();
         QString message = obj.value("message").toString();
     //emit xchatSuccess(author, date.toString(), time.toString(), device, message);
-    emit xchatSuccess(author, date, time, device, message);
+    //emit xchatSuccess(author, date, time, device, message);
+        emit xchatSuccess(author, date02, time02, device, message);
 }
 
 void XchatObject::SubmitMsg(const QString &msg) {

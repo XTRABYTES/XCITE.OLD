@@ -196,45 +196,6 @@ Rectangle {
     }
 
     Label {
-        id: infoLabel
-        z: 1
-        text: "X-CHAT NETWORK INFO"
-        font.pixelSize: 20
-        font.family: xciteMobile.name
-        color: themecolor
-        anchors.top: tagEveryoneLabel.bottom
-        anchors.topMargin: 50
-        anchors.left: infoIcon.right
-        anchors.leftMargin: 10
-    }
-
-    Image {
-        id: infoIcon
-        height: 20
-        fillMode: Image.PreserveAspectFit
-        source: darktheme == true? 'qrc:/icons/mobile/info-icon_01_white.svg' : 'qrc:/icons/mobile/info-icon_01_black i.svg'
-        anchors.verticalCenter: infoLabel.verticalCenter
-        anchors.left: parent.left
-        anchors.leftMargin: 28
-    }
-
-    Rectangle {
-        id: networkInfoArea
-        width: parent.width
-        color: "transparent"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: infoLabel.bottom
-        anchors.topMargin: 10
-        anchors.bottom: closeXchatSettingsModal.top
-        anchors.bottomMargin: 20
-        clip: true
-
-        Mobile.XChatServerList {
-            id: myServerList
-        }
-    }
-
-    Label {
         id: closeXchatSettingsModal
         z: 10
         text: "BACK"

@@ -95,7 +95,6 @@ Rectangle {
     }
 
     Image {
-        z:11
         id: onlineIndicator
         source: networkAvailable == 1? (xChatConnection == true? "qrc:/icons/mobile/online_blue_icon.svg" : "qrc:/icons/mobile/online_red_icon.svg") : "qrc:/icons/mobile/no_internet_icon.svg"
         anchors.verticalCenter: xchatModalLabel.verticalCenter
@@ -115,8 +114,8 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
+                    xchatNetworkTracker = 1
                     checkingXchat = true
-                    console.log("Manually reconnect X-CHAT")
                     checkXChatSignal();
                 }
             }
@@ -553,6 +552,13 @@ Rectangle {
                 endTag = 0
             }
         }
+    }
+
+    Mobile.XChatNetworkInfo {
+        id: myXchatNetwork
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 
     Mobile.XChatUsers {

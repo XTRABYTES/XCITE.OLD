@@ -247,6 +247,7 @@ ApplicationWindow {
     property int debugTracker: 0
     property int xchatTracker: 0
     property int xchatSettingsTracker: 0
+    property int xchatNetworkTracker: 0
     property int xchatUserTracker: 0
     property int tagListTracker: 0
 
