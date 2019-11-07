@@ -95,9 +95,14 @@ Rectangle {
                         //focus: false
 
                         onClicked: {
-                            tagging = ""
-                            console.log("author pushed")
-                            tagging = "@" + senderID.text
+                            if(getUserStatus(author) !== "dnd") {
+                                tagging = ""
+                                console.log("author pushed")
+                                tagging = "@" + senderID.text
+                            }
+                            else {
+                                dndNotification(author)
+                            }
                         }
                     }
                 }
@@ -126,7 +131,29 @@ Rectangle {
                 anchors.leftMargin: 5
                 anchors.verticalCenter: senderID.verticalCenter
                 color: getUserStatus(author) === "online"? "#4BBE2E" : (getUserStatus(author) === "idle"? "#F7931A" : "#E55541")
-                visible: author != "xChatRobot"
+                visible: author != "xChatRobot" && status != "dnd"
+            }
+
+            Rectangle {
+                id: dndArea
+                height: 10
+                width: 10
+                color: "transparent"
+                anchors.left: senderID.right
+                anchors.leftMargin: 5
+                anchors.verticalCenter: senderID.verticalCenter
+                visible: status == "dnd"
+            }
+
+            Image {
+                source: 'qrc:/icons/mobile/dnd-icon_01.svg'
+                width: 10
+                height: 10
+                fillMode: Image.PreserveAspectFit
+                anchors.left: senderID.right
+                anchors.leftMargin: 5
+                anchors.verticalCenter: senderID.verticalCenter
+                visible: dndArea.visible == true
             }
 
             Image {
@@ -137,7 +164,7 @@ Rectangle {
                 anchors.verticalCenter: senderID.verticalCenter
                 anchors.left: online.right
                 anchors.leftMargin: 5
-                visible: author != "xChatRobot"
+                visible: author != "xChatRobot" && !dndArea.visible
             }
 
             Rectangle {

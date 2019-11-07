@@ -76,12 +76,69 @@ Rectangle {
     }
 
     Rectangle {
+        id: pingButton
+        width: (networkInfoArea.width - 56) / 2
+        height: 34
+        anchors.top: xchatNetworkModalLabel.bottom
+        anchors.topMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        border.color: maincolor
+        border.width: 1
+        opacity: pingingXChat == true? 0.25 : 1
+        color: "transparent"
+
+        MouseArea {
+            anchors.fill: pingButton
+
+            onPressed: {
+                click01.play()
+                parent.border.color = themecolor
+                detectInteraction()
+            }
+
+            onCanceled: {
+                parent.border.color = maincolor
+            }
+
+            onReleased: {
+                parent.border.color = maincolor
+            }
+
+            onClicked: {
+                if (xChatConnection && !pingingXChat && !checkingXchat) {
+                    pingingXChat = true
+                    checkingXchat = true
+                    resetServerUpdateStatus();
+                    pingXChatServers();
+                    updateServerStatus();
+                }
+                if (!xChatConnection) {
+                    resetServerUpdateStatus();
+                    updateServerStatus();
+                }
+            }
+        }
+
+        Text {
+            id: pingButtonText
+            text: "PING"
+            font.family: xciteMobile.name
+            font.pointSize: 14
+            color: darktheme == true? "#F2F2F2" : maincolor
+            opacity: pingingXChat == true? 0.25 : 1
+            font.bold: true
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+    }
+
+    Rectangle {
         id: networkInfoArea
         width: parent.width
         color: "transparent"
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: xchatNetworkModalLabel.bottom
-        anchors.topMargin: 30
+        anchors.top: pingButton.bottom
+        anchors.topMargin: 20
         anchors.bottom: closeXchatNetworkModal.top
         anchors.bottomMargin: 20
         clip: true

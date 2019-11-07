@@ -173,5 +173,6 @@
         <file>Controls/+mobile/XChatTagList.qml</file>
         <file>Controls/+mobile/XChatServerList.qml</file>
         <file>Controls/+mobile/XChatNetworkInfo.qml</file>
+        <file>Controls/+mobile/XChatDndNotification.qml</file>
     </qresource>
 </RCC>

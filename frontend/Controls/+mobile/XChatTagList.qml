@@ -28,7 +28,7 @@ Rectangle {
         Rectangle {
             id: userRow
             width: parent.width
-            height: username != ""? 30 : 0
+            height: (username != "" && status != "dnd")? 30 : 0
             color: "transparent"
             clip: true
 
@@ -78,6 +78,11 @@ Rectangle {
             RegExpFilter {
                 roleName: "username"
                 pattern: tagFilter
+                caseSensitivity: Qt.CaseInsensitive
+            },
+            RegExpFilter {
+                roleName: "status"
+                pattern: "online" || "idle" || "offline"
                 caseSensitivity: Qt.CaseInsensitive
             }
         ]

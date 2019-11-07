@@ -61,7 +61,10 @@ Item {
             updateBalanceSignal(walletListJson, "all");
             checkTxStatus(pendingListJson);
 
-            checkXChatSignal();
+            if (!checkingXchat){
+                checkingXchat = true
+                checkXChatSignal();
+            }
 
             if (xChatConnection && !pingingXChat) {
                 pingingXChat = true
@@ -70,6 +73,11 @@ Item {
                 updateServerStatus();
                 pingingXChat = false
             }
+
+            console.log("X-CHAT DND status: " + userSettings.xChatDND)
+
+            status = userSettings.xChatDND === true? "dnd" : "idle"
+            xChatTypingSignal(username,"addToOnline", status)
 
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"

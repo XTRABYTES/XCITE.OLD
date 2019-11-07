@@ -108,9 +108,8 @@ void XchatObject::xchatInc(const QString &user, QString platform, QString status
             obj.insert("route","sendToFront");
             obj.insert("status", status);
             obj.insert("message",message);
-            obj.insert("messageSentTime", QDateTime::currentDateTime().toString());
+            obj.insert("messageSentTime", QString::number(timeStamp));
             obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
-            obj.insert("uctTimeSinceEpoch", QString::number(timeStamp));
             qDebug() << "Miliseconds since EPoch: " + QString::number(timeStamp);
 
              QJsonDocument doc(obj);
@@ -221,21 +220,18 @@ void XchatObject::sendTypingToFront(const QMap<QString, QDateTime> typing){
 }
 
 void XchatObject::sendToFront(QJsonObject obj){
-        //QDateTime dateTime = QDateTime::fromString(obj.value("messageSentTime").toString());
-        qint64 dateTimeMs = (obj.value("uctTimeSinceEpoch").toString()).toLongLong();
-        QDateTime dateTime02 = QDateTime::fromMSecsSinceEpoch(dateTimeMs);
-        dateTime02 = dateTime02.toLocalTime();
-        QDate date02 = dateTime02.date();
-        QTime time02 = dateTime02.time();
-        qDebug() << "local date: " + date02.toString("MMM d") + ", local time: " + time02.toString("H:mm:ss");
-        //QDate date = dateTime.date();
-        //QTime time = dateTime.time();
+        qint64 dateTimeMs = (obj.value("messageSentTime").toString()).toLongLong();
+        QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(dateTimeMs);
+        dateTime = dateTime.toLocalTime();
+        QDate date02 = dateTime.date();
+        QTime time02 = dateTime.time();
+        QString date = date02.toString("MMM d");
+        QString time = time02.toString("H:mm:ss");
         QString author = obj.value("username").toString();
         QString device = obj.value("platform").toString();
         QString message = obj.value("message").toString();
-    //emit xchatSuccess(author, date.toString(), time.toString(), device, message);
-    //emit xchatSuccess(author, date, time, device, message);
-        emit xchatSuccess(author, date02, time02, device, message);
+        qDebug() << "local date: " + date02.toString("MMM d") + ", local time: " + time02.toString("H:mm:ss");
+        emit xchatSuccess(author, date, time, device, message);
 }
 
 void XchatObject::SubmitMsg(const QString &msg) {
@@ -439,6 +435,9 @@ QString XchatObject::matchServer(const QString &server){
     else if (server == "85.214.78.233") {
         xChatServer = "Berlin 02 (DE)";
     }
+    //else if (server == "185.177.21.73") {
+    //    xChatServer = "Sonsbeck (DE)";
+    //}
     return xChatServer;
 }
 

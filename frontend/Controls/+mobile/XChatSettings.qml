@@ -76,17 +76,31 @@ Rectangle {
     }
 
     Label {
-        id: tagMeLabel
+        id: taggingLabel
         z: 1
-        text: "Mute personal tags:"
-        font.pixelSize: 16
+        text: "Tag settings"
+        font.pixelSize: 20
         font.family: xciteMobile.name
         font.bold: true
         color: themecolor
         anchors.top: xchatSettingsModalLabel.bottom
+        anchors.topMargin: 50
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
+
+    Label {
+        id: tagMeLabel
+        z: 1
+        text: userSettings.tagMe === false ? "Mute personal tags (<font color='#0ED8D2'><b>ON</b></font>)" : "Mute personal tags (<font color='#0ED8D2'><b>OFF</b></font>)"
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        color: themecolor
+        anchors.top: taggingLabel.bottom
         anchors.topMargin: 30
         anchors.left: parent.left
         anchors.leftMargin: 28
+        opacity: userSettings.tagMe === false ? 1 : 0.5
     }
 
     Rectangle {
@@ -138,7 +152,7 @@ Rectangle {
     Label {
         id: tagEveryoneLabel
         z: 1
-        text: "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags:"
+        text: userSettings.tagEveryone === false ? "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags (<font color='#0ED8D2'><b>ON</b></font>)" : "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags (<font color='#0ED8D2'><b>OFF</b></font>)"
         font.pixelSize: 16
         font.family: xciteMobile.name
         font.bold: true
@@ -147,10 +161,11 @@ Rectangle {
         anchors.topMargin: 30
         anchors.left: parent.left
         anchors.leftMargin: 28
+        opacity: userSettings.tagEveryone === false ? 1 : 0.5
     }
 
     Rectangle {
-        id: tagEveryoneswitchSwitch
+        id: tagEveryoneSwitch
         z: 1
         width: 20
         height: 20
@@ -190,6 +205,86 @@ Rectangle {
                     else {
                         userSettings.tagEveryone = false
                     }
+                }
+            }
+        }
+    }
+
+    Label {
+        id: dndLabel
+        z: 1
+        text: userSettings.xChatDND === false ? "Do not disturb (<font color='#0ED8D2'><b>OFF</b></font>)" : "Do not disturb (<font color='#0ED8D2'><b>ON</b></font)"
+        font.pixelSize: 20
+        font.family: xciteMobile.name
+        font.bold: true
+        color: themecolor
+        anchors.top: tagEveryoneLabel.bottom
+        anchors.topMargin: 50
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+    }
+
+    Label {
+        id: dndInfoLabel
+        z: 1
+        text: "When <font color='#0ED8D2'><b>Do not disturb</b></font> is on you will not receive notifications for tags."
+        font.pixelSize: 16
+        font.family: xciteMobile.name
+        font.italic: true
+        color: themecolor
+        anchors.top: dndLabel.bottom
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        wrapMode: Text.WordWrap
+    }
+
+    Rectangle {
+        id: dndSwitch
+        z: 1
+        width: 20
+        height: 20
+        radius: 10
+        anchors.verticalCenter: dndLabel.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        color: "transparent"
+        border.color: themecolor
+        border.width: 2
+
+        Rectangle {
+            id: dndIndicator
+            z: 1
+            width: 12
+            height: 12
+            radius: 8
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: userSettings.xChatDND === false ? "#757575" : maincolor
+
+            MouseArea {
+                id: dndButton
+                width: 30
+                height: 30
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+                onPressed: {
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    if (userSettings.xChatDND === false) {
+                        userSettings.xChatDND = true
+                        status = "dnd"
+                    }
+                    else {
+                        userSettings.xChatDND = false
+                        status = "online"
+                    }
+                    xChatTypingSignal(username,"addToOnline", status)
                 }
             }
         }

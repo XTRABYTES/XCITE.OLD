@@ -317,5 +317,7 @@
         <file>icons/mobile/portfolio-icon_02_white.svg</file>
         <file>icons/mobile/connected-icon_01_black.svg</file>
         <file>icons/mobile/connected-icon_01_white.svg</file>
+        <file>icons/mobile/dnd-icon_01.svg</file>
+        <file>icons/mobile/warning-icon_01_red.svg</file>
     </qresource>
 </RCC>

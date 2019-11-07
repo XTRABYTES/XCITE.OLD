@@ -115,8 +115,6 @@ Rectangle {
 
                 onClicked: {
                     xchatNetworkTracker = 1
-                    checkingXchat = true
-                    checkXChatSignal();
                 }
             }
         }
@@ -133,6 +131,17 @@ Rectangle {
         font.pixelSize: 8
         font.family: "Brandon Grotesque"
         visible: xChatConnecting == true
+    }
+
+    Image {
+        id: xChatDND
+        source: "qrc:/icons/mobile/dnd-icon_01.svg"
+        anchors.verticalCenter: xchatModalLabel.verticalCenter
+        anchors.left: connectingLabel.right
+        anchors.leftMargin: 20
+        height: 20
+        fillMode: Image.PreserveAspectFit
+        visible: userSettings.xChatDND === true
     }
 
     Image {
@@ -254,9 +263,11 @@ Rectangle {
             interval: 6000
             onTriggered: {
                 console.log("User stopped writing")
-                status="online"
                 xChatTyping(username,"removeFromTyping",status);
-                checkIfIdle.restart();
+                if (userSettings.xChatDND === false) {
+                    status="online"
+                    checkIfIdle.restart();
+                }
             }
         }
 
@@ -306,12 +317,13 @@ Rectangle {
         onTextEdited: {
             typingTimer.restart();
             if (sendTyping){
-                status="online"
+                if (userSettings.xChatDND === false) {
+                    status="online"
+                }
                 xChatTyping(username,"addToTyping",status);
                 sendTypingTimer.start()
                 sendXchatConnection.restart();
                 checkIfIdle.restart();
-
             }
             sendTyping = false
         }
@@ -349,7 +361,9 @@ Rectangle {
                 xChatMessage = sendText.text
                 if (xChatMessage.length != 0 && xChatMessage.length < 251 && xChatConnection) {
                     xchatError = 0
-                    status="online"
+                    if (UserSettings.xChatDND === false) {
+                        status="online"
+                    }
                     xChatSend(username,"mobile",status,sendText.text)
                     sendText.text = "";
                     xChatTyping(username,"removeFromTyping",status);
@@ -587,6 +601,14 @@ Rectangle {
         z: 10
         anchors.left: parent.left
         anchors.top: parent.top
+    }
+
+    Mobile.XChatDndNotification {
+        id: myDndNotification
+        z: 11
+        anchors.left: parent.left
+        anchors.top: parent.top
+        visible: dndTracker == 1
     }
 
     Component.onDestruction: {

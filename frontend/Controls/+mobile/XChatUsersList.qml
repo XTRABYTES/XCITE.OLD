@@ -34,7 +34,7 @@ Rectangle {
             clip: true
 
             Label {
-                id: pickListUsers
+                id: userName
                 text: username
                 color: "#F2F2F2"
                 font.pixelSize: 14
@@ -42,9 +42,32 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 15
-                anchors.right: parent.right
-                anchors.rightMargin: 10
+                anchors.right: status == "dnd"? dndArea.left : parent.right
+                anchors.rightMargin: status == "dnd"? 5 : 10
                 elide: Text.ElideRight
+            }
+
+            Rectangle {
+                id: dndArea
+                height: 10
+                width: 10
+                color: "transparent"
+                anchors.right: parent.right
+                anchors.rightMargin: 15
+                anchors.verticalCenter: userName.verticalCenter
+                visible: status == "dnd"
+            }
+
+            Image {
+                id: dndIcon
+                source: 'qrc:/icons/mobile/dnd-icon_01.svg'
+                height: 10
+                width: 10
+                fillMode: Image.PreserveAspectFit
+                anchors.verticalCenter: userName.verticalCenter
+                anchors.right: parent.right
+                anchors.rightMargin: 15
+                visible: dndArea.visible == true
             }
 
             Rectangle {
@@ -53,8 +76,9 @@ Rectangle {
                 width: 8
                 radius: 8
                 anchors.horizontalCenter: parent.left
-                anchors.verticalCenter: pickListUsers.verticalCenter
+                anchors.verticalCenter: userName.verticalCenter
                 color: status == "online"? "#4BBE2E" : (status == "idle"? "#F7931A" : "#E55541")
+                visible: status !== "dnd"
             }
 
             Rectangle {
@@ -65,9 +89,14 @@ Rectangle {
                     anchors.fill: parent
 
                     onClicked: {
-                        tagging = ""
-                        console.log("user tagged: " + username)
-                        tagging = "@" + username + " "
+                        if(getUserStatus(username) !== "dnd") {
+                            tagging = ""
+                            console.log("user tagged: " + username)
+                            tagging = "@" + username + " "
+                        }
+                        else {
+                            dndNotification(username)
+                        }
                     }
                 }
             }

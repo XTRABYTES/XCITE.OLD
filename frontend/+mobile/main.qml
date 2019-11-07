@@ -23,7 +23,7 @@ import QtGraphicalEffects 1.0
 ApplicationWindow {
     property bool isNetworkActive: false
 
-    property variant notAllowed: ["<del>","</del>","<s>","</s>","<strong>","</strong>","<i>","</i>","<u>","</u>","<br>","<p>","</p>","</font>","<h1>","</h1>","<h2>","</h2>","<h3>","</h3>","<h4>","</h4>","<h5>","</h5>","<h6>","</h6>","a href=","img src=","ol type=","ul type=","<li>","</li>","<pre>","</pre>","&gt","&lt","&amp"]
+    property variant notAllowed: ["<del>","</del>","<s>","</s>","<strong>","</strong>", "<br>","<p>","</p>","</font>","<h1>","</h1>","<h2>","</h2>","<h3>","</h3>","<h4>","</h4>","<h5>","</h5>","<h6>","</h6>","a href=","img src=","ol type=","ul type=","<li>","</li>","<pre>","</pre>","&gt","&lt","&amp"]
 
     id: xcite
 
@@ -250,6 +250,7 @@ ApplicationWindow {
     property int xchatNetworkTracker: 0
     property int xchatUserTracker: 0
     property int tagListTracker: 0
+    property int dndTracker: 0
 
     property int backupTracker: 0
     property int screenshotTracker: 0
@@ -379,6 +380,7 @@ ApplicationWindow {
     property int xChatID: 1
     property int xChatTag: 0
     property int xChatFilterResults: 0
+    property string dndUser: ""
     property variant messageArray
     property string tagFilter: ""
     property bool sendTyping: true
@@ -431,72 +433,11 @@ ApplicationWindow {
     function openApplication(app) {
         console.log("opening application; appname = " + app)
         if (app === "X-CHAT") {
+            status = userSettings.xChatDND == true? "dnd" : status
+            xChatTypingSignal(username,"addToOnline", status)
             xchatTracker = 1
             selectedApp = ""
         }
-    }
-
-    function getUserStatus(user) {
-        var userStatus = ""
-        for(var i = 0; i < xChatUsers.count; i++) {
-            if (user === xChatUsers.get(i).username) {
-                userStatus = xChatUsers.get(i).status
-            }
-        }
-
-        return userStatus
-    }
-
-    function updateXchat(author,date,time,device,message) {
-            xChatTag = 0
-            //xChatDate = ""
-            //xChatArray = msg.split(':')
-            xChatMessage = message
-
-            for(var o = 0; o < notAllowed.length; o ++) {
-                xChatMessage = xChatMessage.replace(notAllowed[o], "")
-            }
-
-            //xChatMeta = xChatArray[0].split(',')
-            //xChatDate = new Date().toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm")
-            //console.log(xChatDate)
-            //console.log("author: " + xChatMeta[0])
-            messageArray = xChatMessage.split(' ')
-            for(var i = 0; i < (messageArray.length); i ++) {
-                console.log(messageArray[i])
-                if(author !== username) {
-                    if ((messageArray[i].toLowerCase() === "@" + username.toLowerCase() || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() || messageArray[i].toLowerCase() === "@" + username.toLowerCase() + ">/b>" || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() + "</b>")  && userSettings.tagMe === true) {
-                        notification.play()
-                        xChatTag = 1
-                        console.log("someone mentioned you in X-CHAT")
-                        if (xchatTracker !== 1) {
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : xChatMeta[0] + " has mentioned you", "origin" : "X-CHAT"})
-                            alert = true
-                        }
-                    }
-                    else if ((messageArray[i] === "@everyone" || messageArray[i] === "<b>@everyone" || messageArray[i] === "@everyone</b>" || messageArray[i] === "<b>@everyone/b>")  && userSettings.tagEveryone === true) {
-                        notification.play()
-                        xChatTag = 2
-                        console.log("message to everyone in X-CHAT")
-                        if (xchatTracker !== 1) {
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
-                            alert = true
-                        }
-                    }
-                }
-
-            }
-            var searchUsername = new RegExp( "@" + username, "i")
-            xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + username + "</b></font>")
-            xChatMessage = xChatMessage.replace("@everyone", "<font color='#5E8BFF'><b>@everyone</b></font>")
-            xChatMessage = xChatMessage
-            console.log(xChatMessage)
-            xChatTread.append({"author" : author, "device" : device, "date" : date.toLocaleDateString(Qt.locale("en_US"),"MMM d") + " at " + time.toLocaleTimeString("HH:mm:ss"), "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
-            xChatID = xChatID + 1
-        }
-
-    function xChatTyping(user, route, status){
-        xChatTypingSignal(user, route, status)
     }
 
     function updateBalance(coin, address, balance) {
@@ -1019,6 +960,69 @@ ApplicationWindow {
     }
 
     // X-CHAT
+    function dndNotification (user) {
+        dndUser = user
+        dndTracker = 1
+    }
+
+    function getUserStatus(user) {
+        var userStatus = ""
+        for(var i = 0; i < xChatUsers.count; i++) {
+            if (user === xChatUsers.get(i).username) {
+                userStatus = xChatUsers.get(i).status
+            }
+        }
+
+        return userStatus
+    }
+
+    function updateXchat(author,date,time,device,message) {
+            xChatTag = 0
+            xChatMessage = message
+
+            for(var o = 0; o < notAllowed.length; o ++) {
+                xChatMessage = xChatMessage.replace(notAllowed[o], "")
+            }
+
+            messageArray = xChatMessage.split(' ')
+            for(var i = 0; i < (messageArray.length); i ++) {
+                console.log(messageArray[i])
+                if(author !== username && userSettings.xChatDND === false) {
+                    if ((messageArray[i].toLowerCase() === "@" + username.toLowerCase() || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() || messageArray[i].toLowerCase() === "@" + username.toLowerCase() + ">/b>" || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() + "</b>")  && userSettings.tagMe === true) {
+                        notification.play()
+                        xChatTag = 1
+                        console.log("someone mentioned you in X-CHAT")
+                        if (xchatTracker !== 1) {
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : xChatMeta[0] + " has mentioned you", "origin" : "X-CHAT"})
+                            alert = true
+                        }
+                    }
+                    else if ((messageArray[i] === "@everyone" || messageArray[i] === "<b>@everyone" || messageArray[i] === "@everyone</b>" || messageArray[i] === "<b>@everyone/b>")  && userSettings.tagEveryone === true) {
+                        notification.play()
+                        xChatTag = 2
+                        console.log("message to everyone in X-CHAT")
+                        if (xchatTracker !== 1) {
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
+                            alert = true
+                        }
+                    }
+                }
+
+            }
+            var searchUsername = new RegExp( "@" + username, "gi")
+            var searchEveryone = new RegExp("@everyone", "gi")
+            xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + username + "</b></font>")
+            xChatMessage = xChatMessage.replace(searchEveryone, "<font color='#5E8BFF'><b>@everyone</b></font>")
+            xChatMessage = xChatMessage
+            console.log(xChatMessage)
+            xChatTread.append({"author" : author, "device" : device, "date" : date + " at " + time, "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
+            xChatID = xChatID + 1
+        }
+
+    function xChatTyping(user, route, status){
+        xChatTypingSignal(user, route, status)
+    }
+
     function loadOnlineUsers(online) {
         xChatOnline.clear()
         if (typeof online !== "undefined") {
@@ -1168,7 +1172,8 @@ ApplicationWindow {
             userSettings.volume = settingsLoaded.volume;
             userSettings.systemVolume = settingsLoaded.systemVolume;
             userSettings.tagMe = settingsLoaded.tagMe !== undefined? settingsLoaded.tagMe === "true" : true;
-            userSettings.tagEveryone= settingsLoaded.tagEveryone !== undefined? settingsLoaded.tagEveryone === "true" : true
+            userSettings.tagEveryone = settingsLoaded.tagEveryone !== undefined? settingsLoaded.tagEveryone === "true" : true
+            userSettings.xChatDND = settingsLoaded.xChatDND !== undefined? settingsLoaded.xChatDND === "true" : true
             coinList.setProperty(0, "active", userSettings.xfuel);
             coinList.setProperty(1, "active", userSettings.xby);
             coinList.setProperty(2, "active", userSettings.xtest);
@@ -1371,6 +1376,7 @@ ApplicationWindow {
         userSettings.systemVolume = 1
         userSettings.tagMe = true
         userSettings.tagEveryone = true
+        userSettings.xChatDND = false
     }
 
     function initialiseLists() {
@@ -1531,6 +1537,8 @@ ApplicationWindow {
             onSelectedXchatServer: {
                 selectedXChatServer = server
                 console.log("X-CHAT connected to: " + server)
+                checkingXchat = false
+                pingingXChat = false
             }
             onXChatServerDown: {
                 for (var i = 0; i < xChatServers.count; i ++) {
@@ -1780,9 +1788,14 @@ ApplicationWindow {
         property int systemVolume: 1
         property bool tagMe: true
         property bool tagEveryone: true
+        property bool xChatDND: false
 
         onThemeChanged: {
             darktheme = userSettings.theme == "dark"? true : false
+        }
+
+        onXChatDNDChanged: {
+            status = userSettings.xChatDND == true? "dnd" : "online"
         }
     }
 
@@ -1850,28 +1863,10 @@ ApplicationWindow {
         running: true
 
         onTriggered: {
-            if (checkingXchat == false) {
+            if (!checkingXchat) {
+                checkingXchat = true
+                resetServerUpdateStatus();
                 checkXChatSignal();
-            }
-        }
-    }
-
-    Timer {
-        id: checkXchatPing
-        interval: 60000
-        repeat: true
-        running: true
-
-        onTriggered: {
-            if (xChatConnection && !pingingXChat) {
-                pingingXChat = true
-                resetServerUpdateStatus();
-                pingXChatServers();
-                updateServerStatus();
-                pingingXChat = false
-            }
-            if (!xChatConnection) {
-                resetServerUpdateStatus();
                 updateServerStatus();
             }
         }
@@ -1895,8 +1890,10 @@ ApplicationWindow {
         running: true
 
         onTriggered: {
-            status = "idle"
-            xChatTypingSignal(username,"addToOnline", status);
+            if (userSettings.xChatDND == false) {
+                status = "idle"
+                xChatTypingSignal(username,"addToOnline", status);
+            }
         }
     }
 

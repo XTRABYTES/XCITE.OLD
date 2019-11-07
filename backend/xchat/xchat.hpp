@@ -94,7 +94,7 @@ public:
 
 signals:
     void xchatResponseSignal(QVariant text);
-    void xchatSuccess( QString author, QDate date, QTime time, QString device, QString message);
+    void xchatSuccess( QString author, QString date, QString time, QString device, QString message);
     void xchatTypingSignal(const QString &msg);
     void xchatConnectionFail();
     void xchatConnectionSuccess();
