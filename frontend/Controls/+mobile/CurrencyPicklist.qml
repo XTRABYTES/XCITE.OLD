@@ -117,6 +117,15 @@ Rectangle {
                             saveCurrency = false
                         }
                     }
+
+                    onNoInternet: {
+                        if (currencyTracker === 1) {
+                            networkError = 1
+                            userSettings.defaultCurrency = oldCurrency
+                            currencyChangeFailed = 1
+                            saveCurrency = false
+                        }
+                    }
                 }
             }
 

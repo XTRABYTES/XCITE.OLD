@@ -220,6 +220,10 @@ Rectangle {
                                 usernameWarning = 2
                             }
 
+                            onNoInternet: {
+                                networkError = 1
+                            }
+
                             onSettingsServerError: {
                                 networkError = 1
                             }
@@ -485,6 +489,22 @@ Rectangle {
 
                     onUserCreationFailed: {
                         if (createAccountInitiated == true) {
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (createAccountInitiated == true) {
+                            networkError = 1
                             signUpError = 1
                             checkUsername = 0
                             keyPairSend = 0
@@ -1057,6 +1077,14 @@ Rectangle {
                             saveInitiated = false
                         }
                     }
+
+                    onNoInternet: {
+                        if (saveInitiated == true) {
+                            networkError = 1
+                            saveFailed = 1
+                            saveInitiated = false
+                        }
+                    }
                 }
             }
 
@@ -1105,6 +1133,11 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: myOS === "android"? 50 : 70
+    }
+
+    Controls.NetworkError {
+        z:100
+        id: myNetworkError
     }
 }
 

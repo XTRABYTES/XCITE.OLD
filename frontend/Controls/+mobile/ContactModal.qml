@@ -493,6 +493,21 @@ Rectangle {
                     }
                 }
 
+                onNoInternet: {
+                    if (editContactTracker == 1 && editingContact == true) {
+                        networkError = 1
+                        replaceName(contactIndex, oldFirstName, oldFirstName);
+                        contactList.setProperty(contactIndex, "firstName", oldFirstName);
+                        contactList.setProperty(contactIndex, "lastName", oldLastName);
+                        contactList.setProperty(contactIndex, "telNR", oldTel);
+                        contactList.setProperty(contactIndex, "cellNR", oldText);
+                        contactList.setProperty(contactIndex, "mailAddress", oldMail);
+                        contactList.setProperty(contactIndex, "chatID", oldChat);
+                        editFailed = 1
+                        editingContact = false
+                    }
+                }
+
                 onSaveFailedDBError: {
                     failError = "Database ERROR"
                 }
@@ -765,7 +780,7 @@ Rectangle {
             Text {
                 id: deleteText
                 text: "You are about to delete:"
-                anchors.top: deleteConfirmation.modalTop
+                anchors.top: deleteConfirmation.top
                 anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.family: xciteMobile.name
@@ -847,6 +862,15 @@ Rectangle {
                     onSaveFailed: {
                         if (editContactTracker == 1 && deletingContact == true) {
 
+                            contactList.setProperty(contactIndex, "remove", false);
+                            deleteFailed = 1
+                            deletingContact = false
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (editContactTracker == 1 && deletingContact == true) {
+                            networkError = 1
                             contactList.setProperty(contactIndex, "remove", false);
                             deleteFailed = 1
                             deletingContact = false
@@ -1070,7 +1094,7 @@ Rectangle {
                 height: 75
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: deleted.ModalTop
+                anchors.top: deleted.modalTop
                 anchors.topMargin: 20
                 visible: deleteConfirmed == 1
             }

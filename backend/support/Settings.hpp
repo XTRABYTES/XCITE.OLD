@@ -65,6 +65,7 @@ public slots:
     void SaveWallet(QString walletlist, QString addresslist);
     void ExportWallet(QString walletlist);
     void UpdateAccount(QString addresslist, QString contactlist, QString walletlist, QString pendinglist);
+    bool checkInternet();
 
     void onCheckOS();
     void initialisePincode(QString pincode);
@@ -91,7 +92,7 @@ signals:
     void settingsLoaded(const QVariantMap &settings);
     void walletLoaded(const QString &wallets);
     void pendingLoaded(const QString &pending);
-
+    void noInternet();
     void clearSettings();
     void pincodeCorrect();
     void pincodeFalse();

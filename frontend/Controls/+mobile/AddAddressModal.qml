@@ -568,6 +568,18 @@ Rectangle {
                     }
                 }
 
+                onNoInternet: {
+                    if (addAddressTracker == 1 && addingAddress == true) {
+                        networkError = 1
+                        addressID = addressID - 1
+                        addressList.remove(addressID)
+                        editFailed = 1
+                        coinListTracker = 0
+                        addingAddress = false
+                        saveInitiated = false
+                    }
+                }
+
                 onSaveFailedDBError: {
                     if (addAddressTracker == 1 && addingAddress == true) {
                         failError = "Database ERROR"

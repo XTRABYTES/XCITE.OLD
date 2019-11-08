@@ -1415,6 +1415,12 @@ ApplicationWindow {
             }
         }
 
+        onNoInternet: {
+            if (goodbey == 1) {
+                Qt.quit()
+            }
+        }
+
         onOSReturned: {
             myOS = os
         }

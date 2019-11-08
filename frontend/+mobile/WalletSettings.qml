@@ -814,6 +814,20 @@ Rectangle {
                     changeSystemVolumeInitiated = false
                 }
             }
+
+            onNoInternet: {
+                networkError = 1
+                if (changeVolumeInitiated == true) {
+                    userSettings.volume = oldVolume
+                    changeVolumeFailed = 1
+                    changeVolumeInitiated = false
+                }
+                if (changeSystemVolumeInitiated == true) {
+                    userSettings.systemVolume = oldSystemVolume
+                    changeSystemVolumeFailed = 1
+                    changeSystemVolumeInitiated = false
+                }
+            }
         }
     }
 
@@ -911,6 +925,22 @@ Rectangle {
                 }
 
                 onSaveFailed: {
+                    if (clearAllInitiated == true) {
+                        userSettings.locale = oldLocale
+                        userSettings.defaultCurrency = oldDefaultCurrency
+                        userSettings.theme = oldTheme
+                        userSettings.pinlock = oldPinlock
+                        userSettings.sound = oldSound
+                        userSettings.volume = oldVolume
+                        userSettings.systemVolume = oldSystemVolume
+                        clearAllInitiated = false
+                        pinClearInitiated = false
+                        clearFailed = 1
+                    }
+                }
+
+                onNoInternet: {
+                    networkError = 1
                     if (clearAllInitiated == true) {
                         userSettings.locale = oldLocale
                         userSettings.defaultCurrency = oldDefaultCurrency
@@ -1233,6 +1263,11 @@ Rectangle {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
+    }
+
+    Controls.NetworkError {
+        z:100
+        id: myNetworkError
     }
 
     Controls.Goodbey {

@@ -457,6 +457,28 @@ Rectangle {
                     }
                 }
 
+                onNoInternet: {
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
+                        networkError = 1
+                        if (userSettings.localKeys === false) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            editFailed = 1
+                            addingWallet = false
+                        }
+                        else if (userSettings.localKeys === true && walletSaved == true) {
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            saveErrorNR = 1
+                            editFailed = 1
+                            addingWallet = false
+                            walletSaved = false
+                        }
+                    }
+                }
+
                 onSaveFileSucceeded: {
                     if (viewOnlyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
                         walletSaved = true

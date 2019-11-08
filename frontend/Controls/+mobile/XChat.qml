@@ -122,7 +122,6 @@ Rectangle {
     }
 
     Label {
-        z:11
         id: connectingLabel
         text: "connecting"
         anchors.horizontalCenter: onlineIndicator.horizontalCenter
@@ -594,6 +593,11 @@ Rectangle {
         anchors.left: parent.left
         anchors.top: parent.top
         visible: dndTracker == 1
+    }
+
+    Mobile.NetworkError {
+        z:100
+        id: myNetworkError
     }
 
     Component.onDestruction: {

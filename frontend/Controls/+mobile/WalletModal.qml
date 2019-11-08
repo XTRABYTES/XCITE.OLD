@@ -464,6 +464,30 @@ Rectangle {
                     }
                 }
 
+                onNoInternet: {
+                    if (walletDetailTracker == 1 && editingWallet == true) {
+                        networkError = 1
+                        if (userSettings.localKeys === false) {
+                            walletList.setProperty(walletIndex, "label", oldLabel);
+                            walletList.setProperty(walletIndex, "include", oldInclude);
+                            editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
+                            newInclude = oldInclude
+                            editFailed = 1
+                            editingWallet = false
+                        }
+                        else if (userSettings.localKeys === true && walletEdited == true) {
+                            editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
+                            newInclude = oldInclude
+                            editFailed = 1
+                            saveErrorNr = 1
+                            editingWallet = false
+                            walletEdited = false
+                            sumBalance()
+                        }
+
+                    }
+                }
+
                 onSaveFileSucceeded: {
                     if (walletDetailTracker == 1 && userSettings.localKeys === true && editingWallet == true) {
                         walletEdited = true
@@ -887,6 +911,26 @@ Rectangle {
 
                 onSaveFailed: {
                     if (deleteWalletTracker == 1 && deletingWallet == true) {
+                        if (userSettings.localKeys === false) {
+                            walletList.setProperty(walletIndex, "remove", false)
+                            editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
+                            deleteFailed = 1
+                            coinListTracker = 0
+                            deletingAddress = false
+                        }
+                        else if (usersettings.localKeys === true && walletDeleted == true) {
+                            editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
+                            deleteFailed = 1
+                            deleteErrorNr = 1
+                            deletingWallet = false
+                            walletDeleted = false
+                        }
+                    }
+                }
+
+                onNoInternet: {
+                    if (deleteWalletTracker == 1 && deletingWallet == true) {
+                        networkError = 1
                         if (userSettings.localKeys === false) {
                             walletList.setProperty(walletIndex, "remove", false)
                             editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)

@@ -282,4 +282,9 @@ Rectangle {
         id: myScreenshotModal
         z: 10
     }
+
+    Controls.NetworkError {
+        z:100
+        id: myNetworkError
+    }
 }

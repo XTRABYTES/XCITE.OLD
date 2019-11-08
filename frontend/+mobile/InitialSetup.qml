@@ -384,4 +384,9 @@ Item {
             z: 3
         }
     }
+
+    Controls.NetworkError {
+        z:100
+        id: myNetworkError
+    }
 }

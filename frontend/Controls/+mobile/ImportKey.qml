@@ -693,6 +693,44 @@ Rectangle {
                         }
                     }
 
+                    onNoInternet: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            networkError = 1
+                            if (userSettings.localKeys === false) {
+                                walletID = walletID - 1
+                                walletList.remove(walletID)
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                newName.text = ""
+                                newAddress.text = ""
+                                addressHash.text = ""
+                                publicKey.text = ""
+                                privateKey.text = ""
+                                scanning = "scanning..."
+                                editFailed = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
+                            else if (userSettings.localKeys === true && walletSaved ==true) {
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                labelExists = 0
+                                addressExists = 0
+                                invalidAddress = 0
+                                newName.text = ""
+                                newAddress.text = ""
+                                addressHash.text = ""
+                                publicKey.text = ""
+                                privateKey.text = ""
+                                scanning = "scanning..."
+                                editFailed = 1
+                                saveErrorNR = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
+                        }
+                    }
+
                     onSaveFileSucceeded: {
                         if (importKeyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
                             walletSaved = true

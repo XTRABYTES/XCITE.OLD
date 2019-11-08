@@ -2028,10 +2028,14 @@ Item {
         anchors.top: parent.top
     }
 
+    Controls.NetworkError {
+        z:100
+        id: myNetworkError
+    }
+
     Controls.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
-
 }

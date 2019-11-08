@@ -75,6 +75,19 @@ Rectangle {
         font.letterSpacing: 2
     }
 
+    Label {
+        id: notConnectedLabel
+        text: "Not connected to the X-CHAT network"
+        font.family: xciteMobile.name
+        font.pointSize: 16
+        color: "#E55541"
+        font.italic: true
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: xchatNetworkModalLabel.bottom
+        anchors.topMargin: 15
+        visible: xChatConnection !== true
+    }
+
     Rectangle {
         id: pingButton
         width: (networkInfoArea.width - 56) / 2
@@ -86,6 +99,7 @@ Rectangle {
         border.width: 1
         opacity: pingingXChat == true? 0.5 : 1
         color: "transparent"
+        visible: xChatConnection === true
 
         MouseArea {
             anchors.fill: pingButton
@@ -141,6 +155,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: pingButton.bottom
         anchors.bottomMargin: 10
+        visible: xChatConnection === true
 
         Label {
             id: timeUntilPingText

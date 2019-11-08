@@ -447,6 +447,20 @@ Rectangle {
                     }
                 }
 
+                onNoInternet: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        networkError = 1
+                        addressList.setProperty(addressIndex, "logo", oldLogo);
+                        addressList.setProperty(addressIndex, "coin", oldCoinName);
+                        addressList.setProperty(addressIndex, "label", oldAddressName);
+                        addressList.setProperty(addressIndex, "address", oldAddressHash);
+                        addressList.setProperty(addressIndex, "favorite", oldFavorite);
+                        editFailed = 1
+                        coinListTracker = 0
+                        editingAddress = false
+                    }
+                }
+
                 onSaveFailedDBError: {
                     if (addressTracker == 1 && editingAddress == true) {
                         failError = "Database ERROR"
@@ -1149,6 +1163,16 @@ Rectangle {
                     onSaveFailed: {
                         if (addressTracker == 1 && deletingAddress == true) {
 
+                            addressList.setProperty(addressIndex, "remove", oldRemove);
+                            deleteFailed = 1
+                            coinListTracker = 0
+                            deletingAddress = false
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            networkError = 1
                             addressList.setProperty(addressIndex, "remove", oldRemove);
                             deleteFailed = 1
                             coinListTracker = 0

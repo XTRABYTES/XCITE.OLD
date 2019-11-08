@@ -174,5 +174,6 @@
         <file>Controls/+mobile/XChatServerList.qml</file>
         <file>Controls/+mobile/XChatNetworkInfo.qml</file>
         <file>Controls/+mobile/XChatDndNotification.qml</file>
+        <file>Controls/+mobile/NetworkError.qml</file>
     </qresource>
 </RCC>

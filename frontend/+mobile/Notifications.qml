@@ -107,6 +107,14 @@ Rectangle {
                     updatingWallets == false
                 }
             }
+
+            onNoInternet: {
+                if (selectedPage == "notif" && updatingWallets == true) {
+                    networkError = 1
+                    updateFailed = 1
+                    updatingWallets == false
+                }
+            }
         }
     }
 
@@ -203,5 +211,10 @@ Rectangle {
                 mainRoot.pop()
             }
         }
+    }
+
+    Controls.NetworkError {
+        z:100
+        id: myNetworkError
     }
 }

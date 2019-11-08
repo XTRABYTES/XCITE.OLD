@@ -345,6 +345,17 @@ Rectangle {
                     }
                 }
 
+                onNoInternet: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        networkError = 1
+                        failSound.play()
+                        contactID = contactID - 1
+                        contactList.remove(contactID)
+                        editFailed = 1
+                        addingContact = false
+                    }
+                }
+
                 onSaveFailedDBError: {
                     if (addContactTracker == 1 && addingContact == true) {
                         failError = "Database ERROR"

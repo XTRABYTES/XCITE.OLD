@@ -297,6 +297,14 @@ Rectangle {
                 }
             }
 
+            onNoInternet: {
+                if (changePasswordTracker == 1 && saveInitiated == true) {
+                    networkError = 1
+                    editFailed = 1
+                    saveInitiated = false
+                }
+            }
+
             onPasswordChangedFailed: {
                 if (changePasswordTracker == 1 && saveInitiated == true) {
                     editFailed = 1

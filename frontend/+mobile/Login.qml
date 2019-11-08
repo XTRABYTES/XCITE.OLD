@@ -315,6 +315,21 @@ Item {
                     }
                 }
 
+                onNoInternet: {
+                    if (loginTracker == 1){
+                        networkError = 1
+                        checkUsername = 0
+                        keyPairSend = 0
+                        checkIdentity = 0
+                        sessionKey = 0
+                        receiveSessionID = 0
+                        loadingSettings = 0
+                        passError = 1
+                        passWord.text = ""
+                        loginInitiated  = false
+                    }
+                }
+
                 onUsernameAvailable: {
                     if (loginTracker == 1){
                         checkUsername = 0
@@ -539,5 +554,10 @@ Item {
             anchors.topMargin: 5
             color: "#0ED8D2"
         }
+    }
+
+    Controls.NetworkError {
+        z:100
+        id: myNetworkError
     }
 }

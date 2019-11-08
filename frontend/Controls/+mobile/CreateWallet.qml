@@ -522,6 +522,38 @@ Rectangle {
                         }
                     }
 
+                    onNoInternet: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            networkError = 1
+                            if (userSettings.localKeys === false) {
+                                walletID = walletID - 1
+                                walletList.remove(walletID)
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                newName.text = ""
+                                addressHash.text = ""
+                                publicKey.text = ""
+                                privateKey.text = ""
+                                editFailed = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
+                            else if (userSettings.localKeys === true && walletSaved == true) {
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                labelExists = 0
+                                newName.text = ""
+                                addressHash.text = ""
+                                publicKey.text = ""
+                                privateKey.text = ""
+                                editFailed = 1
+                                saveErrorNR = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
+                        }
+                    }
+
                     onSaveFileSucceeded: {
                         if (createWalletTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
                             walletSaved = true
@@ -716,7 +748,7 @@ Rectangle {
                 height: 75
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: createWalletSuccess.modalTop
+                anchors.top: createWalletSuccess.top
                 anchors.topMargin: 20
             }
 
@@ -797,7 +829,7 @@ Rectangle {
                 height: 100
                 width: 100
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: createWalletError.modalTop
+                anchors.top: createWalletError.top
                 anchors.topMargin: 20
             }
 

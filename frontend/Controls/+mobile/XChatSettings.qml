@@ -191,7 +191,6 @@ Rectangle {
         text: userSettings.tagEveryone === false ? "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags (<font color='#0ED8D2'><b> on </b></font>)" : "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags (<b> off </b>)"
         font.pixelSize: 16
         font.family: xciteMobile.name
-        font.bold: true
         color: themecolor
         anchors.top: tagMeLabel.bottom
         anchors.topMargin: 30
@@ -336,7 +335,7 @@ Rectangle {
         }
     }
 
-    Connections {
+    Connections  {
         target: UserSettings
 
         onSaveSucceeded: {
@@ -364,9 +363,32 @@ Rectangle {
                 tagEveryoneChangeInitiated = false
             }
             if (dndChangeInitiated == true) {
+                console.log("Do not disturbd setting failed to save")
                 userSettings.xChatDND = oldDND
                 changeDNDFailed = 1
                 dndChangeInitiated = false
+                xChatTypingSignal(myUsername,"addToOnline", status)
+            }
+        }
+
+        onNoInternet: {
+            networkError = 1
+            if (tagMeChangeInitiated == true) {
+                userSettings.tagMe = oldTagMe
+                changeTagMeFailed = 1
+                tagMeChangeInitiated = false
+            }
+            if (tagEveryoneChangeInitiated == true) {
+                userSettings.tagEveryone = oldTagEveryone
+                changeTagEveryoneFailed = 1
+                tagEveryoneChangeInitiated = false
+            }
+            if (dndChangeInitiated == true) {
+                console.log("Do not disturbd setting failed to save")
+                userSettings.xChatDND = oldDND
+                changeDNDFailed = 1
+                dndChangeInitiated = false
+                xChatTypingSignal(myUsername,"addToOnline", status)
             }
         }
     }

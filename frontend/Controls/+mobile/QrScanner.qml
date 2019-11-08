@@ -202,12 +202,12 @@ Item {
 
 
         captureRect: {
-                        // setup bindings
-                        videoOutput.contentRect;
-                        videoOutput.sourceRect;
-                        return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
-                            0.25, 0.25, 0.5, 0.5
-                        )));
-                    }
+            // setup bindings
+            videoOutput.contentRect;
+            videoOutput.sourceRect;
+            return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
+                                                                                       0.25, 0.25, 0.5, 0.5
+                                                                                       )));
+        }
     }
 }

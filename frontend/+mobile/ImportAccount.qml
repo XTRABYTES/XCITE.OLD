@@ -303,6 +303,21 @@ Item {
                     }
                 }
 
+                onNoInternet: {
+                    if (importTracker == 1) {
+                        networkError = 1
+                        checkUsername = 0
+                        keyPairSend = 0
+                        checkIdentity = 0
+                        sessionKey = 0
+                        receiveSessionID = 0
+                        loadingSettings = 0
+                        passError = 1
+                        passWord.text = ""
+                        importInitiated  = false
+                    }
+                }
+
                 onUsernameAvailable: {
                     if (importTracker == 1) {
                         checkUsername = 0
@@ -451,5 +466,10 @@ Item {
             font.pixelSize: 18
             font.family: xciteMobile.name
         }
+    }
+
+    Controls.NetworkError {
+        z:100
+        id: myNetworkError
     }
 }
