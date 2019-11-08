@@ -55,7 +55,7 @@ Rectangle {
         width: parent.width
         height: parent.height
         color: "black"
-        opacity: 0.9
+        opacity: 0.35
     }
 
     Label {
@@ -76,20 +76,9 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 20
-        color: "#1B2934"
-        opacity: 0.5
-
-        LinearGradient {
-            anchors.fill: parent
-            source: parent
-            start: Qt.point(x, y)
-            end: Qt.point(x, parent.height)
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: "#0ED8D2" }
-            }
-        }
-
+        color: "transparent"
+        border.width: 1
+        border.color: "#0ED8D2"
 
         MouseArea {
             anchors.fill: parent
@@ -115,22 +104,34 @@ Rectangle {
         anchors.verticalCenter: okButton.verticalCenter
     }
 
-    Rectangle {
-        width: doubbleButtonWidth / 2
-        height: 34
-        anchors.horizontalCenter: okButton.horizontalCenter
-        anchors.bottom: okButton.bottom
-        color: "transparent"
-        opacity: 0.5
-        border.width: 1
-        border.color: "#0ED8D2"
+    DropShadow {
+        anchors.fill: bottomLine
+        source: bottomLine
+        samples: 9
+        radius: 4
+        color: darktheme == true? "#000000" : "#727272"
+        horizontalOffset:0
+        verticalOffset: 0
+        spread: 0
+        visible: parent.anchors.bottomMargin < 0
     }
 
     Rectangle {
+        id: bottomLine
         width: parent.width
         height: 1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         color: bgcolor
+    }
+
+    Timer {
+        id: networkErrorTimer
+        interval: 10000
+        repeat: false
+        running: networkError == 1
+        onTriggered:  {
+            networkError = 0
+        }
     }
 }

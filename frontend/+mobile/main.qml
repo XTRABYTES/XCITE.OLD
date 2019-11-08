@@ -377,6 +377,7 @@ ApplicationWindow {
     property bool pingingXChat: false
     property int pingTimeRemain: 60
     property string xChatMessage: ""
+    property bool newMessages: false
     property bool xChatScrolling: false
     property int xChatID: 1
     property int xChatTag: 0
@@ -1165,7 +1166,7 @@ ApplicationWindow {
     }
 
     function loadTransactions(transactions){
-        if (typeof transactions !== "undifined") {
+        if (typeof transactions !== "undefined") {
             historyList.clear();
             var obj = JSON.parse(transactions);
             for (var i in obj){
@@ -1176,7 +1177,7 @@ ApplicationWindow {
     }
 
     function loadTransactionAddresses(inputs, outputs){
-        if (typeof inputs !== "undifined") {
+        if (typeof inputs !== "undefined") {
             inputAddresses.clear();
             var objInput = JSON.parse(inputs);
             for (var i in objInput){
@@ -1184,7 +1185,7 @@ ApplicationWindow {
                 inputAddresses.append(dataInput);
             }
         }
-        if (typeof outputs !== "undifined") {
+        if (typeof outputs !== "undefined") {
             outputAddresses.clear();
             var objOutput = JSON.parse(outputs);
             for (var e in objOutput){

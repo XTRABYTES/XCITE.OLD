@@ -271,6 +271,7 @@ Rectangle {
         onDragEnded: {
             if (msgList.atYEnd) {
                 xChatScrolling = false
+                newMessages = false
             }
             else {
                 xChatScrolling = true

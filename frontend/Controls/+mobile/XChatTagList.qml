@@ -72,8 +72,10 @@ Rectangle {
                     anchors.fill: parent
 
                     onClicked: {
-                        userTag = ""
-                        userTag = username
+                        if (username !== myUsername) {
+                            userTag = ""
+                            userTag = username
+                        }
                     }
                 }
             }
@@ -90,15 +92,31 @@ Rectangle {
                 pattern: tagFilter && !myUsername
                 caseSensitivity: Qt.CaseInsensitive
             },
-            RegExpFilter {
-                roleName: "status"
-                pattern: "online" || "idle" || "offline"
-                caseSensitivity: Qt.CaseInsensitive
+            AnyOf {
+                RegExpFilter {
+                    roleName: "status"
+                    pattern: "online"
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "status"
+                    pattern: "offline"
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "status"
+                    pattern: "idle"
+                    caseSensitivity: Qt.CaseInsensitive
+                }
             }
         ]
 
         sorters: [
-            StringSorter {roleName: "username" ; sortOrder: Qt.AscendingOrder}
+            StringSorter {
+                roleName: "username"
+                sortOrder: Qt.AscendingOrder
+                caseSensitivity: Qt.CaseInsensitive
+            }
         ]
     }
 
