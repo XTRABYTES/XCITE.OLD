@@ -2,7 +2,11 @@
     <qresource prefix="/">
         <file>buttons/ok.png</file>
         <file>logos/xby_logo_200.png</file>
-        <file>backgrounds/polygonal.png</file>
+        <file>backgrounds/polygonal.jpg</file>
+        <file>backgrounds/launchscreen-logo.png</file>
+        <file>backgrounds/mobile-chart-placeholder.png</file>
+        <file>backgrounds/stars.jpg</file>
+        <file>backgrounds/launchScreen-logo_01.png</file>
         <file>aiml/substitutions.xml</file>
         <file>icons/avatar.svg</file>
         <file>icons/chat.svg</file>
@@ -80,10 +84,8 @@
         <file>icons/happiness.svg</file>
         <file>icons/chat-avatar.svg</file>
         <file>ios/LaunchScreen.storyboard</file>
-        <file>backgrounds/launchscreen-logo.png</file>
         <file>icons/mobile-receive.svg</file>
         <file>icons/mobile-send.svg</file>
-        <file>backgrounds/mobile-chart-placeholder.png</file>
         <file>icons/mobile-back.svg</file>
         <file>icons/mobile-menu.svg</file>
         <file>icons/graph5.svg</file>
@@ -161,8 +163,6 @@
         <file>icons/icon-phone_02.svg</file>
         <file>icons/icon-text_01.svg</file>
         <file>icons/icon-pen_01.svg</file>
-        <file>sounds/click_01.wav</file>
-        <file>sounds/click_02.wav</file>
         <file>icons/XBY_card_logo_colored_01.svg</file>
         <file>icons/XFUEL_card_logo_colored_01.svg</file>
         <file>icons/xby_logo_TM.svg</file>
@@ -172,7 +172,6 @@
         <file>icons/XBY_logo_large.svg</file>
         <file>icons/icon-questionmark_01.svg</file>
         <file>icons/icon-ok_01.svg</file>
-        <file>backgrounds/stars.jpg</file>
         <file>scan-window_02.svg</file>
         <file>icons/XBY_logo_big.svg</file>
         <file>icons/XFUEL_logo_big.svg</file>
@@ -225,7 +224,6 @@
         <file>icons/mobile/theme_switch-icon_01_on.svg</file>
         <file>icons/mobile/notification-icon_01.svg</file>
         <file>icons/mobile/menu-icon_01.svg</file>
-        <file>backgrounds/launchScreen-logo_01.png</file>
         <file>icons/mobile/debug-icon_01_dark.svg</file>
         <file>icons/mobile/debug-icon_01_light.svg</file>
         <file>icons/TESTNET_card_logo_colored_01.svg</file>
@@ -239,10 +237,8 @@
         <file>icons/BTC_logo_big.svg</file>
         <file>icons/ETH_card_logo_01.svg</file>
         <file>icons/ETH_logo_big.svg</file>
+       
         <file>icons/mobile/standby-icon_01.svg</file>
-        <file>sounds/notification_1.wav</file>
-        <file>sounds/notification_2.wav</file>
-        <file>sounds/notification_3.wav</file>
         <file>icons/mobile/volume_level_1-icon_dark.svg</file>
         <file>icons/mobile/volume_level_1-icon_focus.svg</file>
         <file>icons/mobile/volume_level_1-icon_light.svg</file>
@@ -255,21 +251,20 @@
         <file>icons/mobile/volume_level_0-icon_dark.svg</file>
         <file>icons/mobile/volume_level_0-icon_focus.svg</file>
         <file>icons/mobile/volume_level_0-icon_light.svg</file>
-        <file>sounds/fail_01.wav</file>
-        <file>sounds/intro_01.wav</file>
-        <file>sounds/outro_01.wav</file>
-        <file>sounds/succes_01.wav</file>
-        <file>gifs/screensaver_01.gif</file>
-        <file>gifs/xby_screensaver_01.gif</file>
-        <file>sounds/Bonjour.wav</file>
-        <file>sounds/Fail.wav</file>
-        <file>sounds/Hello.wav</file>
-        <file>sounds/hola.wav</file>
-        <file>sounds/Intro.wav</file>
-        <file>sounds/Outro.wav</file>
-        <file>sounds/Servus.wav</file>
-        <file>sounds/Succes.wav</file>
-        <file>sounds/Szia.wav</file>
+        
+        <file>sounds/click_02.mp3</file>        
+        <file>sounds/notification_1.mp3</file>
+        <file>sounds/intro_01.mp3</file>
+        <file>sounds/Bonjour.mp3</file>
+        <file>sounds/Fail.mp3</file>
+        <file>sounds/Hello.mp3</file>
+        <file>sounds/hola.mp3</file>
+        <file>sounds/Intro.mp3</file>
+        <file>sounds/Outro.mp3</file>
+        <file>sounds/Servus.mp3</file>
+        <file>sounds/Succes.mp3</file>
+        <file>sounds/Szia.mp3</file>
+        
         <file>icons/mobile/favorite-icon_01_color.svg</file>
         <file>icons/mobile/favorite-icon_01_dark.svg</file>
         <file>icons/mobile/favorite-icon_01_light.svg</file>

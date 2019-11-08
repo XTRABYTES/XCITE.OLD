@@ -36,7 +36,7 @@ ApplicationWindow {
 
     MediaPlayer {
         id: introSound
-        source: "qrc:/sounds/intro_01.wav"
+        source: "qrc:/sounds/intro_01.mp3"
         volume: 1
         autoPlay: true
     }
@@ -80,12 +80,12 @@ ApplicationWindow {
         //fiatCurrencies.append({"currency": "BTC", "ticker": "₿", "currencyNR": 3});
 
         soundList.setProperty(0, "name", "Bonjour");
-        soundList.setProperty(0, "sound", 'qrc:/sounds/Bonjour.wav')
+        soundList.setProperty(0, "sound", 'qrc:/sounds/Bonjour.mp3')
         soundList.setProperty(0, "soundNR", 0)
-        soundList.append({"name": "Hello", "sound": 'qrc:/sounds/Hello.wav', "soundNR": 1});
-        soundList.append({"name": "Hola", "sound": 'qrc:/sounds/hola.wav', "soundNR": 2});
-        soundList.append({"name": "Servus", "sound": 'qrc:/sounds/Servus.wav', "soundNR": 3});
-        soundList.append({"name": "Szia", "sound": 'qrc:/sounds/Szia.wav', "soundNR": 4});
+        soundList.append({"name": "Hello", "sound": 'qrc:/sounds/Hello.mp3', "soundNR": 1});
+        soundList.append({"name": "Hola", "sound": 'qrc:/sounds/hola.mp3', "soundNR": 2});
+        soundList.append({"name": "Servus", "sound": 'qrc:/sounds/Servus.mp3', "soundNR": 3});
+        soundList.append({"name": "Szia", "sound": 'qrc:/sounds/Szia.mp3', "soundNR": 4});
 
         coinList.setProperty(0, "name", nameXFUEL);
         coinList.setProperty(0, "fullname", "xfuel");
@@ -1707,7 +1707,7 @@ ApplicationWindow {
         id: soundList
         ListElement {
             name: ""
-            sound: 'qrc:/sounds/notification_1.wav'
+            sound: 'qrc:/sounds/notification_1.mp3'
             soundNR: 0
         }
     }
@@ -1808,39 +1808,39 @@ ApplicationWindow {
     }
 
     // sounds
-    SoundEffect {
+    MediaPlayer {
         id: click01
-        source: "qrc:/sounds/click_02.wav"
+        source: "qrc:/sounds/click_02.mp3"
         volume: selectedSystemVolume == 0? 0 : 0.15
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: notification
         source: soundList.get(selectedSound).sound
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: succesSound
-        source: "qrc:/sounds/Success.wav"
+        source: "qrc:/sounds/Success.mp3"
         volume: 0.50
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: failSound
-        source: "qrc:/sounds/Fail.wav"
+        source: "qrc:/sounds/Fail.mp3"
         volume: 0.50
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: outroSound
-        source: "qrc:/sounds/Outro.wav"
+        source: "qrc:/sounds/Outro.mp3"
         volume: selectedSystemVolume == 0? 0 : 0.5
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: swipe
-        source: "qrc:/sounds/swipe_01.wav"
+        source: "qrc:/sounds/swipe_01.mp3"
         volume: selectedSystemVolume == 0? 0 : 0.2
     }
 
