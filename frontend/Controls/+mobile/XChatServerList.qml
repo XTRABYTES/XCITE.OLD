@@ -114,7 +114,7 @@ Rectangle {
                 fillMode: Image.PreserveAspectFit
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
-                anchors.rightMargin: 28
+                anchors.rightMargin: 25
                 visible: serverStatus == "down"
             }
 
@@ -126,7 +126,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: nodeDownIcon.left
-                anchors.rightMargin: 15
+                anchors.rightMargin: 12
                 visible: serverStatus == "down"
             }
         }

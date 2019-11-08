@@ -28,6 +28,36 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     onStateChanged: detectInteraction()
+    visible: xchatSettingsModal.anchors.topMargin < Screen.height
+
+    property bool tagMeChangeInitiated: false
+    property bool tagEveryoneChangeInitiated: false
+    property bool dndChangeInitiated: false
+    property bool oldTagMe: userSettings.tagMe
+    property bool oldTagEveryone: userSettings.tagEveryone
+    property bool oldDND: userSettings.xChatDND
+    property int changeTagMeFailed: 0
+    property int changeTagEveryoneFailed: 0
+    property int changeDNDFailed : 0
+    property int saveFailed: 0
+
+    onChangeTagMeFailedChanged: {
+        if(changeTagMeFailed == 1) {
+            saveFailed = 1
+        }
+    }
+
+    onChangeTagEveryoneFailedChanged: {
+        if(changeTagEveryoneFailed == 1) {
+            saveFailed = 1
+        }
+    }
+
+    onChangeDNDFailedChanged: {
+        if (changeDNDFailed == 1) {
+            saveFailed = 1
+        }
+    }
 
     LinearGradient {
         anchors.fill: parent
@@ -92,7 +122,7 @@ Rectangle {
     Label {
         id: tagMeLabel
         z: 1
-        text: userSettings.tagMe === false ? "Mute personal tags (<font color='#0ED8D2'><b>ON</b></font>)" : "Mute personal tags (<font color='#0ED8D2'><b>OFF</b></font>)"
+        text: userSettings.tagMe === false ? "Mute personal tags (<font color='#0ED8D2'><b> on </b></font>)" : "Mute personal tags (<b> off </b>)"
         font.pixelSize: 16
         font.family: xciteMobile.name
         color: themecolor
@@ -138,11 +168,17 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (userSettings.tagMe === false) {
+                    if (userSettings.tagMe === false && tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false) {
+                        oldTagMe = false
+                        tagMeChangeInitiated = true
                         userSettings.tagMe = true
+                        updateToAccount()
                     }
-                    else {
+                    else if (tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false){
+                        oldTagMe = true
+                        tagMeChangeInitiated = true
                         userSettings.tagMe = false
+                        updateToAccount()
                     }
                 }
             }
@@ -152,7 +188,7 @@ Rectangle {
     Label {
         id: tagEveryoneLabel
         z: 1
-        text: userSettings.tagEveryone === false ? "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags (<font color='#0ED8D2'><b>ON</b></font>)" : "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags (<font color='#0ED8D2'><b>OFF</b></font>)"
+        text: userSettings.tagEveryone === false ? "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags (<font color='#0ED8D2'><b> on </b></font>)" : "Mute <font color='#5E8BFF'><b>@everyone</b></font> tags (<b> off </b>)"
         font.pixelSize: 16
         font.family: xciteMobile.name
         font.bold: true
@@ -199,11 +235,17 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (userSettings.tagEveryone === false) {
+                    if (userSettings.tagEveryone === false && tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false) {
+                        oldTagEveryone = false
+                        tagEveryoneChangeInitiated = true
                         userSettings.tagEveryone = true
+                        updateToAccount()
                     }
-                    else {
+                    else if (tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false){
+                        oldTagEveryone = true
+                        tagEveryoneChangeInitiated = true
                         userSettings.tagEveryone = false
+                        updateToAccount()
                     }
                 }
             }
@@ -213,7 +255,7 @@ Rectangle {
     Label {
         id: dndLabel
         z: 1
-        text: userSettings.xChatDND === false ? "Do not disturb (<font color='#0ED8D2'><b>OFF</b></font>)" : "Do not disturb (<font color='#0ED8D2'><b>ON</b></font)"
+        text: userSettings.xChatDND === false ? "Do not disturb (<b> off </b>)" : "Do not disturb (<font color='#0ED8D2'><b> on </b></font>)"
         font.pixelSize: 20
         font.family: xciteMobile.name
         font.bold: true
@@ -276,16 +318,55 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (userSettings.xChatDND === false) {
+                    if (userSettings.xChatDND === false && tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false) {
+                        oldDND = false
+                        dndChangeInitiated = true
                         userSettings.xChatDND = true
-                        status = "dnd"
+                        updateToAccount()
                     }
-                    else {
+                    else if (tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false){
+                        oldDND = true
+                        dndChangeInitiated = true
                         userSettings.xChatDND = false
-                        status = "online"
+                        updateToAccount()
                     }
-                    xChatTypingSignal(username,"addToOnline", status)
+                    xChatTypingSignal(myUsername,"addToOnline", status)
                 }
+            }
+        }
+    }
+
+    Connections {
+        target: UserSettings
+
+        onSaveSucceeded: {
+            if (tagMeChangeInitiated == true) {
+                tagMeChangeInitiated = false
+            }
+            if (tagEveryoneChangeInitiated == true) {
+                tagEveryoneChangeInitiated = false
+            }
+            if (dndChangeInitiated == true) {
+                dndChangeInitiated = false
+                xChatTypingSignal(myUsername,"addToOnline", status)
+            }
+        }
+
+        onSaveFailed: {
+            if (tagMeChangeInitiated == true) {
+                userSettings.tagMe = oldTagMe
+                changeTagMeFailed = 1
+                tagMeChangeInitiated = false
+            }
+            if (tagEveryoneChangeInitiated == true) {
+                userSettings.tagEveryone = oldTagEveryone
+                changeTagEveryoneFailed = 1
+                tagEveryoneChangeInitiated = false
+            }
+            if (dndChangeInitiated == true) {
+                userSettings.xChatDND = oldDND
+                changeDNDFailed = 1
+                dndChangeInitiated = false
             }
         }
     }
@@ -334,6 +415,90 @@ Rectangle {
                     xchatSettingsTracker = 0
                     timer.start()
                 }
+            }
+        }
+    }
+
+    Rectangle {
+        z: 10
+        id: saveFaileddModal
+        width: Screen.width
+        height: Screen.height
+        color: "transparent"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        visible: saveFailed == 1
+
+        MouseArea {
+            anchors.fill: parent
+        }
+
+        Rectangle {
+            width: Screen.width
+            height: Screen.height
+            color: "black"
+            opacity: 0.35
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+        }
+
+        DropShadow {
+            anchors.fill: notificationBox
+            source: notificationBox
+            samples: 9
+            radius: 4
+            color: darktheme == true? "#000000" : "#727272"
+            horizontalOffset:0
+            verticalOffset: 0
+            spread: 0
+        }
+
+        Rectangle {
+            id: notificationBox
+            width: notification.width + 56
+            height: 50
+            color: darktheme == true? "#2A2C31" : "#F2F2F2"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+
+            Item {
+                id: notification
+                width: notificationText.width
+                height: notificationIcon.height
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Label {
+                    id: notificationText
+                    text: changeTagMeFailed == 1 ? "FAILED to change personal tag setting!" : (changeTagEveryoneFailed == 1? "FAILED to change <font color='#5E8BFF'><b>@everyone</b></font> tag setting!" : "FAILED to change <font color='#0ED8D2'><b>Do not disturb</b></font> setting!")
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "#E55541"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
+        Timer {
+            id: saveFailedTimer
+            interval: 2000
+            repeat: false
+            running: saveFailed == 1
+
+            onTriggered: {
+                if(changeTagMeFailed == 1) {
+                    changeTagMeFailed = 0
+                }
+                if(changeTagEveryoneFailed == 1) {
+                    changeTagEveryoneFailed = 0
+                }
+                if(changeDNDFailed == 1) {
+                    changeDNDFailed = 0
+                }
+                saveFailed = 0
             }
         }
     }

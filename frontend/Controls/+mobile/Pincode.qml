@@ -283,7 +283,6 @@ Rectangle {
                                 && newPin2.text !== ""
                                 && newPin2.text.length === 4
                                 && passError3 == 0) {
-                            console.log("attempting to save pincode");
                             newPinSaved = 0;
                             userSettings.pinlock = true;
                             savePincode(newPin1.text);
@@ -297,8 +296,6 @@ Rectangle {
                     onSaveSucceeded: {
                         if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (createPin == 1){
-                                console.log("save succeeded");
-                                console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + ", account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                                 newPin1.text = "";
                                 newPin2.text = "";
                                 newPinSaved = 1
@@ -310,7 +307,6 @@ Rectangle {
                     onSaveFailed: {
                         if (pincodeTracker == 1 && selectedPage == "settings") {
                             if (createPin == 1) {
-                                console.log("save failed");
                                 userSettings.pinlock = true;
                                 newPin1.text = "";
                                 newPin2.text = "";

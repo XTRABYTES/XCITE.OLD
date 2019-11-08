@@ -74,10 +74,7 @@ Item {
                 pingingXChat = false
             }
 
-            console.log("X-CHAT DND status: " + userSettings.xChatDND)
-
-            status = userSettings.xChatDND === true? "dnd" : "idle"
-            xChatTypingSignal(username,"addToOnline", status)
+            xChatTypingSignal(myUsername,"addToOnline", status)
 
             mainRoot.push("../DashboardForm.qml")
             selectedPage = "home"

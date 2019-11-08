@@ -56,7 +56,6 @@ Rectangle {
                                 anchors.fill: parent
 
                                 onClicked: {
-                                    console.log("app button pushed")
                                     selectedApp = name
                                     openApplication(selectedApp)
                                 }

@@ -28,6 +28,7 @@ Rectangle {
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+    clip: true
     onStateChanged: {
         detectInteraction()
         if(xchatTracker === 1) {
@@ -163,7 +164,6 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    console.log("X-CHAT users")
                     xchatUserTracker = 1
                 }
             }
@@ -190,7 +190,6 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
-                    console.log("X-CHAT settings")
                     xchatSettingsTracker = 1
                 }
             }
@@ -262,8 +261,7 @@ Rectangle {
             id: typingTimer
             interval: 6000
             onTriggered: {
-                console.log("User stopped writing")
-                xChatTyping(username,"removeFromTyping",status);
+                xChatTyping(myUsername,"removeFromTyping",status);
                 if (userSettings.xChatDND === false) {
                     status="online"
                     checkIfIdle.restart();
@@ -275,22 +273,17 @@ Rectangle {
             id: sendTypingTimer
             interval: 5000
             onTriggered: {
-            //    console.log("Waiting 5 seconds before sending")
-                 sendTyping = true
+                sendTyping = true
             }
         }
 
         onTextChanged:  {
             msg = sendText.text
             cursorPos = sendText.cursorPosition
-            console.log("cursor position: " + cursorPos)
-            console.log("character before cursor: " + msg.charAt(cursorPos - 1))
             isTag = msg.charAt(cursorPos - 1) === "@" && (cursorPos === 1 || msg.charAt(cursorPos - 2) === " ")
 
             if (isTag) {
-                console.log("tagging detected")
                 beginTag = cursorPos
-                console.log("beginTag: " + beginTag)
                 endTag = cursorPos
                 startTagging = true
                 tagListTracker = 1
@@ -298,10 +291,7 @@ Rectangle {
 
             if (startTagging) {
                 endTag = cursorPos
-                console.log("endTag: " + endTag)
-                console.log("look for tag mark: " + msg.charAt(endTag - (endTag - beginTag) - 1))
                 if (msg.charAt(endTag - (endTag - beginTag) - 1) === "@") {
-                    console.log("tag filter: " + sendText.getText(beginTag, endTag))
                     tagFilter = sendText.getText(beginTag, endTag)
                 }
                 else {
@@ -320,7 +310,7 @@ Rectangle {
                 if (userSettings.xChatDND === false) {
                     status="online"
                 }
-                xChatTyping(username,"addToTyping",status);
+                xChatTyping(myUsername,"addToTyping",status);
                 sendTypingTimer.start()
                 sendXchatConnection.restart();
                 checkIfIdle.restart();
@@ -364,9 +354,9 @@ Rectangle {
                     if (UserSettings.xChatDND === false) {
                         status="online"
                     }
-                    xChatSend(username,"mobile",status,sendText.text)
+                    xChatSend(myUsername,"mobile",status,sendText.text)
                     sendText.text = "";
-                    xChatTyping(username,"removeFromTyping",status);
+                    xChatTyping(myUsername,"removeFromTyping",status);
                     checkIfIdle.restart();
                     myXchat.tagging = ""
                 }
@@ -386,7 +376,7 @@ Rectangle {
             target: xChat
 
             onXchatSuccess: {
-                if(myXchat.xChatOrderedList.get(myXchat.xChatOrderedList.count - 1).author === username) {
+                if(myXchat.xChatOrderedList.get(myXchat.xChatOrderedList.count - 1).author === myUsername) {
                     myXchat.xChatList.positionViewAtEnd()
                 }
                 if(!xChatScrolling) {
@@ -395,7 +385,6 @@ Rectangle {
             }
 
             onXchatTypingSignal: {
-                console.log(msg)
                 typing = msg
             }
         }
@@ -552,12 +541,8 @@ Rectangle {
                 tagFilter = ""
                 startTagging = false
                 beforeTag = sendText.getText(0, beginTag)
-                console.log("before tag: " + beforeTag)
                 afterTag = sendText.getText(endTag, msg.length)
-                console.log("after tag: " + afterTag)
                 sendText.text = beforeTag + " " + afterTag
-                console.log("trimmed text: " + sendText.text)
-                console.log("selected user: " + myXchatTaglist.userTag)
                 sendText.text = sendText.insert(pos, tag)
                 myXchatTaglist.userTag = ""
                 beforeTag = ""

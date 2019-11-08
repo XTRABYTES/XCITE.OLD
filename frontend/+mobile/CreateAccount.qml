@@ -466,7 +466,7 @@ Rectangle {
                             initialisePincode("0000");
                             contactList.setProperty(0, "firstName", "My addresses");
                             updateToAccount();
-                            username = userName.text.trim()
+                            myUsername = userName.text.trim()
                             newAccount = true
                             accountCreated = 1
                             availableUsername = 0
@@ -807,7 +807,7 @@ Rectangle {
 
         Label {
             id: welcomeUser
-            text: "WELCOME " + username
+            text: "WELCOME " + myUsername
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 20

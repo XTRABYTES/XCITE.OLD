@@ -84,7 +84,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         border.color: maincolor
         border.width: 1
-        opacity: pingingXChat == true? 0.25 : 1
+        opacity: pingingXChat == true? 0.5 : 1
         color: "transparent"
 
         MouseArea {
@@ -105,7 +105,8 @@ Rectangle {
             }
 
             onClicked: {
-                if (xChatConnection && !pingingXChat && !checkingXchat) {
+                if (xChatConnection && !pingingXChat) {
+                    pingTimeRemain = -1
                     pingingXChat = true
                     checkingXchat = true
                     resetServerUpdateStatus();
@@ -121,7 +122,7 @@ Rectangle {
 
         Text {
             id: pingButtonText
-            text: "PING"
+            text: (!pingingXChat)? "PING NOW" : "PINGING"
             font.family: xciteMobile.name
             font.pointSize: 14
             color: darktheme == true? "#F2F2F2" : maincolor
@@ -132,13 +133,45 @@ Rectangle {
         }
     }
 
+    Item {
+        id: timeUntilPing
+        height: timeUntilPingText.height
+        width: timeUntilPingText.width + 35
+        opacity: pingingXChat == true? 0.25 : 1
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: pingButton.bottom
+        anchors.bottomMargin: 10
+
+        Label {
+            id: timeUntilPingText
+            text: "time until next ping:"
+            font.family: xciteMobile.name
+            font.pointSize: 12
+            color: darktheme == true? "#F2F2F2" : maincolor
+            font.italic: true
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: timeUntilPingTime
+            text: pingTimeRemain > 0? pingTimeRemain + " s" : ""
+            font.family: xciteMobile.name
+            font.pointSize: 12
+            color: darktheme == true? "#F2F2F2" : maincolor
+            font.italic: true
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+        }
+    }
+
     Rectangle {
         id: networkInfoArea
         width: parent.width
         color: "transparent"
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: pingButton.bottom
-        anchors.topMargin: 20
+        anchors.top: timeUntilPing.bottom
+        anchors.topMargin: 10
         anchors.bottom: closeXchatNetworkModal.top
         anchors.bottomMargin: 20
         clip: true

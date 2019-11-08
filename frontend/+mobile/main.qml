@@ -208,7 +208,7 @@ ApplicationWindow {
     // Global setting, editable
     property bool darktheme: userSettings.theme == "dark"? true : false
     property string fiatTicker: fiatCurrencies.get(userSettings.defaultCurrency).ticker
-    property string username: ""
+    property string myUsername: ""
     property string selectedPage: ""
     property string status: "online"
 
@@ -375,6 +375,7 @@ ApplicationWindow {
     property real pendingETH: 0
     property string selectedXChatServer: ""
     property bool pingingXChat: false
+    property int pingTimeRemain: 60
     property string xChatMessage: ""
     property bool xChatScrolling: false
     property int xChatID: 1
@@ -431,10 +432,9 @@ ApplicationWindow {
 
     // functions
     function openApplication(app) {
-        console.log("opening application; appname = " + app)
         if (app === "X-CHAT") {
             status = userSettings.xChatDND == true? "dnd" : status
-            xChatTypingSignal(username,"addToOnline", status)
+            xChatTypingSignal(myUsername,"addToOnline", status)
             xchatTracker = 1
             selectedApp = ""
         }
@@ -483,14 +483,11 @@ ApplicationWindow {
     }
 
     function updatePending(coin, address, txid, result) {
-        console.log("updating pending list")
-        console.log("checking transaction: " + coin + ", " + address + ", " + txid + ", " + result)
         for (var i = 0; i < pendingList.count; ++i){
             if(pendingList.get(i).coin === coin) {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
                         if(result === "true") {
-                            console.log("remove pending transaction")
                             pendingList.remove(i)
                         }
                     }
@@ -505,8 +502,6 @@ ApplicationWindow {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
                         if(pendingList.get(i).check >= 40) {
-                            console.log("pending transaction canceled")
-                            console.log("canceled transaction: " + coin + ", " + address + ", " + txid)
                             var addressname = getLabelAddress(coin, address)
                             var cancelAlert = "transaction canceled: " + txid
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname})
@@ -986,12 +981,10 @@ ApplicationWindow {
 
             messageArray = xChatMessage.split(' ')
             for(var i = 0; i < (messageArray.length); i ++) {
-                console.log(messageArray[i])
-                if(author !== username && userSettings.xChatDND === false) {
-                    if ((messageArray[i].toLowerCase() === "@" + username.toLowerCase() || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() || messageArray[i].toLowerCase() === "@" + username.toLowerCase() + ">/b>" || messageArray[i].toLowerCase() === "<b>@" + username.toLowerCase() + "</b>")  && userSettings.tagMe === true) {
+                if(author !== myUsername && userSettings.xChatDND === false) {
+                    if ((messageArray[i].toLowerCase() === "@" + myUsername.toLowerCase() || messageArray[i].toLowerCase() === "<b>@" + myUsername.toLowerCase() || messageArray[i].toLowerCase() === "@" + myUsername.toLowerCase() + ">/b>" || messageArray[i].toLowerCase() === "<b>@" + myUsername.toLowerCase() + "</b>")  && userSettings.tagMe === true) {
                         notification.play()
                         xChatTag = 1
-                        console.log("someone mentioned you in X-CHAT")
                         if (xchatTracker !== 1) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : xChatMeta[0] + " has mentioned you", "origin" : "X-CHAT"})
                             alert = true
@@ -1000,7 +993,6 @@ ApplicationWindow {
                     else if ((messageArray[i] === "@everyone" || messageArray[i] === "<b>@everyone" || messageArray[i] === "@everyone</b>" || messageArray[i] === "<b>@everyone/b>")  && userSettings.tagEveryone === true) {
                         notification.play()
                         xChatTag = 2
-                        console.log("message to everyone in X-CHAT")
                         if (xchatTracker !== 1) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
                             alert = true
@@ -1009,12 +1001,11 @@ ApplicationWindow {
                 }
 
             }
-            var searchUsername = new RegExp( "@" + username, "gi")
+            var searchUsername = new RegExp( "@" + myUsername, "gi")
             var searchEveryone = new RegExp("@everyone", "gi")
-            xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + username + "</b></font>")
+            xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + myUsername + "</b></font>")
             xChatMessage = xChatMessage.replace(searchEveryone, "<font color='#5E8BFF'><b>@everyone</b></font>")
             xChatMessage = xChatMessage
-            console.log(xChatMessage)
             xChatTread.append({"author" : author, "device" : device, "date" : date + " at " + time, "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
             xChatID = xChatID + 1
         }
@@ -1026,9 +1017,7 @@ ApplicationWindow {
     function loadOnlineUsers(online) {
         xChatOnline.clear()
         if (typeof online !== "undefined") {
-            console.log("online: " + online)
             var obj = JSON.parse(online);
-            console.log("obj: " + obj);
             for (var i in obj){
                 var data = obj[i];
                 xChatOnline.append(data)
@@ -1048,7 +1037,6 @@ ApplicationWindow {
                         xChatUsers.setProperty(e,"status",xChatOnline.get(o).status)
                         xChatUsers.setProperty(e,"updated",true)
                         xChatOnline.setProperty(o,"newUser",false)
-                        console.log("existing user updated")
                     }
                 }
             }
@@ -1056,14 +1044,12 @@ ApplicationWindow {
                 var act = xChatOnline.get(y).newUser
                 if (act === true) {
                     xChatUsers.append({"username":xChatOnline.get(y).username, "date":xChatOnline.get(y).date, "time":xChatOnline.get(y).time, "status":xChatOnline.get(y).status, "active":true, "updated": true})
-                    console.log("new user added")
                 }
             }
             for (var b = 0; b < xChatUsers.count; b ++) {
                 var updated = xChatUsers.get(b).updated
                 if (updated === false) {
                     xChatUsers.setProperty(b,"status","offline")
-                    console.log("existing user off line")
                 }
             }
         }
@@ -1077,18 +1063,15 @@ ApplicationWindow {
                     xChatServers.setProperty(i, "responseTime", responseTime)
                     xChatServers.setProperty(i, "serverStatus", serverStatus)
                     xChatServers.setProperty(i, "updated", true)
-                    console.log("existing server updated: " + server)
                     serverFound = true
                 }
             }
             if(!serverFound) {
                 xChatServers.append({"name": server, "responseTime": responseTime, "serverStatus": serverStatus, "updated": true})
-                console.log("new server added to list: " + server)
             }
         }
         else {
             xChatServers.append({"name": server, "responseTime": responseTime, "serverStatus": serverStatus, "updated": true})
-            console.log("new server added to list: " + server)
         }
     }
 
@@ -1097,7 +1080,6 @@ ApplicationWindow {
             if (!xChatServers.get(i).updated) {
                 xChatServers.setProperty(i, "serverStatus", "down")
                 xChatServers.setProperty(i, "updated", true)
-                console.log("existing server down: " + xChatServers.get(i).name)
             }
         }
     }
@@ -1173,7 +1155,7 @@ ApplicationWindow {
             userSettings.systemVolume = settingsLoaded.systemVolume;
             userSettings.tagMe = settingsLoaded.tagMe !== undefined? settingsLoaded.tagMe === "true" : true;
             userSettings.tagEveryone = settingsLoaded.tagEveryone !== undefined? settingsLoaded.tagEveryone === "true" : true
-            userSettings.xChatDND = settingsLoaded.xChatDND !== undefined? settingsLoaded.xChatDND === "true" : true
+            userSettings.xChatDND = settingsLoaded.xChatDND !== undefined? settingsLoaded.xChatDND === "true" : false
             coinList.setProperty(0, "active", userSettings.xfuel);
             coinList.setProperty(1, "active", userSettings.xby);
             coinList.setProperty(2, "active", userSettings.xtest);
@@ -1492,24 +1474,29 @@ ApplicationWindow {
             target: xChat
 
             onXchatSuccess: {
-                console.log(author + " - " +  date + " - " + time + " - " + device + " - " + message)
                 updateXchat(author,date,time,device,message)
             }
             onXchatConnectionSuccess: {
                 checkingXchat = false
-                console.log("X-CHAT online")
-                xChatConnection = true
-                xChatConnecting = false
+                if (xChatConnection == false) {
+                    xChatConnection = true
+                    xChatConnecting = false
+                    if (!pingingXChat) {
+                        pingTimeRemain = -1
+                        pingingXChat = true
+                        resetServerUpdateStatus();
+                        pingXChatServers();
+                        updateServerStatus();
+                    }
+                }
             }
 
             onXchatConnectionFail: {
                 checkingXchat = false
-                console.log("X-CHAT offline")
                 xChatConnection = false
                 xChatConnecting = false
             }
             onXchatConnecting: {
-                console.log("X-CHAT connecting")
                 xChatConnecting = true
             }
             onXchatStateChanged: {
@@ -1532,19 +1519,17 @@ ApplicationWindow {
             }
             onServerResponseTime: {
                 updateServerResponseTime(server, responseTime, serverStatus)
-                console.log(server + " online: " + responseTime + " ns")
             }
             onSelectedXchatServer: {
                 selectedXChatServer = server
-                console.log("X-CHAT connected to: " + server)
                 checkingXchat = false
                 pingingXChat = false
+                pingTimeRemain = 60
             }
             onXChatServerDown: {
                 for (var i = 0; i < xChatServers.count; i ++) {
                     if (server === xChatServers.get(i).name) {
                         xChatServers.setProperty(i, "serverStatus", serverStatus)
-                        console.log("server down: " + server)
                     }
                 }
             }
@@ -1865,12 +1850,31 @@ ApplicationWindow {
         onTriggered: {
             if (!checkingXchat) {
                 checkingXchat = true
-                resetServerUpdateStatus();
                 checkXChatSignal();
-                updateServerStatus();
             }
         }
     }
+
+    Timer {
+            id: checkXchatPing
+            interval: 1000
+            repeat: true
+            running: pingTimeRemain > 0
+
+            onTriggered: {
+                pingTimeRemain = pingTimeRemain - 1
+                if (pingTimeRemain == 0) {
+                    if (xChatConnection && !pingingXChat) {
+                        pingTimeRemain = -1
+                        pingingXChat = true
+                        resetServerUpdateStatus();
+                        pingXChatServers();
+                        updateServerStatus();
+                        pingingXChat = false
+                    }
+                }
+            }
+        }
 
     Timer {
         id: sendXchatConnection
@@ -1879,7 +1883,7 @@ ApplicationWindow {
         running: true
 
         onTriggered: {
-            xChatTypingSignal(username,"addToOnline", status);
+            xChatTypingSignal(myUsername,"addToOnline", status);
         }
     }
 
@@ -1892,7 +1896,7 @@ ApplicationWindow {
         onTriggered: {
             if (userSettings.xChatDND == false) {
                 status = "idle"
-                xChatTypingSignal(username,"addToOnline", status);
+                xChatTypingSignal(myUsername,"addToOnline", status);
             }
         }
     }

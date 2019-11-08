@@ -282,7 +282,7 @@ void XchatObject::mqtt_StateChanged() {
                 qDebug() << "connected to  XCHAT";
                 emit xchatConnectionSuccess();
                 emit xchatStateChanged();
-                pingXchatServers();
+                //pingXchatServers();
                 auto subscription = mqtt_client->subscribe(topic);
                 if (!subscription) {
                 } else {
@@ -421,7 +421,7 @@ void XchatObject::pingXchatServers() {
 QString XchatObject::matchServer(const QString &server){
     QString xChatServer;
     if (server == "192.227.147.162") {
-        xChatServer = "Buffalo (US)";
+        xChatServer = "Buffalo 01 (US)";
     }
     else if (server == "85.214.143.20") {
         xChatServer = "Berlin 01 (DE)";
@@ -435,9 +435,9 @@ QString XchatObject::matchServer(const QString &server){
     else if (server == "85.214.78.233") {
         xChatServer = "Berlin 02 (DE)";
     }
-    //else if (server == "185.177.21.73") {
-    //    xChatServer = "Sonsbeck (DE)";
-    //}
+    else if (server == "198.46.193.44") {
+        xChatServer = "Buffalo 02 (US)";
+    }
     return xChatServer;
 }
 

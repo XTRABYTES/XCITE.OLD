@@ -870,18 +870,14 @@ Rectangle {
             calculator: getTestnet(coinID.text) === true? 0 : 1
             onTextChanged: {
                 commaArray = sendAmount.text.split(',')
-                console.log("first part: " + commaArray[0])
                 if (commaArray[1] !== undefined) {
                     detectComma = 1
-                    console.log("comma detected")
                 }
                 else {
                     detectComma = 0
-                    console.log("no comma detected")
                 }
                 if (detectComma == 1){
                     replaceComma = sendAmount.text.replace(",",".")
-                    console.log("formatted number: " + replaceComma)
                     transferArray = replaceComma.split('.')
                     if (transferArray[1] !== undefined) {
                         precision = transferArray[1].length
@@ -892,9 +888,7 @@ Rectangle {
                 }
                 else {
                     replaceComma = sendAmount.text
-                    console.log("formatted number: " + replaceComma)
                     transferArray = sendAmount.text.split('.')
-                    console.log("second part: " + transferArray[1])
                     if (transferArray[1] !== undefined) {
                         precision = transferArray[1].length
                     }
@@ -904,7 +898,6 @@ Rectangle {
                 }
 
 
-                console.log("number of decimals: " + precision)
                 detectInteraction()
             }
         }
@@ -1218,7 +1211,6 @@ Rectangle {
                             && calculatorTracker == 0
                             && (network == "xtrabytes" || network == "xfuel" || network == "testnet")) {
                         selectNetwork = true
-                        console.log("setting network")
                         setNetwork(network)
                     }
                 }
@@ -1549,7 +1541,6 @@ Rectangle {
                         pincodeTracker = 1
                     }
                     else {
-                        console.log(keyInput.text + " " +  replaceComma + " " +  getPrivKey(coinID.text, walletLabel.text))
                         sendCoins(keyInput.text + " " +  replaceComma + " " +  getPrivKey(coinID.text, walletLabel.text))
                         failedSend = 0
                         requestSend = 1
@@ -1564,7 +1555,6 @@ Rectangle {
                 running: false
 
                 onTriggered: {
-                    console.log(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
                     sendCoins(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
                     failedSend = 0
                     requestSend = 1
@@ -1588,7 +1578,6 @@ Rectangle {
                     if (transferTracker == 1 && requestSend == 1) {
                         confirmationSend = 1
                         requestSend = 0
-                        console.log("new transaction: " + coinID.text + ", " + getAddress(coinID.text, walletLabel.text) + ", " + transactionId + ", " + replaceComma)
                         pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
                     }
                 }

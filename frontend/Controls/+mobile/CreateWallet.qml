@@ -249,9 +249,6 @@ Rectangle {
 
                         onKeyPairCreated: {
                             if (createWalletTracker == 1 && createInitiated == true) {
-                                console.log("Address is: " + address)
-                                console.log("PubKey is: " + pubKey)
-                                console.log("PrivKey is: " + privKey)
                                 privateKey.text = privKey
                                 publicKey.text = pubKey
                                 addressHash.text = address

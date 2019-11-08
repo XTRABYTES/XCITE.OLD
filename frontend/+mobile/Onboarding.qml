@@ -163,9 +163,7 @@ Item {
                 onReleased: {
                     loginTracker = 1
                     clearAllSettings();
-                    console.log("checking OS")
                     checkOS();
-                    console.log("requesting state camera permission")
                     checkCamera();
                 }
             }

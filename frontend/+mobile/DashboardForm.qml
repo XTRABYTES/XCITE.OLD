@@ -1805,7 +1805,6 @@ Item {
                         }
 
                         onClicked: {
-                            console.log("theme switch pushed")
                             if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == true) {
                                 userSettings.theme = "light"
                             }

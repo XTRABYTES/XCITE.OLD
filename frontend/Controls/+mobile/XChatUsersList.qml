@@ -55,7 +55,7 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.rightMargin: 15
                 anchors.verticalCenter: userName.verticalCenter
-                visible: status == "dnd"
+                visible: getUserStatus(username) === "dnd"
             }
 
             Image {
@@ -78,7 +78,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.left
                 anchors.verticalCenter: userName.verticalCenter
                 color: status == "online"? "#4BBE2E" : (status == "idle"? "#F7931A" : "#E55541")
-                visible: status !== "dnd"
+                visible: getUserStatus(username) !== "dnd"
             }
 
             Rectangle {
@@ -89,12 +89,11 @@ Rectangle {
                     anchors.fill: parent
 
                     onClicked: {
-                        if(getUserStatus(username) !== "dnd") {
+                        if(getUserStatus(username) !== "dnd" && username !== myUsername) {
                             tagging = ""
-                            console.log("user tagged: " + username)
                             tagging = "@" + username + " "
                         }
-                        else {
+                        else if (getUserStatus(username) === "dnd") {
                             dndNotification(username)
                         }
                     }

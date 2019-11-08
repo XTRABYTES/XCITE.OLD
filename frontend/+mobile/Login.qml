@@ -293,10 +293,11 @@ Item {
                         selectedPage = "home"
                         mainRoot.pop()
                         mainRoot.push("../Home.qml")
-                        username = userName.text.trim()
+                        myUsername = userName.text.trim()
                         loginSuccesTimer.start()
                         loadingSettings = 0
                         verifyingBalances = 0
+                        status = userSettings.xChatDND === true? "dnd" : "idle"
                     }
                 }
 

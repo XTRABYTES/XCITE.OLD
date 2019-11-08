@@ -407,8 +407,6 @@ Rectangle {
 
                         onAddressExtracted: {
                             if (importKeyTracker == 1 && importInitiated == true) {
-                                console.log("Address is: " + addressID)
-                                console.log("PubKey is: " + publicKey)
                                 privateKey.text = newAddress.text
                                 publicKey.text = pubKey
                                 addressHash.text = addressID

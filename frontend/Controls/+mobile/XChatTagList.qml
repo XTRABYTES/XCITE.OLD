@@ -43,7 +43,7 @@ Rectangle {
             }
 
             Label {
-                id: pickListUsers
+                id: userName
                 text: username
                 color: "#F2F2F2"
                 font.pixelSize: 14
@@ -51,6 +51,17 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 15
+            }
+
+            Rectangle {
+                id: onlineIndicator
+                height: 8
+                width: 8
+                radius: 8
+                anchors.horizontalCenter: parent.left
+                anchors.verticalCenter: userName.verticalCenter
+                color: status == "online"? "#4BBE2E" : (status == "idle"? "#F7931A" : "#E55541")
+                visible: getUserStatus(username) !== "dnd"
             }
 
             Rectangle {
@@ -62,7 +73,6 @@ Rectangle {
 
                     onClicked: {
                         userTag = ""
-                        console.log("user tagged: " + username)
                         userTag = username
                     }
                 }
@@ -77,7 +87,7 @@ Rectangle {
         filters: [
             RegExpFilter {
                 roleName: "username"
-                pattern: tagFilter
+                pattern: tagFilter && !myUsername
                 caseSensitivity: Qt.CaseInsensitive
             },
             RegExpFilter {
@@ -102,7 +112,6 @@ Rectangle {
 
         onUserCountChanged:  {
             xChatFilterResults = userCount
-            console.log("filter results: " + xChatFilterResults)
         }
     }
 }

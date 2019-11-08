@@ -36,7 +36,7 @@ Rectangle {
         width: Screen.width
         height: Screen.height
         color: "black"
-        opacity: 0.15
+        opacity: 0.35
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
     }

@@ -61,10 +61,10 @@ Rectangle {
                 anchors.topMargin: 2
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 2
-                anchors.left: author==(username)? undefined : parent.left
-                anchors.leftMargin: author==(username)? 0 : 2
-                anchors.right: author==(username)? parent.right : undefined
-                anchors.rightMargin: author==(username)? 2 : 0
+                anchors.left: author==(myUsername)? undefined : parent.left
+                anchors.leftMargin: author==(myUsername)? 0 : 2
+                anchors.right: author==(myUsername)? parent.right : undefined
+                anchors.rightMargin: author==(myUsername)? 2 : 0
                 color: darktheme == true? "#2A2C31" : "#F2F2F2"
                 visible: author != "xChatRobot"
             }
@@ -95,12 +95,11 @@ Rectangle {
                         //focus: false
 
                         onClicked: {
-                            if(getUserStatus(author) !== "dnd") {
+                            if(getUserStatus(author) !== "dnd" && author !== myUsername) {
                                 tagging = ""
-                                console.log("author pushed")
                                 tagging = "@" + senderID.text
                             }
-                            else {
+                            else if (getUserStatus(author) === "dnd"){
                                 dndNotification(author)
                             }
                         }
@@ -131,7 +130,7 @@ Rectangle {
                 anchors.leftMargin: 5
                 anchors.verticalCenter: senderID.verticalCenter
                 color: getUserStatus(author) === "online"? "#4BBE2E" : (getUserStatus(author) === "idle"? "#F7931A" : "#E55541")
-                visible: author != "xChatRobot" && status != "dnd"
+                visible: author != "xChatRobot" && getUserStatus(author) !== "dnd"
             }
 
             Rectangle {
@@ -142,7 +141,7 @@ Rectangle {
                 anchors.left: senderID.right
                 anchors.leftMargin: 5
                 anchors.verticalCenter: senderID.verticalCenter
-                visible: status == "dnd"
+                visible: getUserStatus(author) === "dnd"
             }
 
             Image {

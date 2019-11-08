@@ -1140,7 +1140,7 @@ Rectangle {
     // Delete success state
     Controls.ReplyModal {
         id: deleted
-        modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 75
+        modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 100
         visible: deleteConfirmed == 1
 
         Image {
