@@ -137,11 +137,13 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
 
     QEventLoop loop;
     QTimer getTimer;
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
 
+    getTimer.start(4000);
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-    getTimer.start(4000);
+    QObject::connect(restclient, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+
     loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
 
     statusCode = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
@@ -1060,9 +1062,10 @@ QByteArray Settings::RestAPIGetCall(QString apiURL){
     QEventLoop loop;
     QTimer getTimer;
     QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
-
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    QObject::connect(restclient, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+
     getTimer.start(4000);
     loop.exec();
 
@@ -1237,9 +1240,11 @@ bool Settings::checkInternet(){
     QNetworkReply* reply = nam.get(req);
     QEventLoop loop;
     QTimer getTimer;
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
 
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    QObject::connect(&nam, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
 
     getTimer.start(4000);
     loop.exec();
