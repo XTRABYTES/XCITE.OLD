@@ -43,6 +43,8 @@ void MarketValue::findCurrencyValue(QString currency)
     QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    QObject::connect(restclient, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+
     getTimer.start(10000); // 10000 milliSeconds wait period for get() method to work properly
 
     loop.exec();

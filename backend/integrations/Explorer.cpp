@@ -140,11 +140,8 @@ QString Explorer::getTransactionDetails(QString coin, QString transaction) {
 
     QEventLoop eventLoop;
     QTimer getTimer;
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&eventLoop, SLOT(quit()));
 
     QNetworkAccessManager mgr;
-    QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
-
     QJsonObject json;
 
     QNetworkRequest request(url);
@@ -157,6 +154,11 @@ QString Explorer::getTransactionDetails(QString coin, QString transaction) {
 
     QNetworkReply *reply = mgr.get(request);
     getTimer.start(4000);
+
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&eventLoop, SLOT(quit()));
+    connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &eventLoop, SLOT(quit()));
+    QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
     eventLoop.exec();
 
     QString strReply = (QString)reply->readAll();
@@ -174,11 +176,7 @@ QString Explorer::getBalanceAddressXBY(QString coin, QString address, QString pa
 
     QEventLoop eventLoop;
     QTimer getTimer;
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&eventLoop, SLOT(quit()));
-
     QNetworkAccessManager mgr;
-    QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
-
     QJsonObject json;
 
     QNetworkRequest request(url);
@@ -191,6 +189,10 @@ QString Explorer::getBalanceAddressXBY(QString coin, QString address, QString pa
 
     QNetworkReply *reply = mgr.get(request);
     getTimer.start(4000); // 4000 milliSeconds wait period for get() method to work properly
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&eventLoop, SLOT(quit()));
+    connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &eventLoop, SLOT(quit()));
+    QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
 
     eventLoop.exec();
 
@@ -209,13 +211,9 @@ QString Explorer::getBalanceAddressExt(QString coin, QString address){
     QUrl Url;
     Url.setPath(url);
 
-    QEventLoop eventLoop;
+    QEventLoop loop;
     QTimer getTimer;
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&eventLoop, SLOT(quit()));
-
     QNetworkAccessManager mgr;
-    QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
-
     QJsonObject json;
 
     QNetworkRequest request(url);
@@ -229,7 +227,12 @@ QString Explorer::getBalanceAddressExt(QString coin, QString address){
     QNetworkReply *reply = mgr.get(request);
     getTimer.start(4000); // 4000 milliSeconds wait period for get() method to work properly
 
-    eventLoop.exec();
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+
+    loop.exec();
 
     QString strReply = (QString)reply->readAll();
     reply->close();
