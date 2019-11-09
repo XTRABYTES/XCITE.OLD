@@ -487,7 +487,7 @@ Rectangle {
             Item {
                 id: notification
                 width: notificationText.width
-                height: notificationIcon.height
+                height: notificationText.height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
 

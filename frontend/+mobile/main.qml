@@ -378,6 +378,7 @@ ApplicationWindow {
     property int pingTimeRemain: 60
     property string xChatMessage: ""
     property bool newMessages: false
+    property bool messageAdded: false
     property bool xChatScrolling: false
     property int xChatID: 1
     property int xChatTag: 0
@@ -956,6 +957,7 @@ ApplicationWindow {
     }
 
     // X-CHAT
+
     function dndNotification (user) {
         dndUser = user
         dndTracker = 1
@@ -971,45 +973,6 @@ ApplicationWindow {
 
         return userStatus
     }
-
-    function updateXchat(author,date,time,device,message) {
-            xChatTag = 0
-            xChatMessage = message
-
-            for(var o = 0; o < notAllowed.length; o ++) {
-                xChatMessage = xChatMessage.replace(notAllowed[o], "")
-            }
-
-            messageArray = xChatMessage.split(' ')
-            for(var i = 0; i < (messageArray.length); i ++) {
-                if(author !== myUsername && userSettings.xChatDND === false) {
-                    if ((messageArray[i].toLowerCase() === "@" + myUsername.toLowerCase() || messageArray[i].toLowerCase() === "<b>@" + myUsername.toLowerCase() || messageArray[i].toLowerCase() === "@" + myUsername.toLowerCase() + ">/b>" || messageArray[i].toLowerCase() === "<b>@" + myUsername.toLowerCase() + "</b>")  && userSettings.tagMe === true) {
-                        notification.play()
-                        xChatTag = 1
-                        if (xchatTracker !== 1) {
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : xChatMeta[0] + " has mentioned you", "origin" : "X-CHAT"})
-                            alert = true
-                        }
-                    }
-                    else if ((messageArray[i] === "@everyone" || messageArray[i] === "<b>@everyone" || messageArray[i] === "@everyone</b>" || messageArray[i] === "<b>@everyone/b>")  && userSettings.tagEveryone === true) {
-                        notification.play()
-                        xChatTag = 2
-                        if (xchatTracker !== 1) {
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
-                            alert = true
-                        }
-                    }
-                }
-
-            }
-            var searchUsername = new RegExp( "@" + myUsername, "gi")
-            var searchEveryone = new RegExp("@everyone", "gi")
-            xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + myUsername + "</b></font>")
-            xChatMessage = xChatMessage.replace(searchEveryone, "<font color='#5E8BFF'><b>@everyone</b></font>")
-            xChatMessage = xChatMessage
-            xChatTread.append({"author" : author, "device" : device, "date" : date + " at " + time, "message" : xChatMessage, "ID" : xChatID, "tag": xChatTag})
-            xChatID = xChatID + 1
-        }
 
     function xChatTyping(user, route, status){
         xChatTypingSignal(user, route, status)
@@ -1478,68 +1441,68 @@ ApplicationWindow {
     }
 
     Connections {
-            target: xChat
+        target: xChat
 
-            onXchatSuccess: {
-                updateXchat(author,date,time,device,message)
-            }
-            onXchatConnectionSuccess: {
-                checkingXchat = false
-                if (xChatConnection == false) {
-                    xChatConnection = true
-                    xChatConnecting = false
-                    if (!pingingXChat) {
-                        pingTimeRemain = -1
-                        pingingXChat = true
-                        resetServerUpdateStatus();
-                        pingXChatServers();
-                        updateServerStatus();
-                    }
-                }
-            }
+        onXchatSuccess: {
 
-            onXchatConnectionFail: {
-                checkingXchat = false
-                xChatConnection = false
+        }
+        onXchatConnectionSuccess: {
+            checkingXchat = false
+            if (xChatConnection == false) {
+                xChatConnection = true
                 xChatConnecting = false
-            }
-            onXchatConnecting: {
-                xChatConnecting = true
-            }
-            onXchatStateChanged: {
-                if(!xChatConnection) {
+                if (!pingingXChat) {
+                    pingTimeRemain = -1
+                    pingingXChat = true
                     resetServerUpdateStatus();
+                    pingXChatServers();
                     updateServerStatus();
                 }
             }
-            onXchatNoInternet: {
-                networkAvailable = 0
+        }
+
+        onXchatConnectionFail: {
+            checkingXchat = false
+            xChatConnection = false
+            xChatConnecting = false
+        }
+        onXchatConnecting: {
+            xChatConnecting = true
+        }
+        onXchatStateChanged: {
+            if(!xChatConnection) {
+                resetServerUpdateStatus();
+                updateServerStatus();
             }
-            onXchatInternetOk: {
-                networkAvailable = 1
-            }
-            onOnlineUsersSignal:{
-                loadOnlineUsers(online)
-            }
-            onClearOnlineNodeList: {
-                xChatServers.clear()
-            }
-            onServerResponseTime: {
-                updateServerResponseTime(server, responseTime, serverStatus)
-            }
-            onSelectedXchatServer: {
-                selectedXChatServer = server
-                checkingXchat = false
-                pingingXChat = false
-                pingTimeRemain = 60
-            }
-            onXChatServerDown: {
-                for (var i = 0; i < xChatServers.count; i ++) {
-                    if (server === xChatServers.get(i).name) {
-                        xChatServers.setProperty(i, "serverStatus", serverStatus)
-                    }
+        }
+        onXchatNoInternet: {
+            networkAvailable = 0
+        }
+        onXchatInternetOk: {
+            networkAvailable = 1
+        }
+        onOnlineUsersSignal:{
+            loadOnlineUsers(online)
+        }
+        onClearOnlineNodeList: {
+            xChatServers.clear()
+        }
+        onServerResponseTime: {
+            updateServerResponseTime(server, responseTime, serverStatus)
+        }
+        onSelectedXchatServer: {
+            selectedXChatServer = server
+            checkingXchat = false
+            pingingXChat = false
+            pingTimeRemain = 60
+        }
+        onXChatServerDown: {
+            for (var i = 0; i < xChatServers.count; i ++) {
+                if (server === xChatServers.get(i).name) {
+                    xChatServers.setProperty(i, "serverStatus", serverStatus)
                 }
             }
+        }
 
     }
 
@@ -1863,25 +1826,25 @@ ApplicationWindow {
     }
 
     Timer {
-            id: checkXchatPing
-            interval: 1000
-            repeat: true
-            running: pingTimeRemain > 0
+        id: checkXchatPing
+        interval: 1000
+        repeat: true
+        running: pingTimeRemain > 0
 
-            onTriggered: {
-                pingTimeRemain = pingTimeRemain - 1
-                if (pingTimeRemain == 0) {
-                    if (xChatConnection && !pingingXChat) {
-                        pingTimeRemain = -1
-                        pingingXChat = true
-                        resetServerUpdateStatus();
-                        pingXChatServers();
-                        updateServerStatus();
-                        pingingXChat = false
-                    }
+        onTriggered: {
+            pingTimeRemain = pingTimeRemain - 1
+            if (pingTimeRemain == 0) {
+                if (xChatConnection && !pingingXChat) {
+                    pingTimeRemain = -1
+                    pingingXChat = true
+                    resetServerUpdateStatus();
+                    pingXChatServers();
+                    updateServerStatus();
+                    pingingXChat = false
                 }
             }
         }
+    }
 
     Timer {
         id: sendXchatConnection
@@ -1982,7 +1945,7 @@ ApplicationWindow {
                         pendingList.setProperty(o, "check", 0)
                         times = 0
                     }
-                pendingList.setProperty(o, "check", (times + 1))
+                    pendingList.setProperty(o, "check", (times + 1))
                 }
             }
         }

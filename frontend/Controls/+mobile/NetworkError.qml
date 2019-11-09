@@ -54,8 +54,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         width: parent.width
         height: parent.height
-        color: "black"
-        opacity: 0.35
+        color: "#2A2C31"
     }
 
     Label {
@@ -64,7 +63,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
-        color: "#FD2E2E"
+        color: "#F2F2F2"
         font.pixelSize: 18
         font.family: xciteMobile.name
     }
@@ -122,7 +121,7 @@ Rectangle {
         height: 1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        color: bgcolor
+        color: "#34363D"
     }
 
     Timer {

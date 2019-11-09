@@ -254,7 +254,7 @@ Rectangle {
         id: newMessagesBar
         width: Screen.width
         height: 20
-        color: darktheme == false ? "#34363D" : "#2A2C31"
+        color: "#6C6C6C"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: sendText.top
         anchors.bottomMargin: 5
@@ -269,34 +269,6 @@ Rectangle {
             color: "#F2F2F2"
             font.family: xciteMobile.name
             font.pixelSize: 16
-        }
-
-        Image {
-            id: newMessagesArrow
-            source: 'qrc:/icons/mobile/dropdown-icon_01_light.svg'
-            height: 14
-            width: 14
-            fillMode: Image.PreserveAspectFit
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-            anchors.rightMargin: 28
-        }
-
-        Rectangle {
-            height: 20
-            width: 20
-            color: "transparent"
-            anchors.horizontalCenter: newMessagesArrow.horizontalCenter
-            anchors.verticalCenter: newMessagesArrow.verticalCenter
-
-            MouseArea {
-                anchors.fill: parent
-
-                onClicked: {
-                    myXchat.xChatList.positionViewAtEnd()
-                    newMessages = false
-                }
-            }
         }
     }
 
@@ -439,21 +411,52 @@ Rectangle {
             target: xChat
 
             onXchatSuccess: {
-                if(myXchat.xChatOrderedList.get(myXchat.xChatOrderedList.count - 1).author === myUsername) {
-                    myXchat.xChatList.positionViewAtEnd()
-                }
-                else if(!xChatScrolling) {
-                    myXchat.xChatList.positionViewAtEnd()
-                }
-                else {
-                    newMessages = true
-                }
+                addMessageToThread.sendMessage({"author": author, "date": date, "time": time, "device": device, "msg": message, "me": myUsername.trim(), "tagMe": userSettings.tagMe, "tagEveryone": userSettings.tagEveryone, "dnd": userSettings.xChatDND})
             }
 
             onXchatTypingSignal: {
                 typing = msg
             }
         }
+
+        WorkerScript {
+            id: addMessageToThread
+            source:'qrc:/Controls/+mobile/addMessage.js'
+
+            onMessage: {
+                console.log("author: " + messageObject.author + " message: " + messageObject.msg + " tag: " + messageObject.tag)
+                for (var b = 0; b < xChatUsers.count; b ++) {
+                    if (xChatUsers.get(b).username === messageObject.author) {
+                        if (messageObject.msg !== "") {
+                            xChatTread.append({"author" : messageObject.author, "device" : messageObject.device, "date" : messageObject.date + " at " + messageObject.time, "message" : messageObject.msg, "ID" : xChatID, "tag": messageObject.tag})
+                            xChatID = xChatID + 1
+                            if(!xChatScrolling) {
+                                myXchat.xChatList.positionViewAtEnd()
+                            }
+                            else {
+                                newMessages = true
+                            }
+                        }
+                        if (messageObject.tag === 1) {
+                            notification.play()
+                            if (xchatTracker !== 1) {
+                                alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : messageObject.author + " has mentioned you", "origin" : "X-CHAT"})
+                                alert = true
+                            }
+                        }
+                        if (messageObject.tag === 2) {
+                            notification.play()
+                            if (xchatTracker !== 1) {
+                                alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
+                                alert = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
 
     Image {
@@ -545,7 +548,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: sendText.top
         anchors.bottomMargin: 15
-        color: darktheme == false ? "#34363D" : "#2A2C31"
+        color: "#6C6C6C"
         visible: tagListTracker == 1 && xChatFilterResults > 0
 
         Label {
