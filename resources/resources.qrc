@@ -237,7 +237,6 @@
         <file>icons/BTC_logo_big.svg</file>
         <file>icons/ETH_card_logo_01.svg</file>
         <file>icons/ETH_logo_big.svg</file>
-       
         <file>icons/mobile/standby-icon_01.svg</file>
         <file>icons/mobile/volume_level_1-icon_dark.svg</file>
         <file>icons/mobile/volume_level_1-icon_focus.svg</file>
@@ -251,8 +250,7 @@
         <file>icons/mobile/volume_level_0-icon_dark.svg</file>
         <file>icons/mobile/volume_level_0-icon_focus.svg</file>
         <file>icons/mobile/volume_level_0-icon_light.svg</file>
-        
-        <file>sounds/click_02.mp3</file>        
+        <file>sounds/click_02.mp3</file>
         <file>sounds/notification_1.mp3</file>
         <file>sounds/intro_01.mp3</file>
         <file>sounds/Bonjour.mp3</file>
@@ -264,7 +262,6 @@
         <file>sounds/Servus.mp3</file>
         <file>sounds/Succes.mp3</file>
         <file>sounds/Szia.mp3</file>
-        
         <file>icons/mobile/favorite-icon_01_color.svg</file>
         <file>icons/mobile/favorite-icon_01_dark.svg</file>
         <file>icons/mobile/favorite-icon_01_light.svg</file>
@@ -314,5 +311,6 @@
         <file>icons/mobile/connected-icon_01_white.svg</file>
         <file>icons/mobile/dnd-icon_01.svg</file>
         <file>icons/mobile/warning-icon_01_red.svg</file>
+        <file>icons/mobile/warning-icon_01_yellow.svg</file>
     </qresource>
 </RCC>

@@ -479,7 +479,7 @@ Rectangle {
             id: notificationBox
             width: notification.width + 56
             height: 50
-            color: darktheme == true? "#2A2C31" : "#F2F2F2"
+            color: darktheme == false ? "#34363D" : "#2A2C31"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -50
@@ -493,11 +493,11 @@ Rectangle {
 
                 Label {
                     id: notificationText
-                    text: changeTagMeFailed == 1 ? "FAILED to change personal tag setting!" : (changeTagEveryoneFailed == 1? "FAILED to change <font color='#5E8BFF'><b>@everyone</b></font> tag setting!" : "FAILED to change <font color='#0ED8D2'><b>Do not disturb</b></font> setting!")
+                    text: changeTagMeFailed == 1 ? "<font color='#E55541'><b>FAILED</b></font> to change personal tag setting!" : (changeTagEveryoneFailed == 1? "<font color='#E55541'><b>FAILED</b></font> to change <font color='#5E8BFF'><b>@everyone</b></font> tag setting!" : "<font color='#E55541'><b>FAILED</b></font> to change <font color='#0ED8D2'><b>Do not disturb</b></font> setting!")
                     font.family: "Brandon Grotesque"
                     font.pointSize: 14
                     font.bold: true
-                    color: "#E55541"
+                    color: "#F2F2F2"
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }

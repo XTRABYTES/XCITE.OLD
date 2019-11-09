@@ -36,7 +36,7 @@ Rectangle {
         width: Screen.width
         height: Screen.height
         color: "black"
-        opacity: 0.35
+        opacity: 0.5
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
     }
@@ -70,7 +70,7 @@ Rectangle {
 
             Image {
                 id: notificationIcon
-                source: 'qrc:/icons/mobile/warning-icon_01_red.svg'
+                source: 'qrc:/icons/mobile/warning-icon_01_yellow.svg'
                 height: 30
                 fillMode: Image.PreserveAspectFit
                 anchors.verticalCenter: notification.verticalCenter

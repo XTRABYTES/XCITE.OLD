@@ -324,7 +324,6 @@ Item {
                         sessionKey = 0
                         receiveSessionID = 0
                         loadingSettings = 0
-                        passError = 1
                         passWord.text = ""
                         loginInitiated  = false
                     }

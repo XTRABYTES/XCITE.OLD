@@ -1013,11 +1013,11 @@ Rectangle {
 
         Label {
             id: popupClearText
-            text: "FAILED to reset your settings!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to reset your settings!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -1051,11 +1051,11 @@ Rectangle {
 
         Label {
             id: popupCurrencyText
-            text: "FAILED to change your currency!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to change your currency!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -1089,11 +1089,11 @@ Rectangle {
 
         Label {
             id: popupSoundText
-            text: "FAILED to change your sound!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to change your sound!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -1127,11 +1127,11 @@ Rectangle {
 
         Label {
             id: popupVolumeText
-            text: "FAILED to change your notification volume!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to change your notification volume!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -1165,11 +1165,11 @@ Rectangle {
 
         Label {
             id: popupSystemVolumeText
-            text: "FAILED to change your system sound volume!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to change your system sound volume!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }

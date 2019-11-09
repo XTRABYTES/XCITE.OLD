@@ -200,8 +200,8 @@ Rectangle {
         width: Screen.width - 56
         anchors.top: xchatModalLabel.bottom
         anchors.topMargin: 20
-        anchors.bottom: typingLabel.top
-        anchors.bottomMargin: 15
+        anchors.bottom: newMessagesBar.visible? newMessagesBar.top : sendText.top
+        anchors.bottomMargin: newMessagesBar.visible? 0 : 10
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
@@ -228,15 +228,76 @@ Rectangle {
     Label {
         id: typingLabel
         text: typing
-        //anchors.top: myXchat.bottom
-        anchors.bottom: sendText.top
-        anchors.topMargin: 20
+        anchors.top: sendText.bottom
+        anchors.topMargin: 5
         anchors.horizontalCenter: parent.horizontalCenter
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.family: xciteMobile.name
         font.bold: true
         font.pixelSize: 10
         font.letterSpacing: 1
+    }
+
+    DropShadow {
+        anchors.fill: newMessagesBar
+        source: newMessagesBar
+        samples: 9
+        radius: 4
+        color: darktheme == true? "#000000" : "#727272"
+        horizontalOffset:0
+        verticalOffset: 0
+        spread: 0
+        visible: newMessagesBar.visible
+    }
+
+    Rectangle {
+        id: newMessagesBar
+        width: Screen.width
+        height: 20
+        color: darktheme == false ? "#34363D" : "#2A2C31"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: sendText.top
+        anchors.bottomMargin: 5
+        visible: xChatScrolling && newMessages
+
+        Label {
+            id: newMessagesLabel
+            text: "New messages available"
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+            color: "#F2F2F2"
+            font.family: xciteMobile.name
+            font.pixelSize: 16
+        }
+
+        Image {
+            id: newMessagesArrow
+            source: 'qrc:/icons/mobile/dropdown-icon_01_light.svg'
+            height: 14
+            width: 14
+            fillMode: Image.PreserveAspectFit
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 28
+        }
+
+        Rectangle {
+            height: 20
+            width: 20
+            color: "transparent"
+            anchors.horizontalCenter: newMessagesArrow.horizontalCenter
+            anchors.verticalCenter: newMessagesArrow.verticalCenter
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    myXchat.xChatList.positionViewAtEnd()
+                    newMessages = false
+                }
+            }
+        }
     }
 
     Controls.TextInput {
@@ -363,10 +424,13 @@ Rectangle {
                     xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages is 250 characters.", "ID" : xChatID})
                     xChatID = xChatID + 1
                     sendText.text = ""
+                    myXchat.xChatList.positionViewAtEnd()
+
                 }
                 if (!xChatConnection) {
                     xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "You're currently not connected to X-CHAT. Try again later", "ID" : xChatID})
                     xChatID = xChatID + 1
+                    myXchat.xChatList.positionViewAtEnd()
                 }
             }
         }
@@ -378,8 +442,11 @@ Rectangle {
                 if(myXchat.xChatOrderedList.get(myXchat.xChatOrderedList.count - 1).author === myUsername) {
                     myXchat.xChatList.positionViewAtEnd()
                 }
-                if(!xChatScrolling) {
+                else if(!xChatScrolling) {
                     myXchat.xChatList.positionViewAtEnd()
+                }
+                else {
+                    newMessages = true
                 }
             }
 
