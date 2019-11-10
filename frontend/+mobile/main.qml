@@ -104,10 +104,10 @@ ApplicationWindow {
         coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
 
         applicationList.setProperty(0, "name", "X-CHAT");
-        applicationList.setProperty(0, "icon_white", 'qrc:/icons/mobile/xchat-icon_white.svg');
-        applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_black.svg');
-        applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_02_black.svg'});
-        applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_01_black.svg'});
+        applicationList.setProperty(0, "icon_white", 'qrc:/icons/mobile/xchat-icon_01_white.svg');
+        applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_01_black.svg');
+        applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_04_black.svg'});
+        applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_02_black.svg'});
 
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
@@ -245,6 +245,8 @@ ApplicationWindow {
     property int currencyTracker: 0
     property int pincodeTracker: 0
     property int debugTracker: 0
+    property int xvaultTracker: 0
+    property int xchangeTracker: 0
     property int xchatTracker: 0
     property int xchatSettingsTracker: 0
     property int xchatNetworkTracker: 0
@@ -438,6 +440,16 @@ ApplicationWindow {
             status = userSettings.xChatDND == true? "dnd" : status
             xChatTypingSignal(myUsername,"addToOnline", status)
             xchatTracker = 1
+            selectedApp = ""
+        }
+
+        if (app === "X-CHANGE") {
+            xchangeTracker = 1
+            selectedApp = ""
+        }
+
+        if (app === "X-VAULT") {
+            xvaultTracker = 1
             selectedApp = ""
         }
     }

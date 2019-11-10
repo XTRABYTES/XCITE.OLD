@@ -121,4 +121,15 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Mobile.XChange {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Mobile.XVault {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
 }

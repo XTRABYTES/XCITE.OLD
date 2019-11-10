@@ -108,7 +108,6 @@
         <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
         <file>Controls/LoadingBar.qml</file>
         <file>Controls/TransactionTable.qml</file>
-        <file>+mobile/xchange.qml</file>
         <file>Controls/+mobile/TransferModal.qml</file>
         <file>Controls/+mobile/Sidebar.qml</file>
         <file>Controls/Switch_mobile.qml</file>
@@ -176,5 +175,7 @@
         <file>Controls/+mobile/XChatDndNotification.qml</file>
         <file>Controls/+mobile/NetworkError.qml</file>
         <file>Controls/+mobile/addMessage.js</file>
+        <file>Controls/+mobile/XChange.qml</file>
+        <file>Controls/+mobile/XVault.qml</file>
     </qresource>
 </RCC>

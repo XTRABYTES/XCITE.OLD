@@ -18,20 +18,63 @@ import QtQuick.Layouts 1.3
 
 import "qrc:/Controls" as Controls
 
-Item {
+Rectangle {
+    id: xchangeModal
+    width: Screen.width
+    state: xchangeTracker == 1? "up" : "down"
+    height: Screen.height
+    color: bgcolor
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    clip: true
 
-    // shared vars
+    LinearGradient {
+        anchors.fill: parent
+        start: Qt.point(0, 0)
+        end: Qt.point(0, parent.height)
+        opacity: 0.05
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "transparent" }
+            GradientStop { position: 1.0; color: maincolor }
+        }
+    }
 
-    property int pageTracker: view.currentIndex == 0 ? 0 : 1
-    property string searchCriteria:""
+    states: [
+        State {
+            name: "up"
+            PropertyChanges { target: xchangeModal; anchors.topMargin: 0}
+        },
+        State {
+            name: "down"
+            PropertyChanges { target: xchangeModal; anchors.topMargin: Screen.height}
+        }
+    ]
 
-    Rectangle {
-        id: backgroundTrading
-        z: 1
-        width: Screen.width
-        height: Screen.height
-        color: "#34363d"
+    transitions: [
+        Transition {
+            from: "*"
+            to: "*"
+            NumberAnimation { target: xchangeModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+        }
+    ]
 
+    MouseArea {
+        anchors.fill: parent
+    }
+
+    Text {
+        id: xchangeModalLabel
+        text: "X-CHANGE"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        font.pixelSize: 20
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.letterSpacing: 2
+    }
+
+    /**
         SwipeView {
             id: view
             z: 2
@@ -311,8 +354,56 @@ Item {
                 onClicked: {
                 }
             }
+        }*/
+
+    Image {
+        id: underConstruction
+        source: darktheme === true? 'qrc:/icons/mobile/construction-icon_01_white.svg' : 'qrc:/icons/mobile/construction-icon_01_black.svg'
+        width: 100
+        height: 100
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -50
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+    Label {
+        id: closeXchangeModal
+        z: 10
+        text: "BACK"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : 70
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.pixelSize: 14
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+
+        Rectangle{
+            id: closeButton
+            height: 34
+            width: doubbleButtonWidth
+            radius: 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
         }
 
+        MouseArea {
+            anchors.fill: closeButton
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onReleased: {
+                if (xchangeTracker == 1) {
+                    xchangeTracker = 0;
+                }
+            }
+        }
+    }
+    /**
         Rectangle {
             color: "black"
             opacity: .75
@@ -329,5 +420,5 @@ Item {
             anchors.left: parent.left
             anchors.top: parent.top
         }
-    }
+        */
 }
