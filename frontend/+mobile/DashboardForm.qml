@@ -81,7 +81,7 @@ Item {
 
             onCurrentIndexChanged: {
                 detectInteraction()
-                pagerTracker = view.currentIndex
+                pageTracker = view.currentIndex
             }
 
             Item {

@@ -419,9 +419,12 @@ ApplicationWindow {
     property string dndUser: ""
     property variant messageArray
     property string tagFilter: ""
-    property string xChatLink: ""
-    property string xChatImage: ""
-    property string xChatQuote: ""
+    property string xChatLink: "none"
+    property string xChatImage: "none"
+    property string xChatQuote: "none"
+    property bool quoteAdded: false
+    property bool linkAdded: false
+    property bool imageAdded: false
     property bool sendTyping: true
     property bool xChatConnection: false
     property bool xChatConnecting: false
@@ -1576,11 +1579,10 @@ ApplicationWindow {
         source:'qrc:/Controls/+mobile/addMessage.js'
 
         onMessage: {
-            console.log("author: " + messageObject.author + " message: " + messageObject.msg + " tag: " + messageObject.tag)
             for (var b = 0; b < xChatUsers.count; b ++) {
                 if (xChatUsers.get(b).username === messageObject.author) {
                     if (messageObject.msg !== "") {
-                        xChatTread.append({"author" : messageObject.author, "device" : messageObject.device, "date" : messageObject.date + " at " + messageObject.time, "message" : messageObject.msg, "ID" : xChatID, "tag": messageObject.tag, "webLink": messageObject.link, "timeID": messageObject.msgID})
+                        xChatTread.append({"author" : messageObject.author, "device" : messageObject.device, "date" : messageObject.date + " at " + messageObject.time, "message" : messageObject.msg, "ID" : xChatID, "tag": messageObject.tag, "webLink": messageObject.link, "image": messageObject.image, "quote": messageObject.quote, "timeID": messageObject.msgID})
                         xChatID = xChatID + 1
                         if(!xChatScrolling) {
                             updateView = true
@@ -1788,6 +1790,8 @@ ApplicationWindow {
             tag: 0
             ID: 0
             webLink: ""
+            image: ""
+            quote: ""
             timeID: ""
         }
     }

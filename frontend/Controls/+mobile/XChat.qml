@@ -249,19 +249,6 @@ Rectangle {
         }
     }
 
-    Label {
-        id: typingLabel
-        text: typing
-        anchors.top: sendText.bottom
-        anchors.topMargin: 5
-        anchors.horizontalCenter: parent.horizontalCenter
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        font.family: xciteMobile.name
-        font.bold: true
-        font.pixelSize: 10
-        font.letterSpacing: 1
-    }
-
     DropShadow {
         anchors.fill: newMessagesBar
         source: newMessagesBar
@@ -409,6 +396,12 @@ Rectangle {
                         status="online"
                     }
                     xChatSend(myUsername,"mobile",status,sendText.text, xChatLink, xChatImage, xChatQuote)
+                    xChatQuote = "none"
+                    quoteAdded = false
+                    xChatLink = "none"
+                    linkAdded = false
+                    xChatImage = "none"
+                    imageAdded = false
                     sendText.text = "";
                     xChatTyping(myUsername,"removeFromTyping",status);
                     checkIfIdle.restart();
@@ -446,6 +439,54 @@ Rectangle {
         anchors.right: executeButton.right
     }
 
+    Image {
+        id: msgQuote
+        source: quoteAdded === false? "qrc:/icons/mobile/quote-icon_01_grey.svg" : "qrc:/icons/mobile/quote-icon_01_blue.svg"
+        width: 20
+        height: 20
+        fillMode: Image.PreserveAspectFit
+        anchors.right: msgLink.left
+        anchors.rightMargin: 20
+        anchors.top: sendText.bottom
+        anchors.topMargin: 10
+    }
+
+    Image {
+        id: msgLink
+        source: linkAdded === false? "qrc:/icons/mobile/link-icon_01_grey.svg" : "qrc:/icons/mobile/link-icon_01_blue.svg"
+        width: 20
+        height: 20
+        fillMode: Image.PreserveAspectFit
+        anchors.right: msgImage.left
+        anchors.rightMargin: 20
+        anchors.top: sendText.bottom
+        anchors.topMargin: 10
+    }
+
+    Image {
+        id: msgImage
+        source: imageAdded === false? "qrc:/icons/mobile/image-icon_01_grey.svg" : "qrc:/icons/mobile/image-icon_01_blue.svg"
+        width: 20
+        height: 20
+        fillMode: Image.PreserveAspectFit
+        anchors.right: sendText.right
+        anchors.top: sendText.bottom
+        anchors.topMargin: 10
+    }
+
+    Label {
+        id: typingLabel
+        text: typing
+        anchors.top: msgImage.bottom
+        anchors.topMargin: 5
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.family: xciteMobile.name
+        font.bold: true
+        font.pixelSize: 10
+        font.letterSpacing: 1
+    }
+
     Label {
         id: closeXchatModal
         z: 10
@@ -456,6 +497,7 @@ Rectangle {
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: false
 
         Rectangle{
             id: closeButton
@@ -469,6 +511,7 @@ Rectangle {
 
         MouseArea {
             anchors.fill: closeButton
+            visible: false
 
             Timer {
                 id: timer

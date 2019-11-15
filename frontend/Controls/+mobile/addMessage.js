@@ -25,6 +25,7 @@ WorkerScript.onMessage = function(message) {
         }
 
     }
+    console.log("link: " + message.link + ", image: " + message.image + ", quote: " + message.quote)
     var searchUsername = new RegExp( "@" + message.me, "gi")
     var searchEveryone = new RegExp("@everyone", "gi")
     xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + message.me + "</b></font>")

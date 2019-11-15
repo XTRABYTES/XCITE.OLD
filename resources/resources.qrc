@@ -317,5 +317,11 @@
         <file>icons/mobile/xchat-icon_01_black.svg</file>
         <file>icons/mobile/xchat-icon_01_white.svg</file>
         <file>icons/mobile/xvault-icon_02_black.svg</file>
+        <file>icons/mobile/image-icon_01_blue.svg</file>
+        <file>icons/mobile/image-icon_01_grey.svg</file>
+        <file>icons/mobile/link-icon_01_blue.svg</file>
+        <file>icons/mobile/link-icon_01_grey.svg</file>
+        <file>icons/mobile/quote-icon_01_blue.svg</file>
+        <file>icons/mobile/quote-icon_01_grey.svg</file>
     </qresource>
 </RCC>

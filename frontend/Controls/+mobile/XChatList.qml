@@ -45,7 +45,7 @@ Rectangle {
         Rectangle {
             id: msgRow
             width: parent.width
-            height: author == "xChatRobot"? ((robotMsgBox.height + 4) > xChatRobotIcon.height?  (robotMsgBox.height + 4): xChatRobotIcon.height) :(message != ""? (webLink != ""? (senderID.height + messageText.height + 1 + messageLink.height + 5) : (senderID.height + messageText.height + 1)): 0)
+            height: author === "xChatRobot"? ((robotMsgBox.height + 4) > xChatRobotIcon.height? (robotMsgBox.height + 4): xChatRobotIcon.height) : (message === ""? 0 : (messageHeader.height + quoteArea.height + messageText.height + linkArea.height + imageArea.height))
             color: "transparent"
             visible: message != ""
             clip: true
@@ -74,6 +74,17 @@ Rectangle {
                 anchors.right: author==(myUsername)? parent.right : undefined
                 anchors.rightMargin: author==(myUsername)? 2 : 0
                 color: darktheme == true? "#2A2C31" : "#F2F2F2"
+                visible: author != "xChatRobot"
+            }
+
+            Rectangle {
+                id: messageHeader
+                color: "transparent"
+                width: msgBox.width
+                height: senderID.height + 6
+                anchors.left: msgBox.left
+                anchors.right: msgBox.right
+                anchors.top: msgRow.top
                 visible: author != "xChatRobot"
             }
 
@@ -192,8 +203,54 @@ Rectangle {
             }
 
             Rectangle {
+                id: quoteArea
+                color: "transparent"
+                width: msgBox.width
+                height: quote != "none" ? messageQuote.height + 5 : 0
+                anchors.left: msgBox.left
+                anchors.right: msgBox.right
+                anchors.top: messageHeader.bottom
+                visible: author != "xChatRobot" && quote != "none"
+            }
+
+            DropShadow {
+                anchors.fill: messageQuote
+                source: messageQuote
+                samples: 9
+                radius: 4
+                color: darktheme == true? "#000000" : "#727272"
+                horizontalOffset:0
+                verticalOffset: 0
+                spread: 0
+                visible: author != "xChatRobot" && (quote != "" || quote != undefined)
+            }
+
+            Rectangle {
                 id: messageQuote
-                visible: author != "xChatRobot" && quote != ""
+                width: msgBox.width - 20
+                height: quote != "none"? quoteText.height + 5 : 0
+                color: "#816030"
+                anchors.horizontalCenter: msgBox.horizontalCenter
+                anchors.top: msgBoxDivider.bottom
+                anchors.topMargin: 5
+                visible: author != "xChatRobot" && quote != "none"
+
+                Text {
+                    id: quoteText
+                    text: quote != "none"? "<<" + quote + ">>" : ""
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.italic: true
+                    font.family: xciteMobile.name
+                    color: "#F2F2F2"
+                    wrapMode: Text.Wrap
+                    font.pixelSize: 14
+                    maximumLineCount: 3
+                    elide: Text.ElideMiddle
+                }
             }
 
             Text {
@@ -203,7 +260,7 @@ Rectangle {
                 anchors.leftMargin: 10
                 anchors.right: msgBox.right
                 anchors.rightMargin: 10
-                anchors.top: msgBoxDivider.bottom
+                anchors.top: quote != "none"? quoteArea.bottom : messageHeader.bottom
                 anchors.topMargin: 5
                 horizontalAlignment: Text.AlignLeft
                 font.family: xciteMobile.name
@@ -221,15 +278,27 @@ Rectangle {
                         anchors.fill: parent
 
                         onPressAndHold: {
-                            xChatQuote = message
+                            xChatQuote = author + ": " + message
+                            quoteAdded = true
                         }
                     }
                 }
             }
 
+            Rectangle {
+                id: linkArea
+                color: "transparent"
+                width: msgBox.width
+                height: webLink != "none"? messageLink.height + 5 : 0
+                anchors.left: msgBox.left
+                anchors.right: msgBox.right
+                anchors.top: messageText.bottom
+                visible: author != "xChatRobot" && webLink != "none"
+            }
+
             Text {
                 id: messageLink
-                text: "<a href='" + weblink + "'>" + webLink + "</a>"
+                text: webLink != "none"? "<a href='" + webLink + "'>" + webLink + "</a>" : ""
                 textFormat: Text.RichText
                 anchors.left: messageText.left
                 anchors.right: messageText.right
@@ -242,18 +311,48 @@ Rectangle {
                 font.pixelSize: 16
                 font.underline: true
                 color: "blue"
-                visible: author != "xChatRobot" && webLink != ""
+                visible: author != "xChatRobot" && webLink != "none"
 
-                onLinkActivated: {
-                    click01.play()
-                    detectInteraction()
-                    Qt.openUrlExternally(webLink)
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            Qt.openUrlExternally(webLink)
+                        }
+                    }
                 }
+            }
+
+            Rectangle {
+                id: imageArea
+                color: "transparent"
+                width: msgBox.width
+                height: image != "none"? messageImage.height + 5 : 0
+                anchors.left: msgBox.left
+                anchors.right: msgBox.right
+                anchors.top: linkArea.bottom
+                visible: author != "xChatRobot" && image != "none"
             }
 
             Image {
                 id: messageImage
-                visible: author != "xChatRobot" && image != ""
+                source: image != "none"? image : ''
+                height: 150
+                width: msgBox.width - 20
+                fillMode: Image.PreserveAspectFit
+                anchors.top: messageLink.bottom
+                anchors.topMargin: 5
+                anchors.horizontalCenter: msgBox.horizontalCenter
+                visible: author != "xChatRobot" && image != "none"
             }
 
             Image {

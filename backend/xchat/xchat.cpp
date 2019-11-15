@@ -73,6 +73,7 @@ unsigned constexpr const_hash(char const *input) {
 void XchatObject::messageRoute(QString message){
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
     QJsonObject obj = doc.object();
+    qDebug() << obj;
     QString route = obj.value("route").toString();
     switch(const_hash(route.toStdString().c_str()))
     {
@@ -98,7 +99,7 @@ void XchatObject::messageRoute(QString message){
 }
 void XchatObject::xchatInc(const QString &user, QString platform, QString status, QString message, QString webLink, QString image, QString quote) {
     if (!message.isEmpty() && mqtt_client->state() == QMqttClient::Connected) {
-
+        qDebug() << "link: " + webLink + ", image: " + image + ", quote: " + quote;
         QString username = user;
         qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
         QJsonObject obj;
@@ -236,7 +237,7 @@ void XchatObject::sendToFront(QJsonObject obj){
     QString image = obj.value("image").toString();
     QString quote = obj.value("quote").toString();
     qDebug() << "local date: " + date02.toString("MMM d") + ", local time: " + time02.toString("H:mm:ss");
-    emit xchatSuccess(author, date, time, device, message, link, msgID, image, quote);
+    emit xchatSuccess(author, date, time, device, message, link, image, quote, msgID);
 }
 
 void XchatObject::SubmitMsg(const QString &msg) {
