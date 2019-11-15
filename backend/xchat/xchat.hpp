@@ -18,6 +18,7 @@
 #include <QVariant>
 
 #include <QtMqtt/QMqttClient>
+#include <QNetworkConfigurationManager>
 
 #include "xchataiml.hpp"
 #include "xchatconversationmodel.hpp"
@@ -92,9 +93,10 @@ public:
    void messageRoute(QString message);
 
 
+
 signals:
     void xchatResponseSignal(QVariant text);
-    void xchatSuccess( QString author, QString date, QString time, QString device, QString message);
+    void xchatSuccess( QString author, QString date, QString time, QString device, QString message, QString link, QString image, QString quote, QString msgID);
     void xchatTypingSignal(const QString &msg);
     void xchatConnectionFail();
     void xchatConnectionSuccess();
@@ -114,10 +116,11 @@ public slots:
     bool CheckUserInputForKeyWord(const QString msg);
     bool CheckAIInputForKeyWord(const QString msg);
     QString HarmonizeKeyWords(const QString msg);
-    void xchatInc(const QString &user, QString platform, QString status, QString message);
+    void xchatInc(const QString &user, QString platform, QString status, QString message, QString webLink, QString image, QString quote);
     void sendTypingToQueue(const QString user, QString route, QString status);
     void pingReceived();
     void pingXchatServers();
+    void forcedReconnect();
 
 
 
@@ -133,6 +136,7 @@ private:
     QString topic = "xcite/xchat";
     QString selectedServer = "";
     bool m_bIsInitialized;
+    bool forced_connect;
     QMap<QString, QDateTime> typing;
     QMap<QString,QString> nodesOnline;
     void cleanTypingList();

@@ -46,6 +46,14 @@ Rectangle {
     property bool startTagging: false
     property string beforeTag: ""
     property string afterTag: ""
+    property int myTracker: xchatTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            xchatError = 0
+            timer.start()
+        }
+    }
 
     LinearGradient {
         anchors.fill: parent
@@ -114,6 +122,11 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
 
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
                 onClicked: {
                     xchatNetworkTracker = 1
                 }
@@ -162,6 +175,12 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
                 onClicked: {
                     xchatUserTracker = 1
                 }
@@ -187,6 +206,11 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     xchatSettingsTracker = 1
@@ -347,7 +371,6 @@ Rectangle {
                 sendXchatConnection.restart();
                 checkIfIdle.restart();
             }
-            sendTyping = false
         }
     }
 
@@ -362,7 +385,6 @@ Rectangle {
 
         MouseArea {
             anchors.fill: parent
-            //enabled: sendEnabled
 
             onPressed: {
                 click01.play()
@@ -386,7 +408,7 @@ Rectangle {
                     if (UserSettings.xChatDND === false) {
                         status="online"
                     }
-                    xChatSend(myUsername,"mobile",status,sendText.text)
+                    xChatSend(myUsername,"mobile",status,sendText.text, xChatLink, xChatImage, xChatQuote)
                     sendText.text = "";
                     xChatTyping(myUsername,"removeFromTyping",status);
                     checkIfIdle.restart();
@@ -395,7 +417,6 @@ Rectangle {
                 if (xChatMessage.length >= 251) {
                     xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages is 250 characters.", "ID" : xChatID})
                     xChatID = xChatID + 1
-                    sendText.text = ""
                     myXchat.xChatList.positionViewAtEnd()
 
                 }
@@ -410,53 +431,10 @@ Rectangle {
         Connections {
             target: xChat
 
-            onXchatSuccess: {
-                addMessageToThread.sendMessage({"author": author, "date": date, "time": time, "device": device, "msg": message, "me": myUsername.trim(), "tagMe": userSettings.tagMe, "tagEveryone": userSettings.tagEveryone, "dnd": userSettings.xChatDND})
-            }
-
             onXchatTypingSignal: {
                 typing = msg
             }
         }
-
-        WorkerScript {
-            id: addMessageToThread
-            source:'qrc:/Controls/+mobile/addMessage.js'
-
-            onMessage: {
-                console.log("author: " + messageObject.author + " message: " + messageObject.msg + " tag: " + messageObject.tag)
-                for (var b = 0; b < xChatUsers.count; b ++) {
-                    if (xChatUsers.get(b).username === messageObject.author) {
-                        if (messageObject.msg !== "") {
-                            xChatTread.append({"author" : messageObject.author, "device" : messageObject.device, "date" : messageObject.date + " at " + messageObject.time, "message" : messageObject.msg, "ID" : xChatID, "tag": messageObject.tag})
-                            xChatID = xChatID + 1
-                            if(!xChatScrolling) {
-                                myXchat.xChatList.positionViewAtEnd()
-                            }
-                            else {
-                                newMessages = true
-                            }
-                        }
-                        if (messageObject.tag === 1) {
-                            notification.play()
-                            if (xchatTracker !== 1) {
-                                alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : messageObject.author + " has mentioned you", "origin" : "X-CHAT"})
-                                alert = true
-                            }
-                        }
-                        if (messageObject.tag === 2) {
-                            notification.play()
-                            if (xchatTracker !== 1) {
-                                alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
-                                alert = true
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
     }
 
     Image {
@@ -522,8 +500,6 @@ Rectangle {
             onReleased: {
                 if (xchatTracker == 1) {
                     xchatTracker = 0;
-                    xchatError = 0
-                    timer.start()
                 }
             }
         }
@@ -584,6 +560,11 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
 
                 onClicked: {
                     tagListTracker = 0
@@ -663,11 +644,6 @@ Rectangle {
         anchors.left: parent.left
         anchors.top: parent.top
         visible: dndTracker == 1
-    }
-
-    Mobile.NetworkError {
-        z:100
-        id: myNetworkError
     }
 
     Component.onDestruction: {

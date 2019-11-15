@@ -29,5 +29,5 @@ WorkerScript.onMessage = function(message) {
     var searchEveryone = new RegExp("@everyone", "gi")
     xChatMessage = xChatMessage.replace(searchUsername, "<font color='#0ED8D2'><b>@" + message.me + "</b></font>")
     xChatMessage = xChatMessage.replace(searchEveryone, "<font color='#5E8BFF'><b>@everyone</b></font>")
-    WorkerScript.sendMessage({ "author": message.author, "date": message.date, "time": message.time, "device": message.device, "msg": xChatMessage, "tag": xChatTag})
+    WorkerScript.sendMessage({ "author": message.author, "date": message.date, "time": message.time, "device": message.device, "msg": xChatMessage, "tag": xChatTag, "link": message.link, "image": message.image, "quote": message.quote, "msgID": message.msgID})
 }

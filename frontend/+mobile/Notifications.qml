@@ -206,7 +206,6 @@ Rectangle {
             }
 
             onClicked: {
-                appsTracker = 0
                 selectedPage = "home"
                 mainRoot.pop()
             }

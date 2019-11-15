@@ -30,9 +30,6 @@ Rectangle {
     onStateChanged: detectInteraction()
     visible: xchatSettingsModal.anchors.topMargin < Screen.height
 
-    property bool tagMeChangeInitiated: false
-    property bool tagEveryoneChangeInitiated: false
-    property bool dndChangeInitiated: false
     property bool oldTagMe: userSettings.tagMe
     property bool oldTagEveryone: userSettings.tagEveryone
     property bool oldDND: userSettings.xChatDND
@@ -40,6 +37,13 @@ Rectangle {
     property int changeTagEveryoneFailed: 0
     property int changeDNDFailed : 0
     property int saveFailed: 0
+    property int myTracker: xchatSettingsTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            timer.start()
+        }
+    }
 
     onChangeTagMeFailedChanged: {
         if(changeTagMeFailed == 1) {
@@ -164,6 +168,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
 
                 onPressed: {
+                    click01.play()
                     detectInteraction()
                 }
 
@@ -230,6 +235,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
 
                 onPressed: {
+                    click01.play()
                     detectInteraction()
                 }
 
@@ -313,6 +319,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
 
                 onPressed: {
+                    click01.play()
                     detectInteraction()
                 }
 
@@ -424,6 +431,7 @@ Rectangle {
                 running: false
 
                 onTriggered: {
+
                 }
             }
 
@@ -435,7 +443,6 @@ Rectangle {
             onReleased: {
                 if (xchatSettingsTracker == 1) {
                     xchatSettingsTracker = 0
-                    timer.start()
                 }
             }
         }

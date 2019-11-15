@@ -27,6 +27,16 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
+    property int myTracker: transactionDetailTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            selectedAddressList = "input"
+            myTransactionAdresses.transactionAddresses = "input"
+            address2Copy = ""
+        }
+    }
+
     states: [
         State {
             name: "up"
@@ -122,6 +132,7 @@ Rectangle {
         font.pixelSize: 16
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Label {
@@ -146,6 +157,7 @@ Rectangle {
         font.pixelSize: 18
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Label {
@@ -171,6 +183,7 @@ Rectangle {
         font.pixelSize: 18
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Label {
@@ -186,6 +199,7 @@ Rectangle {
         font.pixelSize: 14
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Label {
@@ -199,6 +213,7 @@ Rectangle {
         font.pixelSize: 18
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Timer {
@@ -307,6 +322,7 @@ Rectangle {
         color: "transparent"
         state: "down"
         clip: true
+        visible: transactionDetailsCollected === true
 
         states: [
             State {
@@ -355,6 +371,34 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        z: 3
+        width: parent.width
+        height: parent.height
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        color: "black"
+        opacity: 0.50
+        visible: transactionDetailsCollected === false
+
+        MouseArea {
+            anchors.fill: parent
+        }
+    }
+
+    AnimatedImage  {
+        z: 3
+        id: waitingDots
+        source: 'qrc:/gifs/loading-gif_01.gif'
+        width: 90
+        height: 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: inputLabel.bottom
+        anchors.topMargin: 30
+        playing: transactionDetailsCollected === false
+        visible: transactionDetailsCollected === false
+    }
+
     Label {
         id: closeDetailModal
         z: 10
@@ -385,9 +429,6 @@ Rectangle {
 
             onClicked: {
                 transactionDetailTracker = 0;
-                selectedAddressList = "input"
-                myTransactionAdresses.transactionAddresses = "input"
-                address2Copy = ""
             }
         }
     }

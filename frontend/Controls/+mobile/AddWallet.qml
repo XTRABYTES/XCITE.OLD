@@ -62,8 +62,6 @@ Rectangle {
     property string walletType: ""
     property int walletSwitchState: 0
     property int selectWallet: 0
-    property int addActive: 0
-    property int addViewOnly: 0
     property int coin: coinIndex
 
 

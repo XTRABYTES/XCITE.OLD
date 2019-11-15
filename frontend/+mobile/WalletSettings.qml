@@ -26,7 +26,7 @@ Rectangle {
     height: Screen.height
     color: darktheme == true? "#14161B" : "#FDFDFD"
 
-    LinearGradient {
+   LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
         end: Qt.point(0, parent.height)
@@ -38,10 +38,7 @@ Rectangle {
     }
 
     property int clearFailed: 0
-    property bool clearAllInitiated: false
-    property bool changeVolumeInitiated: false
     property int changeVolumeFailed: 0
-    property bool changeSystemVolumeInitiated: false
     property int changeSystemVolumeFailed: 0
 
     MouseArea {
@@ -291,9 +288,32 @@ Rectangle {
 
                     onPincodeCorrect: {
                         if (pinOK == 1 && unlockPin == 1) {
+                            clearPinInitiated = true
+                            oldPinlock = userSettings.pinlock
                             userSettings.pinlock = false
-                            saveAppSettings();
+                            //saveAppSettings();
                             savePincode("0000")
+                        }
+                    }
+
+                    onSaveSucceeded: {
+                        if (clearPinInitiated == true) {
+                            clearPinInitiated = false
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (clearPinInitiated == true) {
+                            clearPinInitiated = false
+                            userSettings.pinlock = oldPinlock
+                        }
+                    }
+
+                    onNoInternet: {
+                        networkError = 1
+                        if (clearPinInitiated == true) {
+                            clearPinInitiated = false
+                            userSettings.pinlock = oldPinlock
                         }
                     }
                 }
@@ -920,7 +940,6 @@ Rectangle {
                 onSaveSucceeded: {
                     if (clearAllInitiated == true) {
                         clearAllInitiated = false
-                        pinClearInitiated = false
                     }
                 }
 
@@ -934,7 +953,6 @@ Rectangle {
                         userSettings.volume = oldVolume
                         userSettings.systemVolume = oldSystemVolume
                         clearAllInitiated = false
-                        pinClearInitiated = false
                         clearFailed = 1
                     }
                 }
@@ -950,7 +968,6 @@ Rectangle {
                         userSettings.volume = oldVolume
                         userSettings.systemVolume = oldSystemVolume
                         clearAllInitiated = false
-                        pinClearInitiated = false
                         clearFailed = 1
                     }
                 }
@@ -1183,13 +1200,6 @@ Rectangle {
         }
     }
 
-    Controls.Pincode {
-        id: myPincode
-        z: 5
-        anchors.top: parent.top
-        anchors.left: parent.left
-    }
-
     Item {
         z: 3
         width: Screen.width
@@ -1245,6 +1255,13 @@ Rectangle {
                 mainRoot.pop()
             }
         }
+    }
+
+    Controls.Pincode {
+        id: myPincode
+        z: 5
+        anchors.top: parent.top
+        anchors.left: parent.left
     }
 
     Controls.ChangePassword {

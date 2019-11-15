@@ -27,6 +27,21 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
+    property int myTracker: addContactTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            newFirstname.text = "";
+            newLastname.text = "";
+            newTel.text = "";
+            newCell.text = "";
+            newMail.text = "";
+            newChat.text = "";
+            contactExists = 0;
+            validEmail = 1;
+        }
+    }
+
     states: [
         State {
             name: "up"
@@ -48,7 +63,6 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
-    property bool addingContact: false
     property int contactExists: 0
     property int validEmail: 1
     property string failError: ""
@@ -676,14 +690,6 @@ Rectangle {
 
             onClicked: {
                 addContactTracker = 0;
-                newFirstname.text = "";
-                newLastname.text = "";
-                newTel.text = "";
-                newCell.text = "";
-                newMail.text = "";
-                newChat.text = "";
-                contactExists = 0;
-                validEmail = 1;
             }
         }
     }

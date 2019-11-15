@@ -322,9 +322,11 @@ Rectangle {
 
                         onClicked: {
                             if (coinIndex < 3){
+                                historyDetailsCollected = false
                                 walletIndex = walletNR
                                 transactionPages = 0
                                 currentPage = 1
+                                historyTracker = 1
                                 updateTransactions(name, address, 1)
                             }
                         }
@@ -334,10 +336,10 @@ Rectangle {
                         target: explorer
 
                         onUpdateTransactions: {
-                            if (historyTracker === 0) {
+                            if (historyDetailsCollected === false) {
                                 transactionPages = totalPages;
                                 loadTransactions(transactions);
-                                historyTracker = 1
+                                historyDetailsCollected = true
                             }
                         }
                     }

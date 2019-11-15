@@ -748,7 +748,7 @@ Rectangle {
                 height: 75
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: createWalletSuccess.top
+                anchors.top: createWalletSuccess.modalTop
                 anchors.topMargin: 20
             }
 
@@ -829,7 +829,7 @@ Rectangle {
                 height: 100
                 width: 100
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: createWalletError.top
+                anchors.top: createWalletError.modalTop
                 anchors.topMargin: 20
             }
 

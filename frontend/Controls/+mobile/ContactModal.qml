@@ -27,6 +27,22 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
+    property int myTracker: editContactTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            contactExists = 0;
+            newFirstname.text = oldFirstName;
+            newLastname.text = oldLastName;
+            newTel.text = oldTel;
+            newCell.text = oldText;
+            newMail.text = oldMail;
+            newChat.text = oldChat;
+            validEmail = 1;
+            contactIndex = 0;
+        }
+    }
+
     onStateChanged: {
         if (editContactModal.state === "up") {
             contactName.text = contactList.get(contactIndex).firstName + " " + contactList.get(contactIndex).lastName;
@@ -76,11 +92,8 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
-    property bool editingContact: false
-    property bool deletingContact: false
     property int contactExists: 0
     property int validEmail: 1
-    property int deleteContactTracker: 0
     property int deleteConfirmed: 0
     property int deleteFailed: 0
     property string oldFirstName
@@ -439,6 +452,7 @@ Rectangle {
 
                 onClicked: {
                     if (contactExists == 0 && validEmail == 1) {
+                        editingContact = true
                         if (newFirstname.text !== "") {
                             contactList.setProperty(contactIndex, "firstName", newFirstname.text)
                             newFirst = newFirstname.text
@@ -462,7 +476,6 @@ Rectangle {
                         contactList.setProperty(contactIndex, "cellNR", newCell.text);
                         contactList.setProperty(contactIndex, "mailAddress", newMail.text);
                         contactList.setProperty(contactIndex, "chatID", newChat.text);
-                        editingContact = true
 
                         updateToAccount()
                     }
@@ -475,7 +488,7 @@ Rectangle {
                 onSaveSucceeded: {
                     if (editContactTracker == 1 && editingContact == true) {
                         editSaved = 1
-                        editingContact = false
+                        editingContactInitiated = false
                     }
                 }
 
@@ -489,7 +502,6 @@ Rectangle {
                         contactList.setProperty(contactIndex, "mailAddress", oldMail);
                         contactList.setProperty(contactIndex, "chatID", oldChat);
                         editFailed = 1
-                        editingContact = false
                     }
                 }
 
@@ -504,7 +516,6 @@ Rectangle {
                         contactList.setProperty(contactIndex, "mailAddress", oldMail);
                         contactList.setProperty(contactIndex, "chatID", oldChat);
                         editFailed = 1
-                        editingContact = false
                     }
                 }
 
@@ -630,6 +641,7 @@ Rectangle {
                     onClicked: {
                         editFailed = 0
                         failError = ""
+                        editingContact = false
                     }
                 }
             }
@@ -740,6 +752,7 @@ Rectangle {
                         contactIndex = 0;
                         editSaved = 0
                         closeAllClipboard = true
+                        editingContact = false
                     }
                 }
             }
@@ -855,7 +868,6 @@ Rectangle {
                             deleteConfirmed = 1
                             contactExists = 0
                             validEmail = 1
-                            deletingContact = false
                         }
                     }
 
@@ -864,7 +876,6 @@ Rectangle {
 
                             contactList.setProperty(contactIndex, "remove", false);
                             deleteFailed = 1
-                            deletingContact = false
                         }
                     }
 
@@ -873,7 +884,6 @@ Rectangle {
                             networkError = 1
                             contactList.setProperty(contactIndex, "remove", false);
                             deleteFailed = 1
-                            deletingContact = false
                         }
                     }
 
@@ -1056,6 +1066,7 @@ Rectangle {
                         deleteContactTracker = 0
                         deleteFailed = 0
                         failError = ""
+                        deletingContact = false
                     }
                 }
             }
@@ -1136,6 +1147,7 @@ Rectangle {
                             deleteContactTracker = 0
                             deleteConfirmed = 0
                             closeAllClipboard = true
+                            deletingContact = false
                         }
                     }
 
@@ -1236,15 +1248,6 @@ Rectangle {
 
             onClicked: {
                 editContactTracker = 0;
-                contactExists = 0;
-                newFirstname.text = oldFirstName;
-                newLastname.text = oldLastName;
-                newTel.text = oldTel;
-                newCell.text = oldText;
-                newMail.text = oldMail;
-                newChat.text = oldChat;
-                validEmail = 1;
-                contactIndex = 0;
             }
         }
     }

@@ -28,6 +28,15 @@ Rectangle {
     anchors.top: parent.top
     onStateChanged: detectInteraction()
 
+    property int myTracker: debugTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            debugError = 0
+            timer.start()
+        }
+    }
+
     LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
@@ -367,8 +376,6 @@ Rectangle {
             onReleased: {
                 if (debugTracker == 1) {
                     debugTracker = 0;
-                    debugError = 0
-                    timer.start()
                 }
             }
         }

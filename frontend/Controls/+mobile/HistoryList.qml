@@ -93,6 +93,8 @@ Rectangle {
                     transactionNR = txid
                     transactionDirection = direction
                     if (explorerBusy == false) {
+                        transactionDetailsCollected = false
+                        transactionDetailTracker = 1
                         getDetails(amountTicker.text, txid)
                     }
                     else {

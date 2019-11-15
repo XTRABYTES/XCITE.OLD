@@ -55,8 +55,6 @@ Rectangle {
     property int selectStorage: 0
     property int storageSwitchState: 0
     property int verifyUsername : 0
-    property bool createAccountInitiated: false
-    property bool saveInitiated: false
     property int saveFailed: 0
     property string failError: ""
     property int checkUsername: 0
@@ -521,24 +519,63 @@ Rectangle {
                     onSaveFailedDBError: {
                         if (createAccountInitiated == true) {
                             failError = "Database ERROR"
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
+
                         }
                     }
 
                     onSaveFailedAPIError: {
                         if (createAccountInitiated == true) {
                             failError = "Network ERROR"
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
                         }
                     }
 
                     onSaveFailedInputError: {
                         if (createAccountInitiated == true) {
-                            failError = "Input ERROR"
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
                         }
                     }
 
                     onSaveFailedUnknownError: {
                         if (createAccountInitiated == true) {
-                            failError = "Unknown ERROR"
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
                         }
                     }
                 }
@@ -655,6 +692,7 @@ Rectangle {
 
                     onClicked: {
                         loginTracker = 1
+                        selectedPage = "onBoarding"
                         mainRoot.pop()
                         mainRoot.push("../Onboarding.qml")
                     }
@@ -1053,7 +1091,7 @@ Rectangle {
                     }
 
                     onReleased: {
-                        saveInitiated = true
+                        saveAccountInitiated = true
                         saveAppSettings()
                     }
                 }
@@ -1062,27 +1100,28 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (saveInitiated == true) {
+                        if (saveAccountInitiated == true) {
                             mainRoot.pop()
+                            selectedPage = "initialSetup"
                             mainRoot.push("../InitialSetup.qml")
                             accountCreated = 0
                             selectStorage = 0
-                            saveInitiated = false
+                            saveAccountInitiated = false
                         }
                     }
 
                     onSaveFailed: {
-                        if (saveInitiated == true) {
+                        if (saveAccountInitiated == true) {
                             saveFailed = 1
-                            saveInitiated = false
+                            saveAccountInitiated = false
                         }
                     }
 
                     onNoInternet: {
-                        if (saveInitiated == true) {
+                        if (saveAccountInitiated == true) {
                             networkError = 1
                             saveFailed = 1
-                            saveInitiated = false
+                            saveAccountInitiated = false
                         }
                     }
                 }

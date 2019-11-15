@@ -30,6 +30,14 @@ Rectangle {
     anchors.topMargin: 50
     visible: scanQRTracker == 0
 
+    property int myTracker: addressTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            timer.start()
+        }
+    }
+
     states: [
         State {
             name: "up"
@@ -70,11 +78,8 @@ Rectangle {
     property string addressHash: addressList.get(addressIndex).address
     property string addressName: addressList.get(addressIndex).label
     property int contact: addressList.get(addressIndex).contact
-    property int deleteAddressTracker: 0
     property int editSaved: 0
     property int editFailed: 0
-    property bool editingAddress: false
-    property bool deletingAddress: false
     property int deleteConfirmed: 0
     property int deleteFailed: 0
     property int favoriteChanged: 0
@@ -429,7 +434,6 @@ Rectangle {
                     if (addressTracker == 1 && editingAddress == true) {
                         editSaved = 1
                         coinListTracker = 0
-                        editingAddress = false
                     }
                 }
 
@@ -443,7 +447,6 @@ Rectangle {
                         addressList.setProperty(addressIndex, "favorite", oldFavorite);
                         editFailed = 1
                         coinListTracker = 0
-                        editingAddress = false
                     }
                 }
 
@@ -457,7 +460,6 @@ Rectangle {
                         addressList.setProperty(addressIndex, "favorite", oldFavorite);
                         editFailed = 1
                         coinListTracker = 0
-                        editingAddress = false
                     }
                 }
 
@@ -911,6 +913,7 @@ Rectangle {
 
                     onClicked: {
                         editFailed = 0
+                        editingAddress = false
                     }
                 }
             }
@@ -1003,6 +1006,7 @@ Rectangle {
                             selectedAddress = ""
                             scanning = "scanning..."
                             closeAllClipboard = true
+                            editingAddress = false
                         }
                     }
 
@@ -1156,7 +1160,6 @@ Rectangle {
                         if (addressTracker == 1 && deletingAddress == true) {
                             deleteConfirmed = 1
                             coinListTracker = 0
-                            deletingAddress = false
                         }
                     }
 
@@ -1166,7 +1169,6 @@ Rectangle {
                             addressList.setProperty(addressIndex, "remove", oldRemove);
                             deleteFailed = 1
                             coinListTracker = 0
-                            deletingAddress = false
                         }
                     }
 
@@ -1176,7 +1178,6 @@ Rectangle {
                             addressList.setProperty(addressIndex, "remove", oldRemove);
                             deleteFailed = 1
                             coinListTracker = 0
-                            deletingAddress = false
                         }
                     }
 
@@ -1363,6 +1364,7 @@ Rectangle {
                         deleteAddressTracker = 0
                         deleteFailed = 0
                         failError = ""
+                        deletingAddress = false
                     }
                 }
             }
@@ -1454,6 +1456,7 @@ Rectangle {
                             selectedAddress = ""
                             scanning = "scanning..."
                             closeAllClipboard = true
+                            deletingAddress = false
                         }
                     }
 
@@ -1576,7 +1579,6 @@ Rectangle {
 
             onReleased: {
                 addressTracker = 0;
-                timer.start()
             }
         }
     }

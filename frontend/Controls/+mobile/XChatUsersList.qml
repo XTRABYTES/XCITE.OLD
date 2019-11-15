@@ -88,6 +88,11 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
                     onClicked: {
                         if(getUserStatus(username) !== "dnd" && username !== myUsername) {
                             tagging = ""
@@ -108,9 +113,8 @@ Rectangle {
 
         sorters: [
             StringSorter {
-                roleName: "username";
+                roleName: "noCapitals";
                 sortOrder: Qt.AscendingOrder;
-                caseSensitivity: Qt.CaseInsensitive
             }
         ]
     }

@@ -30,6 +30,14 @@ Rectangle {
     property alias xChatList: msgList
     property alias xChatOrderedList: arrangedMsg
     property string tagging: ""
+    property bool changeView: updateView
+
+    onChangeViewChanged: {
+        if (changeView == true) {
+            msgList.positionViewAtEnd()
+            updateView = false
+        }
+    }
 
     Component {
         id: msgLine
@@ -37,7 +45,7 @@ Rectangle {
         Rectangle {
             id: msgRow
             width: parent.width
-            height: author == "xChatRobot"? ((robotMsgBox.height + 4) > xChatRobotIcon.height?  (robotMsgBox.height + 4): xChatRobotIcon.height) :(message != ""? senderID.height + messageText.height + 1: 0)
+            height: author == "xChatRobot"? ((robotMsgBox.height + 4) > xChatRobotIcon.height?  (robotMsgBox.height + 4): xChatRobotIcon.height) :(message != ""? (webLink != ""? (senderID.height + messageText.height + 1 + messageLink.height + 5) : (senderID.height + messageText.height + 1)): 0)
             color: "transparent"
             visible: message != ""
             clip: true
@@ -93,6 +101,11 @@ Rectangle {
                     MouseArea {
                         anchors.fill: parent
                         //focus: false
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
 
                         onClicked: {
                             if(getUserStatus(author) !== "dnd" && author !== myUsername) {
@@ -178,6 +191,11 @@ Rectangle {
                 visible: author != "xChatRobot"
             }
 
+            Rectangle {
+                id: messageQuote
+                visible: author != "xChatRobot" && quote != ""
+            }
+
             Text {
                 id: messageText
                 text: message + "<br>"
@@ -194,6 +212,48 @@ Rectangle {
                 textFormat: Text.StyledText
                 color: darktheme == false? "#14161B" : "#F2F2F2"
                 visible: author != "xChatRobot"
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressAndHold: {
+                            xChatQuote = message
+                        }
+                    }
+                }
+            }
+
+            Text {
+                id: messageLink
+                text: "<a href='" + weblink + "'>" + webLink + "</a>"
+                textFormat: Text.RichText
+                anchors.left: messageText.left
+                anchors.right: messageText.right
+                anchors.top: messageText.bottom
+                anchors.topMargin: 5
+                horizontalAlignment: Text.AlignLeft
+                font.family: xciteMobile.name
+                wrapMode: Text.WrapAnywhere
+                maximumLineCount: 2
+                font.pixelSize: 16
+                font.underline: true
+                color: "blue"
+                visible: author != "xChatRobot" && webLink != ""
+
+                onLinkActivated: {
+                    click01.play()
+                    detectInteraction()
+                    Qt.openUrlExternally(webLink)
+                }
+            }
+
+            Image {
+                id: messageImage
+                visible: author != "xChatRobot" && image != ""
             }
 
             Image {
@@ -252,7 +312,10 @@ Rectangle {
         id: arrangedMsg
         sourceModel: xChatTread
         sorters: [
-            RoleSorter { roleName: "ID" ; sortOrder: Qt.DecendingOrder }
+            StringSorter {
+                roleName: "msgID";
+                sortOrder: Qt.AscendingOrder;
+            }
         ]
     }
 

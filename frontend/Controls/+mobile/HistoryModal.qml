@@ -28,6 +28,13 @@ Rectangle {
     anchors.top: parent.top
 
     property int newHistory: 0
+    property int myTracker: historyTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            timer.start()
+        }
+    }
 
     states: [
         State {
@@ -185,22 +192,12 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
+                    loadTransactionsInitiated = true
                     click01.play()
                     detectInteraction()
                     currentPage = currentPage - 1
                     newHistory = 1
                     updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
-                }
-            }
-
-            Connections {
-                target: explorer
-
-                onUpdateTransactions: {
-                    if (historyTracker === 1) {
-                        loadTransactions(transactions);
-                        newHistory = 0
-                    }
                 }
             }
         }
@@ -242,6 +239,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
+                    loadTransactionsInitiated = true
                     click01.play()
                     detectInteraction()
                     currentPage = currentPage + 1
@@ -249,16 +247,17 @@ Rectangle {
                     updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
                 }
             }
+        }
+    }
 
-            Connections {
-                target: explorer
+    Connections {
+        target: explorer
 
-                onUpdateTransactions: {
-                    if (historyTracker === 1) {
-                        loadTransactions(transactions);
-                        newHistory = 0
-                    }
-                }
+        onUpdateTransactions: {
+            if (historyTracker === 1) {
+                loadTransactions(transactions);
+                newHistory = 0
+                loadTransactionsInitiated = false
             }
         }
     }
@@ -273,7 +272,7 @@ Rectangle {
         color: "transparent"
         state: (newHistory == 0)? "down" : "up"
         clip: true
-        visible: transactionSwitch.state == "off"
+        visible: transactionSwitch.state == "off" && historyDetailsCollected == true
 
         states: [
             State {
@@ -377,6 +376,33 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        z: 3
+        width: parent.width
+        height: parent.height
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        color: "black"
+        opacity: 0.50
+        visible: historyDetailsCollected = false
+
+        MouseArea {
+            anchors.fill: parent
+        }
+    }
+
+    AnimatedImage  {
+        z: 3
+        id: waitingDots
+        source: 'qrc:/gifs/loading-gif_01.gif'
+        width: 90
+        height: 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        playing: historyDetailsCollected = false
+        visible: historyDetailsCollected = false
+    }
+
     Label {
         id: closeHistoryModal
         z: 10
@@ -426,7 +452,6 @@ Rectangle {
                 parent.anchors.topMargin = 10
                 if (historyTracker == 1) {
                     historyTracker = 0;
-                    timer.start()
                 }
             }
         }

@@ -28,6 +28,14 @@ Rectangle {
     clip: true
     onStateChanged: detectInteraction()
 
+    property int myTracker: networkError
+
+    onMyTrackerChanged: {
+        if (networkError == 0) {
+
+        }
+    }
+
     states: [
         State {
             name: "up"

@@ -55,6 +55,11 @@ Rectangle {
                             MouseArea {
                                 anchors.fill: parent
 
+                                onPressed: {
+                                    click01.play()
+                                    detectInteraction()
+                                }
+
                                 onClicked: {
                                     selectedApp = name
                                     openApplication(selectedApp)

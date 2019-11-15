@@ -28,6 +28,14 @@ Rectangle {
     anchors.top: parent.top
     onStateChanged: detectInteraction()
 
+    property int myTracker: addAddressTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            timer.start()
+        }
+    }
+
     states: [
         State {
             name: "up"
@@ -49,12 +57,10 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
-    property bool addingAddress: false
     property int invalidAddress: 0
     property int addressExists: 0
     property int labelExists: 0
     property int contact: contactIndex
-    property bool saveInitiated: false
     property string failError: ""
 
     function compareTx() {
@@ -508,7 +514,7 @@ Rectangle {
             visible: editSaved == 0
                      && scanQRTracker == 0
                      && editFailed == 0
-                     && saveInitiated == false
+                     && saveAddressInitiated == false
 
             MouseArea {
                 anchors.fill: saveButton
@@ -530,7 +536,7 @@ Rectangle {
                             && invalidAddress == 0
                             && addressExists == 0
                             && labelExists == 0) {
-                        saveInitiated = true
+                        saveAddressInitiated = true
                         addressList.append({"contact": contactIndex, "fullName": (contactList.get(contactIndex).lastName + contactList.get(contactIndex).fistName),"address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
                         addingAddress = true
@@ -553,7 +559,7 @@ Rectangle {
                         editSaved = 1
                         coinListTracker = 0
                         addingAddress = false
-                        saveInitiated = false
+                        saveAddressInitiated = false
                     }
                 }
 
@@ -564,7 +570,7 @@ Rectangle {
                         editFailed = 1
                         coinListTracker = 0
                         addingAddress = false
-                        saveInitiated = false
+                        saveAddressInitiated = false
                     }
                 }
 
@@ -576,7 +582,7 @@ Rectangle {
                         editFailed = 1
                         coinListTracker = 0
                         addingAddress = false
-                        saveInitiated = false
+                        saveAddressInitiated = false
                     }
                 }
 
@@ -620,7 +626,7 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && scanQRTracker == 0
-                     && saveInitiated == false
+                     && saveAddressInitiated == false
         }
 
         Rectangle {
@@ -638,7 +644,7 @@ Rectangle {
             visible: editSaved == 0
                      && editFailed == 0
                      && scanQRTracker == 0
-                     && saveInitiated == false
+                     && saveAddressInitiated == false
         }
 
         AnimatedImage {
@@ -648,11 +654,11 @@ Rectangle {
             height: 60
             anchors.horizontalCenter: saveButton.horizontalCenter
             anchors.verticalCenter: saveButton.verticalCenter
-            playing: saveInitiated == true
+            playing: saveAddressInitiated == true
             visible: editSaved == 0
                      && scanQRTracker == 0
                      && editFailed == 0
-                     && saveInitiated == true
+                     && saveAddressInitiated == true
         }
 
         // save failed state
@@ -919,7 +925,6 @@ Rectangle {
             onReleased: {
                 if (addAddressTracker == 1) {
                     addAddressTracker = 0;
-                    timer.start()
                 }
             }
         }

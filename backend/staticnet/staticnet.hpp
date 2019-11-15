@@ -134,7 +134,8 @@ public:
 public slots:
     void errorString(const QString error);
     void onResponseFromStaticnet(QJsonObject response) {
-        qDebug() << "staticnet response recevied";       
+        qDebug() << "staticnet response recevied";
+        qDebug() << response;
     }
 
 signals:

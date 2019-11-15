@@ -157,11 +157,12 @@ int main(int argc, char *argv[])
     QObject::connect(&staticNet, SIGNAL(ResponseFromStaticnet(QJsonObject)), &static_int, SLOT(onResponseFromStaticnetEntry(QJsonObject)),Qt::QueuedConnection);      
     QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtility, SLOT(networkEntry(QString)));
 
-    QObject::connect(rootObject, SIGNAL(xChatSend(QString,QString,QString,QString)), &xchatRobot, SLOT(xchatInc(QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(xChatSend(QString,QString,QString,QString, QString, QString, QString)), &xchatRobot, SLOT(xchatInc(QString,QString,QString,QString, QString, QString, QString)));
     QObject::connect(rootObject, SIGNAL(xChatTypingSignal(QString,QString,QString)), &xchatRobot, SLOT(sendTypingToQueue(QString,QString,QString)));
     QObject::connect(rootObject, SIGNAL(checkXChatSignal()), &xchatRobot, SLOT(mqtt_StateChanged()));
     QObject::connect(&settings, SIGNAL(xchatConnectedLogin(QString,QString,QString)), &xchatRobot, SLOT(sendTypingToQueue(QString,QString,QString)));
     QObject::connect(rootObject, SIGNAL(pingXChatServers()), &xchatRobot, SLOT(pingXchatServers()));
+    QObject::connect(rootObject, SIGNAL(xChatReconnect()), &xchatRobot, SLOT(forcedReconnect()));
 
 
     // Fetch currency values

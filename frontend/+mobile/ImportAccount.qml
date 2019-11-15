@@ -24,7 +24,6 @@ Item {
     height: Screen.height
 
     property int passError: 0
-    property bool importInitiated: false
     property int checkUsername: 0
     property int keyPairSend: 0
     property int checkIdentity: 0
@@ -279,13 +278,13 @@ Item {
 
                 onLoginSucceededChanged: {
                     if (importTracker == 1) {
-                        selectedPage = "home"
                         mainRoot.pop()
                         mainRoot.push("../Home.qml")
                         myUsername = userName.text.trim()
                         importSuccesTimer.start()
                         loadingSettings = 0
                         verifyingBalances = 0
+                        importInitiated  = false
                     }
                 }
 
@@ -297,6 +296,7 @@ Item {
                         sessionKey = 0
                         receiveSessionID = 0
                         loadingSettings = 0
+                        verifyingBalances = 0
                         passError = 1
                         passWord.text = ""
                         importInitiated  = false
@@ -312,6 +312,7 @@ Item {
                         sessionKey = 0
                         receiveSessionID = 0
                         loadingSettings = 0
+                        verifyingBalances = 0
                         passError = 1
                         passWord.text = ""
                         importInitiated  = false
@@ -466,10 +467,5 @@ Item {
             font.pixelSize: 18
             font.family: xciteMobile.name
         }
-    }
-
-    Controls.NetworkError {
-        z:100
-        id: myNetworkError
     }
 }

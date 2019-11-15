@@ -23,11 +23,8 @@ Item {
 
     // shared vars
 
-    property int pageTracker: view.currentIndex == 0 ? 0 : 1
     property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
     property string searchCriteria:""
-
-    onPageTrackerChanged: detectInteraction()
 
     Rectangle {
         id: backgroundHome
@@ -81,6 +78,11 @@ Item {
             anchors.fill: parent
             interactive: (appsTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addCoinTracker == 1) ? false : true
             clip: true
+
+            onCurrentIndexChanged: {
+                detectInteraction()
+                pagerTracker = view.currentIndex
+            }
 
             Item {
                 id: dashForm
@@ -441,107 +443,16 @@ Item {
 
                 }
 
-                Item {
-                    z: 3
-                    width: Screen.width
-                    height: coinTracker == 0? 50 : 125
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    LinearGradient {
-                        anchors.fill: parent
-                        start: Qt.point(x, y)
-                        end: Qt.point(x, y + height)
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: "transparent" }
-                            GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
-                            GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-                        }
-                    }
-                }
-
-                Rectangle {
-                    id: backButton1
-                    z: 3
-                    radius: 25
-                    anchors.fill: backButton
-                    color: darktheme == true? "#14161B" : "#FDFDFD"
-                    opacity: 0.1
-                    visible: backButton.visible
-
-                }
-
-                Rectangle {
-                    id: backButton
-                    z: 3
-                    height: 50
-                    width: 50
-                    radius: 25
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 50
-                    color: "transparent"
-                    visible: anchors.rightMargin > -110
-                    state: coinTracker == 1 ? "inView" : "hidden"
-
-                    states: [
-                        State {
-                            name: "inView"
-                            PropertyChanges { target: backButton; anchors.rightMargin: 15}
-                        },
-                        State {
-                            name: "hidden"
-                            PropertyChanges { target: backButton; anchors.rightMargin: -110}
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: "*"
-                            to: "*"
-                            NumberAnimation { target: backButton; properties: "anchors.rightMargin "; duration: 300; easing.type: Easing.InOutCubic}
-                        }
-                    ]
-
-                    Image {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/mobile/back-icon_01.svg'
-                        width: 50
-                        height: 50
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onPressed: {
-                            click01.play()
-                            backButton1.opacity = 0.5
-                            detectInteraction()
-                        }
-
-                        onReleased: {
-                            backButton1.opacity = 0.1
-                        }
-
-                        onClicked: {
-                            if (coinTracker == 1) {
-                                countWallets()
-                                coinTracker = 0
-                            }
-                        }
-                    }
-                }
-
-                Rectangle {
-                    id: addButton5
-                    z: 3
-                    radius: 25
+                DropShadow {
                     anchors.fill: addButton4
-                    color: darktheme == true? "#14161B" : "#FDFDFD"
-                    opacity: 0.1
+                    source: addButton4
+                    samples: 9
+                    radius: 4
+                    color: darktheme == true? "#000000" : "#727272"
+                    horizontalOffset:0
+                    verticalOffset: 0
+                    spread: 0
                     visible: addButton4.visible
-
                 }
 
                 Rectangle {
@@ -549,12 +460,12 @@ Item {
                     z: 3
                     height: 50
                     width: 50
-                    radius: 25
+                    radius: 50
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
-                    color: "transparent"
-                    visible: anchors.leftMargin > -110
+                    color: darktheme == true? "#14161B" : "#F2F2F2"
+                    visible: view.currentIndex == 0
                     state: coinTracker == 1 ? "inView" : "hidden"
 
                     states: [
@@ -590,12 +501,11 @@ Item {
 
                         onPressed: {
                             click01.play()
-                            addButton5.opacity = 0.5
                             detectInteraction()
                         }
 
                         onReleased: {
-                            addButton5.opacity = 0.1
+
                         }
 
                         onClicked: {
@@ -1099,113 +1009,16 @@ Item {
                     }
                 }
 
-                Item {
-                    z: 3
-                    width: Screen.width
-                    height: contactTracker == 0? 50 : 125
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    LinearGradient {
-                        anchors.fill: parent
-                        start: Qt.point(x, y)
-                        end: Qt.point(x, y + height)
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: "transparent" }
-                            GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
-                            GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-                        }
-                    }
-                }
-
-                Rectangle {
-                    id: backButton3
-                    z: 3.5
-                    radius: 25
-                    anchors.fill: backButton2
-                    color: darktheme == true? "#14161B" : "#FDFDFD"
-                    opacity: 0.1
-                    visible: backButton2.visible
-
-                }
-
-                Rectangle {
-                    id: backButton2
-                    z: 3.5
-                    height: 50
-                    width: 50
-                    radius: 25
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 50
-                    color: "transparent"
-                    visible: anchors.rightMargin > -110
-                    state: contactTracker == 1 ? "inView" : "hidden"
-
-                    states: [
-                        State {
-                            name: "inView"
-                            PropertyChanges { target: backButton2; anchors.rightMargin: 15}
-                        },
-                        State {
-                            name: "hidden"
-                            PropertyChanges { target: backButton2; anchors.rightMargin: -110}
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: "*"
-                            to: "*"
-                            NumberAnimation { target: backButton2; properties: "anchors.rightMargin"; duration: 300; easing.type: Easing.InOutCubic}
-                        }
-                    ]
-
-                    Image {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/mobile/back-icon_01.svg'
-                        width: 50
-                        height: 50
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onPressed: {
-                            click01.play()
-                            backButton3.opacity = 0.5
-                            detectInteraction()
-                        }
-
-                        onReleased: {
-                            backButton3.opacity = 0.1
-                        }
-
-                        onClicked: {
-                            if (addressQRTracker == 0) {
-                                if (contactTracker == 1) {
-                                    contactTracker = 0
-                                    //contactIndex = 0
-                                }
-                            }
-
-                            else if (addressQRTracker == 1) {
-                                addressQRTracker = 0
-                            }
-                        }
-                    }
-                }
-
-                Rectangle {
-                    id: addButton3
-                    z: 3
-                    radius: 25
+                DropShadow {
                     anchors.fill: addButton2
-                    color: darktheme == true? "#14161B" : "#FDFDFD"
-                    opacity: 0.1
+                    source: addButton2
+                    samples: 9
+                    radius: 4
+                    color: darktheme == true? "#000000" : "#727272"
+                    horizontalOffset:0
+                    verticalOffset: 0
+                    spread: 0
                     visible: addButton2.visible
-
                 }
 
                 Rectangle {
@@ -1213,12 +1026,12 @@ Item {
                     z: 3
                     height: 50
                     width: 50
-                    radius: 25
+                    radius: 50
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 50
-                    color: "transparent"
-                    visible: (anchors.leftMargin > -110) && contactIndex != 0
+                    color: darktheme == true? "#14161B" : "#F2F2F2"
+                    visible: view.currentIndex == 1 && contactIndex != 0
                     state: (contactTracker == 1 && addressQRTracker == 0)? "inView" : "hidden"
 
                     states: [
@@ -1254,12 +1067,11 @@ Item {
 
                         onPressed: {
                             click01.play()
-                            addButton3.opacity = 0.5
                             detectInteraction()
                         }
 
                         onReleased: {
-                            addButton3.opacity = 0.1
+
                         }
 
                         onClicked: {

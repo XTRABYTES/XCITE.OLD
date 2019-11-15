@@ -283,6 +283,12 @@ Rectangle {
         z: 10
     }
 
+    Controls.LogOut {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
     Controls.NetworkError {
         z:100
         id: myNetworkError

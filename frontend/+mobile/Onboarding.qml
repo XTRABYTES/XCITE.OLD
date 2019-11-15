@@ -170,7 +170,7 @@ Item {
         }
 
         Text {
-            id: qrButtonText
+            id: startButtonText
             text: "LET'S GO"
             font.family: xciteMobile.name
             font.pointSize: 14
@@ -243,5 +243,10 @@ Item {
 
     ImportAccount {
         id: myImport
+    }
+
+    Controls.NetworkError {
+        z:100
+        id: myNetworkError
     }
 }

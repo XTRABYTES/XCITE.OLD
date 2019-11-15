@@ -29,6 +29,18 @@ Rectangle {
     anchors.top: parent.top
     onStateChanged: detectInteraction()
 
+    property int myTracker: changePasswordTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            currentPassword.text = ""
+            passWord1.text = ""
+            passWord2.text = ""
+            editSaved = 0
+            editFailed = 0
+        }
+    }
+
     states: [
         State {
             name: "up"
@@ -56,7 +68,6 @@ Rectangle {
     property int passwordWarning2: 0
     property int editSaved: 0
     property int editFailed: 0
-    property bool saveInitiated: false
     property string failError: ""
 
     function validation(text){
@@ -274,7 +285,7 @@ Rectangle {
                         && passWord2.text != ""
                         && passwordWarning1 == 0
                         && passwordWarning2 == 0) {
-                    saveInitiated = true
+                    savePasswordInitiated = true
                     changePassword(currentPassword.text, passWord1.text)
                 }
             }
@@ -284,55 +295,63 @@ Rectangle {
             target: UserSettings
 
             onSaveSucceeded: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     editSaved = 1
-                    saveInitiated = false
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailed: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     editFailed = 1
-                    saveInitiated = false
+                    savePasswordInitiated = false
                 }
             }
 
             onNoInternet: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     networkError = 1
                     editFailed = 1
-                    saveInitiated = false
+                    savePasswordInitiated = false
                 }
             }
 
             onPasswordChangedFailed: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     editFailed = 1
-                    saveInitiated = false
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailedDBError: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     failError = "Database ERROR"
+                    editFailed = 1
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailedAPIError: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     failError = "Network ERROR"
+                    editFailed = 1
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailedInputError: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     failError = "Input ERROR"
+                    editFailed = 1
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailedUnknownError: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     failError = "Unknown ERROR"
+                    editFailed = 1
+                    savePasswordInitiated = false
                 }
             }
         }
@@ -352,7 +371,7 @@ Rectangle {
         anchors.verticalCenter: saveButton.verticalCenter
         visible: editSaved == 0
                  && editFailed == 0
-                 && saveInitiated == false
+                 && savePasswordInitiated == false
     }
 
     Rectangle {
@@ -370,7 +389,7 @@ Rectangle {
         border.width: 1
         visible: editSaved == 0
                  && editFailed == 0
-                 && saveInitiated == false
+                 && savePasswordInitiated == false
     }
 
     AnimatedImage {
@@ -383,7 +402,7 @@ Rectangle {
         playing: saveInitiated == true
         visible: editSaved == 0
                  && editFailed == 0
-                 && saveInitiated == true
+                 && savePasswordInitiated == true
     }
 
     //change password failed
@@ -621,11 +640,6 @@ Rectangle {
 
             onClicked: {
                 changePasswordTracker = 0
-                currentPassword.text = ""
-                passWord1.text = ""
-                passWord2.text = ""
-                editSaved = 0
-                editFailed = 0
             }
         }
     }

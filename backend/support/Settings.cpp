@@ -114,6 +114,7 @@ bool Settings::UserExists(QString username){
         }
     }
     else {
+        emit noInternet();
         return false;
     }
 }
@@ -219,6 +220,7 @@ void Settings::CreateUser(QString username, QString password){
 
             // Decrypt AES key using local private key. Stores it to backendKey
             int  decryptedSize = RSA_private_decrypt(aesKeySize,encrypted,backendKey,privRSAKey,padding);
+            qDebug() << decryptedSize;
 
             emit saveAccountSettings();
             // Save iv data to local storage
@@ -289,6 +291,7 @@ void Settings::CreateUser(QString username, QString password){
         }
     }
     else {
+        emit noInternet();
         return;
     }
 }
@@ -438,6 +441,7 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
         unsigned char* aeskeyEncryptedChar = new unsigned char[aesKeySize];
         std::memcpy(aeskeyEncryptedChar,aeskeyEncrypted.constData(),aesKeySize);
         int  decryptedSize1 = RSA_private_decrypt(aesKeySize,aeskeyEncryptedChar,backendKey,privRSAKey,padding);
+        qDebug() << decryptedSize;
 
         std::memcpy(iiiv,iv.constData(),iv.size());
 
@@ -523,9 +527,11 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
             }
         }else{
             emit loginFailedChanged();
+            return;
         }
     }
     else {
+        emit noInternet();
         return;
     }
 }
@@ -592,6 +598,7 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
         unsigned char* aeskeyEncryptedChar = new unsigned char[aesKeySize];
         std::memcpy(aeskeyEncryptedChar,aeskeyEncrypted.constData(),aesKeySize);
         int  decryptedSize1 = RSA_private_decrypt(aesKeySize,aeskeyEncryptedChar,backendKey,privRSAKey,padding);
+        qDebug() << decryptedSize;
 
         std::memcpy(iiiv,iv.constData(),iv.size());
 
@@ -726,14 +733,18 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
             }
             else {
                 emit passwordChangedFailed();
+                return;
             }
 
 
         }else{
-            emit passwordChangedFailed(); // if update fails -- CHANGE this
+            emit passwordChangedFailed();
+            return;
         }
     }
      else {
+        emit passwordChangedFailed();
+        emit noInternet();
         return;
     }
 }
@@ -751,6 +762,8 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
     /* Create and initialise the context */
     if(!(ctx = EVP_CIPHER_CTX_new())) {
         int error = 0;
+        qDebug() << "error: ";
+        qDebug() << error;
     }
 
     /* Initialise the encryption operation. IMPORTANT - ensure you use a key
@@ -760,7 +773,8 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
    * is 128 bits */
     if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv)){
         int error = 0;
-
+        qDebug() << "error: ";
+        qDebug() << error;
     }
 
     /* Provide the message to be encrypted, and obtain the encrypted output.
@@ -768,7 +782,8 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
    */
     if(1 != EVP_EncryptUpdate(ctx, ciphertext, &len, plaintext, plaintext_len)){
         int error = 0;
-
+        qDebug() << "error: ";
+        qDebug() << error;
     }
     ciphertext_len = len;
 
@@ -777,7 +792,8 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
    */
     if(1 != EVP_EncryptFinal_ex(ctx, ciphertext + len, &len)){
         int error = 0;
-
+        qDebug() << "error: ";
+        qDebug() << error;
     }
     ciphertext_len += len;
 
@@ -874,6 +890,8 @@ bool Settings::SaveSettings(){
         return true;
     }
     else {
+        emit saveFailed();
+        emit noInternet();
         return false;
     }
 }
@@ -1191,8 +1209,6 @@ void Settings::CheckSessionId(){
 
     bool sessionCheckBool = encryptedText.toString() == "true" ? true:false;
     emit sessionIdCheck(sessionCheckBool);
-
-
 }
 
 void Settings::NoWalletFile(){

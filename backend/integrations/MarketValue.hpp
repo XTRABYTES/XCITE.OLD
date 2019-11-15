@@ -37,6 +37,7 @@ signals:
 public slots:
     void findAllCurrencyValues();
     void findCurrencyValue(QString currency);
+    bool checkInternet();
 
 private:
     QString m_marketValue;

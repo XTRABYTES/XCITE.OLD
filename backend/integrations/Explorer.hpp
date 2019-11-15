@@ -42,6 +42,7 @@ signals:
     void allTxChecked();
     void explorerBusy();
     void detailsCollected();
+    void noInternet();
 
 public slots:
     void getBalanceEntireWallet(QString, QString);
@@ -49,6 +50,7 @@ public slots:
     void getDetails(QString, QString);
     void WalletUpdate(QString coin, QString label, QString message);
     void checkTxStatus(QString);
+    bool checkInternet();
 private:
     QString explorerValue;
 };

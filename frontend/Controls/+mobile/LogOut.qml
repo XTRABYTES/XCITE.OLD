@@ -28,6 +28,13 @@ Rectangle {
     anchors.top: parent.top
 
     property int logoutTimeout: 0
+    property int myTracker: logoutTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0 && goodbey == 0) {
+
+        }
+    }
 
     states: [
         State {
@@ -307,6 +314,7 @@ Rectangle {
 
                         onReleased: {
                             parent.opacity = 0.5
+                            logoutTracker = 0
                             if (manualLogout == 1) {
                                 manualLogout = 0
                                 logoutTracker = 0

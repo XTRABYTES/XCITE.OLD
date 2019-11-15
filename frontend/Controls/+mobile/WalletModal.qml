@@ -29,6 +29,14 @@ Rectangle {
     anchors.top: parent.top
     anchors.topMargin: 50
 
+    property int myTracker: walletDetailTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            timer.start()
+        }
+    }
+
     LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
@@ -71,14 +79,11 @@ Rectangle {
     property bool oldRemove
     property int editSaved: 0
     property int editFailed: 0
-    property bool editingWallet: false
-    property bool deletingWallet: false
     property int deleteConfirmed: 0
     property int deleteFailed: 0
     property int deleteErrorNr: 0
     property int deleteSuccess: 0
     property bool walletDeleted: false
-    property int deleteWalletTracker: 0
     property int labelExists: 0
     property bool newInclude
     property bool walletEdited
@@ -436,7 +441,6 @@ Rectangle {
                 onSaveSucceeded: {
                     if (walletDetailTracker == 1 && editingWallet == true) {
                         editSaved = 1
-                        editingWallet = false
                         sumBalance()
                     }
                 }
@@ -449,14 +453,12 @@ Rectangle {
                             editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                             newInclude = oldInclude
                             editFailed = 1
-                            editingWallet = false
                         }
                         else if (userSettings.localKeys === true && walletEdited == true) {
                             editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                             newInclude = oldInclude
                             editFailed = 1
                             saveErrorNr = 1
-                            editingWallet = false
                             walletEdited = false
                             sumBalance()
                         }
@@ -473,14 +475,12 @@ Rectangle {
                             editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                             newInclude = oldInclude
                             editFailed = 1
-                            editingWallet = false
                         }
                         else if (userSettings.localKeys === true && walletEdited == true) {
                             editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                             newInclude = oldInclude
                             editFailed = 1
                             saveErrorNr = 1
-                            editingWallet = false
                             walletEdited = false
                             sumBalance()
                         }
@@ -501,7 +501,6 @@ Rectangle {
                         editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                         editFailed = 1
                         saveErrorNr = 0
-                        editingWallet = false
                     }
                 }
 
@@ -683,6 +682,7 @@ Rectangle {
                         }
                         editFailed = 0
                         failError = ""
+                        editingWallet = false
                     }
                 }
             }
@@ -763,6 +763,7 @@ Rectangle {
                         addWalletTracker = 0;
                         editSaved = 0;
                         createWalletTracker = 0
+                        editingWallet = false
                     }
                 }
             }
@@ -936,13 +937,11 @@ Rectangle {
                             editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
                             deleteFailed = 1
                             coinListTracker = 0
-                            deletingAddress = false
                         }
                         else if (usersettings.localKeys === true && walletDeleted == true) {
                             editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
                             deleteFailed = 1
                             deleteErrorNr = 1
-                            deletingWallet = false
                             walletDeleted = false
                         }
                     }
@@ -950,7 +949,6 @@ Rectangle {
 
                 onSaveFileSucceeded: {
                     if (deleteWalletTracker == 1 && userSettings.localKeys === true && deletingWallet == true) {
-                        walletDeleted = true
                     }
                 }
 
@@ -960,7 +958,6 @@ Rectangle {
                         editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
                         deleteFailed = 1
                         deleteErrorNr = 0
-                        deletingWallet = false
                     }
                 }
 
@@ -1155,6 +1152,7 @@ Rectangle {
                     deleteFailed = 0
                     deleteWalletTracker = 0
                     failError = ""
+                    deletingAddress = false
                 }
             }
         }
@@ -1235,6 +1233,7 @@ Rectangle {
                         newLabel.text = ""
                         deleteWalletTracker = 0
                         deleteConfirmed = 0
+                        deletingAddress = false
                     }
                 }
 
@@ -1348,7 +1347,6 @@ Rectangle {
 
             onReleased: {
                 walletDetailTracker = 0;
-                timer.start()
             }
         }
     }

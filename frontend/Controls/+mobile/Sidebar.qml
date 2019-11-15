@@ -25,6 +25,8 @@ Rectangle {
     anchors.left: parent.left
     z: 100
 
+    property int myTracker: appsTracker
+
     onStateChanged: detectInteraction()
 
     states: [

@@ -24,7 +24,6 @@ Item {
     height: Screen.height
 
     property int passError: 0
-    property bool loginInitiated: false
     property int checkUsername: 0
     property int keyPairSend: 0
     property int checkIdentity: 0
@@ -290,7 +289,6 @@ Item {
 
                 onLoginSucceededChanged: {
                     if (loginTracker == 1){
-                        selectedPage = "home"
                         mainRoot.pop()
                         mainRoot.push("../Home.qml")
                         myUsername = userName.text.trim()
@@ -298,11 +296,13 @@ Item {
                         loadingSettings = 0
                         verifyingBalances = 0
                         status = userSettings.xChatDND === true? "dnd" : "idle"
+                        loginInitiated  = false
                     }
                 }
 
                 onLoginFailedChanged: {
                     if (loginTracker == 1){
+                        verifyingBalances = 0
                         checkUsername = 0
                         keyPairSend = 0
                         checkIdentity = 0
@@ -377,6 +377,18 @@ Item {
             border.color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
             opacity: 0.50
             visible: logInButton.visible
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.bottom: loginModalBody.bottom
+            anchors.bottomMargin: -10
+            playing: loginInitiated == true
+            visible: loginInitiated == true
         }
 
         Label {
@@ -537,6 +549,7 @@ Item {
                     onClicked: {
                         userSettings.accountCreationCompleted = false
                         mainRoot.pop()
+                        selectedPage = "createAccount"
                         mainRoot.push("../CreateAccount.qml")
                         loginTracker = 0
                     }
@@ -553,10 +566,5 @@ Item {
             anchors.topMargin: 5
             color: "#0ED8D2"
         }
-    }
-
-    Controls.NetworkError {
-        z:100
-        id: myNetworkError
     }
 }

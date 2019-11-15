@@ -94,14 +94,14 @@ ApplicationWindow {
         coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
         coinList.setProperty(0, "percentage", percentageXFUEL);
         coinList.setProperty(0, "totalBalance", 0);
-        coinList.setProperty(0, "active", true);
+        coinList.setProperty(0, "active", userSettings.xfuel);
         coinList.setProperty(0, "testnet", false );
         coinList.setProperty(0, "xby", 1);
         coinList.setProperty(0, "coinID", 0);
-        coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "testnet" : false, "xby": 1,"coinID": 1});
-        coinList.append({"name": "XTEST", "fullname": "testnet", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 2});
-        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 3});
-        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
+        coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": userSettings.xby, "testnet" : false, "xby": 1,"coinID": 1});
+        coinList.append({"name": "XTEST", "fullname": "testnet", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": userSettings.xtest, "testnet" : true, "xby": 1,"coinID": 2});
+        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": userSettings.btc, "testnet" : false, "xby": 0,"coinID": 3});
+        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": userSettings.eth, "testnet" : false, "xby": 0,"coinID": 4});
 
         applicationList.setProperty(0, "name", "X-CHAT");
         applicationList.setProperty(0, "icon_white", 'qrc:/icons/mobile/xchat-icon_01_white.svg');
@@ -212,10 +212,10 @@ ApplicationWindow {
     property string selectedPage: ""
     property string status: "online"
 
-    // Trackers
-    property int interactionTracker: 0
+    // Trackers - pages
     property int loginTracker: 0
     property int importTracker: 0
+    property int pageTracker: 0
     property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
@@ -224,15 +224,19 @@ ApplicationWindow {
     property int appsTracker: 0
     property int coinTracker: 0
     property int walletTracker: 0
+    property int addActive: 0
+    property int addViewOnly: 0
     property int transferTracker: 0
     property int historyTracker: 0
-    property int addressTracker: 0
-    property int contactTracker: 0
-    property int addAddressTracker: 0
     property int addCoinTracker: 0
+    property int addressTracker: 0
+    property int addAddressTracker: 0
+    property int deleteAddressTracker: 0
+    property int contactTracker: 0
     property int addContactTracker: 0
     property int editContactTracker: 0
-    property int coinListTracker: 0
+    property int deleteContactTracker: 0
+    property int deleteWalletTracker: 0
     property int walletListTracker: 0
     property int addressbookTracker: 0
     property int scanQRTracker: 0
@@ -242,8 +246,12 @@ ApplicationWindow {
     property int addressQRTracker: 0
     property int pictureTracker: 0
     property int cellTracker: 0
-    property int currencyTracker: 0
     property int pincodeTracker: 0
+    property int changePasswordTracker: 0
+    property int portfolioTracker: 0
+    property int walletDetailTracker: 0
+    property int transactionDetailTracker: 0
+    property int backupTracker: 0
     property int debugTracker: 0
     property int xvaultTracker: 0
     property int xchangeTracker: 0
@@ -251,18 +259,18 @@ ApplicationWindow {
     property int xchatSettingsTracker: 0
     property int xchatNetworkTracker: 0
     property int xchatUserTracker: 0
+
+
+    // Trackers - features
+    property int interactionTracker: 0
+    property int coinListTracker: 0
+    property int currencyTracker: 0
     property int tagListTracker: 0
     property int dndTracker: 0
-
-    property int backupTracker: 0
     property int screenshotTracker: 0
-    property int walletDetailTracker: 0
-    property int portfolioTracker: 0
-    property int transactionDetailTracker: 0
     property int soundTracker: 0
-    property int changePasswordTracker: 0
 
-    property bool sendEnabled: false
+
     // Global variables
     property int sessionStart: 0
     property int sessionTime: 0
@@ -290,11 +298,24 @@ ApplicationWindow {
     property string scanning: "scanning..."
     property string typing: ""
 
+    property bool loginInitiated: false
+    property bool importInitiated: false
+    property bool createAccountInitiated: false
+    property bool saveAccountInitiated: false
     property string addressbookName: ""
     property string addressbookHash: ""
     property int addressIndex: 0
+    property bool addingAddress: false
+    property bool saveAddressInitiated: false
+    property bool editingAddress: false
+    property bool deletingAddress: false
     property int contactIndex: 0
+    property bool addingContact: false
+    property bool editingContact: false
+    property bool deletingContact: false
     property int walletIndex: 1
+    property bool editingWallet: false
+    property bool deletingWallet: false
     property int coinIndex: 0
     property int pictureIndex: 0
     property int totalLines: 4
@@ -312,10 +333,16 @@ ApplicationWindow {
     property int createPin: 0
     property int changePin: 0
     property int unlockPin: 0
-    property bool pinClearInitiated: false
+    property bool savePinInitiated: false
+    property bool checkPinInitiated: false
+    property bool clearPinInitiated: false
+    property bool changeVolumeInitiated: false
+    property bool changeSystemVolumeInitiated: false
+    property bool clearAllInitiated: false
     property int clearAll: 0
     property int pinOK: 0
     property int pinError: 0
+    property bool savePasswordInitiated: false
     property int requestSend: 0
     property bool newAccount: false
     property real changeBalance: 0
@@ -343,6 +370,9 @@ ApplicationWindow {
     property real totalBTCFiat: totalBTC * valueBTC
     property real totalETHFiat: totalETH * valueETH
     property string historyCoin: ""
+    property bool loadTransactionsInitiated: false
+    property bool transactionDetailsCollected: false
+    property bool historyDetailsCollected: false
     property int transactionPages: 0
     property int currentPage: 0
     property string transactionNR: ""
@@ -380,6 +410,7 @@ ApplicationWindow {
     property int pingTimeRemain: 60
     property string xChatMessage: ""
     property bool newMessages: false
+    property bool updateView: false
     property bool messageAdded: false
     property bool xChatScrolling: false
     property int xChatID: 1
@@ -388,10 +419,17 @@ ApplicationWindow {
     property string dndUser: ""
     property variant messageArray
     property string tagFilter: ""
+    property string xChatLink: ""
+    property string xChatImage: ""
+    property string xChatQuote: ""
     property bool sendTyping: true
     property bool xChatConnection: false
     property bool xChatConnecting: false
+    property bool xChatDisconnected: false
     property bool checkingXchat: false
+    property bool tagMeChangeInitiated: false
+    property bool tagEveryoneChangeInitiated: false
+    property bool dndChangeInitiated: false
     property string selectedApp: ""
 
     // Signals
@@ -414,7 +452,7 @@ ApplicationWindow {
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
     signal helpMe()
-    signal xChatSend(string usr, string platform, string status, string msg)
+    signal xChatSend(string usr, string platform, string status, string msg , string link, string image, string quote)
     signal setNetwork(string network)
     signal testTransaction(string test)
     signal updateAccount(string addresslist, string contactlist, string walletlist, string pendinglist)
@@ -433,6 +471,7 @@ ApplicationWindow {
     signal xChatTypingSignal(string user, string route, string status)
     signal checkXChatSignal()
     signal pingXChatServers()
+    signal xChatReconnect()
 
     // functions
     function openApplication(app) {
@@ -1019,7 +1058,8 @@ ApplicationWindow {
             for (var y = 0; y < xChatOnline.count; y ++) {
                 var act = xChatOnline.get(y).newUser
                 if (act === true) {
-                    xChatUsers.append({"username":xChatOnline.get(y).username, "date":xChatOnline.get(y).date, "time":xChatOnline.get(y).time, "status":xChatOnline.get(y).status, "active":true, "updated": true})
+                    var userID = xChatOnline.get(y).username
+                    xChatUsers.append({"username":userID, "date":xChatOnline.get(y).date, "time":xChatOnline.get(y).time, "status":xChatOnline.get(y).status, "active":true, "updated": true, "noCapitals": userID.toLowerCase()})
                 }
             }
             for (var b = 0; b < xChatUsers.count; b ++) {
@@ -1419,7 +1459,8 @@ ApplicationWindow {
                 transactionTimestamp = timestamp
                 transactionConfirmations = confirmations
                 transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
-                transactionDetailTracker = 1
+                transactionDetailsCollected = true
+                //transactionDetailTracker = 1
             }
         }
 
@@ -1450,18 +1491,23 @@ ApplicationWindow {
         onDetailsCollected: {
             explorerBusy = false
         }
+        onNoInternet: {
+            explorerBusy = false
+            networkError = 1
+        }
     }
 
     Connections {
         target: xChat
 
         onXchatSuccess: {
-
+            addMessageToThread.sendMessage({"author": author, "date": date, "time": time, "device": device, "msg": message, "link": link, "image": image, "quote": quote, "msgID": msgID, "me": myUsername.trim(), "tagMe": userSettings.tagMe, "tagEveryone": userSettings.tagEveryone, "dnd": userSettings.xChatDND})
         }
         onXchatConnectionSuccess: {
             checkingXchat = false
             if (xChatConnection == false) {
                 xChatConnection = true
+                xChatDisconnected = false
                 xChatConnecting = false
                 if (!pingingXChat) {
                     pingTimeRemain = -1
@@ -1477,8 +1523,10 @@ ApplicationWindow {
             checkingXchat = false
             xChatConnection = false
             xChatConnecting = false
+            xChatDisconnected = true
         }
         onXchatConnecting: {
+            xChatDisconnected = false
             xChatConnecting = true
         }
         onXchatStateChanged: {
@@ -1488,7 +1536,10 @@ ApplicationWindow {
             }
         }
         onXchatNoInternet: {
+            networkError = 1
             networkAvailable = 0
+            resetServerUpdateStatus();
+            updateServerStatus();
         }
         onXchatInternetOk: {
             networkAvailable = 1
@@ -1516,6 +1567,45 @@ ApplicationWindow {
             }
         }
 
+    }
+
+    // Workerscripts
+
+    WorkerScript {
+        id: addMessageToThread
+        source:'qrc:/Controls/+mobile/addMessage.js'
+
+        onMessage: {
+            console.log("author: " + messageObject.author + " message: " + messageObject.msg + " tag: " + messageObject.tag)
+            for (var b = 0; b < xChatUsers.count; b ++) {
+                if (xChatUsers.get(b).username === messageObject.author) {
+                    if (messageObject.msg !== "") {
+                        xChatTread.append({"author" : messageObject.author, "device" : messageObject.device, "date" : messageObject.date + " at " + messageObject.time, "message" : messageObject.msg, "ID" : xChatID, "tag": messageObject.tag, "webLink": messageObject.link, "timeID": messageObject.msgID})
+                        xChatID = xChatID + 1
+                        if(!xChatScrolling) {
+                            updateView = true
+                        }
+                        else {
+                            newMessages = true
+                        }
+                    }
+                    if (messageObject.tag === 1) {
+                        notification.play()
+                        if (xchatTracker !== 1) {
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : messageObject.author + " has mentioned you", "origin" : "X-CHAT"})
+                            alert = true
+                        }
+                    }
+                    if (messageObject.tag === 2) {
+                        notification.play()
+                        if (xchatTracker !== 1) {
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
+                            alert = true
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // Listmodels
@@ -1696,7 +1786,9 @@ ApplicationWindow {
             date: ""
             device: ""
             tag: 0
-            ID:0
+            ID: 0
+            webLink: ""
+            timeID: ""
         }
     }
 
@@ -1834,6 +1926,17 @@ ApplicationWindow {
                 checkingXchat = true
                 checkXChatSignal();
             }
+        }
+    }
+
+    Timer {
+        id: xChatConnectingTimer
+        interval: 10000
+        repeat: true
+        running: xChatConnection === false
+
+        onTriggered: {
+            xChatReconnect()
         }
     }
 
@@ -2025,6 +2128,145 @@ ApplicationWindow {
     onClosing: {
         if (mainRoot.depth > 1) {
             close.accepted = false
+            if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0) {
+                if (networkError == 1) {
+                    networkError = 0
+                }
+                else if (selectedPage == "onBoarding") {
+                    if (loginTracker == 1 && !loginInitiated) {
+                        loginTracker = 0
+                    }
+                    else if (importTracker == 1 && !importInitiated) {
+                        importTracker = 0
+                    }
+                }
+                else if (selectedPage == "home") {
+                    if (appsTracker == 1) {
+                        appsTracker = 0
+                    }
+                    else if (addCoinTracker == 1) {
+                        addCoinTracker = 0
+                    }
+
+                    else if (historyTracker == 1) {
+                        if (transactionDetailTracker == 1) {
+                            transactionDetailTracker = 0
+                        }
+                        else {
+                            historyTracker = 0
+                        }
+                    }
+                    else if (addContactTracker == 1 && !addingContact) {
+                        addContactTracker = 0
+                    }
+                    else if (editContactTracker == 1 && !editingContact && !deletingContact) {
+                        if (deleteContactTracker == 1) {
+                            deleteContactTracker = 0
+                        }
+                        else   {
+                            editContactTracker = 0
+                        }
+                    }
+                    else if (addAddressTracker == 1 && !addingAddress && !saveAddressInitiated) {
+                        addAddressTracker = 0
+                    }
+                    else if (addressTracker == 1 && !editingAddress && !deletingAddress) {
+                        if (deleteAddressTracker == 1) {
+                            deleteAddressTracker = 0
+                        }
+                        else {
+                            addressTracker = 0
+                        }
+                    }
+                    else if (walletDetailTracker == 1 && !editingWallet && !deletingWallet) {
+                        if (deleteWalletTracker == 1) {
+                            deleteWalletTracker = 0
+                        }
+                        else {
+                            walletDetailTracker = 0
+                        }
+                    }
+                    else if (portfolioTracker == 1) {
+                        portfolioTracker = 0
+                    }
+                    else if (scanQRTracker == 1) {
+                        // nothing yet
+                    }
+                    else if (transferTracker == 1) {
+                        // nothing yet
+                    }
+                    else if (coinTracker == 1 && pageTracker == 0) {
+                        countWallets()
+                        coinTracker = 0
+                    }
+                    else if (contactTracker == 1 && pageTracker == 1) {
+                        contactTracker = 0
+                    }
+                    else {
+                        sessionStart = 0
+                        sessionTime = 0
+                        manualLogout = 1
+                        logoutTracker = 1
+                    }
+                }
+                else if (selectedPage == "wallet") {
+                    // nothing yet
+                }
+                else if (selectedPage == "apps") {
+                    if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0) {
+                        selectedPage = "home"
+                        mainRoot.pop()
+                    }
+                    else if (xvaultTracker == 1 && networkError == 0) {
+                        xvaultTracker =0
+                    }
+                    else if (xchangeTracker == 1 && networkError == 0) {
+                        xchangeTracker = 0
+                    }
+                    else if (xchatTracker == 1 && networkError == 0) {
+                        if (xchatSettingsTracker == 1) {
+                            if (!tagMeChangeInitiated && !tagEveryoneChangeInitiated && !dndChangeInitiated) {
+                                xchatSettingsTracker = 0
+                            }
+                        }
+                        else if (xchatNetworkTracker == 1) {
+                            xchatNetworkTracker = 0
+                        }
+                        else if (xchatUserTracker == 1) {
+                            xchatUserTracker = 0
+                        }
+                        else {
+                            xchatTracker = 0
+                            dndTracker = 0
+                        }
+                    }
+                }
+                else if (selectedPage == "backup") {
+                    if (screenshotTracker == 0) {
+                        backupTracker = 0
+                        selectedPage = "home"
+                        mainRoot.pop()
+                    }
+                    else if (screenshotTracker == 1) {
+                        screenshotTracker = 0
+                    }
+                }
+                else if (selectedPage == "settings") {
+                    if (debugTracker == 1) {
+                        debugTracker = 0
+                    }
+                    else if (!changeVolumeInitiated && ! changeSystemVolumeInitiated && !clearAllInitiated && !saveCurrency && !saveSound) {
+                        currencyTracker = 0
+                        soundTracker = 0
+                        selectedPage = "home"
+                        mainRoot.pop()
+                    }
+                }
+                else if (selectedPage == "notif") {
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
+            }
         }
     }
 }

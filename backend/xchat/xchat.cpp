@@ -19,7 +19,6 @@
 #include <QtNetwork>
 
 
-
 XchatObject xchatRobot;
 
 Xchat::Xchat(QObject *parent) :
@@ -28,15 +27,15 @@ Xchat::Xchat(QObject *parent) :
 }
 
 XchatObject::XchatObject(QObject *parent) :
-QObject(parent)
+    QObject(parent)
 {
-  window = parent;
-  m_bIsInitialized = false;
-  m_pXchatAiml = NULL;
+    window = parent;
+    m_bIsInitialized = false;
+    m_pXchatAiml = NULL;
 }
 
 XchatObject::~XchatObject() {
-  if (NULL != m_pXchatAiml)
+    if (NULL != m_pXchatAiml)
     {
         m_pXchatAiml->clear();
         delete m_pXchatAiml;
@@ -61,14 +60,14 @@ void XchatObject::Initialize() {
     });
 
 
-
+    forced_connect = false;
     m_bIsInitialized = true;
     mqtt_StateChanged();
 }
 unsigned constexpr const_hash(char const *input) {
     return *input ?
-    static_cast<unsigned int>(*input) + 33 * const_hash(input + 1) :
-    5381;
+                static_cast<unsigned int>(*input) + 33 * const_hash(input + 1) :
+                5381;
 }
 
 void XchatObject::messageRoute(QString message){
@@ -89,7 +88,7 @@ void XchatObject::messageRoute(QString message){
         break;
     case const_hash("sendToFront"):
         sendToFront(obj);
-       break;
+        break;
     default:
         qDebug() << "No Route Found";
         break;
@@ -97,38 +96,40 @@ void XchatObject::messageRoute(QString message){
 
 
 }
-void XchatObject::xchatInc(const QString &user, QString platform, QString status, QString message) {
-    if (!message.isEmpty()) {
+void XchatObject::xchatInc(const QString &user, QString platform, QString status, QString message, QString webLink, QString image, QString quote) {
+    if (!message.isEmpty() && mqtt_client->state() == QMqttClient::Connected) {
 
         QString username = user;
         qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
         QJsonObject obj;
-            obj.insert("username",user);
-            obj.insert("platform",platform);
-            obj.insert("route","sendToFront");
-            obj.insert("status", status);
-            obj.insert("message",message);
-            obj.insert("messageSentTime", QString::number(timeStamp));
-            obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
-            qDebug() << "Miliseconds since EPoch: " + QString::number(timeStamp);
+        obj.insert("username",user);
+        obj.insert("platform",platform);
+        obj.insert("route","sendToFront");
+        obj.insert("status", status);
+        obj.insert("message",message);
+        obj.insert("link", webLink);
+        obj.insert("image", image);
+        obj.insert("quote", quote);
+        obj.insert("messageSentTime", QString::number(timeStamp));
+        obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
 
-             QJsonDocument doc(obj);
-             QString strJson(doc.toJson(QJsonDocument::Compact));
-             mqtt_client->publish(topic, strJson.toUtf8());
-           return;
-        }
+        QJsonDocument doc(obj);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        mqtt_client->publish(topic, strJson.toUtf8());
+        return;
+    }
 }
 
 void XchatObject::sendTypingToQueue(const QString user, QString route, QString status) {
     QJsonObject obj;
-        obj.insert("username",user);
-        obj.insert("route",route);
-        obj.insert("status",status);
-        obj.insert("message","");
-        obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
-        QJsonDocument doc(obj);
-        QString strJson(doc.toJson(QJsonDocument::Compact));
-        mqtt_client->publish(topic, strJson.toUtf8());
+    obj.insert("username",user);
+    obj.insert("route",route);
+    obj.insert("status",status);
+    obj.insert("message","");
+    obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
+    QJsonDocument doc(obj);
+    QString strJson(doc.toJson(QJsonDocument::Compact));
+    mqtt_client->publish(topic, strJson.toUtf8());
 }
 
 void XchatObject::addToTyping(QJsonObject obj){
@@ -190,10 +191,10 @@ void XchatObject::cleanOnlineList(){
         if ( onlineUser.getDateTime().secsTo(now) > 10 * 60){ //remove from online after 10 minutes
             onlineUsers.remove(key);
         }
-//        if (onlineUser.getLastTyped().secsTo(now) > 5 *60){ // if they haven't typed in 5 minutes, set status to idle
-//            onlineUser.setStatus("idle");
-//            onlineUsers.insert(key,onlineUser);
-//        }  // Don't think we need this anymore
+        //        if (onlineUser.getLastTyped().secsTo(now) > 5 *60){ // if they haven't typed in 5 minutes, set status to idle
+        //            onlineUser.setStatus("idle");
+        //            onlineUsers.insert(key,onlineUser);
+        //        }  // Don't think we need this anymore
 
     }
     sendOnlineUsers();
@@ -202,36 +203,40 @@ void XchatObject::cleanOnlineList(){
 void XchatObject::sendTypingToFront(const QMap<QString, QDateTime> typing){
     QString whoIsTyping = "";
     switch(typing.count()){
-        case 0:
-            break;
-        case 1:
-            whoIsTyping = typing.keys().first() + " is typing...";
+    case 0:
+        break;
+    case 1:
+        whoIsTyping = typing.keys().first() + " is typing...";
 
-            break;
-        case 2:
+        break;
+    case 2:
 
-            whoIsTyping = typing.keys().first() + " and " + typing.keys().last() + " are typing...";
-            break;
-        default:
-            whoIsTyping = QString::number(typing.count()) + " others are typing...";
-            break;
+        whoIsTyping = typing.keys().first() + " and " + typing.keys().last() + " are typing...";
+        break;
+    default:
+        whoIsTyping = QString::number(typing.count()) + " others are typing...";
+        break;
     }
     emit xchatTypingSignal(whoIsTyping);
 }
 
 void XchatObject::sendToFront(QJsonObject obj){
-        qint64 dateTimeMs = (obj.value("messageSentTime").toString()).toLongLong();
-        QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(dateTimeMs);
-        dateTime = dateTime.toLocalTime();
-        QDate date02 = dateTime.date();
-        QTime time02 = dateTime.time();
-        QString date = date02.toString("MMM d");
-        QString time = time02.toString("H:mm:ss");
-        QString author = obj.value("username").toString();
-        QString device = obj.value("platform").toString();
-        QString message = obj.value("message").toString();
-        qDebug() << "local date: " + date02.toString("MMM d") + ", local time: " + time02.toString("H:mm:ss");
-        emit xchatSuccess(author, date, time, device, message);
+    QString msgID = obj.value("messageSentTime").toString();
+    qint64 dateTimeMs = (msgID).toLongLong();
+    QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(dateTimeMs);
+    dateTime = dateTime.toLocalTime();
+    QDate date02 = dateTime.date();
+    QTime time02 = dateTime.time();
+    QString date = date02.toString("MMM d");
+    QString time = time02.toString("H:mm:ss");
+    QString author = obj.value("username").toString();
+    QString device = obj.value("platform").toString();
+    QString message = obj.value("message").toString();
+    QString link = obj.value("link").toString();
+    QString image = obj.value("image").toString();
+    QString quote = obj.value("quote").toString();
+    qDebug() << "local date: " + date02.toString("MMM d") + ", local time: " + time02.toString("H:mm:ss");
+    emit xchatSuccess(author, date, time, device, message, link, msgID, image, quote);
 }
 
 void XchatObject::SubmitMsg(const QString &msg) {
@@ -262,37 +267,56 @@ QString XchatObject::HarmonizeKeyWords(QString msg)
             .replace("getblock", "$_WALLET_GETBLOCK$");
 }
 
+void XchatObject::forcedReconnect() {
+    if (checkInternet()){
+        if (mqtt_client->state() == QMqttClient::Disconnected || mqtt_client->state() == QMqttClient::Connecting) {
+            forced_connect = true;
+            qDebug() << "reconnecting to XCHAT";
+            if (mqtt_client->state() == QMqttClient::Connecting) {
+                mqtt_client->disconnect();
+                mqtt_StateChanged();
+            }
+            else {
+                mqtt_client->setHostname(findServer());
+                mqtt_client->setPort(1883);
+                mqtt_client->connectToHost();
+                forced_connect = false;
+                mqtt_StateChanged();
+            }
+        }
+    }
+}
+
 void XchatObject::mqtt_StateChanged() {
     if (checkInternet()){
-        //    xchatRobot.SubmitMsg("@mqtt: State Changed");
-            if (mqtt_client->state() == QMqttClient::Disconnected) {
-                emit xchatConnectionFail();
-                emit xchatStateChanged();
+        if (mqtt_client->state() == QMqttClient::Disconnected) {
+            emit xchatConnectionFail();
+            emit xchatStateChanged();
+            if (!forced_connect) {
                 mqtt_client->setHostname(findServer());
                 mqtt_client->setPort(1883);
                 mqtt_client->connectToHost();
             }
+        }
 
-            if (mqtt_client->state() == QMqttClient::Connecting) {
-                emit xchatConnecting();
-                emit xchatStateChanged();
+        if (mqtt_client->state() == QMqttClient::Connecting) {
+            emit xchatConnecting();
+            emit xchatStateChanged();
+        }
+
+        if (mqtt_client->state() == QMqttClient::Connected) {
+            qDebug() << "connected to  XCHAT";
+            emit xchatConnectionSuccess();
+            emit xchatStateChanged();
+            auto subscription = mqtt_client->subscribe(topic);
+            if (!subscription) {
+            } else {
+
             }
-
-            if (mqtt_client->state() == QMqttClient::Connected) {
-                qDebug() << "connected to  XCHAT";
-                emit xchatConnectionSuccess();
-                emit xchatStateChanged();
-                //pingXchatServers();
-                auto subscription = mqtt_client->subscribe(topic);
-                if (!subscription) {
-                } else {
-
-                }
-            }
+        }
     }
-
-
 }
+
 void XchatObject::sendOnlineUsers(){
     QJsonArray onlineJson;
     QDateTime now = QDateTime::currentDateTime();
@@ -349,8 +373,10 @@ void XchatObject::getOnlineNodes(){
     for(QString server : servers){
         QNetworkAccessManager nam;
         QUrl url("http://" + server + ":15672/api/nodes");
-        url.setUserName("guest");
-        url.setPassword("guest");
+        //url.setUserName("guest");
+        //url.setPassword("guest");
+        url.setUserName("xchat");
+        url.setPassword("xtrabytes");
         QNetworkRequest req(url);
         QNetworkReply* reply = nam.get(req);
         QEventLoop loop;
@@ -360,28 +386,28 @@ void XchatObject::getOnlineNodes(){
         getTimer.start(4000);
         loop.exec();
         if (reply->bytesAvailable()){
-           QByteArray replyBytes = reply->readAll();
-           QJsonDocument doc = QJsonDocument::fromJson(replyBytes);
-           QJsonArray array = doc.array();
-           foreach (const QJsonValue & value, array) {
+            QByteArray replyBytes = reply->readAll();
+            QJsonDocument doc = QJsonDocument::fromJson(replyBytes);
+            QJsonArray array = doc.array();
+            foreach (const QJsonValue & value, array) {
 
-               QJsonObject obj = value.toObject();
-               if (obj.value("running").toBool()){
+                QJsonObject obj = value.toObject();
+                if (obj.value("running").toBool()){
                     nodesOnline.insert(obj.value("name").toString(),"");
-               }
-           }
-           foreach (const QJsonValue & value1, array) {
-               QJsonObject obj = value1.toObject();
-               if (!obj.value("cluster_links").toArray().isEmpty()){
-                   QJsonArray cluster_links = obj.value("cluster_links").toArray();
-                   foreach (const QJsonValue & value2, cluster_links) {
-                       QJsonObject obj2 = value2.toObject();
+                }
+            }
+            foreach (const QJsonValue & value1, array) {
+                QJsonObject obj = value1.toObject();
+                if (!obj.value("cluster_links").toArray().isEmpty()){
+                    QJsonArray cluster_links = obj.value("cluster_links").toArray();
+                    foreach (const QJsonValue & value2, cluster_links) {
+                        QJsonObject obj2 = value2.toObject();
                         if (nodesOnline.contains(obj2.value("name").toString())){
                             nodesOnline.insert(obj2.value("name").toString(),obj2.value("peer_addr").toString());
                         }
-                   }
-               }
-           }
+                    }
+                }
+            }
         }
         reply->close();
         delete reply;

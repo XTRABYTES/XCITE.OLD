@@ -19,8 +19,7 @@ MarketValue::MarketValue(QObject *parent) : QObject(parent)
 {
 }
 
-void MarketValue::findCurrencyValue(QString currency)
-{
+void MarketValue::findCurrencyValue(QString currency) {
     QUrl Url;
     Url.setScheme("http");
     Url.setHost("37.59.57.212");
@@ -58,19 +57,25 @@ void MarketValue::findCurrencyValue(QString currency)
 
     reply->close();
     delete reply;
+
 }
 
 void MarketValue::findAllCurrencyValues(){
-    findCurrencyValue("btcusd");
-    findCurrencyValue("btceur");
-    findCurrencyValue("btcgbp");
-    findCurrencyValue("xbybtc");
-    findCurrencyValue("xbycha");
-    findCurrencyValue("xflbtc");
-    findCurrencyValue("xflcha");
-    findCurrencyValue("btccha");
-    findCurrencyValue("ethbtc");
-    findCurrencyValue("ethcha");
+    if (checkInternet()) {
+        findCurrencyValue("btcusd");
+        findCurrencyValue("btceur");
+        findCurrencyValue("btcgbp");
+        findCurrencyValue("xbybtc");
+        findCurrencyValue("xbycha");
+        findCurrencyValue("xflbtc");
+        findCurrencyValue("xflcha");
+        findCurrencyValue("btccha");
+        findCurrencyValue("ethbtc");
+        findCurrencyValue("ethcha");
+        return;
+    }else {
+        return;
+    }
 }
 
 void MarketValue::setMarketValue(const QString &check, const QString &currency, const QString &currencyValue) {
@@ -78,4 +83,29 @@ void MarketValue::setMarketValue(const QString &check, const QString &currency, 
         m_marketValue = check;
         emit marketValueChanged(currency, currencyValue);
     }
+}
+
+bool MarketValue::checkInternet(){
+    bool connected = false;
+    QNetworkAccessManager nam;
+    QNetworkRequest req(QUrl("http://www.google.com"));
+    QNetworkReply* reply = nam.get(req);
+    QEventLoop loop;
+    QTimer getTimer;
+    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
+
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+
+    getTimer.start(4000);
+    loop.exec();
+    if (reply->bytesAvailable()){
+        connected=true;
+    }else{
+    }
+
+    reply->close();
+    delete reply;
+
+    return connected;
+
 }

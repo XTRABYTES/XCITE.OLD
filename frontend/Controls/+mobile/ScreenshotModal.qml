@@ -31,6 +31,15 @@ Rectangle {
     anchors.top: parent.top
     anchors.topMargin: Screen.height
 
+    property int myTracker: screenshotTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            keyType = ""
+            textForPopup = ""
+        }
+    }
+
     states: [
         State {
             name: "up"
@@ -358,8 +367,6 @@ Rectangle {
 
             onClicked: {
                 screenshotTracker = 0
-                keyType = ""
-                textForPopup = ""
             }
         }
     }
