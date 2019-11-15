@@ -323,5 +323,9 @@
         <file>icons/mobile/link-icon_01_grey.svg</file>
         <file>icons/mobile/quote-icon_01_blue.svg</file>
         <file>icons/mobile/quote-icon_01_grey.svg</file>
+        <file>icons/mobile/eye-icon_01_black.svg</file>
+        <file>icons/mobile/eye-icon_01_white.svg</file>
+        <file>icons/mobile/ok-icon_01_green.svg</file>
+        <file>icons/mobile/ok-icon_01_grey.svg</file>
     </qresource>
 </RCC>

@@ -259,6 +259,9 @@ ApplicationWindow {
     property int xchatSettingsTracker: 0
     property int xchatNetworkTracker: 0
     property int xchatUserTracker: 0
+    property int xChatQuoteTracker: 0
+    property int xChatLinkTracker: 0
+    property int xChatImageTracker: 0
 
 
     // Trackers - features
@@ -419,9 +422,10 @@ ApplicationWindow {
     property string dndUser: ""
     property variant messageArray
     property string tagFilter: ""
-    property string xChatLink: "none"
-    property string xChatImage: "none"
-    property string xChatQuote: "none"
+    property string xchatLink: ""
+    property bool urlFormat: false
+    property string xchatImage: ""
+    property string xchatQuote: ""
     property bool quoteAdded: false
     property bool linkAdded: false
     property bool imageAdded: false
@@ -1586,6 +1590,7 @@ ApplicationWindow {
                         xChatID = xChatID + 1
                         if(!xChatScrolling) {
                             updateView = true
+                            console.log("updating view")
                         }
                         else {
                             newMessages = true
@@ -2238,6 +2243,15 @@ ApplicationWindow {
                         }
                         else if (xchatUserTracker == 1) {
                             xchatUserTracker = 0
+                        }
+                        else if (xChatImageTracker == 1) {
+                            xChatImageTracker = 0
+                        }
+                        else if (xChatLinkTracker == 1) {
+                            xChatLinkTracker = 0
+                        }
+                        else if (xChatQuoteTracker == 1) {
+                            xChatQuoteTracker = 0
                         }
                         else {
                             xchatTracker = 0

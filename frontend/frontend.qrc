@@ -177,5 +177,8 @@
         <file>Controls/+mobile/addMessage.js</file>
         <file>Controls/+mobile/XChange.qml</file>
         <file>Controls/+mobile/XVault.qml</file>
+        <file>Controls/+mobile/XChatQuote.qml</file>
+        <file>Controls/+mobile/XChatLink.qml</file>
+        <file>Controls/+mobile/XChatImage.qml</file>
     </qresource>
 </RCC>

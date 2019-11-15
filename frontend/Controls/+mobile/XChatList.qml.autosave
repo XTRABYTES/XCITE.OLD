@@ -300,6 +300,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 wrapMode: Text.WrapAnywhere
                 maximumLineCount: 2
+                elide: Text.ElideRight
                 font.pixelSize: 16
                 font.underline: true
                 color: "#1499E4"

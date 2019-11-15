@@ -47,6 +47,21 @@ Rectangle {
     property string beforeTag: ""
     property string afterTag: ""
     property int myTracker: xchatTracker
+    property bool changeView: updateView
+
+    Label {
+        id: changeview
+        text: changeView.toString()
+        visible: false
+
+        onTextChanged: {
+            console.log("changeView: " + changeView)
+            if (changeview.text == "true") {
+                myXchat.xChatList.positionViewAtEnd()
+                updateView = false
+            }
+        }
+    }
 
     onMyTrackerChanged: {
         if (myTracker == 0) {
@@ -361,9 +376,18 @@ Rectangle {
         }
     }
 
+    Image {
+        source: 'qrc:/icons/mobile/send_rotated_03.svg'
+        width: executeButton.width
+        height: executeButton.height
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: executeButton.verticalCenter
+        anchors.right: executeButton.right
+    }
+
     Rectangle {
         id: executeButton
-        width: 26
+        width: 30
         height: 30
         anchors.right: parent.right
         anchors.rightMargin: 28
@@ -377,7 +401,6 @@ Rectangle {
                 click01.play()
                 detectInteraction()
                 parent.opacity = 0.5
-                sendEnabled = false;
             }
 
             onCanceled: {
@@ -391,21 +414,31 @@ Rectangle {
             onClicked: {
                 xChatMessage = sendText.text
                 if (xChatMessage.length != 0 && xChatMessage.length < 251 && xChatConnection) {
-                    xchatError = 0
-                    if (UserSettings.xChatDND === false) {
-                        status="online"
+                    if (imageAdded == true && xChatMessage.length > 100) {
+                        xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages with images is 100 characters.", "ID" : xChatID})
+                        xChatID = xChatID + 1
+                        myXchat.xChatList.positionViewAtEnd()
                     }
-                    xChatSend(myUsername,"mobile",status,sendText.text, xChatLink, xChatImage, xChatQuote)
-                    xChatQuote = "none"
-                    quoteAdded = false
-                    xChatLink = "none"
-                    linkAdded = false
-                    xChatImage = "none"
-                    imageAdded = false
-                    sendText.text = "";
-                    xChatTyping(myUsername,"removeFromTyping",status);
-                    checkIfIdle.restart();
-                    myXchat.tagging = ""
+                    else {
+                        xchatError = 0
+                        if (UserSettings.xChatDND === false) {
+                            status="online"
+                        }
+                        xChatSend(myUsername,"mobile",status,sendText.text, xchatLink, xchatImage, xchatQuote)
+                        xchatQuote = ""
+                        quoteAdded = false
+                        xchatLink = ""
+                        myXchatLink.urlText = ""
+                        linkAdded = false
+                        xchatImage = ""
+                        imageAdded = false
+                        myXchatImage.urlText = ""
+                        myXchatImage.imageSource = 'qrc:/icons/mobile/image-icon_01_grey.svg'
+                        sendText.text = "";
+                        xChatTyping(myUsername,"removeFromTyping",status);
+                        checkIfIdle.restart();
+                        myXchat.tagging = ""
+                    }
                 }
                 if (xChatMessage.length >= 251) {
                     xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages is 250 characters.", "ID" : xChatID})
@@ -431,15 +464,6 @@ Rectangle {
     }
 
     Image {
-        source: 'qrc:/icons/mobile/send_rotated_03.svg'
-        width: executeButton.width
-        height: executeButton.height
-        fillMode: Image.PreserveAspectFit
-        anchors.verticalCenter: executeButton.verticalCenter
-        anchors.right: executeButton.right
-    }
-
-    Image {
         id: msgQuote
         source: quoteAdded === false? "qrc:/icons/mobile/quote-icon_01_grey.svg" : "qrc:/icons/mobile/quote-icon_01_blue.svg"
         width: 20
@@ -449,6 +473,31 @@ Rectangle {
         anchors.rightMargin: 20
         anchors.top: sendText.bottom
         anchors.topMargin: 10
+
+        Rectangle {
+            id: msgQuoteBtn
+            width: 20
+            height: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+                enabled: quoteAdded === true
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    if (xChatQuoteTracker == 0) {
+                        xChatQuoteTracker = 1
+                    }
+                }
+            }
+        }
     }
 
     Image {
@@ -461,6 +510,30 @@ Rectangle {
         anchors.rightMargin: 20
         anchors.top: sendText.bottom
         anchors.topMargin: 10
+
+        Rectangle {
+            id: msgLinkBtn
+            width: 20
+            height: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    if (xChatLinkTracker == 0) {
+                        xChatLinkTracker = 1
+                    }
+                }
+            }
+        }
     }
 
     Image {
@@ -472,6 +545,30 @@ Rectangle {
         anchors.right: sendText.right
         anchors.top: sendText.bottom
         anchors.topMargin: 10
+
+        Rectangle {
+            id: msgImageBtn
+            width: 20
+            height: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    if (xChatImageTracker == 0) {
+                        xChatImageTracker = 1
+                    }
+                }
+            }
+        }
     }
 
     Label {
@@ -532,6 +629,14 @@ Rectangle {
                     myXchatTaglist.userTag = ""
                     myXchatUsers.usertag = ""
                     myXchat.tagging = ""
+                    myXchatLink.urlText = ""
+                    myXchatImage.urlText = ""
+                    xchatLink = ""
+                    xchatImage = ""
+                    xchatQuote = ""
+                    linkAdded = false
+                    imageAdded = false
+                    quoteAdded = false
                 }
             }
 
@@ -676,6 +781,27 @@ Rectangle {
 
     Mobile.XChatSettings {
         id: myXchatSettings
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Mobile.XChatQuote {
+        id: myXchatQuote
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Mobile.XChatLink {
+        id: myXchatLink
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Mobile.XChatImage {
+        id: myXchatImage
         z: 10
         anchors.left: parent.left
         anchors.top: parent.top
