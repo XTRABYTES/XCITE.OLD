@@ -300,6 +300,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 wrapMode: Text.WrapAnywhere
                 maximumLineCount: 2
+                elide: Text.ElideRight
                 font.pixelSize: 16
                 font.underline: true
                 color: "#1499E4"
@@ -315,6 +316,11 @@ Rectangle {
                         onPressed: {
                             click01.play()
                             detectInteraction()
+                        }
+
+                        onPressAndHold: {
+                            xChatClipBoard = 1
+                            url2Copy = webLink
                         }
 
                         onClicked: {
@@ -345,7 +351,164 @@ Rectangle {
                 anchors.top: imageArea.top
                 anchors.horizontalCenter: msgBox.horizontalCenter
                 visible: author != "xChatRobot" && image != ""
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            xchatLargeImage = image
+                            xChatLargeImageTracker = 1
+                        }
+                    }
+                }
             }
+
+            DropShadow {
+                z: 12
+                anchors.fill: clipBoardPopup
+                source: clipBoardPopup
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.4
+                transparentBorder: true
+                visible: xChatClipBoard == 1 && url2Copy == webLink
+            }
+
+            Item {
+                id: clipBoardPopup
+                z: 12
+                width: copyToClipboard.width + closeClipboard.width
+                height: 40
+                anchors.horizontalCenter: messageLink.horizontalCenter
+                anchors.verticalCenter: messageLink.verticalCenter
+                visible: xChatClipBoard == 1 && url2Copy == webLink
+
+                property int textCopied: 0
+
+                MouseArea {
+                    height: Screen.height
+                    width: Screen.width
+                    anchors.verticalCenter: Screen.verticalCenter
+                    anchors.horizontalCenter: Screen.horizontalCenter
+
+                    onClicked: xChatClipBoard = 0
+                }
+
+                Rectangle {
+                    id: copyToClipboard
+                    height: 40
+                    width: toClipboardText.width + 40
+                    color: "#34363D"
+                    anchors.left: parent.left
+                    anchors.verticalCenter: clipBoardPopup.verticalCenter
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            copyText2Clipboard(webLink)
+                            xChatClipBoard = 0
+                            urlCopy2Clipboard = 1
+                        }
+                    }
+                }
+
+                Label {
+                    id: toClipboardText
+                    text: "Copy URL"
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "#F2F2F2"
+                    anchors.horizontalCenter: copyToClipboard.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Rectangle {
+                    id: closeClipboard
+                    height: 40
+                    width: 40
+                    color: "#34363D"
+                    anchors.left: copyToClipboard.right
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            xChatClipBoard = 0
+                        }
+                    }
+                }
+
+                Image {
+                    id: closeClipboardImage
+                    source:'qrc:/icons/mobile/delete-icon_01_light.svg'
+                    height: 15
+                    fillMode: Image.PreserveAspectFit
+                    anchors.horizontalCenter: closeClipboard.horizontalCenter
+                    anchors.verticalCenter: closeClipboard.verticalCenter
+                }
+            }
+
+            DropShadow {
+                z: 12
+                anchors.fill: copiedPopup
+                source: copiedPopup
+                horizontalOffset: 0
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.4
+                transparentBorder: true
+                visible: urlCopy2Clipboard == 1 && url2Copy == webLink
+            }
+
+            Item {
+                id: copiedPopup
+                z: 12
+                width: popupCopied.width
+                height: 40
+                anchors.horizontalCenter: messageLink.horizontalCenter
+                anchors.verticalCenter: messageLink.verticalCenter
+                visible: urlCopy2Clipboard == 1 && url2Copy == webLink
+
+                Rectangle {
+                    id: popupCopied
+                    height: 40
+                    width: popupCopiedText.width + 56
+                    color: "#34363D"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Label {
+                    id: popupCopiedText
+                    text: "Copied to clipboard!"
+                    font.family: "Brandon Grotesque"
+                    font.pointSize: 14
+                    font.bold: true
+                    color: "#F2F2F2"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
 
             Image {
                 id: xChatRobotIcon
@@ -416,7 +579,6 @@ Rectangle {
         model: arrangedMsg
         delegate: msgLine
         spacing: 7
-        boundsBehavior: Flickable.StopAtBounds
         onDraggingChanged: {
             xChatFocus = false
             xChatScrolling = true
@@ -432,7 +594,6 @@ Rectangle {
                 xChatScrolling = true
             }
         }
-
     }
 
     Component.onCompleted: {

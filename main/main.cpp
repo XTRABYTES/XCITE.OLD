@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(checkSessionId()), &settings, SLOT(CheckSessionId()));
     QObject::connect(rootObject, SIGNAL(checkCamera()), &settings, SLOT(CheckCamera()));
     QObject::connect(rootObject, SIGNAL(changePassword(QString, QString)), &settings, SLOT(changePassword(QString, QString)));
-
+    QObject::connect(rootObject, SIGNAL(downloadImage(QString)), &settings, SLOT(downloadImage(QString)));
 
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));

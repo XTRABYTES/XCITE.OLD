@@ -270,20 +270,17 @@ QString XchatObject::HarmonizeKeyWords(QString msg)
 
 void XchatObject::forcedReconnect() {
     if (checkInternet()){
-        if (mqtt_client->state() == QMqttClient::Disconnected || mqtt_client->state() == QMqttClient::Connecting) {
-            forced_connect = true;
-            qDebug() << "reconnecting to XCHAT";
-            if (mqtt_client->state() == QMqttClient::Connecting) {
-                mqtt_client->disconnect();
-                mqtt_StateChanged();
-            }
-            else {
-                mqtt_client->setHostname(findServer());
-                mqtt_client->setPort(1883);
-                mqtt_client->connectToHost();
-                forced_connect = false;
-                mqtt_StateChanged();
-            }
+        forced_connect = true;
+        qDebug() << "reconnecting to XCHAT";
+        if (mqtt_client->state() == QMqttClient::Connecting) {
+            mqtt_client->disconnect();
+            mqtt_StateChanged();
+        }
+        else {
+            mqtt_client->setHostname(findServer());
+            mqtt_client->setPort(1883);
+            mqtt_client->connectToHost();
+            mqtt_StateChanged();
         }
     }
 }
@@ -309,6 +306,7 @@ void XchatObject::mqtt_StateChanged() {
             qDebug() << "connected to  XCHAT";
             emit xchatConnectionSuccess();
             emit xchatStateChanged();
+            forced_connect = false;
             auto subscription = mqtt_client->subscribe(topic);
             if (!subscription) {
             } else {

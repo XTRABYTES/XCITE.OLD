@@ -35,7 +35,7 @@ Rectangle {
     function checkImageFormat(url) {
         var urlArray = url.split('.')
         var i = urlArray.length
-        if (urlArray[i-1] === ("jpg" || "jpeg" || "svg" || "png")) {
+        if ((urlArray[i-1] === "jpg") || (urlArray[i-1] === "jpeg") || (urlArray[i-1] === "svg") || (urlArray[i-1] === "png")) {
             formatError = false
             image.source = url
             xchatImage = url
@@ -84,7 +84,7 @@ Rectangle {
 
         Label {
             id: imageBoxLabel
-            text: "IMAGE:"
+            text: "IMAGE"
             anchors.left: imageBox.left
             anchors.leftMargin: 10
             anchors.top: imageBox.top

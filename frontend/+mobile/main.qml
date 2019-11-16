@@ -262,6 +262,7 @@ ApplicationWindow {
     property int xChatQuoteTracker: 0
     property int xChatLinkTracker: 0
     property int xChatImageTracker: 0
+    property int xChatLargeImageTracker: 0
 
 
     // Trackers - features
@@ -413,7 +414,6 @@ ApplicationWindow {
     property int pingTimeRemain: 60
     property string xChatMessage: ""
     property bool newMessages: false
-    property bool updateView: false
     property bool messageAdded: false
     property bool xChatScrolling: false
     property int xChatID: 1
@@ -423,8 +423,12 @@ ApplicationWindow {
     property variant messageArray
     property string tagFilter: ""
     property string xchatLink: ""
+    property string url2Copy: ""
+    property int urlCopy2Clipboard: 0
+    property int xChatClipBoard: 0
     property bool urlFormat: false
     property string xchatImage: ""
+    property string xchatLargeImage: ""
     property string xchatQuote: ""
     property bool quoteAdded: false
     property bool linkAdded: false
@@ -479,6 +483,7 @@ ApplicationWindow {
     signal checkXChatSignal()
     signal pingXChatServers()
     signal xChatReconnect()
+    signal downloadImage(string url)
 
     // functions
     function openApplication(app) {
@@ -1588,11 +1593,7 @@ ApplicationWindow {
                     if (messageObject.msg !== "") {
                         xChatTread.append({"author" : messageObject.author, "device" : messageObject.device, "date" : messageObject.date + " at " + messageObject.time, "message" : messageObject.msg, "ID" : xChatID, "tag": messageObject.tag, "webLink": messageObject.link, "image": messageObject.image, "quote": messageObject.quote, "timeID": messageObject.msgID})
                         xChatID = xChatID + 1
-                        if(!xChatScrolling) {
-                            updateView = true
-                            console.log("updating view")
-                        }
-                        else {
+                        if(xChatScrolling) {
                             newMessages = true
                         }
                     }
@@ -1995,6 +1996,17 @@ ApplicationWindow {
         }
     }
 
+    Timer {
+        id: urlCopyTimer
+        interval: 2000
+        repeat: false
+        running: urlCopy2Clipboard == 1
+
+        onTriggered: {
+            urlCopy2Clipboard = 0
+            url2Copy == ""
+        }
+    }
 
     Timer {
         repeat: false
@@ -2253,6 +2265,13 @@ ApplicationWindow {
                         else if (xChatQuoteTracker == 1) {
                             xChatQuoteTracker = 0
                         }
+                        else if (xChatLargeImageTracker == 1) {
+                            xChatLargeImageTracker = 0
+                        }
+                        else if (xChatClipBoard == 1) {
+                            xChatClipBoard = 0
+                        }
+
                         else {
                             xchatTracker = 0
                             dndTracker = 0

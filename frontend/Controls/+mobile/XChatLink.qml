@@ -66,7 +66,7 @@ Rectangle {
 
         Label {
             id: linkBoxLabel
-            text: "URL:"
+            text: "URL"
             anchors.left: linkBox.left
             anchors.leftMargin: 10
             anchors.top: linkBox.top
@@ -114,7 +114,7 @@ Rectangle {
         Controls.TextInput {
             id: linkText
             height: 34
-            placeholder: "Type your image URL."
+            placeholder: "Type your URL."
             text: ""
             anchors.left: linkBox.left
             anchors.leftMargin: 10

@@ -76,7 +76,7 @@ public slots:
     void CheckSessionId();
     void CheckCamera();
 
-
+    void downloadImage(QString imgUrl);
 
 signals:
     void oSReturned(const QString os);

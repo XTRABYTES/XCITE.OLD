@@ -180,5 +180,6 @@
         <file>Controls/+mobile/XChatQuote.qml</file>
         <file>Controls/+mobile/XChatLink.qml</file>
         <file>Controls/+mobile/XChatImage.qml</file>
+        <file>Controls/+mobile/XChatLargeImage.qml</file>
     </qresource>
 </RCC>

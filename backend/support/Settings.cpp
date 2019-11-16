@@ -1249,6 +1249,10 @@ void Settings::CheckCamera(){
 #endif
 }
 
+void Settings::downloadImage(QString imageUrl) {
+    // put download function here
+}
+
 bool Settings::checkInternet(){
     bool connected = false;
     QNetworkAccessManager nam;

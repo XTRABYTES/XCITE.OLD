@@ -63,7 +63,7 @@ Rectangle {
 
         Label {
             id: quoteBoxLabel
-            text: "QOUTE:"
+            text: "QUOTE"
             anchors.left: quoteBox.left
             anchors.leftMargin: 10
             anchors.top: quoteBox.top

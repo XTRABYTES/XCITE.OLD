@@ -47,21 +47,6 @@ Rectangle {
     property string beforeTag: ""
     property string afterTag: ""
     property int myTracker: xchatTracker
-    property bool changeView: updateView
-
-    Label {
-        id: changeview
-        text: changeView.toString()
-        visible: false
-
-        onTextChanged: {
-            console.log("changeView: " + changeView)
-            if (changeview.text == "true") {
-                myXchat.xChatList.positionViewAtEnd()
-                updateView = false
-            }
-        }
-    }
 
     onMyTrackerChanged: {
         if (myTracker == 0) {
@@ -460,6 +445,10 @@ Rectangle {
             onXchatTypingSignal: {
                 typing = msg
             }
+
+            onXchatSuccess: {
+                autoScrollThread.sendMessage({"author": author, "date": date, "time": time, "device": device, "msg": message, "link": link, "image": image, "quote": quote, "msgID": msgID, "me": myUsername.trim(), "tagMe": userSettings.tagMe, "tagEveryone": userSettings.tagEveryone, "dnd": userSettings.xChatDND})
+            }
         }
     }
 
@@ -543,6 +532,7 @@ Rectangle {
         height: 20
         fillMode: Image.PreserveAspectFit
         anchors.right: sendText.right
+        anchors.rightMargin: 5
         anchors.top: sendText.bottom
         anchors.topMargin: 10
 
@@ -722,6 +712,23 @@ Rectangle {
         }
     }
 
+    WorkerScript {
+        id: autoScrollThread
+        source:'qrc:/Controls/+mobile/addMessage.js'
+
+        onMessage: {
+            for (var b = 0; b < xChatUsers.count; b ++) {
+                if (xChatUsers.get(b).username === messageObject.author) {
+                    if (messageObject.msg !== "") {
+                        if(!xChatScrolling) {
+                            autoScrollTimer.start()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     Mobile.XChatTagList {
         id: myXchatTaglist
         z: 10
@@ -807,12 +814,30 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Mobile.XChatLargeImage {
+        id: myXchatLargeImage
+        z: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
     Mobile.XChatDndNotification {
         id: myDndNotification
         z: 11
         anchors.left: parent.left
         anchors.top: parent.top
         visible: dndTracker == 1
+    }
+
+    Timer {
+        id: autoScrollTimer
+        interval: 100
+        repeat: false
+        running: false
+
+        onTriggered: {
+            myXchat.xChatList.positionViewAtEnd()
+        }
     }
 
     Component.onDestruction: {
