@@ -1118,6 +1118,16 @@ ApplicationWindow {
         }
     }
 
+    function addQuote(user, message) {
+        var remove = ["<font color='#0ED8D2'><b>","<font color='#5E8BFF'><b>","</b></font>"]
+        for(var o = 0; o < remove.length; o ++) {
+            var u = new RegExp( remove[o], "gi")
+            message = message.replace(u, "")
+        }
+        xchatQuote = user + ": " + message
+        quoteAdded = true
+    }
+
     // Start up
     function loadContactList(contacts) {
         if (typeof contacts !== "undefined") {

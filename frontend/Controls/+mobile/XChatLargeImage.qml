@@ -29,7 +29,7 @@ Rectangle {
     Rectangle {
         anchors.fill: parent
         color: "black"
-        opacity: 0.5
+        opacity: 0.75
     }
 
     MouseArea {
@@ -71,8 +71,8 @@ Rectangle {
 
     Rectangle {
         id: closeImageButton
-        width: 25
-        height: 25
+        width: 35
+        height: 35
         anchors.horizontalCenter: closeImage.horizontalCenter
         anchors.verticalCenter: closeImage.verticalCenter
         color: "transparent"
@@ -95,8 +95,8 @@ Rectangle {
     Image {
         id: largeImage
         source: xchatLargeImage
-        width: Screen.width - 96
-        height: Screen.height - 200
+        width: Screen.width - 56
+        height: Screen.height - 150
         fillMode: Image.PreserveAspectFit
         anchors.horizontalCenter: imageFrame.horizontalCenter
         anchors.verticalCenter: imageFrame.verticalCenter

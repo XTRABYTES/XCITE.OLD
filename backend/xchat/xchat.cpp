@@ -274,6 +274,7 @@ void XchatObject::forcedReconnect() {
         qDebug() << "reconnecting to XCHAT";
         if (mqtt_client->state() == QMqttClient::Connecting) {
             mqtt_client->disconnect();
+            forced_connect = false;
             mqtt_StateChanged();
         }
         else {

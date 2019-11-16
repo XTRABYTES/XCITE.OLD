@@ -271,8 +271,9 @@ Rectangle {
                         anchors.fill: parent
 
                         onPressAndHold: {
-                            xchatQuote = author + ": " + message
-                            quoteAdded = true
+                            addQuote(author, message)
+                            //xchatQuote = author + ": " + message
+                            //quoteAdded = true
                         }
                     }
                 }
@@ -334,7 +335,7 @@ Rectangle {
                 id: imageArea
                 color: "transparent"
                 width: msgBox.width - 20
-                height: image != ""? messageImage.height + 5 : 0
+                height: image != ""? messageImage.paintedHeight + 5 : 0
                 anchors.left: msgBox.left
                 anchors.right: msgBox.right
                 anchors.top: webLink != ""? linkArea.bottom : messageText.bottom
@@ -345,8 +346,8 @@ Rectangle {
             Image {
                 id: messageImage
                 source: image != ""? image : ''
-                height: 120
-                width: msgBox.width - 20
+                height: image.implicitHeight < 120? image.implicitHeight : 120
+                width: image.implicitWidth < msgBox.width - 20? image.implicitWidth : msgBox.width - 20
                 fillMode: Image.PreserveAspectFit
                 anchors.top: imageArea.top
                 anchors.horizontalCenter: msgBox.horizontalCenter
@@ -521,25 +522,13 @@ Rectangle {
                 visible: author == "xChatRobot"
             }
 
-            DropShadow {
-                anchors.fill: robotMsgBox
-                source: robotMsgBox
-                samples: 9
-                radius: 4
-                color: darktheme == true? "#000000" : "#727272"
-                horizontalOffset:0
-                verticalOffset: 0
-                spread: 0
-                visible: author == "xChatRobot"
-            }
-
             Rectangle {
                 id: robotMsgBox
                 height: robotText.height +10
                 anchors.left: xChatRobotIcon.right
                 anchors.leftMargin: 10
                 anchors.right: parent.right
-                color: darktheme == true? "#2A2C31" : "#F2F2F2"
+                color: "transparent"
                 visible: author == "xChatRobot"
             }
 
@@ -553,7 +542,6 @@ Rectangle {
                 anchors.top: robotMsgBox.top
                 anchors.topMargin: 5
                 horizontalAlignment: Text.AlignLeft
-                font.family: xciteMobile.name
                 wrapMode: Text.Wrap
                 font.pixelSize: 16
                 color: "#E55541"

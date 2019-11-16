@@ -47,6 +47,7 @@ Rectangle {
     property string beforeTag: ""
     property string afterTag: ""
     property int myTracker: xchatTracker
+    property int charCount: 0
 
     onMyTrackerChanged: {
         if (myTracker == 0) {
@@ -322,6 +323,7 @@ Rectangle {
 
         onTextChanged:  {
             msg = sendText.text
+            charCount = msg.length
             cursorPos = sendText.cursorPosition
             isTag = msg.charAt(cursorPos - 1) === "@" && (cursorPos === 1 || msg.charAt(cursorPos - 2) === " ")
 
@@ -362,9 +364,10 @@ Rectangle {
     }
 
     Image {
+        id: sendIcon
         source: 'qrc:/icons/mobile/send_rotated_03.svg'
-        width: executeButton.width
-        height: executeButton.height
+        width: 25
+        height: 25
         fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: executeButton.verticalCenter
         anchors.right: executeButton.right
@@ -398,7 +401,8 @@ Rectangle {
 
             onClicked: {
                 xChatMessage = sendText.text
-                if (xChatMessage.length != 0 && xChatMessage.length < 251 && xChatConnection) {
+                var trimedMsg = xChatMessage.trim()
+                if (trimedMsg !== 0 && xChatMessage.length < 251 && xChatConnection) {
                     if (imageAdded == true && xChatMessage.length > 100) {
                         xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages with images is 100 characters.", "ID" : xChatID})
                         xChatID = xChatID + 1
@@ -452,6 +456,29 @@ Rectangle {
         }
     }
 
+    Label {
+        id: maxWords
+        text: imageAdded == true? "/100" : "/250"
+        anchors.bottom: sendIcon.top
+        anchors.bottomMargin: 3
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.family: xciteMobile.name
+        font.pixelSize: 8
+    }
+
+    Label {
+        id: charLength
+        text: charCount.toString()
+        anchors.bottom: sendIcon.top
+        anchors.bottomMargin: 3
+        anchors.right: maxWords.left
+        color: (imageAdded === true && charCount > 100)? "#E55541": charCount > 250? "#E55541" : darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.family: xciteMobile.name
+        font.pixelSize: 8
+    }
+
     Image {
         id: msgQuote
         source: quoteAdded === false? "qrc:/icons/mobile/quote-icon_01_grey.svg" : "qrc:/icons/mobile/quote-icon_01_blue.svg"
@@ -465,8 +492,8 @@ Rectangle {
 
         Rectangle {
             id: msgQuoteBtn
-            width: 20
-            height: 20
+            width: 30
+            height: 30
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
@@ -502,8 +529,8 @@ Rectangle {
 
         Rectangle {
             id: msgLinkBtn
-            width: 20
-            height: 20
+            width: 30
+            height: 30
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"
@@ -538,8 +565,8 @@ Rectangle {
 
         Rectangle {
             id: msgImageBtn
-            width: 20
-            height: 20
+            width: 30
+            height: 30
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "transparent"

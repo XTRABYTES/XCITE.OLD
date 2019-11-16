@@ -43,7 +43,7 @@ Rectangle {
         }
         else {
             formatError = true
-            image.source = 'qrc:/icons/mobile/image-icon_01_grey.svg'
+            image.source = 'qrc:/icons/mobile/image_large-icon_01_grey.svg'
             xchatImage = ""
             imageAdded = false
         }
@@ -148,7 +148,7 @@ Rectangle {
 
             onTextChanged: {
                 if (imageAdded == true) {
-                    image.source = 'qrc:/icons/mobile/image-icon_01_grey.svg'
+                    image.source = 'qrc:/icons/mobile/image_large-icon_01_grey.svg'
                     xchatImage = ""
                     imageAdded = false
                 }
@@ -182,14 +182,16 @@ Rectangle {
                 }
 
                 onClicked: {
-                    checkImageFormat(imageText.text)
+                    if (imageText.text != "") {
+                        checkImageFormat(imageText.text)
+                    }
                 }
             }
         }
 
         Image {
             id: image
-            source: 'qrc:/icons/mobile/image-icon_01_grey.svg'
+            source: 'qrc:/icons/mobile/image_large-icon_01_grey.svg'
             height: 120
             width: parent.width - 20
             fillMode: Image.PreserveAspectFit
@@ -226,7 +228,7 @@ Rectangle {
 
                 onClicked: {
                     imageText.text = ""
-                    image.source = 'qrc:/icons/mobile/image-icon_01_grey.svg'
+                    image.source = 'qrc:/icons/mobile/image_large-icon_01_grey.svg'
                     xchatImage = ""
                     imageAdded = false
                 }
@@ -234,9 +236,21 @@ Rectangle {
         }
     }
 
+    DropShadow {
+        anchors.fill: notificationBox
+        source: notificationBox
+        samples: 9
+        radius: 4
+        color: darktheme == true? "#000000" : "#727272"
+        horizontalOffset:0
+        verticalOffset: 0
+        spread: 0
+        visible: formatError == true
+    }
+
     Rectangle {
         id: notificationBox
-        width: parent.width -56
+        width: notification.width + 40
         height: 50
         color: darktheme == true? "#2A2C31" : "#F2F2F2"
         anchors.horizontalCenter: parent.horizontalCenter
