@@ -34,10 +34,11 @@ public:
 
 signals:
     void marketValueChanged(QString currency, QString currencyValue);
+    void noInternet();
 public slots:
     void findAllCurrencyValues();
     void findCurrencyValue(QString currency);
-    bool checkInternet();
+    bool checkInternet(QString url);
 
 private:
     QString m_marketValue;

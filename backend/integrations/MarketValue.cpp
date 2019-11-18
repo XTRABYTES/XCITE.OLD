@@ -44,7 +44,7 @@ void MarketValue::findCurrencyValue(QString currency) {
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
     QObject::connect(restclient, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
 
-    getTimer.start(10000); // 10000 milliSeconds wait period for get() method to work properly
+    getTimer.start(2000); // 10000 milliSeconds wait period for get() method to work properly
 
     loop.exec();
 
@@ -61,7 +61,7 @@ void MarketValue::findCurrencyValue(QString currency) {
 }
 
 void MarketValue::findAllCurrencyValues(){
-    if (checkInternet()) {
+    if (checkInternet("37.59.57.212")) {
         findCurrencyValue("btcusd");
         findCurrencyValue("btceur");
         findCurrencyValue("btcgbp");
@@ -74,6 +74,8 @@ void MarketValue::findAllCurrencyValues(){
         findCurrencyValue("ethcha");
         return;
     }else {
+        qDebug() << "no connection to coin info server";
+        emit noInternet();
         return;
     }
 }
@@ -85,10 +87,10 @@ void MarketValue::setMarketValue(const QString &check, const QString &currency, 
     }
 }
 
-bool MarketValue::checkInternet(){
+bool MarketValue::checkInternet(QString url){
     bool connected = false;
     QNetworkAccessManager nam;
-    QNetworkRequest req(QUrl("http://www.google.com"));
+    QNetworkRequest req(QUrl("http://" + url));
     QNetworkReply* reply = nam.get(req);
     QEventLoop loop;
     QTimer getTimer;

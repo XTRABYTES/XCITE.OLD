@@ -1410,6 +1410,7 @@ ApplicationWindow {
 
     // loggin out
     function logOut () {
+        xChatTypingSignal(myUsername,"addToOnline", "offline");
         updateToAccount()
     }
 
@@ -1526,8 +1527,9 @@ ApplicationWindow {
             addMessageToThread.sendMessage({"author": author, "date": date, "time": time, "device": device, "msg": message, "link": link, "image": image, "quote": quote, "msgID": msgID, "me": myUsername.trim(), "tagMe": userSettings.tagMe, "tagEveryone": userSettings.tagEveryone, "dnd": userSettings.xChatDND})
         }
         onXchatConnectionSuccess: {
-            checkingXchat = false
             if (xChatConnection == false) {
+                networkError = 0
+                networkAvailable = 1
                 xChatConnection = true
                 xChatDisconnected = false
                 xChatConnecting = false
@@ -1542,13 +1544,15 @@ ApplicationWindow {
         }
 
         onXchatConnectionFail: {
-            checkingXchat = false
             xChatConnection = false
             xChatConnecting = false
             xChatDisconnected = true
         }
         onXchatConnecting: {
+            networkError = 0
+            networkAvailable = 1
             xChatDisconnected = false
+            xChatConnection = false
             xChatConnecting = true
         }
         onXchatStateChanged: {
@@ -1942,18 +1946,15 @@ ApplicationWindow {
         running: true
 
         onTriggered: {
-            if (!checkingXchat) {
-                checkingXchat = true
-                checkXChatSignal();
-            }
+           checkXChatSignal();
         }
     }
 
     Timer {
         id: xChatConnectingTimer
-        interval: 10000
+        interval: 35000
         repeat: true
-        running: xChatConnection === false
+        running: xChatConnecting === true
 
         onTriggered: {
             xChatReconnect()

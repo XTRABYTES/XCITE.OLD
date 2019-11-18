@@ -89,7 +89,7 @@ public:
    QString m_lastUserMessage;
    void sendTypingToFront(const QMap<QString, QDateTime> typing);
    void addToTyping(const QString msg);
-   bool checkInternet();
+   bool checkInternet(QString url);
    void messageRoute(QString message);
 
 
@@ -134,6 +134,9 @@ private:
     XchatAIML *m_pXchatAiml;
     QMqttClient *mqtt_client;
     QString topic = "xcite/xchat";
+    QString me = "";
+    QString fastestServer = "";
+    QString connectedServer = "";
     QString selectedServer = "";
     bool m_bIsInitialized;
     bool forced_connect;
@@ -142,10 +145,10 @@ private:
     void cleanTypingList();
     void cleanOnlineList();
     QString findServer();
-    QString Berlin = "85.214.143.20";
-    QString Germany = "85.214.78.233";
+    QString Berlin_01 = "85.214.143.20";
+    QString Berlin_02 = "85.214.78.233";
     QString matchServer(const QString &server);
-    QList<QString> servers{Berlin,Germany};
+    QList<QString> servers{Berlin_01,Berlin_02};
     QMap<QString, OnlineUser> onlineUsers;
     void addToOnline(const QString msg, bool typed);
     void addToOnline(QJsonObject);

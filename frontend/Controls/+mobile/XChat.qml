@@ -224,9 +224,9 @@ Rectangle {
         id: msgWindow
         width: Screen.width - 56
         anchors.top: xchatModalLabel.bottom
-        anchors.topMargin: 20
+        anchors.topMargin: 5
         anchors.bottom: newMessagesBar.visible? newMessagesBar.top : sendText.top
-        anchors.bottomMargin: newMessagesBar.visible? 0 : 10
+        anchors.bottomMargin: newMessagesBar.visible? 0 : 15
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
@@ -327,6 +327,17 @@ Rectangle {
             cursorPos = sendText.cursorPosition
             isTag = msg.charAt(cursorPos - 1) === "@" && (cursorPos === 1 || msg.charAt(cursorPos - 2) === " ")
 
+            typingTimer.restart();
+            if (sendTyping){
+                if (userSettings.xChatDND === false) {
+                    status="online"
+                }
+                xChatTyping(myUsername,"addToTyping",status);
+                sendTypingTimer.start()
+                sendXchatConnection.restart();
+                checkIfIdle.restart();
+            }
+
             if (isTag) {
                 beginTag = cursorPos
                 endTag = cursorPos
@@ -346,19 +357,6 @@ Rectangle {
                     beginTag = 0
                     endTag = 0
                 }
-            }
-        }
-
-        onTextEdited: {
-            typingTimer.restart();
-            if (sendTyping){
-                if (userSettings.xChatDND === false) {
-                    status="online"
-                }
-                xChatTyping(myUsername,"addToTyping",status);
-                sendTypingTimer.start()
-                sendXchatConnection.restart();
-                checkIfIdle.restart();
             }
         }
     }
@@ -460,9 +458,9 @@ Rectangle {
         id: maxWords
         text: imageAdded == true? "/100" : "/250"
         anchors.bottom: sendIcon.top
-        anchors.bottomMargin: 3
-        anchors.right: parent.right
-        anchors.rightMargin: 28
+        anchors.bottomMargin: 4
+        anchors.right: sendText.right
+        anchors.rightMargin: 5
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.family: xciteMobile.name
         font.pixelSize: 8
@@ -472,7 +470,7 @@ Rectangle {
         id: charLength
         text: charCount.toString()
         anchors.bottom: sendIcon.top
-        anchors.bottomMargin: 3
+        anchors.bottomMargin: 4
         anchors.right: maxWords.left
         color: (imageAdded === true && charCount > 100)? "#E55541": charCount > 250? "#E55541" : darktheme == true? "#F2F2F2" : "#2A2C31"
         font.family: xciteMobile.name

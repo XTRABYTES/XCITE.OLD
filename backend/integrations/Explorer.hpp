@@ -50,7 +50,7 @@ public slots:
     void getDetails(QString, QString);
     void WalletUpdate(QString coin, QString label, QString message);
     void checkTxStatus(QString);
-    bool checkInternet();
+    bool checkInternet(QString url);
 private:
     QString explorerValue;
 };

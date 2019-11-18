@@ -99,7 +99,7 @@ void Settings::onClearAllSettings() {
 // Onboarding and login functions
 
 bool Settings::UserExists(QString username){
-    if(checkInternet()){
+    if(checkInternet("37.59.57.212")){
         QUrlQuery queryString;
         queryString.addQueryItem("userId", username);
         QString url = "/v1/user/" + username;
@@ -114,6 +114,7 @@ bool Settings::UserExists(QString username){
         }
     }
     else {
+        qDebug() << "no connection to account server to check if user exists";
         emit noInternet();
         return false;
     }
@@ -165,7 +166,7 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
 
 
 void Settings::CreateUser(QString username, QString password){
-    if (checkInternet()) {
+    if (checkInternet("37.59.57.212")) {
         QTextCodec::setCodecForLocale(QTextCodec::codecForName("Latin1"));
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
 
@@ -291,6 +292,7 @@ void Settings::CreateUser(QString username, QString password){
         }
     }
     else {
+        qDebug() << "no connection to account server to create new user";
         emit noInternet();
         return;
     }
@@ -371,7 +373,7 @@ void Settings::login(QString username, QString password){
 }
 
 void Settings::loginFile(QString username, QString password, QString fileLocation){
-    if (checkInternet()) {
+    if (checkInternet("37.59.57.212")) {
         emit checkUsername();
         if(!UserExists(username)){
             return;
@@ -531,6 +533,7 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
         }
     }
     else {
+        qDebug() << "no connection to account server to log in";
         emit noInternet();
         return;
     }
@@ -538,7 +541,7 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
 
 
 void Settings::changePassword(QString oldPassword, QString newPassword){
-    if (checkInternet()) {
+    if (checkInternet("37.59.57.212")) {
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
         QByteArray pubKey = keyPair.first;
         QByteArray privKey = keyPair.second;
@@ -743,6 +746,7 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
         }
     }
      else {
+        qDebug() << "no connection to account server to change password";
         emit passwordChangedFailed();
         emit noInternet();
         return;
@@ -817,7 +821,7 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
 }
 
 bool Settings::SaveSettings(){
-    if (checkInternet()) {
+    if (checkInternet("37.59.57.212")) {
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
         QVariantMap settings;
 
@@ -890,6 +894,7 @@ bool Settings::SaveSettings(){
         return true;
     }
     else {
+        qDebug() << "no connection to account server to save settings";
         emit saveFailed();
         emit noInternet();
         return false;
@@ -1253,10 +1258,10 @@ void Settings::downloadImage(QString imageUrl) {
     // put download function here
 }
 
-bool Settings::checkInternet(){
+bool Settings::checkInternet(QString url){
     bool connected = false;
     QNetworkAccessManager nam;
-    QNetworkRequest req(QUrl("http://www.google.com"));
+    QNetworkRequest req(QUrl("http://" + url));
     QNetworkReply* reply = nam.get(req);
     QEventLoop loop;
     QTimer getTimer;

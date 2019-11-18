@@ -122,6 +122,7 @@ void XchatObject::xchatInc(const QString &user, QString platform, QString status
 }
 
 void XchatObject::sendTypingToQueue(const QString user, QString route, QString status) {
+    me = user;
     QJsonObject obj;
     obj.insert("username",user);
     obj.insert("route",route);
@@ -136,8 +137,10 @@ void XchatObject::sendTypingToQueue(const QString user, QString route, QString s
 void XchatObject::addToTyping(QJsonObject obj){
     QString name = obj.value("username").toString().trimmed();
     QDateTime now = QDateTime::currentDateTime();
-    typing.insert(name, now);
-    sendTypingToFront(typing);
+    if (name != me){
+        typing.insert(name, now);
+        sendTypingToFront(typing);
+    }
 }
 
 void XchatObject::addToOnline(QJsonObject obj) {
@@ -269,50 +272,51 @@ QString XchatObject::HarmonizeKeyWords(QString msg)
 }
 
 void XchatObject::forcedReconnect() {
-    if (checkInternet()){
-        forced_connect = true;
-        qDebug() << "reconnecting to XCHAT";
-        if (mqtt_client->state() == QMqttClient::Connecting) {
-            mqtt_client->disconnect();
-            forced_connect = false;
-            mqtt_StateChanged();
-        }
-        else {
-            mqtt_client->setHostname(findServer());
-            mqtt_client->setPort(1883);
-            mqtt_client->connectToHost();
-            mqtt_StateChanged();
-        }
+    qDebug() << "force reconnect";
+    if (mqtt_client->state() == QMqttClient::Connecting) {
+        qDebug() << "connection attempt detected";
+        mqtt_client->disconnectFromHost();
+        qDebug() << mqtt_client->state();
+        mqtt_StateChanged();
+        return;
     }
+    qDebug() << "no connection attempt detected";
+    mqtt_StateChanged();
+    return;
 }
 
 void XchatObject::mqtt_StateChanged() {
-    if (checkInternet()){
-        if (mqtt_client->state() == QMqttClient::Disconnected) {
-            emit xchatConnectionFail();
-            emit xchatStateChanged();
-            if (!forced_connect) {
-                mqtt_client->setHostname(findServer());
-                mqtt_client->setPort(1883);
-                mqtt_client->connectToHost();
-            }
+    if (mqtt_client->state() == QMqttClient::Disconnected) {
+        qDebug() << "X-CHAT not connected";
+        emit xchatConnectionFail();
+        emit xchatStateChanged();
+        if (findServer() != "") {
+            qDebug() << "trying to connect to server " + connectedServer;
+            mqtt_client->setHostname(connectedServer);
+            mqtt_client->setPort(1883);
+            mqtt_client->connectToHost();
         }
-
-        if (mqtt_client->state() == QMqttClient::Connecting) {
-            emit xchatConnecting();
-            emit xchatStateChanged();
+        else {
+            qDebug() << "no servers available";
         }
+    }
 
-        if (mqtt_client->state() == QMqttClient::Connected) {
-            qDebug() << "connected to  XCHAT";
-            emit xchatConnectionSuccess();
-            emit xchatStateChanged();
-            forced_connect = false;
-            auto subscription = mqtt_client->subscribe(topic);
-            if (!subscription) {
-            } else {
+    if (mqtt_client->state() == QMqttClient::Connecting) {
+        qDebug() << "X-CHAT connecting to " + connectedServer;
+        emit xchatConnecting();
+        emit xchatStateChanged();
+    }
 
-            }
+    if (mqtt_client->state() == QMqttClient::Connected) {
+        qDebug() << "connected to  XCHAT via: " + connectedServer;
+        emit xchatInternetOk();
+        emit xchatConnectionSuccess();
+        emit xchatStateChanged();
+        auto subscription = mqtt_client->subscribe(topic);
+        if (!subscription) {
+            qDebug() << "not subscribed to topic";
+        } else {
+            qDebug() << "subscribed to topic: " + topic;
         }
     }
 }
@@ -338,12 +342,12 @@ void XchatObject::sendOnlineUsers(){
 }
 
 
-bool XchatObject::checkInternet(){
+bool XchatObject::checkInternet(QString url){
     cleanTypingList();
     cleanOnlineList();
     bool connected = false;
     QNetworkAccessManager nam;
-    QNetworkRequest req(QUrl("http://www.google.com"));
+    QNetworkRequest req(QUrl("https://" + url));
     QNetworkReply* reply = nam.get(req);
     QEventLoop loop;
     QTimer getTimer;
@@ -355,7 +359,6 @@ bool XchatObject::checkInternet(){
     loop.exec();
     if (reply->bytesAvailable()){
         emit xchatInternetOk();
-
         connected=true;
     }else{
         emit xchatConnectionFail();
@@ -373,8 +376,6 @@ void XchatObject::getOnlineNodes(){
     for(QString server : servers){
         QNetworkAccessManager nam;
         QUrl url("http://" + server + ":15672/api/nodes");
-        //url.setUserName("guest");
-        //url.setPassword("guest");
         url.setUserName("xchat");
         url.setPassword("xtrabytes");
         QNetworkRequest req(url);
@@ -408,6 +409,9 @@ void XchatObject::getOnlineNodes(){
                     }
                 }
             }
+        }
+        else {
+            emit xchatNoInternet();
         }
         reply->close();
         delete reply;
@@ -468,15 +472,12 @@ QString XchatObject::matchServer(const QString &server){
 }
 
 QString XchatObject::findServer(){
-    QString fastestServer;
     qint64 fastestTime = 0;
     QElapsedTimer timer;
-    selectedServer = "";
-    emit selectedXchatServer(selectedServer);
+    fastestServer = "";
 
     getOnlineNodes();
     for(QString server : nodesOnline.values()){
-
         QTcpSocket tester;
         tester.connectToHost(server, 1883);
         QString pingedServer = matchServer(server);
@@ -497,13 +498,14 @@ QString XchatObject::findServer(){
         }else if (fastestTime == 0 || fastestTime > timeTaken){
             fastestServer = server;
             fastestTime = timeTaken;
+            selectedServer = matchServer(fastestServer);
+            connectedServer = fastestServer;
+            qDebug() << "Fastest server:  " + selectedServer;
+            emit selectedXchatServer(selectedServer);
         }
 
         tester.close();
     }
-
-    selectedServer = matchServer(fastestServer);
-    qDebug() << "Connecting to " + selectedServer;
     emit selectedXchatServer(selectedServer);
     return fastestServer;
 }

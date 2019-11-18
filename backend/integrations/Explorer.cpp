@@ -21,18 +21,18 @@ Explorer::Explorer(QObject *parent) : QObject(parent)
 }
 
 void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
-    if (checkInternet()) {
-        QJsonArray walletArray = QJsonDocument::fromJson(walletList.toLatin1()).array();
-        foreach (const QJsonValue & value, walletArray) {
-            QJsonObject obj = value.toObject();
-            QString coin = obj.value("name").toString().toLower();
-            QString address = obj.value("address").toString();
-            if (coin == "xtest") {
-                coin = "xfuel-testnet";
-            }
-            if (coin.length() > 0){
-                if ((coin == "xby") || (coin == "xfuel") || (coin == "xfuel-testnet")){
 
+    QJsonArray walletArray = QJsonDocument::fromJson(walletList.toLatin1()).array();
+    foreach (const QJsonValue & value, walletArray) {
+        QJsonObject obj = value.toObject();
+        QString coin = obj.value("name").toString().toLower();
+        QString address = obj.value("address").toString();
+        if (coin == "xtest") {
+            coin = "xfuel-testnet";
+        }
+        if (coin.length() > 0){
+            if ((coin == "xby") || (coin == "xfuel") || (coin == "xfuel-testnet")){
+                if (checkInternet("xtrabytes.global")) {
                     QString response =  getBalanceAddressXBY(coin,address, "1");
                     QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
                     //     qDebug() << coin << ", " << address << ", " << jsonResponse;
@@ -43,7 +43,13 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
                         coin = "xtest";
                     }
                     emit updateBalance(coin.toUpper(),address, balance);
-                } else if(((coin == "btc") || (coin == "eth")) && wallets == "all"){
+                }
+                else {
+                    qDebug() << "no connection to XTRABYTES blockexplorer for wallet ballance";
+                    emit noInternet();
+                }
+            } else if(((coin == "btc") || (coin == "eth")) && wallets == "all"){
+                if (checkInternet("api.blockcypher.com")) {
                     QString response =  getBalanceAddressExt(coin,address);
                     QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toLatin1());
                     //       qDebug() << coin << ", " << address << ", " << jsonResponse;
@@ -61,19 +67,19 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
                         emit updateBalance(coin.toUpper(),address, balance);
                     }
                 }
+                else {
+                    qDebug() << "no connection to Blockcypher blockexplorer";
+                    emit noInternet();
+                }
             }
         }
-        return;
     }
-    else {
-        emit noInternet();
-        return;
-    }
+    return;
 }
 
 
 void Explorer::getTransactionList(QString coin, QString address, QString page){
-    if (checkInternet()) {
+    if (checkInternet("xtrabytes.global")) {
         QString selectedCoin = coin.toLower();
         if (selectedCoin == "xtest") {
             selectedCoin = "xfuel-testnet";
@@ -98,13 +104,14 @@ void Explorer::getTransactionList(QString coin, QString address, QString page){
         }
     }
     else {
+        qDebug() << "no connection to XTRABYTES blockexplorer for transaction list";
         noInternet();
         return;
     }
 }
 
 void Explorer::getDetails(QString coin, QString transaction) {
-    if (checkInternet()) {
+    if (checkInternet("xtrabytes.global")) {
         emit explorerBusy();
 
         QString selectedCoin = coin.toLower();
@@ -142,6 +149,7 @@ void Explorer::getDetails(QString coin, QString transaction) {
         return;
     }
     else {
+        qDebug() << "no connection to XTRABYTES blockexplorer for transaction details";
         emit noInternet();
         return;
     }
@@ -268,7 +276,7 @@ void Explorer::WalletUpdate(QString coin, QString label, QString message){
 }
 
 void Explorer::checkTxStatus(QString pendingList) {
-    if (checkInternet()) {
+    if (checkInternet("xtrabytes.global")) {
         emit explorerBusy();
         QJsonArray pendingArray = QJsonDocument::fromJson(pendingList.toLatin1()).array();
         foreach (const QJsonValue & value, pendingArray) {
@@ -314,15 +322,16 @@ void Explorer::checkTxStatus(QString pendingList) {
         return;
     }
     else {
+        qDebug() << "no connection to XTRABYTES blockexplorer for transaction status";
         emit noInternet();
         return;
     }
 }
 
-bool Explorer::checkInternet(){
+bool Explorer::checkInternet(QString url){
     bool connected = false;
     QNetworkAccessManager nam;
-    QNetworkRequest req(QUrl("http://www.google.com"));
+    QNetworkRequest req(QUrl("https://" + url));
     QNetworkReply* reply = nam.get(req);
     QEventLoop loop;
     QTimer getTimer;
