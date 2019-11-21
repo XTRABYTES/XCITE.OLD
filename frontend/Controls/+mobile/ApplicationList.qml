@@ -20,79 +20,78 @@ import QtQuick.Window 2.2
 import "qrc:/Controls" as Controls
 
 Rectangle {
+    id: applications
     width: parent.width
     height: parent.height
     anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
     color: "transparent"
-    clip :true
 
-    Flickable {
-        width: parent.width
-        height: parent.heigt
-        flickableDirection: Flickable.VerticalFlick
+    Component {
+        id: applicationSquare
 
-        Component {
-            id: applicationSquare
+        Item {
+            width: grid.cellWidth
+            height: grid.cellHeight
 
-            Item {
-                width: grid.cellWidth
-                height: grid.cellHeight
+            Image {
+                id: appIcon
+                source: darktheme == true? icon_white : icon_black
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                height: 60
+                width: 60
+                fillMode: Image.PreserveAspectFit
 
-                Image {
-                        id: appIcon
-                        source: darktheme == true? icon_white : icon_black
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.top: parent.top
-                        anchors.topMargin: 10
-                        height: 60
-                        width: 60
-                        fillMode: Image.PreserveAspectFit
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
 
-                        Rectangle {
-                            anchors.fill: parent
-                            color: "transparent"
+                    MouseArea {
+                        anchors.fill: parent
 
-                            MouseArea {
-                                anchors.fill: parent
-
-                                onPressed: {
-                                    click01.play()
-                                    detectInteraction()
-                                }
-
-                                onClicked: {
-                                    selectedApp = name
-                                    openApplication(selectedApp)
-                                }
-                            }
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
                         }
-                }
 
-                Text {
-                        id: appName
-                        text: name
-                        width: grid.cellWidth
-                        horizontalAlignment: Text.AlignHCenter
-                        elide: Text.ElideRight
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 5
-                        font.pixelSize: 14
-                        font.family: "Brandon Grotesque"
-                        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-                        font.letterSpacing: 2
+                        onClicked: {
+                            selectedApp = name
+                            openApplication(selectedApp)
+                        }
+                    }
                 }
             }
-        }
 
-        GridView {
-            id: grid
-            anchors.fill: parent
-            cellWidth: parent.width/3; cellHeight: 105
-
-            model: applicationList
-            delegate: applicationSquare
+            Text {
+                id: appName
+                text: name
+                width: grid.cellWidth
+                horizontalAlignment: Text.AlignHCenter
+                elide: Text.ElideRight
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 15
+                font.pixelSize: 14
+                font.family: "Brandon Grotesque"
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                font.letterSpacing: 2
+            }
         }
     }
 
+    GridView {
+        id: grid
+        width: parent.width
+        height: parent.height
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        cellWidth: parent.width/3
+        cellHeight: 115
+
+        model: applicationList
+        delegate: applicationSquare
+    }
 }

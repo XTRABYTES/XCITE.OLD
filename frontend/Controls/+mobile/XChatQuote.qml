@@ -125,9 +125,9 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                font.italic: xChatQuote == ""? true : false
+                font.italic: xchatQuote == ""? true : false
                 font.family: xciteMobile.name
-                color: xChatQuote == ""? "#C6C6C6" : "#F2F2F2"
+                color: xchatQuote == ""? "#C6C6C6" : "#F2F2F2"
                 wrapMode: Text.Wrap
                 font.pixelSize: 14
                 maximumLineCount: 12

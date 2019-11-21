@@ -52,6 +52,7 @@ QML_DESIGNER_IMPORT_PATH =
 include(backend/support/QZXing/QZXing.pri)
 include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
 SOURCES += main/main.cpp \
+    backend/support/ttt.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
 	    backend/staticnet/staticnet.cpp \
@@ -76,6 +77,7 @@ RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
 
 HEADERS  += backend/xchat/xchat.hpp \
+    backend/support/ttt.h \
 	    backend/xchat/xchataiml.hpp \
 	    backend/xutility/crypto/allocators.h \
 	    backend/xutility/crypto/ctools.h \

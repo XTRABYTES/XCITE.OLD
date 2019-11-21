@@ -108,9 +108,17 @@ ApplicationWindow {
         applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_01_black.svg');
         applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_04_black.svg'});
         applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_02_black.svg'});
+        applicationList.append({"name": "X-GAMES", "icon_white": 'qrc:/icons/mobile/games-icon_ph_white.svg', "icon_black": 'qrc:/icons/mobile/games-icon_ph_black.svg'});
 
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
+
+        buttonList.setProperty(0, "number", "1");
+        buttonList.setProperty(0, "played", false);
+        buttonList.setProperty(0, "player", "")
+        for (var i = 2; i < 10; i ++) {
+            buttonList.append({"number": Number(i).toLocaleString(), "played": false, "player": ""})
+        }
 
         xChatOnline.clear();
 
@@ -263,6 +271,8 @@ ApplicationWindow {
     property int xChatLinkTracker: 0
     property int xChatImageTracker: 0
     property int xChatLargeImageTracker: 0
+    property int xgamesTracker: 0
+    property int tttTracker: 0
 
 
     // Trackers - features
@@ -441,6 +451,7 @@ ApplicationWindow {
     property bool tagMeChangeInitiated: false
     property bool tagEveryoneChangeInitiated: false
     property bool dndChangeInitiated: false
+    property bool tttGameStarted: false
     property string selectedApp: ""
 
     // Signals
@@ -484,6 +495,10 @@ ApplicationWindow {
     signal pingXChatServers()
     signal xChatReconnect()
     signal downloadImage(string url)
+    signal tttGetScore()
+    signal tttNewGame()
+    signal tttQuitGame()
+    signal tttButtonClicked(string button)
 
     // functions
     function openApplication(app) {
@@ -493,14 +508,16 @@ ApplicationWindow {
             xchatTracker = 1
             selectedApp = ""
         }
-
         if (app === "X-CHANGE") {
             xchangeTracker = 1
             selectedApp = ""
         }
-
         if (app === "X-VAULT") {
             xvaultTracker = 1
+            selectedApp = ""
+        }
+        if (app === "X-GAMES") {
+            xgamesTracker = 1
             selectedApp = ""
         }
     }
@@ -1848,6 +1865,15 @@ ApplicationWindow {
         }
     }
 
+    ListModel {
+        id: buttonList
+        ListElement {
+            number: ""
+            played: false
+            player: ""
+        }
+    }
+
     // Global components
     Clipboard {
         id: clipboard
@@ -2245,10 +2271,19 @@ ApplicationWindow {
                     // nothing yet
                 }
                 else if (selectedPage == "apps") {
-                    if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0) {
+                    if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 & xgamesTracker == 0) {
                         selectedPage = "home"
                         mainRoot.pop()
                     }
+                    else if (xgamesTracker == 1 && networkError == 0) {
+                        if (tttTracker == 1) {
+                            tttTracker = 0
+                        }
+                        else {
+                            xgamesTracker = 0
+                        }
+                    }
+
                     else if (xvaultTracker == 1 && networkError == 0) {
                         xvaultTracker =0
                     }

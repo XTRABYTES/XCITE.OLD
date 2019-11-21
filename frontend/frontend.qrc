@@ -181,5 +181,8 @@
         <file>Controls/+mobile/XChatLink.qml</file>
         <file>Controls/+mobile/XChatImage.qml</file>
         <file>Controls/+mobile/XChatLargeImage.qml</file>
+        <file>Controls/fun/TttBoard.qml</file>
+        <file>Controls/fun/TttGrid.qml</file>
+        <file>Controls/+mobile/XGames.qml</file>
     </qresource>
 </RCC>

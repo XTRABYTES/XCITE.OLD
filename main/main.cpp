@@ -33,6 +33,7 @@
 #include "../backend/integrations/Explorer.hpp"
 #include "../backend/integrations/xutility_integration.hpp"
 #include "../backend/integrations/staticnet_integration.hpp"
+#include "../backend/support/ttt.h"
 
 int main(int argc, char *argv[])
 {
@@ -92,6 +93,10 @@ int main(int argc, char *argv[])
     // wire-up ClipboardProxy
     ClipboardProxy clipboardProxy;
     engine.rootContext()->setContextProperty("clipboardProxy", &clipboardProxy);
+
+    // wire-up Tictactoe
+    Ttt tictactoe;
+    engine.rootContext()->setContextProperty("tictactoe", &tictactoe);
 
     // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
@@ -157,6 +162,7 @@ int main(int argc, char *argv[])
     QObject::connect(&staticNet, SIGNAL(ResponseFromStaticnet(QJsonObject)), &static_int, SLOT(onResponseFromStaticnetEntry(QJsonObject)),Qt::QueuedConnection);      
     QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtility, SLOT(networkEntry(QString)));
 
+    // connect signals for X-CHAT
     QObject::connect(rootObject, SIGNAL(xChatSend(QString,QString,QString,QString, QString, QString, QString)), &xchatRobot, SLOT(xchatInc(QString,QString,QString,QString, QString, QString, QString)));
     QObject::connect(rootObject, SIGNAL(xChatTypingSignal(QString,QString,QString)), &xchatRobot, SLOT(sendTypingToQueue(QString,QString,QString)));
     QObject::connect(rootObject, SIGNAL(checkXChatSignal()), &xchatRobot, SLOT(mqtt_StateChanged()));
@@ -164,6 +170,11 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(pingXChatServers()), &xchatRobot, SLOT(pingXchatServers()));
     QObject::connect(rootObject, SIGNAL(xChatReconnect()), &xchatRobot, SLOT(forcedReconnect()));
 
+    // connect signals for TTT
+    QObject::connect(rootObject, SIGNAL(tttGetScore()), &tictactoe, SLOT(getScore()));
+    QObject::connect(rootObject, SIGNAL(tttNewGame()), &tictactoe, SLOT(newGame()));
+    QObject::connect(rootObject, SIGNAL(tttQuitGame()), &tictactoe, SLOT(quitGame()));
+    QObject::connect(rootObject, SIGNAL(tttButtonClicked(QString)), &tictactoe, SLOT(buttonClicked(QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

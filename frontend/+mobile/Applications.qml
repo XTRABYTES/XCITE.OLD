@@ -45,16 +45,17 @@ Rectangle {
     Rectangle {
         id: appWindow
         width: Screen.width - 56
+        height: parent.height
         anchors.top: applicationModalLabel.bottom
         anchors.topMargin: 30
-        anchors.bottom: closeApplicationModal.top
-        anchors.bottomMargin: 30
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
 
         Mobile.ApplicationList {
             id: myApplications
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 
@@ -113,6 +114,12 @@ Rectangle {
                 mainRoot.pop()
             }
         }
+    }
+
+    Mobile.XGames {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 
     Mobile.XChat {
