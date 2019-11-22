@@ -34,12 +34,13 @@ Rectangle {
 
             Image {
                 id: playedImage
-                source: played == false? '': (player == "me"? 'qrc:/icons/XFUEL_logo_big.svg' : 'qrc:/icons/XBY_logo_big.svg')
+                source: played == false? '': (player == myUsername? 'qrc:/icons/XFUEL_logo_big.svg' : 'qrc:/icons/XBY_logo_big.svg')
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 10
                 height: parent.height * 0.75
                 width: parent.width * 0.75
+                opacity: online == false? 1 : (confirmed == true? 1 : 0.5)
                 fillMode: Image.PreserveAspectFit
                 visible: played
             }
@@ -55,12 +56,25 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
-                    enabled: !played
+                    enabled: tttFinished == true? false : (online == false? (played == false? true : false) : (played == true? false : (tttYourTurn == false? false : true)))
 
                     onClicked: {
                         console.log("clicked button nr: " + number)
                         tttGameStarted = true
-                        tttButtonClicked(number)
+                        if (online == false) {
+                            console.log("requesting new moveID")
+                            tttGetMoveID(number)
+                        }
+                        else {
+                            if (tttCurrentGame !== "" && gameError === 0) {
+                                var lastMove = findLastMove("ttt", tttCurrentGame);
+                                var lastMoveID = findLastMoveID("ttt", tttCurrentGame)
+                                if(lastMove !== "") {
+                                    confirmGameSend(myUsername, "ttt", tttCurrentGame, lastMove, lastMoveID);
+                                }
+                                sendGameToQueue(myUsername, "ttt", tttCurrentGame, number);
+                            }
+                        }
                     }
                 }
             }
@@ -73,7 +87,7 @@ Rectangle {
         anchors.fill: parent
         cellWidth: parent.width/3; cellHeight: parent.width/3
 
-        model: buttonList
+        model: tttButtonList
         delegate: buttonSquare
     }
 }

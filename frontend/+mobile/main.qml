@@ -113,12 +113,22 @@ ApplicationWindow {
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
 
-        buttonList.setProperty(0, "number", "1");
-        buttonList.setProperty(0, "played", false);
-        buttonList.setProperty(0, "player", "")
+        tttSetUsername(myUsername)
+
+        tttButtonList.setProperty(0, "number", "1");
+        tttButtonList.setProperty(0, "played", false);
+        tttButtonList.setProperty(0, "player", "");
+        tttButtonList.setProperty(0, "online", false);
+        tttButtonList.setProperty(0, "confirmed", false);
         for (var i = 2; i < 10; i ++) {
-            buttonList.append({"number": Number(i).toLocaleString(), "played": false, "player": ""})
+            tttButtonList.append({"number": Number(i).toLocaleString(), "played": false, "player": "", "online": false, "confirmed": false})
         }
+
+        scoreList.setProperty(0, "game", "ttt");
+        scoreList.setProperty(0, "player", "computer");
+        scoreList.setProperty(0, "win", 0);
+        scoreList.setProperty(0, "lost", 0);
+        scoreList.setProperty(0, "draw", 0);
 
         xChatOnline.clear();
 
@@ -253,7 +263,6 @@ ApplicationWindow {
     property int calculatorTracker: 0
     property int addressQRTracker: 0
     property int pictureTracker: 0
-    property int cellTracker: 0
     property int pincodeTracker: 0
     property int changePasswordTracker: 0
     property int portfolioTracker: 0
@@ -264,6 +273,20 @@ ApplicationWindow {
     property int xvaultTracker: 0
     property int xchangeTracker: 0
     property int xchatTracker: 0
+    property int xgamesTracker: 0
+    property int tttTracker: 0
+
+
+
+    // Trackers - features
+    property int interactionTracker: 0
+    property int coinListTracker: 0
+    property int currencyTracker: 0
+    property int cellTracker: 0
+    property int tagListTracker: 0
+    property int dndTracker: 0
+    property int screenshotTracker: 0
+    property int soundTracker: 0
     property int xchatSettingsTracker: 0
     property int xchatNetworkTracker: 0
     property int xchatUserTracker: 0
@@ -271,19 +294,7 @@ ApplicationWindow {
     property int xChatLinkTracker: 0
     property int xChatImageTracker: 0
     property int xChatLargeImageTracker: 0
-    property int xgamesTracker: 0
-    property int tttTracker: 0
-
-
-    // Trackers - features
-    property int interactionTracker: 0
-    property int coinListTracker: 0
-    property int currencyTracker: 0
-    property int tagListTracker: 0
-    property int dndTracker: 0
-    property int screenshotTracker: 0
-    property int soundTracker: 0
-
+    property int tttPlayerTracker: 0
 
     // Global variables
     property int sessionStart: 0
@@ -452,6 +463,10 @@ ApplicationWindow {
     property bool tagEveryoneChangeInitiated: false
     property bool dndChangeInitiated: false
     property bool tttGameStarted: false
+    property bool tttYourTurn: false
+    property bool tttFinished: false
+    property string tttCurrentGame: "computer"
+    property int gameError: 0
     property string selectedApp: ""
 
     // Signals
@@ -495,10 +510,19 @@ ApplicationWindow {
     signal pingXChatServers()
     signal xChatReconnect()
     signal downloadImage(string url)
+    signal tttSetUsername(string username)
     signal tttGetScore()
+    signal tttResetScore(string win, string lost, string draw)
     signal tttNewGame()
     signal tttQuitGame()
     signal tttButtonClicked(string button)
+    signal tttGetMoveID(string move)
+    signal tttNewMove(string player, string move)
+    signal tttcreateGameId(string me, string opponent)
+    signal sendGameToQueue(string user, string game, string gameID, string move)
+    signal confirmGameSend(string user, string game, string gameID, string move, string moveID)
+    signal sendGameInvite(string user, string opponent, string game, string gameID)
+    signal confirmGameInvite(string user, string opponent, string game, string gameID, string accept)
 
     // functions
     function openApplication(app) {
@@ -1145,6 +1169,236 @@ ApplicationWindow {
         quoteAdded = true
     }
 
+    // X-GAMES
+    function findLastMove(game, gameID) {
+        var lastMoveNR = 0
+        var lastMove = ""
+        var moveID = 0
+        for (var i = 0; i < movesList.count; i ++) {
+            if (movesList.get(i).game === game && moveList.get(i).gameID === gameID){
+                moveID = Number.fromLocaleString(moveList.get(i).gameID)
+                if (moveID > lastMoveNR) {
+                    lastMoveNR = moveID
+                    lastMove = moveList.get(i).gameID
+                }
+            }
+        }
+        return lastMove;
+    }
+
+    function findLastMoveID(game, gameID) {
+        var lastMoveNR = 0
+        var moveID = 0
+        for (var i = 0; i < movesList.count; i ++) {
+            if (movesList.get(i).game === game && moveList.get(i).gameID === gameID){
+                moveID = Number.fromLocaleString(moveList.get(i).gameID)
+                if (moveID > lastMoveNR) {
+                    lastMoveNR = moveID
+                }
+            }
+        }
+        return lastMoveNR;
+    }
+
+    function findOpponent(gameID) {
+        var opponent = ""
+        var gameIDArray = gameID.split(':')
+        if (gameIDArray[0] === myUsername) {
+            opponent = gameIDArray[1]
+        }
+        if (gameIDArray[1] === myUsername) {
+            opponent = gameIDArray[0]
+        }
+        return opponent;
+    }
+
+    function checkIfMoveExists(game, gameID, player, move, moveID) {
+        for(var o = 0; o < gamesList.count; o ++) {
+            if(gamesList.get(o).game === game && gamesList.get(o).gameID === gameID) {
+                gamesList.setProperty(o, "started", true)
+            }
+        }
+        var exists = false
+        for(var i = 0; i < movesList.count; i ++) {
+            if(movesList.get(i).game === game && movesList.get(i).gameID === gameID && movesList.get(i).moveID === moveID){
+                exists = true
+            }
+        }
+        if(!exists){
+            movesList.append({"game": game, "gameID": gameID, "player": player, "move": move, "moveID": moveID, "confirmed": false});
+        }
+        if(gameID !== "computer") {
+            newMove(game, gameID, player, move)
+            if (player !== myUsername) {
+                confirmGameSend(myUsername, player,  game, gameID,  move, moveID)
+                confirmMove(myUsername, game, gameID, move, moveID)
+            }
+        }
+    }
+
+    function newMove(game, gameID, player, move) {
+        var number = (Number.fromLocaleString(move) - 1);
+        if (game === "ttt" && gameID === tttCurrentGame) {
+            tttNewMove(player, move)
+            if (player !== myUsername) {
+                tttButtonList.setProperty(number, "confirmed", true);
+            }
+            if(tttTracker !== 1 && player !== myUsername) {
+                alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " has made a new move in Tic Tact Toe", "origin" : "X-GAMES"})
+                alert = true
+            }
+        }
+    }
+
+    function confirmMove(user, game, gameID, move, moveID) {
+        var number = (Number.fromLocaleString(move) - 1);
+        for (var i = 0; i < movesList.count; i ++) {
+            if (movesList.get(i).game === game && movesList.get(i).gameID === gameID && movesList.get(i).moveID === moveID) {
+                movesList.setProperty(i, "confirmed", true)
+                if (game === "ttt" && gameID === tttCurrentGame) {
+                    tttButtonList.setProperty(number, "confirmed", true);
+                }
+            }
+        }
+    }
+
+    function correctUser(user, gameID) {
+        var opponent = false
+        var gameIDArray = gameID.split(':')
+        if (gameIDArray[0] === user) {
+            opponent = true
+        }
+        if (gameIDArray[1] === user) {
+            opponent = true
+        }
+        return opponent;
+    }
+
+    function isMyGame(gameID) {
+        var gameIDArray = gameID.split(':')
+        var isMine = false
+        if (gameIDArray[0] === myUsername) {
+            isMine = true
+        }
+        if (gameIDArray[1] === myUsername) {
+            isMine = true
+        }
+
+        return isMine;
+    }
+
+    function inviteSent(game, gameID) {
+        for (var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                gamesList.setProperty(i, "invited", true)
+            }
+        }
+    }
+
+    function getGameName(game) {
+        var gameName = ""
+        if (game === "ttt" ) {
+            gameName = "Tic Tac Toe"
+        }
+        return gameName
+    }
+
+    function checkIfInviteExists(game, gameID) {
+        var gameName = getGameName(game)
+        var exists = false
+        var opponent = findOpponent(gameID)
+        for (var i = 0; i < gamesList.count; i ++) {
+            if(gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                exists = true
+            }
+        }
+        if(!exists) {
+            gamesList.append({"game": game, "gameID": gameID, "invited": true, "accepted": false, "finished": false})
+            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " has has invited you to play a game of " + gameName, "origin" : "X-GAMES"})
+            alert = true
+        }
+        else {
+            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " send you a reminder for his invite to play " + gameName, "origin" : "X-GAMES"})
+            alert = true
+        }
+    }
+
+    function acceptGameInvite(game, gameID, accept) {
+        var gameName = getGameName(game)
+        var opponent = findOpponent(gameID)
+        for(var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                if(accept === "true") {
+                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " accepted your challenge for " + gameName, "origin" : "X-GAMES"})
+                    alert = true
+                    gamesList.setProperty(i, "accepted", true)
+                }
+                if(accept === "false") {
+                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " did not accept your challenge for " + gameName, "origin" : "X-GAMES"})
+                    alert = true
+                    gamesList.remove(i)
+                }
+            }
+        }
+    }
+
+    function removeGame(game, gameID) {
+        for(var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                gamesList.remove(i)
+            }
+        }
+        removeMoves(game, gameID)
+    }
+
+    function removeMoves(game, gameID) {
+        for(var o = 0; o < movesList.count; o ++) {
+            if (movesList.get(o).game === game && movesList.get(o).gameID === gameID) {
+                movesList.remove(o)
+            }
+        }
+    }
+
+    function updateScore(game, player, win, lost, draw) {
+        for (var i = 0; i < scoreList.count; i ++) {
+            if(scoreList.get(i).game === game && scoreList.get(i).player === player) {
+                var currentWin = scoreList.get(i).win
+                var currentLost = scoreList.get(i).lost
+                var currentDraw = scoreList.get(i).draw
+                scoreList.setProperty(i, "win", currentWin + win)
+                scoreList.setProperty(i, "lost", currentLost + lost)
+                scoreList.setProperty(i, "draw", currentDraw + draw)
+            }
+        }
+    }
+
+    function tttLoadGame(game, gameID) {
+        for (var e = 0; e < tttButtonList.count; e ++) {
+            tttButtonList.setProperty(e, "confirmed", false)
+            if (tttCurrentGame === "computer") {
+                tttButtonList.setProperty(e, "online", false)
+            }
+            else {
+                tttButtonList.setProperty(e, "online", true)
+            }
+        }
+
+        for (var i = 0; i < movesList.count; i ++) {
+            if (movesList.get(i).game === game && movesList.get(i).gameID === gameID) {
+                var player = movesList.get(i).player
+                var move = moverList.get(i).player
+                tttNewMove(player, move, "old")
+            }
+        }
+        var lastMove = findLastMoveID(game, gameID)
+        for (var o = 0; o < movesList.count; o ++) {
+            if (movesList.get(o).game === game && movesList.get(o).gameID === gameID && movelList.get(o).moveID !== lastMove) {
+                var number = (Number.fromLocaleString(movesList.get(o).move) - 1)
+                tttButtonList.setProperty(number, "confirmed", true)
+            }
+        }
+    }
+
     // Start up
     function loadContactList(contacts) {
         if (typeof contacts !== "undefined") {
@@ -1543,10 +1797,12 @@ ApplicationWindow {
         onXchatSuccess: {
             addMessageToThread.sendMessage({"author": author, "date": date, "time": time, "device": device, "msg": message, "link": link, "image": image, "quote": quote, "msgID": msgID, "me": myUsername.trim(), "tagMe": userSettings.tagMe, "tagEveryone": userSettings.tagEveryone, "dnd": userSettings.xChatDND})
         }
+
         onXchatConnectionSuccess: {
+            networkError = 0
+            networkAvailable = 1
+            gameError = 0
             if (xChatConnection == false) {
-                networkError = 0
-                networkAvailable = 1
                 xChatConnection = true
                 xChatDisconnected = false
                 xChatConnecting = false
@@ -1565,6 +1821,7 @@ ApplicationWindow {
             xChatConnecting = false
             xChatDisconnected = true
         }
+
         onXchatConnecting: {
             networkError = 0
             networkAvailable = 1
@@ -1572,36 +1829,43 @@ ApplicationWindow {
             xChatConnection = false
             xChatConnecting = true
         }
+
         onXchatStateChanged: {
             if(!xChatConnection) {
                 resetServerUpdateStatus();
                 updateServerStatus();
             }
         }
+
         onXchatNoInternet: {
             networkError = 1
             networkAvailable = 0
             resetServerUpdateStatus();
             updateServerStatus();
         }
+
         onXchatInternetOk: {
             networkAvailable = 1
         }
+
         onOnlineUsersSignal:{
             loadOnlineUsers(online)
         }
         onClearOnlineNodeList: {
             xChatServers.clear()
         }
+
         onServerResponseTime: {
             updateServerResponseTime(server, responseTime, serverStatus)
         }
+
         onSelectedXchatServer: {
             selectedXChatServer = server
             checkingXchat = false
             pingingXChat = false
             pingTimeRemain = 60
         }
+
         onXChatServerDown: {
             for (var i = 0; i < xChatServers.count; i ++) {
                 if (server === xChatServers.get(i).name) {
@@ -1609,7 +1873,39 @@ ApplicationWindow {
                 }
             }
         }
+        // X-GAME related functions
+        onNewMoveReceived: {
+            gameError = 0
+            if(isMyGame(gameID) && correctUser(player, gameID)) {
+                checkIfMoveExists(game, gameID, player, move, moveID)
+            }
+        }
 
+        onNewMoveConfirmed: {
+            gameError = 0
+            if(isMyGame(gameID) && correctUser(player, gameID)) {
+                confirmMove(player, game, gameID, move, moveID)
+            }
+        }
+
+        onReceiveGameInvite: {
+            gameError = 0
+            if(isMyGame(gameID) && correctUser(player2, gameID) && player1 === myUsername) {
+                checkIfInviteExists(game, gameID)
+            }
+        }
+
+        onResponseGameInvite: {
+            gameError = 0
+            var opponent = findOpponent(gameID)
+            if(isMyGame(gameID) && correctUser(user, gameID) && opponent !== myUsername ) {
+                acceptGameInvite(game, gameID, accept)
+            }
+        }
+
+        onGameCommandFailed: {
+            gameError = 1
+        }
     }
 
     // Workerscripts
@@ -1866,11 +2162,48 @@ ApplicationWindow {
     }
 
     ListModel {
-        id: buttonList
+        id: tttButtonList
         ListElement {
             number: ""
             played: false
             player: ""
+            online: false
+            confirmed: false
+        }
+    }
+
+    ListModel {
+        id: gamesList
+        ListElement {
+            game: ""
+            gameID: ""
+            invited: false
+            accepted: false
+            started: false
+            finished: false
+        }
+    }
+
+    ListModel {
+        id: movesList
+        ListElement {
+            game: ""
+            gameID: ""
+            player: ""
+            move: ""
+            moveID: ""
+            confirmed: false
+        }
+    }
+
+    ListModel {
+        id: scoreList
+        ListElement {
+            game: ""
+            player: ""
+            win: 0
+            lost: 0
+            draw: 0
         }
     }
 
@@ -1972,7 +2305,7 @@ ApplicationWindow {
         running: true
 
         onTriggered: {
-           checkXChatSignal();
+            checkXChatSignal();
         }
     }
 

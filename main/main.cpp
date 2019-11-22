@@ -170,11 +170,21 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(pingXChatServers()), &xchatRobot, SLOT(pingXchatServers()));
     QObject::connect(rootObject, SIGNAL(xChatReconnect()), &xchatRobot, SLOT(forcedReconnect()));
 
+    QObject::connect(rootObject, SIGNAL(sendGameToQueue(QString,QString,QString,QString)), &xchatRobot, SLOT(sendGameToQueue(QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(confirmGameSend(QString,QString,QString,QString,QString)), &xchatRobot, SLOT(confirmGameSend(QString,QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(sendGameInvite(QString,QString,QString,QString,QString)), &xchatRobot, SLOT(sendGameInvite(QString,QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(confirmGameInvite(QString,QString,QString,QString)), &xchatRobot, SLOT(confirmGameInvite(QString,QString,QString,QString)));
+
     // connect signals for TTT
+    QObject::connect(rootObject, SIGNAL(tttSetUsername(QString)), &tictactoe, SLOT(setUsername(QString)));
     QObject::connect(rootObject, SIGNAL(tttGetScore()), &tictactoe, SLOT(getScore()));
+    QObject::connect(rootObject, SIGNAL(tttResetScore(QString,QString,QString)), &tictactoe, SLOT(resetScore(QString,QString,QString)));
     QObject::connect(rootObject, SIGNAL(tttNewGame()), &tictactoe, SLOT(newGame()));
     QObject::connect(rootObject, SIGNAL(tttQuitGame()), &tictactoe, SLOT(quitGame()));
+    QObject::connect(rootObject, SIGNAL(tttGetMoveID(QString)), &tictactoe, SLOT(getMoveID(QString)));
     QObject::connect(rootObject, SIGNAL(tttButtonClicked(QString)), &tictactoe, SLOT(buttonClicked(QString)));
+    QObject::connect(rootObject, SIGNAL(tttNewMove(QString,QString)), &tictactoe, SLOT(newMove(QString,QString)));
+    QObject::connect(rootObject, SIGNAL(tttcreateGameId(QString,QString)), &tictactoe, SLOT(createGameID(QString,QString)));
 
     // Fetch currency values
     marketValue.findAllCurrencyValues();

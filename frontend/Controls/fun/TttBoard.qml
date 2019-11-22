@@ -33,7 +33,7 @@ Rectangle {
     property string wonGames: "0"
     property string lostGames: "0"
     property string drawedGames: "0"
-    property bool finished: false
+    property bool finished: tttFinished
     property string winner: ""
     property bool showResult: false
 
@@ -83,14 +83,98 @@ Rectangle {
         font.letterSpacing: 2
     }
 
+    Image {
+        id: onlineIndicator
+        source: networkAvailable == 1? (xChatConnection == true? "qrc:/icons/mobile/online_blue_icon.svg" : "qrc:/icons/mobile/online_red_icon.svg") : "qrc:/icons/mobile/no_internet_icon.svg"
+        anchors.verticalCenter: tttModalLabel.verticalCenter
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        width: 20
+        fillMode: Image.PreserveAspectFit
+    }
+
+    Label {
+        id: connectingLabel
+        text: "connecting"
+        anchors.horizontalCenter: onlineIndicator.horizontalCenter
+        anchors.top: onlineIndicator.bottom
+        anchors.topMargin: 5
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        font.pixelSize: 8
+        font.family: "Brandon Grotesque"
+        visible: xChatConnecting == true
+    }
+
+    Image {
+        id: xChatUsersButton
+        source: "qrc:/icons/mobile/users-icon_01.svg"
+        anchors.verticalCenter: tttModalLabel.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        height: 20
+        fillMode: Image.PreserveAspectFit
+
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            width: 30
+            height: 30
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    tttPlayerTracker = 1
+                }
+            }
+        }
+    }
+
+    Item {
+        id:opponentBox
+        width: opponentLabel.width + opponentName.width + 10
+        height: opponentLabel.height
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: tttModalLabel.bottom
+        anchors.topMargin: 20
+
+        Label {
+            id: opponentLabel
+            text: "PLAYING AGAINGST :"
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            font.pixelSize: 16
+            font.family: "Brandon Grotesque"
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        }
+
+        Label {
+            id: opponentName
+            text: tttCurrentGame == "computer"? "computer" : findOpponent(tttCurrentGame)
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            font.pixelSize: 16
+            font.family: "Brandon Grotesque"
+            font.capitalization: Font.AllUppercase
+            color: maincolor
+        }
+    }
+
+
     Rectangle {
         id: board
         width: parent.width - 46
         height: board.width
         color: "transparent"
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: tttModalLabel.bottom
-        anchors.topMargin: 20
+        anchors.top: opponentBox.bottom
+        anchors.topMargin: 10
 
         Fun.TttGrid {
             id: myTttGrid
@@ -149,6 +233,7 @@ Rectangle {
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: tttCurrentGame == "computer"
     }
 
     Rectangle {
@@ -161,6 +246,7 @@ Rectangle {
         anchors.topMargin: 10
         border.width: 1
         border.color: maincolor
+        visible: tttCurrentGame == "computer"
 
         Item {
             id: wonBox
@@ -375,7 +461,7 @@ Rectangle {
         target: tictactoe
 
         onGameFinished: {
-            for (var i = 0; i < buttonList.count; i ++) {
+            for (var i = 0; i < tttButtonList.count; i ++) {
                 winner = result
                 showResult = true
                 resultTimer.start()
@@ -383,25 +469,49 @@ Rectangle {
                 wonGames = win
                 lostGames = loose
                 drawedGames = draw
+                if(result === "win") {
+                    updateScore(tttCurrentGame, findOpponent(tttCurrentGame), 1, 0, 0)
+                }
+                else if (result === "loose") {
+                    updateScore(tttCurrentGame, findOpponent(tttCurrentGame), 0, 1, 0)
+                }
+                else if (result === "draw") {
+                    updateScore(tttCurrentGame, findOpponent(tttCurrentGame), 0, 0, 1)
+                }
             }
         }
 
         onPlayersChoice: {
             console.log("player's choice: " + btn1)
-            for (var i = 0; i < buttonList.count; i ++) {
-                if (buttonList.get(i).number === btn1) {
-                    buttonList.setProperty(i, "player", "me")
-                    buttonList.setProperty(i, "played", true)
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                if (tttButtonList.get(i).number === btn1) {
+                    tttButtonList.setProperty(i, "player", myUsername)
+                    tttButtonList.setProperty(i, "played", true)
+                }
+            }
+        }
+
+        onOpponentsChoice: {
+            console.log("player's choice: " + btn1)
+            var opponent = findOpponent(tttCurrentGame)
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                if (tttButtonList.get(i).number === btn1) {
+                    tttButtonList.setProperty(i, "player", opponent)
+                    tttButtonList.setProperty(i, "played", true)
                 }
             }
         }
 
         onComputersChoice: {
             console.log("computer's choice: " + btn2)
-            for (var i = 0; i < buttonList.count; i ++) {
-                if (buttonList.get(i).number === btn2) {
-                    buttonList.setProperty(i, "player", "pc")
-                    buttonList.setProperty(i, "played", true)
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                if (tttButtonList.get(i).number === btn2) {
+                    tttButtonList.setProperty(i, "player", "pc")
+                    tttButtonList.setProperty(i, "played", true)
+                    if (tttCurrentGame === "computer") {
+                        checkIfMoveExists("ttt", "computer", "computer", btn2, moveID)
+                        confirmMove("computer", "ttt", "computer", btn2, moveID)
+                    }
                 }
             }
         }
@@ -410,9 +520,17 @@ Rectangle {
         }
 
         onClearBoard: {
-            for (var i = 0; i < buttonList.count; i ++) {
-                buttonList.setProperty(i, "played", false)
-                buttonList.setProperty(i, "player", "")
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                tttButtonList.setProperty(i, "played", false)
+                tttButtonList.setProperty(i, "player", "")
+                tttButtonList.setProperty(i, "confirmed", false)
+            }
+            if (tttCurrentGame === "computer") {
+                for (var i = 0; i < movesList.count; i ++) {
+                    if (movesList.get(i).game === "ttt" && movesList.get(i).gameID === "computer") {
+                        movesList.remove(i)
+                    }
+                }
             }
         }
 
@@ -420,6 +538,25 @@ Rectangle {
             wonGames = win
             lostGames = loose
             drawedGames = draw
+        }
+
+        onNewGameID: {
+            var gameIDArray = gameID.split(':')
+            var opponent = gameIDArray[1]
+            gamesList.append({"game": "ttt", "gameID": gameID, "invited": false, "accepted": false, "finished": false})
+            sendGameInvite(myUsername, opponent, "ttt", gameID)
+            inviteSent("ttt", gameID)
+        }
+
+        onNewMoveID: {
+            console.log("new moveID received: " + moveID)
+            checkIfMoveExists("ttt", "computer", myUsername, move, moveID)
+            tttButtonClicked(move)
+            confirmMove(myUsername, "ttt", "computer", btn1, moveID)
+        }
+
+        onYourTurn: {
+            tttYourTurn = turn
         }
     }
 

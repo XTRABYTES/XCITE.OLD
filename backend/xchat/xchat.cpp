@@ -90,13 +90,135 @@ void XchatObject::messageRoute(QString message){
     case const_hash("sendToFront"):
         sendToFront(obj);
         break;
+    case const_hash("sendToGame"):
+        sendToGame(obj);
+        break;
+    case const_hash("confirmGameReceived"):
+        confirmGameReceived(obj);
+        break;
+    case const_hash("receiveGameInvite"):
+        receiveGameInvite(obj);
+        break;
+    case const_hash("receiveGameInviteResponse"):
+        receiveGameInviteResponse(obj);
+        break;
     default:
         qDebug() << "No Route Found";
         break;
     }
-
-
 }
+
+void XchatObject::sendGameToQueue(const QString user, QString game, QString gameID, QString move) {
+    if (mqtt_client->state() == QMqttClient::Connected) {
+        qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+        QString moveID = QString::number(timeStamp);
+        QJsonObject obj;
+        obj.insert("player", user);
+        obj.insert("route","sendToGame");
+        obj.insert("game", game);
+        obj.insert("gameID", gameID);
+        obj.insert("move",move);
+        obj.insert("moveID", moveID);
+        QJsonDocument doc(obj);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        mqtt_client->publish(topic, strJson.toUtf8());
+    }
+    else {
+        emit gameCommandFailed();
+    }
+}
+
+void XchatObject::sendToGame(QJsonObject obj) {
+    QString player = obj.value("player").toString();
+    QString game = obj.value("game").toString();
+    QString gameID = obj.value("gameID").toString();
+    QString move = obj.value("move").toString();
+    QString moveID = obj.value("moveID").toString();
+
+    emit newMoveReceived(player, game, gameID, move, moveID);
+}
+
+void XchatObject::confirmGameSend(const QString user, QString game, QString gameID, QString move, QString moveID) {
+    if (mqtt_client->state() == QMqttClient::Connected) {
+        QJsonObject obj;
+        obj.insert("player", user);
+        obj.insert("route","confirmGameReceived");
+        obj.insert("game", game);
+        obj.insert("gameID", gameID);
+        obj.insert("move",move);
+        obj.insert("moveID", moveID);
+        QJsonDocument doc(obj);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        mqtt_client->publish(topic, strJson.toUtf8());
+    }
+    else {
+        emit gameCommandFailed();
+    }
+}
+
+void XchatObject::confirmGameReceived(QJsonObject obj) {
+    QString player = obj.value("player").toString();
+    QString game = obj.value("game").toString();
+    QString gameID = obj.value("gameID").toString();
+    QString move = obj.value("move").toString();
+    QString moveID = obj.value("moveID").toString();
+
+    emit newMoveConfirmed(player, game, gameID, move, moveID);
+}
+
+void XchatObject::sendGameInvite(const QString user, QString opponent, QString game, QString gameID) {
+    if (mqtt_client->state() == QMqttClient::Connected) {
+        QJsonObject obj;
+        obj.insert("player1", user);
+        obj.insert("player2", opponent);
+        obj.insert("route","receiveGameInvite");
+        obj.insert("game", game);
+        obj.insert("gameID", gameID);
+        QJsonDocument doc(obj);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        mqtt_client->publish(topic, strJson.toUtf8());
+    }
+    else {
+        emit gameCommandFailed();
+    }
+}
+
+void XchatObject::receiveGameInvite(QJsonObject obj) {
+    QString opponent = obj.value("player1").toString();
+    QString user = obj.value("player2").toString();
+    QString game = obj.value("game").toString();
+    QString gameID = obj.value("gameID").toString();
+
+    emit newGameInvite(user, opponent, game, gameID);
+}
+
+void XchatObject::confirmGameInvite(const QString user, QString opponent, QString game, QString gameID, QString accept) {
+    if (mqtt_client->state() == QMqttClient::Connected) {
+        QJsonObject obj;
+        obj.insert("username", user);
+        obj.insert("opponent", opponent);
+        obj.insert("route","receiveGameInviteResponse");
+        obj.insert("game", game);
+        obj.insert("gameID", gameID);
+        obj.insert("accept", accept);
+        QJsonDocument doc(obj);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        mqtt_client->publish(topic, strJson.toUtf8());
+    }
+    else {
+        emit gameCommandFailed();
+    }
+}
+
+void XchatObject::receiveGameInviteResponse(QJsonObject obj) {
+    QString user = obj.value("username").toString();
+    QString game = obj.value("game").toString();
+    QString gameID = obj.value("gameID").toString();
+    QString accept = obj.value("accept").toString();
+
+    emit responseGameInvite(user, game, gameID, accept);
+}
+
 void XchatObject::xchatInc(const QString &user, QString platform, QString status, QString message, QString webLink, QString image, QString quote) {
     if (!message.isEmpty() && mqtt_client->state() == QMqttClient::Connected) {
         qDebug() << "link: " + webLink + ", image: " + image + ", quote: " + quote;

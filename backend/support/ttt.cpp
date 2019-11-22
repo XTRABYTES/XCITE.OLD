@@ -3,14 +3,33 @@
 #include <cstdint>
 #include <cstring>
 #include <set>
+#include <QtNetwork>
 
 Ttt::Ttt(QObject *parent) :
     QObject(parent)
 {
 }
 
-bool Ttt::check_win()
-{
+void Ttt::setUsername(QString username) {
+    me = username;
+}
+
+void Ttt::getMoveID(QString move) {
+    qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+    QString moveID = QString::number(timeStamp);
+    emit newMoveID(move, moveID);
+}
+
+void Ttt::resetScore(QString wn, QString lst, QString drw) {
+    int scoreWin = wn.toInt();
+    int scoreLost = lst.toInt();
+    int scoreDraw = drw.toInt();
+    win = scoreWin;
+    loose = scoreLost;
+    draw = scoreDraw;
+}
+
+bool Ttt::check_win() {
     int score = evaluate();
     QString won = QString::number(win);
     QString lost = QString::number(loose);
@@ -33,12 +52,31 @@ bool Ttt::check_win()
         emit gameFinished("draw", won, lost, drawed);
         return true;
     }
-
     return false;
 }
 
-void Ttt::buttonClicked(QString btn)
-{
+// player vs player
+void Ttt::newMove(QString player, QString btn) {
+    QString button = btn;
+    int number = btn.toInt();
+    auto coord = get_coordinates(number);
+    emit blockButton(button);
+    if(player == me) {
+        emit playersChoice(button);
+        board[coord.first][coord.second] = 'o';
+        emit yourTurn(false);
+    }
+    else {
+        emit opponentsChoice(button);
+        board[coord.first][coord.second] = 'x';
+        emit yourTurn(true);
+    }
+    if(check_win()){
+    }
+}
+
+// player vs PC
+void Ttt::buttonClicked(QString btn) {
     // Your turn
     QString button1 = btn;
     emit blockButton(button1);
@@ -51,6 +89,8 @@ void Ttt::buttonClicked(QString btn)
     }
 
     // Computer turn
+    qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+    QString moveID = QString::number(timeStamp);
     auto best = find_best_move();
     board[best.first][best.second] = 'x';
     //auto cell = best.first*3 + best.second + 1; // convert (x,y) coord to btn number
@@ -58,32 +98,29 @@ void Ttt::buttonClicked(QString btn)
     qint16 cell = best.first*3 + best.second + 1;
     QString button2 = QString::number(cell);
     emit blockButton(button2);
-    emit computersChoice(button2);
+    emit computersChoice(button2, moveID);
         //button2->setEnabled(false);
         //button2->setIcon(x_icon);
     if (check_win()) {
     }
 }
 
-inline std::pair<int,int> Ttt::get_coordinates(int val)
-{ // returns (row, col) coordinate of given cell
+// get coordinates for buttons
+inline std::pair<int,int> Ttt::get_coordinates(int val) { // returns (row, col) coordinate of given cell
     if (val < 1 || val > 9) throw std::runtime_error("");
     return std::pair<int,int> ((val-1)/3, (val-1)%3);
 }
 
-inline bool Ttt::has_moves_left()
-{
+inline bool Ttt::has_moves_left() {
     for (auto& row: board)
         for (auto& cell: row)
             if (cell == ' ')
                 return true;
-
     return false;
 }
 
 // This is the evaluation function
-int Ttt::evaluate()
-{
+int Ttt::evaluate() {
     // Checking for Rows for X or O victory.
     for (decltype(board)::size_type row = 0; row<board.size(); ++row)
     {
@@ -97,7 +134,6 @@ int Ttt::evaluate()
                 return -10;
         }
     }
-
     // Checking for Columns for X or O victory.
     for (decltype(board)::size_type col = 0; col<board.size(); ++col)
     {
@@ -111,7 +147,6 @@ int Ttt::evaluate()
                 return -10;
         }
     }
-
     // Checking for Diagonals for X or O victory.
     if (board[0][0]==board[1][1] && board[1][1]==board[2][2])
     {
@@ -128,7 +163,6 @@ int Ttt::evaluate()
         else if (board[0][2]=='o')
             return -10;
     }
-
     // Else if none of them have won then return 0
     return 0;
 }
@@ -136,20 +170,16 @@ int Ttt::evaluate()
 // This is the minimax function. It considers all
 // the possible ways the game can go and returns
 // the value of the board
-int Ttt::minimax(int depth, bool isMax)
-{
+int Ttt::minimax(int depth, bool isMax) {
     int score = evaluate();
-
     // If Maximizer has won the game return his/her
     // evaluated score minus depth (to make it smarter)
     if (score == 10)
         return score - depth;
-
     // If Minimizer has won the game return his/her
     // evaluated score plus depth (to make it smarter)
     if (score == -10)
         return score + depth;
-
     // If there are no more moves and no winner then
     // it is a tie
     if (!has_moves_left())
@@ -159,7 +189,6 @@ int Ttt::minimax(int depth, bool isMax)
     if (isMax)
     {
         int best = -1000;
-
         // Traverse all cells
         for (decltype(board)::size_type i = 0; i<board.size(); ++i) {
             for (decltype(i) j = 0; j<board[0].size(); ++j) {
@@ -179,12 +208,10 @@ int Ttt::minimax(int depth, bool isMax)
         }
         return best;
     }
-
     // If this minimizer's move
     else
     {
         int best = 1000;
-
         // Traverse all cells
         for (decltype(board)::size_type i = 0; i<board.size(); ++i) {
             for (decltype(i) j = 0; j<board[0].size(); ++j) {
@@ -206,10 +233,8 @@ int Ttt::minimax(int depth, bool isMax)
     }
 }
 
-std::pair<int,int> Ttt::find_best_move()
-{
+std::pair<int,int> Ttt::find_best_move() {
     int bestVal = -1000, row = -1, col = -1;
-
     // Traverse all cells, evalutae minimax function for
     // all empty cells. And return the cell with optimal
     // value.
@@ -238,30 +263,35 @@ std::pair<int,int> Ttt::find_best_move()
             }
         }
     }
-
     return std::pair<int,int>(row, col);
 }
 
-void Ttt::newGame()
-{
+void Ttt::newGame() {
     for (auto& row: board)
         for (auto& cell: row)
             cell = ' ';
     emit clearBoard();
 }
 
-void Ttt::quitGame()
-{
+void Ttt::quitGame() {
     for (auto& row: board)
         for (auto& cell: row)
             cell = ' ';
     emit clearBoard();
 }
 
-void Ttt::getScore()
-{
+void Ttt::getScore() {
     QString won = QString::number(win);
     QString lost = QString::number(loose);
     QString drawed = QString::number(draw);
     emit scoreBoard(won, lost, drawed);
+}
+
+void Ttt::createGameID(QString user, QString opponent) {
+    QString player1 = user;
+    QString player2 = opponent;
+    qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+    QString identifier = QString::number(timeStamp);
+    QString gameID = player1 + ":" + player2 + ":" + identifier;
+    emit newGameID(gameID);
 }
