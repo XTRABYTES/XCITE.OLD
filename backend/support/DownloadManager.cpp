@@ -49,16 +49,16 @@ void DownloadManager::doDownload(){
 
     }
 
-  //  QTimer *timeout = new QTimer(reply);
-//    timeout->setProperty("count",count);
-//    timeout->start(10000);
+    QTimer timeout;
+    timeout.setSingleShot(true);
+    timeout.start(6000);
 
     reply->setProperty("properties",url->getProperties());
 
        connect(reply, SIGNAL(finished()),this,SLOT(downloadFinished()),Qt::QueuedConnection);
 
-   //  connect(reply, SIGNAL(finished()),timeout,SLOT(stop()),Qt::QueuedConnection);
- //    connect(timeout, SIGNAL(timeout()), reply, SLOT(abort()),Qt::QueuedConnection); //connect reply to this to abort in handleTimeout
+     connect(reply, SIGNAL(finished()),&timeout,SLOT(stop()),Qt::QueuedConnection);
+     connect(&timeout, SIGNAL(timeout()), reply, SLOT(abort()),Qt::QueuedConnection); //connect reply to this to abort in handleTimeout
 
 
 #if QT_CONFIG(ssl)
