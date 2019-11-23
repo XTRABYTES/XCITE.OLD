@@ -10,13 +10,35 @@
  *
  */
 
-#include <QEventLoop>
 #include <QTimer>
 #include <QSettings>
 #include "MarketValue.hpp"
 
 MarketValue::MarketValue(QObject *parent) : QObject(parent)
 {
+}
+
+void MarketValue::DownloadManagerHandler(URLObject *url){
+
+    DownloadManager *manager = manager->getInstance();
+    url->addProperty("url",url->getUrl());
+    url->addProperty("class","MarketValue");
+
+    manager->append(url);
+    connect(manager,  SIGNAL(readFinished(QByteArray,QMap<QString,QVariant>)), this,SLOT(DownloadManagerRouter(QByteArray,QMap<QString,QVariant>)),Qt::UniqueConnection);
+}
+
+void MarketValue::DownloadManagerRouter(QByteArray response, QMap<QString,QVariant> props){
+
+    if (props.value("class").toString() == "MarketValue"){
+
+        QString route = props.value("route").toString();
+        if (route == "findCurrencyValueSlot"){
+               findCurrencyValueSlot(response, props);
+        }else if (route == "checkInternetSlot"){
+            checkInternetSlot(response,props);
+        }
+    }
 }
 
 void MarketValue::findCurrencyValue(QString currency) {
@@ -26,42 +48,26 @@ void MarketValue::findCurrencyValue(QString currency) {
     Url.setPort(8080);
     Url.setPath("/v1/marketvalue/" + currency);
 
-    QNetworkRequest request;
-    request.setUrl(Url);
-
-    QNetworkAccessManager *restclient;
-    restclient = new QNetworkAccessManager(this);
-    request.setRawHeader("Accept", "application/json");
-
-    QNetworkReply *reply = restclient->get(request);
-    QByteArray bytes = reply->readAll();
-    QTimer getTimer; // let's use a 10 second period for timing out the GET opn
-
-
-    QEventLoop loop;
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-    QObject::connect(restclient, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
-
-    getTimer.start(2000); // 10000 milliSeconds wait period for get() method to work properly
-
-    loop.exec();
-
-    QString currencyValue = QString::fromStdString(reply->readAll().toStdString());
-    if (!currencyValue.isNull() && !currencyValue.isEmpty()){
-        currencyValue.remove(0, 1).chop(2);
-        setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
-        qDebug() << currency + ":" + currencyValue;
-    }
-
-    reply->close();
-    delete reply;
+    URLObject urlObj {Url};
+    urlObj.addProperty("route","findCurrencyValueSlot");
+    urlObj.addProperty("currency",currency);
+    DownloadManagerHandler(&urlObj);
 
 }
 
+void MarketValue::findCurrencyValueSlot(QByteArray response, QMap<QString,QVariant> props){
+    QString currencyValue = QString::fromStdString(response.toStdString());
+    QString currency = props.value("currency").toString();
+    if (!currencyValue.isNull() && !currencyValue.isEmpty()){
+        currencyValue.remove(0, 1).chop(2);
+       // setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
+        emit marketValueChanged(currency, currencyValue);
+        qDebug() << currency + ":" + currencyValue;
+    }
+}
+
 void MarketValue::findAllCurrencyValues(){
-    if (checkInternet("37.59.57.212")) {
+    if (checkInternet("http://37.59.57.212:8080")) {
         findCurrencyValue("btcusd");
         findCurrencyValue("btceur");
         findCurrencyValue("btcgbp");
@@ -88,26 +94,31 @@ void MarketValue::setMarketValue(const QString &check, const QString &currency, 
 }
 
 bool MarketValue::checkInternet(QString url){
-    bool connected = false;
-    QNetworkAccessManager nam;
-    QNetworkRequest req(QUrl("http://" + url));
-    QNetworkReply* reply = nam.get(req);
+    bool internetStatus = false;
+
     QEventLoop loop;
-    QTimer getTimer;
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
+        QTimer timeout;
+        timeout.setSingleShot(true);
+        timeout.start(6000);
+        connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
+        auto connectionHandler = connect(this, &MarketValue::internetStatusSignal, [&internetStatus, &loop](bool checked) {
+            internetStatus = checked;
+            loop.quit();
 
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    getTimer.start(4000);
+        });
+        URLObject urlObj {QUrl(url)};
+        urlObj.addProperty("route","checkInternetSlot");
+        DownloadManagerHandler(&urlObj);
     loop.exec();
-    if (reply->bytesAvailable()){
-        connected=true;
+    disconnect(connectionHandler);
+
+    return internetStatus;
+}
+
+void MarketValue::checkInternetSlot(QByteArray response, QMap<QString,QVariant> props){
+    if (response != ""){
+       emit internetStatusSignal(true);
     }else{
+        emit internetStatusSignal(false);
     }
-
-    reply->close();
-    delete reply;
-
-    return connected;
-
 }

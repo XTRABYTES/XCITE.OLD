@@ -463,80 +463,17 @@ void XchatObject::sendOnlineUsers(){
     emit onlineUsersSignal(onlineString);
 }
 
-
-bool XchatObject::checkInternet(QString url){
+void XchatObject::getOnlineNodes(){
     cleanTypingList();
     cleanOnlineList();
-    bool connected = false;
-    QNetworkAccessManager nam;
-    QNetworkRequest req(QUrl("https://" + url));
-    QNetworkReply* reply = nam.get(req);
-    QEventLoop loop;
-    QTimer getTimer;
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
-
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    getTimer.start(4000);
-    loop.exec();
-    if (reply->bytesAvailable()){
-        emit xchatInternetOk();
-        connected=true;
-    }else{
-        emit xchatConnectionFail();
-        emit xchatNoInternet();
-    }
-
-    reply->close();
-    delete reply;
-
-    return connected;
-
-}
-
-void XchatObject::getOnlineNodes(){
     for(QString server : servers){
         QNetworkAccessManager nam;
         QUrl url("http://" + server + ":15672/api/nodes");
         url.setUserName("xchat");
         url.setPassword("xtrabytes");
-        QNetworkRequest req(url);
-        QNetworkReply* reply = nam.get(req);
-        QEventLoop loop;
-        QTimer getTimer;
-        QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-        getTimer.start(4000);
-        loop.exec();
-        if (reply->bytesAvailable()){
-            QByteArray replyBytes = reply->readAll();
-            QJsonDocument doc = QJsonDocument::fromJson(replyBytes);
-            QJsonArray array = doc.array();
-            foreach (const QJsonValue & value, array) {
-
-                QJsonObject obj = value.toObject();
-                if (obj.value("running").toBool()){
-                    nodesOnline.insert(obj.value("name").toString(),"");
-                }
-            }
-            foreach (const QJsonValue & value1, array) {
-                QJsonObject obj = value1.toObject();
-                if (!obj.value("cluster_links").toArray().isEmpty()){
-                    QJsonArray cluster_links = obj.value("cluster_links").toArray();
-                    foreach (const QJsonValue & value2, cluster_links) {
-                        QJsonObject obj2 = value2.toObject();
-                        if (nodesOnline.contains(obj2.value("name").toString())){
-                            nodesOnline.insert(obj2.value("name").toString(),obj2.value("peer_addr").toString());
-                        }
-                    }
-                }
-            }
-        }
-        else {
-            emit xchatNoInternet();
-        }
-        reply->close();
-        delete reply;
+        URLObject urlObj {QUrl(url)};
+        urlObj.addProperty("route","getOnlineNodesSlot");
+        DownloadManagerHandler(&urlObj);
     }
 }
 
@@ -633,4 +570,64 @@ QString XchatObject::findServer(){
 }
 
 
+void XchatObject::DownloadManagerHandler(URLObject *url){
+    DownloadManager *manager = manager->getInstance();
+    url->addProperty("url",url->getUrl());
+    url->addProperty("class","xchat");
+    manager->append(url);
+    connect(manager,  SIGNAL(readTimeout(QMap<QString,QVariant>)),this,SLOT(internetTimeout(QMap<QString,QVariant>)),Qt::UniqueConnection);
+
+    connect(manager,  SIGNAL(readFinished(QByteArray,QMap<QString,QVariant>)), this,SLOT(DownloadManagerRouter(QByteArray,QMap<QString,QVariant>)),Qt::UniqueConnection);
+
+
+}
+
+
+void XchatObject::internetTimeout(QMap<QString,QVariant> props){
+
+    if (props.value("class").toString() == "xchat"){
+        internetActive = false;
+        qDebug() << "timeout caught in xchat";
+        emit xchatNoInternet();
+
+    }
+}
+void XchatObject::DownloadManagerRouter(QByteArray response, QMap<QString,QVariant> props){
+    internetActive = true;
+    emit xchatInternetOk();
+
+    if (props.value("class").toString() == "xchat"){
+        QString route = props.value("route").toString();
+
+            if (route == "getOnlineNodesSlot"){
+                   getOnlineNodesSlot(response,props);
+             }
+
+    }
+}
+
+
+void XchatObject::getOnlineNodesSlot(QByteArray response, QMap<QString,QVariant> props){
+    QJsonDocument doc = QJsonDocument::fromJson(response);
+    QJsonArray array = doc.array();
+    foreach (const QJsonValue & value, array) {
+
+        QJsonObject obj = value.toObject();
+        if (obj.value("running").toBool()){
+            nodesOnline.insert(obj.value("name").toString(),"");
+        }
+    }
+    foreach (const QJsonValue & value1, array) {
+        QJsonObject obj = value1.toObject();
+        if (!obj.value("cluster_links").toArray().isEmpty()){
+            QJsonArray cluster_links = obj.value("cluster_links").toArray();
+            foreach (const QJsonValue & value2, cluster_links) {
+                QJsonObject obj2 = value2.toObject();
+                if (nodesOnline.contains(obj2.value("name").toString())){
+                    nodesOnline.insert(obj2.value("name").toString(),obj2.value("peer_addr").toString());
+                }
+            }
+        }
+    }
+}
 
