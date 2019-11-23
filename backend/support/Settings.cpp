@@ -122,6 +122,7 @@ bool Settings::UserExists(QString username){
             timeout.deleteLater();
         loop.exec();
         disconnect(connectionHandler);
+        qDebug() << "User exists? " + QString::number(userExists);
         return userExists;
     }
     else {
@@ -177,125 +178,129 @@ void Settings::CreateUser(QString username, QString password){
 
         emit checkUsername();
         if(UserExists(username)){
+            qDebug() << "User exists pre create check";
+
             return;
         }else{
 
-//            QVariantMap settings;
-//            settings.insert("app","xtrabytes");
-//            m_settings->setValue("app","xtrabytes");
+            QVariantMap settings;
+            settings.insert("app","xtrabytes");
+            m_settings->setValue("app","xtrabytes");
 
-//            emit createUniqueKeyPair();
-//            // Create Pub/Priv RSA Key
-//            keyPair = createKeyPair();
-//            QByteArray pubKey = keyPair.first;
-//            QByteArray privKey = keyPair.second;
+            emit createUniqueKeyPair();
+            // Create Pub/Priv RSA Key
+            keyPair = createKeyPair();
+            QByteArray pubKey = keyPair.first;
+            QByteArray privKey = keyPair.second;
 
-//            int padding = RSA_PKCS1_OAEP_PADDING;
-//            unsigned char decrypted[32];
+            int padding = RSA_PKCS1_OAEP_PADDING;
+            unsigned char decrypted[32];
 
-//            QString pubKeyString = QString::fromLatin1(pubKey,pubKey.size());
-//            QVariantMap feed1;
-//            feed1.insert("pubKey", pubKeyString);
-//            feed1.insert("username",username);
+            QString pubKeyString = QString::fromLatin1(pubKey,pubKey.size());
+            QVariantMap feed1;
+            feed1.insert("pubKey", pubKeyString);
+            feed1.insert("username",username);
 
-//            QByteArray payload =  QJsonDocument::fromVariant(feed1).toJson(QJsonDocument::Compact);
-//            payload = payload.toBase64();
+            QByteArray payload =  QJsonDocument::fromVariant(feed1).toJson(QJsonDocument::Compact);
+            payload = payload.toBase64();
 
-//            //  Send Pub Key to API.  Response contains backend AES key + iv
-//            QString response2 = RestAPIPostCall("/v1/createKeyPair", payload);
-//            if (response2.isEmpty()){
-//                return;
-//            }
+            //  Send Pub Key to API.  Response contains backend AES key + iv
+            QString response2 = RestAPIPostCall("/v1/createKeyPair", payload);
+            if (response2.isEmpty()){
+                return;
+            }
 
-//            QJsonDocument jsonResponse = QJsonDocument::fromJson(response2.toLatin1());
-//            QJsonValue encryptedText = jsonResponse.object().value("aeskey");
-//            QByteArray aeskeyEncrypted = encryptedText.toString().toLatin1();
+            QJsonDocument jsonResponse = QJsonDocument::fromJson(response2.toLatin1());
+            QJsonValue encryptedText = jsonResponse.object().value("aeskey");
+            QByteArray aeskeyEncrypted = encryptedText.toString().toLatin1();
 
-//            emit receiveSessionEncryptionKey();
-//            // Get IV from API to use in future encryptions
-//            QJsonValue ivValue = jsonResponse.object().value("iv");
-//            QByteArray iv = ivValue.toString().toLatin1();
+            emit receiveSessionEncryptionKey();
+            // Get IV from API to use in future encryptions
+            QJsonValue ivValue = jsonResponse.object().value("iv");
+            QByteArray iv = ivValue.toString().toLatin1();
 
-//            const std::size_t aesKeySize = aeskeyEncrypted.size();
-//            unsigned char* encrypted = new unsigned char[aesKeySize];
-//            std::memcpy(encrypted,aeskeyEncrypted.constData(),aesKeySize);
-//            unsigned char* privKey2 = new unsigned char[privKey.size()];
-//            std::memcpy(privKey2,privKey.data(),privKey.size());
-//            RSA * privRSAKey = createRSA(privKey2,0);
-
-
-//            // Decrypt AES key using local private key. Stores it to backendKey
-//            int  decryptedSize = RSA_private_decrypt(aesKeySize,encrypted,backendKey,privRSAKey,padding);
-//            qDebug() << decryptedSize;
-
-//            emit saveAccountSettings();
-//            // Save iv data to local storage
-//            std::memcpy(iiiv,iv.constData(),iv.size());
-
-//            /* Message to be encrypted */
-//            QString randNum = createRandNum();
-
-//            // Encrypt randNumber with password
-//            QByteArray encodedRandNr = encryption.encode(randNum.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
-//            QString encodedRandNrStr = QString::fromLatin1(encodedRandNr, encodedRandNr.length());
-
-//            // Encrypt randNum with backend AES key
-//            std::pair<int, QByteArray> cipher = encryptAes(randNum, backendKey, iiiv);
-
-//            cipher.second = cipher.second.toBase64();
-
-//            QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
-
-//            QByteArray encodedText = encryption.encode(settingsByte, (password + "xtrabytesxtrabytes").toLatin1());
-//            QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
-
-//            QVariantMap feed2;
-//            feed2.insert("encrypted", cipher.second);
-//            feed2.insert("randNumPass", encodedRandNrStr);
-//            feed2.insert("randNum", randNum);
-//            feed2.insert("username", username);
-//            feed2.insert("settings", DataAsString);
+            const std::size_t aesKeySize = aeskeyEncrypted.size();
+            unsigned char* encrypted = new unsigned char[aesKeySize];
+            std::memcpy(encrypted,aeskeyEncrypted.constData(),aesKeySize);
+            unsigned char* privKey2 = new unsigned char[privKey.size()];
+            std::memcpy(privKey2,privKey.data(),privKey.size());
+            RSA * privRSAKey = createRSA(privKey2,0);
 
 
-//            QByteArray payload3 =  QJsonDocument::fromVariant(feed2).toJson(QJsonDocument::Compact);
-//            payload3 = payload3.toBase64();
+            // Decrypt AES key using local private key. Stores it to backendKey
+            int  decryptedSize = RSA_private_decrypt(aesKeySize,encrypted,backendKey,privRSAKey,padding);
+            qDebug() << decryptedSize;
 
-//            // Send encrypted rand number + settings.  Backend checks randNum and saves settings.  Returns encrypted sessionId
-//            QString response3 = RestAPIPostCall("/v1/decryptAES", payload3);
-//            if (response3.isEmpty()){
-//                return;
-//            }
+            emit saveAccountSettings();
+            // Save iv data to local storage
+            std::memcpy(iiiv,iv.constData(),iv.size());
 
-//            emit receiveSessionID();
-//            QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
-//            QJsonValue encryptedText2 = jsonResponse2.object().value("sessionId");
-//            QByteArray sessionIdEncrypted = encryptedText2.toString().toLatin1();
+            /* Message to be encrypted */
+            QString randNum = createRandNum();
 
-//            const std::size_t sessionIdSize = sessionIdEncrypted.size();
-//            unsigned char* encryptedSess = new unsigned char[sessionIdSize];
-//            std::memcpy(encryptedSess,sessionIdEncrypted.constData(),sessionIdSize);
+            // Encrypt randNumber with password
+            QByteArray encodedRandNr = encryption.encode(randNum.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
+            QString encodedRandNrStr = QString::fromLatin1(encodedRandNr, encodedRandNr.length());
 
-//            // Decrypt session Id using local RSA keys
-//            int  decryptedSize2 = RSA_private_decrypt(sessionIdSize,encryptedSess,decrypted,privRSAKey,padding);
+            // Encrypt randNum with backend AES key
+            std::pair<int, QByteArray> cipher = encryptAes(randNum, backendKey, iiiv);
 
-//            QByteArray sessionIdBa;
-//            sessionIdBa = QByteArray(reinterpret_cast<char*>(decrypted), decryptedSize2);
-//            sessionId = QString::fromLatin1(sessionIdBa, sessionIdBa.size());
+            cipher.second = cipher.second.toBase64();
+
+            QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
+
+            QByteArray encodedText = encryption.encode(settingsByte, (password + "xtrabytesxtrabytes").toLatin1());
+            QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
+
+            QVariantMap feed2;
+            feed2.insert("encrypted", cipher.second);
+            feed2.insert("randNumPass", encodedRandNrStr);
+            feed2.insert("randNum", randNum);
+            feed2.insert("username", username);
+            feed2.insert("settings", DataAsString);
 
 
-//            if (UserExists(username)){
-//                m_username = username;
-//                m_password = password;
-//                emit userCreationSucceeded();
+            QByteArray payload3 =  QJsonDocument::fromVariant(feed2).toJson(QJsonDocument::Compact);
+            payload3 = payload3.toBase64();
 
-//            }else{
-//                emit userCreationFailed();
-//            }
+            // Send encrypted rand number + settings.  Backend checks randNum and saves settings.  Returns encrypted sessionId
+            QString response3 = RestAPIPostCall("/v1/decryptAES", payload3);
+            if (response3.isEmpty()){
+                return;
+            }
 
-//            delete [] encrypted;
-//            delete [] privKey2;
-//        }
-    }
+            emit receiveSessionID();
+            QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
+            QJsonValue encryptedText2 = jsonResponse2.object().value("sessionId");
+            QByteArray sessionIdEncrypted = encryptedText2.toString().toLatin1();
+
+            const std::size_t sessionIdSize = sessionIdEncrypted.size();
+            unsigned char* encryptedSess = new unsigned char[sessionIdSize];
+            std::memcpy(encryptedSess,sessionIdEncrypted.constData(),sessionIdSize);
+
+            // Decrypt session Id using local RSA keys
+            int  decryptedSize2 = RSA_private_decrypt(sessionIdSize,encryptedSess,decrypted,privRSAKey,padding);
+
+            QByteArray sessionIdBa;
+            sessionIdBa = QByteArray(reinterpret_cast<char*>(decrypted), decryptedSize2);
+            sessionId = QString::fromLatin1(sessionIdBa, sessionIdBa.size());
+
+
+            if (UserExists(username)){
+                qDebug() << "User exists post create check";
+
+                m_username = username;
+                m_password = password;
+                emit userCreationSucceeded();
+
+            }else{
+                emit userCreationFailed();
+            }
+
+            delete [] encrypted;
+            delete [] privKey2;
+        }
+
     }
     else {
         qDebug() << "no connection to account server to create new user";
