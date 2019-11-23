@@ -11,6 +11,7 @@
  */
 
 #include "Settings.hpp"
+
 #include <openssl/pem.h>
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
@@ -22,6 +23,7 @@
 #include <cstring>
 #include <tuple>
 #include <QMessageBox>
+#include "DownloadManager.hpp"
 
 #ifdef Q_OS_ANDROID //added to get write permission for Android
 #include <QtAndroid>
@@ -99,19 +101,28 @@ void Settings::onClearAllSettings() {
 // Onboarding and login functions
 
 bool Settings::UserExists(QString username){
-    if(checkInternet("37.59.57.212")){
-        QUrlQuery queryString;
-        queryString.addQueryItem("userId", username);
-        QString url = "/v1/user/" + username;
+    if(checkInternet("http://37.59.57.212:8080")){
+        bool userExists = false;
 
-        QString userinfo = RestAPIGetCall(url);
-        if (userinfo != ""){
-            emit userAlreadyExists();
-            return true;
-        }else{
-            emit usernameAvailable();
-            return false;
-        }
+        QEventLoop loop;
+            QTimer timeout;
+            timeout.setSingleShot(true);
+            timeout.start(6000);
+            connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
+         auto connectionHandler =  connect(this, &Settings::userExistsSignal, [&userExists,&loop](bool checked) {
+                userExists = checked;
+                loop.quit();
+
+            });
+
+            QString url = "http://37.59.57.212:8080/v1/user/" + username;
+            URLObject urlObj {QUrl(url)};
+            urlObj.addProperty("route","userExistsSlot");
+            DownloadManagerHandler(&urlObj);
+            timeout.deleteLater();
+        loop.exec();
+        disconnect(connectionHandler);
+        return userExists;
     }
     else {
         qDebug() << "no connection to account server to check if user exists";
@@ -120,53 +131,47 @@ bool Settings::UserExists(QString username){
     }
 }
 
-QString Settings::RestAPIPostCall(QString apiURL, QByteArray payload){
+QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
     QString statusCode = "";
     QUrl Url;
     Url.setScheme("http");
     Url.setHost("37.59.57.212");
     Url.setPort(8080);
     Url.setPath(apiURL);
-    qDebug() << Url.toString();
 
-    QNetworkRequest request;
-    request.setUrl(Url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
-
-    QNetworkAccessManager *restclient;
-    restclient = new QNetworkAccessManager(this);
-    QNetworkReply *reply = restclient->post(request, payload);
+    bool success = false;
+    QString payload = "";
+    QObject context;
 
     QEventLoop loop;
-    QTimer getTimer;
+        QTimer timeout;
+        timeout.setSingleShot(true);
+        timeout.start(6000);
+        connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
+        auto connectionHandler = connect(this, &Settings::apiPostSignal, &context,[&payload, &success, &loop](bool status,QByteArray payloadIncoming) {
+            payload = QString(payloadIncoming);
+            success = status;
+            loop.quit();
+        });
 
-    getTimer.start(4000);
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-    QObject::connect(restclient, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+        URLObject urlObj {Url};
+        urlObj.addProperty("route","apiPostSlot");
+        urlObj.addProperty("POST",true);
+        urlObj.addProperty("payload",payloadToSend);
+        DownloadManagerHandler(&urlObj);
+        timeout.deleteLater();
+    loop.exec();
 
-    loop.exec(); // Adding a loop makes the request go through now.  Prevents user creation being delayed and future GET request not seeing it
+    disconnect(connectionHandler);
 
-    statusCode = CheckStatusCode(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
 
-    bool callSuccess = statusCode == "Success" ? true:false;
-    QString replyMessage = (QString) reply->readAll();
-    reply->close();
-    delete reply;
-
-    if (callSuccess){
-        return replyMessage;
-
-    }else{
-        return "";
-    }
+    return payload;
 
 }
 
 
 void Settings::CreateUser(QString username, QString password){
-    if (checkInternet("37.59.57.212")) {
+    if (checkInternet("http://37.59.57.212")) {
         QTextCodec::setCodecForLocale(QTextCodec::codecForName("Latin1"));
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
 
@@ -175,121 +180,122 @@ void Settings::CreateUser(QString username, QString password){
             return;
         }else{
 
-            QVariantMap settings;
-            settings.insert("app","xtrabytes");
-            m_settings->setValue("app","xtrabytes");
+//            QVariantMap settings;
+//            settings.insert("app","xtrabytes");
+//            m_settings->setValue("app","xtrabytes");
 
-            emit createUniqueKeyPair();
-            // Create Pub/Priv RSA Key
-            keyPair = createKeyPair();
-            QByteArray pubKey = keyPair.first;
-            QByteArray privKey = keyPair.second;
+//            emit createUniqueKeyPair();
+//            // Create Pub/Priv RSA Key
+//            keyPair = createKeyPair();
+//            QByteArray pubKey = keyPair.first;
+//            QByteArray privKey = keyPair.second;
 
-            int padding = RSA_PKCS1_OAEP_PADDING;
-            unsigned char decrypted[32];
+//            int padding = RSA_PKCS1_OAEP_PADDING;
+//            unsigned char decrypted[32];
 
-            QString pubKeyString = QString::fromLatin1(pubKey,pubKey.size());
-            QVariantMap feed1;
-            feed1.insert("pubKey", pubKeyString);
-            feed1.insert("username",username);
+//            QString pubKeyString = QString::fromLatin1(pubKey,pubKey.size());
+//            QVariantMap feed1;
+//            feed1.insert("pubKey", pubKeyString);
+//            feed1.insert("username",username);
 
-            QByteArray payload =  QJsonDocument::fromVariant(feed1).toJson(QJsonDocument::Compact);
-            payload = payload.toBase64();
+//            QByteArray payload =  QJsonDocument::fromVariant(feed1).toJson(QJsonDocument::Compact);
+//            payload = payload.toBase64();
 
-            //  Send Pub Key to API.  Response contains backend AES key + iv
-            QString response2 = RestAPIPostCall("/v1/createKeyPair", payload);
-            if (response2.isEmpty()){
-                return;
-            }
+//            //  Send Pub Key to API.  Response contains backend AES key + iv
+//            QString response2 = RestAPIPostCall("/v1/createKeyPair", payload);
+//            if (response2.isEmpty()){
+//                return;
+//            }
 
-            QJsonDocument jsonResponse = QJsonDocument::fromJson(response2.toLatin1());
-            QJsonValue encryptedText = jsonResponse.object().value("aeskey");
-            QByteArray aeskeyEncrypted = encryptedText.toString().toLatin1();
+//            QJsonDocument jsonResponse = QJsonDocument::fromJson(response2.toLatin1());
+//            QJsonValue encryptedText = jsonResponse.object().value("aeskey");
+//            QByteArray aeskeyEncrypted = encryptedText.toString().toLatin1();
 
-            emit receiveSessionEncryptionKey();
-            // Get IV from API to use in future encryptions
-            QJsonValue ivValue = jsonResponse.object().value("iv");
-            QByteArray iv = ivValue.toString().toLatin1();
+//            emit receiveSessionEncryptionKey();
+//            // Get IV from API to use in future encryptions
+//            QJsonValue ivValue = jsonResponse.object().value("iv");
+//            QByteArray iv = ivValue.toString().toLatin1();
 
-            const std::size_t aesKeySize = aeskeyEncrypted.size();
-            unsigned char* encrypted = new unsigned char[aesKeySize];
-            std::memcpy(encrypted,aeskeyEncrypted.constData(),aesKeySize);
-            unsigned char* privKey2 = new unsigned char[privKey.size()];
-            std::memcpy(privKey2,privKey.data(),privKey.size());
-            RSA * privRSAKey = createRSA(privKey2,0);
-
-
-            // Decrypt AES key using local private key. Stores it to backendKey
-            int  decryptedSize = RSA_private_decrypt(aesKeySize,encrypted,backendKey,privRSAKey,padding);
-            qDebug() << decryptedSize;
-
-            emit saveAccountSettings();
-            // Save iv data to local storage
-            std::memcpy(iiiv,iv.constData(),iv.size());
-
-            /* Message to be encrypted */
-            QString randNum = createRandNum();
-
-            // Encrypt randNumber with password
-            QByteArray encodedRandNr = encryption.encode(randNum.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
-            QString encodedRandNrStr = QString::fromLatin1(encodedRandNr, encodedRandNr.length());
-
-            // Encrypt randNum with backend AES key
-            std::pair<int, QByteArray> cipher = encryptAes(randNum, backendKey, iiiv);
-
-            cipher.second = cipher.second.toBase64();
-
-            QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
-
-            QByteArray encodedText = encryption.encode(settingsByte, (password + "xtrabytesxtrabytes").toLatin1());
-            QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
-
-            QVariantMap feed2;
-            feed2.insert("encrypted", cipher.second);
-            feed2.insert("randNumPass", encodedRandNrStr);
-            feed2.insert("randNum", randNum);
-            feed2.insert("username", username);
-            feed2.insert("settings", DataAsString);
+//            const std::size_t aesKeySize = aeskeyEncrypted.size();
+//            unsigned char* encrypted = new unsigned char[aesKeySize];
+//            std::memcpy(encrypted,aeskeyEncrypted.constData(),aesKeySize);
+//            unsigned char* privKey2 = new unsigned char[privKey.size()];
+//            std::memcpy(privKey2,privKey.data(),privKey.size());
+//            RSA * privRSAKey = createRSA(privKey2,0);
 
 
-            QByteArray payload3 =  QJsonDocument::fromVariant(feed2).toJson(QJsonDocument::Compact);
-            payload3 = payload3.toBase64();
+//            // Decrypt AES key using local private key. Stores it to backendKey
+//            int  decryptedSize = RSA_private_decrypt(aesKeySize,encrypted,backendKey,privRSAKey,padding);
+//            qDebug() << decryptedSize;
 
-            // Send encrypted rand number + settings.  Backend checks randNum and saves settings.  Returns encrypted sessionId
-            QString response3 = RestAPIPostCall("/v1/decryptAES", payload3);
-            if (response3.isEmpty()){
-                return;
-            }
+//            emit saveAccountSettings();
+//            // Save iv data to local storage
+//            std::memcpy(iiiv,iv.constData(),iv.size());
 
-            emit receiveSessionID();
-            QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
-            QJsonValue encryptedText2 = jsonResponse2.object().value("sessionId");
-            QByteArray sessionIdEncrypted = encryptedText2.toString().toLatin1();
+//            /* Message to be encrypted */
+//            QString randNum = createRandNum();
 
-            const std::size_t sessionIdSize = sessionIdEncrypted.size();
-            unsigned char* encryptedSess = new unsigned char[sessionIdSize];
-            std::memcpy(encryptedSess,sessionIdEncrypted.constData(),sessionIdSize);
+//            // Encrypt randNumber with password
+//            QByteArray encodedRandNr = encryption.encode(randNum.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
+//            QString encodedRandNrStr = QString::fromLatin1(encodedRandNr, encodedRandNr.length());
 
-            // Decrypt session Id using local RSA keys
-            int  decryptedSize2 = RSA_private_decrypt(sessionIdSize,encryptedSess,decrypted,privRSAKey,padding);
+//            // Encrypt randNum with backend AES key
+//            std::pair<int, QByteArray> cipher = encryptAes(randNum, backendKey, iiiv);
 
-            QByteArray sessionIdBa;
-            sessionIdBa = QByteArray(reinterpret_cast<char*>(decrypted), decryptedSize2);
-            sessionId = QString::fromLatin1(sessionIdBa, sessionIdBa.size());
+//            cipher.second = cipher.second.toBase64();
+
+//            QByteArray settingsByte =  QJsonDocument::fromVariant(settings).toJson(QJsonDocument::Compact);
+
+//            QByteArray encodedText = encryption.encode(settingsByte, (password + "xtrabytesxtrabytes").toLatin1());
+//            QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
+
+//            QVariantMap feed2;
+//            feed2.insert("encrypted", cipher.second);
+//            feed2.insert("randNumPass", encodedRandNrStr);
+//            feed2.insert("randNum", randNum);
+//            feed2.insert("username", username);
+//            feed2.insert("settings", DataAsString);
 
 
-            if (UserExists(username)){
-                m_username = username;
-                m_password = password;
-                emit userCreationSucceeded();
+//            QByteArray payload3 =  QJsonDocument::fromVariant(feed2).toJson(QJsonDocument::Compact);
+//            payload3 = payload3.toBase64();
 
-            }else{
-                emit userCreationFailed();
-            }
+//            // Send encrypted rand number + settings.  Backend checks randNum and saves settings.  Returns encrypted sessionId
+//            QString response3 = RestAPIPostCall("/v1/decryptAES", payload3);
+//            if (response3.isEmpty()){
+//                return;
+//            }
 
-            delete [] encrypted;
-            delete [] privKey2;
-        }
+//            emit receiveSessionID();
+//            QJsonDocument jsonResponse2 = QJsonDocument::fromJson(response3.toLatin1());
+//            QJsonValue encryptedText2 = jsonResponse2.object().value("sessionId");
+//            QByteArray sessionIdEncrypted = encryptedText2.toString().toLatin1();
+
+//            const std::size_t sessionIdSize = sessionIdEncrypted.size();
+//            unsigned char* encryptedSess = new unsigned char[sessionIdSize];
+//            std::memcpy(encryptedSess,sessionIdEncrypted.constData(),sessionIdSize);
+
+//            // Decrypt session Id using local RSA keys
+//            int  decryptedSize2 = RSA_private_decrypt(sessionIdSize,encryptedSess,decrypted,privRSAKey,padding);
+
+//            QByteArray sessionIdBa;
+//            sessionIdBa = QByteArray(reinterpret_cast<char*>(decrypted), decryptedSize2);
+//            sessionId = QString::fromLatin1(sessionIdBa, sessionIdBa.size());
+
+
+//            if (UserExists(username)){
+//                m_username = username;
+//                m_password = password;
+//                emit userCreationSucceeded();
+
+//            }else{
+//                emit userCreationFailed();
+//            }
+
+//            delete [] encrypted;
+//            delete [] privKey2;
+//        }
+    }
     }
     else {
         qDebug() << "no connection to account server to create new user";
@@ -373,9 +379,10 @@ void Settings::login(QString username, QString password){
 }
 
 void Settings::loginFile(QString username, QString password, QString fileLocation){
-    if (checkInternet("37.59.57.212")) {
+    if (checkInternet("http://37.59.57.212")) {
         emit checkUsername();
         if(!UserExists(username)){
+            qDebug() << "User does not exist";
             return;
         }
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
@@ -398,6 +405,14 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
         payload = payload.toBase64();
 
         //  Send Pub Key to API.  Backend returns AES key and randNum encrypted with password
+//            QString response2 = RestAPIPostCall("/v1/login", payload);
+//            connect(this, SIGNAL(userExistsSignal(QString)), &loop, SLOT(quit()));
+//            connect(this, &Settings::userExistsSignal, [&response2](QString payload) {
+//                response2 = payload;
+//            });
+//            UserExists(username);
+//          loop.exec();
+
         QString response2 = RestAPIPostCall("/v1/login", payload);
         if (response2.isEmpty()){
             return;
@@ -541,7 +556,7 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
 
 
 void Settings::changePassword(QString oldPassword, QString newPassword){
-    if (checkInternet("37.59.57.212")) {
+    if (checkInternet("http://37.59.57.212")) {
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
         QByteArray pubKey = keyPair.first;
         QByteArray privKey = keyPair.second;
@@ -821,7 +836,7 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
 }
 
 bool Settings::SaveSettings(){
-    if (checkInternet("37.59.57.212")) {
+    if (checkInternet("http://37.59.57.212")) {
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
         QVariantMap settings;
 
@@ -1061,44 +1076,6 @@ bool Settings::checkPincode(QString pincode){
     }
 }
 
-
-QByteArray Settings::RestAPIGetCall(QString apiURL){
-
-    QUrl Url;
-    Url.setScheme("http");
-    Url.setHost("37.59.57.212");
-    Url.setPort(8080);
-    Url.setPath(apiURL);
-
-    QNetworkRequest request;
-    request.setUrl(Url);
-
-    QNetworkAccessManager *restclient;
-    restclient = new QNetworkAccessManager(this);
-    request.setRawHeader("Accept", "application/json");
-
-    QNetworkReply *reply = restclient->get(request);
-    QByteArray bytes = reply->readAll();
-
-    qDebug() << bytes;
-
-    QEventLoop loop;
-    QTimer getTimer;
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-    QObject::connect(restclient, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
-
-    getTimer.start(4000);
-    loop.exec();
-
-    QByteArray bts = reply->readAll();
-    reply->close();
-    delete reply;
-
-    return bts;
-}
-
 QString Settings::CheckStatusCode(QString statusCode){
     QString returnVal;
     if (statusCode.startsWith("2")){
@@ -1259,29 +1236,98 @@ void Settings::downloadImage(QString imageUrl) {
 }
 
 bool Settings::checkInternet(QString url){
-    bool connected = false;
-    QNetworkAccessManager nam;
-    QNetworkRequest req(QUrl("http://" + url));
-    QNetworkReply* reply = nam.get(req);
+
+    bool internetStatus = false;
+
     QEventLoop loop;
-    QTimer getTimer;
+        QTimer timeout;
+        timeout.setSingleShot(true);
+        timeout.start(6000);
+        connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
+        auto connectionHandler = connect(this, &Settings::internetStatusSignal, [&internetStatus, &loop](bool checked) {
+            internetStatus = checked;
+            loop.quit();
 
-    QTimer::connect(&getTimer,SIGNAL(timeout()),&loop, SLOT(quit()));
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
-    QObject::connect(&nam, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+        });
 
-    getTimer.start(4000);
+        URLObject urlObj {QUrl(url)};
+        urlObj.addProperty("route","checkInternetSlot");
+        DownloadManagerHandler(&urlObj);
     loop.exec();
-    if (reply->bytesAvailable()){
-        connected=true;
+    disconnect(connectionHandler);
+
+    return internetStatus;
+}
+
+//SLOTS//
+void Settings::userExistsSlot(QByteArray response, QMap<QString,QVariant> props){
+    if (response != ""){
+                emit userAlreadyExists();
+                emit userExistsSignal(true);
+            }else{
+                emit usernameAvailable();
+                emit userExistsSignal(false);
+            }
+}
+
+void Settings::checkInternetSlot(QByteArray response, QMap<QString,QVariant> props){
+    if (response != ""){
+       emit internetStatusSignal(true);
     }else{
-        emit noInternet();
+        emit internetStatusSignal(false);
     }
+}
 
-    reply->close();
-    delete reply;
+void Settings::apiPostSlot(QByteArray response, QMap<QString,QVariant> props){
+    if (response != ""){
+       emit apiPostSignal(true,response);
+    }else{
+        emit apiPostSignal(false,"");
+    }
+}
 
-    return connected;
 
+void Settings::DownloadManagerHandler(URLObject *url){
+    DownloadManager *manager = manager->getInstance();
+    url->addProperty("url",url->getUrl());
+    url->addProperty("class","Settings");
+    manager->append(url);
+    connect(manager,  SIGNAL(readTimeout(QMap<QString,QVariant>)),this,SLOT(internetTimeout(QMap<QString,QVariant>)),Qt::UniqueConnection);
+
+    connect(manager,  SIGNAL(readFinished(QByteArray,QMap<QString,QVariant>)), this,SLOT(DownloadManagerRouter(QByteArray,QMap<QString,QVariant>)),Qt::UniqueConnection);
+
+
+}
+void Settings::internetTimeout(QMap<QString,QVariant> props){
+
+    if (props.value("class").toString() == "Settings"){
+        internetActive = false;
+        qDebug() << "timeout caught in settings";
+    }
+}
+void Settings::DownloadManagerRouter(QByteArray response, QMap<QString,QVariant> props){
+    internetActive = true;
+
+    if (props.value("class").toString() == "Settings"){
+        QString route = props.value("route").toString();
+
+           if (route == "userExistsSlot"){
+                   userExistsSlot(response,props);
+           }else if (route == "checkInternetSlot"){
+               checkInternetSlot(response,props);
+           }else if (route == "apiPostSlot"){
+               qDebug() << "route found";
+
+               apiPostSlot(response,props);
+           }
+//            }else if (route == "getDetails"){
+//                   getDetailsSlot(response,props);
+//            }else if (route == "getBalanceAddressXBYSlot"){
+//                getBalanceAddressXBYSlot(response,props);
+//            }else if (route == "getBalanceAddressExtSlot"){
+//                getBalanceAddressExtSlot(response,props);
+//            }else if (route == "getTransactionStatusSlot"){
+//                getTransactionStatusSlot(response,props);
+//            }
+    }
 }

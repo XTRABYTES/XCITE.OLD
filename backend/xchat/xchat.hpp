@@ -22,6 +22,8 @@
 
 #include "xchataiml.hpp"
 #include "xchatconversationmodel.hpp"
+#include "../support/DownloadManager.hpp"
+
 
 
 class Xchat : public QObject
@@ -89,7 +91,6 @@ public:
    QString m_lastUserMessage;
    void sendTypingToFront(const QMap<QString, QDateTime> typing);
    void addToTyping(const QString msg);
-   bool checkInternet(QString url);
    void messageRoute(QString message);
 
 
@@ -135,6 +136,12 @@ public slots:
     void forcedReconnect();
 
 
+    void DownloadManagerRouter(QByteArray, QMap<QString,QVariant>);
+    void internetTimeout(QMap<QString,QVariant>);
+    void getOnlineNodesSlot(QByteArray, QMap<QString,QVariant>);
+
+
+
 
 
 private slots:
@@ -142,6 +149,8 @@ private slots:
 
 
 private:
+    bool internetActive = true;
+
     QObject *window;
     XchatAIML *m_pXchatAiml;
     QMqttClient *mqtt_client;
@@ -173,6 +182,9 @@ private:
     void receiveGameInviteResponse(QJsonObject);
     void getOnlineNodes();
     void sendOnlineUsers();
+
+    void  DownloadManagerHandler(URLObject *url);
+
 };
 
 
