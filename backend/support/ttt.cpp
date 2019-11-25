@@ -35,19 +35,19 @@ bool Ttt::check_win() {
     QString lost = QString::number(loose);
     QString drawed = QString::number(draw);
     if (score == -10) {
-        ++win;
+        //++win;
         won = QString::number(win);
         emit gameFinished("win", won, lost, drawed);
         return true;
     }
     else if (score == +10) {
-        ++loose;
+        //++loose;
         lost = QString::number(loose);
         emit gameFinished("loose", won, lost, drawed);
         return true;
     }
     else if (!has_moves_left()) {
-        ++draw;
+        //++draw;
         drawed = QString::number(draw);
         emit gameFinished("draw", won, lost, drawed);
         return true;
@@ -277,7 +277,7 @@ void Ttt::quitGame() {
     for (auto& row: board)
         for (auto& cell: row)
             cell = ' ';
-    emit clearBoard();
+    emit gameQuit();
 }
 
 void Ttt::getScore() {
@@ -293,5 +293,5 @@ void Ttt::createGameID(QString user, QString opponent) {
     qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
     QString identifier = QString::number(timeStamp);
     QString gameID = player1 + ":" + player2 + ":" + identifier;
-    emit newGameID(gameID);
+    emit newGameID("ttt", gameID);
 }

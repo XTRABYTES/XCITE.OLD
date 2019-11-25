@@ -520,9 +520,15 @@ Rectangle {
                 anchors.fill: saveButton
 
                 onPressed: {
-                    parent.opacity = 1
-                    click01.play()
-                    detectInteraction()
+                    if (newName.text != ""
+                            && newAddress.text != ""
+                            && invalidAddress == 0
+                            && addressExists == 0
+                            && labelExists == 0) {
+                        parent.opacity = 1
+                        click01.play()
+                        detectInteraction()
+                    }
                 }
 
                 onCanceled: {
@@ -540,13 +546,7 @@ Rectangle {
                         addressList.append({"contact": contactIndex, "fullName": (contactList.get(contactIndex).lastName + contactList.get(contactIndex).fistName),"address": newAddress.text, "label": newName.text, "logo": getLogo(newCoinName.text), "coin": newCoinName.text, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
                         addressID = addressID +1;
                         addingAddress = true
-                        var datamodel = []
-                        for (var i = 0; i < addressList.count; ++i)
-                            datamodel.push(addressList.get(i))
-
-                        var addressListJson = JSON.stringify(datamodel)
-
-                        saveAddressBook(addressListJson)
+                        updateToAccount()
                     }
                 }
             }

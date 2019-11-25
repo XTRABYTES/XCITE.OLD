@@ -34,7 +34,7 @@ Rectangle {
 
             Image {
                 id: playedImage
-                source: played == false? '': (player == myUsername? 'qrc:/icons/XFUEL_logo_big.svg' : 'qrc:/icons/XBY_logo_big.svg')
+                source: played == false? '': (player == myUsername? 'qrc:/icons/XFUEL_logo_big.svg' : player != ""? 'qrc:/icons/XBY_logo_big.svg' : '')
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 10
@@ -67,18 +67,26 @@ Rectangle {
                         }
                         else {
                             if (tttCurrentGame !== "" && gameError === 0) {
+                                var opponent = findOpponent(tttCurrentGame)
+                                var status = getUserStatus(opponent)
+                                if (status === "online" || status === "idle") {
                                 var lastMove = findLastMove("ttt", tttCurrentGame);
                                 var lastMoveID = findLastMoveID("ttt", tttCurrentGame)
                                 if(lastMove !== "") {
+                                    console.log("confirm previous move")
                                     confirmGameSend(myUsername, "ttt", tttCurrentGame, lastMove, lastMoveID);
                                 }
+                                console.log("send new move to the network")
                                 sendGameToQueue(myUsername, "ttt", tttCurrentGame, number);
+                                }
+                                else {
+                                    playerNotAvailable = 1
+                                }
                             }
                         }
                     }
                 }
             }
-
         }
     }
 

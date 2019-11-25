@@ -184,5 +184,12 @@
         <file>Controls/fun/TttBoard.qml</file>
         <file>Controls/fun/TttGrid.qml</file>
         <file>Controls/+mobile/XGames.qml</file>
+        <file>Controls/fun/TttHub.qml</file>
+        <file>Controls/fun/Unfinished.qml</file>
+        <file>Controls/fun/Invitations.qml</file>
+        <file>Controls/fun/InviteModal.qml</file>
+        <file>Controls/fun/LeaderBoard.qml</file>
+        <file>Controls/fun/LeaderBoardList.qml</file>
+        <file>Controls/fun/PlayerNotAvailable.qml</file>
     </qresource>
 </RCC>

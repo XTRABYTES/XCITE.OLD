@@ -513,7 +513,7 @@ Rectangle {
 
             Image {
                 id: xChatRobotIcon
-                source: darktheme == true? 'qrc:/icons/mobile/robot-icon_01_white.svg' : 'qrc:/icons/mobile/robot-icon_01_black.svg'
+                source: 'qrc:/icons/mobile/robot_bee_01.svg'
                 width: 40
                 height: 40
                 fillMode: Image.PreserveAspectFit
@@ -528,7 +528,7 @@ Rectangle {
                 anchors.left: xChatRobotIcon.right
                 anchors.leftMargin: 10
                 anchors.right: parent.right
-                color: "transparent"
+                 color: "transparent"
                 visible: author == "xChatRobot"
             }
 

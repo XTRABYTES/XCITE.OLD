@@ -68,6 +68,9 @@ TextField {
     }
 
     onPressAndHold: {
+        if (textInputComponent.focus) {
+            EventFilter.focus(this)
+        }
         closeAllClipboard = true
         clipBoard = 1
         closeAllClipboard = false

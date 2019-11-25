@@ -184,12 +184,12 @@ void XchatObject::sendGameInvite(const QString user, QString opponent, QString g
 }
 
 void XchatObject::receiveGameInvite(QJsonObject obj) {
-    QString opponent = obj.value("player1").toString();
-    QString user = obj.value("player2").toString();
+    QString player1 = obj.value("player1").toString();
+    QString player2 = obj.value("player2").toString();
     QString game = obj.value("game").toString();
     QString gameID = obj.value("gameID").toString();
 
-    emit newGameInvite(user, opponent, game, gameID);
+    emit newGameInvite(player1, player2, game, gameID);
 }
 
 void XchatObject::confirmGameInvite(const QString user, QString opponent, QString game, QString gameID, QString accept) {

@@ -288,10 +288,13 @@ Item {
                 }
 
                 onLoginSucceededChanged: {
+                    console.log("my username is: " + userName.text.trim())
                     if (loginTracker == 1){
                         mainRoot.pop()
                         mainRoot.push("../Home.qml")
                         myUsername = userName.text.trim()
+                        tttSetUsername(myUsername)
+                        initializeTtt()
                         loginSuccesTimer.start()
                         loadingSettings = 0
                         verifyingBalances = 0

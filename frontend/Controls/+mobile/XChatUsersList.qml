@@ -29,7 +29,24 @@ Rectangle {
         Rectangle {
             id: userRow
             width: 120
-            height: username != ""? 35 : 0
+            height:{
+                if (inviteTracker == 1) {
+                    if (username === myUsername && (username == "" || status == "dnd" || status == "offline")) {
+                        0
+                    }
+                    else {
+                        35
+                    }
+                }
+                else {
+                    if (username != "") {
+                        35
+                    }
+                    else {
+                        0
+                    }
+                }
+            }
             color: "transparent"
             clip: true
 
@@ -55,7 +72,7 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.rightMargin: 15
                 anchors.verticalCenter: userName.verticalCenter
-                visible: getUserStatus(username) === "dnd"
+                visible: status === "dnd"
             }
 
             Image {
@@ -78,7 +95,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.left
                 anchors.verticalCenter: userName.verticalCenter
                 color: status == "online"? "#4BBE2E" : (status == "idle"? "#F7931A" : "#E55541")
-                visible: getUserStatus(username) !== "dnd"
+                visible: status !== "dnd"
             }
 
             Rectangle {
@@ -94,12 +111,27 @@ Rectangle {
                     }
 
                     onClicked: {
-                        if(getUserStatus(username) !== "dnd" && username !== myUsername) {
-                            tagging = ""
-                            tagging = "@" + username + " "
+                        if (xchatTracker == 1) {
+                            if(status !== "dnd" && username !== myUsername) {
+                                tagging = ""
+                                tagging = "@" + username + " "
+                            }
+                            else if (status === "dnd") {
+                                dndNotification(username)
+                            }
                         }
-                        else if (getUserStatus(username) === "dnd") {
-                            dndNotification(username)
+                        if (inviteTracker == 1) {
+                            if(status !== "dnd" && username !== myUsername) {
+                                if (status === "online" || status === "idle") {
+                                    invitedPlayer = username
+                                }
+                                else {
+                                    playerNotAvailable = 1
+                                }
+                            }
+                            else if (status === "dnd") {
+                                playerNotAvailable = 1
+                            }
                         }
                     }
                 }

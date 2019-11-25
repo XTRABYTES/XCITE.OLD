@@ -172,8 +172,8 @@ int main(int argc, char *argv[])
 
     QObject::connect(rootObject, SIGNAL(sendGameToQueue(QString,QString,QString,QString)), &xchatRobot, SLOT(sendGameToQueue(QString,QString,QString,QString)));
     QObject::connect(rootObject, SIGNAL(confirmGameSend(QString,QString,QString,QString,QString)), &xchatRobot, SLOT(confirmGameSend(QString,QString,QString,QString,QString)));
-    QObject::connect(rootObject, SIGNAL(sendGameInvite(QString,QString,QString,QString,QString)), &xchatRobot, SLOT(sendGameInvite(QString,QString,QString,QString,QString)));
-    QObject::connect(rootObject, SIGNAL(confirmGameInvite(QString,QString,QString,QString)), &xchatRobot, SLOT(confirmGameInvite(QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(sendGameInvite(QString,QString,QString,QString)), &xchatRobot, SLOT(sendGameInvite(QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(confirmGameInvite(QString,QString,QString,QString,QString)), &xchatRobot, SLOT(confirmGameInvite(QString,QString,QString,QString,QString)));
 
     // connect signals for TTT
     QObject::connect(rootObject, SIGNAL(tttSetUsername(QString)), &tictactoe, SLOT(setUsername(QString)));

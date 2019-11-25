@@ -307,9 +307,12 @@ Rectangle {
                 anchors.fill: saveButton
 
                 onPressed: {
-                    parent.opacity = 0.5
-                    click01.play()
-                    detectInteraction()
+                    if ((newFirstname.text !== "" || newLastname.text !== "")
+                            && contactExists == 0 && validEmail == 1) {
+                        parent.opacity = 0.5
+                        click01.play()
+                        detectInteraction()
+                    }
                 }
 
                 onCanceled: {
@@ -327,13 +330,7 @@ Rectangle {
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
                         addingContact = true
-
-                        var datamodel = []
-                        for (var i = 0; i < contactList.count; ++i)
-                            datamodel.push(contactList.get(i))
-
-                        var contactListJson = JSON.stringify(datamodel)
-                        saveContactList(contactListJson)
+                        updateToAccount()
                     }
                 }
             }

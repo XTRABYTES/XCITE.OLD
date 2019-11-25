@@ -45,9 +45,10 @@ signals:
     void computersChoice(QString btn2, QString moveID);
     void blockButton(QString btn);
     void clearBoard();
+    void gameQuit();
     void scoreBoard(QString win, QString loose, QString draw);
     void yourTurn(bool turn);
-    void newGameID(QString gameID);
+    void newGameID(QString game, QString gameID);
     void newMoveID(QString move, QString moveID);
 
 private:

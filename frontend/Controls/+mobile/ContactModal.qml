@@ -793,7 +793,7 @@ Rectangle {
             Text {
                 id: deleteText
                 text: "You are about to delete:"
-                anchors.top: deleteConfirmation.top
+                anchors.top: deleteConfirmation.modalTop
                 anchors.topMargin: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.family: xciteMobile.name
@@ -850,13 +850,8 @@ Rectangle {
 
                         contactList.setProperty(contactIndex, "remove", true)
                         deletingContact = true
-
-                        var datamodel = []
-                        for (var i = 0; i < contactList.count; ++i)
-                            datamodel.push(contactList.get(i))
-
-                        var contactListJson = JSON.stringify(datamodel)
-                        saveContactList(contactListJson)
+                        deleteContactAddresses(contactIndex);
+                        updateToAccount();
                     }
                 }
 

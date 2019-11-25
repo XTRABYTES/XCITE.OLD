@@ -332,5 +332,9 @@
         <file>icons/mobile/games-icon_ph_white.svg</file>
         <file>icons/mobile/ttt-icon_ph_black.svg</file>
         <file>icons/mobile/ttt-icon_ph_white.svg</file>
+        <file>icons/mobile/trophy-icon_01_blue.svg</file>
+        <file>icons/mobile/accept-icon_01.svg</file>
+        <file>icons/mobile/decline-icon_01.svg</file>
+        <file>icons/mobile/robot_bee_01.svg</file>
     </qresource>
 </RCC>

@@ -108,7 +108,10 @@ Rectangle {
             }
 
             onClicked: {
+                var opponent = findOpponent(tttCurrentGame)
                 tttTracker = 1
+                loadScore("ttt", opponent)
+                tttSetUsername(myUsername)
             }
         }
 
@@ -139,6 +142,13 @@ Rectangle {
     Fun.TttBoard {
         z: 100
         id: myTtt
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+    }
+
+    Fun.PlayerNotAvailable {
+        z: 100
+        id: noPlayer
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
     }

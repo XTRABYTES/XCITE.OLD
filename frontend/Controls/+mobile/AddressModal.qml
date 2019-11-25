@@ -1142,14 +1142,7 @@ Rectangle {
                         labelExists = 0
                         invalidAddress = 0
                         deletingAddress = true
-
-                        var datamodel = []
-                        for (var i = 0; i < addressList.count; ++i)
-                            datamodel.push(addressList.get(i))
-
-                        var addressListJson = JSON.stringify(datamodel)
-
-                        saveAddressBook(addressListJson)
+                        updateToAccount()
                     }
                 }
 
