@@ -80,7 +80,7 @@ Rectangle {
             Label {
                 id: notificationText
                 text: "<font color='#0ED8D2'><b>" + dndUser + "</b></font>" + " does not want to be disturbed"
-                color: "#F2F2F2"
+                color: themecolor
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 anchors.verticalCenter: notification.verticalCenter

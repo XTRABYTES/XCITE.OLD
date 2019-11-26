@@ -346,7 +346,7 @@ Rectangle {
             Label {
                 id: notificationText
                 text: "Invitation sent"
-                color: "#F2F2F2"
+                color: themecolor
                 font.pixelSize: 16
                 font.family: xciteMobile.name
                 anchors.verticalCenter: notification.verticalCenter

@@ -96,7 +96,7 @@ Rectangle {
 
             Label {
                 id: lostGames
-                text: inviteTracker == 1 ? getScore(username, gameName, "lost") : ""
+                text: inviteTracker == 1 ? getScore(username, gameName, "win") : ""
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 color: themecolor
@@ -108,7 +108,7 @@ Rectangle {
 
             Label {
                 id: wonGames
-                text: inviteTracker == 1 ? getScore(username, gameName, "win") : ""
+                text: inviteTracker == 1 ? getScore(username, gameName, "lost") : ""
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 color: themecolor
@@ -124,7 +124,7 @@ Rectangle {
                 height: 1
                 color: "#C6C6C6"
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.bottom
+                anchors.bottom: parent.bottom
                 visible: inviteTracker == 1
             }
 

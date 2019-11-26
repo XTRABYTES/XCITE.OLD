@@ -508,7 +508,7 @@ void XchatObject::pingXchatServers() {
 }
 
 QString XchatObject::matchServer(const QString &server){
-    QString xChatServer;
+    QString xChatServer = "unknown";
     if (server == "192.227.147.162") {
         xChatServer = "Buffalo 01 (US)";
     }

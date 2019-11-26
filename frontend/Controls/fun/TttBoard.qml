@@ -285,7 +285,7 @@ Rectangle {
             Label {
                 id: newGameText
                 text: "SELECT A NEW GAME"
-                color: "#F2F2F2"
+                color: themecolor
                 font.pixelSize: 20
                 font.family: xciteMobile.name
                 anchors.verticalCenter: newGame.verticalCenter
@@ -325,7 +325,7 @@ Rectangle {
             Label {
                 id: notificationText
                 text: winner === "win"? "YOU WIN!" : (winner === "loose"? "YOU LOSE!" : "IT'S A DRAW!")
-                color: "#F2F2F2"
+                color: themecolor
                 font.pixelSize: 20
                 font.family: xciteMobile.name
                 anchors.verticalCenter: notification.verticalCenter
@@ -335,11 +335,25 @@ Rectangle {
     }
 
     Label {
+        id: turnLabel
+        text: tttYourTurn === true? "Your turn" : "Opponents turn"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: board.bottom
+        anchors.topMargin: 5
+        font.pixelSize: 16
+        font.family: "Brandon Grotesque"
+        font.italic: true
+        font.capitalization: Font.SmallCaps
+        color: themecolor
+        visible: findOpponent(tttCurrentGame) !== "computer"
+    }
+
+    Label {
         id: scoreBoardLabel
         text: "SCOREBOARD"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: board.bottom
-        anchors.topMargin: 20
+        anchors.topMargin: 30
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"

@@ -67,7 +67,7 @@ Rectangle {
 
             Label {
                 id: lostGames
-                text: lost
+                text: win
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 color: themecolor
@@ -78,7 +78,7 @@ Rectangle {
 
             Label {
                 id: wonGames
-                text: win
+                text: lost
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 color: themecolor
@@ -110,10 +110,10 @@ Rectangle {
         sorters: [
             RoleSorter {
                 roleName: "win"
-                sortOrder: Qt.DescendingOrder},
+                sortOrder: Qt.AsscendingOrder},
             RoleSorter {
                 roleName: "lost"
-                sortOrder: Qt.AscendingOrder},
+                sortOrder: Qt.DecendingOrder},
             RoleSorter {
                 roleName: "draw"
                 sortOrder: Qt.DescendingOrder}

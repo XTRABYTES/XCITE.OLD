@@ -1180,7 +1180,7 @@ ApplicationWindow {
 
     // X-GAMES
     function findLastMove(game, gameID) {
-        var lastMoveNR = 0
+        var lastMoveNR = ""
         var lastMove = ""
         var moveID = 0
         for (var i = 0; i < movesList.count; i ++) {
@@ -2100,7 +2100,7 @@ ApplicationWindow {
         // X-GAME related functions
         onNewMoveReceived: {
             gameError = 0
-            if(isMyGame(gameID) && correctUser(player, gameID) && player !== myUsername) {
+            if(isMyGame(gameID) && correctUser(player, gameID)) {
                 checkIfMoveExists(game, gameID, player, move, moveID)
             }
         }
@@ -2684,7 +2684,7 @@ ApplicationWindow {
         id: checkXchatPing
         interval: 1000
         repeat: true
-        running: pingTimeRemain > 0 && inActive == 0
+        running: pingTimeRemain > 0 && inActive == 0 && xchatNetworkTracker == 1
 
         onTriggered: {
             pingTimeRemain = pingTimeRemain - 1

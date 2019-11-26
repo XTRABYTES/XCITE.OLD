@@ -56,7 +56,7 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
-                    enabled: tttFinished == true? false : (online == false? (played == false? true : false) : (tttYourTurn == false? (played == true? true: false) : true))
+                    enabled: tttFinished == true? false : (online == false? (played == false? true : false) : (played == false? (tttYourTurn == false?  false : true) : false))
 
                     onClicked: {
                         console.log("clicked button nr: " + number)
