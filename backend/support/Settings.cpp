@@ -1194,7 +1194,7 @@ void Settings::CheckSessionId(){
     QJsonDocument jsonResponse = QJsonDocument::fromJson(checkSessionResponse.toLatin1());
     QJsonValue encryptedText = jsonResponse.object().value("sessionId");
 
-    bool sessionCheckBool = encryptedText.toString() == "true" ? true:false;
+    bool sessionCheckBool = encryptedText.toString() == "false" ? false:true;
     emit sessionIdCheck(sessionCheckBool);
 }
 
