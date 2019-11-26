@@ -494,20 +494,11 @@ Rectangle {
             }
 
             onClicked: {
-                tttNewGame()
-                tttGameStarted = false
-                finished = false
-                showResult = false
                 var opponent = findOpponent(tttCurrentGame)
-                if (getUserStatus(opponent) === "online" || getUserStatus(opponent) === "idle" || opponent === "computer") {
+                if (finished == true && opponent === "computer") {
                     tttcreateGameId(myUsername,opponent)
-                    if (opponent === "computer") {
-                        accepted = true
-                    }
                 }
-                else {
-                    playerNotAvailable = 1
-                }
+                tttHubTracker = 1
             }
         }
 
@@ -562,6 +553,7 @@ Rectangle {
                     accepted = false
                     tttResetScore(0, 0, 0)
                     tttGetScore()
+                    finished = true
                 }
                 else {
                     tttTracker = 0
@@ -589,6 +581,7 @@ Rectangle {
 
         onTriggered: {
             showResult = false
+            accepted = false
         }
     }
 

@@ -151,8 +151,7 @@ Rectangle {
                         onClicked: {
                             player = findOpponent(gameID)
                             if (online.status === "online" || online.status === "idle") {
-                                acceptGameInvite(myUsername, gameName, gameID, false)
-                                confirmGameInvite(myUsername, player, gameName, gameID, false)
+                                acceptGameInvite(myUsername, gameName, gameID, "false")
                             }
                             else {
                                 playerNotAvailable = 1

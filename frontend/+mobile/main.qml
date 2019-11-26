@@ -1283,8 +1283,8 @@ ApplicationWindow {
 
         if (player !== myUsername) {
             console.log("send confirmation to opponent")
-            confirmGameSend(myUsername, player,  game, gameID,  move, moveID)
-            confirmMove(myUsername, game, gameID, move, moveID)
+            confirmGameSend(myUsername, game, gameID,  move, moveID)
+            confirmMove(game, gameID, move, moveID)
         }
     }
 
@@ -1300,6 +1300,7 @@ ApplicationWindow {
         if (game === "ttt") {
             console.log("convert move to button")
             var number = Number.fromLocaleString(move) - 1;
+            console.log("move: " + move + " to nr: " + number)
             if (game === "ttt" && gameID === tttCurrentGame) {
                 tttNewMove(player, move)
                 if (player !== myUsername) {
@@ -1316,7 +1317,7 @@ ApplicationWindow {
         }
     }
 
-    function confirmMove(user, game, gameID, move, moveID) {
+    function confirmMove(game, gameID, move, moveID) {
         var number = (Number.fromLocaleString(move) - 1);
         for (var i = 0; i < movesList.count; i ++) {
             if (movesList.get(i).game === game && movesList.get(i).gameID === gameID && movesList.get(i).moveID === moveID) {
@@ -1421,7 +1422,7 @@ ApplicationWindow {
                         alert = true
                     }
                     else {
-                        confirmGameInvite(myUsername, player, game, gameID, "true")
+                        confirmGameInvite(myUsername, player, game, gameID, "false")
                     }
                 }
             }
@@ -2108,7 +2109,7 @@ ApplicationWindow {
         onNewMoveConfirmed: {
             gameError = 0
             if(isMyGame(gameID) && correctUser(player, gameID) && player !== myUsername) {
-                confirmMove(player, game, gameID, move, moveID)
+                confirmMove(game, gameID, move, moveID)
             }
         }
 
@@ -2199,7 +2200,7 @@ ApplicationWindow {
             }
             if (opponent === "computer") {
                 checkIfMoveExists("ttt", tttCurrentGame, "computer", btn2, moveID)
-                confirmMove("computer", "ttt", tttCurrentGame, btn2, moveID)
+                confirmMove("ttt", tttCurrentGame, btn2, moveID)
             }
         }
 
@@ -2259,7 +2260,7 @@ ApplicationWindow {
         onNewMoveID: {
             checkIfMoveExists("ttt", tttCurrentGame, myUsername, move, moveID)
             tttButtonClicked(move)
-            confirmMove(myUsername, "ttt", tttCurrentGame, move, moveID)
+            confirmMove("ttt", tttCurrentGame, move, moveID)
         }
 
         onYourTurn: {
