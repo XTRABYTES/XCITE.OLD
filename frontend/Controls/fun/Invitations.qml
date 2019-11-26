@@ -89,7 +89,7 @@ Rectangle {
                 anchors.left: opponent.right
                 anchors.leftMargin: 15
                 anchors.right: findInviter(gameID, 2) === myUsername? accept.left : resend.left
-                anchors.rightMargin: findInviter(gameID, 2) === myUsername? 15 : 55
+                anchors.rightMargin: findInviter(gameID, 2) === myUsername? 35 : 75
                 horizontalAlignment: Text.AlignRight
                 elide: Text.ElideRight
             }
@@ -119,8 +119,6 @@ Rectangle {
                             player = findOpponent(gameID)
                             if (online.status === "online" || online.status === "idle") {
                                 acceptGameInvite(myUsername, gameName, gameID, "true")
-                                confirmGameInvite(myUsername, player, gameName, gameID, "true")
-                                checkForUserScore(player, gameName)
                             }
                             else {
                                 playerNotAvailable = 1

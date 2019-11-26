@@ -64,7 +64,7 @@ Rectangle {
         Item {
             id: notification
             width: notificationText.width + 15
-            height: notificationIcon.height
+            height: notificationText.height
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -72,7 +72,7 @@ Rectangle {
                 id: notificationText
                 text: "Player not available!"
                 color: "#F2F2F2"
-                font.pixelSize: 12
+                font.pixelSize: 16
                 font.family: xciteMobile.name
                 anchors.verticalCenter: notification.verticalCenter
                 anchors.horizontalCenter: notification.horizontalCenter

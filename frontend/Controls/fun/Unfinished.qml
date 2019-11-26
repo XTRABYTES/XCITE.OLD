@@ -85,7 +85,7 @@ Rectangle {
                 anchors.left: opponent.right
                 anchors.leftMargin: 15
                 anchors.right: parent.right
-                anchors.rightMargin: 75
+                anchors.rightMargin: 95
                 horizontalAlignment: Text.AlignRight
                 elide: Text.ElideRight
             }
@@ -99,6 +99,7 @@ Rectangle {
                 color: maincolor
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
+                anchors.rightMargin: 40
 
                 Rectangle {
                     width: parent.width + 10
@@ -121,6 +122,41 @@ Rectangle {
                                 console.log("play pushed")
                                 playGame(game, gameID);
                                 newGame = true
+                            }
+                            else {
+                                playerNotAvailable = 1
+                            }
+                        }
+                    }
+                }
+            }
+
+            Image {
+                id: resend
+                source: darktheme == true? 'qrc:/icons/mobile/conversion-icon_01_light.svg' : 'qrc:/icons/mobile/conversion-icon_01_dark.svg'
+                width: 20
+                height: 20
+                fillMode: Image.PreserveAspectFit
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                visible: findInviter(gameID, 1) !== myUsername && findOpponent(gameID) !== "computer"
+
+                Rectangle {
+                    width: 30
+                    height: 30
+                    color: "transparent"
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            if (online.status === "online" || online.status === "idle") {
+                                turn = 0
+                                rounds = 60
+                                resendTimer.start()
+                                acceptGameInvite(myUsername, gameName, gameID, "true")
                             }
                             else {
                                 playerNotAvailable = 1

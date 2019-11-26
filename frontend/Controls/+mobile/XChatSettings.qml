@@ -116,6 +116,7 @@ Rectangle {
         font.pixelSize: 20
         font.family: xciteMobile.name
         font.bold: true
+        font.capitalization: Font.SmallCaps
         color: themecolor
         anchors.top: xchatSettingsModalLabel.bottom
         anchors.topMargin: 50
@@ -274,7 +275,7 @@ Rectangle {
     Label {
         id: dndInfoLabel
         z: 1
-        text: "When <font color='#0ED8D2'><b>Do not disturb</b></font> is on you will not receive notifications for tags."
+        text: "When <font color='#0ED8D2'><b>Do not disturb</b></font> is on you will not receive notifications for tags, people will not be able to tag you and you will not be able to play online games."
         font.pixelSize: 16
         font.family: xciteMobile.name
         font.italic: true

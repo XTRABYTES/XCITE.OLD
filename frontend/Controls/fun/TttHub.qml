@@ -89,10 +89,11 @@ Rectangle {
 
     Label {
         id: taggingLabel
-        text: "Unfinished games"
+        text: "Accepted games"
         font.pixelSize: 20
         font.family: xciteMobile.name
         font.bold: true
+        font.capitalization: Font.SmallCaps
         color: themecolor
         anchors.top: tttHubModalLabel.bottom
         anchors.topMargin: 30
@@ -105,7 +106,6 @@ Rectangle {
         width: parent.width - 56
         height: 150
         anchors.top: taggingLabel.bottom
-        anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
@@ -130,6 +130,7 @@ Rectangle {
         font.pixelSize: 20
         font.family: xciteMobile.name
         font.bold: true
+        font.capitalization: Font.SmallCaps
         color: themecolor
         anchors.top: unfinishedGamesArea.bottom
         anchors.topMargin: 10
@@ -225,7 +226,7 @@ Rectangle {
         anchors.topMargin: 30
         anchors.horizontalCenter: parent.horizontalCenter
         border.color: maincolor
-        border.width: 2
+        border.width: 1
         color: "transparent"
 
         MouseArea {

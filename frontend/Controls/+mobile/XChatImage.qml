@@ -38,14 +38,10 @@ Rectangle {
         if ((urlArray[i-1] === "jpg") || (urlArray[i-1] === "jpeg") || (urlArray[i-1] === "svg") || (urlArray[i-1] === "png")) {
             formatError = false
             image.source = url
-            xchatImage = url
-            imageAdded = true
         }
         else {
             formatError = true
             image.source = 'qrc:/icons/mobile/image_large-icon_01_grey.svg'
-            xchatImage = ""
-            imageAdded = false
         }
     }
 
@@ -97,11 +93,13 @@ Rectangle {
             color: darktheme == false? "#14161B" : "#F2F2F2"
         }
 
-        Image {
+        Label{
             id: closeImage
-            source: 'qrc:/icons/mobile/close-icon_01_white.svg'
-            height: 9
-            fillMode: Image.PreserveAspectFit
+            text: image.source == 'qrc:/icons/mobile/image_large-icon_01_grey.svg' || imageText.text == ""? "Close" : "Add image"
+            font.family: xciteMobile.name
+            font.pixelSize: 16
+            font.capitalization: Font.SmallCaps
+            color: darktheme == false? "#14161B" : "#F2F2F2"
             anchors.verticalCenter: imageBoxLabel.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: 10
@@ -109,8 +107,8 @@ Rectangle {
 
         Rectangle {
             id: closeImageButton
-            width: 25
-            height: 25
+            width: closeImage.width
+            height: closeImage.height
             anchors.horizontalCenter: closeImage.horizontalCenter
             anchors.verticalCenter: closeImage.verticalCenter
             color: "transparent"
@@ -124,7 +122,19 @@ Rectangle {
                 }
 
                 onClicked: {
-                    xChatImageTracker = 0
+                    if (image.source == 'qrc:/icons/mobile/image_large-icon_01_grey.svg' || imageText.text === "") {
+                        xchatImage = ""
+                        imageAdded = false
+                        xChatImageTracker = 0
+                    }
+                    else {
+                        checkImageFormat(imageText.text)
+                        if (formatError == false) {
+                            xchatImage = ""
+                            imageAdded = true
+                            xChatImageTracker = 0
+                        }
+                    }
                 }
             }
         }
@@ -229,8 +239,8 @@ Rectangle {
                 onClicked: {
                     imageText.text = ""
                     image.source = 'qrc:/icons/mobile/image_large-icon_01_grey.svg'
-                    xchatImage = ""
-                    imageAdded = false
+                    //xchatImage = ""
+                    //imageAdded = false
                 }
             }
         }

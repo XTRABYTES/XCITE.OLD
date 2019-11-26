@@ -89,10 +89,11 @@ Rectangle {
         Label {
             id: currencyLabel
             z: 1
-            text: "WALLET CURRENCY:"
+            text: "Wallet currency:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: welcomeText.bottom
             anchors.topMargin: 30
@@ -147,7 +148,7 @@ Rectangle {
             id: selectedCurrency
             z: 1
             text: fiatCurrencies.get(userSettings.defaultCurrency).currency + " - " + fiatCurrencies.get(userSettings.defaultCurrency).ticker
-            font.pixelSize: 20
+            font.pixelSize: 16
             font.family: xciteMobile.name
             color: themecolor
             anchors.verticalCenter: picklistArrow.verticalCenter
@@ -225,13 +226,14 @@ Rectangle {
         Label {
             id: pincodeLabel
             z: 1
-            text: "PINLOCK ACTIVE:"
+            text: "Pinlock active:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: picklistArrow.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 25
             anchors.left: parent.left
             anchors.leftMargin: 28
         }
@@ -322,13 +324,14 @@ Rectangle {
 
         Label {
             id: pincodeSwitchLabel
-            text: userSettings.pinlock === true ? "ACTIVE" : "NOT ACTIVE"
+            text: userSettings.pinlock === true ? "Active" : "Not active"
             anchors.right: pincodeSwitch.left
             anchors.rightMargin: 7
             anchors.verticalCenter: pincodeSwitch.verticalCenter
             anchors.verticalCenterOffset: 1
-            font.pixelSize: 20
+            font.pixelSize: 16
             font.family: xciteMobile.name
+            font.capitalization: Font.SmallCaps
             color: userSettings.pinlock === true ? maincolor : "#757575"
         }
 
@@ -339,7 +342,7 @@ Rectangle {
             color: userSettings.pinlock === true? maincolor : "#727272"
             opacity: 0.25
             anchors.top: pincodeSwitchLabel.bottom
-            anchors.topMargin: 25
+            anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
 
             MouseArea {
@@ -392,10 +395,11 @@ Rectangle {
         Label {
             id: passwordLabel
             z: 1
-            text: "ACCOUNT PASSWORD:"
+            text: "Account password:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: changePinButton.bottom
             anchors.topMargin: 25
@@ -410,7 +414,7 @@ Rectangle {
             color: maincolor
             opacity: 0.25
             anchors.top: passwordLabel.bottom
-            anchors.topMargin: 25
+            anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
 
             MouseArea {
@@ -461,10 +465,11 @@ Rectangle {
         Label {
             id: notificationLabel
             z: 1
-            text: "NOTIFICATION SOUND:"
+            text: "Notification sounds:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: changePasswordButton.bottom
             anchors.topMargin: 25
@@ -519,7 +524,7 @@ Rectangle {
             id: chosenSound
             z: 1
             text: soundList.get(selectedSound).name
-            font.pixelSize: 20
+            font.pixelSize: 16
             font.family: xciteMobile.name
             color: themecolor
             anchors.verticalCenter: picklistArrow2.verticalCenter
@@ -606,13 +611,14 @@ Rectangle {
         Label {
             id: volumeLabel
             z: 1
-            text: "NOTIFICATION VOLUME:"
+            text: "Notification volume:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: picklistArrow2.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 25
             anchors.left: parent.left
             anchors.leftMargin: 28
         }
@@ -740,10 +746,11 @@ Rectangle {
         Label {
             id: systemVolumeLabel
             z: 1
-            text: "APP SYSTEM SOUND VOLUME:"
+            text: "App system volume:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: volumeLabel.bottom
             anchors.topMargin: 60

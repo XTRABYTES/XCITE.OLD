@@ -211,6 +211,17 @@ Rectangle {
         }
     }
 
+    Label {
+        id: gameNr
+        text: "#" + findGameNr(tttCurrentGame)
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: opponentBox.bottom
+        anchors.topMargin: 5
+        font.pixelSize: 12
+        font.family: "Brandon Grotesque"
+        font.italic: true
+        color: themecolor
+    }
 
     Rectangle {
         id: board
@@ -218,7 +229,7 @@ Rectangle {
         height: board.width
         color: "transparent"
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: opponentBox.bottom
+        anchors.top: gameNr.bottom
         anchors.topMargin: 10
 
         Fun.TttGrid {
@@ -300,9 +311,8 @@ Rectangle {
         width: notification.width + 56
         height: 50
         color: darktheme == true? "#2A2C31" : "#F2F2F2"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -50
+        anchors.horizontalCenter: board.horizontalCenter
+        anchors.verticalCenter: board.verticalCenter
         visible: showResult == true
 
         Item {

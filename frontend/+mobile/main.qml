@@ -304,6 +304,7 @@ ApplicationWindow {
     property int sessionTime: 0
     property int sessionClosed: 0
     property int standBy: 0
+    property int inActive: 0
     property int screenSaver: 0
     property int autoLogout: 0
     property int manualLogout: 0
@@ -1258,12 +1259,14 @@ ApplicationWindow {
                 gamesList.setProperty(o, "started", true)
             }
         }
+
         var exists = false
         for(var i = 0; i < movesList.count; i ++) {
             if(movesList.get(i).game === game && movesList.get(i).gameID === gameID && movesList.get(i).moveID === moveID){
                 exists = true
             }
         }
+
         if(!exists){
             console.log("move does not exist")
             console.log("adding move for: " + player + " to movesList, game: " + game + ", move: " + move + ", moveID: " + moveID)
@@ -1272,18 +1275,21 @@ ApplicationWindow {
         else {
             console.log("move exists")
         }
+
         if (opponent !== "computer") {
             console.log("sending move to back end")
             newMove(game, gameID, player, move)
-            if (player !== myUsername) {
-                console.log("send confirmation to opponent")
-                confirmGameSend(myUsername, player,  game, gameID,  move, moveID)
-                confirmMove(myUsername, game, gameID, move, moveID)
-            }
+        }
+
+        if (player !== myUsername) {
+            console.log("send confirmation to opponent")
+            confirmGameSend(myUsername, player,  game, gameID,  move, moveID)
+            confirmMove(myUsername, game, gameID, move, moveID)
         }
     }
 
     function newMove(game, gameID, player, move) {
+        var gameNR = findGameNr(gameID)
         console.log("playing new move: " + move + " for player: " + player)
         for (var i = 0; i < gamesList; i ++) {
             if(gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
@@ -1293,27 +1299,29 @@ ApplicationWindow {
         }
         if (game === "ttt") {
             console.log("convert move to button")
-            var number = Number.fromLocaleString(move);
+            var number = Number.fromLocaleString(move) - 1;
             if (game === "ttt" && gameID === tttCurrentGame) {
                 tttNewMove(player, move)
                 if (player !== myUsername) {
                     tttButtonList.setProperty(number, "confirmed", true);
                 }
-                if(tttTracker !== 1 && player !== myUsername && loadingGame !== true) {
-                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " has made a new move in Tic Tact Toe", "origin" : "X-GAMES"})
-                    alert = true
+                if(player !== myUsername && loadingGame !== true) {
+                    notification.play()
+                    if (tttTracker !== 1) {
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " has made a new move in Tic Tact Toe in game #" + gameNR, "origin" : "X-GAMES"})
+                        alert = true
+                    }
                 }
             }
         }
     }
 
     function confirmMove(user, game, gameID, move, moveID) {
-        var number = 0 //(Number.fromLocaleString(move) - 1);
+        var number = (Number.fromLocaleString(move) - 1);
         for (var i = 0; i < movesList.count; i ++) {
             if (movesList.get(i).game === game && movesList.get(i).gameID === gameID && movesList.get(i).moveID === moveID) {
                 movesList.setProperty(i, "confirmed", true)
                 if (game === "ttt" && gameID === tttCurrentGame) {
-
                     tttButtonList.setProperty(number, "confirmed", true);
                 }
             }
@@ -1362,6 +1370,7 @@ ApplicationWindow {
     }
 
     function checkIfInviteExists(game, gameID) {
+        var gameNR = findGameNr(gameID)
         var gameName = getGameName(game)
         var exists = false
         var opponent = findOpponent(gameID)
@@ -1371,14 +1380,14 @@ ApplicationWindow {
             }
         }
         if(!exists) {
-            console.log("invite does not exist")
+            notification.play()
             gamesList.append({"game": game, "gameID": gameID, "invited": true, "accepted": false, "started": false, "finished": false})
-            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " has has invited you to play a game of " + gameName, "origin" : "X-GAMES"})
+            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " has has invited you to play a game of " + gameName + " #" + gameNR, "origin" : "X-GAMES"})
             alert = true
         }
         else {
-            console.log("invite exists")
-            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " send you a reminder for his invite to play " + gameName, "origin" : "X-GAMES"})
+            notification.play()
+            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " send you a reminder for his invite to play " + gameName + " #" + gameNR, "origin" : "X-GAMES"})
             alert = true
         }
     }
@@ -1392,18 +1401,27 @@ ApplicationWindow {
                 console.log("game found")
                 if(accept === "true") {
                     gamesList.setProperty(i, "accepted", true)
+                    checkForUserScore(player, game)
                     console.log("game accepted")
                     if (user !== myUsername) {
-                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " accepted your challenge for " + gameName, "origin" : "X-GAMES"})
+                        notification.play()
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " accepted your invite for " + gameName, "origin" : "X-GAMES"})
                         alert = true
+                    }
+                    else {
+                        confirmGameInvite(myUsername, player, game, gameID, "true")
                     }
                 }
                 else if (accept === "false") {
                     gamesList.remove(i, 1)
                     console.log("game rejected")
                     if (user !== myUsername) {
-                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " did not accept your challenge for " + gameName, "origin" : "X-GAMES"})
+                        notification.play()
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " did not accept your invite for " + gameName, "origin" : "X-GAMES"})
                         alert = true
+                    }
+                    else {
+                        confirmGameInvite(myUsername, player, game, gameID, "true")
                     }
                 }
             }
@@ -1413,7 +1431,6 @@ ApplicationWindow {
     function removeGame(game, gameID) {
         for(var i = 0; i < gamesList.count; i ++) {
             if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
-                console.log("removing game from gamesList")
                 gamesList.remove(i, 1)
             }
         }
@@ -1431,42 +1448,33 @@ ApplicationWindow {
     }
 
     function updateScore(game, player, wn, lst, drw) {
-        console.log("updating score, game: " + game + ", player: " + player + ", win: " + wn + ", lost: " + lst + ", draw: " + drw)
         for (var i = 0; i < scoreList.count; i ++) {
             if(scoreList.get(i).game === game && scoreList.get(i).player === player) {
                 var currentWin = scoreList.get(i).win
                 var currentLost = scoreList.get(i).lost
                 var currentDraw = scoreList.get(i).draw
-                console.log("old score, game: " + game + ", player: " + player + ", win: " + currentWin + ", lost: " + currentLost + ", draw: " + currentDraw)
                 scoreList.setProperty(i, "win", currentWin + wn)
                 scoreList.setProperty(i, "lost", currentLost + lst)
                 scoreList.setProperty(i, "draw", currentDraw + drw)
                 var newWin = scoreList.get(i).win
                 var newLost = scoreList.get(i).lost
                 var newDraw = scoreList.get(i).draw
-                console.log("old score, game: " + game + ", player: " + player + ", win: " + newWin + ", lost: " + newLost + ", draw: " + newDraw)
             }
         }
         loadScore(game, player)
     }
 
     function loadScore(game, player) {
-        console.log("loading score")
         if (game === "ttt") {
-            console.log("resetting ttt score to 0,0,0")
             tttResetScore(0, 0, 0)
-            console.log("find old score")
             for (var i = 0; i < scoreList.count; i ++) {
                 if (scoreList.get(i).game === game && scoreList.get(i).player === player) {
                     var win = scoreList.get(i).win
                     var lost = scoreList.get(i).lost
                     var draw = scoreList.get(i).draw
-                    console.log("old score: " + win + ", " + lost + ", " + draw)
-                    console.log("setting old score")
                     tttResetScore(win, lost, draw)
                 }
             }
-            console.log("retrieving old ttt score")
             tttGetScore()
         }
         loadingGame = false
@@ -1594,6 +1602,24 @@ ApplicationWindow {
                 tttButtonList.setProperty(number, "confirmed", true)
             }
         }
+    }
+
+    function getScore(player, game, result) {
+        var score = 0
+        for (var i = 0; i < scoreList.count; i ++) {
+            if (scoreList.get(i).player === player && scoreList.get(i).game === game) {
+                if (result === "win") {
+                    score = scoreList.get(i).win
+                }
+                if (result === "lost") {
+                    score = scoreList.get(i).lost
+                }
+                if (result === "draw") {
+                    score = scoreList.get(i).draw
+                }
+            }
+        }
+        return score;
     }
 
     // Start up
@@ -1886,6 +1912,7 @@ ApplicationWindow {
     function detectInteraction() {
         if (interactionTracker == 0) {
             interactionTracker = 1
+            inActive = 0
         }
     }
 
@@ -2073,14 +2100,14 @@ ApplicationWindow {
         // X-GAME related functions
         onNewMoveReceived: {
             gameError = 0
-            if(isMyGame(gameID) && correctUser(player, gameID)) {
+            if(isMyGame(gameID) && correctUser(player, gameID) && player !== myUsername) {
                 checkIfMoveExists(game, gameID, player, move, moveID)
             }
         }
 
         onNewMoveConfirmed: {
             gameError = 0
-            if(isMyGame(gameID) && correctUser(player, gameID)) {
+            if(isMyGame(gameID) && correctUser(player, gameID) && player !== myUsername) {
                 confirmMove(player, game, gameID, move, moveID)
             }
         }
@@ -2213,33 +2240,25 @@ ApplicationWindow {
             var opponent = gameIDArray[1]
             gamesList.append({"game": "ttt", "gameID": gameID, "invited": false, "accepted": false, "started": false, "finished": false})
             if (opponent !== "computer") {
-                console.log("send invite for tic tac toe to: " + opponent)
                 sendGameInvite(myUsername, opponent, "ttt", gameID)
-                console.log("updating gamesList")
                 inviteSent("ttt", gameID)
             }
             else {
                 for (var i = 0; i < gamesList.count; i ++) {
                     if (gamesList.get(i).game === "ttt" && gamesList.get(i).gameID === gameID) {
-                        console.log("accepting tic tac toe game against computer")
                         gamesList.setProperty(i, "invited", true)
                         gamesList.setProperty(i, "accepted", true)
                     }
                 }
+                tttCurrentGame = gameID
+                tttYourTurn = true
+                playGame("ttt", tttCurrentGame)
             }
-            tttCurrentGame = gameID
-            console.log("current tic tac toe game: " + tttCurrentGame)
-            tttYourTurn = true
-            playGame("ttt", tttCurrentGame)
         }
 
         onNewMoveID: {
-            console.log("new moveID received: " + moveID)
-            console.log("myUsername: " + myUsername)
             checkIfMoveExists("ttt", tttCurrentGame, myUsername, move, moveID)
-            console.log("send move to backend")
             tttButtonClicked(move)
-            console.log("confirm move")
             confirmMove(myUsername, "ttt", tttCurrentGame, move, moveID)
         }
 
@@ -2665,7 +2684,7 @@ ApplicationWindow {
         id: checkXchatPing
         interval: 1000
         repeat: true
-        running: pingTimeRemain > 0
+        running: pingTimeRemain > 0 && inActive == 0
 
         onTriggered: {
             pingTimeRemain = pingTimeRemain - 1
@@ -2684,7 +2703,7 @@ ApplicationWindow {
 
     Timer {
         id: sendXchatConnection
-        interval: 60000
+        interval: inActive == 0? 60000 : 300000
         repeat: true
         running: true
 
@@ -2733,7 +2752,7 @@ ApplicationWindow {
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
-            if (standBy == 0) {
+            if (inActive == 0) {
                 marketValueChangedSignal("btcusd")
                 marketValueChangedSignal("btceur")
                 marketValueChangedSignal("btcgbp")
@@ -2752,7 +2771,7 @@ ApplicationWindow {
         id: explorerTimer1
         interval: 15000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 && inActive == 0
         onTriggered:  {
             timerCount = timerCount + 1
             if (timerCount == 4) {
@@ -2802,7 +2821,7 @@ ApplicationWindow {
         id: loginTimer
         interval: 30000
         repeat: true
-        running: false //sessionStart == 1
+        running: sessionStart == 1
 
         onTriggered: {
             if (interactionTracker == 1) {
@@ -2813,9 +2832,11 @@ ApplicationWindow {
                 sessionTime = sessionTime +1
                 if (sessionTime >= 10){
                     sessionTime = 0
-                    if (standBy == 0) {
-                        standBy = 1
-                        mainRoot.push("../StandBy.qml")
+                    if (inActive == 0) {
+                        inActive = 1
+                        status = "idle"
+                        xChatTypingSignal(myUsername,"addToOnline", status);
+                        //mainRoot.push("../StandBy.qml")
                     }
                 }
             }
@@ -2829,7 +2850,7 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            if (standBy == 0) {
+            if (inActive == 0) {
                 checkSessionId()
             }
         }

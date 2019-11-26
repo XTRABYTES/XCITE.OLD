@@ -76,11 +76,13 @@ Rectangle {
             color: darktheme == false? "#14161B" : "#F2F2F2"
         }
 
-        Image {
+        Label{
             id: closeQuote
-            source: 'qrc:/icons/mobile/close-icon_01_white.svg'
-            height: 9
-            fillMode: Image.PreserveAspectFit
+            text: xchatQuote == ""? "Close" : "Add quote"
+            font.family: xciteMobile.name
+            font.pixelSize: 16
+            font.capitalization: Font.SmallCaps
+            color: darktheme == false? "#14161B" : "#F2F2F2"
             anchors.verticalCenter: quoteBoxLabel.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: 10
@@ -103,6 +105,10 @@ Rectangle {
                 }
 
                 onClicked: {
+                    if (quoteText.text == "no quote added") {
+                        xchatQuote = ""
+                        quoteAdded = false
+                    }
                     xChatQuoteTracker = 0
                 }
             }

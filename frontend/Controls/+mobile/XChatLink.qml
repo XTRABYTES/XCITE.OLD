@@ -79,11 +79,13 @@ Rectangle {
             color: darktheme == false? "#14161B" : "#F2F2F2"
         }
 
-        Image {
+        Label{
             id: closeLink
-            source: 'qrc:/icons/mobile/close-icon_01_white.svg'
-            height: 9
-            fillMode: Image.PreserveAspectFit
+            text: linkText.text == ""? "Close" : "Add link"
+            font.family: xciteMobile.name
+            font.pixelSize: 16
+            font.capitalization: Font.SmallCaps
+            color: darktheme == false? "#14161B" : "#F2F2F2"
             anchors.verticalCenter: linkBoxLabel.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: 10
@@ -106,6 +108,14 @@ Rectangle {
                 }
 
                 onClicked: {
+                    if ((linkText.text).trim() != "") {
+                        xchatLink = linkText.text.trim()
+                        linkAdded = true
+                    }
+                    else {
+                        xchatLink = ""
+                        linkAdded = false
+                    }
                     xChatLinkTracker = 0
                 }
             }
@@ -127,17 +137,6 @@ Rectangle {
             font.pixelSize: 14
             mobile: 1
             deleteBtn: 0
-
-            onTextChanged: {
-                if ((linkText.text).trim() != "") {
-                    xchatLink = linkText.text
-                    linkAdded = true
-                }
-                else {
-                    xchatLink = ""
-                    linkAdded = false
-                }
-            }
         }
 
         Image {

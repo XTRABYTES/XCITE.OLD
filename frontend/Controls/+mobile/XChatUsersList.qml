@@ -16,37 +16,21 @@ import SortFilterProxyModel 0.2
 
 
 Rectangle {
-    width: 100
+    width: inviteTracker == 0? 120 : parent.width
     height: parent.height
     color: "transparent"
     clip: true
 
     property string tagging: ""
+    property string gameName: ""
 
     Component {
         id: userNames
 
         Rectangle {
             id: userRow
-            width: 120
-            height:{
-                if (inviteTracker == 1) {
-                    if (username === myUsername && (username == "" || status == "dnd" || status == "offline")) {
-                        0
-                    }
-                    else {
-                        35
-                    }
-                }
-                else {
-                    if (username != "") {
-                        35
-                    }
-                    else {
-                        0
-                    }
-                }
-            }
+            width: inviteTracker == 0? 120 : parent.width
+            height: inviteTracker == 1?((username === myUsername || username == "" || status == "dnd" || status == "offline")? 0 : 35):(username != ""? 35 : 0)
             color: "transparent"
             clip: true
 
@@ -96,6 +80,52 @@ Rectangle {
                 anchors.verticalCenter: userName.verticalCenter
                 color: status == "online"? "#4BBE2E" : (status == "idle"? "#F7931A" : "#E55541")
                 visible: status !== "dnd"
+            }
+
+            Label {
+                id: drawedGames
+                text: inviteTracker == 1 ? getScore(username, gameName, "draw") : ""
+                font.pixelSize: 12
+                font.family: xciteMobile.name
+                color: themecolor
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.right
+                anchors.horizontalCenterOffset: -15
+                visible: inviteTracker == 1
+            }
+
+            Label {
+                id: lostGames
+                text: inviteTracker == 1 ? getScore(username, gameName, "lost") : ""
+                font.pixelSize: 12
+                font.family: xciteMobile.name
+                color: themecolor
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.right
+                anchors.horizontalCenterOffset: -55
+                visible: inviteTracker == 1
+            }
+
+            Label {
+                id: wonGames
+                text: inviteTracker == 1 ? getScore(username, gameName, "win") : ""
+                font.pixelSize: 12
+                font.family: xciteMobile.name
+                color: themecolor
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.right
+                anchors.horizontalCenterOffset: -95
+                visible: inviteTracker == 1
+            }
+
+            Rectangle {
+                id: divider
+                width: parent.width
+                height: 1
+                color: "#C6C6C6"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.bottom
+                visible: inviteTracker == 1
             }
 
             Rectangle {

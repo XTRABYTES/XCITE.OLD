@@ -33,7 +33,7 @@ Rectangle {
     onStateChanged: {
         detectInteraction()
         if (inviteTracker === 1) {
-
+            invitedPlayer = ""
         }
     }
 
@@ -101,7 +101,7 @@ Rectangle {
     Label {
         id: onlinePLayers
         text: "Online players"
-        font.pixelSize: 20
+        font.pixelSize: 16
         font.family: xciteMobile.name
         font.bold: true
         color: themecolor
@@ -109,6 +109,45 @@ Rectangle {
         anchors.topMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 28
+    }
+
+    Label {
+        id: drawedGames
+        text: "D"
+        anchors.horizontalCenter: parent.right
+        anchors.horizontalCenterOffset: -43
+        anchors.top: gameLabel.bottom
+        anchors.topMargin: 10
+        font.pixelSize: 16
+        font.family: "Brandon Grotesque"
+        font.capitalization: Font.AllUppercase
+        color: themecolor
+    }
+
+    Label {
+        id: lostGames
+        text: "L"
+        anchors.horizontalCenter: parent.right
+        anchors.horizontalCenterOffset: -83
+        anchors.top: gameLabel.bottom
+        anchors.topMargin: 10
+        font.pixelSize: 16
+        font.family: "Brandon Grotesque"
+        font.capitalization: Font.AllUppercase
+        color: themecolor
+    }
+
+    Label {
+        id: wonGames
+        text: "W"
+        anchors.horizontalCenter: parent.right
+        anchors.horizontalCenterOffset: -123
+        anchors.top: gameLabel.bottom
+        anchors.topMargin: 10
+        font.pixelSize: 16
+        font.family: "Brandon Grotesque"
+        font.capitalization: Font.AllUppercase
+        color: themecolor
     }
 
     Rectangle {
@@ -122,7 +161,7 @@ Rectangle {
 
     Rectangle {
         id: userPicklistArea
-        width: 120
+        width: parent.width - 56
         height: 200
         color: "transparent"
         anchors.top: divider.bottom
@@ -133,30 +172,8 @@ Rectangle {
             id: myXchatUsers
             anchors.top: parent.top
             anchors.left: parent.left
+            gameName: gameName
         }
-    }
-
-    Label {
-        id: selectedLabel
-        text: "Selected player:"
-        font.pixelSize: 16
-        font.family: "Brandon Grotesque"
-        color: themecolor
-        anchors.horizontalCenter: parent.right
-        anchors.horizontalCenterOffset: -(((parent.width - 176)/2)+28)
-        anchors.bottom: userPicklistArea.verticalCenter
-    }
-
-    Label {
-        id: selectedPlayer
-        text: invitedPlayer
-        font.pixelSize: 16
-        font.family: "Brandon Grotesque"
-        font.capitalization: Font.AllUppercase
-        color: maincolor
-        anchors.horizontalCenter: parent.right
-        anchors.horizontalCenterOffset: -(((parent.width - 176)/2)+28)
-        anchors.top: selectedLabel.bottom
     }
 
     Rectangle {
@@ -167,7 +184,7 @@ Rectangle {
         anchors.topMargin: 30
         anchors.horizontalCenter: parent.horizontalCenter
         border.color: invitedPlayer !== ""? maincolor : "#727272"
-        border.width: 2
+        border.width: 1
         color: "transparent"
         opacity: invitedPlayer !== ""? 1 : 0.5
 
@@ -175,51 +192,62 @@ Rectangle {
             anchors.fill: parent
 
             onPressed: {
-                if (invitedPlayer !== "") {
+                if (invitedPlayer !== "" || getUserStatus(invitedPlayer) === "offline" || getUserStatus(invitedPlayer) === "dnd") {
                     parent.border.color = themecolor
-                    inviteButtonText.color = themecolor
+                    inviteButton.border.color = invitedPlayer !== ""? themecolor : "#727272"
+                    inviteButtonText.color = invitedPlayer !== ""? themecolor : "#727272"
                     click01.play()
                     detectInteraction()
                 }
             }
 
             onReleased: {
-                if (invitedPlayer !== "") {
+                if (invitedPlayer !== "" || getUserStatus(invitedPlayer) === "online" || getUserStatus(invitedPlayer) === "idle") {
                     parent.border.color = maincolor
-                    inviteButtonText.color = maincolor
+                    inviteButton.border.color = invitedPlayer !== ""? maincolor : "#727272"
+                    inviteButtonText.color = invitedPlayer !== ""? themecolor : "#727272"
                 }
             }
 
             onCanceled: {
-                if (invitedPlayer !== "") {
+                if (invitedPlayer !== "" || getUserStatus(invitedPlayer) === "online" || getUserStatus(invitedPlayer) === "idle") {
                     parent.border.color = maincolor
-                    inviteButtonText.color = maincolor
+                    inviteButton.border.color = invitedPlayer !== ""? maincolor : "#727272"
+                    inviteButtonText.color = invitedPlayer !== ""? themecolor : "#727272"
                 }
             }
 
             onClicked: {
-                if (invitedPlayer !== "") {
+                if (invitedPlayer !== "" || getUserStatus(invitedPlayer) === "online" || getUserStatus(invitedPlayer) === "idle") {
                     if (xChatConnection) {
                         if (gameName === "ttt") {
                             inviteSend = 1
                             console.log("request new game ID for tic tac toe")
-                            tttcreateGameId(myUsername, invitedPlayer)
+                            tttcreateGameId(myUsername, invitedPlayer);
+                            invitedPlayer = ""
+                            inviteButton.border.color = invitedPlayer !== ""? maincolor : "#727272"
+                            inviteButtonText.color = invitedPlayer !== ""? themecolor : "#727272"
                         }
                     }
                     else {
                         networkError = 1
                     }
                 }
+                if (getUserStatus(invitedPlayer) === "offline" || getUserStatus(invitedPlayer) === "dnd") {
+                    playerNotAvailable = 1
+                }
             }
         }
 
         Text {
             id: inviteButtonText
-            text: "INVITE " + invitedPlayer
+            text: "INVITE <font color='#0ED8D2'>" + invitedPlayer + "</font>"
             font.family: "Brandon Grotesque"
             font.pointSize: 16
-            color: invitedPlayer !== ""? maincolor : "#727272"
+            color: invitedPlayer !== ""? themecolor : "#727272"
             font.bold: true
+            font.capitalization: Font.AllUppercase
+            font.letterSpacing: 2
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
         }
@@ -311,7 +339,7 @@ Rectangle {
         Item {
             id: notification
             width: notificationText.width + 15
-            height: notificationIcon.height
+            height: notificationText.height
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -319,7 +347,7 @@ Rectangle {
                 id: notificationText
                 text: "Invitation sent"
                 color: "#F2F2F2"
-                font.pixelSize: 12
+                font.pixelSize: 16
                 font.family: xciteMobile.name
                 anchors.verticalCenter: notification.verticalCenter
                 anchors.horizontalCenter: notification.horizontalCenter

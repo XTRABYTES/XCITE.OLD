@@ -56,7 +56,7 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
-                    enabled: tttFinished == true? false : (online == false? (played == false? true : false) : (played == true? false : (tttYourTurn == false? false : true)))
+                    enabled: tttFinished == true? false : (online == false? (played == false? true : false) : (tttYourTurn == false? (played == true? true: false) : true))
 
                     onClicked: {
                         console.log("clicked button nr: " + number)
@@ -70,14 +70,14 @@ Rectangle {
                                 var opponent = findOpponent(tttCurrentGame)
                                 var status = getUserStatus(opponent)
                                 if (status === "online" || status === "idle") {
-                                var lastMove = findLastMove("ttt", tttCurrentGame);
-                                var lastMoveID = findLastMoveID("ttt", tttCurrentGame)
-                                if(lastMove !== "") {
-                                    console.log("confirm previous move")
-                                    confirmGameSend(myUsername, "ttt", tttCurrentGame, lastMove, lastMoveID);
-                                }
-                                console.log("send new move to the network")
-                                sendGameToQueue(myUsername, "ttt", tttCurrentGame, number);
+                                    var lastMove = findLastMove("ttt", tttCurrentGame);
+                                    var lastMoveID = findLastMoveID("ttt", tttCurrentGame)
+                                    if(lastMove !== "") {
+                                        console.log("confirm previous move")
+                                        confirmGameSend(myUsername, "ttt", tttCurrentGame, lastMove, lastMoveID);
+                                    }
+                                    console.log("send new move to the network")
+                                    sendGameToQueue(myUsername, "ttt", tttCurrentGame, number);
                                 }
                                 else {
                                     playerNotAvailable = 1
@@ -94,6 +94,7 @@ Rectangle {
         id: grid
         anchors.fill: parent
         cellWidth: parent.width/3; cellHeight: parent.width/3
+        boundsBehavior: Flickable.StopAtBounds
 
         model: tttButtonList
         delegate: buttonSquare
