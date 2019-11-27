@@ -131,6 +131,6 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        games.positionViewAtBeginning()
+        scores.positionViewAtBeginning()
     }
 }

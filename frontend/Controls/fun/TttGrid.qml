@@ -25,6 +25,10 @@ Rectangle {
     color: "transparent"
     clip :true
 
+    property bool newMove: false
+    property bool gamefinished: false
+    property int rounds: 60
+
     Component {
         id: buttonSquare
 
@@ -45,6 +49,30 @@ Rectangle {
                 visible: played
             }
 
+            Image {
+                id: resend
+                source: 'qrc:/icons/mobile/conversion-icon_01_light.svg'
+                width: 40
+                height: 40
+                fillMode: Image.PreserveAspectFit
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: played && !confirmed && !gamefinished
+            }
+
+            Timer {
+                id: resendTimer
+                interval: 40
+                repeat: rounds > 0
+                running: false
+
+                onTriggered: {
+                    rounds = rounds -1
+                    turn = turn + 6
+                    resend.rotation = turn
+                }
+            }
+
             Rectangle {
                 width: parent.width - 5
                 height: parent.height - 5
@@ -56,11 +84,12 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
-                    enabled: tttFinished == true? false : (online == false? (played == false? true : false) : (played == false? (tttYourTurn == false?  false : true) : false))
+                    enabled: tttFinished == true? false : (online == false? (played == false? true : false) : (played == false? (tttYourTurn == false?  false : true) : (confirmed == false? true : false)))
 
                     onClicked: {
                         console.log("clicked button nr: " + number)
                         tttGameStarted = true
+                        newMove = true
                         if (online == false) {
                             console.log("requesting new moveID")
                             tttGetMoveID(number)
@@ -70,6 +99,12 @@ Rectangle {
                                 var opponent = findOpponent(tttCurrentGame)
                                 var status = getUserStatus(opponent)
                                 if (status === "online" || status === "idle") {
+                                    resend.rotation = 0
+                                    if (played && !confirmed) {
+                                        turn = 0
+                                        rounds = 60
+                                        resendTimer.start()
+                                    }
                                     var lastMove = findLastMove("ttt", tttCurrentGame);
                                     var lastMoveID = findLastMoveID("ttt", tttCurrentGame)
                                     if(lastMove !== "") {

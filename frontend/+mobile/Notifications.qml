@@ -24,7 +24,6 @@ Rectangle {
     height: Screen.height
     color: bgcolor
 
-    property bool updatingWallets: false
     property int updateFailed: 0
 
     Text {
@@ -65,7 +64,7 @@ Rectangle {
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
-        visible: alertList.count > 1
+        visible: myNotifications.filteredCount > 0
 
         MouseArea {
             height: 20
@@ -79,43 +78,45 @@ Rectangle {
             }
 
             onClicked: {
-                if (updatingWallets == false) {
-                    alertList.clear();
-                    alertList.append({"date": "", "origin": "", "message": ""});
-                    checkNotifications()
-                    updatingWallets = true
-                    updateToAccount()
+                if (updatingWalletsNotif == false) {
+                    clearAlertList();
+                    checkNotifications();
+                    //updatingWalletsNotif = true
+                    //updateToAccount()
                     appsTracker = 0
                     selectedPage = "home"
                     mainRoot.pop()
                 }
             }
         }
-
+        /**
         Connections {
             target: UserSettings
 
             onSaveSucceeded: {
-                if (selectedPage == "notif" && updatingWallets == true) {
-                    updatingWallets == false
+                if (selectedPage == "notif" && updatingWalletsNotif == true) {
+                    updatingWalletsNotif == false
+                    appsTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
                 }
             }
 
             onSaveFailed: {
-                if (selectedPage == "notif" && updatingWallets == true) {
+                if (selectedPage == "notif" && updatingWalletsNotif == true) {
                     updateFailed = 1
-                    updatingWallets == false
+                    updatingWalletsNotif == false
                 }
             }
 
             onNoInternet: {
-                if (selectedPage == "notif" && updatingWallets == true) {
+                if (selectedPage == "notif" && updatingWalletsNotif == true) {
                     networkError = 1
                     updateFailed = 1
-                    updatingWallets == false
+                    updatingWalletsNotif == false
                 }
             }
-        }
+        }*/
     }
 
     Item {
@@ -206,8 +207,10 @@ Rectangle {
             }
 
             onClicked: {
-                selectedPage = "home"
-                mainRoot.pop()
+                if (updatingWalletsNotif == false) {
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
             }
         }
     }

@@ -195,7 +195,6 @@ Rectangle {
                 if (invitedPlayer !== "" || getUserStatus(invitedPlayer) === "offline" || getUserStatus(invitedPlayer) === "dnd") {
                     parent.border.color = themecolor
                     inviteButton.border.color = invitedPlayer !== ""? themecolor : "#727272"
-                    inviteButtonText.color = invitedPlayer !== ""? themecolor : "#727272"
                     click01.play()
                     detectInteraction()
                 }
@@ -205,7 +204,6 @@ Rectangle {
                 if (invitedPlayer !== "" || getUserStatus(invitedPlayer) === "online" || getUserStatus(invitedPlayer) === "idle") {
                     parent.border.color = maincolor
                     inviteButton.border.color = invitedPlayer !== ""? maincolor : "#727272"
-                    inviteButtonText.color = invitedPlayer !== ""? themecolor : "#727272"
                 }
             }
 
@@ -213,7 +211,6 @@ Rectangle {
                 if (invitedPlayer !== "" || getUserStatus(invitedPlayer) === "online" || getUserStatus(invitedPlayer) === "idle") {
                     parent.border.color = maincolor
                     inviteButton.border.color = invitedPlayer !== ""? maincolor : "#727272"
-                    inviteButtonText.color = invitedPlayer !== ""? themecolor : "#727272"
                 }
             }
 
@@ -225,8 +222,6 @@ Rectangle {
                             console.log("request new game ID for tic tac toe")
                             tttcreateGameId(myUsername, invitedPlayer);
                             invitedPlayer = ""
-                            inviteButton.border.color = invitedPlayer !== ""? maincolor : "#727272"
-                            inviteButtonText.color = invitedPlayer !== ""? themecolor : "#727272"
                         }
                     }
                     else {

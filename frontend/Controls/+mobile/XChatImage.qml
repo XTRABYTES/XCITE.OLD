@@ -130,7 +130,7 @@ Rectangle {
                     else {
                         checkImageFormat(imageText.text)
                         if (formatError == false) {
-                            xchatImage = ""
+                            xchatImage = imageText.text
                             imageAdded = true
                             xChatImageTracker = 0
                         }

@@ -137,6 +137,10 @@ ApplicationWindow {
 
         xChatServers.clear();
 
+        alertList.clear();
+        alertList.append({"date": "", "origin": "", "message": "", "remove": true});
+
+
         marketValueChangedSignal("btcusd");
         marketValueChangedSignal("btceur");
         marketValueChangedSignal("btcgbp");
@@ -378,6 +382,7 @@ ApplicationWindow {
     property string notificationDate: ""
     property bool walletAdded: false
     property bool alert: false
+    property bool updatingWalletsNotif: false
     property bool testNet: false
     property bool saveCurrency: false
     property int oldCurrency: 0
@@ -469,7 +474,9 @@ ApplicationWindow {
     property bool tttGameStarted: false
     property bool tttYourTurn: false
     property bool tttFinished: false
+    property bool tttquit: false
     property string tttCurrentGame: ""
+    property string tttPlayer:""
     property bool alertTtt: false
     property int gameError: 0
     property bool loadingGame: false
@@ -533,6 +540,12 @@ ApplicationWindow {
     signal sendGameInvite(string user, string opponent, string game, string gameID)
     signal confirmGameInvite(string user, string opponent, string game, string gameID, string accept)
 
+    onTttCurrentGameChanged: {
+        if (tttCurrentGame != "") {
+            tttPlayer = findOpponent(tttCurrentGame)
+        }
+    }
+
     // functions
     function openApplication(app) {
         if (app === "X-CHAT") {
@@ -578,7 +591,7 @@ ApplicationWindow {
 
                             walletList.setProperty(i, "balance", newBalance)
                             balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label), "remove": false})
                             alert = true
                             if (standBy == 1) {
                                 walletUpdate(walletList.get(i).name, walletList.get(i).label, balanceAlert)
@@ -619,7 +632,7 @@ ApplicationWindow {
                         if(pendingList.get(i).check >= 40) {
                             var addressname = getLabelAddress(coin, address)
                             var cancelAlert = "transaction canceled: " + txid
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname})
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
                             alert = true
                             updatePending(coin, address, txid, "true")
                         }
@@ -1019,12 +1032,25 @@ ApplicationWindow {
     }
 
     function checkNotifications() {
-        if (alertList.count > 1) {
+        var count = 0
+        for (var i = 0; i < alertList.count; i ++) {
+            if(alertList.get(i).remove === false) {
+                count = count +1
+            }
+        }
+        if (count > 0) {
             alert = true
         }
         else {
             alert = false
         }
+    }
+
+    function clearAlertList() {
+        for (var i = 0; i < alertList.count; i ++) {
+            alertList.setProperty(i, "remove", true)
+        }
+        alert = false
     }
 
     function setMarketValue(currency, currencyValue) {
@@ -1309,7 +1335,7 @@ ApplicationWindow {
                 if(player !== myUsername && loadingGame !== true) {
                     notification.play()
                     if (tttTracker !== 1) {
-                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " has made a new move in Tic Tact Toe in game #" + gameNR, "origin" : "X-GAMES"})
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " has made a new move in Tic Tact Toe in game #" + gameNR, "origin" : "X-GAMES", "remove": false})
                         alert = true
                     }
                 }
@@ -1383,12 +1409,12 @@ ApplicationWindow {
         if(!exists) {
             notification.play()
             gamesList.append({"game": game, "gameID": gameID, "invited": true, "accepted": false, "started": false, "finished": false})
-            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " has has invited you to play a game of " + gameName + " #" + gameNR, "origin" : "X-GAMES"})
+            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " has has invited you to play a game of " + gameName + " #" + gameNR, "origin" : "X-GAMES", "remove": false})
             alert = true
         }
         else {
             notification.play()
-            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " send you a reminder for his invite to play " + gameName + " #" + gameNR, "origin" : "X-GAMES"})
+            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " send you a reminder for his invite to play " + gameName + " #" + gameNR, "origin" : "X-GAMES", "remove": false})
             alert = true
         }
     }
@@ -1406,7 +1432,7 @@ ApplicationWindow {
                     console.log("game accepted")
                     if (user !== myUsername) {
                         notification.play()
-                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " accepted your invite for " + gameName, "origin" : "X-GAMES"})
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " accepted your invite for " + gameName, "origin" : "X-GAMES", "remove": false})
                         alert = true
                     }
                     else {
@@ -1418,7 +1444,7 @@ ApplicationWindow {
                     console.log("game rejected")
                     if (user !== myUsername) {
                         notification.play()
-                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " did not accept your invite for " + gameName, "origin" : "X-GAMES"})
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " did not accept your invite for " + gameName, "origin" : "X-GAMES", "remove": false})
                         alert = true
                     }
                     else {
@@ -1526,6 +1552,22 @@ ApplicationWindow {
         }
         console.log("current game is accepted: " + accepted)
         return accepted;
+    }
+
+    function isFinished(game, gameID) {
+        var finished = false
+        for (var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                if (gamesList.get(i).finished === true) {
+                    finished = true
+                }
+                else {
+                    finished = false
+                }
+            }
+        }
+        console.log("current game is finished: " + finished)
+        return finished;
     }
 
     function initializeTtt() {
@@ -2165,7 +2207,8 @@ ApplicationWindow {
                     updateScore("ttt", opponent, 0, 0, 1)
                 }
             }
-            tttGetScore()
+            loadScore("ttt", tttPlayer)
+            tttCurrentGame = ""
         }
 
         onPlayersChoice: {
@@ -2251,9 +2294,9 @@ ApplicationWindow {
                         gamesList.setProperty(i, "accepted", true)
                     }
                 }
-                tttCurrentGame = gameID
-                tttYourTurn = true
-                playGame("ttt", tttCurrentGame)
+                //tttCurrentGame = gameID
+                //tttYourTurn = true
+                //playGame("ttt", tttCurrentGame)
             }
         }
 
@@ -2288,14 +2331,14 @@ ApplicationWindow {
                     if (messageObject.tag === 1) {
                         notification.play()
                         if (xchatTracker !== 1) {
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : messageObject.author + " has mentioned you", "origin" : "X-CHAT"})
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : messageObject.author + " has mentioned you", "origin" : "X-CHAT", "remove": false})
                             alert = true
                         }
                     }
                     if (messageObject.tag === 2) {
                         notification.play()
                         if (xchatTracker !== 1) {
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT"})
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT", "remove": false})
                             alert = true
                         }
                     }
@@ -2462,6 +2505,7 @@ ApplicationWindow {
             date: ""
             message: ""
             origin: ""
+            remove: false
         }
     }
 
@@ -2978,6 +3022,7 @@ ApplicationWindow {
                         else if (tttTracker == 1) {
                             if (tttHubTracker == 1) {
                                 tttHubTracker = 0
+                                tttquit = false
                             }
                             else if (leaderBoardTracker == 1) {
                                 leaderBoardTracker = 0
@@ -3052,7 +3097,7 @@ ApplicationWindow {
                         mainRoot.pop()
                     }
                 }
-                else if (selectedPage == "notif") {
+                else if (selectedPage == "notif" && updatingWalletsNotif == false) {
                     selectedPage = "home"
                     mainRoot.pop()
                 }

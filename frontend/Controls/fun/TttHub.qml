@@ -30,16 +30,9 @@ Rectangle {
     anchors.top: parent.top
     visible: tttHubModal.anchors.topMargin < Screen.height
 
-    onStateChanged: {
-        detectInteraction()
-        if (tttHubTracker === 1) {
-            newGameSelected = false
-            myUnfinished.newGame =false
-        }
-    }
-
     property bool newGameSelected: false
     property bool myInvites: false
+    property alias unfinishedNewGame: myUnfinished.newGame
 
     LinearGradient {
         anchors.fill: parent

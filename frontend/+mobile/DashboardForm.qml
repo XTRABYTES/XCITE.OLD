@@ -1573,7 +1573,7 @@ Item {
                     color: "#E55541"
                     anchors.horizontalCenter: parent.right
                     anchors.verticalCenter: parent.top
-                    visible: alertList.count > 1
+                    visible: alert == true
                 }
 
                 MouseArea {

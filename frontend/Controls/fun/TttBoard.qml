@@ -44,6 +44,7 @@ Rectangle {
     property bool showResult: false
     property bool accepted: isAccepted("ttt", tttCurrentGame)
 
+
     LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
@@ -213,7 +214,7 @@ Rectangle {
 
     Label {
         id: gameNr
-        text: "#" + findGameNr(tttCurrentGame)
+        text: tttCurrentGame != ""? "#" + findGameNr(tttCurrentGame) : "no game selected"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: opponentBox.bottom
         anchors.topMargin: 5
@@ -236,6 +237,7 @@ Rectangle {
             id: myTttGrid
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
+            gamefinished: finished
         }
     }
 
@@ -336,7 +338,7 @@ Rectangle {
 
     Label {
         id: turnLabel
-        text: tttYourTurn === true? "Your turn" : "Opponents turn"
+        text: tttCurrentGame != ""? (tttYourTurn === true? "Your turn" : "Opponents turn") : "---"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: board.bottom
         anchors.topMargin: 5
@@ -357,6 +359,7 @@ Rectangle {
         font.pixelSize: 16
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: tttCurrentGame != ""
     }
 
     Rectangle {
@@ -369,6 +372,7 @@ Rectangle {
         anchors.topMargin: 10
         border.width: 1
         border.color: maincolor
+        visible: tttCurrentGame != ""
 
         Item {
             id: wonBox
@@ -471,7 +475,7 @@ Rectangle {
         border.color: maincolor
         border.width: 2
         color: "transparent"
-        visible: finished == true
+        visible: finished == true && tttquit == false
 
         MouseArea {
             anchors.fill: parent
@@ -494,13 +498,27 @@ Rectangle {
             }
 
             onClicked: {
-                var opponent = findOpponent(tttCurrentGame)
-                if (finished == true && opponent === "computer") {
-                    tttcreateGameId(myUsername,opponent)
+                if (finished == true) {
+                    var exists = false
+                    for (var i = 0; i < gamesList.count; i ++) {
+                        if (gamesList.get(i).game === "ttt") {
+                            var opponent = findOpponent(gamesList.get(i).gameID)
+                            if (opponent === "computer") {
+                                exists = true
+                                if (gameList.get(i).finished === true) {
+                                    tttcreateGameId(myUsername,opponent)
+                                }
+                            }
+                        }
+                    }
+                    if (!exists) {
+                        tttcreateGameId(myUsername,"computer")
+                    }
+                    tttHubTracker = 1
                 }
-                tttHubTracker = 1
             }
         }
+
 
         Text {
             id: newGameButtonText
@@ -524,7 +542,7 @@ Rectangle {
         border.color: maincolor
         border.width: 2
         color: "transparent"
-        visible: finished == false && tttGameStarted == true
+        visible: finished == false && tttGameStarted == true && tttCurrentGame != ""
 
         MouseArea {
             anchors.fill: parent
@@ -554,6 +572,7 @@ Rectangle {
                     tttResetScore(0, 0, 0)
                     tttGetScore()
                     finished = true
+                    tttquit = true
                 }
                 else {
                     tttTracker = 0
@@ -587,12 +606,17 @@ Rectangle {
 
     Timer {
         id: gameAccepted
-        interval: 10000
+        interval: 5000
         repeat: true
         running: tttTracker == 1
 
         onTriggered: {
-            accepted = isAccepted("ttt", tttCurrentGame)
+            if (tttCurrentGame != "") {
+                accepted = isAccepted("ttt", tttCurrentGame)
+            }
+            else {
+                accepted = false
+            }
         }
     }
 
@@ -605,6 +629,7 @@ Rectangle {
                 showResult = true
                 resultTimer.start()
                 finished = true
+                tttquit = false
                 wonGames = win
                 lostGames = loose
                 drawedGames = draw
@@ -673,12 +698,37 @@ Rectangle {
         anchors.left: parent.left
         anchors.top: parent.top
 
+        onStateChanged: {
+            detectInteraction()
+            if (tttHubTracker == 0) {
+                if (tttCurrentGame === "") {
+                    for (var i = 0; i < gamesList.count; i ++) {
+                        if (gamesList.get(i).game === "ttt") {
+                            var opponent = findOpponent(gamesList.get(i).gameID)
+                            if (opponent === "computer") {
+                                tttCurrentGame = gamesList.get(i).gameID
+                                tttYourTurn = true
+                                playGame("ttt", tttCurrentGame)
+                            }
+                        }
+                    }
+                }
+                accepted = isAccepted("ttt", tttCurrentGame)
+                finished = isFinished("ttt", tttCurrentGame)
+            }
+            else if (tttHubTracker == 1) {
+                newGameSelected = false
+                unfinishedNewGame =false
+            }
+        }
+
         onNewGameSelectedChanged: {
             if (newGameSelected === true) {
                 accepted = isAccepted("ttt", tttCurrentGame)
-                finished = false
+                finished = isFinished("ttt", tttCurrentGame)
                 if (!gameStarted("ttt", tttCurrentGame)){
-                    tttGameStarted == false
+                    tttGameStarted = false
+                    tttquit = false
                 }
             }
         }

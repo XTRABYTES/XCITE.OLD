@@ -23,6 +23,9 @@ Rectangle {
 
     property string tagging: ""
     property string gameName: ""
+    property string win: ""
+    property string lost: ""
+    property string drawed: ""
 
     Component {
         id: userNames
@@ -34,10 +37,23 @@ Rectangle {
             color: "transparent"
             clip: true
 
+            Timer {
+                id: leaderboardTimer
+                interval: 10000
+                repeat: true
+                running: inviteTracker == 1
+
+                onTriggered: {
+                    win = getScore(username, gameName, "lost")
+                    lost = getScore(username, gameName, "win")
+                    drawed = getScore(username, gameName, "draw")
+                }
+            }
+
             Label {
                 id: userName
                 text: username
-                color: "#F2F2F2"
+                color: inviteTracker ==0? "#F2F2F2": themecolor
                 font.pixelSize: 14
                 font.family: xciteMobile.name
                 anchors.verticalCenter: parent.verticalCenter
@@ -84,7 +100,7 @@ Rectangle {
 
             Label {
                 id: drawedGames
-                text: inviteTracker == 1 ? getScore(username, gameName, "draw") : ""
+                text: inviteTracker == 1 ? drawed : ""
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 color: themecolor
@@ -96,7 +112,7 @@ Rectangle {
 
             Label {
                 id: lostGames
-                text: inviteTracker == 1 ? getScore(username, gameName, "win") : ""
+                text: inviteTracker == 1 ? lost : ""
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 color: themecolor
@@ -108,7 +124,7 @@ Rectangle {
 
             Label {
                 id: wonGames
-                text: inviteTracker == 1 ? getScore(username, gameName, "lost") : ""
+                text: inviteTracker == 1 ? win : ""
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 color: themecolor
