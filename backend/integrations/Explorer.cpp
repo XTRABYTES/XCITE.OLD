@@ -316,9 +316,9 @@ void Explorer::getTransactionStatusSlot(QByteArray response, QMap<QString,QVaria
 
 bool Explorer::checkInternet(QString url){
     bool internetStatus = false;
+    QTimer timeout;
 
     QEventLoop loop;
-        QTimer timeout;
         timeout.setSingleShot(true);
         timeout.start(6000);
         connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
@@ -333,7 +333,7 @@ bool Explorer::checkInternet(QString url){
         DownloadManagerHandler(&urlObj);
     loop.exec();
     disconnect(connectionHandler);
-
+     timeout.deleteLater();
     return internetStatus;
 }
 

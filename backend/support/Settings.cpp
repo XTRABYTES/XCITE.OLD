@@ -103,9 +103,9 @@ void Settings::onClearAllSettings() {
 bool Settings::UserExists(QString username){
     if(checkInternet("http://37.59.57.212:8080")){
         bool userExists = false;
+        QTimer timeout;
 
         QEventLoop loop;
-        QTimer timeout;
         timeout.setSingleShot(true);
         timeout.start(6000);
         connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
@@ -119,9 +119,10 @@ bool Settings::UserExists(QString username){
             URLObject urlObj {QUrl(url)};
             urlObj.addProperty("route","userExistsSlot");
             DownloadManagerHandler(&urlObj);
+
         loop.exec();
         disconnect(connectionHandler);
-        qDebug() << "User exists? " + QString::number(userExists);
+        timeout.deleteLater();
         return userExists;
     }
     else {
@@ -142,9 +143,9 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
     bool success = false;
     QString payload = "";
     QObject context;
+    QTimer timeout;
 
     QEventLoop loop;
-        QTimer timeout;
         timeout.setSingleShot(true);
         timeout.start(6000);
         connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
@@ -159,9 +160,12 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
         urlObj.addProperty("POST",true);
         urlObj.addProperty("payload",payloadToSend);
         DownloadManagerHandler(&urlObj);
+
     loop.exec();
 
     disconnect(connectionHandler);
+    timeout.deleteLater();
+
 
 
     return payload;
@@ -1241,9 +1245,9 @@ void Settings::downloadImage(QString imageUrl) {
 bool Settings::checkInternet(QString url){
 
     bool internetStatus = false;
+    QTimer timeout;
 
     QEventLoop loop;
-        QTimer timeout;
         timeout.setSingleShot(true);
         timeout.start(6000);
         connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
@@ -1256,8 +1260,10 @@ bool Settings::checkInternet(QString url){
         URLObject urlObj {QUrl(url)};
         urlObj.addProperty("route","checkInternetSlot");
         DownloadManagerHandler(&urlObj);
+
     loop.exec();
     disconnect(connectionHandler);
+    timeout.deleteLater();
 
     return internetStatus;
 }

@@ -95,9 +95,9 @@ void MarketValue::setMarketValue(const QString &check, const QString &currency, 
 
 bool MarketValue::checkInternet(QString url){
     bool internetStatus = false;
+    QTimer timeout;
 
     QEventLoop loop;
-        QTimer timeout;
         timeout.setSingleShot(true);
         timeout.start(6000);
         connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
@@ -109,8 +109,10 @@ bool MarketValue::checkInternet(QString url){
         URLObject urlObj {QUrl(url)};
         urlObj.addProperty("route","checkInternetSlot");
         DownloadManagerHandler(&urlObj);
+
     loop.exec();
     disconnect(connectionHandler);
+    timeout.deleteLater();
 
     return internetStatus;
 }
