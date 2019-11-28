@@ -331,6 +331,8 @@ bool Explorer::checkInternet(QString url){
         URLObject urlObj {QUrl(url)};
         urlObj.addProperty("route","checkInternetSlot");
         DownloadManagerHandler(&urlObj);
+        timeout->deleteLater();
+
     loop.exec();
     disconnect(connectionHandler);
 

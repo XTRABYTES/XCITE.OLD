@@ -119,6 +119,8 @@ bool Settings::UserExists(QString username){
             URLObject urlObj {QUrl(url)};
             urlObj.addProperty("route","userExistsSlot");
             DownloadManagerHandler(&urlObj);
+            timeout->deleteLater();
+
         loop.exec();
         disconnect(connectionHandler);
         qDebug() << "User exists? " + QString::number(userExists);
@@ -159,6 +161,8 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
         urlObj.addProperty("POST",true);
         urlObj.addProperty("payload",payloadToSend);
         DownloadManagerHandler(&urlObj);
+        timeout->deleteLater();
+
     loop.exec();
 
     disconnect(connectionHandler);
@@ -1256,6 +1260,7 @@ bool Settings::checkInternet(QString url){
         URLObject urlObj {QUrl(url)};
         urlObj.addProperty("route","checkInternetSlot");
         DownloadManagerHandler(&urlObj);
+        timeout->deleteLater();
     loop.exec();
     disconnect(connectionHandler);
 
