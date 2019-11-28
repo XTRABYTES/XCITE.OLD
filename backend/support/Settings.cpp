@@ -105,11 +105,11 @@ bool Settings::UserExists(QString username){
         bool userExists = false;
 
         QEventLoop loop;
-            QTimer *timeout = new QTimer();
-            timeout->setSingleShot(true);
-            timeout->start(6000);
-            connect(timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
-         auto connectionHandler =  connect(this, &Settings::userExistsSignal, [&userExists,&loop](bool checked) {
+        QTimer timeout;
+        timeout.setSingleShot(true);
+        timeout.start(6000);
+        connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
+        auto connectionHandler =  connect(this, &Settings::userExistsSignal, [&userExists,&loop](bool checked) {
                 userExists = checked;
                 loop.quit();
 
@@ -119,8 +119,6 @@ bool Settings::UserExists(QString username){
             URLObject urlObj {QUrl(url)};
             urlObj.addProperty("route","userExistsSlot");
             DownloadManagerHandler(&urlObj);
-            timeout->deleteLater();
-
         loop.exec();
         disconnect(connectionHandler);
         qDebug() << "User exists? " + QString::number(userExists);
@@ -146,10 +144,10 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
     QObject context;
 
     QEventLoop loop;
-        QTimer *timeout = new QTimer();
-        timeout->setSingleShot(true);
-        timeout->start(6000);
-        connect(timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
+        QTimer timeout;
+        timeout.setSingleShot(true);
+        timeout.start(6000);
+        connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
         auto connectionHandler = connect(this, &Settings::apiPostSignal, &context,[&payload, &success, &loop](bool status,QByteArray payloadIncoming) {
             payload = QString(payloadIncoming);
             success = status;
@@ -161,8 +159,6 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
         urlObj.addProperty("POST",true);
         urlObj.addProperty("payload",payloadToSend);
         DownloadManagerHandler(&urlObj);
-        timeout->deleteLater();
-
     loop.exec();
 
     disconnect(connectionHandler);
@@ -1247,10 +1243,10 @@ bool Settings::checkInternet(QString url){
     bool internetStatus = false;
 
     QEventLoop loop;
-        QTimer *timeout = new QTimer();
-        timeout->setSingleShot(true);
-        timeout->start(6000);
-        connect(timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
+        QTimer timeout;
+        timeout.setSingleShot(true);
+        timeout.start(6000);
+        connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
         auto connectionHandler = connect(this, &Settings::internetStatusSignal, [&internetStatus, &loop](bool checked) {
             internetStatus = checked;
             loop.quit();
@@ -1260,7 +1256,6 @@ bool Settings::checkInternet(QString url){
         URLObject urlObj {QUrl(url)};
         urlObj.addProperty("route","checkInternetSlot");
         DownloadManagerHandler(&urlObj);
-        timeout->deleteLater();
     loop.exec();
     disconnect(connectionHandler);
 
