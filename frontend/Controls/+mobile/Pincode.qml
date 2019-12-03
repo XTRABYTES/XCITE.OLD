@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: pincodeModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: pincodeTracker == 1? "up" : "down"
-    height: Screen.height
     color: darktheme == false? "#F7F7F7" : "#14161B"
     onStateChanged: detectInteraction()
 
@@ -68,7 +68,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: pincodeModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: pincodeModal; anchors.topMargin: pincodeModal.height}
         }
     ]
 
@@ -1136,7 +1136,7 @@ Rectangle {
     Item {
         id: bottomGradient
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

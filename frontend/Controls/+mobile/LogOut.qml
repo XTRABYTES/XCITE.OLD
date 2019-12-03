@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: logoutModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: (logoutTracker == 1 && goodbey == 0)? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -43,7 +43,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: logoutModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: logoutModal; anchors.topMargin: logoutModal.height}
         }
     ]
 
@@ -154,7 +154,7 @@ Rectangle {
 
         Item {
             id: buttons
-            width: parent.width - 56
+            width: appWidth - 56
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: logoutLabel.bottom

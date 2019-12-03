@@ -22,7 +22,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: xchatUsersModal
     state: xchatUserTracker == 1? "up" : "down"
-    height: Screen.height
+    height: appHeight
     color: "transparent"
     anchors.right: parent.right
     anchors.top: parent.top
@@ -34,7 +34,7 @@ Rectangle {
         State {
             name: "up"
             PropertyChanges { target: xchatUsersModal; anchors.rightMargin: 0}
-            PropertyChanges { target: xchatUsersModal; width: Screen.width}
+            PropertyChanges { target: xchatUsersModal; width: appWidth}
         },
         State {
             name: "down"

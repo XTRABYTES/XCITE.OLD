@@ -57,7 +57,7 @@ Rectangle {
 
             Rectangle {
                 id: msgBox
-                width: (0.85 * (Screen.width - 56))
+                width: (0.85 * (appWidth - 56))
                 anchors.top: parent.top
                 anchors.topMargin: 2
                 anchors.bottom: parent.bottom
@@ -400,10 +400,10 @@ Rectangle {
                 property int textCopied: 0
 
                 MouseArea {
-                    height: Screen.height
-                    width: Screen.width
-                    anchors.verticalCenter: Screen.verticalCenter
-                    anchors.horizontalCenter: Screen.horizontalCenter
+                    width: appWidth
+                    height: appHeight
+                    anchors.verticalCenter: xcite.verticalCenter
+                    anchors.horizontalCenter: xcite.horizontalCenter
 
                     onClicked: xChatClipBoard = 0
                 }

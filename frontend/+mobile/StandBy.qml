@@ -20,8 +20,8 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: standbyModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
     color: bgcolor
 
     Item {

@@ -191,5 +191,6 @@
         <file>Controls/fun/LeaderBoard.qml</file>
         <file>Controls/fun/LeaderBoardList.qml</file>
         <file>Controls/fun/PlayerNotAvailable.qml</file>
+        <file>Controls/+mobile/DeviceButtons.qml</file>
     </qresource>
 </RCC>

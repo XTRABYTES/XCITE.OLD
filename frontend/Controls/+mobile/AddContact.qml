@@ -20,11 +20,11 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addContactModal
-    width: Screen.width
-    state: addContactTracker == 1? "up" : "down"
-    height: Screen.height
-    color: bgcolor
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    state: addContactTracker == 1? "up" : "down"
+    color: bgcolor
     anchors.top: parent.top
 
     property int myTracker: addContactTracker
@@ -49,7 +49,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addContactModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addContactModal; anchors.topMargin: addContactModal.height}
         }
     ]
 
@@ -638,7 +638,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

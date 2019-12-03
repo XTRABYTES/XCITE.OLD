@@ -59,10 +59,10 @@ int main(int argc, char *argv[])
     QZXing::registerQMLImageProvider(engine);
     engine.addImportPath("qrc:/");
 
-#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+//#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
     QQmlFileSelector *selector = new QQmlFileSelector(&engine);
     selector->setExtraSelectors(QStringList() << "mobile");
-#endif
+//#endif
 
     // wire-up market value
     MarketValue marketValue;

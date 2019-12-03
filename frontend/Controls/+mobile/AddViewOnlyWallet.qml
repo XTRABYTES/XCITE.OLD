@@ -22,11 +22,11 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addWalletModal
-    width: Screen.width
-    state: viewOnlyTracker == 1? "up" : "down"
-    height: Screen.height
-    color: bgcolor
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    state: viewOnlyTracker == 1? "up" : "down"
+    color: bgcolor
     anchors.top: parent.top
 
     MouseArea {
@@ -40,7 +40,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addWalletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: addWalletModal.height}
         }
     ]
 
@@ -673,7 +673,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: 125
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -692,8 +692,8 @@ Rectangle {
 
     Item {
         z: 10
-        width: Screen.width
-        height: Screen.height
+        width: parent.width
+        height: parent.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         visible: scanQRTracker == 1

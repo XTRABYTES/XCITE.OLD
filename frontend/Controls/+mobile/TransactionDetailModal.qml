@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: transactionDetailModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: transactionDetailTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -44,7 +44,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: transactionDetailModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: transactionDetailModal; anchors.topMargin: transactionDetailModal.height}
         }
     ]
 
@@ -354,7 +354,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

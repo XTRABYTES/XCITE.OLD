@@ -20,8 +20,8 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: allWalletCards
-    width: Screen.width
-    height: parent.height - 75
+    width: appWidth
+    height: appHeight - 75
     color: "transparent"
 
     property alias cardSpacing: allCoins.spacing
@@ -32,7 +32,7 @@ Rectangle {
         Rectangle {
             id: currencyRow
             color: "transparent"
-            width: Screen.width
+            width: appWidth
             height: 100
             anchors.horizontalCenter: parent.horizontalCenter
 

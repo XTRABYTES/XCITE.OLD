@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: xvaultModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: xvaultTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -46,7 +46,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: xvaultModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: xvaultModal; anchors.topMargin: xvaultModal.height}
         }
     ]
 

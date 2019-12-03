@@ -22,7 +22,7 @@ Rectangle {
     id: serverError
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.top
-    width: Screen.width
+    width: appWidth
     state: networkError == 0? "up" : "down"
     color: "#E55541"
     clip: true
@@ -59,7 +59,7 @@ Rectangle {
 
     Label {
         id: serverErrorText
-        text: "A network error occured, please try again later."
+        text: "A network error occured."
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         color: "#F2F2F2"

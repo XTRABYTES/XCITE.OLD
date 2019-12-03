@@ -22,9 +22,9 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: xchatModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: xchatTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -74,7 +74,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: xchatModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: xchatModal; anchors.topMargin: xchatModal.height}
         }
     ]
 
@@ -222,7 +222,7 @@ Rectangle {
 
     Rectangle {
         id: msgWindow
-        width: Screen.width - 56
+        width: parent.width - 56
         anchors.top: xchatModalLabel.bottom
         anchors.topMargin: 5
         anchors.bottom: newMessagesBar.visible? newMessagesBar.top : sendText.top
@@ -264,7 +264,7 @@ Rectangle {
 
     Rectangle {
         id: newMessagesBar
-        width: Screen.width
+        width: parent.width
         height: 20
         color: "#6C6C6C"
         anchors.horizontalCenter: parent.horizontalCenter
@@ -682,7 +682,7 @@ Rectangle {
 
     Rectangle {
         id: userTagArea
-        width: Screen.width - 56
+        width: parent.width - 56
         height: myXchatTaglist.height + 25
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: sendText.top
@@ -757,7 +757,7 @@ Rectangle {
     Mobile.XChatTagList {
         id: myXchatTaglist
         z: 10
-        width: Screen.width - 56
+        width: parent.width - 56
         anchors.bottom: userTagArea.bottom
         anchors.horizontalCenter:parent.horizontalCenter
         visible: tagListTracker == 1 && xChatFilterResults > 0

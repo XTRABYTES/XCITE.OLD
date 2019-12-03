@@ -21,9 +21,9 @@ import "../Controls" as Controls
 
 Rectangle {
     id: changePassWordModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: changePasswordTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -48,7 +48,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: changePassWordModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: changePassWordModal; anchors.topMargin: changePassWordModal.height}
         }
     ]
 
@@ -592,7 +592,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 195 : 215
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

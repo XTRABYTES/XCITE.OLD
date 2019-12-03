@@ -18,9 +18,9 @@ import QtQuick.Layouts 1.3
 
 Item {
     id: replyModal
-    width: Screen.width
-    height: Screen.height
-    anchors.top: Screen.top
+    width: appWidth
+    height: appHeight
+    anchors.top: xcite.top
 
 
     property alias modalHeight: replyModalBody.height

@@ -21,10 +21,10 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: applications
-    width: parent.width
-    height: parent.height
-    anchors.top: parent.top
+    width: appWidth - 56
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
     color: "transparent"
 
     Component {

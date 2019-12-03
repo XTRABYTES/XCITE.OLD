@@ -336,5 +336,8 @@
         <file>icons/mobile/accept-icon_01.svg</file>
         <file>icons/mobile/decline-icon_01.svg</file>
         <file>icons/mobile/robot_bee_01.svg</file>
+        <file>icons/mobile/move-icon_01_blue.svg</file>
+        <file>icons/mobile/return-icon_01.svg</file>
+        <file>icons/mobile/minimize-icon_01_blue.svg</file>
     </qresource>
 </RCC>

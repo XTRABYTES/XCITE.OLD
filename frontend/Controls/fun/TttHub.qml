@@ -22,13 +22,13 @@ import "qrc:/Controls/fun" as Fun
 
 Rectangle {
     id: tttHubModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: tttHubTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    visible: tttHubModal.anchors.topMargin < Screen.height
+    visible: tttHubModal.anchors.topMargin < tttHubModal.height
 
     property bool newGameSelected: false
     property bool myInvites: false
@@ -52,7 +52,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: tttHubModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: tttHubModal; anchors.topMargin: height}
         }
     ]
 

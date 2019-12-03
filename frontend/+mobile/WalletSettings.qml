@@ -22,8 +22,10 @@ import "../Controls" as Controls
 Rectangle {
     id: backgroundSettings
     z: 1
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     color: darktheme == true? "#14161B" : "#FDFDFD"
 
    LinearGradient {
@@ -1209,7 +1211,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 215 : 235
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1281,6 +1283,11 @@ Rectangle {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
+    }
+
+    Controls.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
     }
 
     Controls.LogOut {

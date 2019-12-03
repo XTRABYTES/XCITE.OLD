@@ -21,9 +21,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addWalletModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: importKeyTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -39,7 +39,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addWalletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: addWalletModal.height}
         }
     ]
 
@@ -103,7 +103,7 @@ Rectangle {
 
     Rectangle {
         z: 2
-        width: Screen.width
+        width: parent.width
         height: 50
         color: bgcolor
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1069,7 +1069,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1088,8 +1088,8 @@ Rectangle {
 
     Item {
         z: 10
-        width: Screen.width
-        height: Screen.height
+        width: parent.width
+        height: parent.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         visible: scanQRTracker == 1

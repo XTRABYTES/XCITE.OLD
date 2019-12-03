@@ -19,8 +19,8 @@ import QtQuick.Window 2.2
 
 Rectangle {
     id: xchatImageModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -95,8 +95,8 @@ Rectangle {
     Image {
         id: largeImage
         source: xchatLargeImage
-        width: Screen.width - 56
-        height: Screen.height - 150
+        width: parent.width - 56
+        height: parent.height - 150
         fillMode: Image.PreserveAspectFit
         anchors.horizontalCenter: imageFrame.horizontalCenter
         anchors.verticalCenter: imageFrame.verticalCenter

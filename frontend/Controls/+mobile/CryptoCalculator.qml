@@ -20,8 +20,8 @@ import "qrc:/Controls" as Controls
 
 Item {
     id: calculatorModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
 
     Rectangle {
         width: parent.width
@@ -293,7 +293,7 @@ Item {
     Rectangle {
         id: xbyButton1
         height: 34
-        width: (Screen.width - 71) / 4
+        width: (parent.width - 71) / 4
         anchors.top: outputAmountTicker.bottom
         anchors.topMargin: 25
         anchors.left: inputAmount.left
@@ -329,7 +329,7 @@ Item {
     Rectangle {
         id: xfuelButton1
         height: 34
-        width: (Screen.width - 71) / 4
+        width: (parent.width - 71) / 4
         anchors.top: xbyButton1.top
         anchors.left: xbyButton1.right
         anchors.leftMargin: 5
@@ -365,7 +365,7 @@ Item {
     Rectangle {
         id: btcButton1
         height: 34
-        width: (Screen.width - 71) / 4
+        width: (parent.width - 71) / 4
         anchors.top: xbyButton1.top
         anchors.left: xfuelButton1.right
         anchors.leftMargin: 5
@@ -401,7 +401,7 @@ Item {
     Rectangle {
         id: usdButton1
         height: 34
-        width: (Screen.width - 71) / 4
+        width: (parent.width - 71) / 4
         anchors.top: xbyButton1.top
         anchors.left: btcButton1.right
         anchors.leftMargin: 5
@@ -437,7 +437,7 @@ Item {
     Rectangle {
         id: button1
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: xbyButton1.bottom
         anchors.topMargin: 20
         anchors.left: inputAmount.left
@@ -475,7 +475,7 @@ Item {
     Rectangle {
         id: button2
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button1.top
         anchors.left: button1.right
         anchors.leftMargin: 10
@@ -513,7 +513,7 @@ Item {
     Rectangle {
         id: button3
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button2.top
         anchors.left: button2.right
         anchors.leftMargin: 10
@@ -551,7 +551,7 @@ Item {
     Rectangle {
         id: button4
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button1.bottom
         anchors.topMargin: 10
         anchors.left: inputAmount.left
@@ -589,7 +589,7 @@ Item {
     Rectangle {
         id: button5
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button4.top
         anchors.left: button4.right
         anchors.leftMargin: 10
@@ -627,7 +627,7 @@ Item {
     Rectangle {
         id: button6
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button5.top
         anchors.left: button5.right
         anchors.leftMargin: 10
@@ -665,7 +665,7 @@ Item {
     Rectangle {
         id: button7
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button4.bottom
         anchors.topMargin: 10
         anchors.left: inputAmount.left
@@ -703,7 +703,7 @@ Item {
     Rectangle {
         id: button8
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button7.top
         anchors.left: button7.right
         anchors.leftMargin: 10
@@ -741,7 +741,7 @@ Item {
     Rectangle {
         id: button9
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button8.top
         anchors.left: button8.right
         anchors.leftMargin: 10
@@ -779,7 +779,7 @@ Item {
     Rectangle {
         id: buttonC
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button7.bottom
         anchors.topMargin: 10
         anchors.left: inputAmount.left
@@ -821,7 +821,7 @@ Item {
     Rectangle {
         id: button0
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: buttonC.top
         anchors.left: buttonC.right
         anchors.leftMargin: 10
@@ -861,7 +861,7 @@ Item {
     Rectangle {
         id: buttonDec
         height: 50
-        width: (Screen.width - 76) / 3
+        width: (parent.width - 76) / 3
         anchors.top: button0.top
         anchors.left: button0.right
         anchors.leftMargin: 10

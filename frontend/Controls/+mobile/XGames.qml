@@ -21,10 +21,10 @@ import "qrc:/Controls" as Controls
 import "qrc:/Controls/fun" as Fun
 
 Rectangle {
-    id: xgamestModal
-    width: Screen.width
+    id: xgamesModal
+    width: appWidth
+    height: appHeight
     state: xgamesTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -44,11 +44,11 @@ Rectangle {
     states: [
         State {
             name: "up"
-            PropertyChanges { target: xgamestModal; anchors.topMargin: 0}
+            PropertyChanges { target: xgamesModal; anchors.topMargin: 0}
         },
         State {
             name: "down"
-            PropertyChanges { target: xgamestModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: xgamesModal; anchors.topMargin: xgamesModal.height}
         }
     ]
 
@@ -56,7 +56,7 @@ Rectangle {
         Transition {
             from: "*"
             to: "*"
-            NumberAnimation { target: xgamestModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+            NumberAnimation { target: xgamesModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
 
@@ -143,13 +143,13 @@ Rectangle {
         z: 100
         id: myTtt
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: parent.top
     }
 
     Fun.PlayerNotAvailable {
         z: 100
         id: noPlayer
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: parent.top
     }
 }

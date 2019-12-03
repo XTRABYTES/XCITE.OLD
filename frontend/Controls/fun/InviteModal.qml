@@ -22,13 +22,13 @@ import "qrc:/Controls/fun" as Fun
 
 Rectangle {
     id: inviteModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: inviteTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    visible: inviteModal.anchors.topMargin < Screen.height
+    visible: inviteModal.anchors.topMargin < inviteModal.height
 
     onStateChanged: {
         detectInteraction()
@@ -58,7 +58,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: inviteModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: inviteModal; anchors.topMargin: inviteModal.height}
         }
     ]
 

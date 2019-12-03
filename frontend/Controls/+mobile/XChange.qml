@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: xchangeModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: xchangeTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -46,7 +46,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: xchangeModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: xchangeModal; anchors.topMargin: xchangeModal.height}
         }
     ]
 
@@ -88,8 +88,8 @@ Rectangle {
                 Rectangle {
                     id:scrollAreaTradignForm
                     z: 3
-                    width: Screen.width
-                    height: Screen.height - 150
+                    width: xchangeModal.width
+                    height: xchangeModal.height - 150
                     anchors.top: parent.top
                     anchors.topMargin: 100
                     color: "transparent"
@@ -130,7 +130,7 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.top
                     anchors.verticalCenterOffset: 130
-                    width: Screen.width - 55
+                    width: xchangeModal.width - 55
                     color: searchForBalance.text != "" ? "#F2F2F2" : "#727272"
                     font.pixelSize: 14
                     mobile: 1
@@ -142,8 +142,8 @@ Rectangle {
                 Rectangle {
                     id: balanceScrollArea
                     z: 3
-                    width: Screen.width
-                    height: Screen.height - 150
+                    width: xchangeModal.width
+                    height: xchangeModal.height - 150
                     anchors.top: parent.top
                     anchors.topMargin: 100
                     color: "transparent"

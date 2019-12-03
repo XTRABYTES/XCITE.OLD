@@ -20,8 +20,10 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: backupModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     color: bgcolor
 
     property int walletsExported: 0
@@ -147,7 +149,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -283,6 +285,11 @@ Rectangle {
         z: 10
     }
 
+    Controls.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
     Controls.LogOut {
         z: 100
         anchors.left: parent.left
@@ -292,5 +299,11 @@ Rectangle {
     Controls.NetworkError {
         z:100
         id: myNetworkError
+    }
+
+    Controls.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 }

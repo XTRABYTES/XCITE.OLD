@@ -21,9 +21,9 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: xchatNetworkModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: xchatNetworkTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -47,7 +47,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: xchatNetworkModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: xchatNetworkModal; anchors.topMargin: xchatNetworkModal.height}
         }
     ]
 

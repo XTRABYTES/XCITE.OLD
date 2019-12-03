@@ -21,14 +21,14 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: xchatSettingsModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: xchatSettingsTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     onStateChanged: detectInteraction()
-    visible: xchatSettingsModal.anchors.topMargin < Screen.height
+    visible: xchatSettingsModal.anchors.topMargin < xchatSettingsModal.height
 
     property bool oldTagMe: userSettings.tagMe
     property bool oldTagEveryone: userSettings.tagEveryone
@@ -81,7 +81,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: xchatSettingsModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: xchatSettingsModal; anchors.topMargin: xchatSettingsModal.height}
         }
     ]
 
@@ -452,8 +452,8 @@ Rectangle {
     Rectangle {
         z: 10
         id: saveFaileddModal
-        width: Screen.width
-        height: Screen.height
+        width: parent.width
+        height: parent.height
         color: "transparent"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -464,8 +464,8 @@ Rectangle {
         }
 
         Rectangle {
-            width: Screen.width
-            height: Screen.height
+            width: appWidth
+            height: appHeight
             color: "black"
             opacity: 0.35
             anchors.horizontalCenter: parent.horizontalCenter

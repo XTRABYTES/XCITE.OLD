@@ -30,6 +30,8 @@ TextField {
     property int textCopied: 0
     property bool closeLocalClipboard: closeAllClipboard
 
+
+
     onCloseLocalClipboardChanged: {
         if (closeLocalClipboard == true) {
             clipBoard = 0

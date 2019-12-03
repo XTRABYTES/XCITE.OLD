@@ -19,8 +19,10 @@ import QtQuick.Layouts 1.3
 import "qrc:/Controls" as Controls
 
 Item {
-    height: Screen.height
-    width: Screen.width
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     clip: true
 
     property string versionNR: "0.6"
@@ -32,16 +34,16 @@ Item {
     Image {
         id: pictureBG
         source: "qrc:/backgrounds/stars.jpg"
-        height: Screen.height
-        width: pictureBG.height/4741 * 7360
+        height: parent.height
+        fillMode: Image.PreserveAspectFit
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
     }
 
     Rectangle {
         id: backgroundSplash
-        width: Screen.width
-        height: Screen.height
+        width: parent.width
+        height: parent.height
         color: "#14161B"
         state: loginTracker == 0? (importTracker == 0? "hidden" : "inView") : "inView"
 
@@ -131,7 +133,7 @@ Item {
             text: "V" + versionNR
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: welcomeText.bottom
-            anchors.topMargin: -20
+            anchors.topMargin: -16
             color: maincolor
             font.pixelSize: 24
             font.family: xciteMobile.name
@@ -245,8 +247,25 @@ Item {
         id: myImport
     }
 
+    Controls.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Controls.LogOut {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
     Controls.NetworkError {
         z:100
         id: myNetworkError
+    }
+
+    Controls.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 }

@@ -21,8 +21,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: allAddressCards
-    width: Screen.width
-    height: parent.height - 75
+    width: appWidth
+    height: appHeight - 75
+    anchors.top: parent.top
     color: "transparent"
 
     property alias cardSpacing: allAddresses.spacing
@@ -33,10 +34,10 @@ Rectangle {
 
         Rectangle {
             id: addressRow
-            width: Screen.width
+            width: appWidth
             height: 140
             color: "transparent"
-            anchors.horizontalCenter: Screen.horizontalCenter
+            anchors.horizontalCenter: xcite.horizontalCenter
             state: "big"
             clip: true
 

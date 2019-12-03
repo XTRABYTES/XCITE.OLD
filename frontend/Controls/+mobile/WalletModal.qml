@@ -21,9 +21,9 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: walletModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: walletDetailTracker == 0 ? "down" : "up"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -55,7 +55,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: walletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: walletModal; anchors.topMargin: walletModal.height}
         }
     ]
 
@@ -1284,7 +1284,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

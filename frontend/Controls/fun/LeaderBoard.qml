@@ -22,13 +22,13 @@ import "qrc:/Controls/fun" as Fun
 
 Rectangle {
     id: leaderBoardModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: leaderBoardTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    visible: leaderBoardModal.anchors.topMargin < Screen.height
+    visible: leaderBoardModal.anchors.topMargin < leaderBoardModal.height
 
     onStateChanged: {
         detectInteraction()
@@ -57,7 +57,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: leaderBoardModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: leaderBoardModal; anchors.topMargin: leaderBoardModal.height}
         }
     ]
 
@@ -172,7 +172,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 215 : 235
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

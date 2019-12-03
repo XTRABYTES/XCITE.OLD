@@ -20,8 +20,8 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addCoinModal
-    width: parent.width
-    height: parent.height - 180
+    width: appWidth
+    height: appHeight - 180
     color: "transparent"
     anchors.top: parent.top
     anchors.topMargin: 180
@@ -66,7 +66,7 @@ Rectangle {
             Rectangle {
                 id: currencyRow
                 color: "transparent"
-                width: Screen.width
+                width: parent.width
                 height: 50
 
                 Image {
@@ -231,9 +231,8 @@ Rectangle {
 
         Rectangle {
             id: clickArea
-            width: Screen.width - parent.width
-            height: parent.height
-            anchors.top: parent.top
+            width: appWidth - parent.width
+            height: appHeight
             anchors.right: parent.left
             color: "black"
             opacity: 0.25

@@ -22,8 +22,10 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: applicationModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     color: bgcolor
 
     MouseArea {
@@ -44,7 +46,7 @@ Rectangle {
 
     Rectangle {
         id: appWindow
-        width: Screen.width - 56
+        width: parent.width - 56
         height: parent.height
         anchors.top: applicationModalLabel.bottom
         anchors.topMargin: 30
@@ -61,7 +63,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -138,6 +140,11 @@ Rectangle {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
+    }
+
+    Controls.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
     }
 
     Controls.LogOut {

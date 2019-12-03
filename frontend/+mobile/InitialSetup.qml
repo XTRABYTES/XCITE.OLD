@@ -26,8 +26,10 @@ Item {
     Rectangle {
         id: backgroundSetup
         z: 1
-        width: Screen.width
-        height: Screen.height
+        width: appWidth
+        height: appHeight
+        anchors.horizontalCenter: xcite.horizontalCenter
+        anchors.verticalCenter: xcite.verticalCenter
         color: "#14161B"
 
         LinearGradient {
@@ -326,7 +328,7 @@ Item {
 
         Item {
             z: 3
-            width: Screen.width
+            width: appWidth
             height: myOS === "android"? 125 : 145
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
@@ -357,8 +359,8 @@ Item {
         Rectangle {
             id: overlay
             z: 3
-            width: Screen.width
-            height: Screen.height
+            width: appWidth
+            height: appHeight
             color: "#14161B"
             opacity: (importKeyTracker == 1 || createWalletTracker == 1)? 1 : 0
 
@@ -385,8 +387,25 @@ Item {
         }
     }
 
+    Controls.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Controls.LogOut {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
     Controls.NetworkError {
         z:100
         id: myNetworkError
+    }
+
+    Controls.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 }

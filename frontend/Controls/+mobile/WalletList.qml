@@ -20,7 +20,7 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: allWalletCards
-    width: Screen.width
+    width: appWidth
     height: parent.height - 75
 
     color: "transparent"
@@ -33,7 +33,7 @@ Rectangle {
         Rectangle {
             id: currencyRow
             color: "transparent"
-            width: Screen.width
+            width: appWidth
             height: 140
             anchors.horizontalCenter: parent.horizontalCenter
             clip: true

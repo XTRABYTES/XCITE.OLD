@@ -28,9 +28,9 @@ ApplicationWindow {
     id: xcite
 
     visible: true
-
-    width: Screen.width
-    height: Screen.height
+    flags: Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint
+    width: appWidth
+    height: appHeight
     title: qsTr("XCITE")
     color: "#2A2C31"
 
@@ -44,7 +44,7 @@ ApplicationWindow {
     Image {
         id: xbyLogo
         source: 'qrc:/logos/xby_logo_tm.png'
-        width: Screen.width - 100
+        width: parent.width - 100
         fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
@@ -225,12 +225,14 @@ ApplicationWindow {
     property color maincolor: "#0ED8D2"
     property color themecolor: darktheme == true? "#F2F2F2" : "#2A2C31"
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
-    property real doubbleButtonWidth: Screen.width - 56
+    property real doubbleButtonWidth: appWidth - 56
     property string myOS: "android"
+    property int appHeight: Screen.width > Screen.height? 800 : ((myOS == "android" || myOS == "ios")? Screen.height : 800)
+    property int appWidth: Screen.width > Screen.height? 400 : ((myOS == "android" || myOS == "ios")? Screen.width : 400)
 
     // Global setting, editable
     property bool darktheme: userSettings.theme == "dark"? true : false
-    property string fiatTicker: fiatCurrencies.get(userSettings.defaultCurrency).ticker
+    property string fiatTicker: fiatCurrencies.get(userSettings.defaultCurrency).ticker === undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker
     property string myUsername: ""
     property string selectedPage: ""
     property string status: "online"
@@ -565,6 +567,198 @@ ApplicationWindow {
         if (app === "X-GAMES") {
             xgamesTracker = 1
             selectedApp = ""
+        }
+    }
+
+    function moveWindowX(dx) {
+        xcite.setX(xcite.x + dx)
+    }
+
+    function moveWindowY(dy) {
+        xcite.setY(xcite.y + dy)
+    }
+
+    function minimizeApp() {
+        showMinimized()
+    }
+
+    function backButtonPressed() {
+        if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0) {
+            if (networkError == 1) {
+                networkError = 0
+            }
+            else if (selectedPage == "onBoarding") {
+                if (loginTracker == 1 && !loginInitiated) {
+                    loginTracker = 0
+                }
+                else if (importTracker == 1 && !importInitiated) {
+                    importTracker = 0
+                }
+            }
+            else if (selectedPage == "home") {
+                if (appsTracker == 1) {
+                    appsTracker = 0
+                }
+                else if (addCoinTracker == 1) {
+                    addCoinTracker = 0
+                }
+
+                else if (historyTracker == 1) {
+                    if (transactionDetailTracker == 1) {
+                        transactionDetailTracker = 0
+                    }
+                    else {
+                        historyTracker = 0
+                    }
+                }
+                else if (addContactTracker == 1 && !addingContact) {
+                    addContactTracker = 0
+                }
+                else if (editContactTracker == 1 && !editingContact && !deletingContact) {
+                    if (deleteContactTracker == 1) {
+                        deleteContactTracker = 0
+                    }
+                    else   {
+                        editContactTracker = 0
+                    }
+                }
+                else if (addAddressTracker == 1 && !addingAddress && !saveAddressInitiated) {
+                    addAddressTracker = 0
+                }
+                else if (addressTracker == 1 && !editingAddress && !deletingAddress) {
+                    if (deleteAddressTracker == 1) {
+                        deleteAddressTracker = 0
+                    }
+                    else {
+                        addressTracker = 0
+                    }
+                }
+                else if (walletDetailTracker == 1 && !editingWallet && !deletingWallet) {
+                    if (deleteWalletTracker == 1) {
+                        deleteWalletTracker = 0
+                    }
+                    else {
+                        walletDetailTracker = 0
+                    }
+                }
+
+                else if (portfolioTracker == 1) {
+                    portfolioTracker = 0
+                }
+                else if (scanQRTracker == 1) {
+                    // nothing yet
+                }
+                else if (transferTracker == 1) {
+                    // nothing yet
+                }
+                else if (coinTracker == 1 && pageTracker == 0) {
+                    countWallets()
+                    coinTracker = 0
+                }
+                else if (contactTracker == 1 && pageTracker == 1) {
+                    contactTracker = 0
+                }
+                else {
+                    sessionStart = 0
+                    sessionTime = 0
+                    manualLogout = 1
+                    logoutTracker = 1
+                }
+            }
+            else if (selectedPage == "wallet") {
+                // nothing yet
+            }
+            else if (selectedPage == "apps") {
+                if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 & xgamesTracker == 0) {
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
+                else if (xgamesTracker == 1 && networkError == 0) {
+                    if (inviteTracker == 1) {
+                        inviteTracker = 0
+                    }
+                    else if (tttTracker == 1) {
+                        if (tttHubTracker == 1) {
+                            tttHubTracker = 0
+                            tttquit = false
+                        }
+                        else if (leaderBoardTracker == 1) {
+                            leaderBoardTracker = 0
+                        }
+                        else {
+                            tttTracker = 0
+                        }
+                    }
+                    else {
+                        xgamesTracker = 0
+                    }
+                }
+
+                else if (xvaultTracker == 1 && networkError == 0) {
+                    xvaultTracker =0
+                }
+                else if (xchangeTracker == 1 && networkError == 0) {
+                    xchangeTracker = 0
+                }
+                else if (xchatTracker == 1 && networkError == 0) {
+                    if (xchatSettingsTracker == 1) {
+                        if (!tagMeChangeInitiated && !tagEveryoneChangeInitiated && !dndChangeInitiated) {
+                            xchatSettingsTracker = 0
+                        }
+                    }
+                    else if (xchatNetworkTracker == 1) {
+                        xchatNetworkTracker = 0
+                    }
+                    else if (xchatUserTracker == 1) {
+                        xchatUserTracker = 0
+                    }
+                    else if (xChatImageTracker == 1) {
+                        xChatImageTracker = 0
+                    }
+                    else if (xChatLinkTracker == 1) {
+                        xChatLinkTracker = 0
+                    }
+                    else if (xChatQuoteTracker == 1) {
+                        xChatQuoteTracker = 0
+                    }
+                    else if (xChatLargeImageTracker == 1) {
+                        xChatLargeImageTracker = 0
+                    }
+                    else if (xChatClipBoard == 1) {
+                        xChatClipBoard = 0
+                    }
+
+                    else {
+                        xchatTracker = 0
+                        dndTracker = 0
+                    }
+                }
+            }
+            else if (selectedPage == "backup") {
+                if (screenshotTracker == 0) {
+                    backupTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
+                else if (screenshotTracker == 1) {
+                    screenshotTracker = 0
+                }
+            }
+            else if (selectedPage == "settings") {
+                if (debugTracker == 1) {
+                    debugTracker = 0
+                }
+                else if (!changeVolumeInitiated && ! changeSystemVolumeInitiated && !clearAllInitiated && !saveCurrency && !saveSound) {
+                    currencyTracker = 0
+                    soundTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
+            }
+            else if (selectedPage == "notif" && updatingWalletsNotif == false) {
+                selectedPage = "home"
+                mainRoot.pop()
+            }
         }
     }
 
@@ -2672,7 +2866,7 @@ ApplicationWindow {
 
     MediaPlayer {
         id: notification
-        source: soundList.get(selectedSound).sound
+        source: soundList.get(selectedSound).sound === undefined? "qrc:/sounds/Szia.mp3" : soundList.get(selectedSound).sound
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
     }
 
@@ -2849,14 +3043,16 @@ ApplicationWindow {
             if (pendingList.count > 1) {
                 for (var o = 0; 0 < pendingList.count; ++o) {
                     var times = 0
-                    if (pendingList.get(o).check >= 0) {
-                        times = pendingList.get(o).check
+                    if (pendingList.get(o).check !== undefined) {
+                        if (pendingList.get(o).check >= 0) {
+                            times = pendingList.get(o).check
+                        }
+                        else {
+                            pendingList.setProperty(o, "check", 0)
+                            times = 0
+                        }
+                        pendingList.setProperty(o, "check", (times + 1))
                     }
-                    else {
-                        pendingList.setProperty(o, "check", 0)
-                        times = 0
-                    }
-                    pendingList.setProperty(o, "check", (times + 1))
                 }
             }
         }
@@ -2926,182 +3122,7 @@ ApplicationWindow {
     onClosing: {
         if (mainRoot.depth > 1) {
             close.accepted = false
-            if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0) {
-                if (networkError == 1) {
-                    networkError = 0
-                }
-                else if (selectedPage == "onBoarding") {
-                    if (loginTracker == 1 && !loginInitiated) {
-                        loginTracker = 0
-                    }
-                    else if (importTracker == 1 && !importInitiated) {
-                        importTracker = 0
-                    }
-                }
-                else if (selectedPage == "home") {
-                    if (appsTracker == 1) {
-                        appsTracker = 0
-                    }
-                    else if (addCoinTracker == 1) {
-                        addCoinTracker = 0
-                    }
-
-                    else if (historyTracker == 1) {
-                        if (transactionDetailTracker == 1) {
-                            transactionDetailTracker = 0
-                        }
-                        else {
-                            historyTracker = 0
-                        }
-                    }
-                    else if (addContactTracker == 1 && !addingContact) {
-                        addContactTracker = 0
-                    }
-                    else if (editContactTracker == 1 && !editingContact && !deletingContact) {
-                        if (deleteContactTracker == 1) {
-                            deleteContactTracker = 0
-                        }
-                        else   {
-                            editContactTracker = 0
-                        }
-                    }
-                    else if (addAddressTracker == 1 && !addingAddress && !saveAddressInitiated) {
-                        addAddressTracker = 0
-                    }
-                    else if (addressTracker == 1 && !editingAddress && !deletingAddress) {
-                        if (deleteAddressTracker == 1) {
-                            deleteAddressTracker = 0
-                        }
-                        else {
-                            addressTracker = 0
-                        }
-                    }
-                    else if (walletDetailTracker == 1 && !editingWallet && !deletingWallet) {
-                        if (deleteWalletTracker == 1) {
-                            deleteWalletTracker = 0
-                        }
-                        else {
-                            walletDetailTracker = 0
-                        }
-                    }
-                    else if (portfolioTracker == 1) {
-                        portfolioTracker = 0
-                    }
-                    else if (scanQRTracker == 1) {
-                        // nothing yet
-                    }
-                    else if (transferTracker == 1) {
-                        // nothing yet
-                    }
-                    else if (coinTracker == 1 && pageTracker == 0) {
-                        countWallets()
-                        coinTracker = 0
-                    }
-                    else if (contactTracker == 1 && pageTracker == 1) {
-                        contactTracker = 0
-                    }
-                    else {
-                        sessionStart = 0
-                        sessionTime = 0
-                        manualLogout = 1
-                        logoutTracker = 1
-                    }
-                }
-                else if (selectedPage == "wallet") {
-                    // nothing yet
-                }
-                else if (selectedPage == "apps") {
-                    if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 & xgamesTracker == 0) {
-                        selectedPage = "home"
-                        mainRoot.pop()
-                    }
-                    else if (xgamesTracker == 1 && networkError == 0) {
-                        if (inviteTracker == 1) {
-                            inviteTracker = 0
-                        }
-                        else if (tttTracker == 1) {
-                            if (tttHubTracker == 1) {
-                                tttHubTracker = 0
-                                tttquit = false
-                            }
-                            else if (leaderBoardTracker == 1) {
-                                leaderBoardTracker = 0
-                            }
-                            else {
-                                tttTracker = 0
-                            }
-                        }
-                        else {
-                            xgamesTracker = 0
-                        }
-                    }
-
-                    else if (xvaultTracker == 1 && networkError == 0) {
-                        xvaultTracker =0
-                    }
-                    else if (xchangeTracker == 1 && networkError == 0) {
-                        xchangeTracker = 0
-                    }
-                    else if (xchatTracker == 1 && networkError == 0) {
-                        if (xchatSettingsTracker == 1) {
-                            if (!tagMeChangeInitiated && !tagEveryoneChangeInitiated && !dndChangeInitiated) {
-                                xchatSettingsTracker = 0
-                            }
-                        }
-                        else if (xchatNetworkTracker == 1) {
-                            xchatNetworkTracker = 0
-                        }
-                        else if (xchatUserTracker == 1) {
-                            xchatUserTracker = 0
-                        }
-                        else if (xChatImageTracker == 1) {
-                            xChatImageTracker = 0
-                        }
-                        else if (xChatLinkTracker == 1) {
-                            xChatLinkTracker = 0
-                        }
-                        else if (xChatQuoteTracker == 1) {
-                            xChatQuoteTracker = 0
-                        }
-                        else if (xChatLargeImageTracker == 1) {
-                            xChatLargeImageTracker = 0
-                        }
-                        else if (xChatClipBoard == 1) {
-                            xChatClipBoard = 0
-                        }
-
-                        else {
-                            xchatTracker = 0
-                            dndTracker = 0
-                        }
-                    }
-                }
-                else if (selectedPage == "backup") {
-                    if (screenshotTracker == 0) {
-                        backupTracker = 0
-                        selectedPage = "home"
-                        mainRoot.pop()
-                    }
-                    else if (screenshotTracker == 1) {
-                        screenshotTracker = 0
-                    }
-                }
-                else if (selectedPage == "settings") {
-                    if (debugTracker == 1) {
-                        debugTracker = 0
-                    }
-                    else if (!changeVolumeInitiated && ! changeSystemVolumeInitiated && !clearAllInitiated && !saveCurrency && !saveSound) {
-                        currencyTracker = 0
-                        soundTracker = 0
-                        selectedPage = "home"
-                        mainRoot.pop()
-                    }
-                }
-                else if (selectedPage == "notif" && updatingWalletsNotif == false) {
-                    selectedPage = "home"
-                    mainRoot.pop()
-                }
-            }
+            backButtonPressed()
         }
     }
 }

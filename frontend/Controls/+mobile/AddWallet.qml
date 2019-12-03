@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addWalletModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: addWalletTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
 
     LinearGradient {
@@ -47,7 +47,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addWalletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: addWalletModal.height}
         }
     ]
 

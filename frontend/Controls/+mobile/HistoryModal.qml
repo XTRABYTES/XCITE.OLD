@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: historyModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: historyTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -43,7 +43,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: historyModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: historyModal; anchors.topMargin: historyModal.height}
         }
     ]
 
@@ -359,7 +359,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -443,13 +443,11 @@ Rectangle {
             }
 
             onPressed: {
-                parent.anchors.topMargin = 14
                 click01.play()
                 detectInteraction()
             }
 
             onClicked: {
-                parent.anchors.topMargin = 10
                 if (historyTracker == 1) {
                     historyTracker = 0;
                 }

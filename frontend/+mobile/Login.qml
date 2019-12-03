@@ -20,8 +20,10 @@ import "qrc:/Controls" as Controls
 
 Item {
     id: loginModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
 
     property int passError: 0
     property int checkUsername: 0

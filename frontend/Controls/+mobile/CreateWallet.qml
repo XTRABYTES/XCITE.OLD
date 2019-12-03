@@ -21,11 +21,11 @@ import "qrc:/Controls" as Controls
 Rectangle {
     z: 1
     id: addWalletModal
-    width: Screen.width
-    state: createWalletTracker == 1? "up" : "down"
-    height: Screen.height
-    color: bgcolor
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    state: createWalletTracker == 1? "up" : "down"
+    color: bgcolor
     anchors.top: parent.top
 
     Component.onCompleted: darktheme = true
@@ -41,7 +41,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addWalletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: addWalletModal.height}
         }
     ]
 
@@ -80,7 +80,7 @@ Rectangle {
 
     Rectangle {
         z: 2
-        width: Screen.width
+        width: parent.width
         height: 50
         color: bgcolor
         anchors.horizontalCenter: parent.horizontalCenter
@@ -897,7 +897,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

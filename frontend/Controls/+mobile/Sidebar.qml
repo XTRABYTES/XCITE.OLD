@@ -18,7 +18,7 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: sidebar
-    height: Screen.height
+    height: appHeight
     width: 100
     state: appsTracker == 1? "up" : "down"
     color: "#2A2C31"
@@ -494,7 +494,7 @@ Rectangle {
 
     Rectangle {
         anchors.left: parent.right
-        width: appsTracker == 1 ? (Screen.width - parent.width) : 0
+        width: appsTracker == 1 ? (appWidth - parent.width) : 0
         height: parent.height
         color: "black"
         opacity: 0.5

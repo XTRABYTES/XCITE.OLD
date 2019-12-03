@@ -4,8 +4,11 @@ import QtQuick.Window 2.2
 Item {
 
     id: homepageLoader
-    width: Screen.width
-    height: Screen.Height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
+    visible: false
 
     Rectangle {
         anchors.fill: parent

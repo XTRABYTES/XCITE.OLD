@@ -22,8 +22,8 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: xchatLinkModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
     color: "transparent"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -36,8 +36,8 @@ Rectangle {
     }
 
     Rectangle {
-        width: Screen.width
-        height: Screen.height
+        width: parent.width
+        height: parent.height
         color: "black"
         opacity: 0.5
         anchors.horizontalCenter: parent.horizontalCenter

@@ -20,8 +20,10 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: backgroundSignUp
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     color: "#14161B"
 
     LinearGradient {
@@ -702,8 +704,8 @@ Rectangle {
     }
 
     Rectangle {
-        width: Screen.width
-        height: Screen.height
+        width: parent.width
+        height: parent.height
         color: bgcolor
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
@@ -725,7 +727,6 @@ Rectangle {
         state: signUpError == 1? "up" : "down"
         color: "#14161B"
 
-
         states: [
             State {
                 name: "up"
@@ -733,7 +734,7 @@ Rectangle {
             },
             State {
                 name: "down"
-                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: 1.5 * Screen.height}
+                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: appHeight * 1.5}
             }
         ]
 
@@ -851,7 +852,7 @@ Rectangle {
             },
             State {
                 name: "down"
-                PropertyChanges { target: accountSuccess; anchors.verticalCenterOffset: 1.5 * Screen.height}
+                PropertyChanges { target: accountSuccess; anchors.verticalCenterOffset: appHeight * 1.5}
             }
         ]
 
@@ -1174,9 +1175,26 @@ Rectangle {
         anchors.bottomMargin: myOS === "android"? 50 : 70
     }
 
+    Controls.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Controls.LogOut {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
     Controls.NetworkError {
         z:100
         id: myNetworkError
+    }
+
+    Controls.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 }
 

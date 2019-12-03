@@ -39,8 +39,8 @@ Rectangle {
 
             Timer {
                 id: leaderboardTimer
-                interval: 10000
-                repeat: true
+                interval: 500
+                repeat: false
                 running: inviteTracker == 1
 
                 onTriggered: {

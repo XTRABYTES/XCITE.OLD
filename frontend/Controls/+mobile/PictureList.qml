@@ -18,11 +18,11 @@ import QtGraphicalEffects 1.0
 
 Rectangle {
     id: allPictureCards
-    width: Screen.width
+    width: appWidth
     height: 250
     color: "transparent"
     anchors.bottom: parent.bottom
-    anchors.left: Screen.left
+    anchors.horizontalCenter: xcite.left
 
     Component {
         id:pictureCard
@@ -51,9 +51,9 @@ Rectangle {
         source: 'qrc:/icons/CloseIcon.svg'
         width: 15
         height: 15
-        anchors.right: Screen.right
+        anchors.right: parent.right
         anchors.rightMargin: 15
-        anchors.bottom: Screen.bottom
+        anchors.bottom: parent.bottom
         anchors.topMargin: 260
 
         ColorOverlay {

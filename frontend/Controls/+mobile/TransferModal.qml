@@ -22,13 +22,13 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: transactionModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: transferTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    anchors.topMargin: Screen.height
+    anchors.topMargin: transactionModal.height
     visible: scanQRTracker == 0
 
     states: [
@@ -40,7 +40,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: transactionModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: transactionModal; anchors.topMargin: transactionModal.height}
             PropertyChanges { target: transactionModal; opacity: 0}
         }
     ]
@@ -54,7 +54,9 @@ Rectangle {
     ]
 
     onStateChanged: {
-
+        if (transferTracker == 0) {
+            closeTimer.start()
+        }
     }
 
     property int transactionSend: 0
@@ -2008,7 +2010,7 @@ Rectangle {
     }
 
     Item {
-        width: Screen.width
+        width: parent.width
         height: 125
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -2085,7 +2087,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -2105,6 +2107,41 @@ Rectangle {
                 GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
             }
+        }
+    }
+
+    Timer {
+        id: closeTimer
+        interval: 300
+        repeat: false
+        running: false
+
+        onTriggered: {
+            addressbookTracker = 0
+            coinListTracker = 0
+            walletListTracker = 0
+            walletIndex = 0
+            addressIndex = 0
+            switchState = 0
+            transactionSend =0
+            confirmationSend = 0
+            newCoinSelect = 0
+            newCoinPicklist = 0
+            newWalletPicklist = 0
+            newWalletSelect = 0
+            selectedAddress = ""
+            selectedCoin = "XFUEL"
+            sendAmount.text = ""
+            keyInput.text = sendAddress.text
+            referenceInput.text = ""
+            invalidAddress = 0
+            calculatorTracker = 0
+            calculatedAmount = ""
+            scanQRTracker = 0
+            scanning = "scanning..."
+            networkError = 0
+            screenShot = 0
+            precision = 0
         }
     }
 
@@ -2139,41 +2176,6 @@ Rectangle {
         MouseArea {
             anchors.fill: closeButton
 
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    addressbookTracker = 0
-                    coinListTracker = 0
-                    walletListTracker = 0
-                    walletIndex = 0
-                    addressIndex = 0
-                    switchState = 0
-                    transactionSend =0
-                    confirmationSend = 0
-                    newCoinSelect = 0
-                    newCoinPicklist = 0
-                    newWalletPicklist = 0
-                    newWalletSelect = 0
-                    selectedAddress = ""
-                    selectedCoin = "XFUEL"
-                    sendAmount.text = ""
-                    keyInput.text = sendAddress.text
-                    referenceInput.text = ""
-                    invalidAddress = 0
-                    calculatorTracker = 0
-                    calculatedAmount = ""
-                    scanQRTracker = 0
-                    scanning = "scanning..."
-                    networkError = 0
-                    screenShot = 0
-                    precision = 0
-                }
-            }
-
             onPressed: {
                 closeTransferModal.anchors.topMargin = 12
                 click01.play()
@@ -2183,7 +2185,6 @@ Rectangle {
             onReleased: {
                 closeTransferModal.anchors.topMargin = 10
                 transferTracker = 0;
-                timer.start()
             }
         }
     }

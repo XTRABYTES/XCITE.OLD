@@ -21,11 +21,11 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addressModal
-    width: Screen.width
-    state: addressTracker == 0 ? "down" : "up"
-    height: Screen.height
-    color: bgcolor
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    state: addressTracker == 0 ? "down" : "up"
+    color: bgcolor
     anchors.top: parent.top
     anchors.topMargin: 50
     visible: scanQRTracker == 0
@@ -45,7 +45,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addressModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addressModal; anchors.topMargin: addressModal.height}
         }
     ]
 
@@ -1501,7 +1501,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

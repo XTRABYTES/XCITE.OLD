@@ -23,13 +23,13 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: screenShotModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: screenshotTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    anchors.topMargin: Screen.height
+    anchors.topMargin: screenShotModal.height
 
     property int myTracker: screenshotTracker
 
@@ -48,7 +48,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: screenShotModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: screenShotModal; anchors.topMargin: screenShotModal.height}
             PropertyChanges { target: screenShotModal; opacity: 0}
         }
     ]
@@ -318,7 +318,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter

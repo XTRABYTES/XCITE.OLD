@@ -20,9 +20,9 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: debugModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: debugTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -55,7 +55,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: debugModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: debugModal; anchors.topMargin: debugModal.height}
         }
     ]
 
@@ -88,7 +88,7 @@ Rectangle {
 
     Rectangle {
         id: replyWindow
-        width: Screen.width - 56
+        width: parent.width - 56
         anchors.top: debugModalLabel.bottom
         anchors.topMargin: 30
         anchors.bottom: requestText.top

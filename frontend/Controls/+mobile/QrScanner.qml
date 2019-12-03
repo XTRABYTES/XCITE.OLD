@@ -6,13 +6,31 @@ import QtMultimedia 5.8
 import QtQuick.Window 2.2
 
 Item {
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     visible: scanQRTracker == 1
+    state: scanQRTracker == 1? "up" : "down"
+
+    states: [
+        State {
+            name: "up"
+        },
+        State {
+            name: "down"
+        }
+    ]
 
     property alias key: pubKey.text
+    property bool qrFound: false
+
+    onStateChanged: {
+        if (scanQRTracker == 0 && qrFound == false) {
+            selectedAddress = ""
+            publicKey.text = "scanning..."
+        }
+    }
 
     Timer {
         id: timer
@@ -23,6 +41,7 @@ Item {
         onTriggered:{
             scanQRTracker = 0
             publicKey.text = "scanning..."
+            qrFound = false
         }
     }
 
@@ -166,8 +185,6 @@ Item {
 
             onClicked: {
                 scanQRTracker = 0
-                selectedAddress = ""
-                publicKey.text = "scanning..."
             }
         }
     }
@@ -188,6 +205,7 @@ Item {
         decoder {
             enabledDecoders: QZXing.DecoderFormat_QR_CODE
             onTagFound: {
+                qrFound = true
                 console.log(tag);
                 selectedAddress = ""
                 scanning = ""
