@@ -10,7 +10,7 @@
  *
  */
 
-#ifndef XUTILTY_HPP
+#ifndef XUTILITY_HPP
 #define XUTILITY_HPP
 
 #include <QObject>

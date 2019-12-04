@@ -2248,7 +2248,6 @@ ApplicationWindow {
         }
         onNoInternet: {
             explorerBusy = false
-            networkError = 1
         }
     }
 
@@ -3091,9 +3090,8 @@ ApplicationWindow {
         running: sessionStart == 1
 
         onTriggered: {
-            if (inActive == 0) {
-                checkSessionId()
-            }
+            console.log("checking session ID")
+            checkSessionId()
         }
     }
 

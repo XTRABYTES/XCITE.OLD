@@ -711,7 +711,7 @@ Item {
                             width: appWidth
                             height: 30
                             anchors.top: parent.top
-                            anchors.horizontalCenter: flipable.horizontalCenter
+                            //anchors.left: parent.left
                             color: "black"
 
                             Label {
@@ -1277,7 +1277,7 @@ Item {
                             width: appWidth
                             height: 30
                             anchors.top: parent.top
-                            anchors.horizontalCenter: flipable2.horizontalCenter
+                            //anchors.right: parent.right
                             color: "black"
 
                             MouseArea {

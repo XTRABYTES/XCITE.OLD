@@ -56,6 +56,49 @@ Rectangle {
         }
     }
 
+    function sendChat() {
+        xChatMessage = sendText.text
+        var trimedMsg = xChatMessage.trim()
+        if (trimedMsg !== 0 && xChatMessage.length < 251 && xChatConnection) {
+            if (imageAdded == true && xChatMessage.length > 100) {
+                xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages with images is 100 characters.", "ID" : xChatID})
+                xChatID = xChatID + 1
+                myXchat.xChatList.positionViewAtEnd()
+            }
+            else {
+                xchatError = 0
+                if (UserSettings.xChatDND === false) {
+                    status="online"
+                }
+                xChatSend(myUsername,"mobile",status,sendText.text, xchatLink, xchatImage, xchatQuote)
+                xchatQuote = ""
+                quoteAdded = false
+                xchatLink = ""
+                myXchatLink.urlText = ""
+                linkAdded = false
+                xchatImage = ""
+                imageAdded = false
+                myXchatImage.urlText = ""
+                myXchatImage.imageSource = 'qrc:/icons/mobile/image-icon_01_grey.svg'
+                sendText.text = "";
+                xChatTyping(myUsername,"removeFromTyping",status);
+                checkIfIdle.restart();
+                myXchat.tagging = ""
+            }
+        }
+        if (xChatMessage.length >= 251) {
+            xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages is 250 characters.", "ID" : xChatID})
+            xChatID = xChatID + 1
+            myXchat.xChatList.positionViewAtEnd()
+
+        }
+        if (!xChatConnection) {
+            xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "You're currently not connected to X-CHAT. Try again later", "ID" : xChatID})
+            xChatID = xChatID + 1
+            myXchat.xChatList.positionViewAtEnd()
+        }
+    }
+
     LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
@@ -322,11 +365,6 @@ Rectangle {
         }
 
         onTextChanged:  {
-            msg = sendText.text
-            charCount = msg.length
-            cursorPos = sendText.cursorPosition
-            isTag = msg.charAt(cursorPos - 1) === "@" && (cursorPos === 1 || msg.charAt(cursorPos - 2) === " ")
-
             typingTimer.restart();
             if (sendTyping){
                 if (userSettings.xChatDND === false) {
@@ -337,28 +375,41 @@ Rectangle {
                 sendXchatConnection.restart();
                 checkIfIdle.restart();
             }
+            // check for tag
+            msg = sendText.text
+            charCount = msg.length
+            cursorPos = sendText.cursorPosition
 
-            if (isTag) {
-                beginTag = cursorPos
-                endTag = cursorPos
-                startTagging = true
-                tagListTracker = 1
+            if (isTag == false) {
+                if (msg.charAt(cursorPos - 1) === "@" && (cursorPos === 1 || msg.charAt(cursorPos - 2) === " ")) {
+                    isTag = true
+                    startTagging = true
+                    beginTag = cursorPos
+                    endTag = cursorPos
+                    tagListTracker = 1
+                    tagFilter = begingTag !== endTag? sendText.getText(beginTag, endTag): ""
+                }
             }
 
-            if (startTagging) {
-                endTag = cursorPos
-                if (msg.charAt(endTag - (endTag - beginTag) - 1) === "@") {
-                    tagFilter = sendText.getText(beginTag, endTag)
-                }
-                else {
+            else {
+                if (msg.charAt(cursorPos - 1) === " ") {
+                    isTag = false
                     startTagging = false
                     tagListTracker = 0
                     tagFilter = ""
                     beginTag = 0
                     endTag = 0
                 }
+                else {
+                    endTag = cursorPos
+                    tagFilter = sendText.getText(beginTag, endTag)
+                    console.log("tagfilter: " + tagFilter)
+                }
             }
         }
+
+        Keys.onEnterPressed: sendChat()
+        Keys.onReturnPressed: sendChat()
     }
 
     Image {
@@ -398,46 +449,7 @@ Rectangle {
             }
 
             onClicked: {
-                xChatMessage = sendText.text
-                var trimedMsg = xChatMessage.trim()
-                if (trimedMsg !== 0 && xChatMessage.length < 251 && xChatConnection) {
-                    if (imageAdded == true && xChatMessage.length > 100) {
-                        xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages with images is 100 characters.", "ID" : xChatID})
-                        xChatID = xChatID + 1
-                        myXchat.xChatList.positionViewAtEnd()
-                    }
-                    else {
-                        xchatError = 0
-                        if (UserSettings.xChatDND === false) {
-                            status="online"
-                        }
-                        xChatSend(myUsername,"mobile",status,sendText.text, xchatLink, xchatImage, xchatQuote)
-                        xchatQuote = ""
-                        quoteAdded = false
-                        xchatLink = ""
-                        myXchatLink.urlText = ""
-                        linkAdded = false
-                        xchatImage = ""
-                        imageAdded = false
-                        myXchatImage.urlText = ""
-                        myXchatImage.imageSource = 'qrc:/icons/mobile/image-icon_01_grey.svg'
-                        sendText.text = "";
-                        xChatTyping(myUsername,"removeFromTyping",status);
-                        checkIfIdle.restart();
-                        myXchat.tagging = ""
-                    }
-                }
-                if (xChatMessage.length >= 251) {
-                    xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "The limit for text messages is 250 characters.", "ID" : xChatID})
-                    xChatID = xChatID + 1
-                    myXchat.xChatList.positionViewAtEnd()
-
-                }
-                if (!xChatConnection) {
-                    xChatTread.append({"author" : "xChatRobot", "device" : "", "date" : "", "message" : "You're currently not connected to X-CHAT. Try again later", "ID" : xChatID})
-                    xChatID = xChatID + 1
-                    myXchat.xChatList.positionViewAtEnd()
-                }
+                sendChat()
             }
         }
 
@@ -765,15 +777,19 @@ Rectangle {
 
         onUserTagChanged: {
             if (myXchatTaglist.userTag !== "" && startTagging == true) {
+                console.log("tag received: " + userTag)
                 var pos = beginTag
                 var tag = myXchatTaglist.userTag
+
+                beforeTag = sendText.getText(0, beginTag)
+                console.log("text before tag: " + beforeTag)
+                afterTag = sendText.getText(endTag, msg.length)
+                console.log("text after tag: " + afterTag)
+                sendText.text = beforeTag + " " + afterTag
+                sendText.text = sendText.insert(pos, tag)
                 tagListTracker = 0
                 tagFilter = ""
                 startTagging = false
-                beforeTag = sendText.getText(0, beginTag)
-                afterTag = sendText.getText(endTag, msg.length)
-                sendText.text = beforeTag + " " + afterTag
-                sendText.text = sendText.insert(pos, tag)
                 myXchatTaglist.userTag = ""
                 beforeTag = ""
                 afterTag = ""

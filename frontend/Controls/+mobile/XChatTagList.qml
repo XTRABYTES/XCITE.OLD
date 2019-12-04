@@ -28,7 +28,7 @@ Rectangle {
         Rectangle {
             id: userRow
             width: parent.width
-            height: (username != "" && status != "dnd")? 30 : 0
+            height: (username != "" || username != myUsername || status != "dnd")? 30 : 0
             color: "transparent"
             clip: true
 
@@ -78,6 +78,7 @@ Rectangle {
 
                     onClicked: {
                         if (username !== myUsername) {
+                            console.log("tag clicked: " + username)
                             userTag = ""
                             userTag = username
                         }
@@ -94,18 +95,13 @@ Rectangle {
         filters: [
             RegExpFilter {
                 roleName: "username"
-                pattern: tagFilter && !myUsername
+                pattern: tagFilter
                 caseSensitivity: Qt.CaseInsensitive
             },
             AnyOf {
                 RegExpFilter {
                     roleName: "status"
                     pattern: "online"
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-                RegExpFilter {
-                    roleName: "status"
-                    pattern: "offline"
                     caseSensitivity: Qt.CaseInsensitive
                 }
                 RegExpFilter {

@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     GlobalEventFilter eventFilter;
     app.installEventFilter(&eventFilter);
 
-    qmlRegisterType<AddressBookModel>("AddressBookModel", 0, 1, "AddressBookModel");
+    //qmlRegisterType<AddressBookModel>("AddressBookModel", 0, 1, "AddressBookModel");
     qmlRegisterType<ClipboardProxy>("Clipboard", 1, 0, "Clipboard");
     qmlRegisterType<Settings>("xtrabytes.xcite.settings", 1, 0, "XCiteSettings");
 
@@ -105,9 +105,9 @@ int main(int argc, char *argv[])
     // register event filter
     engine.rootContext()->setContextProperty("EventFilter", &eventFilter);
 
-    ReleaseChecker releaseChecker(APP_VERSION);
-    engine.rootContext()->setContextProperty("ReleaseChecker", &releaseChecker);
-    releaseChecker.checkForUpdate();
+    //ReleaseChecker releaseChecker(APP_VERSION);
+    //engine.rootContext()->setContextProperty("ReleaseChecker", &releaseChecker);
+    //releaseChecker.checkForUpdate();
 
     QSettings appSettings;
     Settings settings(&engine, &appSettings);
@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(tttcreateGameId(QString,QString)), &tictactoe, SLOT(createGameID(QString,QString)));
 
     // Fetch currency values
-    marketValue.findAllCurrencyValues();
+    //marketValue.findAllCurrencyValues();
 
     // Set last locale
     settings.setLocale(appSettings.value("locale").toString());

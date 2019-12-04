@@ -34,6 +34,15 @@ Item {
     property int loadingSettings:  0
     property int verifyingBalances: 0
 
+    function logIn() {
+        closeAllClipboard = true
+        if (userName.text != "" && passWord.text != "" && networkError == 0) {
+            loginInitiated = true
+            checkUsername = 1
+            userLogin(userName.text, passWord.text)
+        }
+    }
+
     Rectangle {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
@@ -61,8 +70,6 @@ Item {
                 NumberAnimation { target: login; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
             }
         ]
-
-        // login function
 
         Label {
             id: loginModalLabel
@@ -152,6 +159,9 @@ Item {
                     passError = 0
                 }
             }
+
+            Keys.onEnterPressed: logIn()
+            Keys.onReturnPressed: logIn()
         }
 
         Text {
@@ -181,23 +191,6 @@ Item {
             opacity: 0.50
             visible: loginInitiated == false
 
-            Timer {
-                id: loginSuccesTimer
-                interval: 2000
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    passError = 0
-                    networkError = 0
-                    loginTracker = 0
-                    sessionClosed = 0
-                    sessionStart = 1
-                    loginInitiated  = false
-                    verifyingBalances = 0
-                }
-            }
-
             MouseArea {
                 anchors.fill: parent
 
@@ -206,156 +199,10 @@ Item {
                 }
 
                 onReleased: {
-                    closeAllClipboard = true
-                    if (userName.text != "" && passWord.text != "" && networkError == 0) {
-                        loginInitiated = true
-                        checkUsername = 1
-                        userLogin(userName.text, passWord.text)
-                    }
+                    logIn()
                 }
             }
-            Connections {
-                target: UserSettings
 
-                onCreateUniqueKeyPair: {
-                    if (loginTracker == 1){
-                        checkUsername = 0
-                        keyPairSend = 1
-                    }
-                }
-
-                onCheckIdentity: {
-                    if (loginTracker == 1){
-                        keyPairSend = 0
-                        checkIdentity = 1
-                    }
-                }
-
-                onReceiveSessionEncryptionKey: {
-                    if (loginTracker == 1){
-                        checkIdentity = 0
-                        sessionKey = 1
-                    }
-                }
-
-                onReceiveSessionID: {
-                    if (loginTracker == 1){
-                        sessionKey = 0
-                        receiveSessionID = 1
-                    }
-                }
-
-                onLoadingSettings: {
-                    if (loginTracker == 1){
-                        receiveSessionID = 0
-                        loadingSettings = 1
-                    }
-                }
-
-                onContactsLoaded: {
-                    if (loginTracker == 1){
-                        loadContactList(contacts)
-                    }
-                }
-
-                onAddressesLoaded: {
-                    if (loginTracker == 1){
-                        loadAddressList(addresses)
-                    }
-                }
-                onWalletLoaded: {
-                    if (loginTracker == 1){
-                        loadWalletList(wallets)
-                    }
-                }
-
-                onPendingLoaded: {
-                    if (loginTracker == 1){
-                        loadPendingList(pending)
-                    }
-                }
-
-                onClearSettings:{
-                    if (loginTracker == 1){
-                        clearSettings();
-                    }
-                }
-
-                onSettingsLoaded: {
-                    if (loginTracker == 1){
-                        loadSettings(settings);
-                        loadingSettings = 0
-                        verifyingBalances = 1
-                    }
-                }
-
-                onLoginSucceededChanged: {
-                    console.log("my username is: " + userName.text.trim())
-                    if (loginTracker == 1){
-                        mainRoot.pop()
-                        mainRoot.push("../Home.qml")
-                        myUsername = userName.text.trim()
-                        tttSetUsername(myUsername)
-                        initializeTtt()
-                        loginSuccesTimer.start()
-                        loadingSettings = 0
-                        verifyingBalances = 0
-                        status = userSettings.xChatDND === true? "dnd" : "idle"
-                        loginInitiated  = false
-                    }
-                }
-
-                onLoginFailedChanged: {
-                    if (loginTracker == 1){
-                        verifyingBalances = 0
-                        checkUsername = 0
-                        keyPairSend = 0
-                        checkIdentity = 0
-                        sessionKey = 0
-                        receiveSessionID = 0
-                        loadingSettings = 0
-                        passError = 1
-                        passWord.text = ""
-                        loginInitiated  = false
-                    }
-                }
-
-                onNoInternet: {
-                    if (loginTracker == 1){
-                        networkError = 1
-                        checkUsername = 0
-                        keyPairSend = 0
-                        checkIdentity = 0
-                        sessionKey = 0
-                        receiveSessionID = 0
-                        loadingSettings = 0
-                        passWord.text = ""
-                        loginInitiated  = false
-                    }
-                }
-
-                onUsernameAvailable: {
-                    if (loginTracker == 1){
-                        checkUsername = 0
-                        passError = 1
-                        passWord.text = ""
-                        loginInitiated  = false
-                    }
-                }
-
-                onWalletNotFound: {
-                    if (loginTracker == 1){
-                        checkUsername = 0
-                        keyPairSend = 0
-                        checkIdentity = 0
-                        sessionKey = 0
-                        receiveSessionID = 0
-                        loadingSettings = 0
-                        passWord.text = ""
-                        loginInitiated  = false
-                    }
-                }
-            }
         }
 
         Text {
@@ -570,6 +417,166 @@ Item {
             anchors.top: createAccount.bottom
             anchors.topMargin: 5
             color: "#0ED8D2"
+        }
+    }
+
+    Timer {
+        id: loginSuccesTimer
+        interval: 2000
+        repeat: false
+        running: false
+
+        onTriggered: {
+            passError = 0
+            networkError = 0
+            loginTracker = 0
+            sessionClosed = 0
+            sessionStart = 1
+            loginInitiated  = false
+            verifyingBalances = 0
+        }
+    }
+
+    Connections {
+        target: UserSettings
+
+        onCreateUniqueKeyPair: {
+            if (loginTracker == 1){
+                checkUsername = 0
+                keyPairSend = 1
+            }
+        }
+
+        onCheckIdentity: {
+            if (loginTracker == 1){
+                keyPairSend = 0
+                checkIdentity = 1
+            }
+        }
+
+        onReceiveSessionEncryptionKey: {
+            if (loginTracker == 1){
+                checkIdentity = 0
+                sessionKey = 1
+            }
+        }
+
+        onReceiveSessionID: {
+            if (loginTracker == 1){
+                sessionKey = 0
+                receiveSessionID = 1
+            }
+        }
+
+        onLoadingSettings: {
+            if (loginTracker == 1){
+                receiveSessionID = 0
+                loadingSettings = 1
+            }
+        }
+
+        onContactsLoaded: {
+            if (loginTracker == 1){
+                loadContactList(contacts)
+            }
+        }
+
+        onAddressesLoaded: {
+            if (loginTracker == 1){
+                loadAddressList(addresses)
+            }
+        }
+        onWalletLoaded: {
+            if (loginTracker == 1){
+                loadWalletList(wallets)
+            }
+        }
+
+        onPendingLoaded: {
+            if (loginTracker == 1){
+                loadPendingList(pending)
+            }
+        }
+
+        onClearSettings:{
+            if (loginTracker == 1){
+                clearSettings();
+            }
+        }
+
+        onSettingsLoaded: {
+            if (loginTracker == 1){
+                loadSettings(settings);
+                loadingSettings = 0
+                verifyingBalances = 1
+            }
+        }
+
+        onLoginSucceededChanged: {
+            console.log("my username is: " + userName.text.trim())
+            if (loginTracker == 1){
+                mainRoot.pop()
+                mainRoot.push("../Home.qml")
+                myUsername = userName.text.trim()
+                tttSetUsername(myUsername)
+                initializeTtt()
+                loginSuccesTimer.start()
+                loadingSettings = 0
+                verifyingBalances = 0
+                status = userSettings.xChatDND === true? "dnd" : "idle"
+                loginInitiated  = false
+            }
+        }
+
+        onLoginFailedChanged: {
+            if (loginTracker == 1){
+                verifyingBalances = 0
+                checkUsername = 0
+                keyPairSend = 0
+                checkIdentity = 0
+                sessionKey = 0
+                receiveSessionID = 0
+                loadingSettings = 0
+                passError = 1
+                passWord.text = ""
+                loginInitiated  = false
+            }
+        }
+
+        onNoInternet: {
+            if (loginTracker == 1){
+                networkError = 1
+                checkUsername = 0
+                keyPairSend = 0
+                checkIdentity = 0
+                sessionKey = 0
+                receiveSessionID = 0
+                loadingSettings = 0
+                passWord.text = ""
+                loginInitiated  = false
+            }
+        }
+
+        onUsernameAvailable: {
+            if (loginTracker == 1){
+                checkUsername = 0
+                passError = 1
+                passWord.text = ""
+                loginInitiated  = false
+            }
+        }
+
+        onWalletNotFound: {
+            if (loginTracker == 1){
+                checkUsername = 0
+                keyPairSend = 0
+                checkIdentity = 0
+                sessionKey = 0
+                receiveSessionID = 0
+                loadingSettings = 0
+                passWord.text = ""
+                loginInitiated  = false
+            }
         }
     }
 }

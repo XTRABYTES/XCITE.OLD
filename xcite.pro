@@ -51,8 +51,8 @@ QML_DESIGNER_IMPORT_PATH =
 
 include(backend/support/QZXing/QZXing.pri)
 include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
-SOURCES += main/main.cpp \
-    backend/support/ttt.cpp \
+SOURCES +=  main/main.cpp \
+            backend/support/ttt.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
 	    backend/staticnet/staticnet.cpp \
@@ -66,7 +66,7 @@ SOURCES += main/main.cpp \
             backend/support/globaleventfilter.cpp \
             backend/integrations/MarketValue.cpp \
             backend/integrations/Explorer.cpp \
-            backend/support/ReleaseChecker.cpp \
+            # backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
             backend/support/Settings.cpp \
             backend/support/qaesencryption.cpp \
@@ -79,7 +79,7 @@ RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
 
 HEADERS  += backend/xchat/xchat.hpp \
-    backend/support/ttt.h \
+            backend/support/ttt.h \
 	    backend/xchat/xchataiml.hpp \
 	    backend/xutility/crypto/allocators.h \
 	    backend/xutility/crypto/ctools.h \
@@ -94,16 +94,16 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/support/ClipboardProxy.hpp \
             backend/support/globaleventfilter.hpp \
             backend/integrations/MarketValue.hpp \
-            backend/support/ReleaseChecker.hpp \
+            # backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
             backend/support/Settings.hpp \
             backend/integrations/MarketValue.hpp \
             backend/integrations/Explorer.hpp \
             backend/support/qaesencryption.h \
-    backend/integrations/xutility_integration.hpp \
-    backend/integrations/staticnet_integration.hpp \
-    backend/support/DownloadManager.hpp \
-    backend/support/URLObject.hpp
+            backend/integrations/xutility_integration.hpp \
+            backend/integrations/staticnet_integration.hpp \
+            backend/support/DownloadManager.hpp \
+            backend/support/URLObject.hpp
 
 DISTFILES += \
     xcite.ico \
@@ -193,8 +193,8 @@ ios {
 }
 
 linux:!android {
-  LIBS += -lssl -lcrypto
-  LIBS += -lboost_system
+    LIBS += -lssl -lcrypto
+    LIBS += -lboost_system
 }
 
 android {
@@ -224,11 +224,11 @@ android {
 }
 
 linux {
-      LIBS += -L$$PWD/dependencies/linux/boost/lib/
-      INCLUDEPATH += $$PWD/dependencies/linclude/boost/include
+    LIBS += -L$$PWD/dependencies/linux/boost/lib/
+    INCLUDEPATH += $$PWD/dependencies/linclude/boost/include
 
-      LIBS += -L$$PWD/dependencies/linux/openssl/lib -lssl -lcrypto
-      INCLUDEPATH += $$PWD/dependencies/include/openssl/include
+    LIBS += -L$$PWD/dependencies/linux/openssl/lib -lssl -lcrypto
+    INCLUDEPATH += $$PWD/dependencies/include/openssl/include
 }
 
 
@@ -237,7 +237,7 @@ macx {
         INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
         LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
-   #     LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
+   #    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 }
 
 
