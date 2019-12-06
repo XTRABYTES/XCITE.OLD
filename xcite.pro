@@ -236,7 +236,7 @@ macx {
         INCLUDEPATH += $$PWD/dependencies/include/openssl/include
         INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
-        LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
+        LIBS += -L$$PWD/dependencies/macos/openssl/lib -lssl -lcrypto
    #    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 }
 
