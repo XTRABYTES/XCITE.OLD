@@ -225,7 +225,7 @@ android {
 
 linux {
     LIBS += -L$$PWD/dependencies/linux/boost/lib/
-    INCLUDEPATH += $$PWD/dependencies/linclude/boost/include
+    INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
     LIBS += -L$$PWD/dependencies/linux/openssl/lib -lssl -lcrypto
     INCLUDEPATH += $$PWD/dependencies/include/openssl/include
