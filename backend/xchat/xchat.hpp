@@ -92,7 +92,7 @@ public:
    void sendTypingToFront(const QMap<QString, QDateTime> typing);
    void addToTyping(const QString msg);
    void messageRoute(QString message);
-
+   QString device;
 
 
 signals:
@@ -134,6 +134,7 @@ public slots:
     void pingReceived();
     void pingXchatServers();
     void forcedReconnect();
+    void xchatPopup(QString author, QString msg);
 
 
     void DownloadManagerRouter(QByteArray, QMap<QString,QVariant>);

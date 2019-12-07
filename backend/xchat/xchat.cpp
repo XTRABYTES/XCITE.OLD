@@ -17,6 +17,15 @@
 #include <QString>
 #include <set>
 #include <QtNetwork>
+#include <QMessageBox>
+#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QScreen>
+#include <QTimer>
+#include <QLabel>
+#include <QLayout>
+#include <QHBoxLayout>
+#include <unistd.h>
 
 
 XchatObject xchatRobot;
@@ -217,6 +226,46 @@ void XchatObject::receiveGameInviteResponse(QJsonObject obj) {
     QString accept = obj.value("accept").toString();
 
     emit responseGameInvite(user, game, gameID, accept);
+}
+
+void XchatObject::xchatPopup(QString author, QString msg){
+    QString osType = QSysInfo::productType();
+    device = "desktop";
+    if (osType == "android" || osType == "ios") {
+        device = "mobile";
+    }
+    if (device == "desktop") {
+        QWidget *dialog = new QWidget;
+        QHBoxLayout *msgBox = new QHBoxLayout;
+        QLabel *message = new QLabel;
+        message->setMaximumWidth(400);
+        message->setMaximumHeight(68);
+        message->setStyleSheet("font: 10pt; color:rgb(242,242,242);");
+        message->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+        message->setWordWrap(true);
+        QString auth = "<font color='#F2C94C'><b>" + author + "</b></font>";
+        QString xchatMsg = auth + ":<br><i>" + msg + "</i>";
+        message->setText(xchatMsg);
+        QSize size = QGuiApplication::screens()[0]->size();
+        int xBox = size.width(); int yBox = size.height();
+        QPoint recB;
+        int xBottom; int yBottom;
+        xBottom = xBox - 5; yBottom = yBox - 50;
+        recB.setX(xBottom); recB.setY(yBottom);
+        QPoint recT;
+        int xTop; int yTop;
+        xTop = xBox - 405; yTop = yBox - 118;
+        recT.setX(xTop); recT.setY(yTop);
+        QRect rec;
+        rec.setTopLeft(recT); rec.setBottomRight(recB);
+        dialog->setGeometry(rec);
+        dialog->setStyleSheet("background-color:rgb(20,22,27);");
+        dialog->setWindowFlags(Qt::Window | Qt::FramelessWindowHint |Qt::WindowStaysOnTopHint);
+        msgBox->addWidget(message);
+        dialog->setLayout(msgBox);
+        dialog->show();
+        QTimer::singleShot(7000, dialog, SLOT(hide()));
+    }
 }
 
 void XchatObject::xchatInc(const QString &user, QString platform, QString status, QString message, QString webLink, QString image, QString quote) {
@@ -599,9 +648,9 @@ void XchatObject::DownloadManagerRouter(QByteArray response, QMap<QString,QVaria
     if (props.value("class").toString() == "xchat"){
         QString route = props.value("route").toString();
 
-            if (route == "getOnlineNodesSlot"){
-                   getOnlineNodesSlot(response,props);
-             }
+        if (route == "getOnlineNodesSlot"){
+            getOnlineNodesSlot(response,props);
+        }
 
     }
 }

@@ -631,7 +631,7 @@ Rectangle {
             height: selectedVolume == 0? 40 : 30
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.left
-            anchors.horizontalCenterOffset: 58
+            anchors.horizontalCenterOffset: 48
             anchors.verticalCenter: volumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -660,8 +660,8 @@ Rectangle {
             source: selectedVolume == 1? 'qrc:/icons/mobile/volume_level_1-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_1-icon_light.svg' : 'qrc:/icons/mobile/volume_level_1-icon_dark.svg')
             height: selectedVolume == 1? 40 : 30
             fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: volumeLevel0.right
-            anchors.horizontalCenterOffset: 60
+            anchors.horizontalCenter: volumeLevel0.horizontalCenter
+            anchors.horizontalCenterOffset: (appWidth - 96)/3
             anchors.verticalCenter: volumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -690,8 +690,8 @@ Rectangle {
             source: selectedVolume == 2? 'qrc:/icons/mobile/volume_level_2-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_2-icon_light.svg' : 'qrc:/icons/mobile/volume_level_2-icon_dark.svg')
             height: selectedVolume == 2? 40 : 30
             fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: volumeLevel3.left
-            anchors.horizontalCenterOffset: -60
+            anchors.horizontalCenter: volumeLevel3.horizontalCenter
+            anchors.horizontalCenterOffset: -(appWidth - 96)/3
             anchors.verticalCenter: volumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -765,8 +765,7 @@ Rectangle {
             source: selectedSystemVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
             height: selectedSystemVolume == 0? 40 : 30
             fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: parent.left
-            anchors.horizontalCenterOffset: 58
+            anchors.horizontalCenter: volumeLevel0.horizontalCenter
             anchors.verticalCenter: systemVolumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -794,8 +793,7 @@ Rectangle {
             source: selectedSystemVolume == 1? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
             height: selectedSystemVolume == 1? 40 : 30
             fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: systemVolumeLevel0.right
-            anchors.horizontalCenterOffset: 60
+            anchors.horizontalCenter: volumeLevel1.horizontalCenter
             anchors.verticalCenter: systemVolumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -1294,6 +1292,11 @@ Rectangle {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
+    }
+
+    Controls.DragBar {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
     }
 
     Controls.NetworkError {

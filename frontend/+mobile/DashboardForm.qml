@@ -228,7 +228,7 @@ Item {
                     anchors.topMargin: totalBalance > 1000000? -5 : -15
                     anchors.left: parent.left
                     anchors.leftMargin: 28
-                    visible: portfolio.opacity > 0
+                    visible: portfolio.opacity > 0 && miniatureTracker == 0
 
                     Rectangle {
                         width: 30
@@ -1578,8 +1578,10 @@ Item {
                     }
 
                     onClicked: {
-                        if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0) {
-                            appsTracker = 1
+                        if (miniatureTracker == 0) {
+                            if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0) {
+                                appsTracker = 1
+                            }
                         }
                     }
                 }
@@ -1609,7 +1611,7 @@ Item {
                             detectInteraction()
                         }
 
-                        onClicked: {
+                         onClicked: {
                             if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == true) {
                                 userSettings.theme = "light"
                             }
@@ -1647,9 +1649,16 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
                         onClicked: {
-                            swipe.play()
-                            view.currentIndex = 0
+                            if (miniatureTracker == 0) {
+                                swipe.play()
+                                view.currentIndex = 0
+                            }
                         }
                     }
                 }
@@ -1666,10 +1675,17 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
                         onClicked: {
-                            swipe.play()
-                            if (addCoinTracker == 0)
-                                view.currentIndex = 1
+                            if (miniatureTracker == 0) {
+                                swipe.play()
+                                if (addCoinTracker == 0)
+                                    view.currentIndex = 1
+                            }
                         }
                     }
                 }
@@ -1836,6 +1852,11 @@ Item {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
+    }
+
+    Controls.DragBar {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
     }
 
     Controls.NetworkError {

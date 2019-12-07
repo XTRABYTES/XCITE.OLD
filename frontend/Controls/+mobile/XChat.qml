@@ -84,6 +84,12 @@ Rectangle {
                 xChatTyping(myUsername,"removeFromTyping",status);
                 checkIfIdle.restart();
                 myXchat.tagging = ""
+                isTag = false
+                startTagging = false
+                tagListTracker = 0
+                tagFilter = ""
+                beginTag = 0
+                endTag = 0
             }
         }
         if (xChatMessage.length >= 251) {
@@ -182,7 +188,7 @@ Rectangle {
         id: connectingLabel
         text: "connecting"
         anchors.horizontalCenter: onlineIndicator.horizontalCenter
-        anchors.top: onlineIndicator.bottom
+        anchors.verticalCenter: onlineIndicator.verticalCenter
         anchors.topMargin: 5
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.pixelSize: 8

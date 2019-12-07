@@ -26,9 +26,6 @@ Rectangle {
     color: "transparent"
     clip: true
 
-    property int previousX: 0
-    property int previousY: 0
-
     MouseArea {
         anchors.fill: parent
     }
@@ -36,7 +33,7 @@ Rectangle {
     Rectangle {
         anchors.fill: parent
         color: "black"
-        opacity: 0.35
+        opacity: miniatureTracker == 0? 0.35 : 1
     }
 
     Image {
@@ -80,7 +77,8 @@ Rectangle {
         height: 30
         fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenter: moveButton.horizontalCenter
+        anchors.horizontalCenterOffset: (appWidth - 86)/3
 
         Rectangle {
             width: 30
@@ -93,6 +91,37 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: minimizeApp()
+            }
+        }
+    }
+
+    Image {
+        id: miniatureButton
+        source: miniatureTracker == 0? 'qrc:/icons/mobile/miniature-icon_01.svg' : 'qrc:/icons/mobile/miniature-icon_02.svg'
+        height: 30
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: backButton.horizontalCenter
+        anchors.horizontalCenterOffset: -(appWidth - 86)/3
+
+        Rectangle {
+            width: 30
+            height: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (miniatureTracker == 1) {
+                        miniatureTracker = 0
+                    }
+                    else {
+                        miniatureTracker = 1
+                    }
+                }
             }
         }
     }
@@ -116,7 +145,11 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
 
-                onClicked: backButtonPressed()
+                onClicked: {
+                    if (miniatureTracker == 0) {
+                        backButtonPressed()
+                    }
+                }
             }
         }
     }

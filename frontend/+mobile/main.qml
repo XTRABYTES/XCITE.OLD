@@ -227,8 +227,10 @@ ApplicationWindow {
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
     property real doubbleButtonWidth: appWidth - 56
     property string myOS: "android"
-    property int appHeight: Screen.width > Screen.height? 800 : ((myOS == "android" || myOS == "ios")? Screen.height : 800)
+    property int appHeight: Screen.width > Screen.height? (miniatureTracker == 0? 800 : 200) : ((myOS == "android" || myOS == "ios")? Screen.height : (miniatureTracker == 0? 800 : 200))
     property int appWidth: Screen.width > Screen.height? 400 : ((myOS == "android" || myOS == "ios")? Screen.width : 400)
+    property int previousX: 0
+    property int previousY: 0
 
     // Global setting, editable
     property bool darktheme: userSettings.theme == "dark"? true : false
@@ -282,6 +284,7 @@ ApplicationWindow {
     property int xchatTracker: 0
     property int xgamesTracker: 0
     property int tttTracker: 0
+    property int miniatureTracker: 0
 
 
 
@@ -465,6 +468,8 @@ ApplicationWindow {
     property bool quoteAdded: false
     property bool linkAdded: false
     property bool imageAdded: false
+    property string longMessage: ""
+    property string shortMessage: ""
     property bool sendTyping: true
     property bool xChatConnection: false
     property bool xChatConnecting: false
@@ -527,6 +532,7 @@ ApplicationWindow {
     signal checkXChatSignal()
     signal pingXChatServers()
     signal xChatReconnect()
+    signal xchatPopup(string author, string msg)
     signal downloadImage(string url)
     signal tttSetUsername(string username)
     signal tttGetScore()
@@ -583,7 +589,7 @@ ApplicationWindow {
     }
 
     function backButtonPressed() {
-        if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0) {
+        if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0 && miniatureTracker == 0) {
             if (networkError == 1) {
                 networkError = 0
             }
@@ -2519,6 +2525,10 @@ ApplicationWindow {
                         xChatID = xChatID + 1
                         if(xChatScrolling) {
                             newMessages = true
+                        }
+
+                        if (miniatureTracker == 1 || xchatTracker == 0) {
+                            xchatPopup(messageObject.author, messageObject.msg)
                         }
                     }
                     if (messageObject.tag === 1) {

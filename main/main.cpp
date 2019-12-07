@@ -169,6 +169,7 @@ int main(int argc, char *argv[])
     QObject::connect(&settings, SIGNAL(xchatConnectedLogin(QString,QString,QString)), &xchatRobot, SLOT(sendTypingToQueue(QString,QString,QString)));
     QObject::connect(rootObject, SIGNAL(pingXChatServers()), &xchatRobot, SLOT(pingXchatServers()));
     QObject::connect(rootObject, SIGNAL(xChatReconnect()), &xchatRobot, SLOT(forcedReconnect()));
+    QObject::connect(rootObject, SIGNAL(xchatPopup(QString,QString)), &xchatRobot, SLOT(xchatPopup(QString,QString)));
 
     QObject::connect(rootObject, SIGNAL(sendGameToQueue(QString,QString,QString,QString)), &xchatRobot, SLOT(sendGameToQueue(QString,QString,QString,QString)));
     QObject::connect(rootObject, SIGNAL(confirmGameSend(QString,QString,QString,QString,QString)), &xchatRobot, SLOT(confirmGameSend(QString,QString,QString,QString,QString)));

@@ -258,6 +258,11 @@ Item {
         anchors.top: parent.top
     }
 
+    Controls.DragBar {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
     Controls.NetworkError {
         z:100
         id: myNetworkError
