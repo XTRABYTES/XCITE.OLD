@@ -83,7 +83,6 @@ public slots:
     void checkInternetSlot(QByteArray,QMap<QString,QVariant>);
     void apiPostSlot(QByteArray,QMap<QString,QVariant>);
 
-
 signals:
     void oSReturned(const QString os);
     void loginSucceededChanged();
@@ -127,8 +126,6 @@ signals:
     void userExistsSignal(bool);
     void internetStatusSignal(bool);
     void apiPostSignal(bool,QByteArray);
-
-
 
 private:
     QTranslator m_translator;
