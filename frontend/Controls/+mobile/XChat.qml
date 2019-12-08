@@ -377,6 +377,7 @@ Rectangle {
                     status="online"
                 }
                 xChatTyping(myUsername,"addToTyping",status);
+                sendTyping = false
                 sendTypingTimer.start()
                 sendXchatConnection.restart();
                 checkIfIdle.restart();

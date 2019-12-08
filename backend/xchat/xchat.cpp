@@ -17,6 +17,7 @@
 #include <QString>
 #include <set>
 #include <QtNetwork>
+#include <QNetworkAccessManager>
 #include <QMessageBox>
 #include <QDesktopWidget>
 #include <QGuiApplication>
@@ -293,16 +294,23 @@ void XchatObject::xchatInc(const QString &user, QString platform, QString status
 }
 
 void XchatObject::sendTypingToQueue(const QString user, QString route, QString status) {
-    me = user;
-    QJsonObject obj;
-    obj.insert("username",user);
-    obj.insert("route",route);
-    obj.insert("status",status);
-    obj.insert("message","");
-    obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
-    QJsonDocument doc(obj);
-    QString strJson(doc.toJson(QJsonDocument::Compact));
-    mqtt_client->publish(topic, strJson.toUtf8());
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
+        me = user;
+        QJsonObject obj;
+        obj.insert("username",user);
+        obj.insert("route",route);
+        obj.insert("status",status);
+        obj.insert("message","");
+        obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
+        QJsonDocument doc(obj);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        mqtt_client->publish(topic, strJson.toUtf8());
+        return;
+    }
+    else {
+
+    }
 }
 
 void XchatObject::addToTyping(QJsonObject obj){
@@ -458,28 +466,28 @@ void XchatObject::forcedReconnect() {
 
 void XchatObject::mqtt_StateChanged() {
     if (mqtt_client->state() == QMqttClient::Disconnected) {
-        qDebug() << "X-CHAT not connected";
+        QNetworkAccessManager *manager = new QNetworkAccessManager(this);
         emit xchatConnectionFail();
         emit xchatStateChanged();
-        if (findServer() != "") {
-            qDebug() << "trying to connect to server " + connectedServer;
-            mqtt_client->setHostname(connectedServer);
-            mqtt_client->setPort(1883);
-            mqtt_client->connectToHost();
+        if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
+            if (findServer() != "") {
+                mqtt_client->setHostname(connectedServer);
+                mqtt_client->setPort(1883);
+                mqtt_client->connectToHost();
+            }
+            else {
+            }
         }
         else {
-            qDebug() << "no servers available";
         }
     }
 
     if (mqtt_client->state() == QMqttClient::Connecting) {
-        qDebug() << "X-CHAT connecting to " + connectedServer;
         emit xchatConnecting();
         emit xchatStateChanged();
     }
 
     if (mqtt_client->state() == QMqttClient::Connected) {
-        qDebug() << "connected to  XCHAT via: " + connectedServer;
         emit xchatInternetOk();
         emit xchatConnectionSuccess();
         emit xchatStateChanged();

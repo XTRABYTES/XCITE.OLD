@@ -234,7 +234,7 @@ ApplicationWindow {
 
     // Global setting, editable
     property bool darktheme: userSettings.theme == "dark"? true : false
-    property string fiatTicker: fiatCurrencies.get(userSettings.defaultCurrency).ticker === undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker
+    property string fiatTicker: userSettings.defaultCurrency == undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker
     property string myUsername: ""
     property string selectedPage: ""
     property string status: "online"
@@ -2243,22 +2243,6 @@ ApplicationWindow {
         onCameraCheckPassed: {
             cameraPermission = true
         }
-
-        onMinimizing: {
-            minimizeApp()
-        }
-
-        onMakingBig: {
-            if (myOS !== "android" || myOS !== "ios") {
-                miniatureTracker = 0
-            }
-        }
-
-        onMakingSmall: {
-            if (myOS !== "android" || myOS !== "ios") {
-                miniatureTracker = 1
-            }
-        }
     }
 
     Connections {
@@ -2567,7 +2551,7 @@ ApplicationWindow {
         onStateChanged: {
             if (Qt.application.state === Qt.ApplicationActive) {
                 inActive = false
-                console.log("App back to active state")
+                xChatTypingSignal(myUsername,"addToOnline", "idle");
             }
             else {
                 inActive = true
@@ -2938,10 +2922,9 @@ ApplicationWindow {
         source: 'qrc:/fonts/Brandon_reg.otf'
     }
 
-    // need to look into removing this
     Network {
         id: network
-        handler: wallet
+        //handler: wallet
     }
 
     // sounds
@@ -2953,7 +2936,7 @@ ApplicationWindow {
 
     MediaPlayer {
         id: notification
-        source: soundList.get(selectedSound).sound === undefined? "qrc:/sounds/Szia.mp3" : soundList.get(selectedSound).sound
+        source: selectedSound == undefined? "qrc:/sounds/Szia.mp3" : soundList.get(selectedSound).sound
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
     }
 
@@ -2988,7 +2971,7 @@ ApplicationWindow {
         id: checkXchatConnection
         interval: 10000
         repeat: true
-        running: inActive == false
+        running: true
 
         onTriggered: {
             checkXChatSignal();
@@ -3029,9 +3012,9 @@ ApplicationWindow {
 
     Timer {
         id: sendXchatConnection
-        interval: 60000
+        interval: inActive == false? 60000 : 300000
         repeat: true
-        running: inActive == false
+        running: true
 
         onTriggered: {
             xChatTypingSignal(myUsername,"addToOnline", status);
