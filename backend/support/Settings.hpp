@@ -50,6 +50,7 @@ public:
     void loginFile(QString username, QString password, QString fileLocation);
     void NoWalletFile();
     void DownloadManagerHandler(URLObject *url);
+
 public slots:
     void onLocaleChange(QString);
     void onClearAllSettings();
@@ -144,6 +145,10 @@ private:
     unsigned char backendKey[32];
     unsigned char iiiv[16];
     bool internetActive = true;
+     QQueue<int> saveSettingsQueue;
+     int settingsCount = 0;
+
+
 
 };
 

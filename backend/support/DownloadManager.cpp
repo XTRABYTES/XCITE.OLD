@@ -55,8 +55,7 @@ void DownloadManager::doDownload(){
 
     reply->setProperty("properties",url->getProperties());
 
-       connect(reply, SIGNAL(finished()),this,SLOT(downloadFinished()),Qt::QueuedConnection);
-
+     connect(reply, SIGNAL(finished()),this,SLOT(downloadFinished()),Qt::QueuedConnection);
      connect(reply, SIGNAL(finished()),&timeout,SLOT(stop()),Qt::QueuedConnection);
      connect(&timeout, SIGNAL(timeout()), reply, SLOT(abort()),Qt::QueuedConnection); //connect reply to this to abort in handleTimeout
 
@@ -65,7 +64,6 @@ void DownloadManager::doDownload(){
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
             SLOT(sslErrors(QList<QSslError>)));
 #endif
-
 }
 void DownloadManager::sslErrors(const QList<QSslError> &sslErrors)
 {
@@ -80,17 +78,12 @@ void DownloadManager::sslErrors(const QList<QSslError> &sslErrors)
 
 
 void DownloadManager::downloadFinished(){
-
-     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
-  //   QTimer *t = reply->findChild<QTimer*>();
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
     QUrl url = reply->url();
 
     if (reply->error()) {
         saveToDisk(reply);
     } else {
-//        if (t->isActive()){
-//                 t->stop();
-//        }
         if (isHttpRedirect(reply)) {
             qDebug() << "Request was redirected." ;
         } else {
@@ -109,7 +102,6 @@ void DownloadManager::saveToDisk( QNetworkReply *reply){
 
        emit readTimeout(props);
    }else{
-
        QByteArray response = reply->readAll();
        emit readFinished(response,props);
    }
