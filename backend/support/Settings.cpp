@@ -35,6 +35,7 @@ using std::cin;
 Settings::Settings(QObject *parent) :
     QObject(parent)
 {
+
 }
 
 Settings::Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *parent) :
@@ -42,6 +43,7 @@ Settings::Settings(QQmlApplicationEngine *engine, QSettings *settings, QObject *
 {
     m_engine = engine;
     m_settings = settings;
+
 }
 
 void Settings::onCheckOS() {
@@ -139,12 +141,10 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
     Url.setHost("37.59.57.212");
     Url.setPort(8080);
     Url.setPath(apiURL);
-
     bool success = false;
     QString payload = "";
     QObject context;
     QTimer timeout;
-
     QEventLoop loop;
         timeout.setSingleShot(true);
         timeout.start(6000);
@@ -154,7 +154,6 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
             success = status;
             loop.quit();
         });
-
         URLObject urlObj {Url};
         urlObj.addProperty("route","apiPostSlot");
         urlObj.addProperty("POST",true);
@@ -165,7 +164,6 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
 
     disconnect(connectionHandler);
     timeout.deleteLater();
-
 
 
     return payload;
@@ -843,85 +841,110 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
 }
 
 bool Settings::SaveSettings(){
-    if (checkInternet("http://37.59.57.212")) {
-        QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
-        QVariantMap settings;
-
-        // Encrypt sessionId with backend key
-        std::pair<int, QByteArray> sessionIdAes = encryptAes(sessionId, backendKey, iiiv);
-        sessionIdAes.second = sessionIdAes.second.toBase64();
-
-        foreach (const QString &key, m_settings->childKeys()) {//iterate through m_settings to add everything to settings file we write to DB
-            settings.insert(key,m_settings->value(key).toString());
-            qDebug().noquote() << settings;
+    static QMutex mutex;
+if (mutex.tryLock()){
+    try {
+        if (saveSettingsQueue.size() > 0){
+            saveSettingsQueue.dequeue();
         }
-        QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
-        settings.insert("pincode", dec_pincode); //may be able to remove this
+        if (checkInternet("http://37.59.57.212")) {
+                QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
+                QVariantMap settings;
 
-        /*      Add contacts to DB       */
-        QJsonArray contactsArray = QJsonDocument::fromJson(m_contacts.toLatin1()).array();
-        settings.insert("contacts",contactsArray.toVariantList()); // add contacts array to our existing settings
-        qDebug().noquote() << contactsArray;
+                // Encrypt sessionId with backend key
+                std::pair<int, QByteArray> sessionIdAes = encryptAes(sessionId,backendKey, iiiv);
+                sessionIdAes.second = sessionIdAes.second.toBase64();
+                foreach (const QString &key, m_settings->childKeys()) {//iterate through m_settings to add everything to settings file we write to DB
+                    settings.insert(key,m_settings->value(key).toString());
+                }
+                QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+                settings.insert("pincode", dec_pincode); //may be able to remove this
+
+                /*      Add contacts to DB       */
+                QJsonArray contactsArray = QJsonDocument::fromJson(m_contacts.toLatin1()).array();
+                settings.insert("contacts",contactsArray.toVariantList()); // add contacts array to our existing settings
+
+                /*      Add addresses to DB       */
+                QJsonArray addressesArray = QJsonDocument::fromJson(m_addresses.toLatin1()).array(); //save addresses saves array to m_addresses
+                settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
+
+                /*      Add pendingTransactions to DB       */
+                QJsonArray pendingArray = QJsonDocument::fromJson(m_pending.toLatin1()).array();
+                settings.insert("pendingList",pendingArray.toVariantList()); // add pendingTransactions array to our existing settings
+
+                /*      Add wallets to DB       */
+                bool localKeys = m_settings->value("localKeys").toBool();
+                if (!localKeys){
+                    QJsonArray walletArray = QJsonDocument::fromJson(m_wallet.toLatin1()).array(); //savewallet saves array to m_wallet
+                    settings.insert("walletList",walletArray.toVariantList()); // add wallet array to our existing settings
+                }
+
+                /*    Convert Settings Variant to QByteArray  and encode it   */
+                QByteArray settingsOutput =  QJsonDocument::fromVariant(QVariant(settings)).toJson(QJsonDocument::Compact); //Convert settings to byteArray/Json
+                QByteArray encodedText = encryption.encode(settingsOutput, (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
+                QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
+
+                QVariantMap feed3;
+                feed3.insert("sessionIdAes", sessionIdAes.second);
+                feed3.insert("username",m_username);
+                feed3.insert("settings", DataAsString);
+
+                QByteArray finalLogin =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
+                finalLogin = finalLogin.toBase64();
+                // Send sessionId + settings to backend to save
+                QString saveSettingsResponse = RestAPIPostCall("/v1/saveSettings", finalLogin);
+                mutex.unlock();
+
+                if (saveSettingsResponse.isEmpty()){
+                    if (saveSettingsQueue.size() > 0){
+                        SaveSettings();
+                    }
+                    return false;
+                }
+
+                QJsonDocument jsonResponse = QJsonDocument::fromJson(saveSettingsResponse.toLatin1());
+                QJsonValue encryptedText = jsonResponse.object().value("login");
+                bool settingsSavedSuccess = encryptedText.toString() == "success" ? true:false;
+
+                if (settingsSavedSuccess){
+                    m_oldPincode = m_pincode;
+                    emit saveSucceeded();
+                }else{
+                    m_pincode = m_oldPincode;
+                    emit saveFailed();
+                }
+                if (saveSettingsQueue.size() > 0){
+                    SaveSettings();
+                }
+                return true;
+            }
+            else {
+                qDebug() << "no connection to account server to save settings";
+                emit saveFailed();
+                emit noInternet();
+                mutex.unlock();
+
+                if (saveSettingsQueue.size() > 0){
+                    SaveSettings();
+                }
+                return false;
+            }
 
 
-        /*      Add addresses to DB       */
-        QJsonArray addressesArray = QJsonDocument::fromJson(m_addresses.toLatin1()).array(); //save addresses saves array to m_addresses
-        settings.insert("addresses",addressesArray.toVariantList()); // add address array to our existing settings
+    } catch (QException e) {
+        qDebug() << "exception caught";
+        mutex.unlock();
 
-        /*      Add pendingTransactions to DB       */
-        QJsonArray pendingArray = QJsonDocument::fromJson(m_pending.toLatin1()).array();
-        settings.insert("pendingList",pendingArray.toVariantList()); // add pendingTransactions array to our existing settings
-        qDebug().noquote() << pendingArray;
-
-        /*      Add wallets to DB       */
-        bool localKeys = m_settings->value("localKeys").toBool();
-        if (!localKeys){
-            QJsonArray walletArray = QJsonDocument::fromJson(m_wallet.toLatin1()).array(); //savewallet saves array to m_wallet
-            settings.insert("walletList",walletArray.toVariantList()); // add wallet array to our existing settings
-        }
-
-        /*    Convert Settings Variant to QByteArray  and encode it   */
-        QByteArray settingsOutput =  QJsonDocument::fromVariant(QVariant(settings)).toJson(QJsonDocument::Compact); //Convert settings to byteArray/Json
-        QByteArray encodedText = encryption.encode(settingsOutput, (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
-        QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
-
-        QVariantMap feed3;
-        feed3.insert("sessionIdAes", sessionIdAes.second);
-        feed3.insert("username",m_username);
-        feed3.insert("settings", DataAsString);
-
-        QByteArray finalLogin =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
-        finalLogin = finalLogin.toBase64();
-
-        // Send sessionId + settings to backend to save
-        QString saveSettingsResponse = RestAPIPostCall("/v1/saveSettings", finalLogin);
-        if (saveSettingsResponse.isEmpty()){
-            return false;
-        }
-
-
-        QJsonDocument jsonResponse = QJsonDocument::fromJson(saveSettingsResponse.toLatin1());
-        QJsonValue encryptedText = jsonResponse.object().value("login");
-
-        qDebug() << "reply from save attempt: " + encryptedText.toString();
-        bool settingsSavedSuccess = encryptedText.toString() == "success" ? true:false;
-
-        if (settingsSavedSuccess){
-            m_oldPincode = m_pincode;
-            emit saveSucceeded();
-        }else{
-            m_pincode = m_oldPincode;
-            emit saveFailed();
-        }
-        return true;
     }
-    else {
-        qDebug() << "no connection to account server to save settings";
-        emit saveFailed();
-        emit noInternet();
-        return false;
-    }
+
+}else{
+    saveSettingsQueue.append(++settingsCount);
+
 }
+
+    return true;
+}
+
 
 void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
@@ -1297,10 +1320,14 @@ void Settings::apiPostSlot(QByteArray response, QMap<QString,QVariant> props){
 
 
 void Settings::DownloadManagerHandler(URLObject *url){
-    DownloadManager *manager = manager->getInstance();
+
+    DownloadManager *manager = DownloadManager::getInstance();
+
     url->addProperty("url",url->getUrl());
+
     url->addProperty("class","Settings");
     manager->append(url);
+
     connect(manager,  SIGNAL(readTimeout(QMap<QString,QVariant>)),this,SLOT(internetTimeout(QMap<QString,QVariant>)),Qt::UniqueConnection);
 
     connect(manager,  SIGNAL(readFinished(QByteArray,QMap<QString,QVariant>)), this,SLOT(DownloadManagerRouter(QByteArray,QMap<QString,QVariant>)),Qt::UniqueConnection);
@@ -1325,8 +1352,6 @@ void Settings::DownloadManagerRouter(QByteArray response, QMap<QString,QVariant>
            }else if (route == "checkInternetSlot"){
                checkInternetSlot(response,props);
            }else if (route == "apiPostSlot"){
-               qDebug() << "route found";
-
                apiPostSlot(response,props);
            }
 //            }else if (route == "getDetails"){
