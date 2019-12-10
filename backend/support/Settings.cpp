@@ -920,6 +920,7 @@ bool Settings::SaveSettings(){
             }
             else {
                 qDebug() << "no connection to account server to save settings";
+                m_pincode = m_oldPincode;
                 emit saveFailed();
                 emit noInternet();
                 mutex.unlock();
@@ -931,14 +932,19 @@ bool Settings::SaveSettings(){
             }
         } catch (QException e) {
             qDebug() << "exception caught";
+            m_pincode = m_oldPincode;
             emit saveFailed();
             mutex.unlock();
+
+            if (saveSettingsQueue.size() > 0){
+                SaveSettings();
+            }
         }
 
-    }else{
+    }
+    else{
         saveSettingsQueue.append(++settingsCount);
     }
-
     return true;
 }
 
