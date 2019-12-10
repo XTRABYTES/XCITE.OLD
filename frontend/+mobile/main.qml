@@ -152,6 +152,9 @@ ApplicationWindow {
         marketValueChangedSignal("ethbtc");
         marketValueChangedSignal("ethcha");
 
+        fiatTicker = userSettings.defaultCurrency == undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker;
+        notification.source =  selectedSound == undefined? "qrc:/sounds/Szia.mp3" : soundList.get(selectedSound).sound;
+
         selectedPage = "onBoarding"
         mainRoot.push("../Onboarding.qml")
     }
@@ -234,7 +237,7 @@ ApplicationWindow {
 
     // Global setting, editable
     property bool darktheme: userSettings.theme == "dark"? true : false
-    property string fiatTicker: userSettings.defaultCurrency == undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker
+    property string fiatTicker: "$"
     property string myUsername: ""
     property string selectedPage: ""
     property string status: "online"
@@ -583,6 +586,18 @@ ApplicationWindow {
         onActivated: {
             if (myOS !== "android" || myOS !== "ios") {
                 backButtonPressed()
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: "Alt+Q"
+        onActivated: {
+            if (myOS !== "android" || myOS !== "ios") {
+                sessionStart = 0
+                sessionTime = 0
+                manualLogout = 1
+                logoutTracker = 1
             }
         }
     }
@@ -1537,7 +1552,7 @@ ApplicationWindow {
             console.log("move exists")
         }
 
-        if (opponent !== "computer") {
+        if (opponent !== "computer" || loadingGame === true) {
             console.log("sending move to back end")
             newMove(game, gameID, player, move)
         }
@@ -1791,13 +1806,18 @@ ApplicationWindow {
 
     function isFinished(game, gameID) {
         var finished = false
-        for (var i = 0; i < gamesList.count; i ++) {
-            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
-                if (gamesList.get(i).finished === true) {
-                    finished = true
-                }
-                else {
-                    finished = false
+        if (gameID === "") {
+            finished = true
+        }
+        else {
+            for (var i = 0; i < gamesList.count; i ++) {
+                if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                    if (gamesList.get(i).finished === true) {
+                        finished = true
+                    }
+                    else {
+                        finished = false
+                    }
                 }
             }
         }
@@ -1847,6 +1867,9 @@ ApplicationWindow {
             console.log("loading score initiated")
             loadScore(game, player)
             tttHubTracker = 0
+            if (tttTracker == 0 && xgamesTracker == 1) {
+                tttTracker = 1
+            }
         }
     }
 
@@ -2188,6 +2211,7 @@ ApplicationWindow {
 
     // check for user interaction
     function detectInteraction() {
+        inActive = false;
         if (interactionTracker == 0) {
             interactionTracker = 1
         }
@@ -2441,6 +2465,7 @@ ApplicationWindow {
                 }
             }
             loadScore("ttt", tttPlayer)
+            tttFinished = true
             tttCurrentGame = ""
         }
 
@@ -2527,9 +2552,12 @@ ApplicationWindow {
                         gamesList.setProperty(i, "accepted", true)
                     }
                 }
-                //tttCurrentGame = gameID
-                //tttYourTurn = true
-                //playGame("ttt", tttCurrentGame)
+                if (tttTracker == 0 && xgamesTracker == 1) {
+                    tttCurrentGame = gameID
+                    playGame("ttt", tttCurrentGame)
+                    tttYourTurn = true
+                    tttTracker = 1
+                }
             }
         }
 
@@ -2551,17 +2579,20 @@ ApplicationWindow {
         onStateChanged: {
             if (Qt.application.state === Qt.ApplicationActive) {
                 inActive = false
-                xChatTypingSignal(myUsername,"addToOnline", "idle");
+                checkSessionId()
+                xChatReconnect();
+                status= "online";
             }
             else {
                 inActive = true
-                if(Qt.application.state === Qt.ApplicationSuspended) {
-                    xChatTypingSignal(myUsername,"addToOnline", "offline");
+                if (Qt.application.state === Qt.ApplicationSuspended) {
+                    status = "offline"
                 }
                 else {
-                    xChatTypingSignal(myUsername,"addToOnline", "idle");
+                    status = "idle"
                 }
             }
+            xChatTypingSignal(myUsername,"addToOnline", status);
         }
     }
 
@@ -2923,7 +2954,7 @@ ApplicationWindow {
     }
 
     Network {
-        id: network
+        //id: network
         //handler: wallet
     }
 
@@ -2936,7 +2967,7 @@ ApplicationWindow {
 
     MediaPlayer {
         id: notification
-        source: selectedSound == undefined? "qrc:/sounds/Szia.mp3" : soundList.get(selectedSound).sound
+        source: ''
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
     }
 
@@ -3144,6 +3175,7 @@ ApplicationWindow {
                 if (sessionTime >= 10){
                     sessionTime = 0
                     status = "idle"
+                    inActive = true
                     xChatTypingSignal(myUsername,"addToOnline", status);
                     //mainRoot.push("../StandBy.qml")
                 }

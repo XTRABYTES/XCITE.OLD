@@ -23,7 +23,7 @@ void Explorer::DownloadManagerHandler(URLObject *url){
     url->addProperty("url",url->getUrl());
     url->addProperty("class","Explorer");
     manager->append(url);
-  //  connect(manager,  SIGNAL(readTimeout(QMap<QString,QVariant>)),this,SLOT(internetTimeout(QMap<QString,QVariant>)),Qt::UniqueConnection);
+    //  connect(manager,  SIGNAL(readTimeout(QMap<QString,QVariant>)),this,SLOT(internetTimeout(QMap<QString,QVariant>)),Qt::UniqueConnection);
 
     connect(manager,  SIGNAL(readFinished(QByteArray,QMap<QString,QVariant>)), this,SLOT(DownloadManagerRouter(QByteArray,QMap<QString,QVariant>)),Qt::UniqueConnection);
 
@@ -34,19 +34,19 @@ void Explorer::DownloadManagerRouter(QByteArray response, QMap<QString,QVariant>
     if (props.value("class").toString() == "Explorer"){
         QString route = props.value("route").toString();
 
-            if (route == "getTransactionList"){
-                   getTransactionDetailsSlot(response);
-            }else if (route == "getDetails"){
-                   getDetailsSlot(response,props);
-            }else if (route == "getBalanceAddressXBYSlot"){
-                getBalanceAddressXBYSlot(response,props);
-            }else if (route == "getBalanceAddressExtSlot"){
-                getBalanceAddressExtSlot(response,props);
-            }else if (route == "getTransactionStatusSlot"){
-                getTransactionStatusSlot(response,props);
-            }else if (route == "checkInternetSlot"){
-                checkInternetSlot(response,props);
-            }
+        if (route == "getTransactionList"){
+            getTransactionDetailsSlot(response);
+        }else if (route == "getDetails"){
+            getDetailsSlot(response,props);
+        }else if (route == "getBalanceAddressXBYSlot"){
+            getBalanceAddressXBYSlot(response,props);
+        }else if (route == "getBalanceAddressExtSlot"){
+            getBalanceAddressExtSlot(response,props);
+        }else if (route == "getTransactionStatusSlot"){
+            getTransactionStatusSlot(response,props);
+        }else if (route == "checkInternetSlot"){
+            checkInternetSlot(response,props);
+        }
     }
 }
 
@@ -73,7 +73,7 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
                     DownloadManagerHandler(&urlObj);
                 }
                 else {
-                    qDebug() << "no connection to XTRABYTES blockexplorer for wallet ballance";
+                    qDebug() << "no connection to XTRABYTES blockexplorer for wallet balance";
                     emit noInternet();
                 }
             } else if(((coin == "btc") || (coin == "eth")) && wallets == "all"){
@@ -204,16 +204,16 @@ void Explorer::checkTxStatus(QString pendingList) {
 // SLOTS //
 void Explorer::getTransactionDetailsSlot(QByteArray response){
     QJsonDocument jsonResponse = QJsonDocument::fromJson(response);
-   QJsonObject meta = jsonResponse.object().value("meta").toObject();
-   int totalPages = meta.value("pages").toInt();
+    QJsonObject meta = jsonResponse.object().value("meta").toObject();
+    int totalPages = meta.value("pages").toInt();
 
-   QJsonObject result = jsonResponse.object().value("result").toObject();
-   QJsonArray transactions = result.value("transactions").toArray();
-   QJsonDocument doc;
-   doc.setArray(transactions);
-   QString transactionString(doc.toJson(QJsonDocument::Compact));
+    QJsonObject result = jsonResponse.object().value("result").toObject();
+    QJsonArray transactions = result.value("transactions").toArray();
+    QJsonDocument doc;
+    doc.setArray(transactions);
+    QString transactionString(doc.toJson(QJsonDocument::Compact));
 
-   emit updateTransactions(transactionString, QString::number(totalPages));
+    emit updateTransactions(transactionString, QString::number(totalPages));
 }
 
 void Explorer::getDetailsSlot(QByteArray response, QMap<QString,QVariant> props){
@@ -243,7 +243,7 @@ void Explorer::getDetailsSlot(QByteArray response, QMap<QString,QVariant> props)
 void Explorer::getBalanceAddressXBYSlot(QByteArray response, QMap<QString,QVariant> props){
     QString coin = props.value("coin").toString();
     QString address = props.value("address").toString();
-  //  qDebug() << "receiving balance for: " + coin + " : " + address;
+    //  qDebug() << "receiving balance for: " + coin + " : " + address;
 
     QJsonDocument jsonResponse = QJsonDocument::fromJson(response);
     QJsonObject result = jsonResponse.object().value("result").toObject();
@@ -259,7 +259,7 @@ void Explorer::getBalanceAddressExtSlot(QByteArray response, QMap<QString,QVaria
     QJsonDocument jsonResponse = QJsonDocument::fromJson(response);
     QString coin = props.value("coin").toString();
     QString address = props.value("address").toString();
-//    qDebug() << "receiving balance for: " + coin + " : " + address;
+    //    qDebug() << "receiving balance for: " + coin + " : " + address;
 
     if(jsonResponse.object().contains("balance")) {
         double balanceLong = jsonResponse.object().value("balance").toDouble();
@@ -316,9 +316,11 @@ void Explorer::getTransactionStatusSlot(QByteArray response, QMap<QString,QVaria
 
 bool Explorer::checkInternet(QString url){
     bool internetStatus = false;
-    QTimer timeout;
-
-    QEventLoop loop;
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
+        qDebug() << "network manager available";
+        QTimer timeout;
+        QEventLoop loop;
         timeout.setSingleShot(true);
         timeout.start(6000);
         connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
@@ -332,17 +334,21 @@ bool Explorer::checkInternet(QString url){
         urlObj.addProperty("route","checkInternetSlot");
         DownloadManagerHandler(&urlObj);
 
-    loop.exec();
-    disconnect(connectionHandler);
-    timeout.deleteLater();
+        loop.exec();
+        disconnect(connectionHandler);
+        timeout.deleteLater();
 
-
-    return internetStatus;
+        return internetStatus;
+    }
+    else {
+        qDebug() << "network manager not available";
+        return internetStatus;
+    }
 }
 
 void Explorer::checkInternetSlot(QByteArray response, QMap<QString,QVariant> props){
     if (response != ""){
-       emit internetStatusSignal(true);
+        emit internetStatusSignal(true);
     }else{
         emit internetStatusSignal(false);
     }

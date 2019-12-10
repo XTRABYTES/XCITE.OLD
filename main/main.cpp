@@ -20,6 +20,7 @@
 #include <qqmlcontext.h>
 #include <qqml.h>
 #include <QZXing.h>
+#include <QDebug>
 #include "../backend/staticnet/staticnet.hpp"
 #include "../backend/xutility/xutility.hpp"
 #include "../backend/xchat/xchat.hpp"
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
     engine.addImportPath("qrc:/");
 
 //#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+    qDebug() << "MOBILE DEVICE";
     QQmlFileSelector *selector = new QQmlFileSelector(&engine);
     selector->setExtraSelectors(QStringList() << "mobile");
 //#endif
@@ -67,20 +69,24 @@ int main(int argc, char *argv[])
     // wire-up market value
     MarketValue marketValue;
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
+    qDebug() << "MARKETVALUE WIRED UP";
 
     // wire-up Explorer
     Explorer explorer;
     engine.rootContext()->setContextProperty("explorer", &explorer);
+    qDebug() << "EXPLORER WIRED UP";
 
     // wire-up xutility_integration
     xutility_integration xUtil_int;
     engine.rootContext()->setContextProperty("xUtil_int", &xUtil_int);    
     engine.rootContext()->setContextProperty("xUtility", &xUtility);
+    qDebug() << "XUTILITY WIRED UP";
 
     // wire-up xchat
-  //  XchatObject xChat;
+    // XchatObject xChat;
     xchatRobot.Initialize();
     engine.rootContext()->setContextProperty("xChat", &xchatRobot);
+    qDebug() << "XCHAT WIRED UP";
 
 
     // wire-up staticnet_integration
@@ -88,22 +94,27 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("StaticNet", &staticNet);
     staticnet_integration static_int;
     engine.rootContext()->setContextProperty("static_int", &static_int);
+    qDebug() << "STATICNET WIRED UP";
 
 
     // wire-up ClipboardProxy
     ClipboardProxy clipboardProxy;
     engine.rootContext()->setContextProperty("clipboardProxy", &clipboardProxy);
+    qDebug() << "CLIPBOARD WIRED UP";
 
     // wire-up Tictactoe
     Ttt tictactoe;
     engine.rootContext()->setContextProperty("tictactoe", &tictactoe);
+    qDebug() << "TTT WIRED UP";
 
     // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
+    qDebug() << "APP VERSION SET";
 
     // register event filter
     engine.rootContext()->setContextProperty("EventFilter", &eventFilter);
+    qDebug() << "EVENT FILTER SET";
 
     //ReleaseChecker releaseChecker(APP_VERSION);
     //engine.rootContext()->setContextProperty("ReleaseChecker", &releaseChecker);
@@ -112,11 +123,13 @@ int main(int argc, char *argv[])
     QSettings appSettings;
     Settings settings(&engine, &appSettings);
     engine.rootContext()->setContextProperty("UserSettings", &settings);
+    qDebug() << "USER SETTINGS SET";
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty()) {
         return -1;
     }
+    qDebug() << "MAIN.QML LOADED";
 
     QObject *rootObject = engine.rootObjects().first();
 

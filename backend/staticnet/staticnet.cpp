@@ -30,6 +30,7 @@ void StaticNet::Initialize() {
 	
 	    // Ignore SSL Errors 
 	    // Please comment out before production usage
+       qDebug() << "INITIALIZE STATICNET";
        QSslConfiguration sslConf = QSslConfiguration::defaultConfiguration();
        sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
        QSslConfiguration::setDefaultConfiguration(sslConf);

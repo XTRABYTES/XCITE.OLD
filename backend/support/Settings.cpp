@@ -112,15 +112,15 @@ bool Settings::UserExists(QString username){
         timeout.start(6000);
         connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
         auto connectionHandler =  connect(this, &Settings::userExistsSignal, [&userExists,&loop](bool checked) {
-                userExists = checked;
-                loop.quit();
+            userExists = checked;
+            loop.quit();
 
-            });
+        });
 
-            QString url = "http://37.59.57.212:8080/v1/user/" + username;
-            URLObject urlObj {QUrl(url)};
-            urlObj.addProperty("route","userExistsSlot");
-            DownloadManagerHandler(&urlObj);
+        QString url = "http://37.59.57.212:8080/v1/user/" + username;
+        URLObject urlObj {QUrl(url)};
+        urlObj.addProperty("route","userExistsSlot");
+        DownloadManagerHandler(&urlObj);
 
         loop.exec();
         disconnect(connectionHandler);
@@ -146,19 +146,19 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
     QObject context;
     QTimer timeout;
     QEventLoop loop;
-        timeout.setSingleShot(true);
-        timeout.start(6000);
-        connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
-        auto connectionHandler = connect(this, &Settings::apiPostSignal, &context,[&payload, &success, &loop](bool status,QByteArray payloadIncoming) {
-            payload = QString(payloadIncoming);
-            success = status;
-            loop.quit();
-        });
-        URLObject urlObj {Url};
-        urlObj.addProperty("route","apiPostSlot");
-        urlObj.addProperty("POST",true);
-        urlObj.addProperty("payload",payloadToSend);
-        DownloadManagerHandler(&urlObj);
+    timeout.setSingleShot(true);
+    timeout.start(6000);
+    connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
+    auto connectionHandler = connect(this, &Settings::apiPostSignal, &context,[&payload, &success, &loop](bool status,QByteArray payloadIncoming) {
+        payload = QString(payloadIncoming);
+        success = status;
+        loop.quit();
+    });
+    URLObject urlObj {Url};
+    urlObj.addProperty("route","apiPostSlot");
+    urlObj.addProperty("POST",true);
+    urlObj.addProperty("payload",payloadToSend);
+    DownloadManagerHandler(&urlObj);
 
     loop.exec();
 
@@ -410,13 +410,13 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
         payload = payload.toBase64();
 
         //  Send Pub Key to API.  Backend returns AES key and randNum encrypted with password
-//            QString response2 = RestAPIPostCall("/v1/login", payload);
-//            connect(this, SIGNAL(userExistsSignal(QString)), &loop, SLOT(quit()));
-//            connect(this, &Settings::userExistsSignal, [&response2](QString payload) {
-//                response2 = payload;
-//            });
-//            UserExists(username);
-//          loop.exec();
+        //            QString response2 = RestAPIPostCall("/v1/login", payload);
+        //            connect(this, SIGNAL(userExistsSignal(QString)), &loop, SLOT(quit()));
+        //            connect(this, &Settings::userExistsSignal, [&response2](QString payload) {
+        //                response2 = payload;
+        //            });
+        //            UserExists(username);
+        //          loop.exec();
 
         QString response2 = RestAPIPostCall("/v1/login", payload);
         if (response2.isEmpty()){
@@ -765,7 +765,7 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
             return;
         }
     }
-     else {
+    else {
         qDebug() << "no connection to account server to change password";
         emit passwordChangedFailed();
         emit noInternet();
@@ -842,12 +842,12 @@ std::pair<int, QByteArray> Settings::encryptAes(QString text,  unsigned char *ke
 
 bool Settings::SaveSettings(){
     static QMutex mutex;
-if (mutex.tryLock()){
-    try {
-        if (saveSettingsQueue.size() > 0){
-            saveSettingsQueue.dequeue();
-        }
-        if (checkInternet("http://37.59.57.212")) {
+    if (mutex.tryLock()){
+        try {
+            if (saveSettingsQueue.size() > 0){
+                saveSettingsQueue.dequeue();
+            }
+            if (checkInternet("http://37.59.57.212")) {
                 QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
                 QVariantMap settings;
 
@@ -929,18 +929,15 @@ if (mutex.tryLock()){
                 }
                 return false;
             }
+        } catch (QException e) {
+            qDebug() << "exception caught";
+            emit saveFailed();
+            mutex.unlock();
+        }
 
-
-    } catch (QException e) {
-        qDebug() << "exception caught";
-        mutex.unlock();
-
+    }else{
+        saveSettingsQueue.append(++settingsCount);
     }
-
-}else{
-    saveSettingsQueue.append(++settingsCount);
-
-}
 
     return true;
 }
@@ -1198,29 +1195,37 @@ void Settings::ImportWallet(QString username, QString password){
 }
 
 void Settings::CheckSessionId(){
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
+        qDebug() << "network manager available";
+        // Encrypt sessionId with backend key
+        std::pair<int, QByteArray> sessionIdAes = encryptAes(sessionId, backendKey, iiiv);
+        sessionIdAes.second = sessionIdAes.second.toBase64();
 
-    // Encrypt sessionId with backend key
-    std::pair<int, QByteArray> sessionIdAes = encryptAes(sessionId, backendKey, iiiv);
-    sessionIdAes.second = sessionIdAes.second.toBase64();
+        QVariantMap feed;
+        feed.insert("sessionIdAes", sessionIdAes.second);
+        feed.insert("username",m_username);
 
-    QVariantMap feed;
-    feed.insert("sessionIdAes", sessionIdAes.second);
-    feed.insert("username",m_username);
+        QByteArray checkSession =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
+        checkSession = checkSession.toBase64();
 
-    QByteArray checkSession =  QJsonDocument::fromVariant(feed).toJson(QJsonDocument::Compact);
-    checkSession = checkSession.toBase64();
+        // Send sessionId + settings to backend to save
+        QString checkSessionResponse = RestAPIPostCall("/v1/checkSessionId", checkSession);
+        if (checkSessionResponse.isEmpty()){
+            return;
+        }
 
-    // Send sessionId + settings to backend to save
-    QString checkSessionResponse = RestAPIPostCall("/v1/checkSessionId", checkSession);
-    if (checkSessionResponse.isEmpty()){
-        return;
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(checkSessionResponse.toLatin1());
+        QJsonValue encryptedText = jsonResponse.object().value("sessionId");
+
+        bool sessionCheckBool = encryptedText.toString() == "false" ? false:true;
+        emit sessionIdCheck(sessionCheckBool);
+    }
+    else {
+        qDebug() << "network manager not available";
+        emit sessionIdCheck(true);
     }
 
-    QJsonDocument jsonResponse = QJsonDocument::fromJson(checkSessionResponse.toLatin1());
-    QJsonValue encryptedText = jsonResponse.object().value("sessionId");
-
-    bool sessionCheckBool = encryptedText.toString() == "false" ? false:true;
-    emit sessionIdCheck(sessionCheckBool);
 }
 
 void Settings::NoWalletFile(){
@@ -1266,11 +1271,12 @@ void Settings::downloadImage(QString imageUrl) {
 }
 
 bool Settings::checkInternet(QString url){
-
     bool internetStatus = false;
-    QTimer timeout;
-
-    QEventLoop loop;
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
+        qDebug() << "network manager available";
+        QTimer timeout;
+        QEventLoop loop;
         timeout.setSingleShot(true);
         timeout.start(6000);
         connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
@@ -1284,27 +1290,32 @@ bool Settings::checkInternet(QString url){
         urlObj.addProperty("route","checkInternetSlot");
         DownloadManagerHandler(&urlObj);
 
-    loop.exec();
-    disconnect(connectionHandler);
-    timeout.deleteLater();
+        loop.exec();
+        disconnect(connectionHandler);
+        timeout.deleteLater();
 
-    return internetStatus;
+        return internetStatus;
+    }
+    else {
+        qDebug() << "network manager not available";
+        return internetStatus;
+    }
 }
 
 //SLOTS//
 void Settings::userExistsSlot(QByteArray response, QMap<QString,QVariant> props){
     if (response != ""){
-                emit userAlreadyExists();
-                emit userExistsSignal(true);
-            }else{
-                emit usernameAvailable();
-                emit userExistsSignal(false);
-            }
+        emit userAlreadyExists();
+        emit userExistsSignal(true);
+    }else{
+        emit usernameAvailable();
+        emit userExistsSignal(false);
+    }
 }
 
 void Settings::checkInternetSlot(QByteArray response, QMap<QString,QVariant> props){
     if (response != ""){
-       emit internetStatusSignal(true);
+        emit internetStatusSignal(true);
     }else{
         emit internetStatusSignal(false);
     }
@@ -1312,7 +1323,7 @@ void Settings::checkInternetSlot(QByteArray response, QMap<QString,QVariant> pro
 
 void Settings::apiPostSlot(QByteArray response, QMap<QString,QVariant> props){
     if (response != ""){
-       emit apiPostSignal(true,response);
+        emit apiPostSignal(true,response);
     }else{
         emit apiPostSignal(false,"");
     }
@@ -1347,21 +1358,21 @@ void Settings::DownloadManagerRouter(QByteArray response, QMap<QString,QVariant>
     if (props.value("class").toString() == "Settings"){
         QString route = props.value("route").toString();
 
-           if (route == "userExistsSlot"){
-                   userExistsSlot(response,props);
-           }else if (route == "checkInternetSlot"){
-               checkInternetSlot(response,props);
-           }else if (route == "apiPostSlot"){
-               apiPostSlot(response,props);
-           }
-//            }else if (route == "getDetails"){
-//                   getDetailsSlot(response,props);
-//            }else if (route == "getBalanceAddressXBYSlot"){
-//                getBalanceAddressXBYSlot(response,props);
-//            }else if (route == "getBalanceAddressExtSlot"){
-//                getBalanceAddressExtSlot(response,props);
-//            }else if (route == "getTransactionStatusSlot"){
-//                getTransactionStatusSlot(response,props);
-//            }
+        if (route == "userExistsSlot"){
+            userExistsSlot(response,props);
+        }else if (route == "checkInternetSlot"){
+            checkInternetSlot(response,props);
+        }else if (route == "apiPostSlot"){
+            apiPostSlot(response,props);
+        }
+        //            }else if (route == "getDetails"){
+        //                   getDetailsSlot(response,props);
+        //            }else if (route == "getBalanceAddressXBYSlot"){
+        //                getBalanceAddressXBYSlot(response,props);
+        //            }else if (route == "getBalanceAddressExtSlot"){
+        //                getBalanceAddressExtSlot(response,props);
+        //            }else if (route == "getTransactionStatusSlot"){
+        //                getTransactionStatusSlot(response,props);
+        //            }
     }
 }

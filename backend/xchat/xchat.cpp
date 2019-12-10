@@ -470,6 +470,7 @@ void XchatObject::mqtt_StateChanged() {
         emit xchatConnectionFail();
         emit xchatStateChanged();
         if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
+            qDebug() << "network manager available";
             if (findServer() != "") {
                 mqtt_client->setHostname(connectedServer);
                 mqtt_client->setPort(1883);
@@ -479,6 +480,7 @@ void XchatObject::mqtt_StateChanged() {
             }
         }
         else {
+            qDebug() << "network manager not available";
         }
     }
 

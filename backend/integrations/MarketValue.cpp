@@ -34,7 +34,7 @@ void MarketValue::DownloadManagerRouter(QByteArray response, QMap<QString,QVaria
 
         QString route = props.value("route").toString();
         if (route == "findCurrencyValueSlot"){
-               findCurrencyValueSlot(response, props);
+            findCurrencyValueSlot(response, props);
         }else if (route == "checkInternetSlot"){
             checkInternetSlot(response,props);
         }
@@ -60,7 +60,7 @@ void MarketValue::findCurrencyValueSlot(QByteArray response, QMap<QString,QVaria
     QString currency = props.value("currency").toString();
     if (!currencyValue.isNull() && !currencyValue.isEmpty()){
         currencyValue.remove(0, 1).chop(2);
-       // setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
+        // setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
         emit marketValueChanged(currency, currencyValue);
         qDebug() << currency + ":" + currencyValue;
     }
@@ -95,9 +95,11 @@ void MarketValue::setMarketValue(const QString &check, const QString &currency, 
 
 bool MarketValue::checkInternet(QString url){
     bool internetStatus = false;
-    QTimer timeout;
-
-    QEventLoop loop;
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
+        qDebug() << "network manager available";
+        QTimer timeout;
+        QEventLoop loop;
         timeout.setSingleShot(true);
         timeout.start(6000);
         connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()),Qt::QueuedConnection);
@@ -110,16 +112,21 @@ bool MarketValue::checkInternet(QString url){
         urlObj.addProperty("route","checkInternetSlot");
         DownloadManagerHandler(&urlObj);
 
-    loop.exec();
-    disconnect(connectionHandler);
-    timeout.deleteLater();
+        loop.exec();
+        disconnect(connectionHandler);
+        timeout.deleteLater();
 
-    return internetStatus;
+        return internetStatus;
+    }
+    else {
+        qDebug() << "network manager not available";
+        return internetStatus;
+    }
 }
 
 void MarketValue::checkInternetSlot(QByteArray response, QMap<QString,QVariant> props){
     if (response != ""){
-       emit internetStatusSignal(true);
+        emit internetStatusSignal(true);
     }else{
         emit internetStatusSignal(false);
     }

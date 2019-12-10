@@ -108,10 +108,40 @@ Rectangle {
             }
 
             onClicked: {
-                var opponent = findOpponent(tttCurrentGame)
-                tttTracker = 1
-                loadScore("ttt", opponent)
+                var opponent = ""
                 tttSetUsername(myUsername)
+                if (tttCurrentGame !== "") {
+                    opponent = findOpponent(tttCurrentGame)
+                    loadScore("ttt", opponent)
+                    tttTracker = 1
+                }
+                else {
+                    for (var i = 0; i < gamesList.count; i ++) {
+                        if (gamesList.get(i).game === "ttt" && gamesList.get(i).gameID !== "" && gamesList.get(i).finished === false) {
+                            opponent = findOpponent(gamesList.get(i).gameID)
+                            if (opponent === "computer") {
+                                console.log("found ongoing tic tac toe game against computer")
+                                tttCurrentGame = gamesList.get(i).gameID
+                            }
+                            else {
+                                console.log("no ongoing game against computer found")
+                            }
+                        }
+                    }
+                    if (tttCurrentGame !== "") {
+                        console.log("loading existing tic tac toe game against computer")
+                        playGame("ttt", tttCurrentGame)
+                    }
+                    else {
+                        console.log("creating new tic tac toe game against computer")
+                        tttcreateGameId(myUsername,"computer")
+                    }
+                }
+                if (opponent === "computer") {
+                    for (var e = 0; e < tttButtonList.count; e ++) {
+                        tttButtonList.setProperty(e, "online", false)
+                    }
+                }
             }
         }
 

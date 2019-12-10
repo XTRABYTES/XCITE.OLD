@@ -184,12 +184,12 @@ Rectangle {
                         }
 
                         onClicked: {
-                            selectedAddress = addressHash.text
                             selectedCoin = coin
                             walletIndex = defaultWallet(coin)
                             addressIndex = uniqueNR
                             switchState = 1
                             transferTracker = 1
+                            selectedAddress = addressHash.text
                         }
                     }
                 }

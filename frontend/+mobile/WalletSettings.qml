@@ -97,7 +97,7 @@ Rectangle {
             font.bold: true
             font.capitalization: Font.SmallCaps
             color: themecolor
-            anchors.top: welcomeText.bottom
+            anchors.top: parent.top
             anchors.topMargin: 30
             anchors.left: parent.left
             anchors.leftMargin: 28

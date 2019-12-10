@@ -33,6 +33,8 @@ Rectangle {
     onStateChanged: {
         if (tttTracker == 1) {
             accepted = isAccepted("ttt", tttCurrentGame)
+            finished = isFinished("ttt", tttCurrentGame)
+            tttFinished = finished
         }
     }
 
@@ -628,12 +630,12 @@ Rectangle {
                 winner = result
                 showResult = true
                 resultTimer.start()
-                finished = true
                 tttquit = false
                 wonGames = win
                 lostGames = loose
                 drawedGames = draw
             }
+            finished = true
         }
 
         onScoreBoard: {
@@ -715,6 +717,7 @@ Rectangle {
                 }
                 accepted = isAccepted("ttt", tttCurrentGame)
                 finished = isFinished("ttt", tttCurrentGame)
+                tttFinished = finished
             }
             else if (tttHubTracker == 1) {
                 newGameSelected = false
@@ -726,6 +729,7 @@ Rectangle {
             if (newGameSelected === true) {
                 accepted = isAccepted("ttt", tttCurrentGame)
                 finished = isFinished("ttt", tttCurrentGame)
+                tttFinished = finished
                 if (!gameStarted("ttt", tttCurrentGame)){
                     tttGameStarted = false
                     tttquit = false

@@ -263,7 +263,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         visible: editSaved == 0
                  && editFailed == 0
-                 && saveInitiated == false
+                 && savePasswordInitiated == false
 
         MouseArea {
             anchors.fill: saveButton
@@ -399,7 +399,7 @@ Rectangle {
         height: 60
         anchors.horizontalCenter: saveButton.horizontalCenter
         anchors.verticalCenter: saveButton.verticalCenter
-        playing: saveInitiated == true
+        playing: savePasswordInitiated == true
         visible: editSaved == 0
                  && editFailed == 0
                  && savePasswordInitiated == true

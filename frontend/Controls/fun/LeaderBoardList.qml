@@ -110,13 +110,16 @@ Rectangle {
         sorters: [
             RoleSorter {
                 roleName: "win"
-                sortOrder: Qt.AsscendingOrder},
+                sortOrder: Qt.AscendingOrder
+            },
             RoleSorter {
                 roleName: "lost"
-                sortOrder: Qt.DecendingOrder},
+                sortOrder: Qt.DescendingOrder
+            },
             RoleSorter {
                 roleName: "draw"
-                sortOrder: Qt.DescendingOrder}
+                sortOrder: Qt.DescendingOrder
+            }
         ]
     }
 
