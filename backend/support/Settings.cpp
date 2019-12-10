@@ -172,7 +172,7 @@ QString Settings::RestAPIPostCall(QString apiURL, QByteArray payloadToSend){
 
 
 void Settings::CreateUser(QString username, QString password){
-    if (checkInternet("http://37.59.57.212")) {
+    if (checkInternet("http://37.59.57.212:8080")) {
         QTextCodec::setCodecForLocale(QTextCodec::codecForName("Latin1"));
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
 
@@ -384,7 +384,7 @@ void Settings::login(QString username, QString password){
 }
 
 void Settings::loginFile(QString username, QString password, QString fileLocation){
-    if (checkInternet("http://37.59.57.212")) {
+    if (checkInternet("http://37.59.57.212:8080")) {
         emit checkUsername();
         if(!UserExists(username)){
             qDebug() << "User does not exist";
@@ -561,7 +561,7 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
 
 
 void Settings::changePassword(QString oldPassword, QString newPassword){
-    if (checkInternet("http://37.59.57.212")) {
+    if (checkInternet("http://37.59.57.212:8080")) {
         QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
         QByteArray pubKey = keyPair.first;
         QByteArray privKey = keyPair.second;
@@ -847,7 +847,7 @@ bool Settings::SaveSettings(){
             if (saveSettingsQueue.size() > 0){
                 saveSettingsQueue.dequeue();
             }
-            if (checkInternet("http://37.59.57.212")) {
+            if (checkInternet("http://37.59.57.212:8080")) {
                 QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
                 QVariantMap settings;
 
