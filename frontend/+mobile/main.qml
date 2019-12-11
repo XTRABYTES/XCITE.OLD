@@ -36,7 +36,7 @@ ApplicationWindow {
 
     MediaPlayer {
         id: introSound
-        source: "qrc:/sounds/intro_01.mp3"
+        source: "qrc:/sounds/intro_01.wav"
         volume: 1
         autoPlay: true
     }
@@ -80,12 +80,12 @@ ApplicationWindow {
         //fiatCurrencies.append({"currency": "BTC", "ticker": "₿", "currencyNR": 3});
 
         soundList.setProperty(0, "name", "Bonjour");
-        soundList.setProperty(0, "sound", 'qrc:/sounds/Bonjour.mp3')
+        soundList.setProperty(0, "sound", 'qrc:/sounds/Bonjour.wav')
         soundList.setProperty(0, "soundNR", 0)
-        soundList.append({"name": "Hello", "sound": 'qrc:/sounds/Hello.mp3', "soundNR": 1});
-        soundList.append({"name": "Hola", "sound": 'qrc:/sounds/hola.mp3', "soundNR": 2});
-        soundList.append({"name": "Servus", "sound": 'qrc:/sounds/Servus.mp3', "soundNR": 3});
-        soundList.append({"name": "Szia", "sound": 'qrc:/sounds/Szia.mp3', "soundNR": 4});
+        soundList.append({"name": "Hello", "sound": 'qrc:/sounds/Hello.wav', "soundNR": 1});
+        soundList.append({"name": "Hola", "sound": 'qrc:/sounds/hola.wav', "soundNR": 2});
+        soundList.append({"name": "Servus", "sound": 'qrc:/sounds/Servus.wav', "soundNR": 3});
+        soundList.append({"name": "Szia", "sound": 'qrc:/sounds/Szia.wav', "soundNR": 4});
 
         coinList.setProperty(0, "name", nameXFUEL);
         coinList.setProperty(0, "fullname", "xfuel");
@@ -2824,7 +2824,7 @@ ApplicationWindow {
         id: soundList
         ListElement {
             name: ""
-            sound: 'qrc:/sounds/notification_1.mp3'
+            sound: 'qrc:/sounds/notification_1.wav'
             soundNR: 0
         }
     }
@@ -2974,41 +2974,41 @@ ApplicationWindow {
     }
 
     // sounds
-    MediaPlayer {
+    SoundEffect {
         id: click01
-        source: "qrc:/sounds/click_02.mp3"
+        source: "qrc:/sounds/click_02.wav"
         volume: selectedSystemVolume == 0? 0 : 0.15
     }
 
-    MediaPlayer {
+    SoundEffect {
         id: notification
         source: ''
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
     }
 
-    MediaPlayer {
+    SoundEffect {
         id: succesSound
-        source: "qrc:/sounds/Success.mp3"
+        source: "qrc:/sounds/Succes.wav"
         volume: 0.50
     }
 
-    MediaPlayer {
+    SoundEffect {
         id: failSound
-        source: "qrc:/sounds/Fail.mp3"
+        source: "qrc:/sounds/Fail.wav"
         volume: 0.50
     }
 
-    MediaPlayer {
+    SoundEffect {
         id: outroSound
-        source: "qrc:/sounds/Outro.mp3"
+        source: "qrc:/sounds/Outro.wav"
         volume: selectedSystemVolume == 0? 0 : 0.5
     }
 
-    MediaPlayer {
-        id: swipe
-        source: "qrc:/sounds/swipe_01.mp3"
-        volume: selectedSystemVolume == 0? 0 : 0.2
-    }
+   # SoundEffect {
+   #     id: swipe
+   #     source: "qrc:/sounds/swipe_01.mp3"
+   #     volume: selectedSystemVolume == 0? 0 : 0.2
+   # }
 
     // timers
 
