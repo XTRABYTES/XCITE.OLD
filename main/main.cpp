@@ -133,7 +133,6 @@ int main(int argc, char *argv[])
 
     QObject *rootObject = engine.rootObjects().first();
 
-    QObject::connect(rootObject, SIGNAL(checkOS()), &settings, SLOT(onCheckOS()));
     QObject::connect(rootObject, SIGNAL(userLogin(QString, QString)), &settings, SLOT(login(QString, QString)));
     QObject::connect(rootObject, SIGNAL(createUser(QString, QString)), &settings, SLOT(CreateUser(QString, QString)));
     QObject::connect(rootObject, SIGNAL(userExists(QString)), &settings, SLOT(UserExists(QString)));

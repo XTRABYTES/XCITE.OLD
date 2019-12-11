@@ -465,7 +465,7 @@ Rectangle {
             id: logoutText
             text: "LOG OUT"
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 50
+            anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
             color: maincolor
             font.family: xciteMobile.name
             anchors.horizontalCenter: parent.horizontalCenter

@@ -169,6 +169,43 @@ Rectangle {
         }
     }
 
+    Label {
+        id: closeXchangeModal
+        z: 10
+        text: "BACK"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.pixelSize: 14
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+
+        Rectangle{
+            id: closeButton
+            height: 34
+            width: doubbleButtonWidth
+            radius: 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+        }
+
+        MouseArea {
+            anchors.fill: closeButton
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onReleased: {
+                if (xgamesTracker == 1) {
+                    xgamesTracker = 0;
+                }
+            }
+        }
+    }
+
     Fun.TttBoard {
         z: 100
         id: myTtt

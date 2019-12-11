@@ -98,7 +98,7 @@ Rectangle {
             font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: parent.top
-            anchors.topMargin: 30
+            anchors.topMargin: 10
             anchors.left: parent.left
             anchors.leftMargin: 28
         }
@@ -1230,7 +1230,7 @@ Rectangle {
         id: closeSettings
         z: 4
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+        anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         text: "BACK"
         font.pixelSize: 14

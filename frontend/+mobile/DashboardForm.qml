@@ -469,7 +469,7 @@ Item {
                     radius: 50
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 50
+                    anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
                     color: darktheme == true? "#14161B" : "#F2F2F2"
                     visible: view.currentIndex == 0
                     state: coinTracker == 1 ? "inView" : "hidden"
@@ -1034,7 +1034,7 @@ Item {
                     radius: 50
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 50
+                    anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
                     color: darktheme == true? "#14161B" : "#F2F2F2"
                     visible: view.currentIndex == 1 && contactIndex != 0
                     state: (contactTracker == 1 && addressQRTracker == 0)? "inView" : "hidden"

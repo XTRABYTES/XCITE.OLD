@@ -165,7 +165,6 @@ Item {
                 onReleased: {
                     loginTracker = 1
                     clearAllSettings();
-                    checkOS();
                     checkCamera();
                 }
             }
@@ -236,7 +235,7 @@ Item {
         width: 150
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
         anchors.bottom: backgroundSplash.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+        anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
     }
 
     Login {

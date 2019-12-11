@@ -28,7 +28,7 @@ ApplicationWindow {
     id: xcite
 
     visible: true
-    flags: Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint
+    flags: Qt.Dialog | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.MSWindowsFixedSizeDialogHint : 0)
     width: appWidth
     height: appHeight
     title: qsTr("XCITE")
@@ -36,7 +36,7 @@ ApplicationWindow {
 
     MediaPlayer {
         id: introSound
-        source: "qrc:/sounds/intro_01.wav"
+        source: "qrc:/sounds/intro_01.mp3"
         volume: 1
         autoPlay: true
     }
@@ -80,12 +80,12 @@ ApplicationWindow {
         //fiatCurrencies.append({"currency": "BTC", "ticker": "₿", "currencyNR": 3});
 
         soundList.setProperty(0, "name", "Bonjour");
-        soundList.setProperty(0, "sound", 'qrc:/sounds/Bonjour.wav')
+        soundList.setProperty(0, "sound", 'qrc:/sounds/Bonjour.mp3')
         soundList.setProperty(0, "soundNR", 0)
-        soundList.append({"name": "Hello", "sound": 'qrc:/sounds/Hello.wav', "soundNR": 1});
-        soundList.append({"name": "Hola", "sound": 'qrc:/sounds/hola.wav', "soundNR": 2});
-        soundList.append({"name": "Servus", "sound": 'qrc:/sounds/Servus.wav', "soundNR": 3});
-        soundList.append({"name": "Szia", "sound": 'qrc:/sounds/Szia.wav', "soundNR": 4});
+        soundList.append({"name": "Hello", "sound": 'qrc:/sounds/Hello.mp3', "soundNR": 1});
+        soundList.append({"name": "Hola", "sound": 'qrc:/sounds/hola.mp3', "soundNR": 2});
+        soundList.append({"name": "Servus", "sound": 'qrc:/sounds/Servus.mp3', "soundNR": 3});
+        soundList.append({"name": "Szia", "sound": 'qrc:/sounds/Szia.mp3', "soundNR": 4});
 
         coinList.setProperty(0, "name", nameXFUEL);
         coinList.setProperty(0, "fullname", "xfuel");
@@ -152,7 +152,7 @@ ApplicationWindow {
         marketValueChangedSignal("ethbtc");
         marketValueChangedSignal("ethcha");
 
-  fiatTicker = userSettings.defaultCurrency == undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker;
+        fiatTicker = userSettings.defaultCurrency == undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker;
         notification.source =  selectedSound == undefined? "qrc:/sounds/Szia.mp3" : soundList.get(selectedSound).sound;
 
         selectedPage = "onBoarding"
@@ -229,7 +229,7 @@ ApplicationWindow {
     property color themecolor: darktheme == true? "#F2F2F2" : "#2A2C31"
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
     property real doubbleButtonWidth: appWidth - 56
-    property string myOS: "android"
+    property string myOS: Qt.platform.os
     property int appHeight: Screen.width > Screen.height? (miniatureTracker == 0? 800 : 200) : ((myOS == "android" || myOS == "ios")? Screen.height : (miniatureTracker == 0? 800 : 200))
     property int appWidth: Screen.width > Screen.height? 400 : ((myOS == "android" || myOS == "ios")? Screen.width : 400)
     property int previousX: 0
@@ -290,7 +290,7 @@ ApplicationWindow {
     property int miniatureTracker: 0
 
 
-    
+
     // Trackers - features
     property int interactionTracker: 0
     property int coinListTracker: 0
@@ -316,7 +316,7 @@ ApplicationWindow {
     property int sessionTime: 0
     property int sessionClosed: 0
     property int standBy: 0
-    property int inActive: 0
+    property bool inActive: false
     property int screenSaver: 0
     property int autoLogout: 0
     property int manualLogout: 0
@@ -496,7 +496,6 @@ ApplicationWindow {
     property string selectedApp: ""
 
     // Signals
-    signal checkOS()
     signal loginSuccesfulSignal(string username, string password)
     signal loginFailed()
     signal marketValueChangedSignal(string currency)
@@ -601,7 +600,7 @@ ApplicationWindow {
             }
         }
     }
-    
+
     // functions
     function openApplication(app) {
         if (app === "X-CHAT") {
@@ -633,13 +632,13 @@ ApplicationWindow {
     }
 
     function minimizeApp() {
-         if (myOS !== "android" || myOS !== "ios") {
+        if (myOS !== "android" || myOS !== "ios") {
             showMinimized()
         }
     }
 
     function backButtonPressed() {
-         if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0 && miniatureTracker == 0) {
+        if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0 && miniatureTracker == 0) {
             if (networkError == 1) {
                 networkError = 0
             }
@@ -815,6 +814,22 @@ ApplicationWindow {
                 selectedPage = "home"
                 mainRoot.pop()
             }
+        }
+    }
+
+    function isIphoneX() {
+        if (Qt.platform.os === "ios"){
+            switch(ScreenHeight * devicePixelRatio) {
+            case 1792: // iPhone_XR;
+            case 2436: // iPhone_X_XS;
+            case 2688: // iPhone_XS_MAX;
+                return true;
+            default:
+                return false;
+            }
+        }
+        else {
+            return false;
         }
     }
 
@@ -2557,7 +2572,7 @@ ApplicationWindow {
                     playGame("ttt", tttCurrentGame)
                     tttYourTurn = true
                     tttTracker = 1
-                }               
+                }
             }
         }
 
@@ -2573,7 +2588,7 @@ ApplicationWindow {
         }
     }
 
-   Connections {
+    Connections {
         target: Qt.application
 
         onStateChanged: {
@@ -2596,7 +2611,7 @@ ApplicationWindow {
         }
     }
 
-   // Workerscripts
+    // Workerscripts
 
     WorkerScript {
         id: addMessageToThread
@@ -2612,22 +2627,22 @@ ApplicationWindow {
                         if(xChatScrolling) {
                             newMessages = true
                         }
-                    
+
                         if (miniatureTracker == 1 || xchatTracker == 0 || inActive == true) {
                             xchatPopup(messageObject.author, messageObject.msg)
                             if ((myOS !== "android" || myOS !== "ios") && messageObject.author !== myUsername) {
                                 playNotif = true
                             }
-                        }    
+                        }
                     }
-                     if (messageObject.tag === 1 && messageObject.author !== myUsername) {
+                    if (messageObject.tag === 1 && messageObject.author !== myUsername) {
                         playNotif = true
                         if (xchatTracker == 0 || inActive == true) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : messageObject.author + " has mentioned you", "origin" : "X-CHAT", "remove": false})
                             alert = true
                         }
                     }
-                      if (messageObject.tag === 1 && messageObject.author !== myUsername) {
+                    if (messageObject.tag === 2 && messageObject.author !== myUsername) {
                         playNotif = true
                         if (xchatTracker == 0 || inActive == true) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT", "remove": false})
@@ -2809,7 +2824,7 @@ ApplicationWindow {
         id: soundList
         ListElement {
             name: ""
-            sound: 'qrc:/sounds/notification_1.wav'
+            sound: 'qrc:/sounds/notification_1.mp3'
             soundNR: 0
         }
     }
@@ -2953,46 +2968,45 @@ ApplicationWindow {
         source: 'qrc:/fonts/Brandon_reg.otf'
     }
 
-    // need to look into removing this
     Network {
-        // id: network
-        // handler: wallet
+        //id: network
+        //handler: wallet
     }
 
     // sounds
-    SoundEffect {
+    MediaPlayer {
         id: click01
-        source: "qrc:/sounds/click_02.wav"
+        source: "qrc:/sounds/click_02.mp3"
         volume: selectedSystemVolume == 0? 0 : 0.15
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: notification
-        source: soundList.get(selectedSound).sound === undefined? "qrc:/sounds/Szia.wav" : soundList.get(selectedSound).sound
+        source: ''
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: succesSound
-        source: "qrc:/sounds/Success.wav"
+        source: "qrc:/sounds/Success.mp3"
         volume: 0.50
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: failSound
-        source: "qrc:/sounds/Fail.wav"
+        source: "qrc:/sounds/Fail.mp3"
         volume: 0.50
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: outroSound
-        source: "qrc:/sounds/Outro.wav"
+        source: "qrc:/sounds/Outro.mp3"
         volume: selectedSystemVolume == 0? 0 : 0.5
     }
 
-    SoundEffect {
+    MediaPlayer {
         id: swipe
-        source: "qrc:/sounds/swipe_01.wav"
+        source: "qrc:/sounds/swipe_01.mp3"
         volume: selectedSystemVolume == 0? 0 : 0.2
     }
 
