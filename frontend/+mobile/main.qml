@@ -3004,11 +3004,11 @@ ApplicationWindow {
         volume: selectedSystemVolume == 0? 0 : 0.5
     }
 
-   # SoundEffect {
-   #     id: swipe
-   #     source: "qrc:/sounds/swipe_01.mp3"
-   #     volume: selectedSystemVolume == 0? 0 : 0.2
-   # }
+   // SoundEffect {
+   //     id: swipe
+   //     source: "qrc:/sounds/swipe_01.mp3"
+   //     volume: selectedSystemVolume == 0? 0 : 0.2
+   // }
 
     // timers
 
