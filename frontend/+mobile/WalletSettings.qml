@@ -1230,7 +1230,7 @@ Rectangle {
         id: closeSettings
         z: 4
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         text: "BACK"
         font.pixelSize: 14

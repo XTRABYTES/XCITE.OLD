@@ -235,7 +235,7 @@ Item {
         width: 150
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
         anchors.bottom: backgroundSplash.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
     }
 
     Login {

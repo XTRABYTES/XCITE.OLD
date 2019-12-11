@@ -33,10 +33,12 @@ Rectangle {
         State {
             name: "up"
             PropertyChanges { target: sidebar; anchors.leftMargin: 0}
+            PropertyChanges { target: darkArea; width: appWidth - sidebar.width}
         },
         State {
             name: "down"
             PropertyChanges { target: sidebar; anchors.leftMargin: -100}
+            PropertyChanges { target: darkArea; width: 0}
         }
     ]
 
@@ -465,7 +467,7 @@ Rectangle {
             id: logoutText
             text: "LOG OUT"
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
+            anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
             color: maincolor
             font.family: xciteMobile.name
             anchors.horizontalCenter: parent.horizontalCenter
@@ -493,8 +495,8 @@ Rectangle {
     }
 
     Rectangle {
+        id: darkArea
         anchors.left: parent.right
-        width: appsTracker == 1 ? (appWidth - parent.width) : 0
         height: parent.height
         color: "black"
         opacity: 0.5

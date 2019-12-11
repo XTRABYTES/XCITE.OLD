@@ -11,7 +11,6 @@
  */
 
 #include "Settings.hpp"
-
 #include <openssl/pem.h>
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
@@ -23,6 +22,7 @@
 #include <cstring>
 #include <tuple>
 #include <QMessageBox>
+#include <QNetworkAccessManager>
 #include "DownloadManager.hpp"
 
 #ifdef Q_OS_ANDROID //added to get write permission for Android

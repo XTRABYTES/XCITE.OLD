@@ -27,8 +27,6 @@
 #include <string>
 #include <iostream>
 
-
-
 class Settings : public QObject
 {
     Q_OBJECT
@@ -145,11 +143,8 @@ private:
     unsigned char backendKey[32];
     unsigned char iiiv[16];
     bool internetActive = true;
-     QQueue<int> saveSettingsQueue;
-     int settingsCount = 0;
-
-
-
+    QQueue<int> saveSettingsQueue;
+    int settingsCount = 0;
 };
 
 #endif // SETTINGS_HPP
