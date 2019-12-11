@@ -447,8 +447,9 @@ Rectangle {
     Item {
         id: logoutSection
         width: sidebar.width
-        height: logoutText.height + 70
+        height: logoutText.height + logout.height
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         visible: appsTracker == 1
 
         Image {
@@ -467,7 +468,6 @@ Rectangle {
             id: logoutText
             text: "LOG OUT"
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
             color: maincolor
             font.family: xciteMobile.name
             anchors.horizontalCenter: parent.horizontalCenter
@@ -476,8 +476,8 @@ Rectangle {
 
         Rectangle {
             id: logoutButtonArea
+            height: parent.height
             width: parent.width
-            height: logout.height + logoutText.height + 5
             anchors.top: parent.top
             color: "transparent"
             MouseArea {
