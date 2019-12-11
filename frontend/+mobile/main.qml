@@ -3004,19 +3004,11 @@ ApplicationWindow {
         volume: selectedSystemVolume == 0? 0 : 0.5
     }
 
-<<<<<<< Updated upstream
-   // SoundEffect {
-   //     id: swipe
-   //     source: "qrc:/sounds/swipe_01.wav"
-   //     volume: selectedSystemVolume == 0? 0 : 0.2
-   // }
-=======
     SoundEffect {
         id: swipe
         source: "qrc:/sounds/swipe.wav"
         volume: selectedSystemVolume == 0? 0 : 0.2
     }
->>>>>>> Stashed changes
 
     // timers
 
