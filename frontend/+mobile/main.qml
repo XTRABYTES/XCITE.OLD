@@ -152,6 +152,9 @@ ApplicationWindow {
         marketValueChangedSignal("ethbtc");
         marketValueChangedSignal("ethcha");
 
+  fiatTicker = userSettings.defaultCurrency == undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker;
+        notification.source =  selectedSound == undefined? "qrc:/sounds/Szia.mp3" : soundList.get(selectedSound).sound;
+
         selectedPage = "onBoarding"
         mainRoot.push("../Onboarding.qml")
     }
@@ -227,12 +230,14 @@ ApplicationWindow {
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
     property real doubbleButtonWidth: appWidth - 56
     property string myOS: "android"
-    property int appHeight: Screen.width > Screen.height? 800 : ((myOS == "android" || myOS == "ios")? Screen.height : 800)
+    property int appHeight: Screen.width > Screen.height? (miniatureTracker == 0? 800 : 200) : ((myOS == "android" || myOS == "ios")? Screen.height : (miniatureTracker == 0? 800 : 200))
     property int appWidth: Screen.width > Screen.height? 400 : ((myOS == "android" || myOS == "ios")? Screen.width : 400)
+    property int previousX: 0
+    property int previousY: 0
 
     // Global setting, editable
     property bool darktheme: userSettings.theme == "dark"? true : false
-    property string fiatTicker: fiatCurrencies.get(userSettings.defaultCurrency).ticker === undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker
+    property string fiatTicker: "$"
     property string myUsername: ""
     property string selectedPage: ""
     property string status: "online"
@@ -282,9 +287,10 @@ ApplicationWindow {
     property int xchatTracker: 0
     property int xgamesTracker: 0
     property int tttTracker: 0
+    property int miniatureTracker: 0
 
 
-
+    
     // Trackers - features
     property int interactionTracker: 0
     property int coinListTracker: 0
@@ -465,6 +471,8 @@ ApplicationWindow {
     property bool quoteAdded: false
     property bool linkAdded: false
     property bool imageAdded: false
+    property string longMessage: ""
+    property string shortMessage: ""
     property bool sendTyping: true
     property bool xChatConnection: false
     property bool xChatConnecting: false
@@ -527,6 +535,7 @@ ApplicationWindow {
     signal checkXChatSignal()
     signal pingXChatServers()
     signal xChatReconnect()
+    signal xchatPopup(string author, string msg)
     signal downloadImage(string url)
     signal tttSetUsername(string username)
     signal tttGetScore()
@@ -548,6 +557,51 @@ ApplicationWindow {
         }
     }
 
+    // Keyboard shortcuts
+    Shortcut {
+        sequence: "Alt+M"
+        onActivated: minimizeApp()
+    }
+
+    Shortcut {
+        sequence: "Alt+Down"
+        onActivated: {
+            if (myOS !== "android" || myOS !== "ios") {
+                miniatureTracker = 0
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: "Alt+Up"
+        onActivated: {
+            if (myOS !== "android" || myOS !== "ios") {
+                miniatureTracker = 1
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: "Alt+Left"
+        onActivated: {
+            if (myOS !== "android" || myOS !== "ios") {
+                backButtonPressed()
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: "Alt+Q"
+        onActivated: {
+            if (myOS !== "android" || myOS !== "ios") {
+                sessionStart = 0
+                sessionTime = 0
+                manualLogout = 1
+                logoutTracker = 1
+            }
+        }
+    }
+    
     // functions
     function openApplication(app) {
         if (app === "X-CHAT") {
@@ -579,11 +633,13 @@ ApplicationWindow {
     }
 
     function minimizeApp() {
-        showMinimized()
+         if (myOS !== "android" || myOS !== "ios") {
+            showMinimized()
+        }
     }
 
     function backButtonPressed() {
-        if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0) {
+         if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0 && miniatureTracker == 0) {
             if (networkError == 1) {
                 networkError = 0
             }
@@ -1496,7 +1552,7 @@ ApplicationWindow {
             console.log("move exists")
         }
 
-        if (opponent !== "computer") {
+        if (opponent !== "computer" || loadingGame === true) {
             console.log("sending move to back end")
             newMove(game, gameID, player, move)
         }
@@ -1750,13 +1806,18 @@ ApplicationWindow {
 
     function isFinished(game, gameID) {
         var finished = false
-        for (var i = 0; i < gamesList.count; i ++) {
-            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
-                if (gamesList.get(i).finished === true) {
-                    finished = true
-                }
-                else {
-                    finished = false
+        if (gameID === "") {
+            finished = true
+        }
+        else {
+            for (var i = 0; i < gamesList.count; i ++) {
+                if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                    if (gamesList.get(i).finished === true) {
+                        finished = true
+                    }
+                    else {
+                        finished = false
+                    }
                 }
             }
         }
@@ -1806,6 +1867,9 @@ ApplicationWindow {
             console.log("loading score initiated")
             loadScore(game, player)
             tttHubTracker = 0
+            if (tttTracker == 0 && xgamesTracker == 1) {
+                tttTracker = 1
+            }
         }
     }
 
@@ -2147,9 +2211,9 @@ ApplicationWindow {
 
     // check for user interaction
     function detectInteraction() {
+        inActive = false;
         if (interactionTracker == 0) {
             interactionTracker = 1
-            inActive = 0
         }
     }
 
@@ -2401,6 +2465,7 @@ ApplicationWindow {
                 }
             }
             loadScore("ttt", tttPlayer)
+            tttFinished = true
             tttCurrentGame = ""
         }
 
@@ -2487,9 +2552,12 @@ ApplicationWindow {
                         gamesList.setProperty(i, "accepted", true)
                     }
                 }
-                //tttCurrentGame = gameID
-                //tttYourTurn = true
-                //playGame("ttt", tttCurrentGame)
+                if (tttTracker == 0 && xgamesTracker == 1) {
+                    tttCurrentGame = gameID
+                    playGame("ttt", tttCurrentGame)
+                    tttYourTurn = true
+                    tttTracker = 1
+                }               
             }
         }
 
@@ -2505,13 +2573,37 @@ ApplicationWindow {
         }
     }
 
-    // Workerscripts
+   Connections {
+        target: Qt.application
+
+        onStateChanged: {
+            if (Qt.application.state === Qt.ApplicationActive) {
+                inActive = false
+                checkSessionId()
+                xChatReconnect();
+                status= "online";
+            }
+            else {
+                inActive = true
+                if (Qt.application.state === Qt.ApplicationSuspended) {
+                    status = "offline"
+                }
+                else {
+                    status = "idle"
+                }
+            }
+            xChatTypingSignal(myUsername,"addToOnline", status);
+        }
+    }
+
+   // Workerscripts
 
     WorkerScript {
         id: addMessageToThread
         source:'qrc:/Controls/+mobile/addMessage.js'
 
         onMessage: {
+            var playNotif = false
             for (var b = 0; b < xChatUsers.count; b ++) {
                 if (xChatUsers.get(b).username === messageObject.author) {
                     if (messageObject.msg !== "") {
@@ -2520,22 +2612,33 @@ ApplicationWindow {
                         if(xChatScrolling) {
                             newMessages = true
                         }
+                    
+                        if (miniatureTracker == 1 || xchatTracker == 0 || inActive == true) {
+                            xchatPopup(messageObject.author, messageObject.msg)
+                            if ((myOS !== "android" || myOS !== "ios") && messageObject.author !== myUsername) {
+                                playNotif = true
+                            }
+                        }    
                     }
-                    if (messageObject.tag === 1) {
-                        notification.play()
-                        if (xchatTracker !== 1) {
+                     if (messageObject.tag === 1 && messageObject.author !== myUsername) {
+                        playNotif = true
+                        if (xchatTracker == 0 || inActive == true) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : messageObject.author + " has mentioned you", "origin" : "X-CHAT", "remove": false})
                             alert = true
                         }
                     }
-                    if (messageObject.tag === 2) {
-                        notification.play()
-                        if (xchatTracker !== 1) {
+                      if (messageObject.tag === 1 && messageObject.author !== myUsername) {
+                        playNotif = true
+                        if (xchatTracker == 0 || inActive == true) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT", "remove": false})
                             alert = true
                         }
                     }
                 }
+            }
+            if (playNotif) {
+                notification.play()
+                playNotif = false
             }
         }
     }
@@ -2852,8 +2955,8 @@ ApplicationWindow {
 
     // need to look into removing this
     Network {
-        id: network
-        handler: wallet
+        // id: network
+        // handler: wallet
     }
 
     // sounds
@@ -2911,7 +3014,7 @@ ApplicationWindow {
         id: xChatConnectingTimer
         interval: 35000
         repeat: true
-        running: xChatConnecting === true
+        running: xChatConnecting === true && inActive == false
 
         onTriggered: {
             xChatReconnect()
@@ -2922,7 +3025,7 @@ ApplicationWindow {
         id: checkXchatPing
         interval: 1000
         repeat: true
-        running: pingTimeRemain > 0 && inActive == 0 && xchatNetworkTracker == 1
+        running: pingTimeRemain > 0 && inActive == false && xchatNetworkTracker == 1
 
         onTriggered: {
             pingTimeRemain = pingTimeRemain - 1
@@ -2941,7 +3044,7 @@ ApplicationWindow {
 
     Timer {
         id: sendXchatConnection
-        interval: inActive == 0? 60000 : 300000
+        interval: inActive == false? 60000 : 300000
         repeat: true
         running: true
 
@@ -2954,7 +3057,7 @@ ApplicationWindow {
         id: checkIfIdle
         interval: 300000
         repeat: true
-        running: true
+        running: inActive == false
 
         onTriggered: {
             if (userSettings.xChatDND == false) {
@@ -2990,7 +3093,7 @@ ApplicationWindow {
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
-            if (inActive == 0) {
+            if (inActive == false) {
                 marketValueChangedSignal("btcusd")
                 marketValueChangedSignal("btceur")
                 marketValueChangedSignal("btcgbp")
@@ -3009,7 +3112,7 @@ ApplicationWindow {
         id: explorerTimer1
         interval: 15000
         repeat: true
-        running: sessionStart == 1 && inActive == 0
+        running: sessionStart == 1 && inActive == false
         onTriggered:  {
             timerCount = timerCount + 1
             if (timerCount == 4) {
@@ -3061,7 +3164,7 @@ ApplicationWindow {
         id: loginTimer
         interval: 30000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 && inActive == false
 
         onTriggered: {
             if (interactionTracker == 1) {
@@ -3072,12 +3175,10 @@ ApplicationWindow {
                 sessionTime = sessionTime +1
                 if (sessionTime >= 10){
                     sessionTime = 0
-                    if (inActive == 0) {
-                        inActive = 1
-                        status = "idle"
-                        xChatTypingSignal(myUsername,"addToOnline", status);
-                        //mainRoot.push("../StandBy.qml")
-                    }
+                    status = "idle"
+                    inActive = true
+                    xChatTypingSignal(myUsername,"addToOnline", status);
+                    //mainRoot.push("../StandBy.qml")
                 }
             }
         }
@@ -3087,7 +3188,7 @@ ApplicationWindow {
         id: networkTimer
         interval: 60000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 && inActive == false
 
         onTriggered: {
             console.log("checking session ID")
