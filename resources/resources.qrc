@@ -250,18 +250,18 @@
         <file>icons/mobile/volume_level_0-icon_dark.svg</file>
         <file>icons/mobile/volume_level_0-icon_focus.svg</file>
         <file>icons/mobile/volume_level_0-icon_light.svg</file>
-        <file>sounds/click_02.mp3</file>
-        <file>sounds/notification_1.mp3</file>
-        <file>sounds/intro_01.mp3</file>
-        <file>sounds/Bonjour.mp3</file>
-        <file>sounds/Fail.mp3</file>
-        <file>sounds/Hello.mp3</file>
-        <file>sounds/hola.mp3</file>
-        <file>sounds/Intro.mp3</file>
-        <file>sounds/Outro.mp3</file>
-        <file>sounds/Servus.mp3</file>
-        <file>sounds/Succes.mp3</file>
-        <file>sounds/Szia.mp3</file>
+        <file>sounds/click_02.wav</file>
+        <file>sounds/notification_1.wav</file>
+        <file>sounds/intro_01.wav</file>
+        <file>sounds/Bonjour.wav</file>
+        <file>sounds/Fail.wav</file>
+        <file>sounds/Hello.wav</file>
+        <file>sounds/hola.wav</file>
+        <file>sounds/Intro.wav</file>
+        <file>sounds/Outro.wav</file>
+        <file>sounds/Servus.wav</file>
+        <file>sounds/Succes.wav</file>
+        <file>sounds/Szia.wav</file>
         <file>icons/mobile/favorite-icon_01_color.svg</file>
         <file>icons/mobile/favorite-icon_01_dark.svg</file>
         <file>icons/mobile/favorite-icon_01_light.svg</file>
@@ -339,7 +339,5 @@
         <file>icons/mobile/move-icon_01_blue.svg</file>
         <file>icons/mobile/return-icon_01.svg</file>
         <file>icons/mobile/minimize-icon_01_blue.svg</file>
-        <file>icons/mobile/miniature-icon_01.svg</file>
-        <file>icons/mobile/miniature-icon_02.svg</file>
     </qresource>
 </RCC>

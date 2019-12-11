@@ -15,7 +15,7 @@ VERSION_BUILD=0
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui xml quick svg charts sql mqtt network
+QT	+= core gui xml quick svg charts sql mqtt
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 CONFIG += resources_big
 CONFIG += static
@@ -51,6 +51,7 @@ QML_DESIGNER_IMPORT_PATH =
 
 include(backend/support/QZXing/QZXing.pri)
 include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
+
 SOURCES +=  main/main.cpp \
             backend/support/ttt.cpp \
 	    backend/xchat/xchat.cpp \
@@ -137,23 +138,31 @@ DISTFILES += \
     resources/ios/xcite180px.png
 
 RC_ICONS = xcite.ico
-CONFIG(debug, debug|release) {
-    DESTDIR = $$PWD/build/debug
-} else {
-    DESTDIR = $$PWD/build/release
-}
+# CONFIG(debug, debug|release) {
+#    DESTDIR = $$PWD/build/debug
+# } else {
+#    DESTDIR = $$PWD/build/release
+# }
 
 win32 {
-    # Copy OpenSSL DDLs into the build dir on Windows
-    DESTDIR_WIN = $${DESTDIR}
-    DESTDIR_WIN ~= s,/,\\,g
-    PWD_WIN = $${PWD}
-    PWD_WIN ~= s,/,\\,g
-    QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*.dll\" \"$${DESTDIR_WIN}\")
-
-    win32-g++:contains(QT_ARCH, x86_64):{
-      message("Compiling Windows x86_x64 (64-bit)")
     
+    win32-g++:contains(QT_ARCH, x86_64):{
+     message("Compiling Windows x86_x64 (64-bit)")
+    
+      CONFIG(debug, debug|release) {
+      DESTDIR = $$PWD/build/64_bit-debug
+     } else {
+      DESTDIR = $$PWD/build/64_bit-release
+     }
+
+# Copy OpenSSL DDLs into the build dir on Windows
+      DESTDIR_WIN = $${DESTDIR}
+      DESTDIR_WIN ~= s,/,\\,g
+      PWD_WIN = $${PWD}
+      PWD_WIN ~= s,/,\\,g
+      QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*x64.dll\" \"$${DESTDIR_WIN}\")
+    
+# Dependency Location
       LIBS += -L$$PWD/dependencies/windows/openssl/lib/lib64 -llibssl -llibcrypto -lcrypt32 -lws2_32
       INCLUDEPATH += $$PWD/dependencies/include/openssl/include
 
@@ -166,7 +175,20 @@ win32 {
 
     else {
       message("Compiling Windows x86 (32-bit)")
+      CONFIG(debug, debug|release) {
+      DESTDIR = $$PWD/build/32_bit-debug
+     } else {
+      DESTDIR = $$PWD/build/32_bit-release
+     }
     
+# Copy OpenSSL DDLs into the build dir on Windows
+      DESTDIR_WIN = $${DESTDIR}
+      DESTDIR_WIN ~= s,/,\\,g
+      PWD_WIN = $${PWD}
+      PWD_WIN ~= s,/,\\,g
+      QMAKE_POST_LINK += $$quote(cmd /c copy /y \"$${PWD_WIN}\\support\\*1_1.dll\" \"$${DESTDIR_WIN}\")
+    
+# Dependency Location
       LIBS += -L$$PWD/dependencies/windows/openssl/lib/lib32 -llibssl -llibcrypto -lcrypt32 -lws2_32
       INCLUDEPATH += $$PWD/dependencies/include/openssl/include
     
@@ -225,7 +247,7 @@ android {
 
 linux {
     LIBS += -L$$PWD/dependencies/linux/boost/lib/
-    INCLUDEPATH += $$PWD/dependencies/include/boost/include
+    INCLUDEPATH += $$PWD/dependencies/linclude/boost/include
 
     LIBS += -L$$PWD/dependencies/linux/openssl/lib -lssl -lcrypto
     INCLUDEPATH += $$PWD/dependencies/include/openssl/include
@@ -236,7 +258,7 @@ macx {
         INCLUDEPATH += $$PWD/dependencies/include/openssl/include
         INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
-        LIBS += -L$$PWD/dependencies/macos/openssl/lib -lssl -lcrypto
+        LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
    #    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 }
 
