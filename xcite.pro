@@ -15,7 +15,7 @@ VERSION_BUILD=0
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui xml quick svg charts sql mqtt
+QT	+= core gui xml quick svg charts sql mqtt network
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 CONFIG += resources_big
 CONFIG += static
@@ -147,7 +147,7 @@ RC_ICONS = xcite.ico
 win32 {
     
     win32-g++:contains(QT_ARCH, x86_64):{
-     message("Compiling Windows x86_x64 (64-bit)")
+      message("Compiling Windows x86_x64 (64-bit)")
     
       CONFIG(debug, debug|release) {
       DESTDIR = $$PWD/build/64_bit-debug
@@ -247,7 +247,7 @@ android {
 
 linux {
     LIBS += -L$$PWD/dependencies/linux/boost/lib/
-    INCLUDEPATH += $$PWD/dependencies/linclude/boost/include
+    INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
     LIBS += -L$$PWD/dependencies/linux/openssl/lib -lssl -lcrypto
     INCLUDEPATH += $$PWD/dependencies/include/openssl/include
@@ -258,7 +258,7 @@ macx {
         INCLUDEPATH += $$PWD/dependencies/include/openssl/include
         INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
-        LIBS += -L$$PWD/dependencies/ios/x86_64/openssl/lib -lssl -lcrypto
+        LIBS += -L$$PWD/dependencies/macos/openssl/lib -lssl -lcrypto
    #    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 }
 
