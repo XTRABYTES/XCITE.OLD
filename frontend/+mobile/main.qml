@@ -819,16 +819,17 @@ ApplicationWindow {
 
     function isIphoneX() {
         if (Qt.platform.os === "ios"){
-            switch(ScreenHeight * devicePixelRatio) {
-            case 1792: // iPhone_XR;
-            case 2436: // iPhone_X_XS;
-            case 2688: // iPhone_XS_MAX;
+            switch(appHeight) {
+            case 1792: //("iPhone_XR");
+            case 2436: //("iPhone_X_XS");
+            case 2688: //("iPhone_XRS_MAX");
                 return true;
-            default:
+            default: //("not an iPhone X");
                 return false;
             }
         }
         else {
+            //("not an iPhone");
             return false;
         }
     }
