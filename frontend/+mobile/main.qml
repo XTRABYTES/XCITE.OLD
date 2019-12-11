@@ -3006,7 +3006,7 @@ ApplicationWindow {
 
    // SoundEffect {
    //     id: swipe
-   //     source: "qrc:/sounds/swipe_01.mp3"
+   //     source: "qrc:/sounds/swipe_01.wav"
    //     volume: selectedSystemVolume == 0? 0 : 0.2
    // }
 
