@@ -341,5 +341,6 @@
         <file>icons/mobile/minimize-icon_01_blue.svg</file>
         <file>icons/mobile/miniature-icon_01.svg</file>
         <file>icons/mobile/miniature-icon_02.svg</file>
+        <file>sounds/swipe.wav</file>
     </qresource>
 </RCC>
