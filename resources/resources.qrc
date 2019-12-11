@@ -339,5 +339,7 @@
         <file>icons/mobile/move-icon_01_blue.svg</file>
         <file>icons/mobile/return-icon_01.svg</file>
         <file>icons/mobile/minimize-icon_01_blue.svg</file>
+        <file>icons/mobile/miniature-icon_01.svg</file>
+        <file>icons/mobile/miniature-icon_02.svg</file>
     </qresource>
 </RCC>
