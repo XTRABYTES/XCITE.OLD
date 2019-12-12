@@ -40,7 +40,14 @@ Item {
             checkNotifications()
             findAllMarketValues()
 
-           var datamodelWallet = []
+            //reset checks for pendinglist to 0
+            if (pendingList.count > 0) {
+                for (var o = 0; o < pendingList.count; ++o) {
+                    pendingList.setProperty(o, "checks", 0)
+                }
+            }
+
+            var datamodelWallet = []
             var datamodelPending = []
 
             for (var i = 0; i < walletList.count; ++i) {

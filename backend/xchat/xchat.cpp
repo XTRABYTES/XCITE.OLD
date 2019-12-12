@@ -626,10 +626,7 @@ void XchatObject::DownloadManagerHandler(URLObject *url){
     url->addProperty("class","xchat");
     manager->append(url);
     connect(manager,  SIGNAL(readTimeout(QMap<QString,QVariant>)),this,SLOT(internetTimeout(QMap<QString,QVariant>)),Qt::UniqueConnection);
-
     connect(manager,  SIGNAL(readFinished(QByteArray,QMap<QString,QVariant>)), this,SLOT(DownloadManagerRouter(QByteArray,QMap<QString,QVariant>)),Qt::UniqueConnection);
-
-
 }
 
 
@@ -639,7 +636,6 @@ void XchatObject::internetTimeout(QMap<QString,QVariant> props){
         internetActive = false;
         qDebug() << "timeout caught in xchat";
         emit xchatNoInternet();
-
     }
 }
 void XchatObject::DownloadManagerRouter(QByteArray response, QMap<QString,QVariant> props){
@@ -652,7 +648,6 @@ void XchatObject::DownloadManagerRouter(QByteArray response, QMap<QString,QVaria
         if (route == "getOnlineNodesSlot"){
             getOnlineNodesSlot(response,props);
         }
-
     }
 }
 

@@ -3149,11 +3149,12 @@ ApplicationWindow {
             };
 
             if (pendingList.count > 1) {
-                for (var o = 0; 0 < pendingList.count; ++o) {
+                for (var o = 0; o < pendingList.count; ++o) {
                     var times = 0
-                    if (pendingList.get(o).check !== undefined) {
-                        if (pendingList.get(o).check >= 0) {
-                            times = pendingList.get(o).check
+                    var check = pendingList.get(o).check
+                    if (check !== undefined) {
+                        if (check >= 0) {
+                            times = check
                         }
                         else {
                             pendingList.setProperty(o, "check", 0)

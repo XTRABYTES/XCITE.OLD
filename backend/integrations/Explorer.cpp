@@ -132,7 +132,7 @@ void Explorer::getDetails(QString coin, QString transaction) {
         }
         if (selectedCoin.length() > 0){
             if ((selectedCoin == "xby") || (selectedCoin == "xfuel") || (selectedCoin == "xfuel-testnet")){
-                QString url = "https://xtrabytes.global/api/"+ coin.toLower() + "/transaction/" + transaction;
+                QString url = "https://xtrabytes.global/api/"+ selectedCoin + "/transaction/" + transaction;
                 URLObject urlObj {QUrl(url)};
                 urlObj.addProperty("route","getDetails");
                 DownloadManagerHandler(&urlObj);

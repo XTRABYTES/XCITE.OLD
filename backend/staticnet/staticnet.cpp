@@ -446,6 +446,4 @@ void SendcoinWorker::process() {
         xchatRobot.SubmitMsg("Bad or mising network ID.");
         emit finished();
     }
-
-
 }
