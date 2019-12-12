@@ -140,17 +140,7 @@ ApplicationWindow {
         alertList.clear();
         alertList.append({"date": "", "origin": "", "message": "", "remove": true});
 
-
-        marketValueChangedSignal("btcusd");
-        marketValueChangedSignal("btceur");
-        marketValueChangedSignal("btcgbp");
-        marketValueChangedSignal("xbybtc");
-        marketValueChangedSignal("xbycha");
-        marketValueChangedSignal("xflbtc");
-        marketValueChangedSignal("xflcha");
-        marketValueChangedSignal("btccha");
-        marketValueChangedSignal("ethbtc");
-        marketValueChangedSignal("ethcha");
+        findAllMarketValues()
 
         fiatTicker = userSettings.defaultCurrency == undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker;
         notification.source =  selectedSound == undefined? "qrc:/sounds/Szia.mp3" : soundList.get(selectedSound).sound;
@@ -499,6 +489,7 @@ ApplicationWindow {
     signal loginSuccesfulSignal(string username, string password)
     signal loginFailed()
     signal marketValueChangedSignal(string currency)
+    signal findAllMarketValues()
     signal localeChange(string locale)
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
@@ -2597,7 +2588,19 @@ ApplicationWindow {
                 inActive = false
                 checkSessionId()
                 xChatReconnect();
-                status= "online";
+                status = "online";
+                marketValueTimer.restart()
+                explorerTimer1.restart()
+                loginTimer.restart()
+                networkTimer.restart()
+                findAllMarketValues()
+                var datamodelWallet = []
+
+                for (var i = 0; i < walletList.count; ++i) {
+                    datamodelWallet.push(walletList.get(i))
+                };
+                var walletListJson = JSON.stringify(datamodelWallet)
+                updateBalanceSignal(walletListJson, "all");
             }
             else {
                 inActive = true
@@ -3105,20 +3108,9 @@ ApplicationWindow {
         id: marketValueTimer
         interval: 60000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 && inActive == false
         onTriggered:  {
-            if (inActive == false) {
-                marketValueChangedSignal("btcusd")
-                marketValueChangedSignal("btceur")
-                marketValueChangedSignal("btcgbp")
-                marketValueChangedSignal("xbybtc")
-                marketValueChangedSignal("xbycha")
-                marketValueChangedSignal("xflbtc")
-                marketValueChangedSignal("xflcha")
-                marketValueChangedSignal("btccha")
-                marketValueChangedSignal("ethbtc")
-                marketValueChangedSignal("ethcha")
-            }
+            findAllMarketValues()
         }
     }
 
@@ -3192,7 +3184,6 @@ ApplicationWindow {
                     status = "idle"
                     inActive = true
                     xChatTypingSignal(myUsername,"addToOnline", status);
-                    //mainRoot.push("../StandBy.qml")
                 }
             }
         }

@@ -876,7 +876,7 @@ Rectangle {
                     selectedAddress = ""
                     scanning = ""
                     publicKey.text = tag
-                    selectedAddress = publicKey.text
+                    newAddress.text = publicKey.text
                     timer.start()
                 }
                 tryHarder: true

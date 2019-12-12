@@ -60,7 +60,6 @@ void MarketValue::findCurrencyValueSlot(QByteArray response, QMap<QString,QVaria
     QString currency = props.value("currency").toString();
     if (!currencyValue.isNull() && !currencyValue.isEmpty()){
         currencyValue.remove(0, 1).chop(2);
-        // setMarketValue(currency + ":" + currencyValue, currency, currencyValue);
         emit marketValueChanged(currency, currencyValue);
         qDebug() << currency + ":" + currencyValue;
     }
@@ -97,7 +96,6 @@ bool MarketValue::checkInternet(QString url){
     bool internetStatus = false;
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
-        qDebug() << "network manager available";
         QTimer timeout;
         QEventLoop loop;
         timeout.setSingleShot(true);
@@ -119,7 +117,6 @@ bool MarketValue::checkInternet(QString url){
         return internetStatus;
     }
     else {
-        qDebug() << "network manager not available";
         return internetStatus;
     }
 }

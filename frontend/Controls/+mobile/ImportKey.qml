@@ -869,6 +869,7 @@ Rectangle {
                             saveErrorNR = 0
                             walletAdded = true
                             importKeyTracker = 0
+                            newWallet = 0
                         }
 
                         editFailed = 0
@@ -961,6 +962,7 @@ Rectangle {
                         selectedAddress = ""
                         scanning = "scanning..."
                         importKeyTracker = 0
+                        newWallet = 0
                     }
                 }
             }
@@ -1334,6 +1336,7 @@ Rectangle {
                     scanQRTracker = 0
                     selectedAddress = ""
                     scanning = "scanning..."
+                    newWallet = 0
                 }
             }
 

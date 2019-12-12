@@ -371,14 +371,9 @@ void XchatObject::cleanOnlineList(){
     QDateTime now = QDateTime::currentDateTime();
     for (QString key : onlineUsers.keys()){
         OnlineUser onlineUser = onlineUsers.value(key);
-        if ( onlineUser.getDateTime().secsTo(now) > 10 * 60){ //remove from online after 10 minutes
+        if ( onlineUser.getDateTime().secsTo(now) > 5 * 60){ //remove from online after 5 minutes
             onlineUsers.remove(key);
         }
-        //        if (onlineUser.getLastTyped().secsTo(now) > 5 *60){ // if they haven't typed in 5 minutes, set status to idle
-        //            onlineUser.setStatus("idle");
-        //            onlineUsers.insert(key,onlineUser);
-        //        }  // Don't think we need this anymore
-
     }
     sendOnlineUsers();
 
@@ -470,7 +465,6 @@ void XchatObject::mqtt_StateChanged() {
         emit xchatConnectionFail();
         emit xchatStateChanged();
         if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
-            qDebug() << "network manager available";
             if (findServer() != "") {
                 mqtt_client->setHostname(connectedServer);
                 mqtt_client->setPort(1883);
@@ -480,7 +474,6 @@ void XchatObject::mqtt_StateChanged() {
             }
         }
         else {
-            qDebug() << "network manager not available";
         }
     }
 
@@ -495,9 +488,7 @@ void XchatObject::mqtt_StateChanged() {
         emit xchatStateChanged();
         auto subscription = mqtt_client->subscribe(topic);
         if (!subscription) {
-            qDebug() << "not subscribed to topic";
         } else {
-            qDebug() << "subscribed to topic: " + topic;
         }
     }
 }

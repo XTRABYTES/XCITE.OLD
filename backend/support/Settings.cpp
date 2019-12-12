@@ -1201,9 +1201,9 @@ void Settings::ImportWallet(QString username, QString password){
 }
 
 void Settings::CheckSessionId(){
+    qDebug() << "checking session ID";
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
-        qDebug() << "network manager available";
         // Encrypt sessionId with backend key
         std::pair<int, QByteArray> sessionIdAes = encryptAes(sessionId, backendKey, iiiv);
         sessionIdAes.second = sessionIdAes.second.toBase64();
@@ -1228,7 +1228,6 @@ void Settings::CheckSessionId(){
         emit sessionIdCheck(sessionCheckBool);
     }
     else {
-        qDebug() << "network manager not available";
         emit sessionIdCheck(true);
     }
 
@@ -1280,7 +1279,6 @@ bool Settings::checkInternet(QString url){
     bool internetStatus = false;
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
-        qDebug() << "network manager available";
         QTimer timeout;
         QEventLoop loop;
         timeout.setSingleShot(true);
@@ -1303,7 +1301,6 @@ bool Settings::checkInternet(QString url){
         return internetStatus;
     }
     else {
-        qDebug() << "network manager not available";
         return internetStatus;
     }
 }

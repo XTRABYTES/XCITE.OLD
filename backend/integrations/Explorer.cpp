@@ -84,9 +84,6 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
                     urlObj.addProperty("coin",coin);
                     urlObj.addProperty("address",address);
                     DownloadManagerHandler(&urlObj);
-
-
-
                 }
                 else {
                     qDebug() << "no connection to Blockcypher blockexplorer";
@@ -243,7 +240,6 @@ void Explorer::getDetailsSlot(QByteArray response, QMap<QString,QVariant> props)
 void Explorer::getBalanceAddressXBYSlot(QByteArray response, QMap<QString,QVariant> props){
     QString coin = props.value("coin").toString();
     QString address = props.value("address").toString();
-    //  qDebug() << "receiving balance for: " + coin + " : " + address;
 
     QJsonDocument jsonResponse = QJsonDocument::fromJson(response);
     QJsonObject result = jsonResponse.object().value("result").toObject();
@@ -259,7 +255,6 @@ void Explorer::getBalanceAddressExtSlot(QByteArray response, QMap<QString,QVaria
     QJsonDocument jsonResponse = QJsonDocument::fromJson(response);
     QString coin = props.value("coin").toString();
     QString address = props.value("address").toString();
-    //    qDebug() << "receiving balance for: " + coin + " : " + address;
 
     if(jsonResponse.object().contains("balance")) {
         double balanceLong = jsonResponse.object().value("balance").toDouble();
@@ -318,7 +313,6 @@ bool Explorer::checkInternet(QString url){
     bool internetStatus = false;
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
-        qDebug() << "network manager available";
         QTimer timeout;
         QEventLoop loop;
         timeout.setSingleShot(true);
@@ -341,7 +335,6 @@ bool Explorer::checkInternet(QString url){
         return internetStatus;
     }
     else {
-        qDebug() << "network manager not available";
         return internetStatus;
     }
 }

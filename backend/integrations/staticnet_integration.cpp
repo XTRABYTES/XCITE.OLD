@@ -28,9 +28,7 @@ void staticnet_integration::sendCoinsEntry(QString msg) {
     } else {
         qDebug() << "staticnet command not accepted";
     }
-    
 }
-
 
 void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
     qDebug() << "staticnet response recevied:";
@@ -43,30 +41,48 @@ void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
     QString txid = result.value("txid").toString();
     QString traceid = response.value("traceID").toString();
 
-    if (sender == "SendcoinWorker::txbroadcast_request") {
-        if (params == true) {
+    if (sender == "SendcoinWorker::process") {
+        if (error == "") {
             emit validParams(traceid);
-            qDebug() << "Valid parameters for sendcoin, traceId: " + traceid;
+            qDebug() << "Valid parameters for sendcoin, traceID: " + traceid;
         }
         else {
+            emit sendCoinsFailure(error, traceid);
             emit badParams();
-            qDebug() << "Invalid parameters for sendcoin";
+            qDebug() << "Invalid parameters for sendcoin, error: " + error + ", traceID: " + traceid;
+        }
+    }
+
+    else if (sender == "SendcoinWorker::txbroadcast_request") {
+        if (params == true) {
+            emit validParams(traceid);
+            qDebug() << "Valid parameters for sendcoin, traceID: " + traceid;
+        }
+        else {
+            emit sendCoinsFailure(error, traceid);
+            emit badParams();
+            qDebug() << "Invalid parameters for sendcoin, traceID: " + traceid;
         }
     }
 
     else if (sender == "SendcoinWorker::unspent_onResponse") {
-        emit badRawTX(traceid);
-        qDebug() << "bad raw transaction, traceid: " + traceid;
+        if (!error.isNull()) {
+            emit sendCoinsFailure(error, traceid);
+            emit badRawTX(traceid);
+            qDebug() << "bad raw transaction, error: " + error + ", traceID: " + traceid;
+        }
+        else {
+            qDebug() << "Valid raw transaction, traceID: " + traceid;
+        }
     }
 
     else if (sender ==  "SendcoinWorker::txbroadcast_onResponse") {
-        if (txid != ""){
-            emit sendCoinsSuccess(txid, traceid);
-            qDebug() << "transactionId: " + txid + " traceId: " + traceid;
-        }else{
+        if (txid == ""){
             emit sendCoinsFailure(error, traceid);
-            qDebug() << "ERROR: " + error + " traceId: " + traceid;
-
+            qDebug() << "Transaction not broadcasted, traceID: " + traceid;
+        }else{
+            emit sendCoinsSuccess(txid, traceid);
+            qDebug() << "Transaction broadcasted, transactionId: " + txid + " traceID: " + traceid;
         }
     }
 

@@ -38,16 +38,7 @@ Item {
             sumBTC()
             sumETH()
             checkNotifications()
-            marketValueChangedSignal("btcusd");
-            marketValueChangedSignal("btceur");
-            marketValueChangedSignal("btcgbp");
-            marketValueChangedSignal("xbybtc");
-            marketValueChangedSignal("xbycha");
-            marketValueChangedSignal("xflbtc");
-            marketValueChangedSignal("xflcha");
-            marketValueChangedSignal("btccha");
-            marketValueChangedSignal("ethbtc");
-            marketValueChangedSignal("ethcha");
+            findAllMarketValues()
 
            var datamodelWallet = []
             var datamodelPending = []

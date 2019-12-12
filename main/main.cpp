@@ -155,6 +155,7 @@ int main(int argc, char *argv[])
 
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
+    QObject::connect(rootObject, SIGNAL(findAllMarketValues()), &marketValue, SLOT(findAllCurrencyValues()));
 
     // connect QML signals for Explorer
     QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString, QString)), &explorer, SLOT(getBalanceEntireWallet(QString, QString)));
