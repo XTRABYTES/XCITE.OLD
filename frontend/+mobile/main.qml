@@ -34,13 +34,6 @@ ApplicationWindow {
     title: qsTr("XCITE")
     color: "#2A2C31"
 
-    MediaPlayer {
-        id: introSound
-        source: "qrc:/sounds/intro_01.wav"
-        volume: 1
-        autoPlay: true
-    }
-
     Image {
         id: xbyLogo
         source: 'qrc:/logos/xby_logo_tm.png'
@@ -3219,8 +3212,19 @@ ApplicationWindow {
     // Order of the pages
     StackView {
         id: mainRoot
-        initialItem: "../main.qml"
         anchors.fill: parent
+        initialItem:
+            Component{
+            MediaPlayer {
+                id: introSound
+                source: "qrc:/sounds/intro_01.wav"
+                volume: 1
+                autoPlay: true
+            }
+        }
+        Component.onCompleted: {
+            console.log("+mobile/main.qml - StackView component completed")
+        }
     }
 
     // native back button
