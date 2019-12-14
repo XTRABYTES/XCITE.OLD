@@ -62,6 +62,7 @@ Rectangle {
                 anchors.right: status == "dnd"? dndArea.left : parent.right
                 anchors.rightMargin: status == "dnd"? 5 : 10
                 elide: Text.ElideRight
+                opacity: (status == "dnd" || status == "offline")? 0.5 : 1
             }
 
             Rectangle {
