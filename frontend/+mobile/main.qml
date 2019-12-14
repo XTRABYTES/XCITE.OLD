@@ -21,18 +21,13 @@ import QtMultimedia 5.8
 import QtGraphicalEffects 1.0
 
 ApplicationWindow {
-    property bool isNetworkActive: false
-
-    property variant notAllowed: ["<del>","</del>","<s>","</s>","<strong>","</strong>", "<br>","<p>","</p>","</font>","<h1>","</h1>","<h2>","</h2>","<h3>","</h3>","<h4>","</h4>","<h5>","</h5>","<h6>","</h6>","a href=","img src=","ol type=","ul type=","<li>","</li>","<pre>","</pre>","&gt","&lt","&amp"]
-
     id: xcite
-
-    visible: true
-    flags: Qt.Dialog | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.MSWindowsFixedSizeDialogHint : 0)
+    flags: Qt.Window | Qt.FramelessWindowHint | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.X11BypassWindowManagerHint : 0) | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.WindowStaysOnTopHint : 0)
     width: appWidth
-    height: appHeight
+    height: appHeight + 50
     title: qsTr("XCITE")
-    color: "#2A2C31"
+    color: darktheme === "false"? "#F2F2F2" : "#14161B"
+    visible: true
 
     Image {
         id: xbyLogo
@@ -142,8 +137,6 @@ ApplicationWindow {
         mainRoot.push("../Onboarding.qml")
     }
 
-
-
     onBtcValueXBYChanged: {
         coinList.setProperty(1, "coinValueBTC", btcValueXBY);
         coinList.setProperty(1, "fiatValue", btcValueXBY * valueBTC);
@@ -217,13 +210,15 @@ ApplicationWindow {
     property int appWidth: Screen.width > Screen.height? 400 : ((myOS == "android" || myOS == "ios")? Screen.width : 400)
     property int previousX: 0
     property int previousY: 0
+    property variant notAllowed: ["<del>","</del>","<s>","</s>","<strong>","</strong>", "<br>","<p>","</p>","</font>","<h1>","</h1>","<h2>","</h2>","<h3>","</h3>","<h4>","</h4>","<h5>","</h5>","<h6>","</h6>","a href=","img src=","ol type=","ul type=","<li>","</li>","<pre>","</pre>","&gt","&lt","&amp"]
 
     // Global setting, editable
-    property bool darktheme: userSettings.theme == "dark"? true : false
+    property bool darktheme: userSettings.theme !== "dark"? false : true
     property string fiatTicker: "$"
     property string myUsername: ""
     property string selectedPage: ""
     property string status: "online"
+    property bool isNetworkActive: false
 
     // Trackers - pages
     property int loginTracker: 0
@@ -271,8 +266,6 @@ ApplicationWindow {
     property int xgamesTracker: 0
     property int tttTracker: 0
     property int miniatureTracker: 0
-
-
 
     // Trackers - features
     property int interactionTracker: 0
