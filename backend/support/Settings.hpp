@@ -104,7 +104,7 @@ signals:
     void saveFailed();
     void saveFileSucceeded();
     void saveFileFailed();
-    void sessionIdCheck(const bool &sessionAlive);
+    void sessionIdCheck(const QString &sessionAlive);
     void checkUsername();
     void createUniqueKeyPair();
     void receiveSessionEncryptionKey();

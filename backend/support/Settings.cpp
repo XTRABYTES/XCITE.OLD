@@ -1220,15 +1220,19 @@ void Settings::CheckSessionId(){
         if (checkSessionResponse.isEmpty()){
             return;
         }
-
-        QJsonDocument jsonResponse = QJsonDocument::fromJson(checkSessionResponse.toLatin1());
-        QJsonValue encryptedText = jsonResponse.object().value("sessionId");
-
-        bool sessionCheckBool = encryptedText.toString() == "false" ? false:true;
-        emit sessionIdCheck(sessionCheckBool);
+        bool sessionID = checkSessionResponse.contains("sessionId");
+        if (sessionID) {
+            QJsonDocument jsonResponse = QJsonDocument::fromJson(checkSessionResponse.toLatin1());
+            QJsonValue encryptedText = jsonResponse.object().value("sessionId");
+            QString sessionCheckBool = encryptedText.toString();
+            emit sessionIdCheck(sessionCheckBool);
+        }
+        else {
+            emit sessionIdCheck("no_response");
+        }
     }
     else {
-        emit sessionIdCheck(true);
+        emit sessionIdCheck("no_internet");
     }
 
 }
