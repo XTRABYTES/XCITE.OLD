@@ -340,7 +340,7 @@ Rectangle {
 
     Label {
         id: turnLabel
-        text: tttCurrentGame != ""? (tttYourTurn === true? "Your turn" : "Opponents turn") : "---"
+        text: tttCurrentGame != ""? (tttYourTurn === true? "Your turn" : "Opponent's turn") : "---"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: board.bottom
         anchors.topMargin: 5
@@ -507,7 +507,7 @@ Rectangle {
                             var opponent = findOpponent(gamesList.get(i).gameID)
                             if (opponent === "computer") {
                                 exists = true
-                                if (gameList.get(i).finished === true) {
+                                if (gamesList.get(i).finished === true) {
                                     tttcreateGameId(myUsername,opponent)
                                 }
                             }
@@ -516,8 +516,8 @@ Rectangle {
                     if (!exists) {
                         tttcreateGameId(myUsername,"computer")
                     }
-                    tttHubTracker = 1
                 }
+                tttHubTracker = 1
             }
         }
 

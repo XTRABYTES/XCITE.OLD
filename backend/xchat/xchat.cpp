@@ -270,25 +270,31 @@ void XchatObject::xchatPopup(QString author, QString msg){
 }
 
 void XchatObject::xchatInc(const QString &user, QString platform, QString status, QString message, QString webLink, QString image, QString quote) {
-    if (!message.isEmpty() && mqtt_client->state() == QMqttClient::Connected) {
-        qDebug() << "link: " + webLink + ", image: " + image + ", quote: " + quote;
-        QString username = user;
-        qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-        QJsonObject obj;
-        obj.insert("username",user);
-        obj.insert("platform",platform);
-        obj.insert("route","sendToFront");
-        obj.insert("status", status);
-        obj.insert("message",message);
-        obj.insert("link", webLink);
-        obj.insert("image", image);
-        obj.insert("quote", quote);
-        obj.insert("messageSentTime", QString::number(timeStamp));
-        obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
+        if (!message.isEmpty() && mqtt_client->state() == QMqttClient::Connected) {
+            qDebug() << "link: " + webLink + ", image: " + image + ", quote: " + quote;
+            QString username = user;
+            qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+            QJsonObject obj;
+            obj.insert("username",user);
+            obj.insert("platform",platform);
+            obj.insert("route","sendToFront");
+            obj.insert("status", status);
+            obj.insert("message",message);
+            obj.insert("link", webLink);
+            obj.insert("image", image);
+            obj.insert("quote", quote);
+            obj.insert("messageSentTime", QString::number(timeStamp));
+            obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
 
-        QJsonDocument doc(obj);
-        QString strJson(doc.toJson(QJsonDocument::Compact));
-        mqtt_client->publish(topic, strJson.toUtf8());
+            QJsonDocument doc(obj);
+            QString strJson(doc.toJson(QJsonDocument::Compact));
+            mqtt_client->publish(topic, strJson.toUtf8());
+            return;
+        }
+    }
+    else {
         return;
     }
 }
@@ -309,7 +315,7 @@ void XchatObject::sendTypingToQueue(const QString user, QString route, QString s
         return;
     }
     else {
-
+        return;
     }
 }
 

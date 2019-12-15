@@ -94,7 +94,6 @@ public:
    void messageRoute(QString message);
    QString device;
 
-
 signals:
     void xchatResponseSignal(QVariant text);
     void xchatSuccess( QString author, QString date, QString time, QString device, QString message, QString link, QString image, QString quote, QString msgID);

@@ -77,7 +77,7 @@ Rectangle {
     property int selectedWallet: getWalletNR(coinID.text, walletLabel.text)
     property string searchCriteria: ""
     property int copyImage2clipboard: 0
-    property int screenShot: 0
+    //property int screenShot: 0
     property int badNetwork: 0
     property bool selectNetwork: false
 
@@ -177,7 +177,7 @@ Rectangle {
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
-        visible: addressbookTracker == 0 && screenShot == 0
+        visible: addressbookTracker == 0 && viewForScreenshot == 0
     }
 
     Label {
@@ -223,7 +223,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && screenShot == 0
+                     && viewForScreenshot == 0
             onStateChanged: detectInteraction()
         }
 
@@ -240,7 +240,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && screenShot == 0
+                     && viewForScreenshot == 0
         }
         Text {
             id: sendText
@@ -255,7 +255,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && screenShot == 0
+                     && viewForScreenshot == 0
         }
 
         Image {
@@ -337,7 +337,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletListTracker == 0
                      && publicKey.text != ""
-                     && screenShot == 0
+                     && viewForScreenshot == 0
         }
 
         Text {
@@ -356,7 +356,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletListTracker == 0
                      && publicKey.text != ""
-                     && screenShot == 0
+                     && viewForScreenshot == 0
         }
 
         Image {
@@ -372,7 +372,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && coinListTracker == 0
                      && calculatorTracker == 0
-                     && screenShot == 0
+                     && viewForScreenshot == 0
 
             Rectangle{
                 id: picklistButton1
@@ -417,7 +417,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && screenShot == 0
+                     && viewForScreenshot == 0
         }
 
         Rectangle {
@@ -434,7 +434,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && screenShot == 0
+                     && viewForScreenshot == 0
             clip: true
 
             Controls.CoinPicklist {
@@ -456,7 +456,7 @@ Rectangle {
                      && addressbookTracker == 0
                      && scanQRTracker == 0
                      && calculatorTracker == 0
-                     && screenShot == 0
+                     && viewForScreenshot == 0
 
             Image {
                 id: picklistCloseArrow1
@@ -493,7 +493,7 @@ Rectangle {
                      && walletListTracker == 0
                      && calculatorTracker == 0
                      && publicKey.text != ""
-                     && screenShot == 0
+                     && viewForScreenshot == 0
 
             Rectangle{
                 id: picklistButton2
@@ -539,7 +539,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && publicKey.text != ""
-                     && screenShot == 0
+                     && viewForScreenshot == 0
         }
 
         Rectangle {
@@ -557,7 +557,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && publicKey.text != ""
-                     && screenShot == 0
+                     && viewForScreenshot == 0
             clip: true
 
             Controls.WalletPicklist {
@@ -580,7 +580,7 @@ Rectangle {
                      && scanQRTracker == 0
                      && calculatorTracker == 0
                      && publicKey.text != ""
-                     && screenShot == 0
+                     && viewForScreenshot == 0
 
             Image {
                 id: picklistCloseArrow2
@@ -660,12 +660,12 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (screenShot == 0) {
-                        screenShot = 1
+                    if (viewForScreenshot == 0) {
+                        viewForScreenshot = 1
                     }
 
-                    else if (screenShot == 1) {
-                        screenShot = 0
+                    else if (viewForScreenshot == 1) {
+                        viewForScreenshot = 0
                     }
                 }
             }
@@ -1213,6 +1213,7 @@ Rectangle {
                             && calculatorTracker == 0
                             && (network == "xtrabytes" || network == "xfuel" || network == "testnet")) {
                         selectNetwork = true
+                        transactionInProgress = true
                         setNetwork(network)
                     }
                 }
@@ -1655,6 +1656,7 @@ Rectangle {
                 onClicked: {
                     failedSend = 0
                     transactionSend = 0
+                    transactionInProgress = false
                 }
             }
         }
@@ -1787,6 +1789,7 @@ Rectangle {
                         transactionDate = ""
                         timestamp = 0
                         precision = 0
+                        transactionInProgress = false
                     }
                 }
             }
@@ -1888,6 +1891,7 @@ Rectangle {
                         transactionDate = ""
                         timestamp = 0
                         precision = 0
+                        transactionInProgress = false
                         updateToAccount()
                     }
                 }
@@ -2140,7 +2144,7 @@ Rectangle {
             scanQRTracker = 0
             scanning = "scanning..."
             networkError = 0
-            screenShot = 0
+            viewForScreenshot = 0
             precision = 0
         }
     }
@@ -2161,7 +2165,7 @@ Rectangle {
                  && calculatorTracker == 0
                  && scanQRTracker == 0
                  && addressbookTracker == 0
-                 && screenShot == 0
+                 && viewForScreenshot == 0
 
         Rectangle{
             id: closeButton
