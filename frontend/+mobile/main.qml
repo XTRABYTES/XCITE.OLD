@@ -24,7 +24,7 @@ ApplicationWindow {
     id: xcite
     flags: Qt.Window | Qt.FramelessWindowHint | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.X11BypassWindowManagerHint : 0) | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.WindowStaysOnTopHint : 0)
     width: appWidth
-    height: appHeight + 50
+    height: appHeight
     title: qsTr("XCITE")
     color: darktheme === "false"? "#F2F2F2" : "#14161B"
     visible: true
@@ -314,7 +314,7 @@ ApplicationWindow {
     property string scanningKey: ""
     property string scanning: "scanning..."
     property string typing: ""
-
+    property bool checkingSessionID: false
     property bool loginInitiated: false
     property bool importInitiated: false
     property bool createAccountInitiated: false
@@ -2223,11 +2223,22 @@ ApplicationWindow {
         target: UserSettings
 
         onSessionIdCheck: {
-            if (sessionAlive === false && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
+            checkingSessionID = false
+            if (sessionAlive === "false" && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
+                console.log("session ID check failed")
                 networkLogout = 1
                 logoutTracker = 1
                 sessionStart = 0
                 sessionClosed = 1
+            }
+            else if (sessionAlive === "no_internet") {
+                console.log("session ID check - no internet")
+            }
+            else if (sessionAlive == "no_response") {
+                console.log("session ID check - no response")
+            }
+            else {
+                console.log("session ID check passed")
             }
         }
 
@@ -2587,6 +2598,7 @@ ApplicationWindow {
                 };
                 var walletListJson = JSON.stringify(datamodelWallet)
                 updateBalanceSignal(walletListJson, "all");
+                checkingSessionID = false
             }
             else {
                 inActive = true
@@ -3183,8 +3195,11 @@ ApplicationWindow {
         running: sessionStart == 1 && inActive == false
 
         onTriggered: {
-            console.log("checking session ID")
-            checkSessionId()
+            if (checkingSessionID == false) {
+                checkingSessionID = true
+                console.log("checking session ID")
+                checkSessionId()
+            }
         }
     }
 
@@ -3214,9 +3229,6 @@ ApplicationWindow {
                 volume: 1
                 autoPlay: true
             }
-        }
-        Component.onCompleted: {
-            console.log("+mobile/main.qml - StackView component completed")
         }
     }
 

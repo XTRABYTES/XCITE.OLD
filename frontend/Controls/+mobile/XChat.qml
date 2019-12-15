@@ -399,7 +399,7 @@ Rectangle {
             }
 
             else {
-                if (msg.charAt(cursorPos - 1) === " ") {
+                if (msg.charAt(cursorPos - 1) === " " || cursorPos === 0) {
                     isTag = false
                     startTagging = false
                     tagListTracker = 0
