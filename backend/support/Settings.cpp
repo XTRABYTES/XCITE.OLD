@@ -1201,9 +1201,9 @@ void Settings::ImportWallet(QString username, QString password){
 }
 
 void Settings::CheckSessionId(){
+
     qDebug() << "checking session ID";
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
+    if (checkInternet("http://37.59.57.212:8080")) {
         // Encrypt sessionId with backend key
         std::pair<int, QByteArray> sessionIdAes = encryptAes(sessionId, backendKey, iiiv);
         sessionIdAes.second = sessionIdAes.second.toBase64();
