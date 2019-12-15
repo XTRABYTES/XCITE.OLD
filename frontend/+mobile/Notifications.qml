@@ -16,7 +16,7 @@ import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
-import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Controls
 
 Rectangle {
     id: notificationModal
@@ -83,15 +83,12 @@ Rectangle {
                 if (updatingWalletsNotif == false) {
                     clearAlertList();
                     checkNotifications();
-                    //updatingWalletsNotif = true
-                    //updateToAccount()
-                    appsTracker = 0
-                    selectedPage = "home"
-                    mainRoot.pop()
+                    updatingWalletsNotif = true
+                    updateToAccount()
                 }
             }
         }
-        /**
+
         Connections {
             target: UserSettings
 
@@ -118,7 +115,7 @@ Rectangle {
                     updatingWalletsNotif == false
                 }
             }
-        }*/
+        }
     }
 
     Item {

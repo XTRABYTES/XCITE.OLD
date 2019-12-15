@@ -22,6 +22,33 @@ Item {
     id: calculatorModal
     width: appWidth
     height: appHeight
+    state: calculatorTracker == 1? "up" : "down"
+
+    states: [
+        State {
+            name: "up"
+            PropertyChanges { target: calculatorModal; anchors.topMargin: 0}
+        },
+        State {
+            name: "down"
+            PropertyChanges { target: calculatorModal; anchors.topMargin: calculatorModal.height}
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "*"
+            to: "*"
+            NumberAnimation { target: calculatorModal; property: "anchors.topMargin"; duration: 400; easing.type: Easing.InOutCubic}
+        }
+    ]
+
+    onStateChanged: {
+        if (calculatorTracker == 0) {
+            inputAmount.text = ""
+            calculatorTracker = 0
+        }
+    }
 
     Rectangle {
         width: parent.width
@@ -53,6 +80,10 @@ Item {
     property string toCurrency: "XFUEL"
     property string output: ""
     property int decimals: 0
+
+    function closeCalculator() {
+        calculatorTracker = 0
+    }
 
     function convert() {
         var newAmount = ""
@@ -983,8 +1014,7 @@ Item {
             }
 
             onClicked: {
-                calculatorTracker = 0
-                inputAmount.text = ""
+                closeCalculator()
             }
         }
     }

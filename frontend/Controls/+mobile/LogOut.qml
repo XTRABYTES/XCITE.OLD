@@ -30,6 +30,8 @@ Rectangle {
     property int logoutTimeout: 0
     property int myTracker: logoutTracker
 
+
+
     onMyTrackerChanged: {
         if (myTracker == 0 && goodbey == 0) {
 

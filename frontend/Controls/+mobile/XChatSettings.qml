@@ -270,6 +270,7 @@ Rectangle {
         anchors.topMargin: 50
         anchors.left: parent.left
         anchors.leftMargin: 28
+        opacity: userSettings.xChatDND === true ? 1 : 0.5
     }
 
     Label {

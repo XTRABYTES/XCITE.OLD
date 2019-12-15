@@ -307,6 +307,8 @@ ApplicationWindow {
     property int newWalletPicklist: 0
     property int newWalletSelect: 0
     property int switchState: 0
+    property int viewForScreenshot: 0
+    property bool transactionInProgress: false
     property string scannedAddress: ""
     property string selectedAddress: ""
     property string currentAddress: ""
@@ -681,7 +683,22 @@ ApplicationWindow {
                     // nothing yet
                 }
                 else if (transferTracker == 1) {
-                    // nothing yet
+                    if (calculatorTracker == 1) {
+                        calculatorTracker =0
+                    }
+                    else if (addressbookTracker == 1) {
+                        addressbookTracker = 0
+                    }
+                    else if (scanQRTracker == 1) {
+                        scanQRTracker = 0
+                    }
+                    else if (viewForScreenshot == 1) {
+                        viewForScreenshot = 0
+                    }
+
+                    else if (transactionInProgress == false){
+                        transferTracker = 0
+                    }
                 }
                 else if (coinTracker == 1 && pageTracker == 0) {
                     countWallets()

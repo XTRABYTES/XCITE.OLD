@@ -70,7 +70,12 @@ Rectangle {
                 if (UserSettings.xChatDND === false) {
                     status="online"
                 }
-                xChatSend(myUsername,"mobile",status,sendText.text, xchatLink, xchatImage, xchatQuote)
+                var device = "mobile"
+                if (Qt.platform.os !== "android" && Qt.platform.os !== "ios") {
+                    device = "desktop"
+                }
+
+                xChatSend(myUsername,device,status,sendText.text, xchatLink, xchatImage, xchatQuote)
                 xchatQuote = ""
                 quoteAdded = false
                 xchatLink = ""
