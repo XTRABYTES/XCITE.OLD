@@ -44,8 +44,6 @@ Rectangle {
     property int beginTag: 0
     property int endTag: 0
     property bool startTagging: false
-    property string beforeTag: ""
-    property string afterTag: ""
     property int myTracker: xchatTracker
     property int charCount: 0
 
@@ -291,13 +289,15 @@ Rectangle {
             onTaggingChanged: {
                 if (myXchat.tagging !== "") {
                     var pos = sendText.cursorPosition
-                    var tag = myXchat.tagging + " "
-                    if (cursorPos == 0 || msg.charAt(cursorPos - 1) == " ") {
-                        sendText.text = sendText.insert(pos, tag)
+                    var tag = myXchat.tagging.trim()
+                    if (pos === 0 || msg.charAt(pos - 1) === " ") {
+                        tag = tag + " "
                     }
                     else {
-                        sendText.text = sendText.insert(pos, (" " + tag))
+                        tag = " " + tag + " "
                     }
+                    console.log("XChat1 - pos." + pos + "., tag." + tag + ".")
+                    sendText.text = sendText.text.substring(0, pos) + tag + sendText.text.substring(pos)
                     myXchat.tagging = ""
                 }
             }
@@ -399,7 +399,7 @@ Rectangle {
                     beginTag = cursorPos
                     endTag = cursorPos
                     tagListTracker = 1
-                    tagFilter = begingTag !== endTag? sendText.getText(beginTag, endTag): ""
+                    tagFilter = beginTag !== endTag? sendText.getText(beginTag, endTag): ""
                 }
             }
 
@@ -663,8 +663,6 @@ Rectangle {
                     tagFilter = ""
                     beginTag = 0
                     endTag = 0
-                    beforeTag = ""
-                    afterTag = ""
                     myXchatTaglist.userTag = ""
                     myXchatUsers.usertag = ""
                     myXchat.tagging = ""
@@ -791,20 +789,13 @@ Rectangle {
             if (myXchatTaglist.userTag !== "" && startTagging == true) {
                 console.log("tag received: " + userTag)
                 var pos = beginTag
-                var tag = myXchatTaglist.userTag
-
-                beforeTag = sendText.getText(0, beginTag)
-                console.log("text before tag: " + beforeTag)
-                afterTag = sendText.getText(endTag, msg.length)
-                console.log("text after tag: " + afterTag)
-                sendText.text = beforeTag + " " + afterTag
-                sendText.text = sendText.insert(pos, tag)
+                var tag = myXchatTaglist.userTag.trim() + " "
+                console.log("XChat2 - pos." + pos + "., tag." + tag + ".")
+                sendText.text = sendText.text.substring(0, pos) + tag + sendText.text.substring(pos)
                 tagListTracker = 0
                 tagFilter = ""
                 startTagging = false
                 myXchatTaglist.userTag = ""
-                beforeTag = ""
-                afterTag = ""
                 beginTag = 0
                 endTag = 0
             }
@@ -827,13 +818,15 @@ Rectangle {
         onUsertagChanged: {
             if (myXchatUsers.usertag !== "") {
                 var pos = sendText.cursorPosition
-                var tag = myXchatUsers.usertag + " "
-                if (cursorPos == 0 || msg.charAt(cursorPos - 1) == " ") {
-                    sendText.text = sendText.insert(pos, tag)
+                var tag = myXchatUsers.usertag.trim()
+                if (pos === 0 || msg.charAt(pos - 1) === " ") {
+                    tag = tag + " "
                 }
                 else {
-                    sendText.text = sendText.insert(pos,(" " + tag))
+                    tag = " " + tag + " "
                 }
+                console.log("XChat3 - pos." + pos + "., tag." + tag + ".")
+                sendText.text = sendText.text.substring(0, pos) + tag + sendText.text.substring(pos)
                 myXchatUsers.usertag = ""
             }
         }
@@ -903,11 +896,8 @@ Rectangle {
         tagFilter = ""
         beginTag = 0
         endTag = 0
-        beforeTag = ""
-        afterTag = ""
         myXchatTaglist.userTag = ""
         myXchatUsers.usertag = ""
         myXchat.tagging = ""
     }
 }
-
