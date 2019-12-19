@@ -320,6 +320,7 @@ Rectangle {
                             if (manualLogout == 1) {
                                 manualLogout = 0
                                 logoutTracker = 0
+                                sessionStart = 1
                             }
                             else if (sessionClosed == 1) {
                                 goodbey = 1

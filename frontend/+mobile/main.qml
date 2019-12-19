@@ -707,6 +707,10 @@ ApplicationWindow {
                 else if (contactTracker == 1 && pageTracker == 1) {
                     contactTracker = 0
                 }
+                else if (addressQRTracker == 1 && pageTracker == 1) {
+                    addressQRTracker = 0
+                }
+
                 else {
                     sessionStart = 0
                     sessionTime = 0
