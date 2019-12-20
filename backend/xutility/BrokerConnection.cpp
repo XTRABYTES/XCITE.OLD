@@ -16,9 +16,16 @@ void BrokerConnection::Initialize() {
     m_client.setVirtualHost("xtrabytes");
 
     connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
+    connect(&m_client, SIGNAL(disconnected()),this,SLOT(reconnect()));
     m_client.connectToHost();
     m_client.setAutoReconnect(true);
 
+}
+void BrokerConnection::disconnect(){
+    m_client.disconnectFromHost();
+}
+void BrokerConnection::reconnect(){
+    m_client.connectToHost();
 }
 
 bool BrokerConnection::isConnected(){

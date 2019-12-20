@@ -370,7 +370,7 @@ void XchatObject::mqtt_StateChanged() {
     }else{
         emit xchatConnectionFail();
         emit xchatStateChanged();
-        broker.Initialize();
+        broker.disconnect();
     }
 }
 

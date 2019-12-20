@@ -27,6 +27,8 @@ public slots:
     void clientConnected();
     void sendMessage(QString,QString);
     void connectExchange(QString);
+    void reconnect();
+    void disconnect();
 
 private:
     QAmqpClient m_client;
