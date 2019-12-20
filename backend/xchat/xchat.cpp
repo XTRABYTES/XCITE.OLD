@@ -29,6 +29,8 @@
 #include <unistd.h>
 
 
+
+
 XchatObject xchatRobot;
 
 Xchat::Xchat(QObject *parent) :
@@ -52,33 +54,59 @@ XchatObject::~XchatObject() {
         m_pXchatAiml = NULL;
     }
 }
+   unsigned constexpr const_hash(char const *input) {
+       return *input ?
+                   static_cast<unsigned int>(*input) + 33 * const_hash(input + 1) :
+                   5381;
+   }
+
+   void XchatObject::xchatEntry(QByteArray obj){
+        QJsonDocument json = QJsonDocument::fromJson(obj);
+        QJsonObject jsonObj = json.object();
+        QString route = jsonObj.value("route").toString();
+       switch(const_hash(route.toStdString().c_str()))
+       {
+       case const_hash("addToTyping"):
+           addToOnline(jsonObj);
+           addToTyping(jsonObj);
+           break;
+       case const_hash("addToOnline"):
+           addToOnline(jsonObj);
+           break;
+       case const_hash("removeFromTyping"):
+           removeFromTyping(jsonObj);
+           break;
+       case const_hash("sendToFront"):
+           sendToFront(jsonObj);
+           break;
+       default:
+           qDebug() << "No Route Found";
+           break;
+       }
+   }
 
 
 void XchatObject::Initialize() {
-    m_pXchatAiml = new XchatAIML;
-    m_pXchatAiml->loadAIMLSet();
 
-    mqtt_client = new QMqttClient(this);
-    qDebug() << "INITIALIZE XCHAT";
-    connect(mqtt_client, &QMqttClient::stateChanged, this, &XchatObject::mqtt_StateChanged);
-    connect(mqtt_client, &QMqttClient::pingResponseReceived, this, &XchatObject::pingReceived);
-
-
-    connect(mqtt_client, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
-        const QString content = message;
-        messageRoute(content);
-    });
+//    m_pXchatAiml = new XchatAIML;
+//    m_pXchatAiml->loadAIMLSet();
+//    mqtt_client = new QMqttClient(this);
+//    qDebug() << "INITIALIZE XCHAT";
+//    connect(mqtt_client, &QMqttClient::stateChanged, this, &XchatObject::mqtt_StateChanged);
+//    connect(mqtt_client, &QMqttClient::pingResponseReceived, this, &XchatObject::pingReceived);
 
 
-    forced_connect = false;
-    m_bIsInitialized = true;
-    mqtt_StateChanged();
+//    connect(mqtt_client, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
+//        const QString content = message;
+//        messageRoute(content);
+//    });
+
+
+//    forced_connect = false;
+//    m_bIsInitialized = true;
+//   mqtt_StateChanged();
 }
-unsigned constexpr const_hash(char const *input) {
-    return *input ?
-                static_cast<unsigned int>(*input) + 33 * const_hash(input + 1) :
-                5381;
-}
+
 
 void XchatObject::messageRoute(QString message){
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
@@ -100,133 +128,10 @@ void XchatObject::messageRoute(QString message){
     case const_hash("sendToFront"):
         sendToFront(obj);
         break;
-    case const_hash("sendToGame"):
-        sendToGame(obj);
-        break;
-    case const_hash("confirmGameReceived"):
-        confirmGameReceived(obj);
-        break;
-    case const_hash("receiveGameInvite"):
-        receiveGameInvite(obj);
-        break;
-    case const_hash("receiveGameInviteResponse"):
-        receiveGameInviteResponse(obj);
-        break;
     default:
         qDebug() << "No Route Found";
         break;
     }
-}
-
-void XchatObject::sendGameToQueue(const QString user, QString game, QString gameID, QString move) {
-    if (mqtt_client->state() == QMqttClient::Connected) {
-        qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-        QString moveID = QString::number(timeStamp);
-        QJsonObject obj;
-        obj.insert("player", user);
-        obj.insert("route","sendToGame");
-        obj.insert("game", game);
-        obj.insert("gameID", gameID);
-        obj.insert("move",move);
-        obj.insert("moveID", moveID);
-        QJsonDocument doc(obj);
-        QString strJson(doc.toJson(QJsonDocument::Compact));
-        mqtt_client->publish(topic, strJson.toUtf8());
-    }
-    else {
-        emit gameCommandFailed();
-    }
-}
-
-void XchatObject::sendToGame(QJsonObject obj) {
-    QString player = obj.value("player").toString();
-    QString game = obj.value("game").toString();
-    QString gameID = obj.value("gameID").toString();
-    QString move = obj.value("move").toString();
-    QString moveID = obj.value("moveID").toString();
-
-    emit newMoveReceived(player, game, gameID, move, moveID);
-}
-
-void XchatObject::confirmGameSend(const QString user, QString game, QString gameID, QString move, QString moveID) {
-    if (mqtt_client->state() == QMqttClient::Connected) {
-        QJsonObject obj;
-        obj.insert("player", user);
-        obj.insert("route","confirmGameReceived");
-        obj.insert("game", game);
-        obj.insert("gameID", gameID);
-        obj.insert("move",move);
-        obj.insert("moveID", moveID);
-        QJsonDocument doc(obj);
-        QString strJson(doc.toJson(QJsonDocument::Compact));
-        mqtt_client->publish(topic, strJson.toUtf8());
-    }
-    else {
-        emit gameCommandFailed();
-    }
-}
-
-void XchatObject::confirmGameReceived(QJsonObject obj) {
-    QString player = obj.value("player").toString();
-    QString game = obj.value("game").toString();
-    QString gameID = obj.value("gameID").toString();
-    QString move = obj.value("move").toString();
-    QString moveID = obj.value("moveID").toString();
-
-    emit newMoveConfirmed(player, game, gameID, move, moveID);
-}
-
-void XchatObject::sendGameInvite(const QString user, QString opponent, QString game, QString gameID) {
-    if (mqtt_client->state() == QMqttClient::Connected) {
-        QJsonObject obj;
-        obj.insert("player1", user);
-        obj.insert("player2", opponent);
-        obj.insert("route","receiveGameInvite");
-        obj.insert("game", game);
-        obj.insert("gameID", gameID);
-        QJsonDocument doc(obj);
-        QString strJson(doc.toJson(QJsonDocument::Compact));
-        mqtt_client->publish(topic, strJson.toUtf8());
-    }
-    else {
-        emit gameCommandFailed();
-    }
-}
-
-void XchatObject::receiveGameInvite(QJsonObject obj) {
-    QString player1 = obj.value("player1").toString();
-    QString player2 = obj.value("player2").toString();
-    QString game = obj.value("game").toString();
-    QString gameID = obj.value("gameID").toString();
-
-    emit newGameInvite(player1, player2, game, gameID);
-}
-
-void XchatObject::confirmGameInvite(const QString user, QString opponent, QString game, QString gameID, QString accept) {
-    if (mqtt_client->state() == QMqttClient::Connected) {
-        QJsonObject obj;
-        obj.insert("username", user);
-        obj.insert("opponent", opponent);
-        obj.insert("route","receiveGameInviteResponse");
-        obj.insert("game", game);
-        obj.insert("gameID", gameID);
-        obj.insert("accept", accept);
-        QJsonDocument doc(obj);
-        QString strJson(doc.toJson(QJsonDocument::Compact));
-        mqtt_client->publish(topic, strJson.toUtf8());
-    }
-    else {
-        emit gameCommandFailed();
-    }
-}
-
-void XchatObject::receiveGameInviteResponse(QJsonObject obj) {
-    QString user = obj.value("username").toString();
-    QString game = obj.value("game").toString();
-    QString gameID = obj.value("gameID").toString();
-    QString accept = obj.value("accept").toString();
-
-    emit responseGameInvite(user, game, gameID, accept);
 }
 
 void XchatObject::xchatPopup(QString author, QString msg){
@@ -270,31 +175,25 @@ void XchatObject::xchatPopup(QString author, QString msg){
 }
 
 void XchatObject::xchatInc(const QString &user, QString platform, QString status, QString message, QString webLink, QString image, QString quote) {
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
-        if (!message.isEmpty() && mqtt_client->state() == QMqttClient::Connected) {
-            qDebug() << "link: " + webLink + ", image: " + image + ", quote: " + quote;
-            QString username = user;
-            qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-            QJsonObject obj;
-            obj.insert("username",user);
-            obj.insert("platform",platform);
-            obj.insert("route","sendToFront");
-            obj.insert("status", status);
-            obj.insert("message",message);
-            obj.insert("link", webLink);
-            obj.insert("image", image);
-            obj.insert("quote", quote);
-            obj.insert("messageSentTime", QString::number(timeStamp));
-            obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
+    if (!message.isEmpty() && broker.isConnected()) {
+        qDebug() << "link: " + webLink + ", image: " + image + ", quote: " + quote;
+        QString username = user;
+        qint64 timeStamp = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+        QJsonObject obj;
+        obj.insert("username",user);
+        obj.insert("platform",platform);
+        obj.insert("route","sendToFront");
+        obj.insert("status", status);
+        obj.insert("message",message);
+        obj.insert("link", webLink);
+        obj.insert("image", image);
+        obj.insert("quote", quote);
+        obj.insert("messageSentTime", QString::number(timeStamp));
+        obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
 
-            QJsonDocument doc(obj);
-            QString strJson(doc.toJson(QJsonDocument::Compact));
-            mqtt_client->publish(topic, strJson.toUtf8());
-            return;
-        }
-    }
-    else {
+        QJsonDocument doc(obj);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        broker.sendMessage("xchatsQueue",strJson);
         return;
     }
 }
@@ -311,7 +210,8 @@ void XchatObject::sendTypingToQueue(const QString user, QString route, QString s
         obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
         QJsonDocument doc(obj);
         QString strJson(doc.toJson(QJsonDocument::Compact));
-        mqtt_client->publish(topic, strJson.toUtf8());
+        broker.sendMessage("xchatsQueue",strJson);
+
         return;
     }
     else {
@@ -419,7 +319,6 @@ void XchatObject::sendToFront(QJsonObject obj){
     QString link = obj.value("link").toString();
     QString image = obj.value("image").toString();
     QString quote = obj.value("quote").toString();
-    qDebug() << "local date: " + date02.toString("MMM d") + ", local time: " + time02.toString("H:mm:ss");
     emit xchatSuccess(author, date, time, device, message, link, image, quote, msgID);
 }
 
@@ -452,50 +351,26 @@ QString XchatObject::HarmonizeKeyWords(QString msg)
 }
 
 void XchatObject::forcedReconnect() {
+
     qDebug() << "force reconnect";
-    if (mqtt_client->state() == QMqttClient::Connecting) {
-        qDebug() << "connection attempt detected";
-        mqtt_client->disconnectFromHost();
-        qDebug() << mqtt_client->state();
-        mqtt_StateChanged();
+    if (!broker.isConnected()) {
+        broker.Initialize();
         return;
     }
     qDebug() << "no connection attempt detected";
-    mqtt_StateChanged();
     return;
 }
 
 void XchatObject::mqtt_StateChanged() {
-    if (mqtt_client->state() == QMqttClient::Disconnected) {
-        QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    if (broker.isConnected()){
+      emit xchatInternetOk();
+      emit xchatConnectionSuccess();
+      emit xchatStateChanged();
+
+    }else{
         emit xchatConnectionFail();
         emit xchatStateChanged();
-        if(manager->networkAccessible() == QNetworkAccessManager::Accessible) {
-            if (findServer() != "") {
-                mqtt_client->setHostname(connectedServer);
-                mqtt_client->setPort(1883);
-                mqtt_client->connectToHost();
-            }
-            else {
-            }
-        }
-        else {
-        }
-    }
-
-    if (mqtt_client->state() == QMqttClient::Connecting) {
-        emit xchatConnecting();
-        emit xchatStateChanged();
-    }
-
-    if (mqtt_client->state() == QMqttClient::Connected) {
-        emit xchatInternetOk();
-        emit xchatConnectionSuccess();
-        emit xchatStateChanged();
-        auto subscription = mqtt_client->subscribe(topic);
-        if (!subscription) {
-        } else {
-        }
+        broker.Initialize();
     }
 }
 
@@ -534,6 +409,7 @@ void XchatObject::getOnlineNodes(){
 }
 
 void XchatObject::pingXchatServers() {
+
     QElapsedTimer timer;
 
     getOnlineNodes();
