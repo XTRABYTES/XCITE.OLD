@@ -214,6 +214,8 @@ ios {
 
     INCLUDEPATH += $$PWD/dependencies/include/openssl/include
     INCLUDEPATH += $$PWD/dependencies/include/boost/include
+    INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
+
     LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
     QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
     QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
@@ -236,6 +238,9 @@ android {
 
       LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
+
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/qamqp/32bit/ -lqamqp
+
    
     }
 
@@ -247,10 +252,13 @@ android {
 
       LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system-mgw49-mt-d-1_60
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
-    }
-    LIBS += -L$$PWD/backend/support/qamqp -lqamqp
 
-    INCLUDEPATH += $$PWD/backend/support/qamqp/src
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/qamqp/64bit/ -lqamqp
+
+    }
+
+    INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
+
 
 }
 
@@ -260,21 +268,21 @@ linux {
 
     LIBS += -L$$PWD/dependencies/linux/openssl/lib -lssl -lcrypto
     INCLUDEPATH += $$PWD/dependencies/include/openssl/include
+
+    INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
+    LIBS += -L$$PWD/dependencies/linux/qamqp/ -lqamqp
+
+
 }
 
 
 macx {
         INCLUDEPATH += $$PWD/dependencies/include/openssl/include
         INCLUDEPATH += $$PWD/dependencies/include/boost/include
-       INCLUDEPATH += $$PWD/backend/support/qamqp/src
-
-
-
-#DEPENDPATH += $$PWD/backend/support/QAMQP
+        INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
 
         LIBS += -L$$PWD/dependencies/macos/openssl/lib -lssl -lcrypto
-        LIBS += -L$$PWD/backend/support/qamqp/src -lqamqp
-   #    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
+        LIBS += -L$$PWD/dependencies/macos/qamqp -lqamqp
 }
 
 
@@ -288,7 +296,8 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
 
     ANDROID_EXTRA_LIBS = \
         $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32/libcrypto_1_1.so \
-        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32/libssl_1_1.so
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32/libssl_1_1.so \
+        $$PWD/dependencies/android/armeabi-v7a/qamqp/32bit/libqamqp.so
 }
 
 contains(ANDROID_TARGET_ARCH,arm64-v8a) {
@@ -299,6 +308,6 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
     ANDROID_EXTRA_LIBS = \
         $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64/libcrypto_1_1.so \
         $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64/libssl_1_1.so \
-        $$PWD/backend/support/qamqp/libqamqp.so
+        $$PWD/dependencies/android/armeabi-v7a/qamqp/64bit/libqamqp.so
 }
 
