@@ -26,6 +26,7 @@
 #include <openssl/rsa.h>
 #include <string>
 #include <iostream>
+#include "../xutility/BrokerConnection.h"
 
 class Settings : public QObject
 {

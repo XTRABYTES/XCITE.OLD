@@ -353,11 +353,6 @@ QString XchatObject::HarmonizeKeyWords(QString msg)
 void XchatObject::forcedReconnect() {
 
     qDebug() << "force reconnect";
-    if (!broker.isConnected()) {
-        broker.Initialize();
-        return;
-    }
-    qDebug() << "no connection attempt detected";
     return;
 }
 
@@ -370,7 +365,6 @@ void XchatObject::mqtt_StateChanged() {
     }else{
         emit xchatConnectionFail();
         emit xchatStateChanged();
-        broker.disconnect();
     }
 }
 

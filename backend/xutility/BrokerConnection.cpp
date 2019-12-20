@@ -1,6 +1,11 @@
 #include "BrokerConnection.h"
 BrokerConnection broker;
 static QQueue<QString> queues;
+QString me = "";
+
+#include "qamqpclient.h"
+#include "qamqpexchange.h"
+#include "qamqpqueue.h"
 
 BrokerConnection::BrokerConnection(QObject *parent) :
     QObject(parent)
@@ -8,7 +13,8 @@ BrokerConnection::BrokerConnection(QObject *parent) :
 }
 
 
-void BrokerConnection::Initialize() {
+void BrokerConnection::Initialize(QString user) {
+    me = user;
     m_client.setHost("69.51.23.182");
     m_client.setPort(5672);
     m_client.setUsername("xchat");
@@ -16,15 +22,17 @@ void BrokerConnection::Initialize() {
     m_client.setVirtualHost("xtrabytes");
 
     connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
-    connect(&m_client, SIGNAL(disconnected()),this,SLOT(reconnect()));
-    m_client.connectToHost();
-    m_client.setAutoReconnect(true);
+}
+void BrokerConnection::disconnectMQ(){
+    qDebug() << "disconnecting MQ";
+    emit xchatConnectionFail();
+
+    m_client.abort();
+    m_client.disconnectFromHost();
 
 }
-void BrokerConnection::disconnect(){
-    m_client.disconnectFromHost();
-}
 void BrokerConnection::reconnect(){
+    qDebug() << "reconnecting";
     m_client.connectToHost();
 }
 
@@ -38,8 +46,9 @@ void BrokerConnection::clientConnected() {
    }
 
 void BrokerConnection::connectExchange(QString queueName){
-    if (m_client.isConnected()){
+    if (m_client.isConnected() && !me.isEmpty()){
         QAmqpExchange *exchange = m_client.createExchange(queueName);
+        disconnect(exchange, 0, 0, 0); // in case this is a reconnect
             exchange->setProperty("queue",queueName);
             connect(exchange, SIGNAL(declared()), this, SLOT(exchangeDeclared()));
             exchange->declare(QAmqpExchange::FanOut);
@@ -50,11 +59,14 @@ void BrokerConnection::connectExchange(QString queueName){
 
    void BrokerConnection::exchangeDeclared() {
        QAmqpExchange *exchange = qobject_cast<QAmqpExchange*>(sender());
-       QAmqpQueue *temporaryQueue = m_client.createQueue();
+       QAmqpQueue *temporaryQueue = m_client.createQueue(exchange->property("queue").toString() + "-" + me);
+       disconnect(temporaryQueue, 0, 0, 0); // in case this is a reconnect
+
        temporaryQueue->setProperty("queue",exchange->property("queue"));
-       connect(temporaryQueue, SIGNAL(declared()), this, SLOT(queueDeclared()));
-       connect(temporaryQueue, SIGNAL(bound()), this, SLOT(queueBound()));
-       connect(temporaryQueue, SIGNAL(messageReceived()), this, SLOT(messageReceived()));
+       connect(temporaryQueue, &QAmqpQueue::declared,  this, &BrokerConnection::queueDeclared);
+       connect(temporaryQueue, &QAmqpQueue::bound,  this, &BrokerConnection::queueBound);
+       connect(temporaryQueue, &QAmqpQueue::messageReceived,  this, &BrokerConnection::messageReceived);
+
        temporaryQueue->declare(QAmqpQueue::Exclusive);
    }
 
@@ -69,6 +81,9 @@ void BrokerConnection::connectExchange(QString queueName){
        QAmqpQueue *temporaryQueue = qobject_cast<QAmqpQueue*>(sender());
        if (!temporaryQueue)
            return;
+
+       emit xchatInternetOk();
+       emit xchatConnectionSuccess();
 
        qDebug() << " [*] Waiting for logs on " + temporaryQueue->property("queue").toString() + " --- " + temporaryQueue->name() + ".";
        temporaryQueue->consume(QAmqpQueue::coNoAck);
@@ -96,7 +111,11 @@ void BrokerConnection::connectExchange(QString queueName){
            QAmqpExchange *exchange = m_client.createExchange(queue);
            exchange->publish(message, queue);
        }else{
-           qDebug() << "not connected send";
+           if(!me.isEmpty()){
+               reconnect();
+           }else{
+             qDebug() << "not connected send";
+           }
        }
    }
 

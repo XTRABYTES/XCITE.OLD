@@ -2464,6 +2464,40 @@ ApplicationWindow {
     }
 
     Connections {
+        target: broker
+
+        onXchatConnectionSuccess: {
+            networkError = 0
+            networkAvailable = 1
+            gameError = 0
+            if (xChatConnection == false) {
+                xChatConnection = true
+                xChatDisconnected = false
+                xChatConnecting = false
+                if (!pingingXChat) {
+                    pingTimeRemain = -1
+                    pingingXChat = true
+                    resetServerUpdateStatus();
+                    pingXChatServers();
+                    updateServerStatus();
+                }
+            }
+        }
+
+        onXchatConnectionFail: {
+            xChatConnection = false
+            xChatConnecting = false
+            xChatDisconnected = true
+        }
+
+
+        onXchatInternetOk: {
+            networkAvailable = 1
+        }
+
+    }
+
+    Connections {
         target: tictactoe
 
         onGameFinished: {

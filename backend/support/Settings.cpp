@@ -1028,6 +1028,8 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     m_oldPincode = QString::fromLatin1(enc_pincode, enc_pincode.length());
 
     emit loginSucceededChanged();
+    broker.Initialize(m_username);
+
     emit xchatConnectedLogin(m_username,"addToOnline","online");
 }
 

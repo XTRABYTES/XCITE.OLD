@@ -14,10 +14,15 @@ class BrokerConnection : public QObject
     Q_OBJECT
 public:
     explicit BrokerConnection(QObject *parent = nullptr);
-    void Initialize();
+    void Initialize(QString);
     bool isConnected();
+    QAmqpClient m_client;
+
 
 signals:
+    void xchatConnectionFail();
+    void xchatInternetOk();
+    void xchatConnectionSuccess();
 
 public slots:
     void queueBound();
@@ -28,10 +33,9 @@ public slots:
     void sendMessage(QString,QString);
     void connectExchange(QString);
     void reconnect();
-    void disconnect();
+    void disconnectMQ();
 
 private:
-    QAmqpClient m_client;
 
 };
 extern BrokerConnection broker;
