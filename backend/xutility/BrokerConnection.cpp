@@ -17,6 +17,7 @@ void BrokerConnection::Initialize() {
 
     connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
     m_client.connectToHost();
+    m_client.setAutoReconnect(true);
 
 }
 
