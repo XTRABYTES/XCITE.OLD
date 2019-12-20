@@ -2341,6 +2341,45 @@ ApplicationWindow {
     }
 
     Connections {
+        target: xGames
+
+        // X-GAME related functions
+        onNewMoveReceived: {
+            gameError = 0
+            if(isMyGame(gameID) && correctUser(player, gameID)) {
+                checkIfMoveExists(game, gameID, player, move, moveID)
+            }
+        }
+
+        onNewMoveConfirmed: {
+            gameError = 0
+            if(isMyGame(gameID) && correctUser(player, gameID) && player !== myUsername) {
+                confirmMove(game, gameID, move, moveID)
+            }
+        }
+
+        onNewGameInvite: {
+            gameError = 0
+            if(isMyGame(gameID) && player1 !== myUsername) {
+                if (correctUser(player2, gameID)) {
+                    checkIfInviteExists(game, gameID)
+                }
+            }
+        }
+
+        onResponseGameInvite: {
+            gameError = 0
+            if(isMyGame(gameID) && correctUser(user, gameID) && user !== myUsername ) {
+                acceptGameInvite(user, game, gameID, accept)
+            }
+        }
+
+        onGameCommandFailed: {
+            gameError = 1
+        }
+    }
+
+    Connections {
         target: xChat
 
         onXchatSuccess: {
@@ -2422,40 +2461,40 @@ ApplicationWindow {
                 }
             }
         }
-        // X-GAME related functions
-        onNewMoveReceived: {
-            gameError = 0
-            if(isMyGame(gameID) && correctUser(player, gameID)) {
-                checkIfMoveExists(game, gameID, player, move, moveID)
-            }
-        }
+    }
 
-        onNewMoveConfirmed: {
-            gameError = 0
-            if(isMyGame(gameID) && correctUser(player, gameID) && player !== myUsername) {
-                confirmMove(game, gameID, move, moveID)
-            }
-        }
+    Connections {
+        target: broker
 
-        onNewGameInvite: {
+        onXchatConnectionSuccess: {
+            networkError = 0
+            networkAvailable = 1
             gameError = 0
-            if(isMyGame(gameID) && player1 !== myUsername) {
-                if (correctUser(player2, gameID)) {
-                    checkIfInviteExists(game, gameID)
+            if (xChatConnection == false) {
+                xChatConnection = true
+                xChatDisconnected = false
+                xChatConnecting = false
+                if (!pingingXChat) {
+                    pingTimeRemain = -1
+                    pingingXChat = true
+                    resetServerUpdateStatus();
+                    pingXChatServers();
+                    updateServerStatus();
                 }
             }
         }
 
-        onResponseGameInvite: {
-            gameError = 0
-            if(isMyGame(gameID) && correctUser(user, gameID) && user !== myUsername ) {
-                acceptGameInvite(user, game, gameID, accept)
-            }
+        onXchatConnectionFail: {
+            xChatConnection = false
+            xChatConnecting = false
+            xChatDisconnected = true
         }
 
-        onGameCommandFailed: {
-            gameError = 1
+
+        onXchatInternetOk: {
+            networkAvailable = 1
         }
+
     }
 
     Connections {

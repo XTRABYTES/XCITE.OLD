@@ -1,0 +1,12 @@
+prefix=/Users/jpilgrim/Qt1/5.12.5/android_arm64_v8a
+exec_prefix=${prefix}
+libdir=/usr/lib
+includedir=/usr/include/qamqp
+
+
+Name: Qamqp
+Description: Qamqp Library
+Version: 0.5.0
+Libs: -L${libdir} -lqamqp 
+Cflags: -DQAMQP_SHARED -I${includedir}
+

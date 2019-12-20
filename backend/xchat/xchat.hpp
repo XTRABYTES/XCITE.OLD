@@ -23,6 +23,7 @@
 #include "xchataiml.hpp"
 #include "xchatconversationmodel.hpp"
 #include "../support/DownloadManager.hpp"
+#include "../xutility/BrokerConnection.h"
 
 
 
@@ -109,14 +110,7 @@ signals:
     void selectedXchatServer(QString server);
     void xChatServerDown(QString server, QString serverStatus);
     void clearOnlineNodeList();
-    void sendNewMoveSucceed(QString player, QString game, QString gameID, QString move, QString moveID);
-    void newMoveReceived(QString player, QString game, QString gameID, QString move, QString moveID);
-    void newMoveConfirmed(QString player, QString game, QString gameID, QString move, QString moveID);
-    void sendGameInviteSucceed(QString user, QString opponent, QString game, QString gameID);
-    void newGameInvite(QString player1, QString player2, QString game, QString gameID);
-    void sendConfirmGameInviteSucceed(QString user, QString opponent, QString game, QString gameID, QString accept);
-    void responseGameInvite(QString user, QString game, QString gameID, QString accept);
-    void gameCommandFailed();
+
 
 
 public slots:
@@ -126,15 +120,11 @@ public slots:
     QString HarmonizeKeyWords(const QString msg);
     void xchatInc(const QString &user, QString platform, QString status, QString message, QString webLink, QString image, QString quote);
     void sendTypingToQueue(const QString user, QString route, QString status);
-    void sendGameToQueue(const QString player, QString game, QString gameID, QString move);
-    void confirmGameSend(const QString player, QString game, QString gameID, QString move, QString moveID);
-    void sendGameInvite(const QString user, QString opponent, QString game, QString gameID);
-    void confirmGameInvite(const QString user, QString opponent, QString game, QString gameID, QString accept);
     void pingReceived();
     void pingXchatServers();
     void forcedReconnect();
     void xchatPopup(QString author, QString msg);
-
+    void xchatEntry(QByteArray obj);
 
     void DownloadManagerRouter(QByteArray, QMap<QString,QVariant>);
     void internetTimeout(QMap<QString,QVariant>);
@@ -147,10 +137,8 @@ public slots:
 private slots:
     void mqtt_StateChanged();
 
-
 private:
     bool internetActive = true;
-
     QObject *window;
     XchatAIML *m_pXchatAiml;
     QMqttClient *mqtt_client;
@@ -176,10 +164,6 @@ private:
     void addToTyping(QJsonObject);
     void removeFromTyping(QJsonObject);
     void sendToFront(QJsonObject);
-    void sendToGame(QJsonObject);
-    void confirmGameReceived(QJsonObject);
-    void receiveGameInvite(QJsonObject);
-    void receiveGameInviteResponse(QJsonObject);
     void getOnlineNodes();
     void sendOnlineUsers();
 

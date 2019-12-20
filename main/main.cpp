@@ -24,6 +24,7 @@
 #include "../backend/staticnet/staticnet.hpp"
 #include "../backend/xutility/xutility.hpp"
 #include "../backend/xchat/xchat.hpp"
+#include "../backend/xgames/XGames.hpp"
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
@@ -35,6 +36,7 @@
 #include "../backend/integrations/xutility_integration.hpp"
 #include "../backend/integrations/staticnet_integration.hpp"
 #include "../backend/support/ttt.h"
+#include "../backend/xutility/BrokerConnection.h"
 
 int main(int argc, char *argv[])
 {
@@ -88,6 +90,11 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("xChat", &xchatRobot);
     qDebug() << "XCHAT WIRED UP";
 
+    engine.rootContext()->setContextProperty("broker",&broker);
+
+    xgames.Initialize();
+    engine.rootContext()->setContextProperty("xGames", &xgames);
+    qDebug() << "XGames WIRED UP";
 
     // wire-up staticnet_integration
     staticNet.Initialize();
@@ -183,11 +190,10 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(pingXChatServers()), &xchatRobot, SLOT(pingXchatServers()));
     QObject::connect(rootObject, SIGNAL(xChatReconnect()), &xchatRobot, SLOT(forcedReconnect()));
     QObject::connect(rootObject, SIGNAL(xchatPopup(QString,QString)), &xchatRobot, SLOT(xchatPopup(QString,QString)));
-
-    QObject::connect(rootObject, SIGNAL(sendGameToQueue(QString,QString,QString,QString)), &xchatRobot, SLOT(sendGameToQueue(QString,QString,QString,QString)));
-    QObject::connect(rootObject, SIGNAL(confirmGameSend(QString,QString,QString,QString,QString)), &xchatRobot, SLOT(confirmGameSend(QString,QString,QString,QString,QString)));
-    QObject::connect(rootObject, SIGNAL(sendGameInvite(QString,QString,QString,QString)), &xchatRobot, SLOT(sendGameInvite(QString,QString,QString,QString)));
-    QObject::connect(rootObject, SIGNAL(confirmGameInvite(QString,QString,QString,QString,QString)), &xchatRobot, SLOT(confirmGameInvite(QString,QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(sendGameToQueue(QString,QString,QString,QString)), &xgames, SLOT(sendGameToQueue(QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(confirmGameSend(QString,QString,QString,QString,QString)), &xgames, SLOT(confirmGameSend(QString,QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(sendGameInvite(QString,QString,QString,QString)), &xgames, SLOT(sendGameInvite(QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(confirmGameInvite(QString,QString,QString,QString,QString)), &xgames, SLOT(confirmGameInvite(QString,QString,QString,QString,QString)));
 
     // connect signals for TTT
     QObject::connect(rootObject, SIGNAL(tttSetUsername(QString)), &tictactoe, SLOT(setUsername(QString)));

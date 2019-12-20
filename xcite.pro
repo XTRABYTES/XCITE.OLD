@@ -50,6 +50,7 @@ QML_IMPORT_PATH =
 QML_DESIGNER_IMPORT_PATH =
 
 include(backend/support/QZXing/QZXing.pri)
+#include(backend/support/QAMQP/qamqp.pri)
 include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
 
 SOURCES +=  main/main.cpp \
@@ -57,6 +58,8 @@ SOURCES +=  main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
 	    backend/staticnet/staticnet.cpp \
+            backend/xgames/XGames.cpp \
+            backend/xutility/BrokerConnection.cpp \
 	    backend/xutility/xutility.cpp \
 	    backend/xutility/crypto/ctools.cpp \
 	    backend/xutility/transaction/transaction.cpp \
@@ -82,6 +85,8 @@ RESOURCES += frontend/frontend.qrc
 HEADERS  += backend/xchat/xchat.hpp \
             backend/support/ttt.h \
 	    backend/xchat/xchataiml.hpp \
+            backend/xgames/XGames.hpp \
+            backend/xutility/BrokerConnection.h \
 	    backend/xutility/crypto/allocators.h \
 	    backend/xutility/crypto/ctools.h \
 	    backend/xutility/crypto/numbers.h \
@@ -243,6 +248,10 @@ android {
       LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/lib/ -lboost_system-mgw49-mt-d-1_60
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
     }
+    LIBS += -L$$PWD/backend/support/qamqp -lqamqp
+
+    INCLUDEPATH += $$PWD/backend/support/qamqp/src
+
 }
 
 linux {
@@ -257,8 +266,14 @@ linux {
 macx {
         INCLUDEPATH += $$PWD/dependencies/include/openssl/include
         INCLUDEPATH += $$PWD/dependencies/include/boost/include
+       INCLUDEPATH += $$PWD/backend/support/qamqp/src
+
+
+
+#DEPENDPATH += $$PWD/backend/support/QAMQP
 
         LIBS += -L$$PWD/dependencies/macos/openssl/lib -lssl -lcrypto
+        LIBS += -L$$PWD/backend/support/qamqp/src -lqamqp
    #    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/boost/libcomp -lboost_system-gcc-mt-1_60
 }
 
@@ -283,5 +298,7 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 
     ANDROID_EXTRA_LIBS = \
         $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64/libcrypto_1_1.so \
-        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64/libssl_1_1.so
+        $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64/libssl_1_1.so \
+        $$PWD/backend/support/qamqp/libqamqp.so
 }
+
