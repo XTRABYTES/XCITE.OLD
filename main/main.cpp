@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("xChat", &xchatRobot);
     qDebug() << "XCHAT WIRED UP";
 
+    broker.Initialize("");
     engine.rootContext()->setContextProperty("broker",&broker);
 
     xgames.Initialize();

@@ -543,6 +543,10 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
 
             // Send new encrypted Rand Nums to backend
             QString finalLoginResponse = RestAPIPostCall("/v1/finalLogin", finalLogin);
+            broker.me = m_username;
+            broker.connectExchange("xchatsQueue");
+            broker.connectExchange("xgames");
+
             if (finalLoginResponse.isEmpty()){
                 emit loginFailedChanged();
                 return;
@@ -687,7 +691,6 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
             QVariantMap settings;
             foreach (const QString &key, m_settings->childKeys()) {//iterate through m_settings to add everything to settings file we write to DB
                 settings.insert(key,m_settings->value(key).toString());
-                qDebug().noquote() << settings;
             }
             QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (oldPassword + "xtrabytesxtrabytes").toLatin1());
             settings.insert("pincode", dec_pincode); //may be able to remove this
@@ -955,13 +958,11 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     QJsonObject json = QJsonDocument::fromJson(settings).object();
     QVariantMap settingsMap;
     m_settings->clear();
-    qDebug() << m_settings;
     foreach(const QString& key, json.keys()) {
         QJsonValue value = json.value(key);
         settingsMap.insert(key,value.toString());
         m_settings->setValue(key,value.toString());
         m_settings->sync();
-        qDebug() << m_settings;
     }
     emit settingsLoaded(settingsMap);
 
@@ -1001,11 +1002,9 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
         QString walletFile = LoadFile(m_username.toLower() + ".wallet", fileLocation);
         if (walletFile != "ERROR"){
             QByteArray decodedWallet = encryption.decode(walletFile.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
-            qDebug().noquote() << "Decoded Wallet " + decodedWallet;
             int pos = decodedWallet.lastIndexOf(QChar(']')); // find last bracket to mark the end of the json
             decodedWallet = decodedWallet.left(pos+1); //remove everything after the valid json
             walletArray = QJsonDocument::fromJson(decodedWallet).array();
-            qDebug().noquote() << walletArray;
         }else{
             emit walletNotFound();
             return;
@@ -1028,8 +1027,6 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     m_oldPincode = QString::fromLatin1(enc_pincode, enc_pincode.length());
 
     emit loginSucceededChanged();
-    broker.Initialize(m_username);
-
     emit xchatConnectedLogin(m_username,"addToOnline","online");
 }
 

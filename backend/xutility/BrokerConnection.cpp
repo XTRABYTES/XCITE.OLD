@@ -1,11 +1,8 @@
 #include "BrokerConnection.h"
 BrokerConnection broker;
 static QQueue<QString> queues;
-QString me = "";
 
-#include "qamqpclient.h"
-#include "qamqpexchange.h"
-#include "qamqpqueue.h"
+
 
 BrokerConnection::BrokerConnection(QObject *parent) :
     QObject(parent)
@@ -14,15 +11,22 @@ BrokerConnection::BrokerConnection(QObject *parent) :
 
 
 void BrokerConnection::Initialize(QString user) {
-    me = user;
+    me = "";
     m_client.setHost("69.51.23.182");
     m_client.setPort(5672);
     m_client.setUsername("xchat");
     m_client.setPassword("nopwd");
     m_client.setVirtualHost("xtrabytes");
+    reconnectTimer.setSingleShot(true);
+    reconnectTimer.start(10000);
+    //m_client.setAutoReconnect(true);
 
     connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
+
+    m_client.connectToHost();
+
 }
+
 void BrokerConnection::disconnectMQ(){
     qDebug() << "disconnecting MQ";
     emit xchatConnectionFail();
@@ -32,8 +36,14 @@ void BrokerConnection::disconnectMQ(){
 
 }
 void BrokerConnection::reconnect(){
-    qDebug() << "reconnecting";
-    m_client.connectToHost();
+    if (!reconnectTimer.isActive()){
+        reconnectTimer.setSingleShot(true);
+        reconnectTimer.start(10000);
+        qDebug() << "reconnecting";
+        m_client.connectToHost();
+    }else{
+        qDebug() << "already connecting";
+    }
 }
 
 bool BrokerConnection::isConnected(){
