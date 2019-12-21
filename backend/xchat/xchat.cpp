@@ -363,6 +363,7 @@ void XchatObject::mqtt_StateChanged() {
       emit xchatStateChanged();
 
     }else{
+        broker.reconnect();
         emit xchatConnectionFail();
         emit xchatStateChanged();
     }
@@ -391,46 +392,46 @@ void XchatObject::sendOnlineUsers(){
 void XchatObject::getOnlineNodes(){
     cleanTypingList();
     cleanOnlineList();
-    for(QString server : servers){
-        QNetworkAccessManager nam;
-        QUrl url("http://" + server + ":15672/api/nodes");
-        url.setUserName("xchat");
-        url.setPassword("xtrabytes");
-        URLObject urlObj {QUrl(url)};
-        urlObj.addProperty("route","getOnlineNodesSlot");
-        DownloadManagerHandler(&urlObj);
-    }
+//    for(QString server : servers){
+//        QNetworkAccessManager nam;
+//        QUrl url("http://" + server + ":15672/api/nodes");
+//        url.setUserName("xchat");
+//        url.setPassword("xtrabytes");
+//        URLObject urlObj {QUrl(url)};
+//        urlObj.addProperty("route","getOnlineNodesSlot");
+//        DownloadManagerHandler(&urlObj);
+//    }
 }
 
 void XchatObject::pingXchatServers() {
 
-    QElapsedTimer timer;
+//    QElapsedTimer timer;
 
-    getOnlineNodes();
-    for(QString server : nodesOnline.values()){
+//    getOnlineNodes();
+//    for(QString server : nodesOnline.values()){
 
-        QTcpSocket tester;
-        tester.connectToHost(server, 1883);
-        QString pingedServer = matchServer(server);
-        timer.start();
-        bool online = true;
-        if(tester.waitForConnected(1000)) {
-            qDebug() << "Server: " + pingedServer + " up";
-        } else {
-            online=false;
-        }
-        qint64 timeTaken = timer.nsecsElapsed();
-        qDebug() << pingedServer + " timer: " + QString::number(timeTaken);
-        QString responseTime = QString::number(timeTaken);
-        emit serverResponseTime(pingedServer, responseTime, "up");
-        if (!online){
-            qDebug() << "Server: " + pingedServer + " down";
-            emit xChatServerDown(pingedServer, "down");
-        }
+//        QTcpSocket tester;
+//        tester.connectToHost(server, 1883);
+//        QString pingedServer = matchServer(server);
+//        timer.start();
+//        bool online = true;
+//        if(tester.waitForConnected(1000)) {
+//            qDebug() << "Server: " + pingedServer + " up";
+//        } else {
+//            online=false;
+//        }
+//        qint64 timeTaken = timer.nsecsElapsed();
+//        qDebug() << pingedServer + " timer: " + QString::number(timeTaken);
+//        QString responseTime = QString::number(timeTaken);
+//        emit serverResponseTime(pingedServer, responseTime, "up");
+//        if (!online){
+//            qDebug() << "Server: " + pingedServer + " down";
+//            emit xChatServerDown(pingedServer, "down");
+//        }
 
-        tester.close();
-    }
-    emit selectedXchatServer(selectedServer);
+//        tester.close();
+//    }
+//    emit selectedXchatServer(selectedServer);
 }
 
 QString XchatObject::matchServer(const QString &server){
@@ -461,37 +462,37 @@ QString XchatObject::findServer(){
     QElapsedTimer timer;
     fastestServer = "";
 
-    getOnlineNodes();
-    for(QString server : nodesOnline.values()){
-        QTcpSocket tester;
-        tester.connectToHost(server, 1883);
-        QString pingedServer = matchServer(server);
-        timer.start();
-        bool online = true;
-        if(tester.waitForConnected(1000)) {
-            qDebug() << "Server: " + pingedServer + " up";
-        } else {
-            online=false;
-        }
-        qint64 timeTaken = timer.nsecsElapsed();
-        qDebug() << pingedServer + " timer: " + QString::number(timeTaken);
-        QString responseTime = QString::number(timeTaken);
-        emit serverResponseTime(pingedServer, responseTime, "up");
-        if (!online){
-            qDebug() << "Server: " + pingedServer + " down";
-            emit xChatServerDown(pingedServer, "down");
-        }else if (fastestTime == 0 || fastestTime > timeTaken){
-            fastestServer = server;
-            fastestTime = timeTaken;
-            selectedServer = matchServer(fastestServer);
-            connectedServer = fastestServer;
-            qDebug() << "Fastest server:  " + selectedServer;
-            emit selectedXchatServer(selectedServer);
-        }
+//    getOnlineNodes();
+//    for(QString server : nodesOnline.values()){
+//        QTcpSocket tester;
+//        tester.connectToHost(server, 1883);
+//        QString pingedServer = matchServer(server);
+//        timer.start();
+//        bool online = true;
+//        if(tester.waitForConnected(1000)) {
+//            qDebug() << "Server: " + pingedServer + " up";
+//        } else {
+//            online=false;
+//        }
+//        qint64 timeTaken = timer.nsecsElapsed();
+//        qDebug() << pingedServer + " timer: " + QString::number(timeTaken);
+//        QString responseTime = QString::number(timeTaken);
+//        emit serverResponseTime(pingedServer, responseTime, "up");
+//        if (!online){
+//            qDebug() << "Server: " + pingedServer + " down";
+//            emit xChatServerDown(pingedServer, "down");
+//        }else if (fastestTime == 0 || fastestTime > timeTaken){
+//            fastestServer = server;
+//            fastestTime = timeTaken;
+//            selectedServer = matchServer(fastestServer);
+//            connectedServer = fastestServer;
+//            qDebug() << "Fastest server:  " + selectedServer;
+//            emit selectedXchatServer(selectedServer);
+//        }
 
-        tester.close();
-    }
-    emit selectedXchatServer(selectedServer);
+//        tester.close();
+//    }
+//    emit selectedXchatServer(selectedServer);
     return fastestServer;
 }
 

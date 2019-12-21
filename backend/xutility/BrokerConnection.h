@@ -17,6 +17,7 @@ public:
     void Initialize(QString);
     bool isConnected();
     QAmqpClient m_client;
+    QString me;
 
 
 signals:
@@ -36,6 +37,7 @@ public slots:
     void disconnectMQ();
 
 private:
+    QTimer reconnectTimer;
 
 };
 extern BrokerConnection broker;
