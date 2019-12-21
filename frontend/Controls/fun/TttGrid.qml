@@ -87,6 +87,9 @@ Rectangle {
                     enabled: gamefinished == true? false : (online == false? (played == false? true : false) : (played == false? (tttYourTurn == false?  false : true) : (confirmed == false? true : false)))
 
                     onClicked: {
+                        if (tttYourTurn === true) {
+                            tttYourTurn = false
+                        }
                         console.log("clicked button nr: " + number)
                         tttGameStarted = true
                         newMove = true

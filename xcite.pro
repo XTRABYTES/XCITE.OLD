@@ -205,7 +205,7 @@ win32 {
 
       LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
-      
+
       LIBS += -L$$PWD/dependencies/windows/qamqp/32bit -llibqamqp
       INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
     }
