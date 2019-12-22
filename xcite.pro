@@ -223,6 +223,7 @@ ios {
     INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
 
     LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
+    LIBS += -L$$PWD/dependencies/ios/x86_64/qamqp/ -lqamqp
     QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
     QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
 }
