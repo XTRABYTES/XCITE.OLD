@@ -543,14 +543,16 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
 
             // Send new encrypted Rand Nums to backend
             QString finalLoginResponse = RestAPIPostCall("/v1/finalLogin", finalLogin);
-            broker.me = m_username;
-            broker.connectExchange("xchatsQueue");
-            broker.connectExchange("xgames");
 
             if (finalLoginResponse.isEmpty()){
                 emit loginFailedChanged();
                 return;
             }
+
+            broker.me = m_username;
+            broker.connectExchange("xchatsQueue");
+            broker.connectExchange("xgames");
+
         }else{
             emit loginFailedChanged();
             return;
