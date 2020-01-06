@@ -550,7 +550,7 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
             }
 
             broker.me = m_username;
-            broker.connectExchange("xchatsQueue");
+            broker.connectExchange("xchats");
             broker.connectExchange("xgames");
 
         }else{

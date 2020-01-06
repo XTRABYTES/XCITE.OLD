@@ -40,7 +40,8 @@ public:
         Direct,
         FanOut,
         Topic,
-        Headers
+        Headers,
+        Deduplication
     };
     QString type() const;
 
