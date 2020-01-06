@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include "qamqpclient.h"
+#include "qamqpmessage.h"
+
 #include "qamqpexchange.h"
 #include "qamqpqueue.h"
 #include <QJsonObject>
@@ -38,6 +40,13 @@ public slots:
 
 private:
     QTimer reconnectTimer;
+
+//    QStringList servers = (QStringList() << "85.214.78.233");
+    QStringList servers = (QStringList() << "176.123.4.83" << "69.51.23.182" <<
+                           "185.122.58.178"<<"85.214.143.20"<<"85.214.78.233"<<
+                           "37.187.99.162"<<"103.205.143.174"<<"217.144.53.84"<<
+                           "185.177.21.73"<<"144.172.126.16"<<"92.63.57.175"<<"151.80.38.9");
+
 
 };
 extern BrokerConnection broker;
