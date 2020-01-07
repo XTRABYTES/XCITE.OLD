@@ -2465,6 +2465,9 @@ ApplicationWindow {
 
     Connections {
         target: broker
+        onSelectedXchatServer: {
+            selectedXChatServer = server
+        }
 
         onXchatConnectionSuccess: {
             networkError = 0
