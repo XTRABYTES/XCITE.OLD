@@ -87,6 +87,18 @@ Rectangle {
         anchors.topMargin: 15
         visible: xChatConnection !== true
     }
+    Label {
+        id: connectedLabel
+        text: selectedXChatServer
+        font.family: xciteMobile.name
+        font.pointSize: 16
+        color: "#E55541"
+        font.italic: true
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: xchatNetworkModalLabel.bottom
+        anchors.topMargin: 15
+        visible: xChatConnection === true
+    }
 
     Rectangle {
         id: pingButton

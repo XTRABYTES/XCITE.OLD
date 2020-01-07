@@ -16,6 +16,7 @@ void BrokerConnection::Initialize(QString user) {
     int RandIndex = rand() % servers.size();
     QString server = servers.takeAt(RandIndex);
     qDebug() << "Connecting to " + server;
+    selectedServer = server;
     m_client.setHost(server);
     m_client.setPort(5672);
     m_client.setUsername("xchat");
@@ -55,6 +56,8 @@ bool BrokerConnection::isConnected(){
 }
 void BrokerConnection::clientConnected() {
     qDebug() << "Connected to MQ Server";
+    emit selectedXchatServer(selectedServer);
+
     connectExchange("xgames");
     connectExchange("xchats");
    }
@@ -138,6 +141,7 @@ void BrokerConnection::connectExchange(QString queueName){
                headers.insert("x-dicom-version","1.0.0");
                headers.insert("x-dicom-msgtype","xchat");
                headers.insert("x-cache-size",500);
+               headers.insert("x-cache-ttl",10000);
 
            properties.insert(QAmqpMessage::Property::Headers,headers);
            exchange->publish(message, "xcite.xchat", properties);

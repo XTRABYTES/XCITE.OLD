@@ -26,6 +26,8 @@ signals:
     void xchatConnectionFail();
     void xchatInternetOk();
     void xchatConnectionSuccess();
+    void selectedXchatServer(QString server);
+
 
 public slots:
     void queueBound();
@@ -40,6 +42,7 @@ public slots:
 
 private:
     QTimer reconnectTimer;
+    QString selectedServer;
 
 //    QStringList servers = (QStringList() << "85.214.78.233");
     QStringList servers = (QStringList() << "176.123.4.83" << "69.51.23.182" <<
