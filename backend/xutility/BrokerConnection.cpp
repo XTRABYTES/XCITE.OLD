@@ -98,7 +98,7 @@ void BrokerConnection::connectExchange(QString queueName){
        QAmqpQueue *temporaryQueue = qobject_cast<QAmqpQueue*>(sender());
        if (!temporaryQueue)
            return;
-       temporaryQueue->bind(temporaryQueue->property("queue").toString(), temporaryQueue->name());
+       temporaryQueue->bind(temporaryQueue->property("queue").toString(), "xcite.xchat");
    }
 
    void BrokerConnection::queueBound() {
