@@ -94,7 +94,7 @@ Rectangle {
 
             onSaveSucceeded: {
                 if (selectedPage == "notif" && updatingWalletsNotif == true) {
-                    updatingWalletsNotif == false
+                    updatingWalletsNotif = false
                     appsTracker = 0
                     selectedPage = "home"
                     mainRoot.pop()
@@ -104,7 +104,7 @@ Rectangle {
             onSaveFailed: {
                 if (selectedPage == "notif" && updatingWalletsNotif == true) {
                     updateFailed = 1
-                    updatingWalletsNotif == false
+                    updatingWalletsNotif = false
                 }
             }
 
@@ -112,7 +112,7 @@ Rectangle {
                 if (selectedPage == "notif" && updatingWalletsNotif == true) {
                     networkError = 1
                     updateFailed = 1
-                    updatingWalletsNotif == false
+                    updatingWalletsNotif = false
                 }
             }
         }

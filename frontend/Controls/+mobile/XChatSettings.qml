@@ -180,7 +180,7 @@ Rectangle {
                         userSettings.tagMe = true
                         updateToAccount()
                     }
-                    else if (tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false){
+                    else if (userSettings.tagMe === true && tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false){
                         oldTagMe = true
                         tagMeChangeInitiated = true
                         userSettings.tagMe = false
@@ -247,7 +247,7 @@ Rectangle {
                         userSettings.tagEveryone = true
                         updateToAccount()
                     }
-                    else if (tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false){
+                    else if (userSettings.tagEveryone === true && tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false){
                         oldTagEveryone = true
                         tagEveryoneChangeInitiated = true
                         userSettings.tagEveryone = false
@@ -332,7 +332,7 @@ Rectangle {
                         userSettings.xChatDND = true
                         updateToAccount()
                     }
-                    else if (tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false){
+                    else if (userSettings.xChatDND === true && tagMeChangeInitiated == false && tagEveryoneChangeInitiated == false && dndChangeInitiated == false){
                         oldDND = true
                         dndChangeInitiated = true
                         userSettings.xChatDND = false
@@ -351,10 +351,10 @@ Rectangle {
             if (tagMeChangeInitiated == true) {
                 tagMeChangeInitiated = false
             }
-            if (tagEveryoneChangeInitiated == true) {
+            else if (tagEveryoneChangeInitiated == true) {
                 tagEveryoneChangeInitiated = false
             }
-            if (dndChangeInitiated == true) {
+            else if (dndChangeInitiated == true) {
                 dndChangeInitiated = false
                 xChatTypingSignal(myUsername,"addToOnline", status)
             }
@@ -366,13 +366,12 @@ Rectangle {
                 changeTagMeFailed = 1
                 tagMeChangeInitiated = false
             }
-            if (tagEveryoneChangeInitiated == true) {
+            else if (tagEveryoneChangeInitiated == true) {
                 userSettings.tagEveryone = oldTagEveryone
                 changeTagEveryoneFailed = 1
                 tagEveryoneChangeInitiated = false
             }
-            if (dndChangeInitiated == true) {
-                console.log("Do not disturbd setting failed to save")
+            else if (dndChangeInitiated == true) {
                 userSettings.xChatDND = oldDND
                 changeDNDFailed = 1
                 dndChangeInitiated = false
@@ -387,13 +386,12 @@ Rectangle {
                 changeTagMeFailed = 1
                 tagMeChangeInitiated = false
             }
-            if (tagEveryoneChangeInitiated == true) {
+            else if (tagEveryoneChangeInitiated == true) {
                 userSettings.tagEveryone = oldTagEveryone
                 changeTagEveryoneFailed = 1
                 tagEveryoneChangeInitiated = false
             }
-            if (dndChangeInitiated == true) {
-                console.log("Do not disturbd setting failed to save")
+            else if (dndChangeInitiated == true) {
                 userSettings.xChatDND = oldDND
                 changeDNDFailed = 1
                 dndChangeInitiated = false
