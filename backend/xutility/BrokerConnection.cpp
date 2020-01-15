@@ -12,12 +12,9 @@ BrokerConnection::BrokerConnection(QObject *parent) :
 
 void BrokerConnection::Initialize(QString user) {
     me = "";
-    srand ( time(NULL) );
-    int RandIndex = rand() % servers.size();
-    QString server = servers.takeAt(RandIndex);
-    qDebug() << "Connecting to " + server;
-    selectedServer = server;
-    m_client.setHost(server);
+    chooseServer();
+    qDebug() << "Connecting to " + selectedServer;
+    m_client.setHost(selectedServer);
     m_client.setPort(5672);
     m_client.setUsername("xchat");
     m_client.setPassword("nopwd");
@@ -30,6 +27,12 @@ void BrokerConnection::Initialize(QString user) {
 
     m_client.connectToHost();
 
+}
+
+void BrokerConnection::chooseServer(){
+    srand ( time(NULL) );
+    int RandIndex = rand() % servers.size();
+    selectedServer = servers.takeAt(RandIndex);
 }
 
 void BrokerConnection::disconnectMQ(){
@@ -45,6 +48,8 @@ void BrokerConnection::reconnect(){
         reconnectTimer.setSingleShot(true);
         reconnectTimer.start(10000);
         qDebug() << "reconnecting";
+        chooseServer();
+        m_client.setHost(selectedServer);
         m_client.connectToHost();
     }else{
         qDebug() << "already connecting";
@@ -83,15 +88,15 @@ void BrokerConnection::connectExchange(QString queueName){
 
    void BrokerConnection::exchangeDeclared() {
        QAmqpExchange *exchange = qobject_cast<QAmqpExchange*>(sender());
-       QAmqpQueue *temporaryQueue = m_client.createQueue(exchange->property("queue").toString() + "-" + me);
+       QAmqpQueue *temporaryQueue = m_client.createQueue(exchange->property("queue").toString() + "-" + me); //
+
        disconnect(temporaryQueue, 0, 0, 0); // in case this is a reconnect
 
        temporaryQueue->setProperty("queue",exchange->property("queue"));
        connect(temporaryQueue, &QAmqpQueue::declared,  this, &BrokerConnection::queueDeclared);
        connect(temporaryQueue, &QAmqpQueue::bound,  this, &BrokerConnection::queueBound);
        connect(temporaryQueue, &QAmqpQueue::messageReceived,  this, &BrokerConnection::messageReceived);
-
-       temporaryQueue->declare(QAmqpQueue::Exclusive);
+       temporaryQueue->declare(QAmqpQueue::AutoDelete);
    }
 
    void BrokerConnection::queueDeclared() {
@@ -102,15 +107,20 @@ void BrokerConnection::connectExchange(QString queueName){
    }
 
    void BrokerConnection::queueBound() {
-       QAmqpQueue *temporaryQueue = qobject_cast<QAmqpQueue*>(sender());
-       if (!temporaryQueue)
-           return;
+       try {
+           QAmqpQueue *temporaryQueue = qobject_cast<QAmqpQueue*>(sender());
+           if (!temporaryQueue)
+               return;
 
-       emit xchatInternetOk();
-       emit xchatConnectionSuccess();
+           emit xchatInternetOk();
+           emit xchatConnectionSuccess();
 
-       qDebug() << " [*] Waiting for logs on " + temporaryQueue->property("queue").toString() + " --- " + temporaryQueue->name() + ".";
-       temporaryQueue->consume(QAmqpQueue::coNoAck);
+           qDebug() << " [*] Waiting for logs on " + temporaryQueue->property("queue").toString() + " --- " + temporaryQueue->name() + ".";
+           temporaryQueue->consume(QAmqpQueue::coNoAck);
+       } catch (...) {
+           qDebug() << "Exception here queue bound";
+       }
+
    }
 
    void BrokerConnection::messageReceived() {

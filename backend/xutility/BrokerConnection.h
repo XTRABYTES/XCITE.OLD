@@ -39,11 +39,11 @@ public slots:
     void connectExchange(QString);
     void reconnect();
     void disconnectMQ();
+    void chooseServer();
 
 private:
     QTimer reconnectTimer;
     QString selectedServer;
-
 //    QStringList servers = (QStringList() << "85.214.78.233");
     QStringList servers = (QStringList() << "176.123.4.83" << "69.51.23.182" <<
                            "185.122.58.178"<<"85.214.143.20"<<"85.214.78.233"<<
