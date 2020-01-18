@@ -1,4 +1,8 @@
 #include "BrokerConnection.h"
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/mersenne_twister.hpp>
+
+
 BrokerConnection broker;
 static QQueue<QString> queues;
 
@@ -22,7 +26,6 @@ void BrokerConnection::Initialize(QString user) {
     reconnectTimer.setSingleShot(true);
     reconnectTimer.start(10000);
     //m_client.setAutoReconnect(true);
-
     connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
 
     m_client.connectToHost();
@@ -30,17 +33,20 @@ void BrokerConnection::Initialize(QString user) {
 }
 
 void BrokerConnection::chooseServer(){
-    srand ( time(NULL) );
-    int RandIndex = rand() % servers.size();
-    selectedServer = servers.takeAt(RandIndex);
+    boost::random::mt19937 gen;
+    gen.seed(time(NULL));
+    boost::random::uniform_int_distribution<> dist(0, servers.size()-1);
+    int randIndex = dist(gen);
+    selectedServer = servers.at(randIndex);
+    qDebug() << "selected: " + selectedServer;
 }
 
 void BrokerConnection::disconnectMQ(){
-    qDebug() << "disconnecting MQ";
-    emit xchatConnectionFail();
-
-    m_client.abort();
-    m_client.disconnectFromHost();
+    if(m_client.isConnected()){
+        qDebug() << "disconnecting MQ";
+        emit xchatConnectionFail();
+        m_client.disconnectFromHost();
+    }
 
 }
 void BrokerConnection::reconnect(){
