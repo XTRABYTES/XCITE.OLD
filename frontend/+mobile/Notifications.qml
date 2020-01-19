@@ -85,10 +85,14 @@ Rectangle {
                     checkNotifications();
                     updatingWalletsNotif = true
                     updateToAccount()
+                    appsTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
+                    updatingWalletsNotif = false
                 }
             }
         }
-
+        /*
         Connections {
             target: UserSettings
 
@@ -115,7 +119,7 @@ Rectangle {
                     updatingWalletsNotif = false
                 }
             }
-        }
+        }*/
     }
 
     Item {

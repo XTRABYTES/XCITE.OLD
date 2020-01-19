@@ -106,7 +106,8 @@ Rectangle {
                         if (currencyTracker === 1) {
                             currencyTracker = 0
                             sumBalance()
-                            saveCurrency =false
+                            fiatTicker = fiatCurrencies.get(userSettings.defaultCurrency).ticker
+                            saveCurrency = false
                         }
                     }
 

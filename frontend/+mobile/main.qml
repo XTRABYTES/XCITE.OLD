@@ -130,8 +130,8 @@ ApplicationWindow {
 
         findAllMarketValues()
 
-        fiatTicker = userSettings.defaultCurrency == undefined? "$" : fiatCurrencies.get(userSettings.defaultCurrency).ticker;
-        notification.source =  selectedSound == undefined? "qrc:/sounds/Szia.mp3" : soundList.get(selectedSound).sound;
+        fiatTicker = fiatCurrencies.get(userSettings.defaultCurrency).ticker;
+        notification.source = soundList.get(selectedSound).sound;
 
         selectedPage = "onBoarding"
         mainRoot.push("../Onboarding.qml")
