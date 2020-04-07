@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <string>
 
 #include <boost/algorithm/string.hpp>
 
@@ -156,6 +157,8 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
 
     } else if (command == "ping") {
         request(params);
+    } else if (command == "sping") {
+        srequest(params);
     } else if (command == "echo") {
         request(params);
     } else if (command == "sendcoin") {
@@ -184,6 +187,46 @@ void SnetKeyWordWorker::request(const QJsonArray *params) {
 
     client->request(params);
 }
+
+void SnetKeyWordWorker::srequest(const QJsonArray *params) {
+
+    const std::string correlation(xUtility.get_uuid());
+    SimplePocoHandler handler("85.214.143.20", 5672);
+    AMQP::Connection connection(&handler, AMQP::Login("guest", "guest"), "/");
+
+    AMQP::Channel channel(&connection);
+    AMQP::QueueCallback callback = [&](const std::string &name,
+            int msgcount,
+            int consumercount)
+    {
+        std::string sping_attrib = params->at(2).toString().toStdString();
+        AMQP::Envelope env(sping_attrib.c_str(),strlen(sping_attrib.c_str()));
+        env.setCorrelationID(correlation);
+        env.setReplyTo(name);
+        channel.publish("","rpc_queue",env);
+    };
+
+    channel.declareQueue(AMQP::exclusive).onSuccess(callback);
+
+    auto receiveCallback = [&](const AMQP::Message &message,
+            uint64_t deliveryTag,
+            bool redelivered)
+    {
+        if(message.correlationID() != correlation)
+            return;
+
+        std::string msg(message.body(),message.bodySize());
+        //std::cout<<" [.] Reply ID "<< msg <<std::endl;
+        xchatRobot.SubmitMsg("SPING reply ID#"+QString::fromUtf8(msg.c_str()));
+        handler.quit();
+    };
+
+    channel.consume("", AMQP::noack).onReceived(receiveCallback);
+
+    handler.loop();
+ 
+}
+
 
 void SnetKeyWordWorker::onResponse( QJsonArray params, QJsonObject res)
 {

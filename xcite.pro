@@ -15,7 +15,7 @@ VERSION_BUILD=0
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui xml quick svg charts sql mqtt
+QT	+= core gui xml quick svg charts sql
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 CONFIG += resources_big
 CONFIG += static
@@ -200,6 +200,8 @@ mac {
 linux:!android {
   LIBS += -lssl -lcrypto
   LIBS += -lboost_system
+  LIBS += -lamqpcpp
+  LIBS += -lPocoFoundation -lPocoUtil -lPocoNet  
 }
 
 android {

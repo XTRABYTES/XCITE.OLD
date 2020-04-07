@@ -44,17 +44,24 @@ void XchatObject::Initialize() {
     m_pXchatAiml = new XchatAIML;
     m_pXchatAiml->loadAIMLSet();
 
-    mqtt_client = new QMqttClient(this);
-     
-    connect(mqtt_client, &QMqttClient::stateChanged, this, &XchatObject::mqtt_StateChanged);
 
-    connect(mqtt_client, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
-        const QString content = topic.name() + QLatin1String(": ") + message + QLatin1Char('\n');
-        xchatRobot.SubmitMsg("@mqtt://" + content);
-    });
+//    mqtt_client = new QMqttClient(this);
+// FIXMEE!!!     
+//    connect(mqtt_client, &QMqttClient::stateChanged, this, &XchatObject::mqtt_StateChanged);
+
+//   !! FIXMEE
+//    connect(mqtt_client, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
+//        const QString content = topic.name() + QLatin1String(": ") + message + QLatin1Char('\n');
+//        xchatRobot.SubmitMsg("@mqtt://" + content);
+//    });
             
-    m_bIsInitialized = true;
-    mqtt_StateChanged();
+//    m_bIsInitialized = true;
+//    m_bIsInitialized = false;
+
+//    mqtt_StateChanged();
+
+
+
 }
 
 
@@ -62,9 +69,9 @@ void XchatObject::SubmitMsgCall(const QString &msg) {
 	
 	 
 	 if (!msg.isEmpty() && msg.front()=="@") {
-	 	 if (mqtt_client->publish(topic, msg.toUtf8()) == -1) {
-	 	    xchatRobot.SubmitMsg("@mqtt-ERROR: Could not publish message.");
-	 	 }
+//	 	 if (mqtt_client->publish(topic, msg.toUtf8()) == -1) {
+//	 	    xchatRobot.SubmitMsg("@mqtt-ERROR: Could not publish message.");
+//	 	 }
        return;
     }
 
@@ -142,6 +149,7 @@ QString XchatObject::HarmonizeKeyWords(QString msg)
             .replace("getblock", "$_WALLET_GETBLOCK$");
 }
 
+/*
 void XchatObject::mqtt_StateChanged() {
 
     xchatRobot.SubmitMsg("@mqtt: State Changed");
@@ -168,3 +176,4 @@ void XchatObject::mqtt_StateChanged() {
         
 
 }
+*/
