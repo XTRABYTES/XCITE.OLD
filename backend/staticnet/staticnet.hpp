@@ -100,6 +100,7 @@ signals:
 
 public Q_SLOTS:
     void request(const QJsonArray *params);
+    void srequest(const QJsonArray *params);
     void onResponse(QJsonArray params, QJsonObject );
     int errorString(QString errorstr);
 
@@ -134,8 +135,7 @@ public:
 public slots:
     void errorString(const QString error);
     void onResponseFromStaticnet(QJsonObject response) {
-        qDebug() << "staticnet response recevied";
-        qDebug() << response;
+        qDebug() << "staticnet response recevied";       
     }
 
 signals:
