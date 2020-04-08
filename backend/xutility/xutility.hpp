@@ -10,7 +10,7 @@
  *
  */
 
-#ifndef XUTILITY_HPP
+#ifndef XUTILTY_HPP
 #define XUTILITY_HPP
 
 #include <QObject>
@@ -20,6 +20,9 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+#include <amqpcpp.h>
+#include "kashmir/uuid.h"
+#include "kashmir/devrand.h"
 
 class Xutility : public QObject {
     Q_OBJECT
@@ -34,6 +37,7 @@ public:
     void help();
     void createkeypair(const QJsonArray *params);
     void privkey2address(const QJsonArray *params);
+    std::string get_uuid();
 signals:
     void keyPairCreated(const QString &address, const QString &pubKey, const QString &privKey);
     void addressExtracted(const QString &priv, const QString &pubKey, const QString &addressID);
@@ -59,6 +63,46 @@ private:
     std::vector<std::string>::iterator network;
 
 };
+
+class SimplePocoHandlerImpl;
+class SimplePocoHandler: public AMQP::ConnectionHandler
+{
+public:
+
+    static constexpr size_t BUFFER_SIZE = 8 * 1024 * 1024; //8Mb
+    static constexpr size_t TEMP_BUFFER_SIZE = 1024 * 1024; //1Mb
+
+    SimplePocoHandler(const std::string& host, uint16_t port);
+    virtual ~SimplePocoHandler();
+
+    void loop();
+    void quit();
+
+    bool connected() const;
+
+private:
+
+    SimplePocoHandler(const SimplePocoHandler&) = delete;
+    SimplePocoHandler& operator=(const SimplePocoHandler&) = delete;
+
+    void close();
+
+    virtual void onData(
+            AMQP::Connection *connection, const char *data, size_t size);
+
+    virtual void onConnected(AMQP::Connection *connection);
+
+    virtual void onError(AMQP::Connection *connection, const char *message);
+
+    virtual void onClosed(AMQP::Connection *connection);
+
+    void sendDataFromBuffer();
+
+private:
+
+    std::shared_ptr<SimplePocoHandlerImpl> m_impl;
+};
+
 
 extern Xutility xUtility;
 
