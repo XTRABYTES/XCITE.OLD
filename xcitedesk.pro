@@ -51,6 +51,10 @@ QML_DESIGNER_IMPORT_PATH =
 
 include(backend/support/QZXing/QZXing.pri)
 include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
+
+INCLUDEPATH += $$PWD/3rdparty
+INCLUDEPATH += $$PWD/3rdparty/include
+
 SOURCES += main/main.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
