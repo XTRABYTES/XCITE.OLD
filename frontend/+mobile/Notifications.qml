@@ -218,6 +218,12 @@ Rectangle {
         }
     }
 
+    Controls.SwipeBack {
+        z: 100
+        anchors.right: parent.right
+        anchors.top: parent.top
+    }
+
     Controls.DeviceButtons {
         z: 100
         visible: myOS !== "android" && myOS !== "ios"

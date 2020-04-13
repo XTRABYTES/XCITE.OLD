@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: backgroundSignUp
@@ -1173,6 +1174,12 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
+    }
+
+    Mobile.SwipeBack {
+        z: 100
+        anchors.right: parent.right
+        anchors.top: parent.top
     }
 
     Controls.DeviceButtons {
