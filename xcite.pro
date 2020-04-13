@@ -221,9 +221,18 @@ ios {
     INCLUDEPATH += $$PWD/dependencies/include/openssl/include
     INCLUDEPATH += $$PWD/dependencies/include/boost/include
     INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
+    INCLUDEPATH += $$PWD/dependencies/include/amqpcpp
+    INCLUDEPATH += $$PWD/dependencies/include/kashmir
+    INCLUDEPATH += $$PWD/dependencies/include/poco
 
     LIBS += -L$$PWD/dependencies/ios/arm64-v8a/openssl/lib -lssl -lcrypto
     LIBS += -L$$PWD/dependencies/ios/x86_64/qamqp/ -lqamqp
+    LIBS += -L$$PWD/dependencies/ios/x86_64/poco -lPocoFoundation -lPocoUtil -lPocoNet
+    LIBS += -L$$PWD/dependencies/ios/x86_64/amqpcpp -lamqpcpp
+
+
+
+
     QMAKE_ASSET_CATALOGS = $$PWD/resources/ios/Images.xcassets
     QMAKE_ASSET_CATALOGS_APP_ICON = "AppIcon"
 }
