@@ -258,6 +258,8 @@ android {
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
       LIBS += -L$$PWD/dependencies/android/armeabi-v7a/qamqp/32bit/ -lqamqp
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/poco/32bit/ -lPocoFoundation -lPocoUtil -lPocoNet
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/amqpcpp/32bit/ -lamqpcpp
 
 
     }
@@ -272,6 +274,8 @@ android {
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
       LIBS += -L$$PWD/dependencies/android/armeabi-v7a/qamqp/64bit/ -lqamqp
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/poco/64bit/ -lPocoFoundation -lPocoUtil -lPocoNet
+      LIBS += -L$$PWD/dependencies/android/armeabi-v7a/amqpcpp/64bit/ -lamqpcpp
 
     }
 
@@ -280,8 +284,7 @@ android {
     INCLUDEPATH += $$PWD/dependencies/include/kashmir
     INCLUDEPATH += $$PWD/dependencies/include/poco
 
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/poco/ -lPocoFoundation -lPocoUtil -lPocoNet
-    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/amqpcpp -lamqpcpp
+
 
 
 }
@@ -328,8 +331,16 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
     ANDROID_EXTRA_LIBS = \
         $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32/libcrypto_1_1.so \
         $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib32/libssl_1_1.so \
-        $$PWD/dependencies/android/armeabi-v7a/qamqp/32bit/libqamqp.so
+        $$PWD/dependencies/android/armeabi-v7a/qamqp/32bit/libqamqp.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/32bit/libPocoFoundation.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/32bit/libPocoNet.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/32bit/libPocoUtil.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/32bit/libPocoXML.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/32bit/libPocoJSON.so \
+        $$PWD/dependencies/android/armeabi-v7a/amqpcpp/32bit/libamqpcpp.so
+
 }
+
 
 contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 
@@ -339,5 +350,12 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
     ANDROID_EXTRA_LIBS = \
         $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64/libcrypto_1_1.so \
         $$PWD/dependencies/android/armeabi-v7a/openssl/lib/lib64/libssl_1_1.so \
-        $$PWD/dependencies/android/armeabi-v7a/qamqp/64bit/libqamqp.so
+        $$PWD/dependencies/android/armeabi-v7a/qamqp/64bit/libqamqp.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/64bit/libPocoFoundation.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/64bit/libPocoNet.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/64bit/libPocoUtil.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/64bit/libPocoXML.so \
+        $$PWD/dependencies/android/armeabi-v7a/poco/64bit/libPocoJSON.so \
+        $$PWD/dependencies/android/armeabi-v7a/amqpcpp/64bit/libamqpcpp.so
+
 }
