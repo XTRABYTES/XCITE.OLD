@@ -30,6 +30,18 @@ void staticnet_integration::sendCoinsEntry(QString msg) {
     }
 }
 
+void staticnet_integration::pingRequestEntry(QString msg) {
+
+    qDebug() << "ping requested";
+    int _traceID;
+    QString sendPing = "!!staticnet sping " + msg;
+    if (staticNet.CheckUserInputForKeyWord(sendPing, &_traceID)) {
+        qDebug() << "staticnet command accepted";
+    } else {
+        qDebug() << "staticnet command not accepted";
+    }
+}
+
 void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
     qDebug() << "staticnet response recevied:";
 

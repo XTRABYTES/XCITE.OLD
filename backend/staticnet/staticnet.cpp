@@ -158,6 +158,7 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
     } else if (command == "ping") {
         request(params);
     } else if (command == "sping") {
+        qDebug() << "send ping request recognized";
         srequest(params);
     } else if (command == "echo") {
         request(params);

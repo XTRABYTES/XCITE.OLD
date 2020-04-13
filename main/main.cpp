@@ -182,6 +182,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(sendCoins(QString)), &static_int, SLOT(sendCoinsEntry(QString)));
     QObject::connect(&staticNet, SIGNAL(ResponseFromStaticnet(QJsonObject)), &static_int, SLOT(onResponseFromStaticnetEntry(QJsonObject)),Qt::QueuedConnection);      
     QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtility, SLOT(networkEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(pingRequest(QString)), &static_int, SLOT(pingRequestEntry(QString)));
 
     // connect signals for X-CHAT
     QObject::connect(rootObject, SIGNAL(xChatSend(QString,QString,QString,QString, QString, QString, QString)), &xchatRobot, SLOT(xchatInc(QString,QString,QString,QString, QString, QString, QString)));

@@ -142,6 +142,12 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Mobile.XPing {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
     Mobile.SwipeBack {
         z: 100
         anchors.right: parent.right

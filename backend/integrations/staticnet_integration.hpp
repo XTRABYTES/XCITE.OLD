@@ -31,9 +31,11 @@ signals:
     void badRawTX(QString traceID);
     void validParams(QString traceID);
     void badParams();
+    void pingReplyReceived(QString pingReply, QString traceID);
 
 public slots:
     void sendCoinsEntry(QString msg);
+    void pingRequestEntry(QString msg);
     void onResponseFromStaticnetEntry(QJsonObject response);
 };
 

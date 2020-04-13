@@ -342,5 +342,7 @@
         <file>icons/mobile/miniature-icon_01.svg</file>
         <file>icons/mobile/miniature-icon_02.svg</file>
         <file>sounds/swipe.wav</file>
+        <file>icons/mobile/ping-icon_01_black.svg</file>
+        <file>icons/mobile/ping-icon_01_white.svg</file>
     </qresource>
 </RCC>

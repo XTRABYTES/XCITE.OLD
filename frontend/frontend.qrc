@@ -194,5 +194,6 @@
         <file>Controls/+mobile/DeviceButtons.qml</file>
         <file>Controls/+mobile/DragBar.qml</file>
         <file>Controls/+mobile/SwipeBack.qml</file>
+        <file>Controls/+mobile/XPing.qml</file>
     </qresource>
 </RCC>
