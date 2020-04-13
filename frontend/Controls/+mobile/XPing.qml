@@ -202,10 +202,10 @@ Rectangle {
                 totalPings = Number.fromLocaleString(Qt.locale("en_US"),pingAmount.text)
                 if (totalPings < 50) {
                     replyText.text = replyText.text + "<br>" + "ping ID: " + requestText.text + ", amount: " + pingAmount.text
-                    for (var a = 0; i < totalPings; i ++) {
+                    for (var a = 0; a < totalPings; a ++) {
                         var b = pingSNR + a
                         var pingIdentifier = requestText.text + "_" + b
-                        requestPing(pingIdentifier)
+                        pingRequest(pingIdentifier)
                     }
                     pingSNR = pingSNR + totalPings
                     requestText.text = ""
