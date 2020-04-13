@@ -276,6 +276,12 @@ android {
     }
 
     INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
+    INCLUDEPATH += $$PWD/dependencies/include/amqpcpp
+    INCLUDEPATH += $$PWD/dependencies/include/kashmir
+    INCLUDEPATH += $$PWD/dependencies/include/poco
+
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/poco/ -lPocoFoundation -lPocoUtil -lPocoNet
+    LIBS += -L$$PWD/dependencies/android/armeabi-v7a/amqpcpp -lamqpcpp
 
 
 }
