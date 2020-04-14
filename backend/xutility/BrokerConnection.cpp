@@ -33,12 +33,12 @@ void BrokerConnection::Initialize(QString user) {
 }
 
 void BrokerConnection::chooseServer(){
-    boost::random::mt19937 gen;
-    gen.seed(time(NULL));
-    boost::random::uniform_int_distribution<> dist(0, servers.size()-1);
-    int randIndex = dist(gen);
-    selectedServer = servers.at(randIndex);
-    qDebug() << "selected: " + selectedServer;
+//    boost::random::mt19937 gen;
+//    gen.seed(time(NULL));
+//    boost::random::uniform_int_distribution<> dist(0, servers.size()-1);
+//    int randIndex = dist(gen);
+//    selectedServer = servers.at(randIndex);
+//    qDebug() << "selected: " + selectedServer;
 }
 
 void BrokerConnection::disconnectMQ(){
