@@ -16,29 +16,29 @@ BrokerConnection::BrokerConnection(QObject *parent) :
 
 void BrokerConnection::Initialize(QString user) {
     me = "";
-    chooseServer();
-    qDebug() << "Connecting to " + selectedServer;
-    m_client.setHost(selectedServer);
-    m_client.setPort(5672);
-    m_client.setUsername("xchat");
-    m_client.setPassword("nopwd");
-    m_client.setVirtualHost("xtrabytes");
-    reconnectTimer.setSingleShot(true);
-    reconnectTimer.start(10000);
-    //m_client.setAutoReconnect(true);
-    connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
+//    chooseServer();
+//    qDebug() << "Connecting to " + selectedServer;
+//    m_client.setHost(selectedServer);
+//    m_client.setPort(5672);
+//    m_client.setUsername("xchat");
+//    m_client.setPassword("nopwd");
+//    m_client.setVirtualHost("xtrabytes");
+//    reconnectTimer.setSingleShot(true);
+//    reconnectTimer.start(10000);
+//    //m_client.setAutoReconnect(true);
+//    connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
 
-    m_client.connectToHost();
+//    m_client.connectToHost();
 
 }
 
 void BrokerConnection::chooseServer(){
-    boost::random::mt19937 gen;
-    gen.seed(time(NULL));
-    boost::random::uniform_int_distribution<> dist(0, servers.size()-1);
-    int randIndex = dist(gen);
-    selectedServer = servers.at(randIndex);
-    qDebug() << "selected: " + selectedServer;
+//    boost::random::mt19937 gen;
+//    gen.seed(time(NULL));
+//    boost::random::uniform_int_distribution<> dist(0, servers.size()-1);
+//    int randIndex = dist(gen);
+//    selectedServer = servers.at(randIndex);
+//    qDebug() << "selected: " + selectedServer;
 }
 
 void BrokerConnection::disconnectMQ(){
