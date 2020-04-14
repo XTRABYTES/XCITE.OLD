@@ -30,10 +30,15 @@ Rectangle {
 
     property int myTracker: pingTracker
     property int totalPings: 0
+    property variant replyArray
+    property string pingReply
 
     onMyTrackerChanged: {
         if (myTracker == 0) {
             timer.start()
+        }
+        else {
+            msgList.positionViewAtEnd()
         }
     }
 
@@ -85,68 +90,102 @@ Rectangle {
 
     Rectangle {
         id: replyWindow
-        width: parent.width - 56
+        width: parent.width - 58
         anchors.top: pingModalLabel.bottom
         anchors.topMargin: 30
         anchors.bottom: requestText.top
         anchors.bottomMargin: 15
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
-        border.color: themecolor
-        border.width: 1
+        clip: true
 
-        Flickable {
-            id: scrollArea
-            height: parent.height
-            width: parent.width
-            contentHeight: replyText.height
-            anchors.left: parent.left
-            anchors.bottom: parent.bottom
-            boundsBehavior: Flickable.DragOverBounds
-            clip: true
+        Component {
+            id: msgLine
 
-            ScrollBar.vertical: ScrollBar {
-                parent: scrollArea.parent
-                anchors.top: scrollArea.top
-                anchors.left: scrollArea.right
-                anchors.bottom: scrollArea.bottom
-                policy: ScrollBar.AsNeeded
-                width: 5
-            }
-
-            Text {
-                id: replyText
-                y: scrollArea.y + scrollArea.height - replyText.implicitHeight
+            Rectangle {
+                id: msgRow
                 width: parent.width
-                text: ""
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignBottom
-                padding: 7
-                wrapMode: Text.Wrap
-                //anchors.bottom: parent.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-                color: darktheme == true? maincolor : "#14161B"
-                font.pixelSize: 14
-                font.family: xciteMobile.name
+                height: author == "xChatRobot"? 25 : messageText.height
+                color: "transparent"
+                visible: message != ""
 
-                onTextChanged: {
-                    y = scrollArea.y + scrollArea.height - replyText.implicitHeight
+                Rectangle {
+                    id: msgBox
+                    width: (messageText.implicitWidth + 10) < (0.85 * parent.width)? (messageText.implicitWidth + 10) : (0.85 * parent.width)
+                    height: parent.height
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: inout == "in"? undefined : parent.left
+                    anchors.leftMargin: inout == "in"? 0 : 2
+                    anchors.right: inout == "in"? parent.right : undefined
+                    anchors.rightMargin: inout == "in"? 2 : 0
+                    color: inout == "in"? "transparent" : maincolor
+                    border.width: inout == "in"? 1 : 0
+                    border.color: inout == "in"? maincolor : "transparent"
+                }
+
+                Text {
+                    id: messageText
+                    text: inout == "in"? (author == "staticNet"? "STATIC-net: " + message : message) : ">>>>" + message
+                    anchors.left: msgBox.left
+                    anchors.leftMargin: 5
+                    anchors.right: msgBox.right
+                    anchors.rightMargin: 5
+                    anchors.top: parent.top
+                    horizontalAlignment: Text.AlignLeft
+                    font.family: xciteMobile.name
+                    wrapMode: Text.Wrap
+                    font.pixelSize: 14
+                    textFormat: Text.StyledText
+                    color: inout == "in"? (darktheme == false? "#14161B" : maincolor) : "#14161B"
+                }
+
+                Image {
+                    id: xChatRobotIcon
+                    source: 'qrc:/icons/mobile/robot_bee_01.svg'
+                    width: 25
+                    height: 25
+                    fillMode: Image.PreserveAspectFit
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: msgBox.left
+                    anchors.rightMargin: 5
+                    visible: author == "xChatRobot"
                 }
             }
         }
+
+        ListView {
+            anchors.fill: parent
+            id: msgList
+            model: xPingTread
+            delegate: msgLine
+            spacing: 5
+            onDraggingChanged: {
+                detectInteraction()
+            }
+        }
+    }
+    Rectangle {
+        id: replyWindowBorder
+        height: replyWindow.height + 2
+        width: replyWindow.width + 2
+        anchors.horizontalCenter: replyWindow.horizontalCenter
+        anchors.verticalCenter: replyWindow.verticalCenter
+        color: "transparent"
+        border.color: themecolor
+        border.width: 1
     }
 
     Controls.TextInput {
         id: requestText
         height: 34
-        placeholder: "PING IDENTIFIER"
+        placeholder: "PING ID"
         text: ""
         anchors.left: parent.left
         anchors.leftMargin: 28
         anchors.right: parent.right
-        anchors.rightMargin: 147
-        anchors.bottom: closePingModal.top
-        anchors.bottomMargin: 25
+        anchors.rightMargin: 182
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         color: themecolor
         textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
         font.pixelSize: 14
@@ -156,14 +195,14 @@ Rectangle {
     Controls.TextInput {
         id: pingAmount
         height: 34
-        width: 75
-        placeholder: "AMOUNT"
+        width: 100
+        placeholder: "Amount"
         text: ""
         inputMethodHints: Qt.ImhDigitsOnly
         anchors.right: parent.right
-        anchors.rightMargin: 62
-        anchors.bottom: closePingModal.top
-        anchors.bottomMargin: 25
+        anchors.rightMargin: 72
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         color: themecolor
         textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
         font.pixelSize: 14
@@ -176,10 +215,10 @@ Rectangle {
         height: 34
         anchors.right: parent.right
         anchors.rightMargin: 28
-        anchors.bottom: closePingModal.top
-        anchors.bottomMargin: 25
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         color: maincolor
-        opacity: 0.25
+        opacity: 0.5
 
         MouseArea {
             anchors.fill: parent
@@ -187,11 +226,11 @@ Rectangle {
             onPressed: {
                 click01.play()
                 detectInteraction()
-                parent.opacity = 0.5
+                parent.opacity = 1
             }
 
             onCanceled: {
-                parent.opacity = 0.5
+                parent.opacity = 1
             }
 
             onReleased: {
@@ -199,29 +238,62 @@ Rectangle {
             }
 
             onClicked: {
-                totalPings = Number.fromLocaleString(Qt.locale("en_US"),pingAmount.text)
-                if (totalPings < 50) {
-                    replyText.text = replyText.text + "<br>" + "ping ID: " + requestText.text + ", amount: " + pingAmount.text
-                    for (var a = 0; a < totalPings; a ++) {
-                        var b = pingSNR + a
-                        var pingIdentifier = requestText.text + "_" + b
-                        pingRequest(pingIdentifier)
+
+                if (requestText.text != "") {
+                    var pingIdentifier
+                    if (pingAmount.text != "") {
+                        totalPings = Number.fromLocaleString(Qt.locale("en_US"),pingAmount.text)
+                        if (totalPings <= 50) {
+                            xPingTread.append({"message": "ping ID: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername})
+                            msgList.positionViewAtEnd()
+                            for (var a = 0; a < totalPings; a ++) {
+                                var b = pingSNR + a
+                                pingIdentifier = myUsername + "_" + requestText.text + "_" + b
+                                pingRequest(pingIdentifier)
+                            }
+                            pingSNR = pingSNR + totalPings
+                            requestText.text = ""
+                            pingAmount.text = ""
+                        }
+                        else {
+                            xPingTread.append({"message": "Amount too high, max. 50!!", "inout": "in", "author": "xChatRobot"})
+                            msgList.positionViewAtEnd()
+                            pingAmount.text = ""
+                        }
                     }
-                    pingSNR = pingSNR + totalPings
-                    requestText.text = ""
-                    pingAmount.text = ""
+                    else {
+                        totalPings = 1
+                        xPingTread.append({"message": "ping ID: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername})
+                        msgList.positionViewAtEnd()
+                        var c = pingSNR + totalPings
+                        pingIdentifier = myUsername + "_" + requestText.text + "_" + c
+                        pingRequest(pingIdentifier)
+                        pingSNR = pingSNR + totalPings
+                        requestText.text = ""
+                        pingAmount.text = ""
+                    }
                 }
                 else {
-                    replyText.text = replyText.text + "<br>" + "Amount too high, max. 50"
-                    pingAmount.text = ""
+                    xPingTread.append({"message": "No ping identifier selected!!", "inout": "in", "author": "xChatRobot"})
+                    msgList.positionViewAtEnd()
                 }
             }
         }
 
         Connections {
-            target: static_int
-            // code to detect incoming replies for the pings
-            // execute: replyText.text = replyText.text + "<br>" + pingReply
+            target: xChat
+
+            onXchatResponseSignal: {
+                if (pingTracker == 1) {
+                    console.log(text)
+                    pingReply = text
+                    replyArray = pingReply.split(' ')
+                    if (replyArray[0] === "SPING") {
+                        xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet"})
+                        msgList.positionViewAtEnd()
+                    }
+                }
+            }
         }
     }
 
@@ -238,60 +310,24 @@ Rectangle {
         width: 34
         height: 34
         anchors.right: executeButton.right
-        anchors.top: executeButton.top
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         color: "transparent"
         border.color: maincolor
         border.width: 1
         opacity: 0.50
     }
 
-    Label {
-        id: closePingModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+    Timer {
+        id: timer
+        interval: 300
+        repeat: false
+        running: false
 
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    replyText.text = ""
-                    requestText.text = ""
-                    closeAllClipboard = true
-                }
-            }
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onReleased: {
-                if (pingTracker == 1) {
-                    pingTracker = 0;
-                }
-            }
+        onTriggered: {
+            replyText.text = ""
+            requestText.text = ""
+            closeAllClipboard = true
         }
     }
 

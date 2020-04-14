@@ -111,8 +111,6 @@ signals:
     void xChatServerDown(QString server, QString serverStatus);
     void clearOnlineNodeList();
 
-
-
 public slots:
     void SubmitMsg(const QString &msg);
     bool CheckUserInputForKeyWord(const QString msg);
@@ -125,14 +123,9 @@ public slots:
     void forcedReconnect();
     void xchatPopup(QString author, QString msg);
     void xchatEntry(QByteArray obj);
-
     void DownloadManagerRouter(QByteArray, QMap<QString,QVariant>);
     void internetTimeout(QMap<QString,QVariant>);
     void getOnlineNodesSlot(QByteArray, QMap<QString,QVariant>);
-
-
-
-
 
 private slots:
     void mqtt_StateChanged();
@@ -166,12 +159,9 @@ private:
     void sendToFront(QJsonObject);
     void getOnlineNodes();
     void sendOnlineUsers();
-
     void  DownloadManagerHandler(URLObject *url);
 
 };
-
-
 
 extern XchatObject xchatRobot;
 

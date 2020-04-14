@@ -165,7 +165,7 @@ Rectangle {
         anchors.bottom: closeDebugModal.top
         anchors.bottomMargin: 25
         color: maincolor
-        opacity: 0.25
+        opacity: 0.5
 
         MouseArea {
             anchors.fill: parent
@@ -173,11 +173,11 @@ Rectangle {
             onPressed: {
                 click01.play()
                 detectInteraction()
-                parent.opacity = 0.5
+                parent.opacity = 1
             }
 
             onCanceled: {
-                parent.opacity = 0.5
+                parent.opacity = 1
             }
 
             onReleased: {

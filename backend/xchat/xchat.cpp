@@ -324,6 +324,7 @@ void XchatObject::sendToFront(QJsonObject obj){
 
 void XchatObject::SubmitMsg(const QString &msg) {
     emit xchatResponseSignal(msg);
+    qDebug() << msg;
 }
 
 void XchatObject::pingReceived() {

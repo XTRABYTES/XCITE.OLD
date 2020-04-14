@@ -730,10 +730,14 @@ ApplicationWindow {
                 // nothing yet
             }
             else if (selectedPage == "apps") {
-                if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 & xgamesTracker == 0) {
+                if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 && xgamesTracker == 0 && pingTracker == 0) {
                     selectedPage = "home"
                     mainRoot.pop()
                 }
+                else if (pingTracker == 1 && networkError == 0) {
+                    pingTracker = 0
+                }
+
                 else if (xgamesTracker == 1 && networkError == 0) {
                     if (inviteTracker == 1) {
                         inviteTracker = 0
@@ -2993,6 +2997,15 @@ ApplicationWindow {
             win: 0
             lost: 0
             draw: 0
+        }
+    }
+
+    ListModel {
+        id: xPingTread
+        ListElement {
+            message:""
+            inout: ""
+            author: ""
         }
     }
 
