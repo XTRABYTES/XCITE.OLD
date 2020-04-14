@@ -728,6 +728,7 @@ ApplicationWindow {
             }
             else if (selectedPage == "apps") {
                 if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 && xgamesTracker == 0 && pingTracker == 0) {
+                    appsTracker = 0
                     selectedPage = "home"
                     mainRoot.pop()
                 }
@@ -3003,6 +3004,7 @@ ApplicationWindow {
             message:""
             inout: ""
             author: ""
+            time: ""
         }
     }
 

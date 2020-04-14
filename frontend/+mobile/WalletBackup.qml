@@ -135,7 +135,8 @@ Rectangle {
     Rectangle {
         id: walletScrollArea
         width: parent.width
-        anchors.bottom: closeBackupModal.top
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.top: selectLabel.bottom
         anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
@@ -165,7 +166,7 @@ Rectangle {
             }
         }
     }
-
+    /**
     Label {
         id: closeBackupModal
         z: 10
@@ -203,7 +204,7 @@ Rectangle {
             }
         }
     }
-
+    */
     Item {
         z: 10
         id: exportPopup

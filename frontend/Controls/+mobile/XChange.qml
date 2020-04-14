@@ -366,7 +366,7 @@ Rectangle {
         anchors.verticalCenterOffset: -50
         anchors.horizontalCenter: parent.horizontalCenter
     }
-
+    /**
     Label {
         id: closeXchangeModal
         z: 10
@@ -403,7 +403,7 @@ Rectangle {
             }
         }
     }
-    /**
+
         Rectangle {
             color: "black"
             opacity: .75

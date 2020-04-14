@@ -865,8 +865,8 @@ Rectangle {
         height: 34
         color: maincolor
         opacity: 0.25
-        anchors.bottom: closeSettings.top
-        anchors.bottomMargin: 35
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         visible: clearAllInitiated == false
 
@@ -1225,7 +1225,7 @@ Rectangle {
             }
         }
     }
-
+    /**
     Label {
         id: closeSettings
         z: 4
@@ -1263,7 +1263,7 @@ Rectangle {
             }
         }
     }
-
+    */
     Controls.Pincode {
         id: myPincode
         z: 5
@@ -1314,5 +1314,11 @@ Rectangle {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
+    }
+
+    Component.onDestruction: {
+        currencyTracker = 0
+        soundTracker = 0
+        appsTracker = 0
     }
 }

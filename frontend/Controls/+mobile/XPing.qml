@@ -32,6 +32,8 @@ Rectangle {
     property int totalPings: 0
     property variant replyArray
     property string pingReply
+    property string sendTime
+    property string replyTime
 
     onMyTrackerChanged: {
         if (myTracker == 0) {
@@ -139,6 +141,23 @@ Rectangle {
                     color: inout == "in"? (darktheme == false? "#14161B" : maincolor) : "#14161B"
                 }
 
+                Text {
+                    id: messageTime
+                    text: time
+                    anchors.left: inout == "in"? parent.left : msgBox.right
+                    anchors.leftMargin: 5
+                    anchors.right: inout == "in"? msgBox.left : parent.right
+                    anchors.rightMargin: 5
+                    anchors.verticalCenter: msgBox.verticalCenter
+                    horizontalAlignment: Text.AlignRight
+                    font.family: xciteMobile.name
+                    wrapMode: Text.Wrap
+                    font.pixelSize: 8
+                    textFormat: Text.StyledText
+                    color: darktheme == false? "#14161B" : maincolor
+                    visible: author != "xChatRobot"
+                }
+
                 Image {
                     id: xChatRobotIcon
                     source: 'qrc:/icons/mobile/robot_bee_01.svg'
@@ -238,13 +257,14 @@ Rectangle {
             }
 
             onClicked: {
-
+                sendTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                console.log("sendTime: " + sendTime)
                 if (requestText.text != "") {
                     var pingIdentifier
                     if (pingAmount.text != "") {
                         totalPings = Number.fromLocaleString(Qt.locale("en_US"),pingAmount.text)
                         if (totalPings <= 50) {
-                            xPingTread.append({"message": "ping ID: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername})
+                            xPingTread.append({"message": "ping ID: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
                             msgList.positionViewAtEnd()
                             for (var a = 0; a < totalPings; a ++) {
                                 var b = pingSNR + a
@@ -256,14 +276,14 @@ Rectangle {
                             pingAmount.text = ""
                         }
                         else {
-                            xPingTread.append({"message": "Amount too high, max. 50!!", "inout": "in", "author": "xChatRobot"})
+                            xPingTread.append({"message": "Amount too high, max. 50!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
                             msgList.positionViewAtEnd()
                             pingAmount.text = ""
                         }
                     }
                     else {
                         totalPings = 1
-                        xPingTread.append({"message": "ping ID: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername})
+                        xPingTread.append({"message": "ping ID: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
                         msgList.positionViewAtEnd()
                         var c = pingSNR + totalPings
                         pingIdentifier = myUsername + "_" + requestText.text + "_" + c
@@ -274,7 +294,7 @@ Rectangle {
                     }
                 }
                 else {
-                    xPingTread.append({"message": "No ping identifier selected!!", "inout": "in", "author": "xChatRobot"})
+                    xPingTread.append({"message": "No ping identifier selected!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
                     msgList.positionViewAtEnd()
                 }
             }
@@ -285,11 +305,12 @@ Rectangle {
 
             onXchatResponseSignal: {
                 if (pingTracker == 1) {
-                    console.log(text)
+                    replyTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                    console.log("replyTime: " + replyTime)
                     pingReply = text
                     replyArray = pingReply.split(' ')
                     if (replyArray[0] === "SPING") {
-                        xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet"})
+                        xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
                         msgList.positionViewAtEnd()
                     }
                 }
@@ -333,7 +354,7 @@ Rectangle {
 
     Component.onDestruction: {
         replyText.text = ""
-        replyText.text = ""
+        pingAmount.text = ""
         pingTracker = 0
     }
 }

@@ -382,7 +382,7 @@ Rectangle {
     }
 
     Component.onDestruction: {
-        replyText.text = ""
+        requestText.text = ""
         replyText.text = ""
         debugTracker = 0
         debugError = 0
