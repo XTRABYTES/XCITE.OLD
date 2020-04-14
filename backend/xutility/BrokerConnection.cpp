@@ -16,19 +16,19 @@ BrokerConnection::BrokerConnection(QObject *parent) :
 
 void BrokerConnection::Initialize(QString user) {
     me = "";
-    chooseServer();
-    qDebug() << "Connecting to " + selectedServer;
-    m_client.setHost(selectedServer);
-    m_client.setPort(5672);
-    m_client.setUsername("xchat");
-    m_client.setPassword("nopwd");
-    m_client.setVirtualHost("xtrabytes");
-    reconnectTimer.setSingleShot(true);
-    reconnectTimer.start(10000);
-    //m_client.setAutoReconnect(true);
-    connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
+//    chooseServer();
+//    qDebug() << "Connecting to " + selectedServer;
+//    m_client.setHost(selectedServer);
+//    m_client.setPort(5672);
+//    m_client.setUsername("xchat");
+//    m_client.setPassword("nopwd");
+//    m_client.setVirtualHost("xtrabytes");
+//    reconnectTimer.setSingleShot(true);
+//    reconnectTimer.start(10000);
+//    //m_client.setAutoReconnect(true);
+//    connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
 
-    m_client.connectToHost();
+//    m_client.connectToHost();
 
 }
 
