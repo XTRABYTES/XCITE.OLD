@@ -131,9 +131,6 @@ ApplicationWindow {
 
         findAllMarketValues()
 
-        fiatTicker = fiatCurrencies.get(userSettings.defaultCurrency).ticker;
-        notification.source = soundList.get(selectedSound).sound;
-
         selectedPage = "onBoarding"
         mainRoot.push("../Onboarding.qml")
     }
@@ -215,7 +212,7 @@ ApplicationWindow {
 
     // Global setting, editable
     property bool darktheme: userSettings.theme !== "dark"? false : true
-    property string fiatTicker: "$"
+    property string fiatTicker: userSettings.defaultCurrency == 0? "$" : userSettings.defaultCurrency == 1? "€" : userSettings.defaultCurrency == 2? "£" : "₿"
     property string myUsername: ""
     property string selectedPage: ""
     property string status: "online"
@@ -2007,8 +2004,8 @@ ApplicationWindow {
             userSettings.xby = settingsLoaded.xby === "true";
             userSettings.xfuel = settingsLoaded.xfuel === "true";
             userSettings.xtest = settingsLoaded.xtest === "true";
-            userSettings.xby = settingsLoaded.btc === "true";
-            userSettings.xfuel = settingsLoaded.eth === "true";
+            userSettings.btc = settingsLoaded.btc === "true";
+            userSettings.eth = settingsLoaded.eth === "true";
             userSettings.sound = settingsLoaded.sound;
             userSettings.volume = settingsLoaded.volume;
             userSettings.systemVolume = settingsLoaded.systemVolume;
@@ -3068,7 +3065,7 @@ ApplicationWindow {
 
     SoundEffect {
         id: notification
-        source: ''
+        source: userSettings.sound == 0? 'qrc:/sounds/Bonjour.wav' : (userSettings.sound == 1? 'qrc:/sounds/Hello.wav': (userSettings.sound == 2? 'qrc:/sounds/hola.wav' :(userSettings.sound == 3? 'qrc:/sounds/Servus.wav' : 'qrc:/sounds/Szia.wav')))
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
     }
 
