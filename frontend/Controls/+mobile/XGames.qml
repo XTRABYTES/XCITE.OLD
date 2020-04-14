@@ -76,6 +76,17 @@ Rectangle {
         font.letterSpacing: 2
     }
 
+    Image {
+        id: underConstruction
+        source: darktheme === true? 'qrc:/icons/mobile/construction-icon_01_white.svg' : 'qrc:/icons/mobile/construction-icon_01_black.svg'
+        width: 100
+        height: 100
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -50
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+    /**
     Rectangle {
         id: tttButton
         width: parent.width - 66
@@ -168,9 +179,9 @@ Rectangle {
             anchors.leftMargin: 30
         }
     }
-
+    */
     Label {
-        id: closeXchangeModal
+        id: closeXgamesModal
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom

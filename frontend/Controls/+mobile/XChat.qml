@@ -157,6 +157,17 @@ Rectangle {
     }
 
     Image {
+        id: underConstruction
+        source: darktheme === true? 'qrc:/icons/mobile/construction-icon_01_white.svg' : 'qrc:/icons/mobile/construction-icon_01_black.svg'
+        width: 100
+        height: 100
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -50
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+    /**
+    Image {
         id: onlineIndicator
         source: networkAvailable == 1? (xChatConnection == true? "qrc:/icons/mobile/online_blue_icon.svg" : "qrc:/icons/mobile/online_red_icon.svg") : "qrc:/icons/mobile/no_internet_icon.svg"
         anchors.verticalCenter: xchatModalLabel.verticalCenter
@@ -885,7 +896,43 @@ Rectangle {
             myXchat.xChatList.positionViewAtEnd()
         }
     }
+    */
+    Label {
+        id: closeXchatModal
+        z: 10
+        text: "BACK"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.pixelSize: 14
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
 
+        Rectangle{
+            id: closeButton
+            height: 34
+            width: doubbleButtonWidth
+            radius: 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+        }
+
+        MouseArea {
+            anchors.fill: closeButton
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onReleased: {
+                if (xchatTracker == 1) {
+                    xchatTracker = 0;
+                }
+            }
+        }
+    }
     Component.onDestruction: {
         sendText.text = ""
         xchatTracker = 0
