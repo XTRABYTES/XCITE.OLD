@@ -193,7 +193,17 @@ void SnetKeyWordWorker::request(const QJsonArray *params) {
 
 void SnetKeyWordWorker::srequest(const QJsonArray *params) {
 
-    QString xparams = params ->at(2).toString();
+    int paramSize = params ->count();
+    QString xparams;
+    for (int i = 2; i < paramSize - 1; i ++) {
+        if (i == 2) {
+            xparams = params ->at(i).toString();
+        }
+        else {
+            xparams = xparams + " " + params -> at(i).toString();
+        }
+    }
+    qDebug() << "trimmed params: " << xparams;
     QJsonDocument requestDoc = QJsonDocument::fromJson(xparams.toUtf8());
     QJsonObject requestObject = requestDoc.object();
     QString xdapp = requestObject.value("xdapp").toString().toLatin1();
