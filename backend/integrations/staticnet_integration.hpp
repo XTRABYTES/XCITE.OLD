@@ -35,7 +35,7 @@ signals:
 
 public slots:
     void sendCoinsEntry(QString msg);
-    void pingRequestEntry(QString msg);
+    void dicomRequestEntry(QString msg);
     void onResponseFromStaticnetEntry(QJsonObject response);
 };
 

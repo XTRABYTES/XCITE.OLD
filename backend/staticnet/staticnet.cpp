@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include <boost/algorithm/string.hpp>
 
@@ -45,7 +46,8 @@ void StaticNet::Initialize() {
 bool StaticNet::CheckUserInputForKeyWord(const QString msg, int *traceID) {
 
       *traceID = staticNet.GetNewTraceID();
-      qDebug() << "staticnet accessed!" << " traceID=" << *traceID;
+
+      qDebug() << "staticnet accessed! traceID= " << *traceID;
       
       if (!(msg.split(" ").at(0) == "!!staticnet")) {
          return false;
@@ -136,7 +138,7 @@ void SnetKeyWordWorker::process() {
     
     CmdParser(&params);
 
-    qDebug() << "Processing done";
+    qDebug() << "Processing done" << &params;
     	 	 	      
 }
 
@@ -157,8 +159,8 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
 
     } else if (command == "ping") {
         request(params);
-    } else if (command == "sping") {
-        qDebug() << "send ping request recognized";
+    } else if (command == "dicom") {
+        qDebug() << "dicom request recognized";
         srequest(params);
     } else if (command == "echo") {
         request(params);
@@ -182,14 +184,39 @@ void SnetKeyWordWorker::help() {
 
 void SnetKeyWordWorker::request(const QJsonArray *params) {
 		 
-   // xchatRobot.SubmitMsg("Command forwarded to STaTiC network. Wait for reply. ID: #"+params->last().toString());
-	 client = new StaticNetHttpClient(staticNet.GetConnectStr());
+   //xchatRobot.SubmitMsg("Command forwarded to STaTiC network. Wait for reply. ID: #"+params->last().toString());
+    client = new StaticNetHttpClient(staticNet.GetConnectStr());
     connect(client, SIGNAL (response( QJsonArray, QJsonObject)), this, SLOT (onResponse( QJsonArray, QJsonObject)));
 
     client->request(params);
 }
 
 void SnetKeyWordWorker::srequest(const QJsonArray *params) {
+
+    QString xparams = params ->at(2).toString();
+    QJsonDocument requestDoc = QJsonDocument::fromJson(xparams.toUtf8());
+    QJsonObject requestObject = requestDoc.object();
+    QString xdapp = requestObject.value("xdapp").toString().toLatin1();
+    QString xmethod = requestObject.value("method").toString().toLatin1();
+    QString xpayload = requestObject.value("payload").toString().toLatin1();
+    qDebug() << "payload: " << xpayload;
+    QString xid = requestObject.value("id").toString().toLatin1();
+    if (xid == "") {
+        xid = params->last().toString();
+    }
+
+    QJsonDocument doc;
+    QJsonObject obj;
+    obj.insert("dicom", QJsonValue::fromVariant("1.0"));
+    obj.insert("type", QJsonValue::fromVariant("request"));
+    obj.insert("id", QJsonValue::fromVariant(xid));
+    obj.insert("xdapp", QJsonValue::fromVariant(xdapp));
+    obj.insert("method", QJsonValue::fromVariant(xmethod));
+    obj.insert("payload", QJsonValue::fromVariant(xpayload));
+    doc.setObject(obj);
+
+    QByteArray docByteArray = doc.toJson(QJsonDocument::Compact);
+    std::string strJson = docByteArray.toStdString();
 
     const std::string correlation(xUtility.get_uuid());
     SimplePocoHandler handler("85.214.143.20", 5672);
@@ -200,12 +227,13 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
             int msgcount,
             int consumercount)
     {
-        std::string sping_attrib = params->at(2).toString().toStdString();
+        std::string sping_attrib = strJson;
         AMQP::Envelope env(sping_attrib.c_str(),strlen(sping_attrib.c_str()));
         env.setCorrelationID(correlation);
         env.setReplyTo(name);
-        channel.publish("","rpc_queue",env);
+        channel.publish("","dicom_testqueue",env);
     };
+    qDebug() << "request send to STATIC network";
 
     channel.declareQueue(AMQP::exclusive).onSuccess(callback);
 
@@ -215,10 +243,16 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     {
         if(message.correlationID() != correlation)
             return;
+        qDebug() << "ping reply received";
+        std::string stdMsg(message.body(),message.bodySize());
+        QString msg = QString::fromStdString(stdMsg);
+        QJsonDocument replyDoc = QJsonDocument::fromJson(msg.toUtf8());
+        QJsonObject replyObject = replyDoc.object();
+        QString dapp = replyObject.value("xdapp").toString().toLatin1();
+        QString replyMsg = replyObject.value("payload").toString().toLatin1();
+        qDebug() << "received reply: " + replyMsg;
+        xchatRobot.SubmitMsg(dapp + " reply:" + replyMsg);
 
-        std::string msg(message.body(),message.bodySize());
-        //std::cout<<" [.] Reply ID "<< msg <<std::endl;
-        xchatRobot.SubmitMsg("SPING reply ID#"+QString::fromUtf8(msg.c_str()));
         handler.quit();
     };
 

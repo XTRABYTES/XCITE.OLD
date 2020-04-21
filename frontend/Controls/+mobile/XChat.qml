@@ -899,7 +899,7 @@ Rectangle {
 
     */
     Component.onDestruction: {
-        sendText.text = ""
+        //sendText.text = ""
         xchatTracker = 0
         xchatError = 0
         isTag = false

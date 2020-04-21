@@ -34,6 +34,7 @@ Rectangle {
     property string pingReply
     property string sendTime
     property string replyTime
+    property string xdapp: "ping"
 
     onMyTrackerChanged: {
         if (myTracker == 0) {
@@ -80,7 +81,7 @@ Rectangle {
 
     Text {
         id: pingModalLabel
-        text: "PING CONSOLE"
+        text: "APP CONSOLE"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
@@ -91,10 +92,159 @@ Rectangle {
     }
 
     Rectangle {
+        id: pingBtn
+        width: (replyWindow.width - 20) / 5
+        height: 30
+        anchors.left: replyWindow.left
+        anchors.top: pingModalLabel.bottom
+        anchors.topMargin: 20
+        color: xdapp == "ping"? maincolor : "transparent"
+        border.width: 1
+        border.color: xdapp == "ping"? "transparent" : maincolor
+
+        Text {
+            id: pingBtnLabel
+            text: "PING"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            color: xdapp == "ping"? "#2A2C31": (darktheme == true? "#F2F2F2" : "#2A2C31")
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                xdapp = "ping"
+            }
+        }
+    }
+
+    Rectangle {
+        id: xfuelBtn
+        width: (replyWindow.width - 20) / 5
+        height: 30
+        anchors.left: pingBtn.right
+        anchors.leftMargin: 5
+        anchors.top: pingModalLabel.bottom
+        anchors.topMargin: 20
+        color: xdapp == "xfuel"? maincolor : "transparent"
+        border.width: 1
+        border.color: xdapp == "xfuel"? "transparent" : maincolor
+
+        Text {
+            id: xfuelBtnLabel
+            text: "XFUEL"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            color: xdapp == "xfuel"? "#2A2C31": (darktheme == true? "#F2F2F2" : "#2A2C31")
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                xdapp = "xfuel"
+            }
+        }
+    }
+
+    Rectangle {
+        id: xbyBtn
+        width: (replyWindow.width - 20) / 5
+        height: 30
+        anchors.left: xfuelBtn.right
+        anchors.leftMargin: 5
+        anchors.top: pingModalLabel.bottom
+        anchors.topMargin: 20
+        color: xdapp == "xby"? maincolor : "transparent"
+        border.width: 1
+        border.color: xdapp == "xby"? "transparent" : maincolor
+
+        Text {
+            id: xbyBtnLabel
+            text: "XBY"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            color: xdapp == "xby"? "#2A2C31": (darktheme == true? "#F2F2F2" : "#2A2C31")
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                xdapp = "xby"
+            }
+        }
+    }
+
+    Rectangle {
+        id: testBtn
+        width: (replyWindow.width - 20) / 5
+        height: 30
+        anchors.left: xbyBtn.right
+        anchors.leftMargin: 5
+        anchors.top: pingModalLabel.bottom
+        anchors.topMargin: 20
+        color: xdapp == "testnet"? maincolor : "transparent"
+        border.width: 1
+        border.color: xdapp == "testnet"? "transparent" : maincolor
+
+        Text {
+            id: testBtnLabel
+            text: "TESTNET"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            color: xdapp == "testnet"? "#2A2C31": (darktheme == true? "#F2F2F2" : "#2A2C31")
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                xdapp = "testnet"
+            }
+        }
+    }
+
+    Rectangle {
+        id: explorerBtn
+        width: (replyWindow.width - 20) / 5
+        height: 30
+        anchors.left: testBtn.right
+        anchors.leftMargin: 5
+        anchors.top: pingModalLabel.bottom
+        anchors.topMargin: 20
+        color: xdapp == "explorer"? maincolor : "transparent"
+        border.width: 1
+        border.color: xdapp == "explorer"? "transparent" : maincolor
+
+        Text {
+            id: explorerBtnLabel
+            text: "EXPLORER"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            color: xdapp == "explorer"? "#2A2C31": (darktheme == true? "#F2F2F2" : "#2A2C31")
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                xdapp = "explorer"
+            }
+        }
+    }
+
+    Rectangle {
         id: replyWindow
         width: parent.width - 58
-        anchors.top: pingModalLabel.bottom
-        anchors.topMargin: 30
+        anchors.top: pingBtn.bottom
+        anchors.topMargin: 20
         anchors.bottom: requestText.top
         anchors.bottomMargin: 15
         anchors.horizontalCenter: parent.horizontalCenter
@@ -197,7 +347,7 @@ Rectangle {
     Controls.TextInput {
         id: requestText
         height: 34
-        placeholder: "PING ID"
+        placeholder: xdapp != "ping"? "Method" : "PingID"
         text: ""
         anchors.left: parent.left
         anchors.leftMargin: 28
@@ -215,9 +365,9 @@ Rectangle {
         id: pingAmount
         height: 34
         width: 100
-        placeholder: "Amount"
+        placeholder: xdapp != "ping"? "Payload" : "Amount"
         text: ""
-        inputMethodHints: Qt.ImhDigitsOnly
+        inputMethodHints: xdapp == "ping"? Qt.ImhDigitsOnly : Qt.ImhNone
         anchors.right: parent.right
         anchors.rightMargin: 72
         anchors.bottom: parent.bottom
@@ -260,41 +410,62 @@ Rectangle {
                 sendTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
                 console.log("sendTime: " + sendTime)
                 if (requestText.text != "") {
-                    var pingIdentifier
-                    if (pingAmount.text != "") {
-                        totalPings = Number.fromLocaleString(Qt.locale("en_US"),pingAmount.text)
-                        if (totalPings <= 50) {
-                            xPingTread.append({"message": "ping ID: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
-                            msgList.positionViewAtEnd()
-                            for (var a = 0; a < totalPings; a ++) {
-                                var b = pingSNR + a
-                                pingIdentifier = myUsername + "_" + requestText.text + "_" + b
-                                pingRequest(pingIdentifier)
+                    if (xdapp == "ping") {
+                        var pingIdentifier
+                        if (pingAmount.text != "") {
+                            totalPings = Number.fromLocaleString(Qt.locale("en_US"),pingAmount.text)
+                            if (totalPings <= 50) {
+                                xPingTread.append({"message": "ping: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
+                                msgList.positionViewAtEnd()
+                                for (var a = 0; a < totalPings; a ++) {
+                                    var b = pingSNR + a
+                                    pingIdentifier = myUsername + "_" + requestText.text + "_" + b
+                                    var dataModelParams = {"xdapp":xdapp, "method":"ping","payload":pingIdentifier}
+                                    var paramsJson = JSON.stringify(dataModelParams)
+                                    dicomRequest(paramsJson)
+                                }
+                                pingSNR = pingSNR + totalPings
+                                requestText.text = ""
+                                pingAmount.text = ""
                             }
+                            else {
+                                xPingTread.append({"message": "Amount too high, max. 50!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
+                                msgList.positionViewAtEnd()
+                                pingAmount.text = ""
+                            }
+                        }
+                        else {
+                            totalPings = 1
+                            xPingTread.append({"message": "ping: " + myUsername + "_" + requestText.text + ", amount: 1", "inout": "out", "author": myUsername, "time": sendTime})
+                            msgList.positionViewAtEnd()
+                            var c = pingSNR + totalPings
+                            pingIdentifier = myUsername + "_" + requestText.text + "_" + c
+                            var dataModelParams2 = {"xdapp":xdapp, "method":"ping","payload":pingIdentifier}
+                            var paramsJson2 = JSON.stringify(dataModelParams2)
+                            dicomRequest(paramsJson2)
                             pingSNR = pingSNR + totalPings
                             requestText.text = ""
                             pingAmount.text = ""
                         }
-                        else {
-                            xPingTread.append({"message": "Amount too high, max. 50!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
-                            msgList.positionViewAtEnd()
-                            pingAmount.text = ""
-                        }
                     }
                     else {
-                        totalPings = 1
-                        xPingTread.append({"message": "ping ID: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
+                        xPingTread.append({"message": xdapp + ": " + requestText.text + " " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
                         msgList.positionViewAtEnd()
-                        var c = pingSNR + totalPings
-                        pingIdentifier = myUsername + "_" + requestText.text + "_" + c
-                        pingRequest(pingIdentifier)
-                        pingSNR = pingSNR + totalPings
+                        var dataModelParams3 = {"xdapp":xdapp, "method":requestText.text,"payload":pingAmount.text}
+                        var paramsJson3 = JSON.stringify(dataModelParams3)
+                        dicomRequest(paramsJson3)
                         requestText.text = ""
                         pingAmount.text = ""
                     }
                 }
                 else {
-                    xPingTread.append({"message": "No ping identifier selected!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
+                    if (xdapp == "ping") {
+                        xPingTread.append({"message": "No ping identifier selected!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
+                    }
+                    else {
+                        xPingTread.append({"message": "No method selected!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
+                    }
+
                     msgList.positionViewAtEnd()
                 }
             }
@@ -309,7 +480,7 @@ Rectangle {
                     console.log("replyTime: " + replyTime)
                     pingReply = text
                     replyArray = pingReply.split(' ')
-                    if (replyArray[0] === "SPING") {
+                    if (replyArray[0] === "ping" || replyArray[0] === "xfuel" || replyArray[0] === "xby" || replyArray[0] === "testnet" || replyArray[0] === "explorer") {
                         xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
                         msgList.positionViewAtEnd()
                     }
@@ -346,14 +517,14 @@ Rectangle {
         running: false
 
         onTriggered: {
-            replyText.text = ""
+            pingReply = ""
             requestText.text = ""
             closeAllClipboard = true
         }
     }
 
     Component.onDestruction: {
-        replyText.text = ""
+        pingReply = ""
         pingAmount.text = ""
         pingTracker = 0
     }

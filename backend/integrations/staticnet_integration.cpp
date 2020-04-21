@@ -30,11 +30,11 @@ void staticnet_integration::sendCoinsEntry(QString msg) {
     }
 }
 
-void staticnet_integration::pingRequestEntry(QString msg) {
+void staticnet_integration::dicomRequestEntry(QString msg) {
 
-    qDebug() << "ping requested";
+    qDebug() << "dicom request";
     int _traceID;
-    QString sendPing = "!!staticnet sping " + msg;
+    QString sendPing = "!!staticnet dicom " + msg;
     if (staticNet.CheckUserInputForKeyWord(sendPing, &_traceID)) {
         qDebug() << "staticnet command accepted";
     } else {
@@ -43,7 +43,7 @@ void staticnet_integration::pingRequestEntry(QString msg) {
 }
 
 void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
-    qDebug() << "staticnet response recevied:";
+    //qDebug() << "staticnet response recevied:";
 
     QJsonDocument json_doc(response);
     QString error = response.value("error").toString();
@@ -98,6 +98,6 @@ void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
         }
     }
 
-    QString json_string = json_doc.toJson();
-    qDebug() << json_string;
+    //QString json_string = json_doc.toJson();
+    //qDebug() << json_string;
 }

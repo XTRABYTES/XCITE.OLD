@@ -97,7 +97,7 @@ ApplicationWindow {
         applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_04_black.svg'});
         applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_02_black.svg'});
         applicationList.append({"name": "X-GAMES", "icon_white": 'qrc:/icons/mobile/games-icon_ph_white.svg', "icon_black": 'qrc:/icons/mobile/games-icon_ph_black.svg'});
-        applicationList.append({"name": "X-PING", "icon_white": 'qrc:/icons/mobile/ping-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/ping-icon_01_black.svg'});
+        applicationList.append({"name": "CONSOLE", "icon_white": 'qrc:/icons/mobile/ping-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/ping-icon_01_black.svg'});
 
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
@@ -528,7 +528,7 @@ ApplicationWindow {
     signal confirmGameSend(string user, string game, string gameID, string move, string moveID)
     signal sendGameInvite(string user, string opponent, string game, string gameID)
     signal confirmGameInvite(string user, string opponent, string game, string gameID, string accept)
-    signal pingRequest(string message)
+    signal dicomRequest(string params)
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {
@@ -601,7 +601,7 @@ ApplicationWindow {
             xgamesTracker = 1
             selectedApp = ""
         }
-        if (app === "X-PING") {
+        if (app === "CONSOLE") {
             pingTracker = 1
             selectedApp = ""
         }
