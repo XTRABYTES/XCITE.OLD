@@ -289,7 +289,65 @@ Rectangle {
                     font.pixelSize: 14
                     textFormat: Text.StyledText
                     color: inout == "in"? (darktheme == false? "#14161B" : maincolor) : "#14161B"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressAndHold: {
+                            if(copy2clipboard == 0 && pingTracker == 1) {
+                                copyText2Clipboard(messageText.text)
+                                copy2clipboard = 1
+                            }
+                        }
+                    }
+
+                    DropShadow {
+                        z: 12
+                        anchors.fill: textPopup
+                        source: textPopup
+                        horizontalOffset: 0
+                        verticalOffset: 4
+                        radius: 12
+                        samples: 25
+                        spread: 0
+                        color: "black"
+                        opacity: 0.4
+                        transparentBorder: true
+                        visible: copy2clipboard == 1 && pingTracker == 1
+                    }
+
+                    Item {
+                        id: textPopup
+                        z: 12
+                        width: popupClipboard.width
+                        height: popupClipboardText.height + 20
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: publicKey.verticalCenter
+                        visible: copy2clipboard == 1 && pingTracker == 1
+
+                        Rectangle {
+                            id: popupClipboard
+                            height: 50
+                            width: popupClipboardText.width + 20
+                            color: "#34363D"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Label {
+                            id: popupClipboardText
+                            text: "Text copied!"
+                            font.family: "Brandon Grotesque"
+                            font.pointSize: 14
+                            font.bold: true
+                            color: "#F2F2F2"
+                            horizontalAlignment: Text.AlignHCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
                 }
+
 
                 Text {
                     id: messageTime
@@ -519,6 +577,7 @@ Rectangle {
         onTriggered: {
             pingReply = ""
             requestText.text = ""
+            copy2clipboard = 0
             closeAllClipboard = true
         }
     }
@@ -527,5 +586,6 @@ Rectangle {
         pingReply = ""
         pingAmount.text = ""
         pingTracker = 0
+        copy2clipboard = 0
     }
 }

@@ -204,6 +204,7 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
         }
     }
     qDebug() << "trimmed params: " << xparams;
+
     QJsonDocument requestDoc = QJsonDocument::fromJson(xparams.toUtf8());
     QJsonObject requestObject = requestDoc.object();
     QString xdapp = requestObject.value("xdapp").toString().toLatin1();
@@ -227,6 +228,8 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
 
     QByteArray docByteArray = doc.toJson(QJsonDocument::Compact);
     std::string strJson = docByteArray.toStdString();
+    QString fullCommand = QString::fromStdString(strJson);
+    qDebug() << "full command: " << fullCommand;
 
     const std::string correlation(xUtility.get_uuid());
     SimplePocoHandler handler("85.214.143.20", 5672);
