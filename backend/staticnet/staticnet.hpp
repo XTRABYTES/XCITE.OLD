@@ -64,10 +64,14 @@ signals:
     void finished();
     void error(QString err);
     void sendcoinFailed();
+    void fundsLow();
+    void txTooBig();
+    void sendFee(QString fee, QString rawTx, QString traceId);
 
 public Q_SLOTS:
     void unspent_request(const QJsonArray *params);
-    void unspent_onResponse(QJsonArray params, QJsonObject );
+    void unspent_onResponse(QString id, QJsonObject );
+    void calculate_fee(const QJsonArray inputs, const QJsonArray outputs);
     void txbroadcast_request(const QJsonArray *params);
     void txbroadcast_onResponse(QJsonArray params, QJsonObject );
 
@@ -79,7 +83,10 @@ private:
     std::string target_address;
     std::string value_str;
     QString trace_id;
+    std::string RawTransaction;
     StaticNetHttpClient *client;
+    bool tooBig;
+    int nMinFee;
 };
 
 
@@ -110,6 +117,7 @@ private:
     StaticNetHttpClient *client;
     void help();
     void sendcoin(const QJsonArray *params);
+    void broadcastTx(const QJsonArray *params);
 };
 
 
