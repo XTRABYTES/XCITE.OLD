@@ -34,8 +34,8 @@ void staticnet_integration::dicomRequestEntry(QString msg) {
 
     qDebug() << "dicom request";
     int _traceID;
-    QString sendPing = "!!staticnet dicom " + msg;
-    if (staticNet.CheckUserInputForKeyWord(sendPing, &_traceID)) {
+    QString sendDicom = "!!staticnet dicom " + msg;
+    if (staticNet.CheckUserInputForKeyWord(sendDicom, &_traceID)) {
         qDebug() << "staticnet command accepted";
     } else {
         qDebug() << "staticnet command not accepted";

@@ -66,12 +66,12 @@ signals:
     void sendcoinFailed();
     void fundsLow();
     void txTooBig();
-    void sendFee(QString fee, QString rawTx, QString traceId);
+
 
 public Q_SLOTS:
     void unspent_request(const QJsonArray *params);
-    void unspent_onResponse(QString id, QJsonObject );
-    void calculate_fee(const QJsonArray inputs, const QJsonArray outputs);
+    void unspent_onResponse(QString id, QString utxo);
+    void calculate_fee(const QString inputs, const QString outputs);
     void txbroadcast_request(const QJsonArray *params);
     void txbroadcast_onResponse(QJsonArray params, QJsonObject );
 
@@ -117,7 +117,6 @@ private:
     StaticNetHttpClient *client;
     void help();
     void sendcoin(const QJsonArray *params);
-    void broadcastTx(const QJsonArray *params);
 };
 
 
@@ -148,6 +147,9 @@ public slots:
 
 signals:
 	 void ResponseFromStaticnet(QJsonObject);
+     void sendFee(QString fee, QString rawTx, QString traceId);
+     void rawTxFailed();
+     void utxoError();
 
 private:
     boost::mutex mutex;

@@ -68,7 +68,13 @@ Rectangle {
     property string amountTransfer: "AMOUNT (" + coinID.text + ")"
     property string keyTransfer: "SEND TO (ADDRESS)"
     property string referenceTransfer: "REFERENCE"
+    property int txFee: 1
+    property string rawTX: ""
+    property string txId: ""
+    property string network: coinID.text
     property real amountSend: 0
+    property string transferReply: ""
+    property var replyArray
     property string searchTxText: ""
     property string transactionDate: ""
     property int timestamp: 0
@@ -80,6 +86,7 @@ Rectangle {
     //property int screenShot: 0
     property int badNetwork: 0
     property bool selectNetwork: false
+    property bool createTx: false
 
     property var commaArray
     property int detectComma
@@ -290,6 +297,7 @@ Rectangle {
                      && calculatorTracker == 0
                      && coinListTracker == 0
             onTextChanged: {
+                network = coinID.text == "XBY"? "xtrabytes" : (coinID.text == "XFUEL"? "xfuel" : (coinID.text == "XTEST"? "testnet" : "nothing"))
                 if (keyInput.text != "") {
                     checkAddress()
                 }
@@ -1187,9 +1195,10 @@ Rectangle {
                      && calculatorTracker == 0
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
+                     && createTx == false
 
             MouseArea {
-                property string network: coinID.text == "XBY"? "xtrabytes" : (coinID.text == "XFUEL"? "xfuel" : (coinID.text == "XTEST"? "testnet" : "nothing"))
+                //property string network: coinID.text == "XBY"? "xtrabytes" : (coinID.text == "XFUEL"? "xfuel" : (coinID.text == "XTEST"? "testnet" : "nothing"))
                 anchors.fill: sendButton
 
                 onPressed: {
@@ -1223,10 +1232,12 @@ Rectangle {
 
                     onNewNetwork: {
                         if (transferTracker == 1 && selectNetwork == true) {
-                            transactionSend = 1
+                            //transactionSend = 1
                             coinListTracker = 0
                             walletListTracker = 0
                             selectNetwork = false
+                            createTx = true
+                            sendCoins(keyInput.text + " " +  replaceComma + " " +  getPrivKey(coinID.text, walletLabel.text))
                         }
                     }
 
@@ -1237,6 +1248,50 @@ Rectangle {
                         }
                     }
                 }
+
+
+                Connections {
+                    target: StaticNet
+
+                    onSendFee: {
+                        if (transferTracker == 1 && createTx == true) {
+                            console.log("raw transaction created: " + rawTx + ", fee: " + fee + ", id: " + traceId)
+                            txFee = fee
+                            rawTX = rawTx
+                            txID = traceId
+                            transactionSend = 1
+                            createTx = false
+                        }
+                    }
+                    onRawTxFailed: {
+                       if (transferTracker == 1 && createTx == true) {
+                           console.log("failed to create raw transaction")
+                           createTx = false
+                           failedSend = 1
+                           transactionSend = 1
+                       }
+                    }
+                    onUtxoError: {
+                        if (transferTracker == 1 && createTx == true) {
+                            console.log("Error retrieving UTXO")
+                            createTx = false
+                            failedSend = 1
+                            transactionSend = 1
+                        }
+                    }
+                }
+            }
+
+            AnimatedImage {
+                id: waitingDots01
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 75
+                height: 50
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: -50
+                playing: createTx == true
+                visible: createTx == true
             }
         }
 
@@ -1498,7 +1553,7 @@ Rectangle {
 
         Text {
             id: confirmationFeeAmount2
-            text: "1"
+            text: txFee
             anchors.top: confirmationFeeAmount.top
             anchors.left: feeAmount.left
             font.family: xciteMobile.name
@@ -1544,7 +1599,11 @@ Rectangle {
                         pincodeTracker = 1
                     }
                     else {
-                        sendCoins(keyInput.text + " " +  replaceComma + " " +  getPrivKey(coinID.text, walletLabel.text))
+                        //sendCoins(keyInput.text + " " +  replaceComma + " " +  getPrivKey(coinID.text, walletLabel.text))
+                        var dataModelParams = {"xdapp":network,"method":"broadcastTx","payload":rawTX,"id":txId}
+                        var paramsJson = JSON.stringify(dataModelParams3)
+                        dicomRequest(paramsJson3)
+                        console.log("request TX broadcast: " + paramsJson)
                         failedSend = 0
                         requestSend = 1
                     }
@@ -1574,21 +1633,45 @@ Rectangle {
                 }
             }
 
+/**            Connections {
+*                target: static_int
+*
+*                onSendCoinsSuccess : {
+*                    if (transferTracker == 1 && requestSend == 1) {
+*                        confirmationSend = 1
+*                        requestSend = 0
+*                        pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
+*                    }
+*                }
+*
+*                onSendCoinsFailure : {
+*                    if (transferTracker == 1 && requestSend == 1) {
+*                        requestSend = 0
+*                        failedSend = 1
+*                    }
+*                }
+*            }
+*/
             Connections {
-                target: static_int
+                target: xChat
 
-                onSendCoinsSuccess : {
+                onXchatResponseSignal: {
                     if (transferTracker == 1 && requestSend == 1) {
-                        confirmationSend = 1
-                        requestSend = 0
-                        pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
-                    }
-                }
-
-                onSendCoinsFailure : {
-                    if (transferTracker == 1 && requestSend == 1) {
-                        requestSend = 0
-                        failedSend = 1
+                        transferReply = text
+                        replyArray = transferReply.split(' ')
+                        var s = replyArray[2].split(":")
+                        if (replyArray[0] === "dicom" && s[1] === txId) {
+                            var r = replyArray[3].split(":")
+                            if (r[1] !== "error") {
+                                confirmationSend = 1
+                                requestSend = 0
+                                pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
+                            }
+                            else {
+                                requestSend = 0
+                                failedSend = 1
+                            }
+                        }
                     }
                 }
             }
@@ -1708,7 +1791,7 @@ Rectangle {
 
         Label {
             id: waitingText
-            text: "Waiting for Network to confirm transaction"
+            text: "Waiting for network to confirm transaction"
             anchors.bottom: waitingDots.top
             anchors.bottomMargin: 70
             anchors.horizontalCenter: parent.horizontalCenter
@@ -1790,6 +1873,8 @@ Rectangle {
                         timestamp = 0
                         precision = 0
                         transactionInProgress = false
+                        rawTX = ""
+                        txFee = 0
                     }
                 }
             }
@@ -1891,6 +1976,8 @@ Rectangle {
                         transactionDate = ""
                         timestamp = 0
                         precision = 0
+                        rawTX = ""
+                        txFee = 0
                         transactionInProgress = false
                         updateToAccount()
                     }
@@ -2146,6 +2233,8 @@ Rectangle {
             networkError = 0
             viewForScreenshot = 0
             precision = 0
+            rawTX = ""
+            txFee = 0
         }
     }
 

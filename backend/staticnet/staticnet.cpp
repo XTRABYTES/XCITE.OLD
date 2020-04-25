@@ -156,8 +156,6 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
 
     if (command == "help") {
         help();
-    } else if (command == "ping") {
-        request(params);
     } else if (command == "dicom") {
         qDebug() << "dicom request recognized";
         srequest(params);
@@ -166,14 +164,10 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
     } else if (command == "sendcoin") {
         qDebug() << "send coin command recognized";
         sendcoin(params);
-    } else if (command == "broadcasttx") {
-        qDebug() << "broadcast transaction command recognized";
-        broadcastTx(params);
     } else {
         xchatRobot.SubmitMsg("Bad !!staticnet command. Ignored.");
         xchatRobot.SubmitMsg("More informations: !!staticnet help");
     }
-
 }
 
 void SnetKeyWordWorker::help() {
@@ -183,15 +177,29 @@ void SnetKeyWordWorker::help() {
     xchatRobot.SubmitMsg("!!staticnet sendcoin [target] [amount] [privatekey]");
 }
 
+// NOT NEEDED ANYMORE (I THINK) ----
+void SnetKeyWordWorker::request(const QJsonArray *params){
 
-void SnetKeyWordWorker::request(const QJsonArray *params) {
-
-    //xchatRobot.SubmitMsg("Command forwarded to STaTiC network. Wait for reply. ID: #"+params->last().toString());
+    xchatRobot.SubmitMsg("Command forwarded to STaTiC network. Wait for reply. ID: #"+params->last().toString());
     client = new StaticNetHttpClient(staticNet.GetConnectStr());
     connect(client, SIGNAL (response( QJsonArray, QJsonObject)), this, SLOT (onResponse( QJsonArray, QJsonObject)));
 
     client->request(params);
 }
+
+void SendcoinWorker::unspent_request(const QJsonArray *params) {
+
+}
+
+void SendcoinWorker::txbroadcast_request(const QJsonArray *params) {
+
+}
+
+void SendcoinWorker::txbroadcast_onResponse(QJsonArray params, QJsonObject ) {
+
+}
+
+// ----
 
 void SnetKeyWordWorker::srequest(const QJsonArray *params) {
 
@@ -268,11 +276,17 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
         QString replyMethod = replyObject.value("method").toString().toLatin1();
         QString replyMsg = replyObject.value("payload").toString().toLatin1();
         qDebug() << "received reply: " + replyMsg;
-        xchatRobot.SubmitMsg(dapp + " reply:" + replyMsg);
+        xchatRobot.SubmitMsg("dicom - " + dapp + ":" + replyMethod + " id:" + replyId + " reply:" + replyMsg);
 
         if (dapp == "explorer") {
             if (replyMethod == "getutxo") {
-                SendcoinWorker::unspent_onResponse(replyId, replyObject.value("payload"));   // need help here
+                if (replyMsg != "error") {
+                SendcoinWorker* worker = new SendcoinWorker(params);
+                worker->unspent_onResponse(replyId, replyMsg);
+                }
+                else {
+                emit staticNet.utxoError();
+                }
             }
         }
 
@@ -282,7 +296,6 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     channel.consume("", AMQP::noack).onReceived(receiveCallback);
 
     handler.loop();
-
 }
 
 
@@ -318,32 +331,7 @@ void SnetKeyWordWorker::sendcoin(const QJsonArray *params) {
     connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
     thread->start();
     emit finished();
-
 }
-
-void SnetKeyWordWorker::broadcastTx(const QJsonArray *params) {
-
-    QString netWork = params->at(2).toString().toLatin1();
-    QString payload = params->at(3).toString().toLatin1();
-    QString id = params->at(4).toString().toLatin1();
-
-    QJsonArray arr;
-    QJsonObject idObj;
-    idObj.insert("id", QJsonValue::fromVariant(id));
-    QJsonObject xdappObj;
-    xdappObj.insert("xdapp", QJsonValue::fromVariant(netWork));
-    QJsonObject methodObj;
-    methodObj.insert("method", QJsonValue::fromVariant("rawtx"));
-    QJsonObject payloadObj;
-    payloadObj.insert("payload", QJsonValue::fromVariant(payload));
-    arr.append(idObj);
-    arr.append(xdappObj);
-    arr.append(methodObj);
-    arr.append(payloadObj);
-
-    SnetKeyWordWorker::srequest(arr); // need help here
-}
-
 
 SendcoinWorker::SendcoinWorker(const QJsonArray *params) { 
 
@@ -357,99 +345,79 @@ SendcoinWorker::SendcoinWorker(const QJsonArray *params) {
 SendcoinWorker::~SendcoinWorker() {	
 }
 
+void SendcoinWorker::process() {
 
-void SendcoinWorker::unspent_request(const QJsonArray *params) {
+    qDebug() << xUtility.getSelectedNetworkid();
 
-    QJsonObject response;
-    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_request"));
-    response.insert("traceID", QJsonValue::fromVariant(trace_id));
-    response.insert("params", QJsonValue::fromVariant(params));
-    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+    if (xUtility.getSelectedNetworkid() != 0) {
 
-    client = new StaticNetHttpClient(staticNet.GetConnectStr());
-    connect(client, SIGNAL (response( QJsonArray, QJsonObject)), this, SLOT (unspent_onResponse( QJsonArray, QJsonObject)));
+        CXCiteSecret xciteSecret;
+        bool fGood = xciteSecret.SetString(secret,xUtility.getSelectedNetworkid());
+        if (fGood) {
+            CKey key = xciteSecret.GetKey();
+            CPubKey pubkey = key.GetPubKey();
+            CKeyID keyID = pubkey.GetID();
+            CXCiteAddress _address = CXCiteAddress(keyID,xUtility.getSelectedNetworkid());
+            CScript scriptPubKey;
+            scriptPubKey.SetDestination(_address.Get());
 
-    client->request(params);
-}
+            hexscript = HexStr(scriptPubKey);
+            sender_address = _address.ToString();
 
-// NOT NEEDED ANYMORE
-//void SendcoinWorker::txbroadcast_request(const QJsonArray *params) {
+            QString netWork = QString::fromStdString(xUtility.getSelectedNetworkName());
 
-//    QJsonObject response;
-//    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::txbroadcast_request"));
-//    response.insert("traceID", QJsonValue::fromVariant(trace_id));
-//    response.insert("params", QJsonValue::fromVariant(params));
-//    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+            QJsonDocument doc;
+            QJsonObject obj;
+            QJsonObject explorerPayload;
+            explorerPayload.insert("address", QString::fromUtf8(sender_address.c_str()));
+            explorerPayload.insert("chain", QJsonValue::fromVariant(netWork));
+            QJsonDocument payloadDoc(explorerPayload);
+            QString payloadstr(payloadDoc.toJson(QJsonDocument::Compact));
+            obj.insert("xdapp", QJsonValue::fromVariant("explorer"));
+            obj.insert("method", QJsonValue::fromVariant("getutxo"));
+            obj.insert("payload", QJsonValue::fromVariant(payloadstr));
+            doc.setObject(obj);
 
-//    client = new StaticNetHttpClient(staticNet.GetConnectStr());
-//    connect(client, SIGNAL (response( QJsonArray, QJsonObject)), this, SLOT (txbroadcast_onResponse( QJsonArray, QJsonObject)));
+            int _traceID;
+            QString payload(doc.toJson(QJsonDocument::Compact));
+            QString getUtxo = "!!staticnet dicom " + payload;
 
-//    client->request(params);
-//}
+            qDebug() << getUtxo;
+
+            if (staticNet.CheckUserInputForKeyWord(getUtxo,&_traceID)) {
+                qDebug() << "staticnet command accepted";
+            } else {
+                qDebug() << "staticnet command not accepted";
+            }
+
+        } else {
+            qDebug()<< "Bad private key.";
+            xchatRobot.SubmitMsg("Bad private key.");
+            emit sendcoinFailed();
+            emit finished();
+        }
 
 
-//void SendcoinWorker::txbroadcast_onResponse( QJsonArray params, QJsonObject res)
-//{
-
-//    QJsonObject response;
-//    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::txbroadcast_onResponse"));
-//    response.insert("traceID", QJsonValue::fromVariant(trace_id));
-//    response.insert("params", QJsonValue::fromVariant(res));
-//    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
-
-//    if (!res["error"].isNull()) {
-//        xchatRobot.SubmitMsg("STaTiC network(unspent query) error. ID: #"+params.last().toString());
-//        qDebug() << res;
-//    } else {
-
-//        QJsonDocument doc(res);
-//        QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
-//        //xchatRobot.SubmitMsg("Recevied txbroadcast reply from STaTiC network. ID: #"+params.last().toString());
-//        xchatRobot.SubmitMsg(formattedJsonString);
-//        qDebug() << formattedJsonString;
-//    }
-//    emit finished();
-//}
-
-void SendcoinWorker::calculate_fee(const QJsonArray inputs, const QJsonArray outputs)
-{
-    int64 nBaseFee = 1;
-    int64 outCount = 0;
-    int64 dust_soft_limit = 1;
-    tooBig = false;
-
-    unsigned int nBytes;
-    // calculate nBytes based on inputs & outputs
-
-    if (nBytes > 100000) {
-        tooBig = true;
-        return;
+    } else {
+        qDebug()<< "Bad or mising network ID.";
+        xchatRobot.SubmitMsg("Bad or mising network ID.");
+        emit sendcoinFailed();
+        emit finished();
     }
-    nMinFee = (1 + (int64)nBytes / 1000) * nBaseFee;
-    // help needed to write the code
-    //foreach() {
-        // for each output in the list add 1 to outcount
-    outCount ++;
-
-    // if ( outputvalue < dust_soft_limit){
-        // if the value of the output is lower than dust_soft_limit add 1 nBaseFee to the nMinFee
-    //nMinFee += nBaseFee
-    // }
-    //}
-    // check if the nMinFee is lower than the expected fee based on the number of outputs
-    if (nMinFee < ((outCount * nBaseFee) / 3 )) nMinFee= (outCount * nBaseFee) / 3 ;
 }
 
-void SendcoinWorker::unspent_onResponse( QString id, QJsonObject res)
+void SendcoinWorker::unspent_onResponse( QString id, QString res)
 {
-    
+    QJsonDocument doc = QJsonDocument::fromJson(res.toUtf8());
+    QJsonObject resObj = doc.object();
     QJsonObject response;
+    qDebug() << "received utxo" << resObj;
     response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));
     response.insert("traceID", QJsonValue::fromVariant(id));
     response.insert("params", QJsonValue::fromVariant(res));
     QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
 
-    if (!res["error"].isNull()) {
+    if (!resObj["error"].isNull()) {
         xchatRobot.SubmitMsg("STaTiC network(unspent query) error. ID: #"+ id);
         qDebug() << res;
         emit finished();
@@ -457,24 +425,20 @@ void SendcoinWorker::unspent_onResponse( QString id, QJsonObject res)
 
         RawTransaction = "";
         int64 send_value = AmountFromStr(value_str.c_str());
-        int64 fee_value = AmountFromStr("1.00000000");
-        nMinFee = fee_value;
+        nMinFee = 1;
 
-        QJsonDocument doc(res);
         QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
-        qDebug() << res;
-        // the format returned looks like this {"utxo-id:vout-value":"utxo-value", "utxo-id:vout":"utxo-value", "utxo-id:vout":"utxo-value", "utxo-id:vout":"utxo-value", ...}
-        //QJsonObject json;
+        qDebug() << doc;
 
         std::vector<std::string> inputs;
         std::vector<std::string> outputs;
 
         int64 inputs_sum = 0;
-        foreach(const QString& key, res.keys()) {
+        foreach(const QString& key, resObj.keys()) {
 
             outputs.clear();
 
-            QJsonValue value = res.value(key);
+            QJsonValue value = resObj.value(key);
             int64 tx_value = AmountFromStr(value.toString().toStdString().c_str());
             inputs_sum = inputs_sum + tx_value;
 
@@ -497,87 +461,84 @@ void SendcoinWorker::unspent_onResponse( QString id, QJsonObject res)
             }
 
             // recalculate fee_value based on inputs
+            std::string inputString = std::accumulate(inputs.begin(), inputs.end(), std::string{});
+            QString inputStr = QString::fromStdString(inputString);
+
+            std::string outputString = std::accumulate(outputs.begin(), outputs.end(), std::string{});
+            QString outputStr = QString::fromStdString(outputString);
+
+            calculate_fee(inputStr, outputStr);
+
             if (tooBig) {
                 emit txTooBig();
+                emit sendcoinFailed();
                 return;
             }
             if ((inputs_sum - (send_value + nMinFee)) >= 0) break;
 
         }
 
+        qDebug() << "final fee: " << nMinFee;
+
         if ((inputs_sum - (send_value + nMinFee)) < 0) {
             emit fundsLow();
+            emit sendcoinFailed();
         } else {
             qDebug() << "Creating RAW transaction...";
             RawTransaction = CreateRawTransaction( xUtility.getSelectedNetworkid(), inputs, outputs, secret);
             qDebug() << "Created RAW transaction:" << QString::fromUtf8(RawTransaction.c_str());
 
             if (RawTransaction.length()) {
-                emit sendFee(QString::number(nMinFee), QString::fromStdString(RawTransaction), trace_id);
+                qDebug() << "raw TX: " << QString::fromStdString(RawTransaction);
+                emit staticNet.sendFee(QString::number(nMinFee), QString::fromStdString(RawTransaction), id);
             } else {
                 QJsonObject response;
                 response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));
-                response.insert("traceID", QJsonValue::fromVariant(trace_id));
+                response.insert("traceID", QJsonValue::fromVariant(id));
                 response.insert("error", "Invalid RAW transaction.");
                 QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
-                emit finished();
+                emit staticNet.rawTxFailed();
             }
         }
     }
 }
 
-void SendcoinWorker::process() { 
+void SendcoinWorker::calculate_fee(const QString inputs, const QString outputs)
+{
+    int nBaseFee = 1;
+    int outCount = 0;
+    int dust_soft_limit = 1;
+    int nBytes;
+    tooBig = false;
+    qDebug() << "calculating fee ...";
+    qDebug() << "input string: " << inputs;
+    qDebug() << "output string: " << outputs;
 
-    qDebug() << xUtility.getSelectedNetworkid();
+    QStringList outputList = outputs.split(' ');
 
-    if (xUtility.getSelectedNetworkid() != 0) {
+    // check if transaction size is lower than 100kb, no need to worry for now because we only return a maximum of 50 utxo and allow 1 receiving address
+    nBytes = 1;
 
-        CXCiteSecret xciteSecret;
-        bool fGood = xciteSecret.SetString(secret,xUtility.getSelectedNetworkid());
-        if (fGood) {
-            CKey key = xciteSecret.GetKey();
-            CPubKey pubkey = key.GetPubKey();
-            CKeyID keyID = pubkey.GetID();
-            CXCiteAddress _address = CXCiteAddress(keyID,xUtility.getSelectedNetworkid());
-            CScript scriptPubKey;
-            scriptPubKey.SetDestination(_address.Get());
-
-            hexscript = HexStr(scriptPubKey);
-            sender_address = _address.ToString();
-
-            QString netWork = QString::fromStdString(xUtility.getSelectedNetworkName());
-
-            QJsonArray arr;
-            QJsonObject explorerPayload;
-            explorerPayload.insert("chain", QJsonValue::fromVariant(netWork));
-            explorerPayload.insert("address", QString::fromUtf8(sender_address.c_str()));
-            QJsonObject idObj;
-            idObj.insert("id", QJsonValue::fromVariant(trace_id));
-            QJsonObject xdappObj;
-            xdappObj.insert("xdapp", QJsonValue::fromVariant("explorer"));
-            QJsonObject methodObj;
-            methodObj.insert("method", QJsonValue::fromVariant("getutxo"));
-            QJsonObject payloadObj;
-            payloadObj.insert("payload", explorerPayload);
-            arr.append(idObj);
-            arr.append(xdappObj);
-            arr.append(methodObj);
-            arr.append(payloadObj);
-
-            SnetKeyWordWorker::srequest(arr); // need help here
-
-        } else {
-            qDebug()<< "Bad private key.";
-            xchatRobot.SubmitMsg("Bad private key.");
-            emit sendcoinFailed();
-            emit finished();
-        }
-
-
-    } else {
-        qDebug()<< "Bad or mising network ID.";
-        xchatRobot.SubmitMsg("Bad or mising network ID.");
-        emit sendcoinFailed();
-        emit finished();
+    if (nBytes > 100000) {
+        tooBig = true;
+        return;
     }
+    nMinFee = (1 + (nBytes / 1000)) * nBaseFee;
+
+    // count number of outputs and check if outvalues are higher than dust_soft_limit
+    for (int i = 0; i < outputList.count(); i++) {
+        outCount ++;
+        QString output = outputList.at(i);
+        QStringList outputSplit = output.split(',');
+        double outputvalue = outputSplit.at(3).toDouble();
+        qDebug() << "output value: " << outputvalue;
+        if ( outputvalue < dust_soft_limit){
+             nMinFee += nBaseFee;
+        }
+    }
+
+    // check if the nMinFee is lower than the expected fee based on the number of outputs
+    if (nMinFee < ((outCount * nBaseFee) / 3 )) nMinFee= (outCount * nBaseFee) / 3 ;
+
+    qDebug() << "calculated fee: " << nMinFee;
 }

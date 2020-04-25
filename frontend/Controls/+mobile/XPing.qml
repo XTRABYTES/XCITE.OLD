@@ -322,7 +322,7 @@ Rectangle {
                         width: popupClipboard.width
                         height: popupClipboardText.height + 20
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: publicKey.verticalCenter
+                        anchors.verticalCenter: parent.verticalCenter
                         visible: copy2clipboard == 1 && pingTracker == 1
 
                         Rectangle {
@@ -538,7 +538,7 @@ Rectangle {
                     console.log("replyTime: " + replyTime)
                     pingReply = text
                     replyArray = pingReply.split(' ')
-                    if (replyArray[0] === "ping" || replyArray[0] === "xfuel" || replyArray[0] === "xby" || replyArray[0] === "testnet" || replyArray[0] === "explorer") {
+                    if (replyArray[0] === "dicom") {
                         xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
                         msgList.positionViewAtEnd()
                     }
