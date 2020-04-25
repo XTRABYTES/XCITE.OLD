@@ -88,7 +88,6 @@ void StaticNetHttpClient::request(const QJsonArray *params) {
     QJsonDocument json;
     QJsonObject obj;
 
-
     obj.insert("dicom", QJsonValue::fromVariant("1.0"));
     obj.insert("type", QJsonValue::fromVariant("request"));
     obj.insert("method", QJsonValue::fromVariant(params->at(1).toString()));
@@ -163,6 +162,12 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
         request(params);
     } else if (command == "sendcoin") {
         qDebug() << "send coin command recognized";
+        target_addr = params->at(2).toString();
+        qDebug() << "target address: " << target_addr;
+        send_amount = params->at(3).toString();
+        qDebug() << "send amount: " << send_amount;
+        priv_key = params->at(4).toString();
+        qDebug() << "private key: " << priv_key;
         sendcoin(params);
     } else {
         xchatRobot.SubmitMsg("Bad !!staticnet command. Ignored.");
@@ -266,7 +271,7 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     {
         if(message.correlationID() != correlation)
             return;
-        qDebug() << "ping reply received";
+        qDebug() << "dicom reply received";
         std::string stdMsg(message.body(),message.bodySize());
         QString msg = QString::fromStdString(stdMsg);
         QJsonDocument replyDoc = QJsonDocument::fromJson(msg.toUtf8());
@@ -281,8 +286,11 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
         if (dapp == "explorer") {
             if (replyMethod == "getutxo") {
                 if (replyMsg != "error") {
-                SendcoinWorker* worker = new SendcoinWorker(params);
-                worker->unspent_onResponse(replyId, replyMsg);
+                    qDebug() << "target address: " << target_addr;
+                    qDebug() << "send amount: " << send_amount;
+                    qDebug() << "private key: " << priv_key;
+                    SendcoinWorker* worker = new SendcoinWorker(params);
+                    worker->unspent_onResponse(replyId, replyMsg, target_addr, send_amount, priv_key);
                 }
                 else {
                 emit staticNet.utxoError();
@@ -336,10 +344,13 @@ void SnetKeyWordWorker::sendcoin(const QJsonArray *params) {
 SendcoinWorker::SendcoinWorker(const QJsonArray *params) { 
 
     // FIXMEE need validate each params
-    target_address = params->at(2).toString().toStdString();
-    value_str = params->at(3).toString().toStdString();
-    secret = params->at(4).toString().toStdString();
-    trace_id = params->at(5).toString();
+    module = params->at(1).toString();
+    if (module == "sendcoin") {
+        target_address = params->at(2).toString().toStdString();
+        value_str = params->at(3).toString().toStdString();
+        secret = params->at(4).toString().toStdString();
+        trace_id = params->at(5).toString();
+    }
 }
 
 SendcoinWorker::~SendcoinWorker() {	
@@ -349,7 +360,7 @@ void SendcoinWorker::process() {
 
     qDebug() << xUtility.getSelectedNetworkid();
 
-    if (xUtility.getSelectedNetworkid() != 0) {
+    if (xUtility.getSelectedNetworkid() != 0 && module == "sendcoin") {
 
         CXCiteSecret xciteSecret;
         bool fGood = xciteSecret.SetString(secret,xUtility.getSelectedNetworkid());
@@ -363,6 +374,8 @@ void SendcoinWorker::process() {
 
             hexscript = HexStr(scriptPubKey);
             sender_address = _address.ToString();
+            qDebug() << "sender address: " << QString::fromStdString(sender_address);
+            qDebug() << "hex script: " << QString::fromStdString(hexscript);
 
             QString netWork = QString::fromStdString(xUtility.getSelectedNetworkName());
 
@@ -383,6 +396,8 @@ void SendcoinWorker::process() {
             QString getUtxo = "!!staticnet dicom " + payload;
 
             qDebug() << getUtxo;
+
+
 
             if (staticNet.CheckUserInputForKeyWord(getUtxo,&_traceID)) {
                 qDebug() << "staticnet command accepted";
@@ -406,10 +421,38 @@ void SendcoinWorker::process() {
     }
 }
 
-void SendcoinWorker::unspent_onResponse( QString id, QString res)
+void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target, QString amount, QString privkey)
 {
     QJsonDocument doc = QJsonDocument::fromJson(res.toUtf8());
     QJsonObject resObj = doc.object();
+    std::string output_address = target.toStdString();
+    qDebug() << "receiving address: " << QString::fromStdString(output_address);
+    std::string input_key = privkey.toStdString();
+    qDebug() << "private key: " << QString::fromStdString(input_key);
+    std::string send_amount = amount.toStdString();
+    qDebug() << "send amount: " << QString::fromStdString(send_amount);
+
+    CXCiteSecret xciteSecret;
+    bool fGood = xciteSecret.SetString(input_key,xUtility.getSelectedNetworkid());
+    if (fGood) {
+        CKey key = xciteSecret.GetKey();
+        CPubKey pubkey = key.GetPubKey();
+        CKeyID keyID = pubkey.GetID();
+        CXCiteAddress _address = CXCiteAddress(keyID,xUtility.getSelectedNetworkid());
+        CScript scriptPubKey;
+        scriptPubKey.SetDestination(_address.Get());
+
+        hexscript = HexStr(scriptPubKey);
+        qDebug() << "hex script: " << QString::fromStdString(hexscript);
+        sender_address = _address.ToString();
+        qDebug() << " sender address: " << QString::fromStdString(sender_address);
+    } else {
+        qDebug()<< "Bad private key.";
+        xchatRobot.SubmitMsg("Bad private key.");
+        emit sendcoinFailed();
+        emit finished();
+    }
+
     QJsonObject response;
     qDebug() << "received utxo" << resObj;
     response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));
@@ -424,7 +467,8 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res)
     } else {
 
         RawTransaction = "";
-        int64 send_value = AmountFromStr(value_str.c_str());
+        int64 send_value = AmountFromStr(send_amount.c_str());
+        qDebug() << "send amount: " << send_value;
         nMinFee = 1;
 
         QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
@@ -432,6 +476,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res)
 
         std::vector<std::string> inputs;
         std::vector<std::string> outputs;
+        inputs.clear();
 
         int64 inputs_sum = 0;
         foreach(const QString& key, resObj.keys()) {
@@ -450,11 +495,11 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res)
                     + tx_details.at(1) + ","
                     + hexscript + ","
                     + value.toString().toStdString();
-
+            qDebug() << "detailed input TX: " << QString::fromStdString(detailed_input_tx);
 
             inputs.push_back(detailed_input_tx);
 
-            outputs.push_back(target_address + "," + StrFromAmount(send_value));
+            outputs.push_back(output_address + "," + StrFromAmount(send_value));
 
             if ((inputs_sum - (send_value + nMinFee)) >= 1) {
                 outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + nMinFee)));
@@ -463,9 +508,11 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res)
             // recalculate fee_value based on inputs
             std::string inputString = std::accumulate(inputs.begin(), inputs.end(), std::string{});
             QString inputStr = QString::fromStdString(inputString);
+            qDebug() << "input string: " << inputStr;
 
             std::string outputString = std::accumulate(outputs.begin(), outputs.end(), std::string{});
             QString outputStr = QString::fromStdString(outputString);
+            qDebug() << "output string: " << outputStr;
 
             calculate_fee(inputStr, outputStr);
 
@@ -503,7 +550,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res)
     }
 }
 
-void SendcoinWorker::calculate_fee(const QString inputs, const QString outputs)
+void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputStr)
 {
     int nBaseFee = 1;
     int outCount = 0;
@@ -511,12 +558,12 @@ void SendcoinWorker::calculate_fee(const QString inputs, const QString outputs)
     int nBytes;
     tooBig = false;
     qDebug() << "calculating fee ...";
-    qDebug() << "input string: " << inputs;
-    qDebug() << "output string: " << outputs;
+    qDebug() << "input string: " << inputStr;
+    qDebug() << "output string: " << outputStr;
 
-    QStringList outputList = outputs.split(' ');
+    QStringList outputList = outputStr.split(' ');
 
-    // check if transaction size is lower than 100kb, no need to worry for now because we only return a maximum of 50 utxo and allow 1 receiving address
+    // check if transaction size is lower than 100kb, no need to worry for now because we only return a maximum of 50 utxo and allow 1 target address
     nBytes = 1;
 
     if (nBytes > 100000) {

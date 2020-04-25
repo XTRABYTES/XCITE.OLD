@@ -57,6 +57,7 @@ public:
     SendcoinWorker(const QJsonArray *params);
     ~SendcoinWorker();
 
+
 public slots:
     void process();
 
@@ -70,7 +71,7 @@ signals:
 
 public Q_SLOTS:
     void unspent_request(const QJsonArray *params);
-    void unspent_onResponse(QString id, QString utxo);
+    void unspent_onResponse(QString id, QString utxo, QString target, QString amount, QString privkey);
     void calculate_fee(const QString inputs, const QString outputs);
     void txbroadcast_request(const QJsonArray *params);
     void txbroadcast_onResponse(QJsonArray params, QJsonObject );
@@ -83,6 +84,7 @@ private:
     std::string target_address;
     std::string value_str;
     QString trace_id;
+    QString module;
     std::string RawTransaction;
     StaticNetHttpClient *client;
     bool tooBig;
@@ -113,6 +115,9 @@ public Q_SLOTS:
 
 private:
     QString msg;
+    QString target_addr;
+    QString send_amount;
+    QString priv_key;
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
     void help();
@@ -156,7 +161,6 @@ private:
     int traceID;
     QString ConnectStr;
 };
-
 
 extern StaticNet staticNet;
 
