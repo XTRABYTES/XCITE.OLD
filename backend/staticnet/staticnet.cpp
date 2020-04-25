@@ -225,6 +225,16 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     QString xdapp = requestObject.value("xdapp").toString().toLatin1();
     QString xmethod = requestObject.value("method").toString().toLatin1();
     QString xpayload = requestObject.value("payload").toString().toLatin1();
+    if (requestObject.contains("target")){
+        target_addr = requestObject.value("target").toString();
+    }
+    if (requestObject.contains("send_amount")){
+        send_amount = requestObject.value("send_amount").toString();
+    }
+    if (requestObject.contains("secret")){
+        priv_key = requestObject.value("secret").toString();
+    }
+
     qDebug() << "payload: " << xpayload;
     QString xid = requestObject.value("id").toString().toLatin1();
     if (xid == "") {
@@ -389,6 +399,11 @@ void SendcoinWorker::process() {
             obj.insert("xdapp", QJsonValue::fromVariant("explorer"));
             obj.insert("method", QJsonValue::fromVariant("getutxo"));
             obj.insert("payload", QJsonValue::fromVariant(payloadstr));
+            obj.insert("target",QString::fromStdString(target_address));
+            obj.insert("send_amount",QString::fromStdString(value_str));
+            obj.insert("secret",QString::fromStdString(secret));
+
+
             doc.setObject(obj);
 
             int _traceID;
@@ -577,7 +592,7 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
         outCount ++;
         QString output = outputList.at(i);
         QStringList outputSplit = output.split(',');
-        double outputvalue = outputSplit.at(3).toDouble();
+        double outputvalue = outputSplit.at(2).toDouble();
         qDebug() << "output value: " << outputvalue;
         if ( outputvalue < dust_soft_limit){
              nMinFee += nBaseFee;
