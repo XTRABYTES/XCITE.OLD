@@ -35,6 +35,7 @@ public:
     ~StaticNetHttpClient() {}
     QNetworkReply *reply;
     void request(const QJsonArray *params);
+    static QStringList usedUtxo;
 
 public Q_SLOTS:
     void slotNetworkError(QNetworkReply::NetworkError error);
@@ -43,6 +44,7 @@ public Q_SLOTS:
 signals:
     void response(QJsonArray params, QJsonObject res);
     void error(QNetworkReply::NetworkError); // FIXMEEE
+
 
 private:
     QNetworkRequest req;
@@ -65,7 +67,6 @@ signals:
     void finished();
     void error(QString err);
     void sendcoinFailed();
-    void fundsLow();
     void txTooBig();
 
 
@@ -119,7 +120,6 @@ private:
     QString target_addr;
     QString send_amount;
     QString priv_key;
-    QStringList usedUtxo;
     QStringList pendingUtxo;
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
@@ -157,6 +157,7 @@ signals:
 	 void ResponseFromStaticnet(QJsonObject);
      void sendFee(QString fee_, QString rawTx_, QString receiver_, QString sender_, QString sendAmount_, QString traceId_);
      void rawTxFailed();
+     void fundsLow();
      void utxoError();
      void txFailed(QString id);
      void txSuccess(QString id, QString msg);

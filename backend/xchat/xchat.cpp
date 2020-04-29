@@ -364,7 +364,7 @@ void XchatObject::mqtt_StateChanged() {
       emit xchatStateChanged();
 
     }else{
-        broker.reconnect();
+     //   broker.reconnect();
         emit xchatConnectionFail();
         emit xchatStateChanged();
     }

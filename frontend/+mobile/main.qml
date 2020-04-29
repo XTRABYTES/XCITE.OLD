@@ -2672,7 +2672,7 @@ ApplicationWindow {
             if (Qt.application.state === Qt.ApplicationActive) {
                 inActive = false
                 checkSessionId()
-                xChatReconnect();
+             //   xChatReconnect();
                 status = "online";
                 marketValueTimer.restart()
                 explorerTimer1.restart()
@@ -3130,7 +3130,7 @@ ApplicationWindow {
         running: xChatConnecting === true && inActive == false
 
         onTriggered: {
-            xChatReconnect()
+           // xChatReconnect()
         }
     }
 

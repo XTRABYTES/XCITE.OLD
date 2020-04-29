@@ -28,6 +28,7 @@
 
 
 StaticNet staticNet;
+QStringList usedUtxo;
 
 void StaticNet::Initialize() {
 
@@ -466,7 +467,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
     response.insert("params", QJsonValue::fromVariant(res));
     QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
 
-    if (!resObj["error"].isNull()) {
+    if (resObj.contains("error")){
         xchatRobot.SubmitMsg("dicom - backend - getutxo error. ID: #"+ id);
         emit finished();
     } else {
@@ -495,7 +496,6 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
 
             QJsonValue value = resObj.value(key);
             int64 tx_value = AmountFromStr(value.toString().toStdString().c_str());
-            inputs_sum = inputs_sum + tx_value;
 
             std::string input_tx = key.toStdString();
             std::vector<std::string> tx_details;
@@ -507,8 +507,11 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                     boost::split(utxo_details, utxoID, [](char c){return c == ',';});
                     if (tx_details.at(0) == utxo_details.at(2) && xUtility.getSelectedNetworkName() == utxo_details.at(0)) {
                         xchatRobot.SubmitMsg("dicom - backend - create transaction: utxo already used");
+                        continue;
                     }
                     else {
+                        inputs_sum = inputs_sum + tx_value;
+
                         std::string detailed_input_tx = tx_details.at(0) + ","
                                 + tx_details.at(1) + ","
                                 + hexscript + ","
@@ -549,6 +552,8 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                 }
             }
             else {
+                inputs_sum = inputs_sum + tx_value;
+
                 std::string detailed_input_tx = tx_details.at(0) + ","
                         + tx_details.at(1) + ","
                         + hexscript + ","
@@ -589,15 +594,15 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
         }
 
         qDebug() << "final fee: " << (nMinFee * nBaseFee);
-        QStringList usedUtxo = used_Utxo;
+        usedUtxo = used_Utxo;
         QString network = QString::fromStdString(xUtility.getSelectedNetworkName());
         for (int i = 0; i < inputStringList.count(); i++) {
             usedUtxo.append(network + "," + id + "," + inputStringList.at(i));
         }
 
         if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) < 0) {
-            emit fundsLow();
-            emit sendcoinFailed();
+            emit staticNet.fundsLow();
+          //  emit staticNet.sendcoinFailed();
         } else {
             if (secret != ""){
                 qDebug() << "Creating RAW transaction...";
