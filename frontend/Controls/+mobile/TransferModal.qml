@@ -1290,6 +1290,14 @@ Rectangle {
                             transactionSend = 1
                         }
                     }
+                    onFundsLow: {
+                        if (transferTracker == 1 && createTx == true) {
+                            console.log("Funds too low")
+                            createTx = false
+                            failedSend = 1
+                            transactionSend = 1
+                        }
+                    }
                     onUtxoError: {
                         if (transferTracker == 1 && createTx == true) {
                             console.log("Error retrieving UTXO")

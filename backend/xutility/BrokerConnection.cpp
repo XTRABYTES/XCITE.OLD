@@ -57,7 +57,7 @@ void BrokerConnection::reconnect(){
         reconnectTimer.setSingleShot(true);
         reconnectTimer.start(10000);
         qDebug() << "reconnecting";
-        chooseServer();
+      //  chooseServer();
         m_client.setHost(selectedServer);
         m_client.connectToHost();
     }else{
@@ -166,7 +166,7 @@ void BrokerConnection::connectExchange(QString queueName){
            exchange->publish(message, "xcite.xchat", properties);
        }else{
            if(!me.isEmpty()){
-               reconnect();
+               //reconnect();
            }else{
              qDebug() << "not connected send";
            }
