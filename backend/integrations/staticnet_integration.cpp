@@ -42,6 +42,17 @@ void staticnet_integration::dicomRequestEntry(QString msg) {
     }
 }
 
+void staticnet_integration::clearUtxoList() {
+
+    int _traceID;
+    QString clearUtxo = "!!staticnet clearUtxo ";
+    if (staticNet.CheckUserInputForKeyWord(clearUtxo, &_traceID)) {
+        qDebug() << "staticnet command accepted";
+    } else {
+        qDebug() << "staticnet command not accepted";
+    }
+}
+
 void staticnet_integration::onResponseFromStaticnetEntry(QJsonObject response) {
     //qDebug() << "staticnet response recevied:";
 

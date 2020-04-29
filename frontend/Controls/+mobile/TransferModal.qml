@@ -70,6 +70,11 @@ Rectangle {
     property string referenceTransfer: "REFERENCE"
     property int txFee: 1
     property string rawTX: ""
+    property string receivedReceiver: ""
+    property string receivedSender: ""
+    property string receivedAmount: ""
+    property string receivedLabel: ""
+    property string receivedTxID: ""
     property string txId: ""
     property string network: coinID.text
     property real amountSend: 0
@@ -878,7 +883,7 @@ Rectangle {
                      && publicKey.text != ""
             mobile: 1
             calculator: getTestnet(coinID.text) === true? 0 : 1
-            onTextChanged: {
+            onTextEdited: {
                 commaArray = sendAmount.text.split(',')
                 if (commaArray[1] !== undefined) {
                     detectComma = 1
@@ -906,8 +911,6 @@ Rectangle {
                         precision = 0
                     }
                 }
-
-
                 detectInteraction()
             }
         }
@@ -924,25 +927,25 @@ Rectangle {
             }
         }
 
-        Label {
-            text: "Input amount too low"
-            color: "#FD2E2E"
-            anchors.left: sendAmount.left
-            anchors.leftMargin: 5
-            anchors.top: sendAmount.bottom
-            anchors.topMargin: 1
-            font.pixelSize: 11
-            font.family: xciteMobile.name
-            visible: transferSwitch.on == true
-                     && transactionSend == 0
-                     && addressbookTracker == 0
-                     && scanQRTracker == 0
-                     && calculatorTracker == 0
-                     && (coinID.text === "XBY"? inputAmount < 1 : (coinID.text === "XFUEL"? inputAmount < 1 : (coinID.text === "XTEST"? inputAmount < 1 : inputAmount < 0)))
-                     && walletList.get(selectedWallet).viewOnly === false
-                     && publicKey.text != ""
-        }
-
+ /*       Label {
+ *           text: "Input amount too low"
+ *           color: "#FD2E2E"
+ *           anchors.left: sendAmount.left
+ *           anchors.leftMargin: 5
+ *           anchors.top: sendAmount.bottom
+ *           anchors.topMargin: 1
+ *           font.pixelSize: 11
+ *           font.family: xciteMobile.name
+ *           visible: transferSwitch.on == true
+ *                    && transactionSend == 0
+ *                    && addressbookTracker == 0
+ *                    && scanQRTracker == 0
+ *                    && calculatorTracker == 0
+ *                    && (coinID.text === "XBY"? inputAmount < 1 : (coinID.text === "XFUEL"? inputAmount < 1 : (coinID.text === "XTEST"? inputAmount < 1 : inputAmount < 0)))
+ *                    && walletList.get(selectedWallet).viewOnly === false
+ *                    && publicKey.text != ""
+ *       }
+*/
         Label {
             text: "Insufficient funds"
             color: "#FD2E2E"
@@ -1181,7 +1184,7 @@ Rectangle {
             color: (invalidAddress == 0
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
-                    && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
+                    //&& (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                     && precision <= 8
                     && inputAmount <= (walletList.get(selectedWallet).balance)) ? maincolor : "#727272"
             opacity: darktheme == true? 0.25 : 0.5
@@ -1198,7 +1201,6 @@ Rectangle {
                      && createTx == false
 
             MouseArea {
-                //property string network: coinID.text == "XBY"? "xtrabytes" : (coinID.text == "XFUEL"? "xfuel" : (coinID.text == "XTEST"? "testnet" : "nothing"))
                 anchors.fill: sendButton
 
                 onPressed: {
@@ -1237,7 +1239,10 @@ Rectangle {
                             walletListTracker = 0
                             selectNetwork = false
                             createTx = true
-                            sendCoins(keyInput.text + " " +  replaceComma + " " +  getPrivKey(coinID.text, walletLabel.text))
+                            var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                            var msg = "UI - send coins - target:" + keyInput.text + ", amount:" +  sendAmount.text + ", private key: " +  getPrivKey(coinID.text, walletLabel.text)
+                            xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
+                            sendCoins(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
                         }
                     }
 
@@ -1255,21 +1260,35 @@ Rectangle {
 
                     onSendFee: {
                         if (transferTracker == 1 && createTx == true) {
-                            console.log("raw transaction created: " + rawTx + ", fee: " + fee + ", id: " + traceId)
-                            txFee = fee
-                            rawTX = rawTx
-                            txID = traceId
-                            transactionSend = 1
-                            createTx = false
+                            notification.play()
+                            console.log("sender: " + sender_ + " receiver: " + receiver_ + " amount: " + sendAmount_)
+                            if (getAddress(coinID.text, walletLabel.text) === sender_) {
+                                console.log("raw transaction created: " + rawTx_ + ", fee: " + fee_ + ", id: " + traceId_)
+                                txFee = fee_
+                                rawTX = rawTx_
+                                receivedReceiver = receiver_
+                                receivedSender = sender_
+                                receivedAmount = sendAmount_
+                                receivedLabel = ""
+                                for (var i = 0; i < walletList.count; i ++) {
+                                    if (walletList.get(i).address === receivedReceiver){
+                                        receivedLabel = walletList.get(i).label
+                                    }
+                                }
+
+                                receivedTxID = traceId_
+                                transactionSend = 1
+                                createTx = false
+                            }
                         }
                     }
                     onRawTxFailed: {
-                       if (transferTracker == 1 && createTx == true) {
-                           console.log("failed to create raw transaction")
-                           createTx = false
-                           failedSend = 1
-                           transactionSend = 1
-                       }
+                        if (transferTracker == 1 && createTx == true) {
+                            console.log("failed to create raw transaction")
+                            createTx = false
+                            failedSend = 1
+                            transactionSend = 1
+                        }
                     }
                     onUtxoError: {
                         if (transferTracker == 1 && createTx == true) {
@@ -1281,18 +1300,18 @@ Rectangle {
                     }
                 }
             }
+        }
 
-            AnimatedImage {
-                id: waitingDots01
-                source: 'qrc:/gifs/loading-gif_01.gif'
-                width: 75
-                height: 50
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -50
-                playing: createTx == true
-                visible: createTx == true
-            }
+        AnimatedImage {
+            id: waitingDots01
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 75
+            height: 50
+            anchors.horizontalCenter: sendButton.horizontalCenter
+            anchors.verticalCenter: sendButton.verticalCenter
+            anchors.verticalCenterOffset: -20
+            playing: createTx == true
+            visible: createTx == true
         }
 
         Text {
@@ -1303,7 +1322,7 @@ Rectangle {
             color: (invalidAddress == 0
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
-                    && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
+                    //&& (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                     && precision <= 8
                     && inputAmount <= (walletList.get(selectedWallet).balance)) ? (darktheme == false? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: sendButton.horizontalCenter
@@ -1318,7 +1337,7 @@ Rectangle {
             border.color: (invalidAddress == 0
                            && keyInput.text !== ""
                            && sendAmount.text !== ""
-                           && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
+                           //&& (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                            && precision <= 8
                            && inputAmount <= (walletList.get(selectedWallet).balance)) ? maincolor : "#979797"
             border.width: 1
@@ -1338,441 +1357,447 @@ Rectangle {
                      &&requestSend == 0
 
             Text {
-            id: sendingLabel
-            text: "SENDING:"
-            anchors.left: confirmationSendButton.left
-            anchors.top: sendConfirmation.modalTop
-            anchors.topMargin: 20
-            font.family: xciteMobile.name
-            font.pixelSize: 16
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+                id: sendingLabel
+                text: "SENDING:"
+                anchors.left: confirmationSendButton.left
+                anchors.top: sendConfirmation.modalTop
+                anchors.topMargin: 20
+                font.family: xciteMobile.name
+                font.pixelSize: 16
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Item {
-            id:amount
-            implicitWidth: confirmationAmount.implicitWidth + confirmationAmount1.implicitWidth + confirmationAmount2.implicitWidth + 7
-            implicitHeight: confirmationAmount.implicitHeight
-            anchors.bottom: sendingLabel.bottom
-            anchors.right: cancelSendButton.right
-            anchors.rightMargin: 10
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Item {
+                id:amount
+                implicitWidth: confirmationAmount.implicitWidth + confirmationAmount1.implicitWidth + confirmationAmount2.implicitWidth + 7
+                implicitHeight: confirmationAmount.implicitHeight
+                anchors.bottom: sendingLabel.bottom
+                anchors.right: cancelSendButton.right
+                anchors.rightMargin: 10
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: confirmationAmount
-            text: coinID.text
-            anchors.top: amount.top
-            anchors.right: amount.right
-            font.family: xciteMobile.name
-            font.pixelSize: 16
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                id: confirmationAmount
+                text: coinID.text
+                anchors.top: amount.top
+                anchors.right: amount.right
+                font.family: xciteMobile.name
+                font.pixelSize: 16
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            property string transferAmount: inputAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
-            property var amountArray: transferAmount.split('.')
-            id: confirmationAmount1
-            text: "." + amountArray[1]
-            anchors.bottom: confirmationAmount.bottom
-            anchors.bottomMargin: 2
-            anchors.right: confirmationAmount.left
-            anchors.rightMargin: 7
-            font.family: xciteMobile.name
-            font.pixelSize: 12
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                property string transferAmount: receivedAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                property var amountArray: transferAmount.split('.')
+                id: confirmationAmount1
+                text: amountArray[1] !== undefined?  ("." + amountArray[1]) : ".0000"
+                anchors.bottom: confirmationAmount.bottom
+                anchors.bottomMargin: 2
+                anchors.right: confirmationAmount.left
+                anchors.rightMargin: 7
+                font.family: xciteMobile.name
+                font.pixelSize: 12
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            property string transferAmount: inputAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
-            property var amountArray: transferAmount.split('.')
-            id: confirmationAmount2
-            text: amountArray[0]
-            anchors.top: confirmationAmount.top
-            anchors.left: amount.left
-            font.family: xciteMobile.name
-            font.pixelSize: 16
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                property string transferAmount: receivedAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                property var amountArray: transferAmount.split('.')
+                id: confirmationAmount2
+                text: amountArray[0]
+                anchors.top: confirmationAmount.top
+                anchors.left: amount.left
+                font.family: xciteMobile.name
+                font.pixelSize: 16
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: to
-            text: "TO:"
-            anchors.left: confirmationSendButton.left
-            anchors.top: sendingLabel.bottom
-            anchors.topMargin: 15
-            font.family: xciteMobile.name
-            font.pixelSize: 16
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                id: to
+                text: "TO:"
+                anchors.left: confirmationSendButton.left
+                anchors.top: sendingLabel.bottom
+                anchors.topMargin: 15
+                font.family: xciteMobile.name
+                font.pixelSize: 16
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: confirmationAddress
-            text: addressName != ""? addressName : keyInput.text
-            anchors.bottom: to.bottom
-            anchors.bottomMargin: 2
-            anchors.right: cancelSendButton.right
-            anchors.rightMargin: 10
-            font.family: xciteMobile.name
-            font.pixelSize: addressName != ""? 16 : 10
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                id: confirmationAddress
+                text: receivedLabel != ""? receivedLabel : receivedReceiver
+                anchors.bottom: to.bottom
+                anchors.bottomMargin: 2
+                anchors.right: cancelSendButton.right
+                anchors.rightMargin: 10
+                font.family: xciteMobile.name
+                font.pixelSize: addressName != ""? 16 : 10
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: confirmationAddressName
-            text: "(" + keyInput.text + ")"
-            anchors.top: confirmationAddress.bottom
-            anchors.topMargin: 5
-            anchors.right: cancelSendButton.right
-            anchors.rightMargin: 10
-            font.family: xciteMobile.name
-            font.pixelSize: 10
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: addressName != ""
-                     && transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                id: confirmationAddressName
+                text: "(" + receivedReceiver + ")"
+                anchors.top: confirmationAddress.bottom
+                anchors.topMargin: 5
+                anchors.right: cancelSendButton.right
+                anchors.rightMargin: 10
+                font.family: xciteMobile.name
+                font.pixelSize: 10
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: receivedReceiver != ""
+                         && transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: reference
-            text: "REF.:"
-            anchors.left: confirmationSendButton.left
-            anchors.top: confirmationAddressName.bottom
-            anchors.topMargin: 5
-            font.family: xciteMobile.name
-            font.pixelSize: 16
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: referenceInput.text !== ""
-                     && transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                id: reference
+                text: "REF.:"
+                anchors.left: confirmationSendButton.left
+                anchors.top: confirmationAddressName.bottom
+                anchors.topMargin: 5
+                font.family: xciteMobile.name
+                font.pixelSize: 16
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: referenceInput.text !== ""
+                         && transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: referenceText
-            text: referenceInput.text
-            anchors.bottom: reference.bottom
-            anchors.right: cancelSendButton.right
-            anchors.rightMargin: 10
-            font.family: xciteMobile.name
-            font.pixelSize: 16
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: referenceInput.text !== ""
-                     && transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                id: referenceText
+                text: referenceInput.text
+                anchors.bottom: reference.bottom
+                anchors.right: cancelSendButton.right
+                anchors.rightMargin: 10
+                font.family: xciteMobile.name
+                font.pixelSize: 16
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: referenceInput.text !== ""
+                         && transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: feeLabel
-            text: "TRANSACTION FEE:"
-            anchors.left: confirmationSendButton.left
-            anchors.top: reference.bottom
-            anchors.topMargin: 15
-            font.family: xciteMobile.name
-            font.pixelSize: 16
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                id: feeLabel
+                text: "TRANSACTION FEE:"
+                anchors.left: confirmationSendButton.left
+                anchors.top: reference.bottom
+                anchors.topMargin: 15
+                font.family: xciteMobile.name
+                font.pixelSize: 16
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Item {
-            id:feeAmount
-            implicitWidth: confirmationFeeAmount.implicitWidth + confirmationFeeAmount1.implicitWidth + confirmationFeeAmount2.implicitWidth + 7
-            implicitHeight: confirmationAmount.implicitHeight
-            anchors.bottom: feeLabel.bottom
-            anchors.right: cancelSendButton.right
-            anchors.rightMargin: 10
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Item {
+                id:feeAmount
+                implicitWidth: confirmationFeeAmount.implicitWidth + confirmationFeeAmount1.implicitWidth + confirmationFeeAmount2.implicitWidth + 7
+                implicitHeight: confirmationAmount.implicitHeight
+                anchors.bottom: feeLabel.bottom
+                anchors.right: cancelSendButton.right
+                anchors.rightMargin: 10
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: confirmationFeeAmount
-            text: coinID.text
-            anchors.top: feeAmount.top
-            anchors.right: feeAmount.right
-            font.family: xciteMobile.name
-            font.pixelSize: 16
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                id: confirmationFeeAmount
+                text: coinID.text
+                anchors.top: feeAmount.top
+                anchors.right: feeAmount.right
+                font.family: xciteMobile.name
+                font.pixelSize: 16
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: confirmationFeeAmount1
-            text: ".0000"
-            anchors.bottom: confirmationFeeAmount.bottom
-            anchors.bottomMargin: 2
-            anchors.right: confirmationFeeAmount.left
-            anchors.rightMargin: 7
-            font.family: xciteMobile.name
-            font.pixelSize: 12
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                property string transferFee: txFee.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                property var feeArray: transferFee.split('.')
+                id: confirmationFeeAmount1
+                text: feeArray[1] !== undefined?  ("." + feeArray[1]) : ".0000"
+                anchors.bottom: confirmationFeeAmount.bottom
+                anchors.bottomMargin: 2
+                anchors.right: confirmationFeeAmount.left
+                anchors.rightMargin: 7
+                font.family: xciteMobile.name
+                font.pixelSize: 12
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Text {
-            id: confirmationFeeAmount2
-            text: txFee
-            anchors.top: confirmationFeeAmount.top
-            anchors.left: feeAmount.left
-            font.family: xciteMobile.name
-            font.pixelSize: 16
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                property string transferFee: txFee.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                property var feeArray: transferFee.split('.')
+                id: confirmationFeeAmount2
+                text: feeArray[0]
+                anchors.top: confirmationFeeAmount.top
+                anchors.left: feeAmount.left
+                font.family: xciteMobile.name
+                font.pixelSize: 16
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Rectangle {
-            id: confirmationSendButton
-            width: (doubbleButtonWidth - 30) / 2
-            height: 34
-            anchors.top: feeLabel.bottom
-            anchors.topMargin: 25
-            anchors.right: parent.horizontalCenter
-            anchors.rightMargin: 5
-            color: "#4BBE2E"
-            opacity: darktheme == true? 0.25 : 0.5
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
+            Rectangle {
+                id: confirmationSendButton
+                width: (doubbleButtonWidth - 30) / 2
+                height: 34
+                anchors.top: feeLabel.bottom
+                anchors.topMargin: 25
+                anchors.right: parent.horizontalCenter
+                anchors.rightMargin: 5
+                color: "#4BBE2E"
+                opacity: darktheme == true? 0.25 : 0.5
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
 
-            MouseArea {
-                anchors.fill: confirmationSendButton
+                MouseArea {
+                    anchors.fill: confirmationSendButton
 
-                onPressed: {
-                    click01.play()
-                    detectInteraction()
-                }
-
-                onCanceled: {
-                }
-
-                onReleased: {
-                }
-
-                onClicked: {
-                    if (userSettings.pinlock === true){
-                        pincodeTracker = 1
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
                     }
-                    else {
-                        //sendCoins(keyInput.text + " " +  replaceComma + " " +  getPrivKey(coinID.text, walletLabel.text))
-                        var dataModelParams = {"xdapp":network,"method":"broadcastTx","payload":rawTX,"id":txId}
-                        var paramsJson = JSON.stringify(dataModelParams3)
-                        dicomRequest(paramsJson3)
+
+                    onCanceled: {
+                    }
+
+                    onReleased: {
+                    }
+
+                    onClicked: {
+                        if (userSettings.pinlock === true){
+                            pincodeTracker = 1
+                        }
+                        else {
+                            var nw = coinID.text.toLowerCase()
+                            if (nw === "xtest") {
+                                nw = "testnet"
+                            }
+                            var dataModelParams = {"xdapp":nw,"method":"sendrawtransaction","payload":rawTX,"id":receivedTxID}
+                            var paramsJson = JSON.stringify(dataModelParams)
+                            dicomRequest(paramsJson)
+                            var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                            var msg = "UI - confirming TX: " + paramsJson
+                            xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
+                            console.log("request TX broadcast: " + paramsJson)
+                            failedSend = 0
+                            requestSend = 1
+                        }
+                    }
+                }
+
+                Timer {
+                    id: timer3
+                    interval: 1000
+                    repeat: false
+                    running: false
+
+                    onTriggered: {
+                        var dataModelParams = {"xdapp":network,"method":"broadcastTx","payload":rawTX,"id":receivedTxID}
+                        var paramsJson = JSON.stringify(dataModelParams)
+                        dicomRequest(paramsJson)
                         console.log("request TX broadcast: " + paramsJson)
                         failedSend = 0
                         requestSend = 1
                     }
                 }
-            }
 
-            Timer {
-                id: timer3
-                interval: 1000
-                repeat: false
-                running: false
+                Connections {
+                    target: UserSettings
 
-                onTriggered: {
-                    sendCoins(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
-                    failedSend = 0
-                    requestSend = 1
-                }
-            }
-
-            Connections {
-                target: UserSettings
-
-                onPincodeCorrect: {
-                    if (pincodeTracker == 1 && transferTracker == 1) {
-                        timer3.start()
+                    onPincodeCorrect: {
+                        if (pincodeTracker == 1 && transferTracker == 1) {
+                            timer3.start()
+                        }
                     }
                 }
-            }
 
-/**            Connections {
-*                target: static_int
-*
-*                onSendCoinsSuccess : {
-*                    if (transferTracker == 1 && requestSend == 1) {
-*                        confirmationSend = 1
-*                        requestSend = 0
-*                        pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
-*                    }
-*                }
-*
-*                onSendCoinsFailure : {
-*                    if (transferTracker == 1 && requestSend == 1) {
-*                        requestSend = 0
-*                        failedSend = 1
-*                    }
-*                }
-*            }
-*/
-            Connections {
-                target: xChat
+                Connections {
+                    target: xChat
 
-                onXchatResponseSignal: {
-                    if (transferTracker == 1 && requestSend == 1) {
-                        transferReply = text
-                        replyArray = transferReply.split(' ')
-                        var s = replyArray[2].split(":")
-                        if (replyArray[0] === "dicom" && s[1] === txId) {
-                            var r = replyArray[3].split(":")
-                            if (r[1] !== "error") {
-                                confirmationSend = 1
-                                requestSend = 0
-                                pendingList.append({"coin": coinID.text, "address": getAddress(coinID.text, walletLabel.text), "txid": transactionId, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
-                            }
-                            else {
-                                requestSend = 0
-                                failedSend = 1
+                    onXchatResponseSignal: {
+                        if (transferTracker == 1 && requestSend == 1) {
+                            transferReply = text
+                            replyArray = transferReply.split(' ')
+                            var s = replyArray[3].split(":")
+                            if (replyArray[0] === "dicom" && s[1] === receivedTxID) {
+                                var r = replyArray[4].split(":")
+                                if (r[1] !== "error") {
+                                    confirmationSend = 1
+                                    requestSend = 0
+                                    pendingList.append({"coin": coinID.text, "address": receivedSender, "txid": r[1], "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
+                                    receivedAmount = ""
+                                    receivedReceiver = ""
+                                    receivedSender = ""
+                                    receivedTxID = ""
+                                    receivedLabel = ""
+                                }
+                                else {
+                                    requestSend = 0
+                                    failedSend = 1
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        Text {
-            text: "CONFIRM"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            color: "#4BBE2E"
-            opacity: darktheme == true? 0.5 : 0.75
-            font.bold: true
-            anchors.horizontalCenter: confirmationSendButton.horizontalCenter
-            anchors.verticalCenter: confirmationSendButton.verticalCenter
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                text: "CONFIRM"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                color: "#4BBE2E"
+                opacity: darktheme == true? 0.5 : 0.75
+                font.bold: true
+                anchors.horizontalCenter: confirmationSendButton.horizontalCenter
+                anchors.verticalCenter: confirmationSendButton.verticalCenter
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Rectangle {
-            width: (doubbleButtonWidth - 30) / 2
-            height: 34
-            anchors.horizontalCenter: confirmationSendButton.horizontalCenter
-            anchors.verticalCenter: confirmationSendButton.verticalCenter
-            color: "transparent"
-            border.color: "#4BBE2E"
-            border.width: 1
-            opacity: darktheme == true? 0.5 : 0.75
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Rectangle {
+                width: (doubbleButtonWidth - 30) / 2
+                height: 34
+                anchors.horizontalCenter: confirmationSendButton.horizontalCenter
+                anchors.verticalCenter: confirmationSendButton.verticalCenter
+                color: "transparent"
+                border.color: "#4BBE2E"
+                border.width: 1
+                opacity: darktheme == true? 0.5 : 0.75
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Rectangle {
-            id: cancelSendButton
-            width: (doubbleButtonWidth - 30) / 2
-            height: 34
-            color: "#E55541"
-            opacity: darktheme == true? 0.25 : 0.5
-            anchors.top: feeLabel.bottom
-            anchors.topMargin: 25
-            anchors.left: parent.horizontalCenter
-            anchors.leftMargin: 5
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
+            Rectangle {
+                id: cancelSendButton
+                width: (doubbleButtonWidth - 30) / 2
+                height: 34
+                color: "#E55541"
+                opacity: darktheme == true? 0.25 : 0.5
+                anchors.top: feeLabel.bottom
+                anchors.topMargin: 25
+                anchors.left: parent.horizontalCenter
+                anchors.leftMargin: 5
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
 
-            MouseArea {
-                anchors.fill: cancelSendButton
+                MouseArea {
+                    anchors.fill: cancelSendButton
 
-                onPressed: {
-                    click01.play()
-                    detectInteraction()
-                }
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
 
-                onCanceled: {
-                }
+                    onCanceled: {
+                    }
 
-                onReleased: {
-                }
+                    onReleased: {
+                    }
 
-                onClicked: {
-                    failedSend = 0
-                    transactionSend = 0
-                    transactionInProgress = false
+                    onClicked: {
+                        failedSend = 0
+                        transactionSend = 0
+                        transactionInProgress = false
+                        rawTX = ""
+                        txFee = 0
+                        receivedAmount = ""
+                        receivedLabel = ""
+                        receivedReceiver = ""
+                        receivedSender = ""
+                        receivedTxID = ""
+                    }
                 }
             }
-        }
 
-        Text {
-            text: "CANCEL"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            font.bold: true
-            color: "#E55541"
-            opacity: darktheme == true? 0.5 : 0.75
-            anchors.horizontalCenter: cancelSendButton.horizontalCenter
-            anchors.verticalCenter: cancelSendButton.verticalCenter
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Text {
+                text: "CANCEL"
+                font.family: xciteMobile.name
+                font.pointSize: 14
+                font.bold: true
+                color: "#E55541"
+                opacity: darktheme == true? 0.5 : 0.75
+                anchors.horizontalCenter: cancelSendButton.horizontalCenter
+                anchors.verticalCenter: cancelSendButton.verticalCenter
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
 
-        Rectangle {
-            width: (doubbleButtonWidth - 30) / 2
-            height: 34
-            color: "transparent"
-            border.color: "#E55541"
-            border.width: 1
-            opacity: darktheme == true? 0.5 : 0.75
-            anchors.horizontalCenter: cancelSendButton.horizontalCenter
-            anchors.verticalCenter: cancelSendButton.verticalCenter
-            visible: transactionSend == 1
-                     && confirmationSend == 0
-                     && failedSend == 0
-                     &&requestSend == 0
-        }
+            Rectangle {
+                width: (doubbleButtonWidth - 30) / 2
+                height: 34
+                color: "transparent"
+                border.color: "#E55541"
+                border.width: 1
+                opacity: darktheme == true? 0.5 : 0.75
+                anchors.horizontalCenter: cancelSendButton.horizontalCenter
+                anchors.verticalCenter: cancelSendButton.verticalCenter
+                visible: transactionSend == 1
+                         && confirmationSend == 0
+                         && failedSend == 0
+                         &&requestSend == 0
+            }
         }
 
         // Wait for feedback
@@ -1875,6 +1900,11 @@ Rectangle {
                         transactionInProgress = false
                         rawTX = ""
                         txFee = 0
+                        receivedAmount = ""
+                        receivedLabel = ""
+                        receivedReceiver = ""
+                        receivedSender = ""
+                        receivedTxID = ""
                     }
                 }
             }
@@ -1978,6 +2008,11 @@ Rectangle {
                         precision = 0
                         rawTX = ""
                         txFee = 0
+                        receivedAmount = ""
+                        receivedLabel = ""
+                        receivedReceiver = ""
+                        receivedSender = ""
+                        receivedTxID = ""
                         transactionInProgress = false
                         updateToAccount()
                     }
@@ -2235,6 +2270,11 @@ Rectangle {
             precision = 0
             rawTX = ""
             txFee = 0
+            receivedAmount = ""
+            receivedLabel = ""
+            receivedReceiver = ""
+            receivedSender = ""
+            createTx = false
         }
     }
 

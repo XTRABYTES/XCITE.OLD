@@ -126,6 +126,8 @@ ApplicationWindow {
 
         xChatServers.clear();
 
+        clearUtxoList();
+
         alertList.clear();
         alertList.append({"date": "", "origin": "", "message": "", "remove": true});
 
@@ -529,6 +531,7 @@ ApplicationWindow {
     signal sendGameInvite(string user, string opponent, string game, string gameID)
     signal confirmGameInvite(string user, string opponent, string game, string gameID, string accept)
     signal dicomRequest(string params)
+    signal clearUtxoList()
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {
@@ -2468,6 +2471,18 @@ ApplicationWindow {
             for (var i = 0; i < xChatServers.count; i ++) {
                 if (server === xChatServers.get(i).name) {
                     xChatServers.setProperty(i, "serverStatus", serverStatus)
+                }
+            }
+        }
+
+        onXchatResponseSignal: {
+            if (pingTracker != 1){
+                var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                console.log("replyTime: " + t)
+                var a = text
+                var b = a.split(' ')
+                if (b[0] === "dicom") {
+                    xPingTread.append({"message": text, "inout": "in", "author": "staticNet", "time": t})
                 }
             }
         }

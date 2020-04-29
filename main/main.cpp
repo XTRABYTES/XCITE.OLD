@@ -161,6 +161,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(changePassword(QString, QString)), &settings, SLOT(changePassword(QString, QString)));
     QObject::connect(rootObject, SIGNAL(downloadImage(QString)), &settings, SLOT(downloadImage(QString)));
 
+
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
     QObject::connect(rootObject, SIGNAL(findAllMarketValues()), &marketValue, SLOT(findAllCurrencyValues()));
@@ -185,6 +186,7 @@ int main(int argc, char *argv[])
 
     // connect QML signals for dicom
     QObject::connect(rootObject, SIGNAL(dicomRequest(QString)), &static_int, SLOT(dicomRequestEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(clearUtxoList()), &static_int, SLOT(clearUtxoList()));
 
     // connect signals for X-CHAT
     QObject::connect(rootObject, SIGNAL(xChatSend(QString,QString,QString,QString, QString, QString, QString)), &xchatRobot, SLOT(xchatInc(QString,QString,QString,QString, QString, QString, QString)));

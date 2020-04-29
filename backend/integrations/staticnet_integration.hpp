@@ -37,6 +37,7 @@ public slots:
     void sendCoinsEntry(QString msg);
     void dicomRequestEntry(QString msg);
     void onResponseFromStaticnetEntry(QJsonObject response);
+    void clearUtxoList();
 };
 
 

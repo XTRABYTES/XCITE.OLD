@@ -71,7 +71,7 @@ signals:
 
 public Q_SLOTS:
     void unspent_request(const QJsonArray *params);
-    void unspent_onResponse(QString id, QString utxo, QString target, QString amount, QString privkey);
+    void unspent_onResponse(QString id, QString utxo, QString target, QString amount, QString privkey, QStringList usedUtxo);
     void calculate_fee(const QString inputs, const QString outputs);
     void txbroadcast_request(const QJsonArray *params);
     void txbroadcast_onResponse(QJsonArray params, QJsonObject );
@@ -89,6 +89,7 @@ private:
     StaticNetHttpClient *client;
     bool tooBig;
     int nMinFee;
+    int nBaseFee = 100000000;
 };
 
 
@@ -118,6 +119,8 @@ private:
     QString target_addr;
     QString send_amount;
     QString priv_key;
+    QStringList usedUtxo;
+    QStringList pendingUtxo;
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
     void help();
@@ -152,7 +155,7 @@ public slots:
 
 signals:
 	 void ResponseFromStaticnet(QJsonObject);
-     void sendFee(QString fee, QString rawTx, QString traceId);
+     void sendFee(QString fee_, QString rawTx_, QString receiver_, QString sender_, QString sendAmount_, QString traceId_);
      void rawTxFailed();
      void utxoError();
 

@@ -158,9 +158,9 @@ Rectangle {
         anchors.leftMargin: 5
         anchors.top: pingModalLabel.bottom
         anchors.topMargin: 20
-        color: xdapp == "xby"? maincolor : "transparent"
+        color: xdapp == "xtrabytes"? maincolor : "transparent"
         border.width: 1
-        border.color: xdapp == "xby"? "transparent" : maincolor
+        border.color: xdapp == "xtrabytes"? "transparent" : maincolor
 
         Text {
             id: xbyBtnLabel
@@ -169,13 +169,13 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             font.pixelSize: 10
             font.family: "Brandon Grotesque"
-            color: xdapp == "xby"? "#2A2C31": (darktheme == true? "#F2F2F2" : "#2A2C31")
+            color: xdapp == "xtrabytes"? "#2A2C31": (darktheme == true? "#F2F2F2" : "#2A2C31")
         }
 
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                xdapp = "xby"
+                xdapp = "xtrabytes"
             }
         }
     }
@@ -473,7 +473,7 @@ Rectangle {
                         if (pingAmount.text != "") {
                             totalPings = Number.fromLocaleString(Qt.locale("en_US"),pingAmount.text)
                             if (totalPings <= 50) {
-                                xPingTread.append({"message": "ping: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
+                                xPingTread.append({"message": "UI - ping: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
                                 msgList.positionViewAtEnd()
                                 for (var a = 0; a < totalPings; a ++) {
                                     var b = pingSNR + a
@@ -494,7 +494,7 @@ Rectangle {
                         }
                         else {
                             totalPings = 1
-                            xPingTread.append({"message": "ping: " + myUsername + "_" + requestText.text + ", amount: 1", "inout": "out", "author": myUsername, "time": sendTime})
+                            xPingTread.append({"message": "UI - ping: " + myUsername + "_" + requestText.text + ", amount: 1", "inout": "out", "author": myUsername, "time": sendTime})
                             msgList.positionViewAtEnd()
                             var c = pingSNR + totalPings
                             pingIdentifier = myUsername + "_" + requestText.text + "_" + c
@@ -507,7 +507,7 @@ Rectangle {
                         }
                     }
                     else {
-                        xPingTread.append({"message": xdapp + ": " + requestText.text + " " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
+                        xPingTread.append({"message": "UI - " +  xdapp + ": " + requestText.text + " " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
                         msgList.positionViewAtEnd()
                         var dataModelParams3 = {"xdapp":xdapp, "method":requestText.text,"payload":pingAmount.text}
                         var paramsJson3 = JSON.stringify(dataModelParams3)
@@ -533,7 +533,7 @@ Rectangle {
             target: xChat
 
             onXchatResponseSignal: {
-                if (pingTracker == 1) {
+                //if (pingTracker == 1) {
                     replyTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
                     console.log("replyTime: " + replyTime)
                     pingReply = text
@@ -542,7 +542,7 @@ Rectangle {
                         xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
                         msgList.positionViewAtEnd()
                     }
-                }
+                //}
             }
         }
     }
