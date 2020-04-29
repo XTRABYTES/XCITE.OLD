@@ -158,6 +158,8 @@ signals:
      void sendFee(QString fee_, QString rawTx_, QString receiver_, QString sender_, QString sendAmount_, QString traceId_);
      void rawTxFailed();
      void utxoError();
+     void txFailed(QString id);
+     void txSuccess(QString id, QString msg);
 
 private:
     boost::mutex mutex;

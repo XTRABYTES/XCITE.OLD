@@ -927,7 +927,7 @@ Rectangle {
             }
         }
 
- /*       Label {
+        /*       Label {
  *           text: "Input amount too low"
  *           color: "#FD2E2E"
  *           anchors.left: sendAmount.left
@@ -1622,11 +1622,7 @@ Rectangle {
                             pincodeTracker = 1
                         }
                         else {
-                            var nw = coinID.text.toLowerCase()
-                            if (nw === "xtest") {
-                                nw = "testnet"
-                            }
-                            var dataModelParams = {"xdapp":nw,"method":"sendrawtransaction","payload":rawTX,"id":receivedTxID}
+                            var dataModelParams = {"xdapp":network,"method":"sendrawtransaction","payload":rawTX,"id":receivedTxID}
                             var paramsJson = JSON.stringify(dataModelParams)
                             dicomRequest(paramsJson)
                             var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
@@ -1666,29 +1662,33 @@ Rectangle {
                 }
 
                 Connections {
-                    target: xChat
+                    target: StaticNet
 
-                    onXchatResponseSignal: {
+                    onTxSuccess: {
                         if (transferTracker == 1 && requestSend == 1) {
-                            transferReply = text
-                            replyArray = transferReply.split(' ')
-                            var s = replyArray[3].split(":")
-                            if (replyArray[0] === "dicom" && s[1] === receivedTxID) {
-                                var r = replyArray[4].split(":")
-                                if (r[1] !== "error") {
-                                    confirmationSend = 1
-                                    requestSend = 0
-                                    pendingList.append({"coin": coinID.text, "address": receivedSender, "txid": r[1], "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
-                                    receivedAmount = ""
-                                    receivedReceiver = ""
-                                    receivedSender = ""
-                                    receivedTxID = ""
-                                    receivedLabel = ""
-                                }
-                                else {
-                                    requestSend = 0
-                                    failedSend = 1
-                                }
+                            if (id === receivedTxID) {
+                                confirmationSend = 1
+                                requestSend = 0
+                                pendingList.append({"coin": coinID.text, "address": receivedSender, "txid": msg, "amount": Number.fromLocaleString(Qt.locale("en_US"),replaceComma), "value": replaceComma, "check": 0})
+                                receivedAmount = ""
+                                receivedReceiver = ""
+                                receivedSender = ""
+                                receivedTxID = ""
+                                receivedLabel = ""
+                            }
+                        }
+                    }
+
+                    onTxFailed: {
+                        if (transferTracker == 1 && requestSend == 1) {
+                            if (id === receivedTxID) {
+                                requestSend = 0
+                                failedSend = 1
+                                receivedAmount = ""
+                                receivedReceiver = ""
+                                receivedSender = ""
+                                receivedTxID = ""
+                                receivedLabel = ""
                             }
                         }
                     }
