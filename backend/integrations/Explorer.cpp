@@ -298,7 +298,7 @@ void Explorer::getTransactionStatusSlot(QByteArray response, QMap<QString,QVaria
 
         QJsonObject result = jsonResponse.object().value("result").toObject();
         int confirms = result.value("confirmations").toInt();
-        qDebug() << "confirmations: " + confirms;
+        qDebug() << "confirmations: " << confirms;
 
         if (confirms >= 1) {
             emit txidConfirmed(coin, address, transaction, "true");

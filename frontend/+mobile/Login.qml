@@ -496,6 +496,7 @@ Item {
             if (loginTracker == 1){
                 loadPendingList(pending)
             }
+            pendingList.clear();
         }
 
         onClearSettings:{

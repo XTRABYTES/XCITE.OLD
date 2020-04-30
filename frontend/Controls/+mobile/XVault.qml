@@ -84,5 +84,41 @@ Rectangle {
         anchors.verticalCenterOffset: -50
         anchors.horizontalCenter: parent.horizontalCenter
     }
+
+    Label {
+        id: closeXvaultModal
+        z: 10
+        text: "CLOSE"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.pixelSize: 14
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+
+        Rectangle{
+            id: closeButton
+            height: 34
+            width: parent.width
+            radius: 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+        }
+
+        MouseArea {
+            anchors.fill: closeButton
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                xvaultTracker = 0
+            }
+        }
+    }
 }
 

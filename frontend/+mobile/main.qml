@@ -132,7 +132,7 @@ ApplicationWindow {
         alertList.append({"date": "", "origin": "", "message": "", "remove": true});
 
         transactionList.clear();
-        transactionList.append({"requestID":"","coin":"","address":"","receiver":"","amount":0});
+        transactionList.append({"requestID": "","coin": "","address": "","receiver": "","amount": 0});
 
         findAllMarketValues()
 
@@ -910,7 +910,7 @@ ApplicationWindow {
             if(pendingList.get(i).coin === coin) {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
-                        if(pendingList.get(i).check >= 40) {
+                        if(pendingList.get(i).check >= 3) {
                             //var addressname = getLabelAddress(coin, address)
                             //var cancelAlert = "transaction canceled: " + txid
                             //alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
@@ -2330,7 +2330,7 @@ ApplicationWindow {
         }
 
         onTxidExists: {
-            pendingUnconfirmed(coin, address, txid, result)
+            updatePending(coin, address, txid, result)
         }
 
         onTxidConfirmed: {
@@ -2709,28 +2709,37 @@ ApplicationWindow {
         target: StaticNet
 
         onTxSuccess: {
+            var g = msg
             for (var i = 0; i < transactionList.count; ++i) {
                 if (transactionList.get(i).requestID === id) {
                     var b = ""
+                    var j = ""
                     for (var a = 0; a < walletList.count; ++a ) {
                         if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
                             b = walletList.get(a).label
+                            j = walletList.get(a).address
                         }
                     }
                     if (b === "") {
                         b = transactionList.get(i).address
                     }
                     var c = ""
-                    for (var e = 0; e < addressList.count;++e ) {
-                        if (addressList.get(e).name === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
-                            c = walletList.get(e).fullName + " " + walletList.get(e).label
+                    for (var e = 0; e < addressList.count; ++e ) {
+                        if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
+                            if(addressList.get(e).fullName !== undefined) {
+                                c = addressList.get(e).fullName + " " + addressList.get(e).label
+                            }
+                            else {
+                                c= addressList.get(e).label
+                            }
                         }
                     }
                     if (c === "") {
                         c = transactionList.get(i).receiver
                     }
-                    var f = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
-                    pendingList.append({"coin": transactionList.get(i).coin, "address": b, "txid": msg, "amount": transactionList.get(i).amount, "value": f, "check": 0})
+                    var h = transactionList.get(i).amount
+                    var f = Number(h).toLocaleString(Qt.locale("en_US"))
+                    //pendingList.append({"coin": transactionList.get(i).coin, "address": j, "txid": g, "amount": h, "value": "false", "check": 0})
                     var d = "Accepted transaction of " + f + " " + transactionList.get(i).coin + " to " + c
                     alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
                     alert = true
@@ -2754,7 +2763,7 @@ ApplicationWindow {
                     }
                     var c = ""
                     for (var e = 0; e < addressList.count;++e ) {
-                        if (addressList.get(e).name === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
+                        if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
                             c = addressList.get(e).fullName + " " + addressList.get(e).label
                         }
                     }
@@ -3096,10 +3105,10 @@ ApplicationWindow {
         id: transactionList
         ListElement {
             requestID:""
-            coin:""
-            address:""
-            receiver:""
-            amount:0
+            coin: ""
+            address: ""
+            receiver: ""
+            amount: 0
         }
     }
 

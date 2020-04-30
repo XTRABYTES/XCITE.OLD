@@ -76,6 +76,7 @@ Rectangle {
     property string receivedLabel: ""
     property string receivedTxID: ""
     property string txId: ""
+    property real totalAmount: 0
     property string network: coinID.text
     property real amountSend: 0
     property string transferReply: ""
@@ -1652,12 +1653,15 @@ Rectangle {
                     running: false
 
                     onTriggered: {
-                        var dataModelParams = {"xdapp":network,"method":"broadcastTx","payload":rawTX,"id":receivedTxID}
+                        var dataModelParams = {"xdapp":network,"method":"sendrawtransaction","payload":rawTX,"id":receivedTxID}
                         var paramsJson = JSON.stringify(dataModelParams)
                         dicomRequest(paramsJson)
+                        var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                        var msg = "UI - confirming TX: " + paramsJson
+                        xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
                         console.log("request TX broadcast: " + paramsJson)
-                        var total = Number.fromLocaleString(Qt.locale("en_US"),replaceComma) + Number.fromLocaleString(Qt.locale("en_US"),txFee)
-                        transactionList.append({"requestID":receivedTxID,"coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":total})
+                        totalAmount = Number.fromLocaleString(Qt.locale("en_US"),replaceComma) + Number.fromLocaleString(Qt.locale("en_US"),txFee)
+                        transactionList.append({"requestID":receivedTxID,"coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":totalAmount})
                         //requestSend = 1
                         transferTracker = 0
                     }
