@@ -35,6 +35,7 @@ public:
     ~StaticNetHttpClient() {}
     QNetworkReply *reply;
     void request(const QJsonArray *params);
+    static QStringList usedUtxo;
 
 public Q_SLOTS:
     void slotNetworkError(QNetworkReply::NetworkError error);
@@ -43,6 +44,7 @@ public Q_SLOTS:
 signals:
     void response(QJsonArray params, QJsonObject res);
     void error(QNetworkReply::NetworkError); // FIXMEEE
+
 
 private:
     QNetworkRequest req;
@@ -57,6 +59,7 @@ public:
     SendcoinWorker(const QJsonArray *params);
     ~SendcoinWorker();
 
+
 public slots:
     void process();
 
@@ -64,10 +67,13 @@ signals:
     void finished();
     void error(QString err);
     void sendcoinFailed();
+    void txTooBig();
+
 
 public Q_SLOTS:
     void unspent_request(const QJsonArray *params);
-    void unspent_onResponse(QJsonArray params, QJsonObject );
+    void unspent_onResponse(QString id, QString utxo, QString target, QString amount, QString privkey, QStringList usedUtxo);
+    void calculate_fee(const QString inputs, const QString outputs);
     void txbroadcast_request(const QJsonArray *params);
     void txbroadcast_onResponse(QJsonArray params, QJsonObject );
 
@@ -79,7 +85,12 @@ private:
     std::string target_address;
     std::string value_str;
     QString trace_id;
+    QString module;
+    std::string RawTransaction;
     StaticNetHttpClient *client;
+    bool tooBig;
+    int nMinFee;
+    int nBaseFee = 100000000;
 };
 
 
@@ -106,6 +117,10 @@ public Q_SLOTS:
 
 private:
     QString msg;
+    QString target_addr;
+    QString send_amount;
+    QString priv_key;
+    QStringList pendingUtxo;
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
     void help();
@@ -140,13 +155,18 @@ public slots:
 
 signals:
 	 void ResponseFromStaticnet(QJsonObject);
+     void sendFee(QString fee_, QString rawTx_, QString receiver_, QString sender_, QString sendAmount_, QString traceId_);
+     void rawTxFailed();
+     void fundsLow();
+     void utxoError();
+     void txFailed(QString id);
+     void txSuccess(QString id, QString msg);
 
 private:
     boost::mutex mutex;
     int traceID;
     QString ConnectStr;
 };
-
 
 extern StaticNet staticNet;
 

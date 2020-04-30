@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include <boost/algorithm/string.hpp>
 
@@ -23,46 +24,49 @@
 #include "../xutility/xutility.hpp"
 #include "../xutility/crypto/ctools.h"
 #include "../xutility/transaction/transaction.h"
+#include "../support/Settings.hpp"
 
-	
+
 StaticNet staticNet;
+QStringList usedUtxo;
 
 void StaticNet::Initialize() {
-	
-	    // Ignore SSL Errors 
-	    // Please comment out before production usage
-       QSslConfiguration sslConf = QSslConfiguration::defaultConfiguration();
-       sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
-       QSslConfiguration::setDefaultConfiguration(sslConf);
 
-       traceID=0;
-       //ConnectStr="https://127.0.0.1:8080/v1.0/dicom";
-       //ConnectStr="https://87.229.77.126:8443/v1.0/dicom";
-       ConnectStr="https://87.229.77.126:8442/v1.0/dicom";
+    // Ignore SSL Errors
+    // Please comment out before production usage
+    QSslConfiguration sslConf = QSslConfiguration::defaultConfiguration();
+    sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    QSslConfiguration::setDefaultConfiguration(sslConf);
+
+    traceID=0;
+    //ConnectStr="https://127.0.0.1:8080/v1.0/dicom";
+    //ConnectStr="https://87.229.77.126:8443/v1.0/dicom";
+    ConnectStr="https://87.229.77.126:8442/v1.0/dicom";
 
 }
 
 bool StaticNet::CheckUserInputForKeyWord(const QString msg, int *traceID) {
 
-      *traceID = staticNet.GetNewTraceID();
-      qDebug() << "staticnet accessed!" << " traceID=" << *traceID;
-      
-      if (!(msg.split(" ").at(0) == "!!staticnet")) {
-         return false;
-      }      
-         QString traced_msg = msg + " " + QString::number(*traceID);
-			QThread* thread = new QThread;
-			SnetKeyWordWorker* worker = new SnetKeyWordWorker(&traced_msg);
-			worker->moveToThread(thread);
-	        connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
-			connect(thread, SIGNAL (started()), worker, SLOT (process()));
-			connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
-			connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
-			connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
-			thread->start();
-	   
-      return true;
-	
+    *traceID = staticNet.GetNewTraceID();
+
+    qDebug() << "staticnet accessed! traceID= " << *traceID;
+
+    if (!(msg.split(" ").at(0) == "!!staticnet")) {
+        return false;
+    }
+    QString traced_msg = msg + " " + QString::number(*traceID);
+    QThread* thread = new QThread;
+    SnetKeyWordWorker* worker = new SnetKeyWordWorker(&traced_msg);
+    worker->moveToThread(thread);
+    connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
+    connect(thread, SIGNAL (started()), worker, SLOT (process()));
+    connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
+    connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
+    connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
+    thread->start();
+
+    return true;
+
 }
 
 void StaticNet::errorString(const QString error) {
@@ -70,55 +74,54 @@ void StaticNet::errorString(const QString error) {
 }
 
 StaticNetHttpClient::StaticNetHttpClient(const QString &endpoint, QObject *parent ): QObject(parent) {
-	
-     req.setUrl(QUrl(endpoint));
-     req.setHeader(QNetworkRequest::ContentTypeHeader,"application/json;");
-     manager = new QNetworkAccessManager();
 
-     connect(manager, SIGNAL (finished(QNetworkReply*)), this, SLOT (onResponse(QNetworkReply*)));
-     // FIXMEE!
-     // connect(manager, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotNetworkError(QNetworkReply::NetworkError)));
+    req.setUrl(QUrl(endpoint));
+    req.setHeader(QNetworkRequest::ContentTypeHeader,"application/json;");
+    manager = new QNetworkAccessManager();
+
+    connect(manager, SIGNAL (finished(QNetworkReply*)), this, SLOT (onResponse(QNetworkReply*)));
+    // FIXMEE!
+    // connect(manager, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotNetworkError(QNetworkReply::NetworkError)));
 }
 
 
 void StaticNetHttpClient::request(const QJsonArray *params) {
-    	
-     QJsonDocument json;
-     QJsonObject obj;
 
+    QJsonDocument json;
+    QJsonObject obj;
 
-     obj.insert("dicom", QJsonValue::fromVariant("1.0"));
-     obj.insert("type", QJsonValue::fromVariant("request"));
-     obj.insert("method", QJsonValue::fromVariant(params->at(1).toString()));
-     obj.insert("params", QJsonValue::fromVariant(params->at(2).toString()));
-     json.setObject(obj);
+    obj.insert("dicom", QJsonValue::fromVariant("1.0"));
+    obj.insert("type", QJsonValue::fromVariant("request"));
+    obj.insert("method", QJsonValue::fromVariant(params->at(1).toString()));
+    obj.insert("params", QJsonValue::fromVariant(params->at(2).toString()));
+    json.setObject(obj);
 
-     reply = manager->post(req, json.toJson(QJsonDocument::Compact));    
-     reply->setProperty("params", *params);
+    reply = manager->post(req, json.toJson(QJsonDocument::Compact));
+    reply->setProperty("params", *params);
 }
-	    
+
 
 void StaticNetHttpClient::slotNetworkError(QNetworkReply::NetworkError error) {
-            QTextStream(stdout) << "error:" << reply->error() << endl;
+    QTextStream(stdout) << "error:" << reply->error() << endl;
 }
 
 void StaticNetHttpClient::onResponse(QNetworkReply *res) {
-    	  
-        QJsonDocument json = QJsonDocument::fromJson(res->readAll());
-        QJsonObject reply = json.object();
 
-        QJsonArray params = res->property("params").toJsonArray(); 
-        response( params , reply);
+    QJsonDocument json = QJsonDocument::fromJson(res->readAll());
+    QJsonObject reply = json.object();
+
+    QJsonArray params = res->property("params").toJsonArray();
+    response( params , reply);
 }
 
 
 SnetKeyWordWorker::SnetKeyWordWorker(const QString *_msg) {
-		
+
     this->msg = QString(*_msg);
 }
 
 SnetKeyWordWorker::~SnetKeyWordWorker() {
-	//xchatRobot.SubmitMsg("SnetKeyWordWorker() worker stopped."); 
+    //xchatRobot.SubmitMsg("SnetKeyWordWorker() worker stopped.");
 }
 
 int SnetKeyWordWorker::errorString(QString errorstr) {
@@ -130,14 +133,14 @@ void SnetKeyWordWorker::process() {
     qDebug() << "Processing staticnet command: [" << msg << "]";
     
     QStringList args = msg.split(" ");
-    QJsonArray params; 
+    QJsonArray params;
     
     for (QStringList::const_iterator it = args.constBegin(); it != args.constEnd(); ++it) params.append(QJsonValue(*it));
     
     CmdParser(&params);
 
-    qDebug() << "Processing done";
-    	 	 	      
+    qDebug() << "Processing done" << &params;
+
 }
 
 void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
@@ -154,21 +157,29 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
 
     if (command == "help") {
         help();
-
-    } else if (command == "ping") {
-        request(params);
-    } else if (command == "sping") {
+    } else if (command == "dicom") {
         srequest(params);
     } else if (command == "echo") {
         request(params);
+    } else if (command == "clearUtxo") {
+        usedUtxo.clear();
+        pendingUtxo.clear();
+    } else if (command == "addUtxo") {
+        xchatRobot.SubmitMsg("dicom - backend - adding utxo to pending list");
+        QString newUtxo = params->at(2).toString();
+        xchatRobot.SubmitMsg("dicom - backend - utxo string:" + newUtxo);
+        QStringList newUtxoList = newUtxo.split("-");
+        for (int i = 0; i < newUtxoList.count(); i++) {
+            pendingUtxo.append(newUtxoList.at(i));
+        }
     } else if (command == "sendcoin") {
-        qDebug() << "send coin command recognized";
-        sendcoin(params);          
+        target_addr = params->at(2).toString();
+        send_amount = params->at(3).toString();
+        priv_key = params->at(4).toString();
+        sendcoin(params);
     } else {
-        xchatRobot.SubmitMsg("Bad !!staticnet command. Ignored.");
-        xchatRobot.SubmitMsg("More informations: !!staticnet help");
+        xchatRobot.SubmitMsg("dicom - backend - Bad !!staticnet command. Ignored.");
     }
-  
 }
 
 void SnetKeyWordWorker::help() {
@@ -178,17 +189,79 @@ void SnetKeyWordWorker::help() {
     xchatRobot.SubmitMsg("!!staticnet sendcoin [target] [amount] [privatekey]");
 }
 
+// NOT NEEDED ANYMORE (I THINK) ----
+void SnetKeyWordWorker::request(const QJsonArray *params){
 
-void SnetKeyWordWorker::request(const QJsonArray *params) {
-		 
-   // xchatRobot.SubmitMsg("Command forwarded to STaTiC network. Wait for reply. ID: #"+params->last().toString());
-	 client = new StaticNetHttpClient(staticNet.GetConnectStr());
+    xchatRobot.SubmitMsg("Command forwarded to STaTiC network. Wait for reply. ID: #"+params->last().toString());
+    client = new StaticNetHttpClient(staticNet.GetConnectStr());
     connect(client, SIGNAL (response( QJsonArray, QJsonObject)), this, SLOT (onResponse( QJsonArray, QJsonObject)));
 
     client->request(params);
 }
 
+void SendcoinWorker::unspent_request(const QJsonArray *params) {
+
+}
+
+void SendcoinWorker::txbroadcast_request(const QJsonArray *params) {
+
+}
+
+void SendcoinWorker::txbroadcast_onResponse(QJsonArray params, QJsonObject ) {
+
+}
+
+// ----
+
 void SnetKeyWordWorker::srequest(const QJsonArray *params) {
+
+    int paramSize = params ->count();
+    QString xparams;
+    for (int i = 2; i < paramSize - 1; i ++) {
+        if (i == 2) {
+            xparams = params ->at(i).toString();
+        }
+        else {
+            xparams = xparams + " " + params -> at(i).toString();
+        }
+    }
+    qDebug() << "trimmed params: " << xparams;
+
+    QJsonDocument requestDoc = QJsonDocument::fromJson(xparams.toUtf8());
+    QJsonObject requestObject = requestDoc.object();
+    QString xdapp = requestObject.value("xdapp").toString().toLatin1();
+    QString xmethod = requestObject.value("method").toString().toLatin1();
+    QString xpayload = requestObject.value("payload").toString().toLatin1();
+    if (requestObject.contains("target")){
+        target_addr = requestObject.value("target").toString();
+    }
+    if (requestObject.contains("send_amount")){
+        send_amount = requestObject.value("send_amount").toString();
+    }
+    if (requestObject.contains("secret")){
+        priv_key = requestObject.value("secret").toString();
+    }
+
+    qDebug() << "payload: " << xpayload;
+    QString xid = requestObject.value("id").toString().toLatin1();
+    if (xid == "") {
+        xid = params->last().toString();
+    }
+
+    QJsonDocument doc;
+    QJsonObject obj;
+    obj.insert("dicom", QJsonValue::fromVariant("1.0"));
+    obj.insert("type", QJsonValue::fromVariant("request"));
+    obj.insert("id", QJsonValue::fromVariant(xid));
+    obj.insert("xdapp", QJsonValue::fromVariant(xdapp));
+    obj.insert("method", QJsonValue::fromVariant(xmethod));
+    obj.insert("payload", QJsonValue::fromVariant(xpayload));
+    doc.setObject(obj);
+
+    QByteArray docByteArray = doc.toJson(QJsonDocument::Compact);
+    std::string strJson = docByteArray.toStdString();
+    QString fullCommand = QString::fromStdString(strJson);
+    xchatRobot.SubmitMsg("dicom - " + fullCommand);
 
     const std::string correlation(xUtility.get_uuid());
     SimplePocoHandler handler("85.214.143.20", 5672);
@@ -199,11 +272,11 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
             int msgcount,
             int consumercount)
     {
-        std::string sping_attrib = params->at(2).toString().toStdString();
+        std::string sping_attrib = strJson;
         AMQP::Envelope env(sping_attrib.c_str(),strlen(sping_attrib.c_str()));
         env.setCorrelationID(correlation);
         env.setReplyTo(name);
-        channel.publish("","rpc_queue",env);
+        channel.publish("","dicom_testqueue_v4",env);
     };
 
     channel.declareQueue(AMQP::exclusive).onSuccess(callback);
@@ -214,17 +287,48 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     {
         if(message.correlationID() != correlation)
             return;
+        std::string stdMsg(message.body(),message.bodySize());
+        QString msg = QString::fromStdString(stdMsg);
+        QJsonDocument replyDoc = QJsonDocument::fromJson(msg.toUtf8());
+        QJsonObject replyObject = replyDoc.object();
+        QString dapp = replyObject.value("xdapp").toString().toLatin1();
+        QString replyId = replyObject.value("id").toString().toLatin1();
+        QString replyMethod = replyObject.value("method").toString().toLatin1();
+        QString replyMsg = replyObject.value("payload").toString().toLatin1();
+        xchatRobot.SubmitMsg("dicom - " + dapp + ":" + replyMethod + " id:" + replyId + " reply:" + replyMsg);
+        QJsonDocument msgDoc = QJsonDocument::fromJson(replyMsg.toUtf8());
+        QJsonObject msgObj = msgDoc.object();
 
-        std::string msg(message.body(),message.bodySize());
-        //std::cout<<" [.] Reply ID "<< msg <<std::endl;
-        xchatRobot.SubmitMsg("SPING reply ID#"+QString::fromUtf8(msg.c_str()));
+        if (replyMethod == "getutxo") {
+            if (replyMsg == "rpc error" || msgObj.contains("error")) {
+                emit staticNet.utxoError();
+            }
+            else {
+                SendcoinWorker* worker = new SendcoinWorker(params);
+                worker->unspent_onResponse(replyId, replyMsg, target_addr, send_amount, priv_key,usedUtxo);
+            }
+        }
+        else if (replyMethod == "sendrawtransaction") {
+            if (replyMsg == "rpc error" || msgObj.contains("error")) {
+                emit staticNet.txFailed(replyId);
+            }
+            else {
+                emit staticNet.txSuccess(replyId, replyMsg);
+                for (int i = 0; i < pendingUtxo.count(); i++) {
+                    QStringList confirmedUtxo = pendingUtxo.at(i).split(",");
+                    if (confirmedUtxo.at(1) == replyId) {
+                        usedUtxo.append(pendingUtxo.at(i));
+                    }
+                }
+            }
+        }
+
         handler.quit();
     };
 
     channel.consume("", AMQP::noack).onReceived(receiveCallback);
 
     handler.loop();
- 
 }
 
 
@@ -232,240 +336,327 @@ void SnetKeyWordWorker::onResponse( QJsonArray params, QJsonObject res)
 {
     
     if (!res["error"].isNull()) {
-    	  xchatRobot.SubmitMsg("STaTiC network error. ID: #"+params.last().toString());
-        qDebug() << res;
-        
+        xchatRobot.SubmitMsg("STaTiC network error. ID: #"+params.last().toString());
     } else {
+        QJsonDocument doc(res);
+        QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
+        xchatRobot.SubmitMsg("Recevied reply from STaTiC network: " + formattedJsonString);
+    }
 
-    QJsonDocument doc(res);
-    QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
-    //xchatRobot.SubmitMsg("Recevied reply from STaTiC network. ID: #"+params.last().toString());
-    //xchatRobot.SubmitMsg(formattedJsonString);
-	}
-	
-	emit finished();
+    emit finished();
 }
 
 void SnetKeyWordWorker::sendcoin(const QJsonArray *params) {
 
-        qDebug() << "Initiate sending coins";
-
-		QThread* thread = new QThread;
-		SendcoinWorker* worker = new SendcoinWorker(params);
-		worker->moveToThread(thread);
-        connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
-		connect(thread, SIGNAL (started()), worker, SLOT (process()));
-		connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
-		connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
-		connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
-		thread->start();
-      emit finished();
- 
+    QThread* thread = new QThread;
+    SendcoinWorker* worker = new SendcoinWorker(params);
+    worker->moveToThread(thread);
+    connect(worker, SIGNAL (error(QString)), this, SLOT (errorString(QString)));
+    connect(thread, SIGNAL (started()), worker, SLOT (process()));
+    connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
+    connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
+    connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
+    thread->start();
+    emit finished();
 }
-
 
 SendcoinWorker::SendcoinWorker(const QJsonArray *params) { 
 
-      // FIXMEE need validate each params 
-      target_address = params->at(2).toString().toStdString();
-      value_str = params->at(3).toString().toStdString();
-      secret = params->at(4).toString().toStdString();      
-      trace_id = params->at(5).toString();      
+    // FIXMEE need validate each params
+    module = params->at(1).toString();
+    if (module == "sendcoin") {
+        target_address = params->at(2).toString().toStdString();
+        value_str = params->at(3).toString().toStdString();
+        secret = params->at(4).toString().toStdString();
+        trace_id = params->at(5).toString();
+    }
 }
 
 SendcoinWorker::~SendcoinWorker() {	
 }
 
+void SendcoinWorker::process() {
 
-void SendcoinWorker::unspent_request(const QJsonArray *params) {
-		 
-    QJsonObject response;
-    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_request"));	 
-	 response.insert("traceID", QJsonValue::fromVariant(trace_id));
-	 response.insert("params", QJsonValue::fromVariant(params));
-    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
-	 
-	 client = new StaticNetHttpClient(staticNet.GetConnectStr());
-    connect(client, SIGNAL (response( QJsonArray, QJsonObject)), this, SLOT (unspent_onResponse( QJsonArray, QJsonObject)));
+    xchatRobot.SubmitMsg("dicom - backend - selected network: " + QString::fromStdString(xUtility.getSelectedNetworkName()));
 
-    client->request(params);
-}
+    if (xUtility.getSelectedNetworkid() != 0 && module == "sendcoin") {
 
-void SendcoinWorker::txbroadcast_request(const QJsonArray *params) {
-		 
-	 QJsonObject response;
-    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::txbroadcast_request"));	 
-	 response.insert("traceID", QJsonValue::fromVariant(trace_id));
-	 response.insert("params", QJsonValue::fromVariant(params));
-    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
-	 
-	 client = new StaticNetHttpClient(staticNet.GetConnectStr());
-    connect(client, SIGNAL (response( QJsonArray, QJsonObject)), this, SLOT (txbroadcast_onResponse( QJsonArray, QJsonObject)));
-
-    client->request(params);
-}
-
-
-void SendcoinWorker::txbroadcast_onResponse( QJsonArray params, QJsonObject res)
-{
-  
-  	 QJsonObject response;
-    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::txbroadcast_onResponse"));	 
-	 response.insert("traceID", QJsonValue::fromVariant(trace_id));
-	 response.insert("params", QJsonValue::fromVariant(res));
-    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
-  
-    if (!res["error"].isNull()) {
-    	  xchatRobot.SubmitMsg("STaTiC network(unspent query) error. ID: #"+params.last().toString());
-        qDebug() << res;    
-    } else {
-
-    QJsonDocument doc(res);
-    QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
-    //xchatRobot.SubmitMsg("Recevied txbroadcast reply from STaTiC network. ID: #"+params.last().toString());
-    xchatRobot.SubmitMsg(formattedJsonString);
-    qDebug() << formattedJsonString;
-    }    
-    emit finished();
-}
-
-void SendcoinWorker::unspent_onResponse( QJsonArray params, QJsonObject res)
-{
-    
-  	 QJsonObject response;
-    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));	 
-	 response.insert("traceID", QJsonValue::fromVariant(trace_id));
-	 response.insert("params", QJsonValue::fromVariant(res));
-    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
-
-    if (!res["error"].isNull()) {
-    	  xchatRobot.SubmitMsg("STaTiC network(unspent query) error. ID: #"+params.last().toString());
-        qDebug() << res;
-        emit finished();     
-    } else {
-
-    QJsonDocument doc(res);
-    QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
-    //xchatRobot.SubmitMsg("Recevied unspent reply from STaTiC network. ID: #"+params.last().toString());
-    //xchatRobot.SubmitMsg(formattedJsonString);
-
-    int64 send_value = AmountFromStr(value_str.c_str());    
-    int64 fee_value = AmountFromStr("1.00000000");    
-    
-    qDebug() << res;
-    QJsonObject json = res["unspents"].toObject();   
-    
-    
-    std::vector<std::string> inputs;
-    std::vector<std::string> outputs;
-           
-    int64 inputs_sum = 0;        
-    foreach(const QString& key, json.keys()) {
-    
-        QJsonValue value = json.value(key);
-        int64 tx_value = AmountFromStr(value.toString().toStdString().c_str());
-        inputs_sum = inputs_sum + tx_value;
-        
-        std::string input_tx = key.toStdString();
-        std::vector<std::string> tx_details;
-        boost::split(tx_details, input_tx , [](char c){return c == ':';});
-                        
-        std::string detailed_input_tx = tx_details.at(0) + "," 
-                        + tx_details.at(1) + "," 
-                        + hexscript + "," 
-                        + value.toString().toStdString();
-                        
-                        
-        inputs.push_back(detailed_input_tx);
-        if ((inputs_sum - (send_value + fee_value)) >= 0) break;
-         
-    }
-
-    outputs.push_back(target_address + "," + StrFromAmount(send_value));
-    if ((inputs_sum - (send_value + fee_value)) > 0) {
-       outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + fee_value)));
-    }
-
-    qDebug() << "Creating RAW transaction...";
-    std::string RawTransaction = CreateRawTransaction( xUtility.getSelectedNetworkid(), inputs, outputs, secret);
-    qDebug() << "Created RAW transaction:" << QString::fromUtf8(RawTransaction.c_str());
-    
-    if (RawTransaction.length()) {
-		   QJsonArray req_params; 
-		   req_params.push_back("!!staticnet");
-		   req_params.push_back("txbroadcast");   
-		   req_params.push_back(QString::fromUtf8(xUtility.getSelectedNetworkName().c_str())+"_rawtx:"+QString::fromUtf8(RawTransaction.c_str()));	
-			txbroadcast_request(&req_params);     
-    } else {
-		  	 QJsonObject response;
-		    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));	 
-			 response.insert("traceID", QJsonValue::fromVariant(trace_id));
-			 response.insert("error", "Invalid RAW transaction.");
-		    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
-          emit finished();
-    }
-     
-    
-	}
-	
-	
-}
-
-void SendcoinWorker::process() { 
-                  
-      //	!!staticnet sendcoin [target-address] [sending-amount] [sender-privatekey]
-
-      // examples:
-
-      // !!xutil network xfuel
-      // !!staticnet sendcoin FBCMNhonjRxELB2UrxNGHgAusPnNHvsMUi 1.23456789 R9fXvzTuqz9BqgyiV4tmiY2LkioUq7GxKGTcJibruKpNYitutbft
-      
-      // !!xutil network testnet
-      // !!staticnet sendcoin GQufCtACUjYdBycKb9kaJXF8bbV9aHryJ2 9.87654321 RgeFarE5WTUMmuHtHfGt7B23sL7VoWGeyiGJ1Yrzrz6Jc3zMN1rU
-      
-      // !!xutil network xtrabytes
-      // !!staticnet sendcoin BTSRyjb1kgtqyqwHvJLqBr4nMGjTFpb9ut 1.23456789 6AAY3KtjZF7zP6w4JwtJvhYV4vAPD44QpCDAfS3e6bMaHZsd842
-
-     qDebug() << xUtility.getSelectedNetworkid();
-
-      if (xUtility.getSelectedNetworkid() != 0) {
-     	       
         CXCiteSecret xciteSecret;
         bool fGood = xciteSecret.SetString(secret,xUtility.getSelectedNetworkid());
         if (fGood) {
-        	  CKey key = xciteSecret.GetKey();
-        	  CPubKey pubkey = key.GetPubKey();
-           CKeyID keyID = pubkey.GetID();
-           CXCiteAddress _address = CXCiteAddress(keyID,xUtility.getSelectedNetworkid());
-           CScript scriptPubKey;         
-           scriptPubKey.SetDestination(_address.Get());           
-                    
-           hexscript = HexStr(scriptPubKey);
-           sender_address = _address.ToString();
-      	      	         
-   QJsonArray req_params; 
-   req_params.push_back("!!staticnet");
-   req_params.push_back("getunspents");   
-   req_params.push_back(QString::fromUtf8(xUtility.getSelectedNetworkName().c_str())+"_address:"+QString::fromUtf8(sender_address.c_str()));
-	
-	unspent_request(&req_params);
-         
-         
+            CKey key = xciteSecret.GetKey();
+            CPubKey pubkey = key.GetPubKey();
+            CKeyID keyID = pubkey.GetID();
+            CXCiteAddress _address = CXCiteAddress(keyID,xUtility.getSelectedNetworkid());
+            CScript scriptPubKey;
+            scriptPubKey.SetDestination(_address.Get());
+
+            hexscript = HexStr(scriptPubKey);
+            sender_address = _address.ToString();
+
+            QString netWork = QString::fromStdString(xUtility.getSelectedNetworkName());
+
+            QJsonDocument doc;
+            QJsonObject obj;
+            QString payloadstr = "{\"chain\":\"" + netWork + "\",\"address\":\"" + QString::fromUtf8(sender_address.c_str()) + "\"}";
+            obj.insert("id",QJsonValue::fromVariant(trace_id));
+            obj.insert("xdapp", QJsonValue::fromVariant("explorer"));
+            obj.insert("method", QJsonValue::fromVariant("getutxo"));
+            obj.insert("payload", QJsonValue::fromVariant(payloadstr));
+            obj.insert("target",QString::fromStdString(target_address));
+            obj.insert("send_amount",QString::fromStdString(value_str));
+            obj.insert("secret",QString::fromStdString(secret));
+
+
+            doc.setObject(obj);
+
+            int _traceID;
+            QString payload(doc.toJson(QJsonDocument::Compact));
+            QString getUtxo = "!!staticnet dicom " + payload;
+
+            if (staticNet.CheckUserInputForKeyWord(getUtxo,&_traceID)) {
+                //qDebug() << "staticnet command accepted";
+            } else {
+                //qDebug() << "staticnet command not accepted";
+            }
+
         } else {
-            qDebug()<< "Bad private key.";
-            xchatRobot.SubmitMsg("Bad private key.");
+            xchatRobot.SubmitMsg("dicom - backend - Bad private key.");
             emit sendcoinFailed();
             emit finished();
-        
         }
 
-      	
-      } else {
-        qDebug()<< "Bad or mising network ID.";
-        xchatRobot.SubmitMsg("Bad or mising network ID.");
+
+    } else {
+        xchatRobot.SubmitMsg("dicom - backend - Bad or mising network ID.");
         emit sendcoinFailed();
         emit finished();
-      }
+    }
+}
 
+void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target, QString amount, QString privkey, QStringList used_Utxo)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(res.toUtf8());
+    QJsonObject resObj = doc.object();
+    std::string output_address = target.toStdString();
+    std::string input_key = privkey.toStdString();
+    std::string send_amount = amount.toStdString();
 
+    CXCiteSecret xciteSecret;
+    bool fGood = xciteSecret.SetString(input_key,xUtility.getSelectedNetworkid());
+    if (fGood) {
+        CKey key = xciteSecret.GetKey();
+        CPubKey pubkey = key.GetPubKey();
+        CKeyID keyID = pubkey.GetID();
+        CXCiteAddress _address = CXCiteAddress(keyID,xUtility.getSelectedNetworkid());
+        CScript scriptPubKey;
+        scriptPubKey.SetDestination(_address.Get());
+
+        hexscript = HexStr(scriptPubKey);
+        sender_address = _address.ToString();
+        secret = privkey.toStdString();
+    } else {
+        xchatRobot.SubmitMsg("dicom - backend - Bad private key.");
+        emit sendcoinFailed();
+        emit finished();
+    }
+
+    QJsonObject response;
+    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));
+    response.insert("traceID", QJsonValue::fromVariant(id));
+    response.insert("params", QJsonValue::fromVariant(res));
+    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+
+    if (resObj.contains("error")){
+        xchatRobot.SubmitMsg("dicom - backend - getutxo error. ID: #"+ id);
+        emit finished();
+    } else {
+
+        RawTransaction = "";
+        int64 send_value = AmountFromStr(send_amount.c_str());
+        nMinFee = 1;
+
+        QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
+        qDebug() << doc;
+
+        std::vector<std::string> inputs;
+        std::vector<std::string> outputs;
+        std::string inputString;
+        std::string outputString;
+        QString inputStr;
+        QString outputStr;
+        QStringList inputStringList;
+        QStringList outputStringList;
+        inputs.clear();
+        int64 inputs_sum = 0;
+
+        foreach(const QString& key, resObj.keys()) {
+
+            outputs.clear();
+
+            QJsonValue value = resObj.value(key);
+            int64 tx_value = AmountFromStr(value.toString().toStdString().c_str());
+
+            std::string input_tx = key.toStdString();
+            std::vector<std::string> tx_details;
+            boost::split(tx_details, input_tx , [](char c){return c == ':';});
+            if (used_Utxo.count() != 0) {
+                bool used = false;
+                for (int i = 0; i < used_Utxo.count(); i++) {
+                    std::string utxoID = used_Utxo.at(i).toStdString();
+                    std::vector<std::string> utxo_details;
+                    boost::split(utxo_details, utxoID, [](char c){return c == ',';});
+                    if (tx_details.at(0) == utxo_details.at(2) && xUtility.getSelectedNetworkName() == utxo_details.at(0)) {
+                        used = true;
+                        xchatRobot.SubmitMsg("dicom - backend - create transaction: utxo already used");
+                    }
+                }
+                if (!used) {
+                inputs_sum = inputs_sum + tx_value;
+
+                std::string detailed_input_tx = tx_details.at(0) + ","
+                        + tx_details.at(1) + ","
+                        + hexscript + ","
+                        + value.toString().toStdString();
+
+                inputs.push_back(detailed_input_tx);
+                }
+            }
+            else {
+                inputs_sum = inputs_sum + tx_value;
+
+                std::string detailed_input_tx = tx_details.at(0) + ","
+                        + tx_details.at(1) + ","
+                        + hexscript + ","
+                        + value.toString().toStdString();
+
+                inputs.push_back(detailed_input_tx);
+            }
+            outputs.push_back(output_address + "," + StrFromAmount(send_value));
+
+            if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 1) {
+                outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + (nMinFee * nBaseFee))));
+            }
+
+            // recalculate fee_value based on inputs
+            inputStringList.clear();
+            for (auto element : inputs) {
+                inputStringList.append(QString::fromStdString(element));
+            }
+            //if (inputString.size() > 0)  inputString.resize (inputString.size() - 1);
+            inputStr = inputStringList.join(" ");
+
+            outputStringList.clear();
+            for (auto element : outputs) {
+                outputStringList.append(QString::fromStdString(element));
+            }
+            //if (outputString.size() > 0)  outputString.resize (outputString.size() - 1);
+            outputStr = outputStringList.join(" ");
+
+            calculate_fee(inputStr, outputStr);
+            if (tooBig) {
+                emit txTooBig();
+                emit sendcoinFailed();
+                return;
+            }
+
+            if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 0) break;
+        }
+
+        qDebug() << "final fee: " << (nMinFee * nBaseFee);
+        usedUtxo = used_Utxo;
+        QString network = QString::fromStdString(xUtility.getSelectedNetworkName());
+        for (int i = 0; i < inputStringList.count(); i++) {
+            usedUtxo.append(network + "," + id + "," + inputStringList.at(i));
+        }
+
+        if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) < 0) {
+            emit staticNet.fundsLow();
+            xchatRobot.SubmitMsg("dicom - backend - not enough coins available");
+          //  emit staticNet.sendcoinFailed();
+        } else {
+            if (secret != ""){
+                qDebug() << "Creating RAW transaction...";
+                RawTransaction = CreateRawTransaction( xUtility.getSelectedNetworkid(), inputs, outputs, secret);
+
+                if (RawTransaction.length()) {
+                    qDebug() << "raw TX: " << QString::fromStdString(RawTransaction);
+                    xchatRobot.SubmitMsg("dicom - backend - inputs: " + inputStr);
+                    xchatRobot.SubmitMsg("dicom - backend - outputs: " + outputStr);
+                    xchatRobot.SubmitMsg("dicom - backend - raw TX: " + QString::fromStdString(RawTransaction));
+                    double send_Amount = send_value/100000000;
+                    double send_Fee = (nMinFee * nBaseFee)/100000000;
+                    int _traceID;
+                    QString updateUtxo = "!!staticnet addUtxo " + usedUtxo.join("-");
+                    xchatRobot.SubmitMsg("dicom - backend - used utxo: " + usedUtxo.join("-"));
+                    if (staticNet.CheckUserInputForKeyWord(updateUtxo,&_traceID)) {
+                        //qDebug() << "staticnet command accepted";
+                    } else {
+                        //qDebug() << "staticnet command not accepted";
+                    }
+                    QString rawTx = "[\"" + QString::fromStdString(RawTransaction) + "\"]";
+                    emit staticNet.sendFee(QString::number(send_Fee), rawTx, QString::fromStdString(output_address), QString::fromStdString(sender_address), QString::number(send_Amount), id);
+                } else {
+                    QJsonObject response;
+                    response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));
+                    response.insert("traceID", QJsonValue::fromVariant(id));
+                    response.insert("error", "Invalid RAW transaction.");
+                    QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
+                    emit staticNet.rawTxFailed();
+                }
+            }
+            else {
+                xchatRobot.SubmitMsg("dicom - backend - error: no private key");
+            }
+        }
+    }
+}
+
+void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputStr)
+{
+    tooBig = false;
+    qDebug() << "calculating fee ...";
+    qDebug() << "input string: " << inputStr;
+    qDebug() << "output string: " << outputStr;
+
+    QStringList outputList = outputStr.split(' ');
+    QStringList inputList = inputStr.split(' ');
+    int outputCount = outputList.count();
+    int inputCount = inputList.count();
+    int outputSize = 33;
+    int inputSize = 146;
+    int maxSize = 100000;
+    int nBaseValue= 1;
+    int outCount = 0;
+    int dust_soft_limit = 1;
+    int nBytes;
+
+    // estimate size of the transaction
+    nBytes = (inputSize * inputCount) + (outputSize * outputCount) + 10;
+    xchatRobot.SubmitMsg("dicom - backend - TX size: " + QString::number(nBytes) + " bytes");
+
+    // reject transactions bigger than 100k
+    if (nBytes > maxSize) {
+        tooBig = true;
+        return;
+    }
+    nMinFee = (1 + (nBytes / 1000)) * nBaseValue;
+    xchatRobot.SubmitMsg("dicom - backend - fee after size check: " + QString::number(nMinFee));
+
+    // count number of outputs and check if outvalues are higher than dust_soft_limit
+    for (int i = 0; i < outputList.count(); i++) {
+        outCount ++;
+        QString output = outputList.at(i);
+        QStringList outputSplit = output.split(',');
+        double outputvalue = outputSplit.last().toDouble();
+        if ( outputvalue < dust_soft_limit){
+            nMinFee += nBaseValue;
+        }
+    }
+    xchatRobot.SubmitMsg("dicom - backend - fee after output check: " + QString::number(nMinFee));
+
+    // check if the nMinFee is lower than the expected fee based on the number of outputs
+    if (nMinFee < ((outCount * nBaseValue) / 3 )) nMinFee= (outCount * nBaseValue) / 3 ;
+
+    xchatRobot.SubmitMsg("dicom - backend - calculated fee: " + QString::number(nMinFee));
 }

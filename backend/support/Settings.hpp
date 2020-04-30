@@ -22,11 +22,11 @@
 #include <QDateTime>
 #include <QNetworkReply>
 #include "qaesencryption.h"
+#include "DownloadManager.hpp"
 #include <openssl/rsa.h>
 #include <string>
 #include <iostream>
-
-
+#include "../xutility/BrokerConnection.h"
 
 class Settings : public QObject
 {
@@ -48,6 +48,7 @@ public:
     QString createRandNum();
     void loginFile(QString username, QString password, QString fileLocation);
     void NoWalletFile();
+    void DownloadManagerHandler(URLObject *url);
 
 public slots:
     void onLocaleChange(QString);
@@ -65,17 +66,22 @@ public slots:
     void SaveWallet(QString walletlist, QString addresslist);
     void ExportWallet(QString walletlist);
     void UpdateAccount(QString addresslist, QString contactlist, QString walletlist, QString pendinglist);
+    bool checkInternet(QString url);
 
     void onCheckOS();
     void initialisePincode(QString pincode);
     void onSavePincode(QString pincode);
     bool checkPincode(QString pincode);
     QString RestAPIPostCall(QString apiURL, QByteArray payload);
-    QByteArray RestAPIGetCall(QString apiURL);
     void CheckSessionId();
     void CheckCamera();
 
-
+    void downloadImage(QString imgUrl);
+    void DownloadManagerRouter(QByteArray,QMap<QString,QVariant>);
+    void internetTimeout(QMap<QString,QVariant>);
+    void userExistsSlot(QByteArray,QMap<QString,QVariant>);
+    void checkInternetSlot(QByteArray,QMap<QString,QVariant>);
+    void apiPostSlot(QByteArray,QMap<QString,QVariant>);
 
 signals:
     void oSReturned(const QString os);
@@ -91,7 +97,7 @@ signals:
     void settingsLoaded(const QVariantMap &settings);
     void walletLoaded(const QString &wallets);
     void pendingLoaded(const QString &pending);
-
+    void noInternet();
     void clearSettings();
     void pincodeCorrect();
     void pincodeFalse();
@@ -99,7 +105,7 @@ signals:
     void saveFailed();
     void saveFileSucceeded();
     void saveFileFailed();
-    void sessionIdCheck(const bool &sessionAlive);
+    void sessionIdCheck(const QString &sessionAlive);
     void checkUsername();
     void createUniqueKeyPair();
     void receiveSessionEncryptionKey();
@@ -116,8 +122,10 @@ signals:
     void cameraCheckPassed();
     void passwordChangedSucceeded();
     void passwordChangedFailed();
-
-
+    void xchatConnectedLogin(QString username, QString route, QString status);
+    void userExistsSignal(bool);
+    void internetStatusSignal(bool);
+    void apiPostSignal(bool,QByteArray);
 
 private:
     QTranslator m_translator;
@@ -135,7 +143,9 @@ private:
     std::pair<QByteArray,QByteArray> keyPair;
     unsigned char backendKey[32];
     unsigned char iiiv[16];
-
+    bool internetActive = true;
+    QQueue<int> saveSettingsQueue;
+    int settingsCount = 0;
 };
 
 #endif // SETTINGS_HPP

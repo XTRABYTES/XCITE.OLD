@@ -24,10 +24,11 @@
 #include "../backend/xchat/xchatconversationmodel.hpp"
 #include "../backend/staticnet/staticnet.hpp"
 #include "../backend/xutility/xutility.hpp"
+#include "../backend/xchat/xchat.hpp"
+#include "../backend/xgames/XGames.hpp"
 #include "../backend/XCITE/nodes/nodetransaction.h"
 #include "../backend/addressbook/addressbookmodel.hpp"
 #include "../backend/support/ClipboardProxy.hpp"
-#include "../backend/testnet/testnet.hpp"
 #include "../backend/support/globaleventfilter.hpp"
 #include "../backend/support/Settings.hpp"
 #include "../backend/support/ReleaseChecker.hpp"
@@ -35,6 +36,8 @@
 #include "../backend/integrations/Explorer.hpp"
 #include "../backend/integrations/xutility_integration.hpp"
 #include "../backend/integrations/staticnet_integration.hpp"
+#include "../backend/support/ttt.h"
+#include "../backend/xutility/BrokerConnection.h"
 
 int main(int argc, char *argv[])
 {
@@ -87,40 +90,61 @@ int main(int argc, char *argv[])
     xchatRobot.Initialize();
     engine.rootContext()->setContextProperty("XChatRobot", &xchatRobot);
 
-    // wire-up testnet wallet
-    Testnet wallet;
-    engine.rootContext()->setContextProperty("wallet", &wallet);
-
     // wire-up market value
     MarketValue marketValue;
     engine.rootContext()->setContextProperty("marketValue", &marketValue);
+    qDebug() << "MARKETVALUE WIRED UP";
 
     // wire-up Explorer
     Explorer explorer;
     engine.rootContext()->setContextProperty("explorer", &explorer);
+    qDebug() << "EXPLORER WIRED UP";
 
     // wire-up xutility_integration
     xutility_integration xUtil_int;
     engine.rootContext()->setContextProperty("xUtil_int", &xUtil_int);    
     engine.rootContext()->setContextProperty("xUtility", &xUtility);
+    qDebug() << "XUTILITY WIRED UP";
+
+    // wire-up xchat
+    // XchatObject xChat;
+    xchatRobot.Initialize();
+    engine.rootContext()->setContextProperty("xChat", &xchatRobot);
+    qDebug() << "XCHAT WIRED UP";
+
+    broker.Initialize("");
+    engine.rootContext()->setContextProperty("broker",&broker);
+
+    xgames.Initialize();
+    engine.rootContext()->setContextProperty("xGames", &xgames);
+    qDebug() << "XGames WIRED UP";
 
     // wire-up staticnet_integration
     staticNet.Initialize();
     engine.rootContext()->setContextProperty("StaticNet", &staticNet);
     staticnet_integration static_int;
     engine.rootContext()->setContextProperty("static_int", &static_int);
+    qDebug() << "STATICNET WIRED UP";
 
 
     // wire-up ClipboardProxy
     ClipboardProxy clipboardProxy;
     engine.rootContext()->setContextProperty("clipboardProxy", &clipboardProxy);
+    qDebug() << "CLIPBOARD WIRED UP";
+
+    // wire-up Tictactoe
+    Ttt tictactoe;
+    engine.rootContext()->setContextProperty("tictactoe", &tictactoe);
+    qDebug() << "TTT WIRED UP";
 
     // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
     engine.rootContext()->setContextProperty("AppVersion", APP_VERSION);
+    qDebug() << "APP VERSION SET";
 
     // register event filter
     engine.rootContext()->setContextProperty("EventFilter", &eventFilter);
+    qDebug() << "EVENT FILTER SET";
 
     ReleaseChecker releaseChecker(APP_VERSION);
     engine.rootContext()->setContextProperty("ReleaseChecker", &releaseChecker);
@@ -129,11 +153,13 @@ int main(int argc, char *argv[])
     QSettings appSettings;
     Settings settings(&engine, &appSettings);
     engine.rootContext()->setContextProperty("UserSettings", &settings);
+    qDebug() << "USER SETTINGS SET";
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty()) {
         return -1;
     }
+    qDebug() << "MAIN.QML LOADED";
 
     QObject *rootObject = engine.rootObjects().first();
 
@@ -156,10 +182,12 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(checkSessionId()), &settings, SLOT(CheckSessionId()));
     QObject::connect(rootObject, SIGNAL(checkCamera()), &settings, SLOT(CheckCamera()));
     QObject::connect(rootObject, SIGNAL(changePassword(QString, QString)), &settings, SLOT(changePassword(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(downloadImage(QString)), &settings, SLOT(downloadImage(QString)));
 
 
     // connect QML signals for market value
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
+    QObject::connect(rootObject, SIGNAL(findAllMarketValues()), &marketValue, SLOT(findAllCurrencyValues()));
 
     // connect QML signals for Explorer
     QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString, QString)), &explorer, SLOT(getBalanceEntireWallet(QString, QString)));
@@ -179,22 +207,39 @@ int main(int argc, char *argv[])
     QObject::connect(&staticNet, SIGNAL(ResponseFromStaticnet(QJsonObject)), &static_int, SLOT(onResponseFromStaticnetEntry(QJsonObject)),Qt::QueuedConnection);      
     QObject::connect(rootObject, SIGNAL(setNetwork(QString)), &xUtility, SLOT(networkEntry(QString)));
 
+    // connect QML signals for dicom
+    QObject::connect(rootObject, SIGNAL(dicomRequest(QString)), &static_int, SLOT(dicomRequestEntry(QString)));
+    QObject::connect(rootObject, SIGNAL(clearUtxoList()), &static_int, SLOT(clearUtxoList()));
+
+    // connect signals for X-CHAT
+    QObject::connect(rootObject, SIGNAL(xChatSend(QString,QString,QString,QString, QString, QString, QString)), &xchatRobot, SLOT(xchatInc(QString,QString,QString,QString, QString, QString, QString)));
+    QObject::connect(rootObject, SIGNAL(xChatTypingSignal(QString,QString,QString)), &xchatRobot, SLOT(sendTypingToQueue(QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(checkXChatSignal()), &xchatRobot, SLOT(mqtt_StateChanged()));
+    QObject::connect(&settings, SIGNAL(xchatConnectedLogin(QString,QString,QString)), &xchatRobot, SLOT(sendTypingToQueue(QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(pingXChatServers()), &xchatRobot, SLOT(pingXchatServers()));
+    QObject::connect(rootObject, SIGNAL(xChatReconnect()), &xchatRobot, SLOT(forcedReconnect()));
+    QObject::connect(rootObject, SIGNAL(xchatPopup(QString,QString)), &xchatRobot, SLOT(xchatPopup(QString,QString)));
+    QObject::connect(rootObject, SIGNAL(sendGameToQueue(QString,QString,QString,QString)), &xgames, SLOT(sendGameToQueue(QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(confirmGameSend(QString,QString,QString,QString,QString)), &xgames, SLOT(confirmGameSend(QString,QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(sendGameInvite(QString,QString,QString,QString)), &xgames, SLOT(sendGameInvite(QString,QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(confirmGameInvite(QString,QString,QString,QString,QString)), &xgames, SLOT(confirmGameInvite(QString,QString,QString,QString,QString)));
+
+    // connect signals for TTT
+    QObject::connect(rootObject, SIGNAL(tttSetUsername(QString)), &tictactoe, SLOT(setUsername(QString)));
+    QObject::connect(rootObject, SIGNAL(tttGetScore()), &tictactoe, SLOT(getScore()));
+    QObject::connect(rootObject, SIGNAL(tttResetScore(QString,QString,QString)), &tictactoe, SLOT(resetScore(QString,QString,QString)));
+    QObject::connect(rootObject, SIGNAL(tttNewGame()), &tictactoe, SLOT(newGame()));
+    QObject::connect(rootObject, SIGNAL(tttQuitGame()), &tictactoe, SLOT(quitGame()));
+    QObject::connect(rootObject, SIGNAL(tttGetMoveID(QString)), &tictactoe, SLOT(getMoveID(QString)));
+    QObject::connect(rootObject, SIGNAL(tttButtonClicked(QString)), &tictactoe, SLOT(buttonClicked(QString)));
+    QObject::connect(rootObject, SIGNAL(tttNewMove(QString,QString)), &tictactoe, SLOT(newMove(QString,QString)));
+    QObject::connect(rootObject, SIGNAL(tttcreateGameId(QString,QString)), &tictactoe, SLOT(createGameID(QString,QString)));
+
     // Fetch currency values
     marketValue.findAllCurrencyValues();
 
     // Set last locale
     settings.setLocale(appSettings.value("locale").toString());
-
-#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
-#else
-    // X-Chat
-    wallet.m_xchatobject = &xchatRobot;
-
-    // FauxWallet
-    QObject::connect(&wallet, SIGNAL(response(QVariant)), rootObject, SLOT(testnetResponse(QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletError(QVariant, QVariant)), rootObject, SLOT(walletError(QVariant, QVariant)));
-    QObject::connect(&wallet, SIGNAL(walletSuccess(QVariant)), rootObject, SLOT(walletSuccess(QVariant)));
-#endif
 
     return app.exec();
 }

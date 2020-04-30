@@ -20,6 +20,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QtWidgets>
+#include "../support/DownloadManager.hpp"
+
 
 
 class Explorer : public QObject
@@ -27,10 +29,8 @@ class Explorer : public QObject
     Q_OBJECT
 public:
     explicit Explorer(QObject *parent = nullptr);
-    QString  getBalanceAddressXBY(QString coin, QString address, QString page);
-    QString  getBalanceAddressExt(QString coin, QString address);
-
-    QString getTransactionDetails(QString coin, QString transaction);
+    void getTransactionStatus(QString coin, QString transaction, QString address);
+    void  DownloadManagerHandler(URLObject *url);
 
 signals:
     void updateBalance(const QString &coin, const QString &address, const QString &balance);
@@ -42,13 +42,33 @@ signals:
     void allTxChecked();
     void explorerBusy();
     void detailsCollected();
+    void noInternet();
+    void internetStatusSignal(bool);
+  //  void quitLoop();
+    void quitLoopSignal();
+
+
 
 public slots:
     void getBalanceEntireWallet(QString, QString);
     void getTransactionList(QString, QString, QString);
+    void getTransactionDetailsSlot(QByteArray);
+    void getDetailsSlot(QByteArray, QMap<QString,QVariant>);
+    void getBalanceAddressXBYSlot(QByteArray, QMap<QString,QVariant>);
+    void getBalanceAddressExtSlot(QByteArray, QMap<QString,QVariant>);
+    void getTransactionStatusSlot(QByteArray, QMap<QString,QVariant>);
+
+//    void internetTimeout(QMap<QString,QVariant>);
+    void DownloadManagerRouter(QByteArray, QMap<QString,QVariant>);
+
+
     void getDetails(QString, QString);
     void WalletUpdate(QString coin, QString label, QString message);
     void checkTxStatus(QString);
+    void checkInternetSlot(QByteArray,QMap<QString,QVariant>);
+    bool checkInternet(QString url);
+
+
 private:
     QString explorerValue;
 };
