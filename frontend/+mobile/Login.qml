@@ -495,7 +495,6 @@ Item {
         onPendingLoaded: {
             if (loginTracker == 1){
                 loadPendingList(pending)
-                pendingList.clear()
             }
         }
 

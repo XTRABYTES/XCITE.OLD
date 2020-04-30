@@ -501,54 +501,25 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
             std::vector<std::string> tx_details;
             boost::split(tx_details, input_tx , [](char c){return c == ':';});
             if (used_Utxo.count() != 0) {
+                bool used = false;
                 for (int i = 0; i < used_Utxo.count(); i++) {
                     std::string utxoID = used_Utxo.at(i).toStdString();
                     std::vector<std::string> utxo_details;
                     boost::split(utxo_details, utxoID, [](char c){return c == ',';});
                     if (tx_details.at(0) == utxo_details.at(2) && xUtility.getSelectedNetworkName() == utxo_details.at(0)) {
+                        used = true;
                         xchatRobot.SubmitMsg("dicom - backend - create transaction: utxo already used");
-                        continue;
                     }
-                    else {
-                        inputs_sum = inputs_sum + tx_value;
+                }
+                if (!used) {
+                inputs_sum = inputs_sum + tx_value;
 
-                        std::string detailed_input_tx = tx_details.at(0) + ","
-                                + tx_details.at(1) + ","
-                                + hexscript + ","
-                                + value.toString().toStdString();
+                std::string detailed_input_tx = tx_details.at(0) + ","
+                        + tx_details.at(1) + ","
+                        + hexscript + ","
+                        + value.toString().toStdString();
 
-                        inputs.push_back(detailed_input_tx);
-
-                        outputs.push_back(output_address + "," + StrFromAmount(send_value));
-
-                        if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 1) {
-                            outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + (nMinFee * nBaseFee))));
-                        }
-
-                        // recalculate fee_value based on inputs
-                        inputString.clear();
-                        for (auto element : inputs) {
-                            inputString += element + " ";
-                        }
-                        //if (inputString.size() > 0)  inputString.resize (inputString.size() - 1);
-                        inputStr = QString::fromStdString(inputString);
-
-                        outputString.clear();
-                        for (auto element : outputs) {
-                            outputString += element + " ";
-                        }
-                        //if (outputString.size() > 0)  outputString.resize (outputString.size() - 1);
-                        outputStr = QString::fromStdString(outputString);
-
-                        calculate_fee(inputStr, outputStr);
-
-                        if (tooBig) {
-                            emit txTooBig();
-                            emit sendcoinFailed();
-                            return;
-                        }
-                        if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 0) break;
-                    }
+                inputs.push_back(detailed_input_tx);
                 }
             }
             else {
@@ -560,37 +531,36 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                         + value.toString().toStdString();
 
                 inputs.push_back(detailed_input_tx);
-
-                outputs.push_back(output_address + "," + StrFromAmount(send_value));
-
-                if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 1) {
-                    outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + (nMinFee * nBaseFee))));
-                }
-
-                // recalculate fee_value based on inputs
-                inputStringList.clear();
-                for (auto element : inputs) {
-                    inputStringList.append(QString::fromStdString(element));
-                }
-                //if (inputString.size() > 0)  inputString.resize (inputString.size() - 1);
-                inputStr = inputStringList.join(" ");
-
-                outputStringList.clear();
-                for (auto element : outputs) {
-                    outputStringList.append(QString::fromStdString(element));
-                }
-                //if (outputString.size() > 0)  outputString.resize (outputString.size() - 1);
-                outputStr = outputStringList.join(" ");
-
-                calculate_fee(inputStr, outputStr);
-
-                if (tooBig) {
-                    emit txTooBig();
-                    emit sendcoinFailed();
-                    return;
-                }
-                if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 0) break;
             }
+            outputs.push_back(output_address + "," + StrFromAmount(send_value));
+
+            if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 1) {
+                outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + (nMinFee * nBaseFee))));
+            }
+
+            // recalculate fee_value based on inputs
+            inputStringList.clear();
+            for (auto element : inputs) {
+                inputStringList.append(QString::fromStdString(element));
+            }
+            //if (inputString.size() > 0)  inputString.resize (inputString.size() - 1);
+            inputStr = inputStringList.join(" ");
+
+            outputStringList.clear();
+            for (auto element : outputs) {
+                outputStringList.append(QString::fromStdString(element));
+            }
+            //if (outputString.size() > 0)  outputString.resize (outputString.size() - 1);
+            outputStr = outputStringList.join(" ");
+
+            calculate_fee(inputStr, outputStr);
+            if (tooBig) {
+                emit txTooBig();
+                emit sendcoinFailed();
+                return;
+            }
+
+            if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 0) break;
         }
 
         qDebug() << "final fee: " << (nMinFee * nBaseFee);
@@ -602,6 +572,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
 
         if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) < 0) {
             emit staticNet.fundsLow();
+            xchatRobot.SubmitMsg("dicom - backend - not enough coins available");
           //  emit staticNet.sendcoinFailed();
         } else {
             if (secret != ""){

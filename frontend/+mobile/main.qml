@@ -131,6 +131,9 @@ ApplicationWindow {
         alertList.clear();
         alertList.append({"date": "", "origin": "", "message": "", "remove": true});
 
+        transactionList.clear();
+        transactionList.append({"requestID":"","coin":"","address":"","receiver":"","amount":0});
+
         findAllMarketValues()
 
         selectedPage = "onBoarding"
@@ -474,6 +477,7 @@ ApplicationWindow {
     property string invitedPlayer: ""
     property int playerNotAvailable: 0
     property string selectedApp: ""
+
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -907,10 +911,10 @@ ApplicationWindow {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
                         if(pendingList.get(i).check >= 40) {
-                            var addressname = getLabelAddress(coin, address)
-                            var cancelAlert = "transaction canceled: " + txid
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
-                            alert = true
+                            //var addressname = getLabelAddress(coin, address)
+                            //var cancelAlert = "transaction canceled: " + txid
+                            //alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
+                            //alert = true
                             updatePending(coin, address, txid, "true")
                         }
                     }
@@ -2672,7 +2676,7 @@ ApplicationWindow {
             if (Qt.application.state === Qt.ApplicationActive) {
                 inActive = false
                 checkSessionId()
-             //   xChatReconnect();
+                //   xChatReconnect();
                 status = "online";
                 marketValueTimer.restart()
                 explorerTimer1.restart()
@@ -2698,6 +2702,71 @@ ApplicationWindow {
                 }
             }
             xChatTypingSignal(myUsername,"addToOnline", status);
+        }
+    }
+
+    Connections {
+        target: StaticNet
+
+        onTxSuccess: {
+            for (var i = 0; i < transactionList.count; ++i) {
+                if (transactionList.get(i).requestID === id) {
+                    var b = ""
+                    for (var a = 0; a < walletList.count; ++a ) {
+                        if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
+                            b = walletList.get(a).label
+                        }
+                    }
+                    if (b === "") {
+                        b = transactionList.get(i).address
+                    }
+                    var c = ""
+                    for (var e = 0; e < addressList.count;++e ) {
+                        if (addressList.get(e).name === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
+                            c = walletList.get(e).fullName + " " + walletList.get(e).label
+                        }
+                    }
+                    if (c === "") {
+                        c = transactionList.get(i).receiver
+                    }
+                    var f = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
+                    pendingList.append({"coin": transactionList.get(i).coin, "address": b, "txid": msg, "amount": transactionList.get(i).amount, "value": f, "check": 0})
+                    var d = "Accepted transaction of " + f + " " + transactionList.get(i).coin + " to " + c
+                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
+                    alert = true
+                    notification.play()
+                    updateToAccount()
+                }
+            }
+        }
+
+        onTxFailed: {
+            for (var i = 0; i < transactionList.count; ++i) {
+                if (transactionList.get(i).requestID === id) {
+                    var b = ""
+                    for (var a = 0; a < walletList.count;++a ) {
+                        if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
+                            b = walletList.get(a).label
+                        }
+                    }
+                    if (b === "") {
+                        b = transactionList.get(i).address
+                    }
+                    var c = ""
+                    for (var e = 0; e < addressList.count;++e ) {
+                        if (addressList.get(e).name === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
+                            c = addressList.get(e).fullName + " " + addressList.get(e).label
+                        }
+                    }
+                    if (c === "") {
+                        c = transactionList.get(i).receiver
+                    }
+                    var d = "Rejected transaction of " + f + " " + transactionList.get(i).coin + " to " + c
+                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
+                    alert = true
+                    notification.play()
+                }
+            }
         }
     }
 
@@ -3023,6 +3092,17 @@ ApplicationWindow {
         }
     }
 
+    ListModel {
+        id: transactionList
+        ListElement {
+            requestID:""
+            coin:""
+            address:""
+            receiver:""
+            amount:0
+        }
+    }
+
     // Global components
     Clipboard {
         id: clipboard
@@ -3130,7 +3210,7 @@ ApplicationWindow {
         running: xChatConnecting === true && inActive == false
 
         onTriggered: {
-           // xChatReconnect()
+            // xChatReconnect()
         }
     }
 
