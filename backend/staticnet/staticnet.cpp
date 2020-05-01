@@ -187,6 +187,8 @@ void SnetKeyWordWorker::help() {
     xchatRobot.SubmitMsg("!!staticnet ping");
     xchatRobot.SubmitMsg("!!staticnet echo [string]");
     xchatRobot.SubmitMsg("!!staticnet sendcoin [target] [amount] [privatekey]");
+    
+
 }
 
 // NOT NEEDED ANYMORE (I THINK) ----
@@ -578,6 +580,10 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
             if (secret != ""){
                 qDebug() << "Creating RAW transaction...";
                 RawTransaction = CreateRawTransaction( xUtility.getSelectedNetworkid(), inputs, outputs, secret);
+                
+                //unsigned char xb_network_id = 25; // 25 = XTRABYTES network
+                //std::string xb_RawTransaction = CreateRawTransaction( xb_network_id, inputs, outputs, secret);                
+                
 
                 if (RawTransaction.length()) {
                     qDebug() << "raw TX: " << QString::fromStdString(RawTransaction);
