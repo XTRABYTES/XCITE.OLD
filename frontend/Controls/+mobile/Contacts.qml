@@ -21,7 +21,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: allWalletCards
     width: appWidth
-    height: appHeight - 75
+    height: parent.height - 75
     color: "transparent"
 
     property alias cardSpacing: allContacts.spacing

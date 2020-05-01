@@ -34,6 +34,8 @@ signals:
     void pingReplyReceived(QString pingReply, QString traceID);
 
 public slots:
+    void requestQueue();
+    void setQueue(QString queueName);
     void sendCoinsEntry(QString msg);
     void dicomRequestEntry(QString msg);
     void onResponseFromStaticnetEntry(QJsonObject response);

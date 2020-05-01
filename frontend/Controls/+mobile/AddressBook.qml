@@ -22,7 +22,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: allAddressCards
     width: appWidth
-    height: appHeight - 75
+    height: parent.height - 75
     anchors.top: parent.top
     color: "transparent"
 

@@ -12,6 +12,7 @@
 
 #include <QSettings>
 #include "Explorer.hpp"
+#include "../xchat/xchat.hpp"
 #include <QWindow>
 
 
@@ -92,6 +93,7 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
             }
         }
     }
+    emit walletChecked();
     return;
 }
 
@@ -302,9 +304,11 @@ void Explorer::getTransactionStatusSlot(QByteArray response, QMap<QString,QVaria
 
         if (confirms >= 1) {
             emit txidConfirmed(coin, address, transaction, "true");
+            xchatRobot.SubmitMsg("dicom - explorer - transaction confirmed, coin: " + coin + " address: " + address + " txid: " + transaction + " confirmations: " + QString::number(confirms));
         }
         else {
             emit txidExists(coin, address, transaction, "false");
+            xchatRobot.SubmitMsg("dicom - explorer - transaction found, coin: " + coin + " address: " + address + " txid: " + transaction);
         }
     }
 }

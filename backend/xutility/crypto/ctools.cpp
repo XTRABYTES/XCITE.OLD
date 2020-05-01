@@ -57,6 +57,9 @@ int ECDSA_SIG_recover_key_GFp(EC_KEY *eckey, ECDSA_SIG *ecsig, const unsigned ch
 {
     if (!eckey) return 0;
 
+    const BIGNUM *sig_r, *sig_s;
+    ECDSA_SIG_get0(ecsig, &sig_r, &sig_s);
+
     int ret = 0;
     BN_CTX *ctx = NULL;
 
@@ -82,10 +85,7 @@ int ECDSA_SIG_recover_key_GFp(EC_KEY *eckey, ECDSA_SIG *ecsig, const unsigned ch
     x = BN_CTX_get(ctx);
     if (!BN_copy(x, order)) { ret=-1; goto err; }
     if (!BN_mul_word(x, i)) { ret=-1; goto err; }
-    const BIGNUM *ecsig_r;
-    const BIGNUM *ecsig_s;
-    ECDSA_SIG_get0(ecsig,&ecsig_r,&ecsig_s);    
-    if (!BN_add(x, x, ecsig_r)) { ret=-1; goto err; }
+    if (!BN_add(x, x, sig_r)) { ret=-1; goto err; }
     field = BN_CTX_get(ctx);
     if (!EC_GROUP_get_curve_GFp(group, field, NULL, NULL, ctx)) { ret=-2; goto err; }
     if (BN_cmp(x, field) >= 0) { ret=0; goto err; }
@@ -106,9 +106,9 @@ int ECDSA_SIG_recover_key_GFp(EC_KEY *eckey, ECDSA_SIG *ecsig, const unsigned ch
     if (!BN_zero(zero)) { ret=-1; goto err; }
     if (!BN_mod_sub(e, zero, e, order, ctx)) { ret=-1; goto err; }
     rr = BN_CTX_get(ctx);
-    if (!BN_mod_inverse(rr, ecsig_r, order, ctx)) { ret=-1; goto err; }
+    if (!BN_mod_inverse(rr, sig_r, order, ctx)) { ret=-1; goto err; }
     sor = BN_CTX_get(ctx);
-    if (!BN_mod_mul(sor, ecsig_s, rr, order, ctx)) { ret=-1; goto err; }
+    if (!BN_mod_mul(sor, sig_s, rr, order, ctx)) { ret=-1; goto err; }
     eor = BN_CTX_get(ctx);
     if (!BN_mod_mul(eor, e, rr, order, ctx)) { ret=-1; goto err; }
     if (!EC_POINT_mul(group, Q, eor, R, sor, ctx)) { ret=-2; goto err; }
@@ -151,14 +151,22 @@ public:
         memset(vch, 0, 32 - nBytes);
     }
 
-    void SetSecretBytes(const unsigned char vch[32]) {
-    	   	    	
-        BIGNUM *bn = BN_new();
-        
-        assert(BN_bin2bn(vch, 32, bn));
-        assert(EC_KEY_regenerate_key(pkey, bn));
-        BN_free(bn);
+
+void SetSecretBytes(const unsigned char vch[32]) {
+
+      BIGNUM *bn = BN_bin2bn(vch,32,BN_new());
+      if (bn == NULL)
+         assert(!"CKey::SetSecretBytes() : BN_bin2bn failed");
+
+      if (!EC_KEY_regenerate_key(pkey,bn)) {
+        BN_clear_free(bn);
+        assert(!"CKey::SetSecretBytes() : EC_KEY_regenerate_key failed");
+      }
+      BN_clear_free(bn);
+
     }
+
+
 
     void GetPrivKey(CPrivKey &privkey, bool fCompressed) {
         EC_KEY_set_conv_form(pkey, fCompressed ? POINT_CONVERSION_COMPRESSED : POINT_CONVERSION_UNCOMPRESSED);
@@ -219,10 +227,10 @@ public:
         if (sig==NULL)
             return false;
         memset(p64, 0, 64);
-        const BIGNUM *sig_r;
-        const BIGNUM *sig_s;
-        ECDSA_SIG_get0(sig,&sig_r,&sig_s);
-    
+
+    const BIGNUM *sig_r, *sig_s;
+    ECDSA_SIG_get0(sig, &sig_r, &sig_s);
+
         int nBitsR = BN_num_bits(sig_r);
         int nBitsS = BN_num_bits(sig_s);
         if (nBitsR <= 256 && nBitsS <= 256) {
@@ -241,9 +249,6 @@ public:
                 }
             }
             assert(fOk);
-            const BIGNUM *sig_r;
-            const BIGNUM *sig_s;
-            ECDSA_SIG_get0(sig,&sig_r,&sig_s);
             BN_bn2bin(sig_r,&p64[32-(nBitsR+7)/8]);
             BN_bn2bin(sig_s,&p64[64-(nBitsS+7)/8]);
         }
@@ -259,17 +264,30 @@ public:
     {
         if (rec<0 || rec>=3)
             return false;
-        BIGNUM *sig_r;
-        BIGNUM *sig_s;               
-        BN_bin2bn(&p64[0],  32, sig_r);
-        BN_bin2bn(&p64[32], 32, sig_s);
         ECDSA_SIG *sig = ECDSA_SIG_new();
+        if (!sig) return false;
+
+        // sig_r and sig_s are deallocated by ECDSA_SIG_free(sig);
+        BIGNUM *sig_r = BN_bin2bn(&p64[0],32,BN_new());
+        BIGNUM *sig_s = BN_bin2bn(&p64[32],32,BN_new());
+        if (!sig_r || !sig_s) return false;
+
+        // copy and transfer ownership to sig
         ECDSA_SIG_set0(sig, sig_r, sig_s);
-        bool ret = ECDSA_SIG_recover_key_GFp(pkey, sig, (unsigned char*)&hash, sizeof(hash), rec, 0) == 1;
+
+        EC_KEY_free(pkey);
+        pkey = EC_KEY_new_by_curve_name(NID_secp256k1);
+
+
+       if (ECDSA_SIG_recover_key_GFp(pkey, sig, (unsigned char*)&hash, sizeof(hash), rec, 0) == 1) {
         ECDSA_SIG_free(sig);
-        return ret;
+        return true;
+       }
+       ECDSA_SIG_free(sig);
+       return false;
     }
-};
+
+ };
 
 }; // end of anonymous namespace
 
@@ -411,7 +429,7 @@ bool CPubKey::Decompress() {
 }
 
 std::vector<unsigned char> ParseHexcstr(const char* psz) {
-	
+
 static const signed char phexdigit[256] =
 { -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
   -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
@@ -429,7 +447,7 @@ static const signed char phexdigit[256] =
   -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
   -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
   -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, };
-  	
+
     // convert hex dump to vector
     std::vector<unsigned char> vch;
     for(;;)

@@ -42,6 +42,7 @@ Rectangle {
         }
         else {
             msgList.positionViewAtEnd()
+            requestQueue()
         }
     }
 
@@ -240,10 +241,64 @@ Rectangle {
         }
     }
 
+    Controls.TextInput {
+        id: queueText
+        height: 34
+        placeholder: "STATIC QUEUE"
+        text: queueName
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.right: queueBtn.left
+        anchors.rightMargin: 10
+        anchors.top: xbyBtn.bottom
+        anchors.topMargin: 15
+        color: themecolor
+        textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+        font.pixelSize: 14
+        mobile: 1
+    }
+
+    Rectangle {
+        id: queueBtn
+        width: 50
+        height: 33
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.verticalCenter: queueText.verticalCenter
+        color: maincolor
+
+
+        Text {
+            id: queueBtnLabel
+            text: "SET"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            color: "#F2F2F2"
+        }
+
+        MouseArea {
+            anchors.fill: parent
+
+            onPressed: {
+                queueBtn.opacity = 0.5
+            }
+
+            onReleased: {
+                queueBtn.opacity = 1
+            }
+
+            onClicked: {
+                setQueue(queueText.text)
+            }
+        }
+    }
+
     Rectangle {
         id: replyWindow
         width: parent.width - 58
-        anchors.top: pingBtn.bottom
+        anchors.top: queueText.bottom
         anchors.topMargin: 20
         anchors.bottom: requestText.top
         anchors.bottomMargin: 15

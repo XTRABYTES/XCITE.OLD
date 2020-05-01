@@ -75,6 +75,7 @@ Rectangle {
     property string receivedAmount: ""
     property string receivedLabel: ""
     property string receivedTxID: ""
+    property string usedCoins: ""
     property string txId: ""
     property real totalAmount: 0
     property string network: coinID.text
@@ -928,25 +929,25 @@ Rectangle {
             }
         }
 
-        /*       Label {
- *           text: "Input amount too low"
- *           color: "#FD2E2E"
- *           anchors.left: sendAmount.left
- *           anchors.leftMargin: 5
- *           anchors.top: sendAmount.bottom
- *           anchors.topMargin: 1
- *           font.pixelSize: 11
- *           font.family: xciteMobile.name
- *           visible: transferSwitch.on == true
- *                    && transactionSend == 0
- *                    && addressbookTracker == 0
- *                    && scanQRTracker == 0
- *                    && calculatorTracker == 0
- *                    && (coinID.text === "XBY"? inputAmount < 1 : (coinID.text === "XFUEL"? inputAmount < 1 : (coinID.text === "XTEST"? inputAmount < 1 : inputAmount < 0)))
- *                    && walletList.get(selectedWallet).viewOnly === false
- *                    && publicKey.text != ""
- *       }
-*/
+       Label {
+            text: "Input amount too low"
+            color: "#FD2E2E"
+            anchors.left: sendAmount.left
+            anchors.leftMargin: 5
+            anchors.top: sendAmount.bottom
+            anchors.topMargin: 1
+            font.pixelSize: 11
+            font.family: xciteMobile.name
+            visible: transferSwitch.on == true
+                     && transactionSend == 0
+                     && addressbookTracker == 0
+                     && scanQRTracker == 0
+                     && calculatorTracker == 0
+                     && (coinID.text === "XBY"? inputAmount < 1 : (coinID.text === "XFUEL"? inputAmount < 1 : (coinID.text === "XTEST"? inputAmount < 1 : inputAmount < 0)))
+                     && walletList.get(selectedWallet).viewOnly === false
+                     && publicKey.text != ""
+        }
+
         Label {
             text: "Insufficient funds"
             color: "#FD2E2E"
@@ -1185,7 +1186,7 @@ Rectangle {
             color: (invalidAddress == 0
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
-                    //&& (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
+                    && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                     && precision <= 8
                     && inputAmount <= (walletList.get(selectedWallet).balance)) ? maincolor : "#727272"
             opacity: darktheme == true? 0.25 : 0.5
@@ -1269,6 +1270,7 @@ Rectangle {
                                 rawTX = rawTx_
                                 receivedReceiver = receiver_
                                 receivedSender = sender_
+                                usedCoins = usedCoins_
                                 receivedAmount = sendAmount_
                                 receivedLabel = ""
                                 for (var i = 0; i < walletList.count; i ++) {
@@ -1331,7 +1333,7 @@ Rectangle {
             color: (invalidAddress == 0
                     && keyInput.text !== ""
                     && sendAmount.text !== ""
-                    //&& (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
+                    && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                     && precision <= 8
                     && inputAmount <= (walletList.get(selectedWallet).balance)) ? (darktheme == false? "#F2F2F2" : maincolor) : "#979797"
             anchors.horizontalCenter: sendButton.horizontalCenter
@@ -1346,7 +1348,7 @@ Rectangle {
             border.color: (invalidAddress == 0
                            && keyInput.text !== ""
                            && sendAmount.text !== ""
-                           //&& (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
+                           && (coinID.text === "XBY"? inputAmount >= 1 : (coinID.text === "XFUEL"? inputAmount >= 1 : (coinID.text === "XTEST"? inputAmount >= 1 : inputAmount > 0)))
                            && precision <= 8
                            && inputAmount <= (walletList.get(selectedWallet).balance)) ? maincolor : "#979797"
             border.width: 1
@@ -1638,8 +1640,10 @@ Rectangle {
                             var msg = "UI - confirming TX: " + paramsJson
                             xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
                             console.log("request TX broadcast: " + paramsJson)
-                            var total = Number.fromLocaleString(Qt.locale("en_US"),replaceComma) + Number.fromLocaleString(Qt.locale("en_US"),txFee)
-                            transactionList.append({"requestID":receivedTxID,"coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":total})
+                            var total = Number.fromLocaleString(Qt.locale("en_US"),replaceComma)
+                            var totalFee = Number.fromLocaleString(Qt.locale("en_US"),txFee)
+                            var totalUsed = Number.fromLocaleString(Qt.locale("en_US"),usedCoins)
+                            transactionList.append({"requestID":receivedTxID,"coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":total,"fee":totalFee,"used":totalUsed})
                             //requestSend = 1
                             transferTracker = 0
                         }
@@ -1660,8 +1664,7 @@ Rectangle {
                         var msg = "UI - confirming TX: " + paramsJson
                         xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
                         console.log("request TX broadcast: " + paramsJson)
-                        totalAmount = Number.fromLocaleString(Qt.locale("en_US"),replaceComma) + Number.fromLocaleString(Qt.locale("en_US"),txFee)
-                        transactionList.append({"requestID":receivedTxID,"coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":totalAmount})
+                        transactionList.append({"requestID":receivedTxID,"coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":Number.fromLocaleString(Qt.locale("en_US"),replaceComma),"fee":Number.fromLocaleString(Qt.locale("en_US"),txFee)})
                         //requestSend = 1
                         transferTracker = 0
                     }
@@ -1676,41 +1679,7 @@ Rectangle {
                         }
                     }
                 }
-
-                /*                Connections {
-*                   target: StaticNet
-*
-*                    onTxSuccess: {
-*                        if (transferTracker == 1 && requestSend == 1) {
-*                            if (id === receivedTxID) {
-*                                confirmationSend = 1
-*                                requestSend = 0
-*                                var total = Number.fromLocaleString(Qt.locale("en_US"),replaceComma) + txFee
-*                                pendingList.append({"coin": coinID.text, "address": receivedSender, "txid": msg, "amount": total, "value": replaceComma, "check": 0})
-*                                receivedAmount = ""
-*                                receivedReceiver = ""
-*                                receivedSender = ""
-*                                receivedTxID = ""
-*                                receivedLabel = ""
-*                            }
-*                        }
-*                    }
-*
-*                    onTxFailed: {
-*                        if (transferTracker == 1 && requestSend == 1) {
-*                            if (id === receivedTxID) {
-*                                requestSend = 0
-*                                failedSend = 1
-*                                receivedAmount = ""
-*                                receivedReceiver = ""
-*                                receivedSender = ""
-*                                receivedTxID = ""
-*                                receivedLabel = ""
-*                            }
-*                        }
-*                    }
-*                }
-*/            }
+            }
 
             Text {
                 text: "CONFIRM"
@@ -1782,6 +1751,7 @@ Rectangle {
                         receivedReceiver = ""
                         receivedSender = ""
                         receivedTxID = ""
+                        usedCoins = ""
                     }
                 }
             }
@@ -1844,6 +1814,7 @@ Rectangle {
 *            visible: requestSend == 1
 *        }
 */
+
         // Transfer failed state
         Controls.ReplyModal {
             id: transferFailed
@@ -1922,6 +1893,7 @@ Rectangle {
                         receivedReceiver = ""
                         receivedSender = ""
                         receivedTxID = ""
+                        usedCoins = ""
                     }
                 }
             }
@@ -2291,6 +2263,7 @@ Rectangle {
             receivedLabel = ""
             receivedReceiver = ""
             receivedSender = ""
+            usedCoins = ""
             createTx = false
         }
     }

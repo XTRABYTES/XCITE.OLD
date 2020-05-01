@@ -201,6 +201,8 @@ Rectangle {
                 Label {
                     property int decimals: pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
                     property string pendingAmount: ((pendingCoins(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                    property int updateTracker1: updateBalanceTracker
+                    property int updateTracker2: updatePendingTracker
                     id: pendingTotal
                     text: pendingAmount
                     anchors.right: pendingTicker.left
@@ -209,11 +211,21 @@ Rectangle {
                     font.pixelSize: 12
                     font.family: xciteMobile.name
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                    onUpdateTracker1Changed: {
+                        if(updateTracker1 == 1) {
+                            pendingTotal.text = ((pendingCoins(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                        }
+                    }
+                    onUpdateTracker2Changed: {
+                        if(updateTracker2 == 1) {
+                            pendingTotal.text = ((pendingCoins(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                        }
+                    }
                 }
 
                 Label {
                     id: pendingLabel
-                    text: "Pending:"
+                    text: "Unavailable:"
                     anchors.right: pendingTotal.left
                     anchors.top: pendingTotal.top
                     anchors.rightMargin: 7

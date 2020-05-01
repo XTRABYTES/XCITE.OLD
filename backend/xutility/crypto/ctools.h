@@ -1,5 +1,4 @@
 /**
-
  * Filename: ctools.h
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -9,25 +8,23 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  *
  *
+        Copyright (c) 2009-2010 Satoshi Nakamoto
+        Copyright (c) 2017-2019 Zoltan Szabo & XTRABYTES developers
 
-		Copyright (c) 2009-2010 Satoshi Nakamoto
-		Copyright (c) 2017-2019 Zoltan Szabo & XTRABYTES developers
-		
-		Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
-		associated documentation files (the “Software”), to deal in the Software without restriction, 
-		including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-		and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
-		subject to the following conditions:
-		
-		The above copyright notice and this permission notice shall be included in all copies or substantial 
-		portions of the Software.
-		
-		THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
-		LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-		IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-		WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-		SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+        associated documentation files (the “Software”), to deal in the Software without restriction,
+        including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+        and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+        subject to the following conditions:
 
+        The above copyright notice and this permission notice shall be included in all copies or substantial
+        portions of the Software.
+
+        THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+        LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+        IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+        WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+        SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #ifndef CTOOLS_H
@@ -377,7 +374,7 @@ inline std::string EncodeBase58(const unsigned char* pbegin, const unsigned char
     CBigNum rem;
     while (bn > bn0)
     {
-        if (!BN_div(dv.to_bignum(), rem.to_bignum(), bn.to_bignum(), bn58.to_bignum(), pctx))
+        if (!BN_div(dv.get(), rem.get(), bn.cget(), bn58.cget(), pctx))
             throw bignum_error("EncodeBase58 : BN_div failed");
         bn = dv;
         unsigned int c = rem.getulong();
@@ -424,7 +421,7 @@ inline bool DecodeBase58(const char* psz, std::vector<unsigned char>& vchRet)
             break;
         }
         bnChar.setulong(p1 - pszBase58);
-        if (!BN_mul(bn.to_bignum(), bn.to_bignum(), bn58.to_bignum(), pctx))
+        if (!BN_mul(bn.get(), bn.cget(), bn58.cget(), pctx))
             throw bignum_error("DecodeBase58 : BN_mul failed");
         bn += bnChar;
     }
@@ -593,14 +590,14 @@ public:
 class CXCiteAddress : public CBase58Data
 {
 private:
-     unsigned char AddressNetwork = 0;	
+     unsigned char AddressNetwork = 0;
 public:
     void SetAddressNetwork( const unsigned char AddressNetworkID ) {
-    	  AddressNetwork = AddressNetworkID;
+          AddressNetwork = AddressNetworkID;
     }
-    
+
     unsigned char GetAddressNetwork() const {
-       return AddressNetwork;    
+       return AddressNetwork;
     }
 
     bool Set(const CKeyID &id) {
@@ -613,7 +610,7 @@ public:
         return boost::apply_visitor(CXCiteAddressVisitor(this), dest);
     }
 
-  
+
     bool IsValid() const
     {
         unsigned int nExpectedSize = 20;
@@ -625,21 +622,21 @@ public:
     {
     }
 
-    CXCiteAddress(const CTxDestination &dest, const unsigned char AddressNetworkID)    
+    CXCiteAddress(const CTxDestination &dest, const unsigned char AddressNetworkID)
     {
-    	  SetAddressNetwork( AddressNetworkID );
+          SetAddressNetwork( AddressNetworkID );
         Set(dest);
     }
 
     CXCiteAddress(const std::string& strAddress, const unsigned char AddressNetworkID)
     {
-    	  SetAddressNetwork( AddressNetworkID );
+          SetAddressNetwork( AddressNetworkID );
         SetString(strAddress);
     }
 
     CXCiteAddress(const char* pszAddress, const unsigned char AddressNetworkID)
     {
-    	  SetAddressNetwork( AddressNetworkID );
+          SetAddressNetwork( AddressNetworkID );
         SetString(pszAddress);
     }
 
@@ -647,19 +644,19 @@ public:
     CTxDestination Get() const {
         uint160 id;
         memcpy(&id, &vchData[0], 20);
-        return CKeyID(id);    
+        return CKeyID(id);
     }
 
     bool GetKeyID(CKeyID &keyID) const {
         if (!IsValid())
             return false;
         if (nVersion != GetAddressNetwork()) return false;
-            
+
             uint160 id;
             memcpy(&id, &vchData[0], 20);
             keyID = CKeyID(id);
             return true;
-        
+
     }
 
 };
@@ -671,19 +668,19 @@ bool inline CXCiteAddressVisitor::operator()(const CNoDestination &id) const { r
 class CXCiteSecret : public CBase58Data
 {
   private:
-     unsigned char AddressNetwork = 0;	
+     unsigned char AddressNetwork = 0;
   public:
     void SetAddressNetwork( const unsigned char AddressNetworkID ) {
-    	  AddressNetwork = AddressNetworkID;
+          AddressNetwork = AddressNetworkID;
     }
-    
+
     unsigned char GetAddressNetwork() const {
-       return AddressNetwork;    
+       return AddressNetwork;
     }
-	
+
     void SetKey(const CKey& vchSecret,const unsigned char AddressNetworkID)
     {
-    	  SetAddressNetwork( AddressNetworkID );
+          SetAddressNetwork( AddressNetworkID );
         assert(vchSecret.IsValid());
         SetData(GetAddressNetwork() + 128, vchSecret.begin(), vchSecret.size());
         if (vchSecret.IsCompressed())
@@ -703,9 +700,9 @@ class CXCiteSecret : public CBase58Data
         return  (vchData.size() == 32 || (vchData.size() == 33 && vchData[32] == 1));
     }
 
-    bool SetString(const char* pszSecret,const unsigned char AddressNetworkID)    
+    bool SetString(const char* pszSecret,const unsigned char AddressNetworkID)
     {
-    	  SetAddressNetwork( AddressNetworkID );
+          SetAddressNetwork( AddressNetworkID );
         return CBase58Data::SetString(pszSecret) && IsValid();
     }
 

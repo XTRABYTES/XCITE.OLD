@@ -42,6 +42,7 @@ signals:
     void allTxChecked();
     void explorerBusy();
     void detailsCollected();
+    void walletChecked();
     void noInternet();
     void internetStatusSignal(bool);
   //  void quitLoop();

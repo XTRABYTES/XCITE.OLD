@@ -128,11 +128,13 @@ ApplicationWindow {
 
         clearUtxoList();
 
+        requestQueue();
+
         alertList.clear();
         alertList.append({"date": "", "origin": "", "message": "", "remove": true});
 
         transactionList.clear();
-        transactionList.append({"requestID": "","coin": "","address": "","receiver": "","amount": 0});
+        transactionList.append({"requestID": "","coin": "","address": "","receiver": "","amount": 0, "fee": 0, "used": 0});
 
         findAllMarketValues()
 
@@ -223,6 +225,7 @@ ApplicationWindow {
     property string status: "online"
     property bool isNetworkActive: false
     property int pingSNR: 0
+    property string queueName: ""
 
     // Trackers - pages
     property int loginTracker: 0
@@ -271,6 +274,8 @@ ApplicationWindow {
     property int tttTracker: 0
     property int miniatureTracker: 0
     property int pingTracker: 0
+    property int updateBalanceTracker: 0
+    property int updatePendingTracker: 0
 
     // Trackers - features
     property int interactionTracker: 0
@@ -405,6 +410,7 @@ ApplicationWindow {
     property bool transactionDirection: false
     property real transactionAmount: 0
     property string transactionConfirmations: ""
+    property string transactionID: ""
     property bool saveSound: false
     property int oldSound: 0
     property int oldVolume: 1
@@ -536,6 +542,8 @@ ApplicationWindow {
     signal confirmGameInvite(string user, string opponent, string game, string gameID, string accept)
     signal dicomRequest(string params)
     signal clearUtxoList()
+    signal requestQueue()
+    signal setQueue(string queue)
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {
@@ -850,6 +858,7 @@ ApplicationWindow {
     }
 
     function updateBalance(coin, address, balance) {
+        updateBalanceTracker = 0
         var balanceAlert
         var difference
         var newBalance
@@ -889,6 +898,7 @@ ApplicationWindow {
                 }
             }
         }
+        updateBalanceTracker = 1
     }
 
     function updatePending(coin, address, txid, result) {
@@ -897,7 +907,7 @@ ApplicationWindow {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
                         if(result === "true") {
-                            pendingList.remove(i, 1)
+                            pendingList.setProperty(i,"value","true")
                         }
                     }
                 }
@@ -907,14 +917,14 @@ ApplicationWindow {
 
     function pendingUnconfirmed(coin, address, txid, result) {
         for (var i = 0; i < pendingList.count; i ++){
-            if(pendingList.get(i).coin === coin) {
+            if(pendingList.get(i).coin === coin && pendingList.get(i).value === "false") {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
-                        if(pendingList.get(i).check >= 3) {
-                            //var addressname = getLabelAddress(coin, address)
-                            //var cancelAlert = "transaction canceled: " + txid
-                            //alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
-                            //alert = true
+                        if(pendingList.get(i).check >= 20) {
+                            var addressname = getLabelAddress(coin, address)
+                            var cancelAlert = "transaction canceled: " + txid
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
+                            alert = true
                             updatePending(coin, address, txid, "true")
                         }
                     }
@@ -1007,8 +1017,8 @@ ApplicationWindow {
     function pendingCoins(coin, address) {
         var pending = 0
         for (var i = 0; i < pendingList.count; i ++) {
-            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address) {
-                pending += pendingList.get(i).amount
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value === "false") {
+                pending += pendingList.get(i).used
             }
         }
         return pending
@@ -2329,6 +2339,20 @@ ApplicationWindow {
             updateBalance(coin, address, balance)
         }
 
+        onWalletChecked: {
+            var datamodelPending = []
+            for (var e = 0; e < pendingList.count; ++e) {
+                if(pendingList.get(e).value === "false") {
+                    datamodelPending.push(pendingList.get(e))
+                }
+            };
+            var pendingListJson = JSON.stringify(datamodelPending)
+
+            if (explorerBusy == false) {
+                checkTxStatus(pendingListJson);
+            };
+        }
+
         onTxidExists: {
             updatePending(coin, address, txid, result)
         }
@@ -2709,7 +2733,6 @@ ApplicationWindow {
         target: StaticNet
 
         onTxSuccess: {
-            var g = msg
             for (var i = 0; i < transactionList.count; ++i) {
                 if (transactionList.get(i).requestID === id) {
                     var b = ""
@@ -2737,12 +2760,18 @@ ApplicationWindow {
                     if (c === "") {
                         c = transactionList.get(i).receiver
                     }
-                    var h = transactionList.get(i).amount
-                    var f = Number(h).toLocaleString(Qt.locale("en_US"))
-                    //pendingList.append({"coin": transactionList.get(i).coin, "address": j, "txid": g, "amount": h, "value": "false", "check": 0})
-                    var d = "Accepted transaction of " + f + " " + transactionList.get(i).coin + " to " + c
+
+                    var h = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
+                    var l = transactionList.get(i).amount
+                    var k = Number(transactionList.get(i).fee).toLocaleString(Qt.locale("en_US"))
+                    var m = transactionList.get(i).used
+                    var o = Number(transactionList.get(i).used).toLocaleString(Qt.locale("en_US"))
+                    pendingList.append({"coin": transactionList.get(i).coin, "address": j, "txid": msg, "amount": l, "used": m, "value": "false", "check": 0})
+                    updatePendingTracker = 1
+                    var d = "Accepted transaction of " + h + transactionList.get(i).coin + " (fee: " + k + transactionList.get(i).coin + ") to " + c
                     alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
                     alert = true
+                    updatePendingTracker = 0
                     notification.play()
                     updateToAccount()
                 }
@@ -2762,20 +2791,31 @@ ApplicationWindow {
                         b = transactionList.get(i).address
                     }
                     var c = ""
-                    for (var e = 0; e < addressList.count;++e ) {
+                    for (var e = 0; e < addressList.count; ++e ) {
                         if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
-                            c = addressList.get(e).fullName + " " + addressList.get(e).label
+                            if(addressList.get(e).fullName !== undefined) {
+                                c = addressList.get(e).fullName + " " + addressList.get(e).label
+                            }
+                            else {
+                                c= addressList.get(e).label
+                            }
                         }
                     }
                     if (c === "") {
                         c = transactionList.get(i).receiver
                     }
-                    var d = "Rejected transaction of " + f + " " + transactionList.get(i).coin + " to " + c
+                    var h = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
+                    var l = transactionList.get(i).amount
+                    var d = "Rejected transaction of " + h + " " + transactionList.get(i).coin + " to " + c
                     alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
                     alert = true
                     notification.play()
                 }
             }
+        }
+
+        onReturnQueue: {
+            queueName = queue_
         }
     }
 
@@ -2913,6 +2953,7 @@ ApplicationWindow {
             address: ""
             txid: ""
             amount: 0
+            used: 0
             value: ""
             check: 0
         }
@@ -3109,6 +3150,8 @@ ApplicationWindow {
             address: ""
             receiver: ""
             amount: 0
+            fee: 0
+            used: 0
         }
     }
 
@@ -3316,39 +3359,11 @@ ApplicationWindow {
 
             clearWalletList()
             var datamodelWallet = []
-            var datamodelPending = []
-
             for (var i = 0; i < walletList.count; ++i) {
                 datamodelWallet.push(walletList.get(i))
             };
-            for (var e = 0; e < pendingList.count; ++e) {
-                datamodelPending.push(pendingList.get(e))
-            };
             var walletListJson = JSON.stringify(datamodelWallet)
-            var pendingListJson = JSON.stringify(datamodelPending)
-
             updateBalanceSignal(walletListJson, balanceCheck);
-
-            if (explorerBusy == false) {
-                checkTxStatus(pendingListJson);
-            };
-
-            if (pendingList.count > 1) {
-                for (var o = 0; o < pendingList.count; ++o) {
-                    var times = 0
-                    var check = pendingList.get(o).check
-                    if (check !== undefined) {
-                        if (check >= 0) {
-                            times = check
-                        }
-                        else {
-                            pendingList.setProperty(o, "check", 0)
-                            times = 0
-                        }
-                        pendingList.setProperty(o, "check", (times + 1))
-                    }
-                }
-            }
         }
     }
 

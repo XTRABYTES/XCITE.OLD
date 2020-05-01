@@ -36,6 +36,7 @@ public:
     QNetworkReply *reply;
     void request(const QJsonArray *params);
     static QStringList usedUtxo;
+    static QString queue_name;
 
 public Q_SLOTS:
     void slotNetworkError(QNetworkReply::NetworkError error);
@@ -89,8 +90,8 @@ private:
     std::string RawTransaction;
     StaticNetHttpClient *client;
     bool tooBig;
-    int nMinFee;
     int nBaseFee = 100000000;
+    int nMinFee;
 };
 
 
@@ -155,7 +156,8 @@ public slots:
 
 signals:
 	 void ResponseFromStaticnet(QJsonObject);
-     void sendFee(QString fee_, QString rawTx_, QString receiver_, QString sender_, QString sendAmount_, QString traceId_);
+     void returnQueue(QString queue_);
+     void sendFee(QString fee_, QString rawTx_, QString receiver_, QString sender_,QString usedCoins_, QString sendAmount_, QString traceId_);
      void rawTxFailed();
      void fundsLow();
      void utxoError();

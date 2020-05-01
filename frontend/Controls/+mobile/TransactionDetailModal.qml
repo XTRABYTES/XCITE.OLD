@@ -232,11 +232,30 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        id: inputBtn
+        width: parent.width/2
+        height: 45
+        color: maincolor
+        anchors.bottom: addressArea.top
+        anchors.left: parent.left
+        opacity: selectedAddressList == "input"? 1 : 0.5
+    }
+
+    Rectangle {
+        id: outputBtn
+        width: parent.width/2
+        height: 45
+        color: maincolor
+        anchors.bottom: addressArea.top
+        anchors.right: parent.right
+        opacity: selectedAddressList == "output"? 1 : 0.5
+    }
+
     Label {
         id: inputLabel
-        text: "Paying Addresses"
-        anchors.left: parent.left
-        anchors.leftMargin: 28
+        text: "Inputs"
+        anchors.horizontalCenter: inputBtn.horizontalCenter
         anchors.top: confirmationAmount.bottom
         anchors.topMargin: 20
         rightPadding: 5
@@ -274,9 +293,8 @@ Rectangle {
 
     Label {
         id: receiveLabel
-        text: "Receiving Addresses"
-        anchors.right: parent.right
-        anchors.rightMargin: 28
+        text: "Outputs"
+        anchors.horizontalCenter: outputBtn.horizontalCenter
         anchors.top: confirmationAmount.bottom
         anchors.topMargin: 20
         leftPadding: 5

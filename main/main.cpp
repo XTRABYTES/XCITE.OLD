@@ -187,6 +187,8 @@ int main(int argc, char *argv[])
     // connect QML signals for dicom
     QObject::connect(rootObject, SIGNAL(dicomRequest(QString)), &static_int, SLOT(dicomRequestEntry(QString)));
     QObject::connect(rootObject, SIGNAL(clearUtxoList()), &static_int, SLOT(clearUtxoList()));
+    QObject::connect(rootObject, SIGNAL(setQueue(QString)), &static_int, SLOT(setQueue(QString)));
+    QObject::connect(rootObject, SIGNAL(requestQueue()), &static_int, SLOT(requestQueue()));
 
     // connect signals for X-CHAT
     QObject::connect(rootObject, SIGNAL(xChatSend(QString,QString,QString,QString, QString, QString, QString)), &xchatRobot, SLOT(xchatInc(QString,QString,QString,QString, QString, QString, QString)));

@@ -204,15 +204,13 @@ Rectangle {
                 roleName: "coin"
                 pattern: pendingCoin
             },
-            AnyOf {
-                RegExpFilter {
-                    roleName: "txid"
-                    pattern: searchCriteria
-                }
-                RegExpFilter {
-                    roleName: "value"
-                    pattern: searchCriteria
-                }
+            RegExpFilter {
+                roleName: "txid"
+                pattern: searchCriteria
+            },
+            RegExpFilter {
+                roleName: "value"
+                pattern: "false"
             }
         ]
     }

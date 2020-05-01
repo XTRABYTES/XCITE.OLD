@@ -21,7 +21,7 @@ import "qrc:/Controls" as Controls
 Rectangle {
     id: allWalletCards
     width: appWidth
-    height: parent.height - 25
+    height: parent.height - 75
 
     color: "transparent"
 
