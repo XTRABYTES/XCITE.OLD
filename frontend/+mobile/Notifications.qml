@@ -55,24 +55,22 @@ Rectangle {
         }
     }
 
-    Label {
+    Image {
         id: clearNotifications
-        text: "CLEAR ALL"
+        source: darktheme == true? 'qrc:/icons/mobile/trash-icon_01_light.svg' : 'qrc:/icons/mobile/trash-icon_01_dark.svg'
+        height: 25
+        fillMode: Image.PreserveAspectFit
         anchors.right: parent.right
-        anchors.rightMargin: 14
+        anchors.rightMargin: 30
         anchors.bottom: notificationList.top
         anchors.bottomMargin: 5
-        font.pixelSize: 12
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        font.letterSpacing: 2
         visible: myNotifications.filteredCount > 0
 
         MouseArea {
-            height: 20
+            height: 25
+            width: 25
             anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.right: parent.right
+            anchors.horizontalCenter: parent.horizontalCenter
 
             onPressed: {
                 click01.play()
@@ -91,72 +89,6 @@ Rectangle {
                     updatingWalletsNotif = false
                 }
             }
-        }
-        /*
-        Connections {
-            target: UserSettings
-
-            onSaveSucceeded: {
-                if (selectedPage == "notif" && updatingWalletsNotif == true) {
-                    updatingWalletsNotif = false
-                    appsTracker = 0
-                    selectedPage = "home"
-                    mainRoot.pop()
-                }
-            }
-
-            onSaveFailed: {
-                if (selectedPage == "notif" && updatingWalletsNotif == true) {
-                    updateFailed = 1
-                    updatingWalletsNotif = false
-                }
-            }
-
-            onNoInternet: {
-                if (selectedPage == "notif" && updatingWalletsNotif == true) {
-                    networkError = 1
-                    updateFailed = 1
-                    updatingWalletsNotif = false
-                }
-            }
-        }*/
-    }
-
-    Item {
-        z: 12
-        width: popupUpdateFail.width
-        height: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
-        visible: updateFailed == 1
-
-        Rectangle {
-            id: popupUpdateFail
-            height: 50
-            width: popupFailText.width + 56
-            color: "#34363D"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-        }
-
-        Label {
-            id: popupFailText
-            text: "FAILED update your wallets!"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: "#E55541"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-        }
-
-        Timer {
-            repeat: false
-            running: updateFailed == 1
-            interval: 2000
-
-            onTriggered: updateFailed = 0
         }
     }
 
@@ -211,6 +143,7 @@ Rectangle {
 
             onClicked: {
                 if (updatingWalletsNotif == false) {
+                    alert = false
                     selectedPage = "home"
                     mainRoot.pop()
                 }

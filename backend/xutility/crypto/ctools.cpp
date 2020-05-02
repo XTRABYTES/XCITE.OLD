@@ -127,6 +127,7 @@ err:
     return ret;
 }
 
+
 // RAII Wrapper around OpenSSL's EC_KEY
 class CECKey {
 private:
@@ -207,9 +208,35 @@ void SetSecretBytes(const unsigned char vch[32]) {
     }
 
     bool Sign(const uint256 &hash, std::vector<unsigned char>& vchSig) {
+
+          vchSig.clear();
+          ECDSA_SIG *sig = ECDSA_do_sign((unsigned char*)&hash, sizeof(hash), pkey);
+          if (sig == NULL) return false;
+          const BIGNUM *sig_r, *sig_s;
+          ECDSA_SIG_get0(sig, &sig_r, &sig_s);
+          BN_CTX *ctx = BN_CTX_new();
+          BN_CTX_start(ctx);
+          const EC_GROUP *group = EC_KEY_get0_group(pkey);
+          BIGNUM *order = BN_CTX_get(ctx);
+          BIGNUM *halforder = BN_CTX_get(ctx);
+          EC_GROUP_get_order(group, order, ctx);
+          BN_rshift1(halforder, order);
+          if (BN_cmp(sig_s, halforder) > 0) {
+                 BIGNUM *new_r = BN_dup(sig_r);
+               BIGNUM *new_s = BN_new();
+
+               BN_sub(new_s, order, sig_s);
+               ECDSA_SIG_set0(sig, new_r, new_s);
+          }
+          BN_CTX_end(ctx);
+          BN_CTX_free(ctx);
+
         unsigned int nSize = ECDSA_size(pkey);
         vchSig.resize(nSize); // Make sure it is big enough
-        assert(ECDSA_sign(0, (unsigned char*)&hash, sizeof(hash), &vchSig[0], &nSize, pkey));
+        unsigned char *pos = &vchSig[0];
+        nSize = i2d_ECDSA_SIG(sig, &pos);
+        ECDSA_SIG_free(sig);
+
         vchSig.resize(nSize); // Shrink to fit actual size
         return true;
     }

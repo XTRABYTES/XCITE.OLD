@@ -91,6 +91,7 @@ private:
     StaticNetHttpClient *client;
     bool tooBig;
     int nBaseFee = 100000000;
+    int dust_soft_limit = 100000000;
     int nMinFee;
 };
 

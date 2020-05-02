@@ -902,12 +902,12 @@ ApplicationWindow {
     }
 
     function updatePending(coin, address, txid, result) {
-        for (var i = 0; i < pendingList.count; ++i){
-            if(pendingList.get(i).coin === coin) {
-                if(pendingList.get(i).address === address) {
-                    if(pendingList.get(i).txid === txid) {
+        for (var u = 0; u < pendingList.count; ++u){
+            if(pendingList.get(u).coin === coin) {
+                if(pendingList.get(u).address === address) {
+                    if(pendingList.get(u).txid === txid) {
                         if(result === "true") {
-                            pendingList.setProperty(i,"value","true")
+                            pendingList.setProperty(u,"value","true")
                         }
                     }
                 }
@@ -925,7 +925,7 @@ ApplicationWindow {
                             var cancelAlert = "transaction canceled: " + txid
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
                             alert = true
-                            updatePending(coin, address, txid, "true")
+                            pendingList.setProperty(i,"value","true")
                         }
                     }
                 }
@@ -2769,10 +2769,8 @@ ApplicationWindow {
                     pendingList.append({"coin": transactionList.get(i).coin, "address": j, "txid": msg, "amount": l, "used": m, "value": "false", "check": 0})
                     updatePendingTracker = 1
                     var d = "Accepted transaction of " + h + transactionList.get(i).coin + " (fee: " + k + transactionList.get(i).coin + ") to " + c
-                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
-                    alert = true
-                    updatePendingTracker = 0
-                    notification.play()
+
+
                     updateToAccount()
                 }
             }

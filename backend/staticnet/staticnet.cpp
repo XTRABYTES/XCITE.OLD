@@ -544,9 +544,9 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                 inputs.push_back(detailed_input_tx);
             }
             outputs.push_back(output_address + "," + StrFromAmount(send_value));
-
-            if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 1) {
-                outputs.push_back(sender_address + "," + StrFromAmount(inputs_sum - (send_value + (nMinFee * nBaseFee))));
+            int64 leftover = inputs_sum - (send_value + (nMinFee * nBaseFee));
+            if (leftover >= dust_soft_limit) {
+                outputs.push_back(sender_address + "," + StrFromAmount(leftover));
             }
 
             // recalculate fee_value based on inputs
@@ -569,8 +569,8 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                 emit sendcoinFailed();
                 return;
             }
-
-            if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 0) break;
+            int64 checkInputs = inputs_sum - (send_value + (nMinFee * nBaseFee));
+            if (checkInputs >= 0) break;
         }
 
         if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) < 0) {
@@ -586,8 +586,8 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                 xchatRobot.SubmitMsg("dicom - backend - final fee: " + QString::number(nMinFee * nBaseFee));
                 outpts.clear();
                 outpts.push_back(output_address + "," + StrFromAmount(send_value));
-                if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) >= 100000000) {
-                    int64 change = inputs_sum - (send_value + (nMinFee * nBaseFee));
+                int64 change = inputs_sum - (send_value + (nMinFee * nBaseFee));
+                if (change >= dust_soft_limit) {
                     xchatRobot.SubmitMsg("dicom - backend - change: " + QString::number(change));
                     outpts.push_back(sender_address + "," + StrFromAmount(change));
                 }
@@ -615,12 +615,11 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                     int _traceID;
                     QString updateUtxo = "!!staticnet addUtxo " + usedUtxo.join("-");
                     QString usedCoins = QString::number(send_UsedCoins);
-                    xchatRobot.SubmitMsg("dicom - backend - used utxo: " + usedUtxo.join("-"));
                     xchatRobot.SubmitMsg("dicom - backend - used coins: " + usedCoins);
                     if (staticNet.CheckUserInputForKeyWord(updateUtxo,&_traceID)) {
-                        //qDebug() << "staticnet command accepted";
+                        //
                     } else {
-                        //qDebug() << "staticnet command not accepted";
+                        xchatRobot.SubmitMsg("dicom - backend - update UTXO list command not accepted");
                     }
                     QString rawTx = "[\"" + QString::fromStdString(RawTransaction) + "\"]";
                     emit staticNet.sendFee(QString::number(send_Fee), rawTx, QString::fromStdString(output_address), QString::fromStdString(sender_address),usedCoins,QString::number(send_Amount), id);
@@ -643,10 +642,6 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
 void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputStr)
 {
     tooBig = false;
-    qDebug() << "calculating fee ...";
-    qDebug() << "input string: " << inputStr;
-    qDebug() << "output string: " << outputStr;
-
     QStringList outputList = outputStr.split(' ');
     QStringList inputList = inputStr.split(' ');
     int outputCount = outputList.count();
@@ -656,7 +651,6 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
     int maxSize = 100000;
     int nBaseValue= 1;
     int outCount = 0;
-    int dust_soft_limit = 1;
     int nBytes;
 
     // estimate size of the transaction
@@ -676,7 +670,8 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
         outCount ++;
         QString output = outputList.at(i);
         QStringList outputSplit = output.split(',');
-        double outputvalue = outputSplit.last().toDouble();
+        QString outputValue = outputSplit.last();
+        int64 outputvalue =  AmountFromStr(outputValue.toStdString().c_str());
         if ( outputvalue < dust_soft_limit){
             nMinFee += nBaseValue;
         }
