@@ -32,7 +32,7 @@ All notable changes to this project will be documented in this file.
 - A change password feature
 - Minor cosmetic/bug fixes
 - First version of the changelog (XCITE version history)
-- XCITE mobile is available, for the first time, in the Google Play store for internal testing (TESTFLIGHT)
+- XCITE mobile is available, for the first time, in the Google Play store for internal testing (Alpha)
 
 
 ## Version [0.3.0]:
