@@ -1,51 +1,67 @@
-Version 0.1 release:
-
-1 - First release
-2 - First GUI implementation
+# XCITE version changelog
+All notable changes to this project will be documented in this file.
 
 
-Version 0.2 fixes and changes:
+## Version [0.6.0]
 
-1 - Added possibility to make transactions with testnet coins
-2 - Added button in homescreen to access portfolio screen
-3 - Possibility to copy addres from transaction details to clipboard
-4 - Only allowing 4 digit pincodes
-5 - Automatic log out after 3 wrong pin attemps
-6 - Limit number of decimals for transfer amount to 8
-7 - Allowing decimals for all language settings
-8 - Disable buttons in wallet settings when droplists are open
-9 - Copy/paste pop-up on top of the screen
+- First public beta version
+- XCITE mobile is listed, simultaneously, in both the Google Store and Apple Store
+       - The android app is listed under early access for public beta testing
+       - The iOS app is available under Apple TESTFLIGHT for beta testing
+- Testenet network beta testing
 
 
-Version 0.3 fixes and changes:
+## Version [0.5.0]:
 
-1 - XBY transactions
-2 - Pending transactions
-3 - Spaces in first and last name of contact available
-4 - Check if contact email has correct format
-5 - Responsive fontsize for larger wallet total
-6 - Check if respons from ETH & BTC explorer has balance in it to avoid 'disappearing' balances
-7 - Copy address from transaction history
-
-
-Version 0.4 fixes and changes:
-This is a minor version update.
-
-1 - Improved function to retrieve coin value.
-2 - A change password feature.
-3 - Minor cosmetic/bug fixes.
-
-
-Version 0.5 fixes and changes:
-
-1 - Further improvements in coin value retrieval
-2 - XBY and XFUEL prices retrieved from Wave Dex
-3 - Fixed QR Code scan
-4 - Our first X-CHAT implementation
+- Further improvements in coin value retrieval
+- XBY and XFUEL prices retrieved from Wave Dex
+- Fixed QR Code scan
+- Our first X-CHAT implementation
     - User list
     - Server list
     - Name tagging
-5 - Improved security features
-6 - 60% application size reduction
-7 - 32 bit and 64 bit versions (Android Version)
-8 - Improved performance and stability and bug fixes
+- Improved security features
+- 60% application size reduction
+- 32 bit and 64 bit versions (Android Version)
+- Improved performance and stability and bug fixes
+
+
+## Version [0.4.0]:
+
+- Improved function to retrieve coin value
+- A change password feature
+- Minor cosmetic/bug fixes
+- First version of the changelog (XCITE version history)
+- XCITE mobile is available, for the first time, in the Google Play store for internal testing (TESTFLIGHT)
+
+
+## Version [0.3.0]:
+
+- XBY transactions
+- Pending transactions
+- Spaces in first and last name of contact available
+- Check if contact email has correct format
+- Responsive fontsize for larger wallet total
+- Check if respons from ETH & BTC explorer has balance in it to avoid 'disappearing' balances
+- Copy address from transaction history
+- XCITE mobile is available, for the first time, in the Apple store for internal testing (TESTFLIGHT)
+
+
+## Version [0.2.0]:
+
+- Added possibility to make transactions with testnet coins
+- Added button in homescreen to access portfolio screen
+- Possibility to copy addres from transaction details to clipboard
+- Only allowing 4 digit pincodes
+- Automatic log out after 3 wrong pin attemps
+- Limit number of decimals for transfer amount to 8
+- Allowing decimals for all language settings
+- Disable buttons in wallet settings when droplists are open
+- Copy/paste pop-up on top of the screen
+- Incorporation of the libraries directly into the github repository
+
+
+## Version [0.1.0]:
+
+- First release
+- First GUI implementation
