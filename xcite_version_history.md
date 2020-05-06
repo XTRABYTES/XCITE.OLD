@@ -9,7 +9,8 @@ All notable changes to this project will be documented in this file.
     - The android app is listed under early access for public beta testing
     - The iOS app is available under Apple TESTFLIGHT for beta testing
 - Testenet network beta testing
-- Application section has been disabled for further optimization and bug fixes
+- Apps section has been disabled for further optimization and bug fixes
+- Navigation keys/swipe implementation
 
 
 ## Version [0.5.0]:
@@ -21,7 +22,7 @@ All notable changes to this project will be documented in this file.
     - User list
     - Server list
     - Name tagging
-- Initial development and testing of the X-GAMES module
+- Initial development and testing of the X-GAMES app
 - Improved security features
 - 60% application size reduction
 - 32 bit and 64 bit versions (Android Version)
@@ -47,6 +48,7 @@ All notable changes to this project will be documented in this file.
 - Check if respons from ETH & BTC explorer has balance in it to avoid 'disappearing' balances
 - Copy address from transaction history
 - XCITE mobile is available, for the first time, in the Apple store for internal testing (TESTFLIGHT)
+- Ability to build/compile for multiple OS platforms using only a single configuration file (.pro file)
 
 
 ## Version [0.2.0]:
