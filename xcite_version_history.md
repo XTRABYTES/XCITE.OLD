@@ -6,8 +6,8 @@ All notable changes to this project will be documented in this file.
 
 - First public beta version
 - XCITE mobile is listed, simultaneously, in both the Google Store and Apple Store
-       - The android app is listed under early access for public beta testing
-       - The iOS app is available under Apple TESTFLIGHT for beta testing
+    - The android app is listed under early access for public beta testing
+    - The iOS app is available under Apple TESTFLIGHT for beta testing
 - Testenet network beta testing
 - Application section has been disabled for further optimization and bug fixes
 
