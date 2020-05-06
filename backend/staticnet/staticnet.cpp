@@ -162,6 +162,7 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
         emit staticNet.returnQueue(queue_name);
     } else if (command == "setQueue") {
        queue_name = params->at(2).toString();
+       xchatRobot.SubmitMsg("dicom - backend - New queue set: " + queue_name);
     } else if (command == "dicom") {
         srequest(params);
     } else if (command == "echo") {
@@ -170,9 +171,7 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
         usedUtxo.clear();
         pendingUtxo.clear();
     } else if (command == "addUtxo") {
-        xchatRobot.SubmitMsg("dicom - backend - adding utxo to pending list");
         QString newUtxo = params->at(2).toString();
-        xchatRobot.SubmitMsg("dicom - backend - utxo string:" + newUtxo);
         QStringList newUtxoList = newUtxo.split("-");
         for (int i = 0; i < newUtxoList.count(); i++) {
             pendingUtxo.append(newUtxoList.at(i));
@@ -224,7 +223,7 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     xchatRobot.SubmitMsg("dicom - backend - queue: " + QString::fromStdString(q_name));
     int paramSize = params ->count();
     QString xparams;
-    for (int i = 2; i < paramSize - 1; i ++) {
+    for (int i = 2; i < paramSize - 1; i++) {
         if (i == 2) {
             xparams = params ->at(i).toString();
         }
@@ -238,7 +237,19 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     QJsonObject requestObject = requestDoc.object();
     QString xdapp = requestObject.value("xdapp").toString().toLatin1();
     QString xmethod = requestObject.value("method").toString().toLatin1();
-    QString xpayload = requestObject.value("payload").toString().toLatin1();
+    QString xpayload;
+    int repeat = 1;
+    if (xdapp != "ping") {
+    xpayload = requestObject.value("payload").toString().toLatin1();
+    }
+    else {
+        QString pingPayload = requestObject.value("payload").toString().toLatin1();
+        QStringList payloadPing = pingPayload.split("_");
+        repeat = payloadPing.last().toInt();
+        for (int e = 0; e < payloadPing.length()-1; e++){
+            xpayload = xpayload + "_" + payloadPing.at(e);
+        }
+    }
     if (requestObject.contains("target")){
         target_addr = requestObject.value("target").toString();
     }
@@ -270,6 +281,16 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     QString fullCommand = QString::fromStdString(strJson);
     xchatRobot.SubmitMsg("dicom - " + fullCommand);
 
+    for (int i = 0; i < repeat; i++){
+        // I would like to move this to a worker so we don't have to wait until a request is completed before sending a new one.
+        sendToDicom(docByteArray, queue_name, params);
+    }
+}
+
+void SnetKeyWordWorker::sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params) {
+    std::string q_name = queueName.toStdString();
+    std::string strJson = docByteArray.toStdString();
+
     const std::string correlation(xUtility.get_uuid());
     SimplePocoHandler handler("85.214.143.20", 5672);
     AMQP::Connection connection(&handler, AMQP::Login("guest", "guest"), "/");
@@ -296,42 +317,7 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
             return;
         std::string stdMsg(message.body(),message.bodySize());
         QString msg = QString::fromStdString(stdMsg);
-        QJsonDocument replyDoc = QJsonDocument::fromJson(msg.toUtf8());
-        QJsonObject replyObject = replyDoc.object();
-        QString dapp = replyObject.value("xdapp").toString().toLatin1();
-        QString replyId = replyObject.value("id").toString().toLatin1();
-        QString replyMethod = replyObject.value("method").toString().toLatin1();
-        QString replyMsg = replyObject.value("payload").toString().toLatin1();
-        xchatRobot.SubmitMsg("dicom - " + dapp + ":" + replyMethod + " id:" + replyId + " reply:" + replyMsg);
-        QJsonDocument msgDoc = QJsonDocument::fromJson(replyMsg.toUtf8());
-        QJsonObject msgObj = msgDoc.object();
-
-        if (replyMethod == "getutxo") {
-            if (replyMsg == "rpc error" || msgObj.contains("error")) {
-                emit staticNet.utxoError();
-            }
-            else {
-                SendcoinWorker* worker = new SendcoinWorker(params);
-                worker->unspent_onResponse(replyId, replyMsg, target_addr, send_amount, priv_key,usedUtxo);
-            }
-        }
-        else if (replyMethod == "sendrawtransaction") {
-            if (replyMsg == "rpc error" || msgObj.contains("error")) {
-                emit staticNet.txFailed(replyId);
-            }
-            else {
-                replyMsg = replyMsg.replace("\"","");
-                replyMsg = replyMsg.trimmed();
-                emit staticNet.txSuccess(replyId, replyMsg);
-                for (int i = 0; i < pendingUtxo.count(); i++) {
-                    QStringList confirmedUtxo = pendingUtxo.at(i).split(",");
-                    if (confirmedUtxo.at(1) == replyId) {
-                        usedUtxo.append(pendingUtxo.at(i));
-                    }
-                }
-            }
-        }
-
+        processReply(msg, params);
         handler.quit();
     };
 
@@ -340,10 +326,46 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     handler.loop();
 }
 
+void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
+    QJsonDocument replyDoc = QJsonDocument::fromJson(msg.toUtf8());
+    QJsonObject replyObject = replyDoc.object();
+    QString dapp = replyObject.value("xdapp").toString().toLatin1();
+    QString replyId = replyObject.value("id").toString().toLatin1();
+    QString replyMethod = replyObject.value("method").toString().toLatin1();
+    QString replyMsg = replyObject.value("payload").toString().toLatin1();
+    xchatRobot.SubmitMsg("dicom - " + dapp + ":" + replyMethod + " id:" + replyId + " reply:" + replyMsg);
+    QJsonDocument msgDoc = QJsonDocument::fromJson(replyMsg.toUtf8());
+    QJsonObject msgObj = msgDoc.object();
+
+    if (replyMethod == "getutxo") {
+        if (replyMsg == "rpc error" || msgObj.contains("error")) {
+            emit staticNet.utxoError();
+        }
+        else {
+            SendcoinWorker* worker = new SendcoinWorker(params);
+            worker->unspent_onResponse(replyId, replyMsg, target_addr, send_amount, priv_key,usedUtxo);
+        }
+    }
+    else if (replyMethod == "sendrawtransaction") {
+        if (replyMsg == "rpc error" || msgObj.contains("error")) {
+            emit staticNet.txFailed(replyId);
+        }
+        else {
+            replyMsg = replyMsg.replace("\"","");
+            replyMsg = replyMsg.trimmed();
+            emit staticNet.txSuccess(replyId, replyMsg);
+            for (int i = 0; i < pendingUtxo.count(); i++) {
+                QStringList confirmedUtxo = pendingUtxo.at(i).split(",");
+                if (confirmedUtxo.at(1) == replyId) {
+                    usedUtxo.append(pendingUtxo.at(i));
+                }
+            }
+        }
+    }
+}
 
 void SnetKeyWordWorker::onResponse( QJsonArray params, QJsonObject res)
 {
-    
     if (!res["error"].isNull()) {
         xchatRobot.SubmitMsg("STaTiC network error. ID: #"+params.last().toString());
     } else {
@@ -351,7 +373,6 @@ void SnetKeyWordWorker::onResponse( QJsonArray params, QJsonObject res)
         QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
         xchatRobot.SubmitMsg("Recevied reply from STaTiC network: " + formattedJsonString);
     }
-
     emit finished();
 }
 
@@ -500,9 +521,11 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
         QStringList outptStringList;
         inputs.clear();
         int64 inputs_sum = 0;
+        int inptCount = 0;
+        int returnedUtxo = resObj.keys().count();
 
         foreach(const QString& key, resObj.keys()) {
-
+            inptCount = inptCount + 1;
             outputs.clear();
 
             QJsonValue value = resObj.value(key);
@@ -519,7 +542,6 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                     boost::split(utxo_details, utxoID, [](char c){return c == ',';});
                     if (tx_details.at(0) == utxo_details.at(2) && xUtility.getSelectedNetworkName() == utxo_details.at(0)) {
                         used = true;
-                        xchatRobot.SubmitMsg("dicom - backend - create transaction: utxo already used");
                     }
                 }
                 if (!used) {
@@ -575,7 +597,12 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
 
         if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) < 0) {
             emit staticNet.fundsLow();
-            xchatRobot.SubmitMsg("dicom - backend - not enough coins available");
+            if (returnedUtxo == 50) {
+            xchatRobot.SubmitMsg("dicom - backend - not enough utxo available to complete transaction, only 50 utxo are returned. Lower the amount of your transaction.");
+            }
+            else if (returnedUtxo < 50 && inptCount == returnedUtxo) {
+            xchatRobot.SubmitMsg("dicom - backend - your available coins are currently used for unconfirmed transactions. Wait until your previous transactions are confirmed");
+            }
           //  emit staticNet.sendcoinFailed();
         } else {
             if (secret != ""){

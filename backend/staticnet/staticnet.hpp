@@ -115,6 +115,8 @@ public Q_SLOTS:
     void request(const QJsonArray *params);
     void srequest(const QJsonArray *params);
     void onResponse(QJsonArray params, QJsonObject );
+    void sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params);
+    void processReply(QString reply, const QJsonArray *params);
     int errorString(QString errorstr);
 
 private:

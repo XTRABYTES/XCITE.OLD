@@ -530,14 +530,10 @@ Rectangle {
                             if (totalPings <= 50) {
                                 xPingTread.append({"message": "UI - ping: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
                                 msgList.positionViewAtEnd()
-                                for (var a = 0; a < totalPings; a ++) {
-                                    var b = pingSNR + a
-                                    pingIdentifier = myUsername + "_" + requestText.text + "_" + b
-                                    var dataModelParams = {"xdapp":xdapp, "method":"ping","payload":pingIdentifier}
-                                    var paramsJson = JSON.stringify(dataModelParams)
-                                    dicomRequest(paramsJson)
-                                }
-                                pingSNR = pingSNR + totalPings
+                                pingIdentifier = myUsername + "_" + requestText.text + "_" + pingAmount.text
+                                var dataModelParams = {"xdapp":xdapp, "method":"ping","payload":pingIdentifier}
+                                var paramsJson = JSON.stringify(dataModelParams)
+                                dicomRequest(paramsJson)
                                 requestText.text = ""
                                 pingAmount.text = ""
                             }
@@ -551,12 +547,10 @@ Rectangle {
                             totalPings = 1
                             xPingTread.append({"message": "UI - ping: " + myUsername + "_" + requestText.text + ", amount: 1", "inout": "out", "author": myUsername, "time": sendTime})
                             msgList.positionViewAtEnd()
-                            var c = pingSNR + totalPings
-                            pingIdentifier = myUsername + "_" + requestText.text + "_" + c
+                            pingIdentifier = myUsername + "_" + requestText.text + "_1"
                             var dataModelParams2 = {"xdapp":xdapp, "method":"ping","payload":pingIdentifier}
                             var paramsJson2 = JSON.stringify(dataModelParams2)
                             dicomRequest(paramsJson2)
-                            pingSNR = pingSNR + totalPings
                             requestText.text = ""
                             pingAmount.text = ""
                         }
