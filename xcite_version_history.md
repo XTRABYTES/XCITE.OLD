@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
        - The android app is listed under early access for public beta testing
        - The iOS app is available under Apple TESTFLIGHT for beta testing
 - Testenet network beta testing
+- Application section has been disabled for further optimization and bug fixes
 
 
 ## Version [0.5.0]:
@@ -20,6 +21,7 @@ All notable changes to this project will be documented in this file.
     - User list
     - Server list
     - Name tagging
+- Initial development and testing of the X-GAMES module
 - Improved security features
 - 60% application size reduction
 - 32 bit and 64 bit versions (Android Version)
