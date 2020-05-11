@@ -676,6 +676,7 @@ Rectangle {
 
                     onClicked: {
                         if (saveErrorNR == 1) {
+                            newLabel.text = ""
                             saveErrorNR = 0
                             walletEdited = true
                             walletDetailTracker = 0;
@@ -1145,6 +1146,7 @@ Rectangle {
 
                 onClicked: {
                     if (deleteErrorNr == 1) {
+                        newLabel.text = ""
                         deleteErrorNr = 0
                         walletDeleted = true
                         walletDetailTracker = 0;
@@ -1332,6 +1334,7 @@ Rectangle {
                 running: false
 
                 onTriggered: {
+                    newLabel.text = ""
                     walletIndex = 0
                     sumBalance()
                     sumXBY()

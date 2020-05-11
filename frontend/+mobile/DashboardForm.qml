@@ -1854,6 +1854,13 @@ Item {
         anchors.top: parent.top
     }
 
+    Controls.ClickToLogout {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+        visible: clickToLogout == 1
+    }
+
     Controls.LogOut {
         z: 100
         anchors.left: parent.left

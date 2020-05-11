@@ -162,10 +162,12 @@ signals:
      void returnQueue(QString queue_);
      void sendFee(QString fee_, QString rawTx_, QString receiver_, QString sender_,QString usedCoins_, QString sendAmount_, QString traceId_);
      void rawTxFailed();
-     void fundsLow();
+     void fundsLow(QString error);
      void utxoError();
      void txFailed(QString id);
      void txSuccess(QString id, QString msg);
+     void txVoutInfo(QString spent, QString txdb, int txValue);
+     void txVoutError();
 
 private:
     boost::mutex mutex;

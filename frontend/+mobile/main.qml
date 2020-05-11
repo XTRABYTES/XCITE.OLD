@@ -134,7 +134,7 @@ ApplicationWindow {
         alertList.append({"date": "", "origin": "", "message": "", "remove": true});
 
         transactionList.clear();
-        transactionList.append({"requestID": "","coin": "","address": "","receiver": "","amount": 0, "fee": 0, "used": 0});
+        transactionList.append({"requestID": "","txid": "","coin": "","address": "","receiver": "","amount": 0, "fee": 0, "used": 0});
 
         findAllMarketValues()
 
@@ -274,8 +274,8 @@ ApplicationWindow {
     property int tttTracker: 0
     property int miniatureTracker: 0
     property int pingTracker: 0
-    property int updateBalanceTracker: 0
     property int updatePendingTracker: 0
+    property int clickToLogout: 0
 
     // Trackers - features
     property int interactionTracker: 0
@@ -483,6 +483,7 @@ ApplicationWindow {
     property string invitedPlayer: ""
     property int playerNotAvailable: 0
     property string selectedApp: ""
+    property string copiedConsoleText: ""
 
 
     // Signals
@@ -732,10 +733,16 @@ ApplicationWindow {
                 }
 
                 else {
-                    sessionStart = 0
-                    sessionTime = 0
-                    manualLogout = 1
-                    logoutTracker = 1
+                    if (clickToLogout == 0) {
+                        clickToLogout = 1
+                    }
+                    else {
+                        clickToLogout = 0
+                        sessionStart = 0
+                        sessionTime = 0
+                        manualLogout = 1
+                        logoutTracker = 1
+                    }
                 }
             }
             else if (selectedPage == "wallet") {
@@ -858,7 +865,6 @@ ApplicationWindow {
     }
 
     function updateBalance(coin, address, balance) {
-        updateBalanceTracker = 0
         var balanceAlert
         var difference
         var newBalance
@@ -898,11 +904,49 @@ ApplicationWindow {
                 }
             }
         }
-        updateBalanceTracker = 1
+    }
+
+    function confirmTransaction(coin, address, txid) {
+        for (var i = 0; i < transactionList.count; i ++) {
+            if (transactionList.get(i).txid === txid) {
+                var b = ""
+                for (var a = 0; a < walletList.count; a ++ ) {
+                    if (walletList.get(a).name === coin && walletList.get(a).address === address) {
+                        b = walletList.get(a).label
+                    }
+                }
+                if (b === "") {
+                    b = transactionList.get(i).address
+                }
+                var c = ""
+                for (var e = 0; e < addressList.count; e ++ ) {
+                    if (addressList.get(e).coin === coin && addressList.get(e).address === transactionList.get(i).receiver) {
+                        if(addressList.get(e).fullName !== undefined) {
+                            c = addressList.get(e).fullName + " " + addressList.get(e).label
+                        }
+                        else {
+                            c = addressList.get(e).label
+                        }
+                    }
+                }
+                if (c === "") {
+                    c = transactionList.get(i).receiver
+                }
+                var h = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
+                var l = transactionList.get(i).amount
+                var k = Number(transactionList.get(i).fee).toLocaleString(Qt.locale("en_US"))
+                var m = transactionList.get(i).used
+                var o = Number(transactionList.get(i).used).toLocaleString(Qt.locale("en_US"))
+                var d = "Confirmed transaction of " + h + transactionList.get(i).coin + " (fee: " + k + transactionList.get(i).coin + ") to " + c
+                alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : coin + " " + b, "remove": false})
+                alert = true
+                notification.play()
+            }
+        }
     }
 
     function updatePending(coin, address, txid, result) {
-        for (var u = 0; u < pendingList.count; ++u){
+        for (var u = 0; u < pendingList.count; u ++){
             if(pendingList.get(u).coin === coin) {
                 if(pendingList.get(u).address === address) {
                     if(pendingList.get(u).txid === txid) {
@@ -1017,7 +1061,11 @@ ApplicationWindow {
     function pendingCoins(coin, address) {
         var pending = 0
         for (var i = 0; i < pendingList.count; i ++) {
-            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value === "false") {
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value === "true") {
+                confirmTransaction(coin, address, pendingList.get(i).txid)
+                pendingList.setProperty(i, "value", "confirmed")
+            }
+            else if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value === "false") {
                 pending += pendingList.get(i).used
             }
         }
@@ -1269,7 +1317,7 @@ ApplicationWindow {
 
     function coinListLines(active) {
         totalLines = 0
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (active === false) {
                 totalLines += 1
             }
@@ -1395,7 +1443,7 @@ ApplicationWindow {
 
     function getUserStatus(user) {
         var userStatus = ""
-        for(var i = 0; i < xChatUsers.count; i++) {
+        for(var i = 0; i < xChatUsers.count; i ++) {
             if (user === xChatUsers.get(i).username) {
                 userStatus = xChatUsers.get(i).status
             }
@@ -2072,7 +2120,7 @@ ApplicationWindow {
     function exportWallets(){
         var dataModelWallet = []
 
-        for (var i = 0; i < walletList.count; ++i){
+        for (var i = 0; i < walletList.count; i ++){
             dataModelWallet.push(walletList.get(i))
         }
 
@@ -2089,16 +2137,16 @@ ApplicationWindow {
         var datamodelAddress = []
         var datamodelPending = []
 
-        for (var i = 0; i < walletList.count; ++i){
+        for (var i = 0; i < walletList.count; i ++){
             dataModelWallet.push(walletList.get(i))
         }
-        for (var e = 0; e < addressList.count; ++e){
+        for (var e = 0; e < addressList.count; e ++){
             datamodelAddress.push(addressList.get(e))
         }
-        for (var o = 0; o < contactList.count; ++o){
+        for (var o = 0; o < contactList.count; o ++){
             datamodelContact.push(contactList.get(o))
         }
-        for (var u = 0; u < pendingList.count; ++u){
+        for (var u = 0; u < pendingList.count; u ++){
             datamodelPending.push(pendingList.get(u))
         }
 
@@ -2200,10 +2248,10 @@ ApplicationWindow {
         var dataModelWallet = []
         var datamodel = []
 
-        for (var i = 0; i < walletList.count; ++i){
+        for (var i = 0; i < walletList.count; i ++){
             dataModelWallet.push(walletList.get(i))
         }
-        for (var e = 0; e < addressList.count; ++e){
+        for (var e = 0; e < addressList.count; i ++){
             datamodel.push(addressList.get(e))
         }
 
@@ -2341,7 +2389,7 @@ ApplicationWindow {
 
         onWalletChecked: {
             var datamodelPending = []
-            for (var e = 0; e < pendingList.count; ++e) {
+            for (var e = 0; e < pendingList.count; e ++) {
                 if(pendingList.get(e).value === "false") {
                     datamodelPending.push(pendingList.get(e))
                 }
@@ -2709,7 +2757,7 @@ ApplicationWindow {
                 findAllMarketValues()
                 var datamodelWallet = []
 
-                for (var i = 0; i < walletList.count; ++i) {
+                for (var i = 0; i < walletList.count; i ++) {
                     datamodelWallet.push(walletList.get(i))
                 };
                 var walletListJson = JSON.stringify(datamodelWallet)
@@ -2733,11 +2781,12 @@ ApplicationWindow {
         target: StaticNet
 
         onTxSuccess: {
-            for (var i = 0; i < transactionList.count; ++i) {
+            for (var i = 0; i < transactionList.count; i ++) {
                 if (transactionList.get(i).requestID === id) {
+                    transactionList.setProperty(i, "txid", msg)
                     var b = ""
                     var j = ""
-                    for (var a = 0; a < walletList.count; ++a ) {
+                    for (var a = 0; a < walletList.count; a ++ ) {
                         if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
                             b = walletList.get(a).label
                             j = walletList.get(a).address
@@ -2747,7 +2796,7 @@ ApplicationWindow {
                         b = transactionList.get(i).address
                     }
                     var c = ""
-                    for (var e = 0; e < addressList.count; ++e ) {
+                    for (var e = 0; e < addressList.count; e ++ ) {
                         if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
                             if(addressList.get(e).fullName !== undefined) {
                                 c = addressList.get(e).fullName + " " + addressList.get(e).label
@@ -2772,16 +2821,17 @@ ApplicationWindow {
                     alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
                     alert = true
                     notification.play()
+                    updatePendingTracker = 0
                     updateToAccount()
                 }
             }
         }
 
         onTxFailed: {
-            for (var i = 0; i < transactionList.count; ++i) {
+            for (var i = 0; i < transactionList.count; i ++) {
                 if (transactionList.get(i).requestID === id) {
                     var b = ""
-                    for (var a = 0; a < walletList.count;++a ) {
+                    for (var a = 0; a < walletList.count; a ++ ) {
                         if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
                             b = walletList.get(a).label
                         }
@@ -2790,7 +2840,7 @@ ApplicationWindow {
                         b = transactionList.get(i).address
                     }
                     var c = ""
-                    for (var e = 0; e < addressList.count; ++e ) {
+                    for (var e = 0; e < addressList.count; e ++ ) {
                         if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
                             if(addressList.get(e).fullName !== undefined) {
                                 c = addressList.get(e).fullName + " " + addressList.get(e).label
@@ -3145,6 +3195,7 @@ ApplicationWindow {
         id: transactionList
         ListElement {
             requestID:""
+            txid: ""
             coin: ""
             address: ""
             receiver: ""

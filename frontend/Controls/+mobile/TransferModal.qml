@@ -94,6 +94,7 @@ Rectangle {
     property int badNetwork: 0
     property bool selectNetwork: false
     property bool createTx: false
+    property string txFailError:""
 
     property var commaArray
     property int detectComma
@@ -1225,6 +1226,7 @@ Rectangle {
                             && inputAmount <= ((walletList.get(selectedWallet).balance) - 1)
                             && calculatorTracker == 0
                             && (network == "xtrabytes" || network == "xfuel" || network == "testnet")) {
+                        txFailError = ""
                         selectNetwork = true
                         transactionInProgress = true
                         setNetwork(network)
@@ -1288,6 +1290,7 @@ Rectangle {
                     onRawTxFailed: {
                         if (transferTracker == 1 && createTx == true) {
                             console.log("failed to create raw transaction")
+                            txFailError = "Failed to create raw transaction"
                             createTx = false
                             failedSend = 1
                             transactionSend = 1
@@ -1296,6 +1299,7 @@ Rectangle {
                     onFundsLow: {
                         if (transferTracker == 1 && createTx == true) {
                             console.log("Funds too low")
+                            txFailError = error
                             createTx = false
                             failedSend = 1
                             transactionSend = 1
@@ -1304,6 +1308,7 @@ Rectangle {
                     onUtxoError: {
                         if (transferTracker == 1 && createTx == true) {
                             console.log("Error retrieving UTXO")
+                            txFailError = "Error retrieving UTXO"
                             createTx = false
                             failedSend = 1
                             transactionSend = 1
@@ -1643,7 +1648,7 @@ Rectangle {
                             var total = Number.fromLocaleString(Qt.locale("en_US"),replaceComma)
                             var totalFee = Number.fromLocaleString(Qt.locale("en_US"),txFee)
                             var totalUsed = Number.fromLocaleString(Qt.locale("en_US"),usedCoins)
-                            transactionList.append({"requestID":receivedTxID,"coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":total,"fee":totalFee,"used":totalUsed})
+                            transactionList.append({"requestID":receivedTxID,"txid":"","coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":total,"fee":totalFee,"used":totalUsed})
                             //requestSend = 1
                             transferTracker = 0
                         }
@@ -1842,6 +1847,20 @@ Rectangle {
                 anchors.horizontalCenter: failedIcon.horizontalCenter
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
                 font.pixelSize: 14
+                font.family: xciteMobile.name
+                font.bold: true
+                visible: transactionSend == 1
+                         && failedSend == 1
+            }
+
+            Label {
+                id: failedErrorLabel
+                text: txFailError
+                anchors.top: failedIconLabel.bottom
+                anchors.topMargin: 5
+                anchors.horizontalCenter: failedIcon.horizontalCenter
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                font.pixelSize: 10
                 font.family: xciteMobile.name
                 font.bold: true
                 visible: transactionSend == 1

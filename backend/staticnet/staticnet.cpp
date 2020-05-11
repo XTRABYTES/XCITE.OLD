@@ -161,8 +161,8 @@ void SnetKeyWordWorker::CmdParser(const QJsonArray *params) {
     } else if (command == "requestQueue") {
         emit staticNet.returnQueue(queue_name);
     } else if (command == "setQueue") {
-       queue_name = params->at(2).toString();
-       xchatRobot.SubmitMsg("dicom - backend - New queue set: " + queue_name);
+        queue_name = params->at(2).toString();
+        xchatRobot.SubmitMsg("dicom - backend - New queue set: " + queue_name);
     } else if (command == "dicom") {
         srequest(params);
     } else if (command == "echo") {
@@ -240,7 +240,7 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     QString xpayload;
     int repeat = 1;
     if (xdapp != "ping") {
-    xpayload = requestObject.value("payload").toString().toLatin1();
+        xpayload = requestObject.value("payload").toString().toLatin1();
     }
     else {
         QString pingPayload = requestObject.value("payload").toString().toLatin1();
@@ -360,6 +360,34 @@ void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
                     usedUtxo.append(pendingUtxo.at(i));
                 }
             }
+        }
+    }
+    else if (replyMethod == "gettxvouts") {
+        if (replyMsg == "rpc error" || msgObj.contains("error")) {
+            emit staticNet.txVoutError();
+        }
+        else {
+            QJsonDocument voutDoc = QJsonDocument::fromJson(replyMsg.toUtf8());
+            QJsonObject voutObj = voutDoc.object();
+            bool voutspent = voutObj.value("spent").toBool();
+            bool vouttxdb = voutObj.value("txdb").toBool();
+            int txAmount = voutObj.value("value").toInt();
+            QString spent;
+            if(!voutspent){
+                spent = "false";
+            }
+            else {
+                spent = "true";
+            }
+            QString txdb;
+            if(!vouttxdb){
+                txdb = "false";
+            }
+            else {
+                txdb = "true";
+            }
+            xchatRobot.SubmitMsg("dicom - " + dapp + ":txvout" + " spent:" + spent + " txdb:" + txdb + " value:" + QString::number(txAmount));
+            emit staticNet.txVoutInfo(spent, txdb, txAmount);
         }
     }
 }
@@ -545,14 +573,14 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                     }
                 }
                 if (!used) {
-                inputs_sum = inputs_sum + tx_value;
+                    inputs_sum = inputs_sum + tx_value;
 
-                std::string detailed_input_tx = tx_details.at(0) + ","
-                        + tx_details.at(1) + ","
-                        + hexscript + ","
-                        + value.toString().toStdString();
+                    std::string detailed_input_tx = tx_details.at(0) + ","
+                            + tx_details.at(1) + ","
+                            + hexscript + ","
+                            + value.toString().toStdString();
 
-                inputs.push_back(detailed_input_tx);
+                    inputs.push_back(detailed_input_tx);
                 }
             }
             else {
@@ -596,14 +624,15 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
         }
 
         if ((inputs_sum - (send_value + (nMinFee * nBaseFee))) < 0) {
-            emit staticNet.fundsLow();
+            //emit staticNet.fundsLow();
             if (returnedUtxo == 50) {
-            xchatRobot.SubmitMsg("dicom - backend - not enough utxo available to complete transaction, only 50 utxo are returned. Lower the amount of your transaction.");
+                xchatRobot.SubmitMsg("dicom - backend - not enough utxo available to complete transaction, only 50 utxo are returned. Lower the amount of your transaction.");
+                emit staticNet.fundsLow("Not enough utxo available");
             }
             else if (returnedUtxo < 50 && inptCount == returnedUtxo) {
-            xchatRobot.SubmitMsg("dicom - backend - your available coins are currently used for unconfirmed transactions. Wait until your previous transactions are confirmed");
+                xchatRobot.SubmitMsg("dicom - backend - your available coins are currently used for unconfirmed transactions. Wait until your previous transactions are confirmed");
+                emit staticNet.fundsLow("Not enough coins available");
             }
-          //  emit staticNet.sendcoinFailed();
         } else {
             if (secret != ""){
                 qDebug() << "Creating RAW transaction...";

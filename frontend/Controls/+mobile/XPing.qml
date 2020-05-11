@@ -35,6 +35,7 @@ Rectangle {
     property string sendTime
     property string replyTime
     property string xdapp: "ping"
+    property int popupY: 0
 
     onMyTrackerChanged: {
         if (myTracker == 0) {
@@ -82,7 +83,7 @@ Rectangle {
 
     Text {
         id: pingModalLabel
-        text: "APP CONSOLE"
+        text: "DICOM CONSOLE"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
@@ -349,8 +350,10 @@ Rectangle {
                         anchors.fill: parent
 
                         onPressAndHold: {
-                            if(copy2clipboard == 0 && pingTracker == 1) {
-                                copyText2Clipboard(messageText.text)
+                            popupY = mouseY
+                            if(copy2clipboard == 0 && pingTracker == 1 && author !== "xChatRobot") {
+                                copiedConsoleText = messageText.text
+                                copyText2Clipboard(copiedConsoleText)
                                 copy2clipboard = 1
                             }
                         }
@@ -368,23 +371,23 @@ Rectangle {
                         color: "black"
                         opacity: 0.4
                         transparentBorder: true
-                        visible: copy2clipboard == 1 && pingTracker == 1
+                        visible: copy2clipboard == 1 && pingTracker == 1 && copiedConsoleText == messageText.text
                     }
 
                     Item {
                         id: textPopup
                         z: 12
+                        y: popupY - popupClipboard.height/2
                         width: popupClipboard.width
-                        height: popupClipboardText.height + 20
+                        height: popupClipboardText.height
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        visible: copy2clipboard == 1 && pingTracker == 1
+                        visible: copy2clipboard == 1 && pingTracker == 1 && copiedConsoleText == messageText.text
 
                         Rectangle {
                             id: popupClipboard
-                            height: 50
+                            height: popupClipboardText.height + 4
                             width: popupClipboardText.width + 20
-                            color: "#34363D"
+                            color: "#42454F"
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
                         }
@@ -583,14 +586,14 @@ Rectangle {
 
             onXchatResponseSignal: {
                 //if (pingTracker == 1) {
-                    replyTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
-                    console.log("replyTime: " + replyTime)
-                    pingReply = text
-                    replyArray = pingReply.split(' ')
-                    if (replyArray[0] === "dicom") {
-                        xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
-                        msgList.positionViewAtEnd()
-                    }
+                replyTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                console.log("replyTime: " + replyTime)
+                pingReply = text
+                replyArray = pingReply.split(' ')
+                if (replyArray[0] === "dicom") {
+                    xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
+                    msgList.positionViewAtEnd()
+                }
                 //}
             }
         }
