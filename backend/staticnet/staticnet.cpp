@@ -29,6 +29,7 @@
 
 StaticNet staticNet;
 QStringList usedUtxo;
+QStringList pendingUtxo;
 QString queue_name  = "dicom_testqueue_v4";
 
 void StaticNet::Initialize() {
@@ -653,10 +654,11 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                 }
                 outptStr = outptStringList.join(" ");
                 qDebug() << "final fee: " << (nMinFee * nBaseFee);
-                usedUtxo = used_Utxo;
+                //usedUtxo = used_Utxo;
+                QStringList reservedUtxo;
                 QString network = QString::fromStdString(xUtility.getSelectedNetworkName());
                 for (int i = 0; i < inputStringList.count(); i++) {
-                    usedUtxo.append(network + "," + id + "," + inputStringList.at(i));
+                    reservedUtxo.append(network + "," + id + "," + inputStringList.at(i));
                 }
                 RawTransaction = CreateRawTransaction( xUtility.getSelectedNetworkid(), inputs, outpts, secret);
 
@@ -669,7 +671,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                     double send_Fee = (nMinFee * nBaseFee)/100000000;
                     double send_UsedCoins = inputs_sum/100000000;
                     int _traceID;
-                    QString updateUtxo = "!!staticnet addUtxo " + usedUtxo.join("-");
+                    QString updateUtxo = "!!staticnet addUtxo " + reservedUtxo.join("-");
                     QString usedCoins = QString::number(send_UsedCoins);
                     xchatRobot.SubmitMsg("dicom - backend - used coins: " + usedCoins);
                     if (staticNet.CheckUserInputForKeyWord(updateUtxo,&_traceID)) {

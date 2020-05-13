@@ -36,6 +36,7 @@ public:
     QNetworkReply *reply;
     void request(const QJsonArray *params);
     static QStringList usedUtxo;
+    static QStringList pendingUtxo;
     static QString queue_name;
 
 public Q_SLOTS:
@@ -124,7 +125,7 @@ private:
     QString target_addr;
     QString send_amount;
     QString priv_key;
-    QStringList pendingUtxo;
+    //QStringList pendingUtxo;
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
     void help();
