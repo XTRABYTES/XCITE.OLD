@@ -71,7 +71,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onDoubleClicked: {
-                    debugTracker = 1
+                    //debugTracker = 1
                 }
             }
         }

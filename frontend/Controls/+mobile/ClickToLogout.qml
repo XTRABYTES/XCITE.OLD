@@ -57,7 +57,7 @@ Rectangle {
             id: popupClickAgain
             height: 50
             width: popupClickAgainText.width + 20
-            color: "#34363D"
+            color: darktheme == true? "#F2F2F2" : "#34363D"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -68,7 +68,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#F2F2F2"
+            color: darktheme == true? "#2A2C31" : "#F2F2F2"
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter

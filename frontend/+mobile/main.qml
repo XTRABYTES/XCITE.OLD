@@ -907,6 +907,11 @@ ApplicationWindow {
     }
 
     function confirmTransaction(coin, address, txid) {
+        for (var u = 0; u <pendingList.count; u ++) {
+            if (pendingList.get(u).coin === coin && pendingList.get(u).address === address && pendingList.get(u).txid === txid) {
+                pendingList.setProperty(u, "value", "confirmed")
+            }
+        }
         for (var i = 0; i < transactionList.count; i ++) {
             if (transactionList.get(i).txid === txid) {
                 var b = ""
@@ -1063,7 +1068,6 @@ ApplicationWindow {
         for (var i = 0; i < pendingList.count; i ++) {
             if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value === "true") {
                 confirmTransaction(coin, address, pendingList.get(i).txid)
-                pendingList.setProperty(i, "value", "confirmed")
             }
             else if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value === "false") {
                 pending += pendingList.get(i).used
@@ -2138,16 +2142,24 @@ ApplicationWindow {
         var datamodelPending = []
 
         for (var i = 0; i < walletList.count; i ++){
-            dataModelWallet.push(walletList.get(i))
+            if (walletList.get(i).remove !== true) {
+                dataModelWallet.push(walletList.get(i))
+            }
         }
         for (var e = 0; e < addressList.count; e ++){
-            datamodelAddress.push(addressList.get(e))
+            if (addressList.get(e).remove !== true) {
+                datamodelAddress.push(addressList.get(e))
+            }
         }
         for (var o = 0; o < contactList.count; o ++){
-            datamodelContact.push(contactList.get(o))
+            if (contactList.get(o).remove !== true) {
+                datamodelContact.push(contactList.get(o))
+            }
         }
         for (var u = 0; u < pendingList.count; u ++){
-            datamodelPending.push(pendingList.get(u))
+            if (pendingList.get(u).value !== "confirmed") {
+                datamodelPending.push(pendingList.get(u))
+            }
         }
 
         var walletListJson = JSON.stringify(dataModelWallet)
@@ -2388,17 +2400,7 @@ ApplicationWindow {
         }
 
         onWalletChecked: {
-            var datamodelPending = []
-            for (var e = 0; e < pendingList.count; e ++) {
-                if(pendingList.get(e).value === "false") {
-                    datamodelPending.push(pendingList.get(e))
-                }
-            };
-            var pendingListJson = JSON.stringify(datamodelPending)
-
-            if (explorerBusy == false) {
-                checkTxStatus(pendingListJson);
-            };
+            explorerBusy = false
         }
 
         onTxidExists: {
@@ -2419,6 +2421,24 @@ ApplicationWindow {
 
         onAllTxChecked: {
             explorerBusy = false
+            if (inActive == false) {
+                timerCount = timerCount + 1
+                if (timerCount == 4) {
+                    balanceCheck = "all"
+                    timerCount = 0
+                }
+                else {
+                    balanceCheck = "xby"
+                }
+
+                clearWalletList()
+                var datamodelWallet = []
+                for (var i = 0; i < walletList.count; ++i) {
+                    datamodelWallet.push(walletList.get(i))
+                };
+                var walletListJson = JSON.stringify(datamodelWallet)
+                updateBalanceSignal(walletListJson, balanceCheck);
+            }
         }
 
         onDetailsCollected: {
@@ -3394,26 +3414,21 @@ ApplicationWindow {
 
     Timer {
         id: explorerTimer1
-        interval: 15000
+        interval: inActive == false? 15000 : 30000
         repeat: true
-        running: sessionStart == 1 && inActive == false
+        running: sessionStart == 1
         onTriggered:  {
-            timerCount = timerCount + 1
-            if (timerCount == 4) {
-                balanceCheck = "all"
-                timerCount = 0
-            }
-            else {
-                balanceCheck = "xby"
-            }
-
-            clearWalletList()
-            var datamodelWallet = []
-            for (var i = 0; i < walletList.count; ++i) {
-                datamodelWallet.push(walletList.get(i))
+            var datamodelPending = []
+            for (var e = 0; e < pendingList.count; e ++) {
+                if(pendingList.get(e).value === "false") {
+                    datamodelPending.push(pendingList.get(e))
+                }
             };
-            var walletListJson = JSON.stringify(datamodelWallet)
-            updateBalanceSignal(walletListJson, balanceCheck);
+            var pendingListJson = JSON.stringify(datamodelPending)
+
+            if (explorerBusy == false) {
+                checkTxStatus(pendingListJson);
+            };
         }
     }
 
