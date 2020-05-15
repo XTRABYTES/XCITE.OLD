@@ -475,7 +475,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 10
-            visible: newWallet == 1 && editSaved == 0
+            visible: newWallet == 1 && editSaved == 0 && editFailed == 0
 
             Text {
                 id: walletCreatedText
@@ -621,6 +621,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: maincolor
                 opacity: 0.25
+                visible: addingWallet == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -631,9 +632,11 @@ Rectangle {
                     }
 
                     onReleased: {
-                        addingWallet = true
-                        saveErrorNR = 0
-                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                        if (addingWallet == false) {
+                            addingWallet = true
+                            saveErrorNR = 0
+                            addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                        }
                     }
                 }
 
@@ -663,11 +666,6 @@ Rectangle {
                                 walletList.remove(walletID)
                                 addressID = addressID -1
                                 addressList.remove(addressID)
-                                newName.text = ""
-                                newAddress.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 scanning = "scanning..."
                                 editFailed = 1
                                 addingWallet = false
@@ -679,11 +677,6 @@ Rectangle {
                                 labelExists = 0
                                 addressExists = 0
                                 invalidAddress = 0
-                                newName.text = ""
-                                newAddress.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 scanning = "scanning..."
                                 editFailed = 1
                                 saveErrorNR = 1
@@ -701,11 +694,6 @@ Rectangle {
                                 walletList.remove(walletID)
                                 addressID = addressID -1
                                 addressList.remove(addressID)
-                                newName.text = ""
-                                newAddress.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 scanning = "scanning..."
                                 editFailed = 1
                                 addingWallet = false
@@ -717,11 +705,6 @@ Rectangle {
                                 labelExists = 0
                                 addressExists = 0
                                 invalidAddress = 0
-                                newName.text = ""
-                                newAddress.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 scanning = "scanning..."
                                 editFailed = 1
                                 saveErrorNR = 1
@@ -783,6 +766,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: addWalletButton.horizontalCenter
                 anchors.verticalCenter: addWalletButton.verticalCenter
+                visible: addingWallet == false
             }
 
 
@@ -795,6 +779,19 @@ Rectangle {
                 opacity: 0.5
                 border.color: maincolor
                 border.width: 1
+                visible: addingWallet == false
+            }
+
+            AnimatedImage  {
+                id: waitingDots
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: addWalletButton.horizontalCenter
+                anchors.top: warningPrivateKey.bottom
+                anchors.topMargin: 40
+                playing: addingWallet == true
+                visible: addingWallet == true
             }
         }
 
@@ -1282,13 +1279,13 @@ Rectangle {
             }
 
             captureRect: {
-                            // setup bindings
-                            videoOutput.contentRect;
-                            videoOutput.sourceRect;
-                            return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
-                                0.25, 0.25, 0.5, 0.5
-                            )));
-                        }
+                // setup bindings
+                videoOutput.contentRect;
+                videoOutput.sourceRect;
+                return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
+                                                                                           0.25, 0.25, 0.5, 0.5
+                                                                                           )));
+            }
         }
     }
 
@@ -1307,6 +1304,7 @@ Rectangle {
                  && editFailed == 0
                  && scanQRTracker == 0
                  && importWalletFailed == 0
+                 && addingWallet == false
 
         Rectangle{
             id: closeButton
@@ -1330,6 +1328,9 @@ Rectangle {
                 onTriggered: {
                     newName.text = ""
                     newAddress.text = ""
+                    addressHash.text = ""
+                    publicKey.text = ""
+                    privateKey.text = ""
                     addressExists = 0
                     labelExists = 0
                     invalidAddress = 0

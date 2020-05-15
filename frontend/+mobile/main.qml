@@ -2142,19 +2142,13 @@ ApplicationWindow {
         var datamodelPending = []
 
         for (var i = 0; i < walletList.count; i ++){
-            if (walletList.get(i).remove !== true) {
-                dataModelWallet.push(walletList.get(i))
-            }
+            dataModelWallet.push(walletList.get(i))
         }
         for (var e = 0; e < addressList.count; e ++){
-            if (addressList.get(e).remove !== true) {
-                datamodelAddress.push(addressList.get(e))
-            }
+            datamodelAddress.push(addressList.get(e))
         }
         for (var o = 0; o < contactList.count; o ++){
-            if (contactList.get(o).remove !== true) {
-                datamodelContact.push(contactList.get(o))
-            }
+            datamodelContact.push(contactList.get(o))
         }
         for (var u = 0; u < pendingList.count; u ++){
             if (pendingList.get(u).value !== "confirmed") {
@@ -2256,20 +2250,18 @@ ApplicationWindow {
         walletID = walletID + 1
         addressList.append({"contact": 0, "fullname": "My addresses", "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
         addressID = addressID +1;
-
         var dataModelWallet = []
         var datamodel = []
 
         for (var i = 0; i < walletList.count; i ++){
             dataModelWallet.push(walletList.get(i))
         }
-        for (var e = 0; e < addressList.count; i ++){
+        for (var e = 0; e < addressList.count; e ++){
             datamodel.push(addressList.get(e))
         }
 
         var walletListJson = JSON.stringify(dataModelWallet)
         var addressListJson = JSON.stringify(datamodel)
-
         saveWalletList(walletListJson, addressListJson)
     }
 
@@ -2437,6 +2429,7 @@ ApplicationWindow {
                     datamodelWallet.push(walletList.get(i))
                 };
                 var walletListJson = JSON.stringify(datamodelWallet)
+                explorerBusy = true
                 updateBalanceSignal(walletListJson, balanceCheck);
             }
         }

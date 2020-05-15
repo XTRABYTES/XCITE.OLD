@@ -1000,7 +1000,7 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     QJsonArray walletArray;
     m_wallet.clear();
     if (localKeys){
-        qDebug().noquote() << "local wallet";
+        //qDebug().noquote() << "local wallet";
         QString walletFile = LoadFile(m_username.toLower() + ".wallet", fileLocation);
         if (walletFile != "ERROR"){
             QByteArray decodedWallet = encryption.decode(walletFile.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
@@ -1012,15 +1012,18 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
             return;
         }
     }else{
-        qDebug().noquote() << "DB wallet";
+        //qDebug().noquote() << "DB wallet";
         walletArray = json["walletList"].toArray(); //get walletList from settings from DB
-        qDebug().noquote() << walletArray;
-    }
+        //qDebug().noquote() << walletArray;
+    }/*
+    int walletCount = walletArray.count();
+    for (int e = 0; e < walletCount; e++) {
+        qDebug() << walletArray.at(e);
+    }*/
     QJsonDocument docWallet;
     docWallet.setArray(walletArray);
     QString wallet(docWallet.toJson(QJsonDocument::Compact));
     m_wallet = wallet;
-
     emit walletLoaded(m_wallet);
 
     QString pincode = json.value("pincode").toString().toLatin1();

@@ -1072,7 +1072,7 @@ Rectangle {
                 anchors.topMargin: 30
                 color: "transparent"
                 opacity: 0.5
-                visible: saveInitiated == false
+                visible: saveAccountInitiated == false
 
                 LinearGradient {
                     anchors.fill: parent
@@ -1138,7 +1138,7 @@ Rectangle {
                 font.bold: true
                 anchors.horizontalCenter: continueButton.horizontalCenter
                 anchors.verticalCenter: continueButton.verticalCenter
-                visible: saveInitiated == false
+                visible: saveAccountInitiated == false
             }
 
             Rectangle {
@@ -1150,7 +1150,7 @@ Rectangle {
                 opacity: 0.5
                 border.width: 1
                 border.color: "#0ED8D2"
-                visible: saveInitiated == false
+                visible: saveAccountInitiated == false
             }
 
             AnimatedImage {
@@ -1160,8 +1160,8 @@ Rectangle {
                 height: 60
                 anchors.horizontalCenter: continueButton.horizontalCenter
                 anchors.verticalCenter: continueButton.verticalCenter
-                playing: saveInitiated == true
-                visible: saveInitiated == true
+                playing: saveAccountInitiated == true
+                visible: saveAccountInitiated == true
             }
         }
     }

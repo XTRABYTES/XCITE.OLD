@@ -308,7 +308,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 10
-            visible: newWallet == 1 && editSaved == 0
+            visible: newWallet == 1 && editSaved == 0 && editFailed == 0
 
             Text {
                 id: walletCreatedText
@@ -469,10 +469,12 @@ Rectangle {
                     }
 
                     onReleased: {
-                        addingWallet = true
-                        walletSaved = false
-                        saveErrorNR = 0
-                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                        if (addingWallet == false) {
+                            addingWallet = true
+                            walletSaved = false
+                            saveErrorNR = 0
+                            addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                        }
                     }
                 }
 
@@ -498,10 +500,6 @@ Rectangle {
                                 walletList.remove(walletID)
                                 addressID = addressID -1
                                 addressList.remove(addressID)
-                                newName.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 editFailed = 1
                                 addingWallet = false
                                 walletSaved = false
@@ -510,10 +508,6 @@ Rectangle {
                                 addressID = addressID -1
                                 addressList.remove(addressID)
                                 labelExists = 0
-                                newName.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 editFailed = 1
                                 saveErrorNR = 1
                                 addingWallet = false
@@ -530,10 +524,6 @@ Rectangle {
                                 walletList.remove(walletID)
                                 addressID = addressID -1
                                 addressList.remove(addressID)
-                                newName.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 editFailed = 1
                                 addingWallet = false
                                 walletSaved = false
@@ -542,10 +532,6 @@ Rectangle {
                                 addressID = addressID -1
                                 addressList.remove(addressID)
                                 labelExists = 0
-                                newName.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 editFailed = 1
                                 saveErrorNR = 1
                                 addingWallet = false
@@ -789,6 +775,11 @@ Rectangle {
                         walletAdded = true
                         addWalletTracker = 0;
                         editSaved = 0;
+                        newName.text = ""
+                        addressHash.text = ""
+                        publicKey.text = ""
+                        privateKey.text = ""
+                        labelExists = 0
                         newWallet = 0
                         createWalletTracker = 0
                     }
@@ -925,9 +916,10 @@ Rectangle {
         font.family: "Brandon Grotesque"
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         visible: editSaved == 0
-                 && newWallet == 0
+                 && editFailed == 0
                  && scanQRTracker == 0
                  && createFailed == 0
+                 && addingWallet == false
 
         Rectangle{
             id: closeButton
@@ -950,6 +942,12 @@ Rectangle {
 
                 onTriggered: {
                     newName.text = ""
+                    addressHash.text = ""
+                    publicKey.text = ""
+                    privateKey.text = ""
+                    labelExists = 0
+                    newWallet = 0
+
                 }
             }
 
