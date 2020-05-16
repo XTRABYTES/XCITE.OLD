@@ -1837,6 +1837,13 @@ Item {
         visible: selectedPage == "home" && scanQRTracker == 1
     }
 
+    Controls.ClickToLogout {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+        visible: clickToLogout == 1
+    }
+
     Controls.SwipeBack {
         z: 100
         anchors.right: parent.right
@@ -1852,13 +1859,6 @@ Item {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
-    }
-
-    Controls.ClickToLogout {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-        visible: clickToLogout == 1
     }
 
     Controls.LogOut {
