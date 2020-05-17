@@ -259,8 +259,8 @@ Rectangle {
         anchors.top: confirmationAmount.bottom
         anchors.topMargin: 20
         rightPadding: 5
-        horizontalAlignment: Text.AlignLeft
-        width: selectedAddressList == "input"? inputLabel.implicitWidth : ((parent.width - 56) - receiveLabel.width)
+        horizontalAlignment: Text.AlignHCenter
+        width: inputBtn.width
         font.family: xciteMobile.name
         font.pixelSize: 18
         font.bold: selectedAddressList == "input"
@@ -298,8 +298,8 @@ Rectangle {
         anchors.top: confirmationAmount.bottom
         anchors.topMargin: 20
         leftPadding: 5
-        horizontalAlignment: Text.AlignRight
-        width: selectedAddressList == "output"? receiveLabel.implicitWidth : ((parent.width - 56) - inputLabel.width)
+        horizontalAlignment: Text.AlignHCenter
+        width: outputBtn.width
         font.family: xciteMobile.name
         font.pixelSize: 18
         font.bold: selectedAddressList == "output"

@@ -293,7 +293,8 @@ void Explorer::getTransactionStatusSlot(QByteArray response, QMap<QString,QVaria
 
     if (jsonResponse.object().contains("message")) {
         qDebug() << "transaction not found";
-        emit txidNotFound(coin, address, transaction, "true");
+        emit txidNotFound(coin, address, transaction, "rejected");
+        xchatRobot.SubmitMsg("dicom - explorer - transaction not found, coin: " + coin + " address: " + address + " txid: " + transaction);
     }
     else if (jsonResponse.object().contains("result")) {
         qDebug() << "transaction found";
@@ -302,8 +303,12 @@ void Explorer::getTransactionStatusSlot(QByteArray response, QMap<QString,QVaria
         int confirms = result.value("confirmations").toInt();
         qDebug() << "confirmations: " << confirms;
 
-        if (confirms >= 1) {
+        if (confirms >= 1 && confirms < 3) {
             emit txidConfirmed(coin, address, transaction, "true");
+            xchatRobot.SubmitMsg("dicom - explorer - transaction confirmed, coin: " + coin + " address: " + address + " txid: " + transaction + " confirmations: " + QString::number(confirms));
+        }
+        else if (confirms >= 3) {
+            emit txidConfirmed(coin, address, transaction, "confirmed");
             xchatRobot.SubmitMsg("dicom - explorer - transaction confirmed, coin: " + coin + " address: " + address + " txid: " + transaction + " confirmations: " + QString::number(confirms));
         }
         else {

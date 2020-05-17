@@ -275,6 +275,8 @@ ApplicationWindow {
     property int miniatureTracker: 0
     property int pingTracker: 0
     property int updatePendingTracker: 0
+    property int failedPendingTracker: 0
+    property int newBalanceTracker: 0
     property int clickToLogout: 0
 
     // Trackers - features
@@ -484,6 +486,7 @@ ApplicationWindow {
     property int playerNotAvailable: 0
     property string selectedApp: ""
     property string copiedConsoleText: ""
+    property string failedTX: ""
 
 
     // Signals
@@ -876,15 +879,16 @@ ApplicationWindow {
                     newBalance = parseFloat(balance);
                     if (!isNaN(newBalance)){
                         if (newBalance !== walletList.get(i).balance) {
-
+                            newBalanceTracker = 0
                             changeBalance = newBalance - walletList.get(i).balance
                             if (changeBalance > 0) {
                                 difference = "increased"
                             }
                             else {
                                 difference = "decreased"
+                                newBalancePending(coin, address)
                             }
-
+                            newBalanceTracker = 1
                             walletList.setProperty(i, "balance", newBalance)
                             balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label), "remove": false})
@@ -955,8 +959,8 @@ ApplicationWindow {
             if(pendingList.get(u).coin === coin) {
                 if(pendingList.get(u).address === address) {
                     if(pendingList.get(u).txid === txid) {
-                        if(result === "true") {
-                            pendingList.setProperty(u,"value","true")
+                        if(result === "true" || result === "confirmed") {
+                            pendingList.setProperty(u,"value",result)
                         }
                     }
                 }
@@ -969,12 +973,16 @@ ApplicationWindow {
             if(pendingList.get(i).coin === coin && pendingList.get(i).value === "false") {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
-                        if(pendingList.get(i).check >= 20) {
+                        if(pendingList.get(i).check >= 10) {
+                            pendingList.setProperty(i,"value",result)
+                            failedTX = txid
+                            failedPendingTracker = 0
                             var addressname = getLabelAddress(coin, address)
                             var cancelAlert = "transaction canceled: " + txid
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
                             alert = true
-                            pendingList.setProperty(i,"value","true")
+                            notification.play()
+                            failedPendingTracker = 1
                         }
                     }
                 }
@@ -1063,17 +1071,43 @@ ApplicationWindow {
         return totalBalance
     }
 
+    function newBalancePending(coin, address) {
+        for (var i = 0; i < pendingList.count; i ++) {
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value !== "confirmed") {
+                confirmTransaction(coin, address, pendingList.get(i).txid)
+            }
+        }
+    }
+
     function pendingCoins(coin, address) {
         var pending = 0
         for (var i = 0; i < pendingList.count; i ++) {
-            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value === "true") {
-                confirmTransaction(coin, address, pendingList.get(i).txid)
-            }
-            else if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value === "false") {
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value !== "confirmed" && pendingList.get(i).value !== "rejected") {
                 pending += pendingList.get(i).used
             }
         }
         return pending
+    }
+
+    function unconfirmedTx(coin, address) {
+        var unconfirmed = 0
+        for (var i = 0; i < pendingList.count; i ++) {
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value !== "confirmed" && pendingList.get(i).value !== "rejected") {
+                unconfirmed += pendingList.get(i).amount
+                unconfirmed += getFee(coin, pendingList.get(i).txid)
+            }
+        }
+        return unconfirmed
+    }
+
+    function getFee(coin, txid) {
+        var fee = 0
+        for (var e = 0; e < transactionList.count; e ++) {
+            if (coin === transactionList.get(e).coin && txid === transactionList.get(e).txid) {
+                fee = transactionList.get(e).fee
+            }
+        }
+        return fee
     }
 
     function sumXBY() {
@@ -2151,7 +2185,7 @@ ApplicationWindow {
             datamodelContact.push(contactList.get(o))
         }
         for (var u = 0; u < pendingList.count; u ++){
-            if (pendingList.get(u).value !== "confirmed") {
+            if (pendingList.get(u).value !== "confirmed" && pendingList.get(u).value !== "rejected") {
                 datamodelPending.push(pendingList.get(u))
             }
         }
@@ -3413,7 +3447,12 @@ ApplicationWindow {
         onTriggered:  {
             var datamodelPending = []
             for (var e = 0; e < pendingList.count; e ++) {
-                if(pendingList.get(e).value === "false") {
+                if(pendingList.get(e).value === "false" || pendingList.get(e).value === "true") {
+                    if (pendingList.get(e).value === "false") {
+                        var checks = pendingList.get(e).check
+                        pendingList.setProperty(e, "check", checks + 1)
+                    }
+
                     datamodelPending.push(pendingList.get(e))
                 }
             };

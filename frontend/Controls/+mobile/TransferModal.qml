@@ -205,7 +205,7 @@ Rectangle {
         font.family: "Brandon Grotesque"
         color: "#E55541"
         font.letterSpacing: 2
-        visible: getTestnet(coinID.text) === true
+        visible: coinID.text == "XTEST"
     }
 
     Flickable {
@@ -885,7 +885,7 @@ Rectangle {
                      && walletList.get(selectedWallet).viewOnly === false
                      && publicKey.text != ""
             mobile: 1
-            calculator: getTestnet(coinID.text) === true? 0 : 1
+            calculator: coinID.text == "XTEST"? 0 : 1
             onTextEdited: {
                 commaArray = sendAmount.text.split(',')
                 if (commaArray[1] !== undefined) {

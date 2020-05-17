@@ -34,14 +34,14 @@ Rectangle {
             id: currencyRow
             color: "transparent"
             width: appWidth
-            height: 140
+            height: 156
             anchors.horizontalCenter: parent.horizontalCenter
             clip: true
 
             Rectangle {
                 id: square
                 width: parent.width
-                height: 140
+                height: 156
                 radius: 4
                 color: "transparent"
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -162,8 +162,9 @@ Rectangle {
                 }
 
                 Text {
-                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
-                    property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                    property var totalBalance: balance
+                    property int decimals: totalBalance <= 1 ? 8 : (totalBalance <= 1000 ? 4 : 2)
+                    property var amountArray: (totalBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel1
                     anchors.right: amountSizeLabel.left
                     anchors.rightMargin: 3
@@ -176,8 +177,9 @@ Rectangle {
                 }
 
                 Text {
-                    property int decimals: balance <= 1 ? 8 : (balance <= 1000 ? 4 : 2)
-                    property var amountArray: (balance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                    property var totalBalance: balance
+                    property int decimals: totalBalance <= 1 ? 8 : (totalBalance <= 1000 ? 4 : 2)
+                    property var amountArray: (totalBalance.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                     id: amountSizeLabel2
                     anchors.right: amountSizeLabel1.left
                     anchors.verticalCenter: walletName.verticalCenter
@@ -188,7 +190,7 @@ Rectangle {
                 }
 
                 Label {
-                    id: pendingTicker
+                    id: unconfirmedTicker
                     text: name
                     anchors.right: amountSizeLabel.right
                     anchors.top: amountSizeLabel.bottom
@@ -199,38 +201,116 @@ Rectangle {
                 }
 
                 Label {
-                    property int decimals: pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
-                    property string pendingAmount: ((pendingCoins(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                    property int decimals: unconfirmedTx(name, address) === 0? 2 : (unconfirmedTx(name, address) <= 1 ? 8 : (unconfirmedTx(name, address) <= 1000 ? 4 : 2))
+                    property string unconfirmedAmount: ((unconfirmedTx(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                    property int updateTracker1: failedPendingTracker
                     property int updateTracker2: updatePendingTracker
-                    property int balanceTracker: balance
-                    id: pendingTotal
-                    text: pendingAmount
-                    anchors.right: pendingTicker.left
-                    anchors.bottom: pendingTicker.bottom
+                    property int newBalance: newBalanceTracker
+                    id: unconfirmedTotal
+                    text: unconfirmedAmount
+                    anchors.right: unconfirmedTicker.left
+                    anchors.bottom: unconfirmedTicker.bottom
                     anchors.rightMargin: 3
                     font.pixelSize: 12
                     font.family: xciteMobile.name
                     color: darktheme == false? "#2A2C31" : "#F2F2F2"
 
-                    onBalanceTrackerChanged: {
-                        pendingTotal.text = ((pendingCoins(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                    onNewBalanceChanged: {
+                        var unconfirmedDecimals = unconfirmedTx(name, address) === 0? 2 : (unconfirmedTx(name, address) <= 1 ? 8 : (unconfirmedTx(name, address) <= 1000 ? 4 : 2))
+                        unconfirmedTotal.text = ((unconfirmedTx(name, address)).toLocaleString(Qt.locale("en_US"), "f", unconfirmedDecimals))
+                    }
+
+                    onUpdateTracker1Changed: {
+                        if(updateTracker1 == 1) {
+                            for (var e = 0; e < pendingList.count; e ++) {
+                                if (pendingList.get(e).coin === name && pendingList.get(e).address === address && failedTX === pendingList.get(e).txid) {
+                                    decimals = unconfirmedTx(name, address) === 0? 2 : (unconfirmedTx(name, address) <= 1 ? 8 : (unconfirmedTx(name, address) <= 1000 ? 4 : 2))
+                                    unconfirmedTotal.text = ((unconfirmedTx(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                                }
+                            }
+                        }
                     }
 
                     onUpdateTracker2Changed: {
                         if(updateTracker2 == 1) {
                             var i = pendingList.count
                             if (pendingList.get(i-1).coin === name && pendingList.get(i-1).address === address) {
-                                pendingTotal.text = ((pendingCoins(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                                decimals = unconfirmedTx(name, address) === 0? 2 : (unconfirmedTx(name, address) <= 1 ? 8 : (unconfirmedTx(name, address) <= 1000 ? 4 : 2))
+                                unconfirmedTotal.text = ((unconfirmedTx(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
                             }
                         }
                     }
                 }
 
                 Label {
-                    id: pendingLabel
-                    text: "Unavailable:"
-                    anchors.right: pendingTotal.left
-                    anchors.top: pendingTotal.top
+                    id: unconfirmedLabel
+                    text: "unconfirmed outgoing TXs:"
+                    anchors.right: unconfirmedTotal.left
+                    anchors.top: unconfirmedTotal.top
+                    anchors.rightMargin: 7
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                }
+
+                Label {
+                    id: unavailableTicker
+                    text: name
+                    anchors.right: unconfirmedTicker.right
+                    anchors.top: unconfirmedTicker.bottom
+                    anchors.topMargin: 2
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+                }
+
+                Label {
+                    property int decimals: pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
+                    property string unavailableAmount: (pendingCoins(name, address).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                    property int updateTracker1: failedPendingTracker
+                    property int updateTracker2: updatePendingTracker
+                    property int newBalance: newBalanceTracker
+                    id: unavailableTotal
+                    text: unavailableAmount
+                    anchors.right: unavailableTicker.left
+                    anchors.bottom: unavailableTicker.bottom
+                    anchors.rightMargin: 3
+                    font.pixelSize: 12
+                    font.family: xciteMobile.name
+                    color: darktheme == false? "#2A2C31" : "#F2F2F2"
+
+                    onNewBalanceChanged: {
+                        var pendingDecimals = pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
+                        unavailableTotal.text = (pendingCoins(name, address).toLocaleString(Qt.locale("en_US"), "f", pendingDecimals))
+                    }
+
+                    onUpdateTracker1Changed: {
+                        if(updateTracker1 == 1) {
+                            for (var e = 0; e < pendingList.count; e ++) {
+                                if (pendingList.get(e).coin === name && pendingList.get(e).address === address && failedTX === pendingList.get(e).txid) {
+                                    decimals = pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
+                                    unavailableTotal.text = ((pendingCoins(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                                }
+                            }
+                        }
+                    }
+
+                    onUpdateTracker2Changed: {
+                        if(updateTracker2 == 1) {
+                            var i = pendingList.count
+                            if (pendingList.get(i-1).coin === name && pendingList.get(i-1).address === address) {
+                                decimals = pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
+                                unavailableTotal.text = (pendingCoins(name, address).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                            }
+                        }
+                    }
+                }
+
+                Label {
+                    id: unavailableLabel
+                    text: "unavailable coins:"
+                    anchors.right: unavailableTotal.left
+                    anchors.top: unavailableTotal.top
                     anchors.rightMargin: 7
                     font.pixelSize: 12
                     font.family: xciteMobile.name
@@ -241,7 +321,7 @@ Rectangle {
                     id: viewOnlyLabel
                     text: " VIEW ONLY"
                     anchors.left: transfer.left
-                    anchors.bottom:  pendingLabel.bottom
+                    anchors.bottom:  unavailableLabel.bottom
                     anchors.bottomMargin: -5
                     font.pixelSize: 14
                     font.family: xciteMobile.name

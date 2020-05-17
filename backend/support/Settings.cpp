@@ -994,6 +994,10 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     m_pending.clear();
     m_pending = pending;
     emit pendingLoaded(m_pending);
+    int pendingCount = pendingArray.count();
+    for (int e = 0; e < pendingCount; e++) {
+        qDebug() << pendingArray.at(e);
+    }
 
     /* Load wallets from JSON from Local or DB */
     bool localKeys = m_settings->value("localKeys").toBool();
