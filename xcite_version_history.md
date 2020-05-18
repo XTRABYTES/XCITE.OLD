@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 
 
+## Version [0.6.1 RC]
+
+- Information feedback provided to the user for failed transactions
+- Visible feedback about unavailable coins per wallet address
+- Coordinated balance & unavailable update
+- "Double swipe" required in Home Screen to log out
+- Additional alert for confirmed transactions
+- Functional XBY transactions
+- Syntax error fixes
+- Minor GUI updates
+
+
 ## Version [0.6.0]
 
 - First public beta version
