@@ -127,12 +127,6 @@ Dependencies are a set of resource files (modules, libraries) used in the creati
 Libraries or modules can include configuration data, documentation, message templates, subroutines, classes, values or type specifications.
 
 #### Required dependencies for the desktop platform (Windows, macOS, Linux):
-- [Boost 1.60](https://www.boost.org/users/history/version_1_60_0.html) -> C++ libraries
-- [Berkeley DB 4.8.30 NC](http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz) -> Database libraries
-- [Openssl 1.1.1d](https://www.openssl.org/source/old/1.1.1/openssl-1.1.1d.tar.gz) -> Cryptography libraries
-- [Mininupnpc 1.9](http://miniupnp.free.fr/files/download.php?file=miniupnpc-1.9.tar.gz) -> UPnP protocol libraries
-
-#### NOTE
 - The required dependencies, for the different desktop compilations, are already included and can be found inside the XCITE /dependencies folder. There is no need to compile them.
 
 #### Required dependencies for the mobile platform (Android, iOS):
