@@ -38,6 +38,7 @@ public:
     void setLocale(QString);
     QString CheckStatusCode(QString);
     void SaveFile(QString, QString, QString);
+    void BackupFile(QString, QString, QString);
     QString LoadFile(QString, QString);
     std::pair<QByteArray, QByteArray> createKeyPair();
     int rsaEncrypt(const unsigned char *message, size_t messageLength, unsigned char **encryptedMessage, unsigned char **encryptedKey,
@@ -58,6 +59,7 @@ public slots:
 
     bool SaveSettings();
     void ImportWallet(QString, QString);
+    void RestoreAccount(QString, QString);
     void LoadSettings(QByteArray settings, QString location);
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
@@ -118,6 +120,7 @@ signals:
     void saveFailedInputError();
     void saveFailedUnknownError();
     void walletNotFound();
+    void settingsNotFound();
     void cameraCheckFailed();
     void cameraCheckPassed();
     void passwordChangedSucceeded();

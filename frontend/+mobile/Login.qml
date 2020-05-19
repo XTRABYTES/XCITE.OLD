@@ -371,7 +371,7 @@ Item {
             text: "You don't have an account?"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: login.bottom
-            anchors.topMargin: 70
+            anchors.topMargin: 120
             color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
@@ -417,6 +417,45 @@ Item {
             anchors.top: createAccount.bottom
             anchors.topMargin: 5
             color: "#0ED8D2"
+        }
+
+        Label {
+            id: restoreAccount
+            text: "Restore an existing account?"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: login.bottom
+            anchors.topMargin: 70
+            color: "#F2F2F2"
+            font.pixelSize: 18
+            font.family: xciteMobile.name
+
+            Rectangle {
+                id: restoreAccountButton
+                width: restoreAccount.width
+                height: 30
+                anchors.horizontalCenter: restoreAccount.horizontalCenter
+                anchors.verticalCenter: restoreAccount.verticalCenter
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: restoreAccountButton
+
+                    onClicked: {
+                        loginTracker = 0
+                        restoreTracker = 1
+                    }
+                }
+            }
+
+            Rectangle {
+                id: underlineRestore
+                width: restoreAccount.width
+                height: 1
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: restoreAccount.bottom
+                anchors.topMargin: 5
+                color: "#0ED8D2"
+            }
         }
     }
 

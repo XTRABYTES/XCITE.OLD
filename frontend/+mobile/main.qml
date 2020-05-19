@@ -230,6 +230,7 @@ ApplicationWindow {
     // Trackers - pages
     property int loginTracker: 0
     property int importTracker: 0
+    property int restoreTracker: 0
     property int pageTracker: 0
     property int logoutTracker: 0
     property int addWalletTracker: 0
@@ -331,6 +332,7 @@ ApplicationWindow {
     property bool checkingSessionID: false
     property bool loginInitiated: false
     property bool importInitiated: false
+    property bool restoreInitiated: false
     property bool createAccountInitiated: false
     property bool saveAccountInitiated: false
     property string addressbookName: ""
@@ -504,6 +506,7 @@ ApplicationWindow {
     signal saveAppSettings()
     signal saveWalletList(string walletlist, string addresses)
     signal importAccount(string username, string password)
+    signal restoreAccount(string username, string password)
     signal exportAccount(string walletlist)
     signal updateBalanceSignal(string walletlist, string wallets)
     signal createKeyPair(string network)
@@ -651,6 +654,9 @@ ApplicationWindow {
                 }
                 else if (importTracker == 1 && !importInitiated) {
                     importTracker = 0
+                }
+                else if (restoreTracker == 1 && !restoreInitiated) {
+                    restoreTracker = 0
                 }
             }
             else if (selectedPage == "home") {
@@ -2331,7 +2337,7 @@ ApplicationWindow {
     }
 
     // loggin out
-    function logOut () {
+    function logOut() {
         xChatTypingSignal(myUsername,"addToOnline", "offline");
         updateToAccount()
     }

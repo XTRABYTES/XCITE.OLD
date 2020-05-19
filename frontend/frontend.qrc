@@ -196,5 +196,6 @@
         <file>Controls/+mobile/SwipeBack.qml</file>
         <file>Controls/+mobile/XPing.qml</file>
         <file>Controls/+mobile/ClickToLogout.qml</file>
+        <file>+mobile/RestoreAccount.qml</file>
     </qresource>
 </RCC>

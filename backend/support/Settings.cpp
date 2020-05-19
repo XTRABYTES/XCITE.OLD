@@ -509,12 +509,29 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
         decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
         QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
 
+        if (fileLocation == "restore") {
+            QString settingsFile = LoadFile(username.toLower() + ".backup", "default");
+            if (settingsFile != "ERROR"){
+                decodedSettings = encryption.decode(settingsFile.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
+                int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
+                decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
+                decodedJson = QJsonDocument::fromJson(decodedSettings).object();
+                fileLocation = "default";
+            }else{
+                emit loginFailedChanged();
+                return;
+            }
+        }
+        else {
+            // do nothing
+        }
 
         if(decodedJson.value("app").toString().startsWith("xtrabytes")){
             m_username = username;
             m_password = password;
 
             emit loadingSettings();
+
             LoadSettings(decodedSettings, fileLocation);
 
             // Create new rand Num.
@@ -724,47 +741,60 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
             QByteArray encodedText = encryption.encode(settingsOutput, (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
             QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
 
-            QVariantMap feed3;
-            feed3.insert("randNumAes", randNumAes.second);
-            feed3.insert("randNumPass", encodedRandNrStr);
-            feed3.insert("sessionIdAes", sessionIdAes.second);
-            feed3.insert("settings",DataAsString);
-            feed3.insert("username",m_username);
+            /*      check encryption    */
+            QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+            int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
+            decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
+            QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
 
-            QByteArray changePassword =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
+            if(decodedJson.value("app").toString().startsWith("xtrabytes")){
+                QVariantMap feed3;
+                feed3.insert("randNumAes", randNumAes.second);
+                feed3.insert("randNumPass", encodedRandNrStr);
+                feed3.insert("sessionIdAes", sessionIdAes.second);
+                feed3.insert("settings",DataAsString);
+                feed3.insert("username",m_username);
 
-            changePassword = changePassword.toBase64();
+                QByteArray changePassword =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
 
-            // Send new encrypted Rand Nums to backend
-            QString changePasswordResponse = RestAPIPostCall("/v1/changePassword", changePassword);
-            if (changePasswordResponse.isEmpty()){
-                return;
-            }
-            QJsonDocument jsonResponseSave = QJsonDocument::fromJson(changePasswordResponse.toLatin1());
-            QJsonValue encryptedTextLogin = jsonResponseSave.object().value("login");
+                changePassword = changePassword.toBase64();
 
-            bool changePasswordSuccess = encryptedTextLogin.toString() == "success" ? true:false;
+                // Send new encrypted Rand Nums to backend
+                QString changePasswordResponse = RestAPIPostCall("/v1/changePassword", changePassword);
+                if (changePasswordResponse.isEmpty()){
+                    return;
+                }
+                QJsonDocument jsonResponseSave = QJsonDocument::fromJson(changePasswordResponse.toLatin1());
+                QJsonValue encryptedTextLogin = jsonResponseSave.object().value("login");
 
-            if (changePasswordSuccess){
+                bool changePasswordSuccess = encryptedTextLogin.toString() == "success" ? true:false;
 
-                QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (oldPassword + "xtrabytesxtrabytes").toLatin1());
-                dec_pincode.chop(1);
+                if (changePasswordSuccess){
+                    qDebug() << "valid encrypted settings file";
+                    /*      back up encrypted file to device     */
+                    BackupFile(m_username.toLower() + ".backup", DataAsString, "default");
 
-                qDebug() << dec_pincode;
+                    QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (oldPassword + "xtrabytesxtrabytes").toLatin1());
+                    dec_pincode.chop(1);
+
+                    qDebug() << dec_pincode;
 
 
-                QByteArray enc_pincode = encryption.encode((dec_pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
-                m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length());
+                    QByteArray enc_pincode = encryption.encode((dec_pincode).toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+                    m_pincode = QString::fromLatin1(enc_pincode, enc_pincode.length());
 
-                emit saveSucceeded();
-                return;
+                    emit saveSucceeded();
+                    return;
+                }
+                else {
+                    emit passwordChangedFailed();
+                    return;
+                }
             }
             else {
                 emit passwordChangedFailed();
                 return;
             }
-
-
         }else{
             emit passwordChangedFailed();
             return;
@@ -889,39 +919,63 @@ bool Settings::SaveSettings(){
                 QByteArray encodedText = encryption.encode(settingsOutput, (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
                 QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
 
-                QVariantMap feed3;
-                feed3.insert("sessionIdAes", sessionIdAes.second);
-                feed3.insert("username",m_username);
-                feed3.insert("settings", DataAsString);
+                /*      check encryption    */
+                QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+                int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
+                decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
+                QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
 
-                QByteArray finalLogin =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
-                finalLogin = finalLogin.toBase64();
-                // Send sessionId + settings to backend to save
-                QString saveSettingsResponse = RestAPIPostCall("/v1/saveSettings", finalLogin);
-                mutex.unlock();
+                if(decodedJson.value("app").toString().startsWith("xtrabytes")){
+                    qDebug() << "valid encrypted settings file";
+                    /*      back up encrypted file to device     */
+                    BackupFile(m_username.toLower() + ".backup", DataAsString, "default");
 
-                if (saveSettingsResponse.isEmpty()){
+                    /*      updating encrypted settings     */
+                    QVariantMap feed3;
+                    feed3.insert("sessionIdAes", sessionIdAes.second);
+                    feed3.insert("username",m_username);
+                    feed3.insert("settings", DataAsString);
+
+                    QByteArray finalLogin =  QJsonDocument::fromVariant(feed3).toJson(QJsonDocument::Compact);
+                    finalLogin = finalLogin.toBase64();
+                    // Send sessionId + settings to backend to save
+                    QString saveSettingsResponse = RestAPIPostCall("/v1/saveSettings", finalLogin);
+                    mutex.unlock();
+
+                    if (saveSettingsResponse.isEmpty()){
+                        if (saveSettingsQueue.size() > 0){
+                            SaveSettings();
+                        }
+                        return false;
+                    }
+
+                    QJsonDocument jsonResponse = QJsonDocument::fromJson(saveSettingsResponse.toLatin1());
+                    QJsonValue encryptedText = jsonResponse.object().value("login");
+                    bool settingsSavedSuccess = encryptedText.toString() == "success" ? true:false;
+
+                    if (settingsSavedSuccess){
+                        m_oldPincode = m_pincode;
+                        emit saveSucceeded();
+                    }else{
+                        m_pincode = m_oldPincode;
+                        emit saveFailed();
+                    }
+                    if (saveSettingsQueue.size() > 0){
+                        SaveSettings();
+                    }
+                    return true;
+                }
+                else {
+                    qDebug() << "corrupted settings file";
+                    m_pincode = m_oldPincode;
+                    emit saveFailed();
+                    mutex.unlock();
+
                     if (saveSettingsQueue.size() > 0){
                         SaveSettings();
                     }
                     return false;
                 }
-
-                QJsonDocument jsonResponse = QJsonDocument::fromJson(saveSettingsResponse.toLatin1());
-                QJsonValue encryptedText = jsonResponse.object().value("login");
-                bool settingsSavedSuccess = encryptedText.toString() == "success" ? true:false;
-
-                if (settingsSavedSuccess){
-                    m_oldPincode = m_pincode;
-                    emit saveSucceeded();
-                }else{
-                    m_pincode = m_oldPincode;
-                    emit saveFailed();
-                }
-                if (saveSettingsQueue.size() > 0){
-                    SaveSettings();
-                }
-                return true;
             }
             else {
                 qDebug() << "no connection to account server to save settings";
@@ -945,14 +999,12 @@ bool Settings::SaveSettings(){
                 SaveSettings();
             }
         }
-
     }
     else{
         saveSettingsQueue.append(++settingsCount);
     }
     return true;
 }
-
 
 void Settings::LoadSettings(QByteArray settings, QString fileLocation){
     QAESEncryption encryption(QAESEncryption::AES_128, QAESEncryption::ECB);
@@ -1050,7 +1102,18 @@ void Settings::UpdateAccount(QString addresslist, QString contactlist, QString w
     if (localKeys){
         QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
         QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
-        SaveFile(m_username.toLower() + ".wallet", encodedWalletString, "default");
+
+        QByteArray decodedWallet = encryption.decode(encodedWalletString.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+        int pos = decodedWallet.lastIndexOf(QChar(']')); // find last bracket to mark the end of the json
+        decodedWallet = decodedWallet.left(pos+1); //remove everything after the valid json
+        QString walletString = QString::fromStdString(decodedWallet.toStdString());
+
+        if (walletString == walletlist) {
+            SaveFile(m_username.toLower() + ".wallet", encodedWalletString, "default");
+        }
+        else {
+            emit saveFileFailed();
+        }
     }else{
         SaveSettings();
     }
@@ -1075,7 +1138,17 @@ void Settings::SaveWallet(QString walletlist, QString addresslist){
     if (localKeys){
         QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
         QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
-        SaveFile(m_username.toLower() + ".wallet", encodedWalletString, "default");
+        QByteArray decodedWallet = encryption.decode(encodedWalletString.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+        int pos = decodedWallet.lastIndexOf(QChar(']')); // find last bracket to mark the end of the json
+        decodedWallet = decodedWallet.left(pos+1); //remove everything after the valid json
+        QString walletString = QString::fromStdString(decodedWallet.toStdString());
+
+        if (walletString == walletlist) {
+            SaveFile(m_username.toLower() + ".wallet", encodedWalletString, "default");
+        }
+        else {
+            emit saveFileFailed();
+        }
     }else{
         SaveSettings();
     }
@@ -1135,6 +1208,37 @@ QString Settings::CheckStatusCode(QString statusCode){
         emit saveFailedUnknownError();
     }
     return returnVal;
+}
+
+void Settings::BackupFile(QString fileName, QString encryptedData, QString fileLocation){
+
+#ifdef Q_OS_ANDROID //added to get write permission for Android
+    auto  result = QtAndroid::checkPermission(QString("android.permission.WRITE_EXTERNAL_STORAGE"));
+    if(result == QtAndroid::PermissionResult::Denied){
+        QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.WRITE_EXTERNAL_STORAGE"}));
+        if(resultHash["android.permission.WRITE_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Denied){
+            //emit saveFileFailed();
+            return;
+        }
+    }
+#endif
+    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0];
+    QDir dir;
+    dir.mkpath(currentDir);
+    qDebug() << " Writing to " + currentDir + "/" + fileName;
+    QFile file(currentDir + "/" + fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        file.errorString(); //We can build this out to emit an error message
+        qDebug() << file.errorString();
+        //emit saveFileFailed();
+        return;
+    }else{
+        //emit saveFileSucceeded();
+        //SaveSettings();
+    }
+    QDataStream out(&file);
+    out.setVersion(QDataStream::Qt_5_11);
+    out << encryptedData;
 }
 
 void Settings::SaveFile(QString fileName, QString encryptedData, QString fileLocation){
@@ -1205,7 +1309,11 @@ QString Settings::LoadFile(QString fileName, QString fileLocation){
 }
 
 void Settings::ImportWallet(QString username, QString password){
-    loginFile(username,password, "import");
+    loginFile(username, password, "import");
+}
+
+void Settings::RestoreAccount(QString username, QString password) {
+    loginFile(username, password, "restore");
 }
 
 void Settings::CheckSessionId(){

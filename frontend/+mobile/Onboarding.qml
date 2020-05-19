@@ -26,6 +26,7 @@ Item {
     clip: true
 
     property string versionNR: "0.6.1 RC"
+    property int started: 0
 
     Component.onCompleted: {
         selectedPage = "login"
@@ -45,7 +46,7 @@ Item {
         width: parent.width
         height: parent.height
         color: "#14161B"
-        state: loginTracker == 0? (importTracker == 0? "hidden" : "inView") : "inView"
+        state: started == 1? "inView" : "hidden"
 
         LinearGradient {
             anchors.fill: parent
@@ -97,7 +98,7 @@ Item {
         anchors.verticalCenterOffset: -50
         color: "transparent"
 
-        state: loginTracker == 0? (importTracker == 0? "inView": "hidden") : "hidden"
+        state: started == 0? "inView" : "hidden"
 
         states: [
             State {
@@ -163,6 +164,7 @@ Item {
                 anchors.fill: startButton
 
                 onReleased: {
+                    started = 1
                     loginTracker = 1
                     clearAllSettings();
                     checkCamera();
@@ -196,9 +198,9 @@ Item {
 
     Label {
         id: closeButtonLabel
-        text: loginTracker == 0 && importTracker == 0? "CLOSE" : (loginTracker == 0? "BACK" : "CLOSE")
-        anchors.bottom: combinationMark.top
-        anchors.bottomMargin: 25
+        text: loginTracker == 0 && importTracker == 0 && restoreTracker == 0? "CLOSE" : (loginTracker == 0? "BACK" : "CLOSE")
+        anchors.bottom: started == 0? combinationMark.top : backgroundSplash.bottom
+        anchors.bottomMargin: started == 0? 25 : myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -217,11 +219,15 @@ Item {
             anchors.fill: closeButton
 
             onClicked: {
-                if (loginTracker == 1 || (loginTracker == 0 && importTracker == 0)) {
+                if (loginTracker == 1 || (loginTracker == 0 && importTracker == 0 && restoreTracker == 0)) {
                 Qt.quit()
                 }
                 if (importTracker == 1) {
                     importTracker = 0
+                    loginTracker = 1
+                }
+                if (restoreTracker == 1) {
+                    restoreTracker = 0
                     loginTracker = 1
                 }
             }
@@ -234,8 +240,31 @@ Item {
         height: 23.4
         width: 150
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
-        anchors.bottom: backgroundSplash.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
+        //anchors.bottom: backgroundSplash.bottom
+        //anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
+        state: started == 0? "down" : "up"
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: combinationMark; anchors.bottom: backgroundSplash.top}
+                PropertyChanges { target: combinationMark; anchors.bottomMargin: -50}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: combinationMark; anchors.bottom: backgroundSplash.bottom}
+                PropertyChanges { target: combinationMark; anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: combinationMark; property: "anchors.bottom"; duration: 300; easing.type: Easing.OutCubic}
+                NumberAnimation { target: combinationMark; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
+            }
+        ]
     }
 
     Login {
@@ -244,6 +273,10 @@ Item {
 
     ImportAccount {
         id: myImport
+    }
+
+    RestoreAccount {
+        id: myRestore
     }
 
     Controls.SwipeBack {
