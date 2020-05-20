@@ -164,10 +164,25 @@ Item {
                 anchors.fill: startButton
 
                 onReleased: {
+                    checkCamera();
+                }
+            }
+
+            Connections {
+                target: UserSettings
+
+                onCameraCheckPassed: {
+                    checkWriteAccess();
+                }
+
+                onCameraCheckFailed: {
+                    checkWriteAccess();
+                }
+
+                onWriteCheckPassed: {
                     started = 1
                     loginTracker = 1
                     clearAllSettings();
-                    checkCamera();
                 }
             }
         }

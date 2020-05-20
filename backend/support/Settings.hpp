@@ -49,6 +49,7 @@ public:
     QString createRandNum();
     void loginFile(QString username, QString password, QString fileLocation);
     void NoWalletFile();
+    void NoBackupFile();
     void DownloadManagerHandler(URLObject *url);
 
 public slots:
@@ -77,6 +78,7 @@ public slots:
     QString RestAPIPostCall(QString apiURL, QByteArray payload);
     void CheckSessionId();
     void CheckCamera();
+    void CheckWriteAccess();
 
     void downloadImage(QString imgUrl);
     void DownloadManagerRouter(QByteArray,QMap<QString,QVariant>);
@@ -123,6 +125,8 @@ signals:
     void settingsNotFound();
     void cameraCheckFailed();
     void cameraCheckPassed();
+    void writeCheckFailed();
+    void writeCheckPassed();
     void passwordChangedSucceeded();
     void passwordChangedFailed();
     void xchatConnectedLogin(QString username, QString route, QString status);

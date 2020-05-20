@@ -383,6 +383,14 @@ void Settings::login(QString username, QString password){
     loginFile(username,password,"default");
 }
 
+void Settings::ImportWallet(QString username, QString password){
+    loginFile(username,password,"import");
+}
+
+void Settings::RestoreAccount(QString username, QString password) {
+    loginFile(username,password,"restore");
+}
+
 void Settings::loginFile(QString username, QString password, QString fileLocation){
     if (checkInternet("http://37.59.57.212:8080")) {
         emit checkUsername();
@@ -410,13 +418,6 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
         payload = payload.toBase64();
 
         //  Send Pub Key to API.  Backend returns AES key and randNum encrypted with password
-        //            QString response2 = RestAPIPostCall("/v1/login", payload);
-        //            connect(this, SIGNAL(userExistsSignal(QString)), &loop, SLOT(quit()));
-        //            connect(this, &Settings::userExistsSignal, [&response2](QString payload) {
-        //                response2 = payload;
-        //            });
-        //            UserExists(username);
-        //          loop.exec();
 
         QString response2 = RestAPIPostCall("/v1/login", payload);
         if (response2.isEmpty()){
@@ -514,9 +515,10 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
             if (settingsFile != "ERROR"){
                 decodedSettings = encryption.decode(settingsFile.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
                 int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
-                decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
+                int begin = decodedSettings.indexOf(QChar('{')); // find first bracket to mark beginning of the json
+                qDebug() << "first { at poistion: " << begin;
+                decodedSettings = decodedSettings.left(pos+1); // remove everything after the valid json
                 decodedJson = QJsonDocument::fromJson(decodedSettings).object();
-                fileLocation = "default";
             }else{
                 emit loginFailedChanged();
                 return;
@@ -687,6 +689,8 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
         QByteArray decodedSettings = encryption.decode(settings.toLatin1(), (oldPassword + "xtrabytesxtrabytes").toLatin1());
         int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
         decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
+        int begin = decodedSettings.indexOf(QChar('{')); // find first bracket to mark beginning of the json
+        qDebug() << "first { at poistion: " << begin;
         QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
 
         if(decodedJson.value("app").toString().startsWith("xtrabytes")){
@@ -742,12 +746,15 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
             QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
 
             /*      check encryption    */
-            QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
-            int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
-            decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
-            QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
+            QByteArray decodedPWSettings = encryption.decode(DataAsString.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+            int posPW = decodedPWSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
+            decodedPWSettings = decodedPWSettings.left(posPW+1); //remove everything after the valid json
+            int beginPW = decodedPWSettings.indexOf(QChar('{')); // find first bracket to mark beginning of the json
+            qDebug() << "first { at poistion: " << beginPW;
+            QJsonObject decodedPWJson = QJsonDocument::fromJson(decodedPWSettings).object();
 
-            if(decodedJson.value("app").toString().startsWith("xtrabytes")){
+            if(decodedPWJson.value("app").toString().startsWith("xtrabytes")){
+                qDebug() << "valid encryption";
                 QVariantMap feed3;
                 feed3.insert("randNumAes", randNumAes.second);
                 feed3.insert("randNumPass", encodedRandNrStr);
@@ -920,12 +927,14 @@ bool Settings::SaveSettings(){
                 QString DataAsString = QString::fromLatin1(encodedText, encodedText.length());
 
                 /*      check encryption    */
-                QByteArray decodedSettings = encryption.decode(DataAsString.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
-                int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
-                decodedSettings = decodedSettings.left(pos+1); //remove everything after the valid json
-                QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
+                QByteArray decodedSaveSettings = encryption.decode(DataAsString.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
+                int posSave = decodedSaveSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
+                decodedSaveSettings = decodedSaveSettings.left(posSave+1); //remove everything after the valid json
+                int beginSave = decodedSaveSettings.indexOf(QChar('{')); // find first bracket to mark beginning of the json
+                qDebug() << "first { at poistion: " << beginSave;
+                QJsonObject decodedSaveJson = QJsonDocument::fromJson(decodedSaveSettings).object();
 
-                if(decodedJson.value("app").toString().startsWith("xtrabytes")){
+                if(decodedSaveJson.value("app").toString().startsWith("xtrabytes")){
                     qDebug() << "valid encrypted settings file";
                     /*      back up encrypted file to device     */
                     BackupFile(m_username.toLower() + ".backup", DataAsString, "default");
@@ -1071,11 +1080,11 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
         //qDebug().noquote() << "DB wallet";
         walletArray = json["walletList"].toArray(); //get walletList from settings from DB
         //qDebug().noquote() << walletArray;
-    }/*
+    }
     int walletCount = walletArray.count();
     for (int e = 0; e < walletCount; e++) {
         qDebug() << walletArray.at(e);
-    }*/
+    }
     QJsonDocument docWallet;
     docWallet.setArray(walletArray);
     QString wallet(docWallet.toJson(QJsonDocument::Compact));
@@ -1138,6 +1147,7 @@ void Settings::SaveWallet(QString walletlist, QString addresslist){
     if (localKeys){
         QByteArray encodedWallet = encryption.encode(walletlist.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1()); //encode settings after adding address
         QString encodedWalletString = QString::fromLatin1(encodedWallet,encodedWallet.length());
+
         QByteArray decodedWallet = encryption.decode(encodedWalletString.toLatin1(), (m_password + "xtrabytesxtrabytes").toLatin1());
         int pos = decodedWallet.lastIndexOf(QChar(']')); // find last bracket to mark the end of the json
         decodedWallet = decodedWallet.left(pos+1); //remove everything after the valid json
@@ -1230,15 +1240,13 @@ void Settings::BackupFile(QString fileName, QString encryptedData, QString fileL
     if (!file.open(QIODevice::WriteOnly)) {
         file.errorString(); //We can build this out to emit an error message
         qDebug() << file.errorString();
-        //emit saveFileFailed();
         return;
     }else{
-        //emit saveFileSucceeded();
-        //SaveSettings();
+        QDataStream out(&file);
+        out.setVersion(QDataStream::Qt_5_11);
+        out << encryptedData;
+        qDebug() << "backup file saved";
     }
-    QDataStream out(&file);
-    out.setVersion(QDataStream::Qt_5_11);
-    out << encryptedData;
 }
 
 void Settings::SaveFile(QString fileName, QString encryptedData, QString fileLocation){
@@ -1267,12 +1275,13 @@ void Settings::SaveFile(QString fileName, QString encryptedData, QString fileLoc
         emit saveFileFailed();
         return;
     }else{
+        QDataStream out(&file);
+        out.setVersion(QDataStream::Qt_5_11);
+        out << encryptedData;
+        qDebug() << "wallet file saved";
         emit saveFileSucceeded();
         SaveSettings();
     }
-    QDataStream out(&file);
-    out.setVersion(QDataStream::Qt_5_11);
-    out << encryptedData;
 }
 
 QString Settings::LoadFile(QString fileName, QString fileLocation){
@@ -1298,7 +1307,12 @@ QString Settings::LoadFile(QString fileName, QString fileLocation){
     QFile file(currentDir + "/" + fileName);
     if (!file.open(QIODevice::ReadOnly)) {
         file.errorString(); //We can build this out to emit an error message
-        NoWalletFile();
+        if (fileLocation == "restore") {
+            NoBackupFile();
+        }
+        else {
+            NoWalletFile();
+        }
         return "ERROR";
     }
 
@@ -1306,14 +1320,6 @@ QString Settings::LoadFile(QString fileName, QString fileLocation){
     in.setVersion(QDataStream::Qt_5_11);
     in >> returnFile;
     return returnFile;
-}
-
-void Settings::ImportWallet(QString username, QString password){
-    loginFile(username, password, "import");
-}
-
-void Settings::RestoreAccount(QString username, QString password) {
-    loginFile(username, password, "restore");
 }
 
 void Settings::CheckSessionId(){
@@ -1367,6 +1373,20 @@ void Settings::NoWalletFile(){
     msgBox->show();
 }
 
+void Settings::NoBackupFile(){
+
+    qDebug() << "No backup file found!";
+
+    QMessageBox *msgBox = new QMessageBox;
+    msgBox->setParent(0);
+    msgBox->setWindowTitle("Backup file ERROR!!!");
+    msgBox->setIcon(QMessageBox::Warning);
+    msgBox->setText("No backup file was found");
+    msgBox->setStandardButtons(QMessageBox::Ok);
+    msgBox->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+    msgBox->show();
+}
+
 void Settings::CheckCamera(){
 
 #ifdef Q_OS_ANDROID //added to get camera permission for Android
@@ -1387,6 +1407,29 @@ void Settings::CheckCamera(){
     else {
         qDebug() << "Camera permission ok";
         emit cameraCheckPassed();
+    }
+#endif
+}
+
+void Settings::CheckWriteAccess() {
+#ifdef Q_OS_ANDROID //added to get camera permission for Android
+    auto  result = QtAndroid::checkPermission(QString("android.permission.WRITE_EXTERNAL_STORAGE"));
+    qDebug() << "Checking write permission";
+    if(result == QtAndroid::PermissionResult::Denied){
+        QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.WRITE_EXTERNAL_STORAGE"}));
+        if(resultHash["android.permission.WRITE_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Denied){
+            qDebug() << "No write permission";
+            emit writeCheckFailed();
+            return;
+        }else{
+            qDebug() << "Write permission ok";
+            emit writeCheckPassed();
+            return;
+        }
+    }
+    else {
+        qDebug() << "Write permission ok";
+        emit writeCheckPassed();
     }
 #endif
 }

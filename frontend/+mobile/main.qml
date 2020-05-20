@@ -526,6 +526,7 @@ ApplicationWindow {
     signal copyText2Clipboard(string text)
     signal sendCoins(string message)
     signal checkCamera()
+    signal checkWriteAccess()
     signal checkTxStatus(string pendinglist)
     signal changePassword(string oldPassword, string newPassword)
     signal xChatTypingSignal(string user, string route, string status)
