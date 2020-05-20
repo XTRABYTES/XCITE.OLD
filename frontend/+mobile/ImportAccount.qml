@@ -34,6 +34,15 @@ Item {
     property int loadingSettings:  0
     property int verifyingBalances: 0
 
+    function importWallet() {
+        closeAllClipboard = true
+        if (userName.text != "" && passWord.text != "" && networkError == 0) {
+            importInitiated = true
+            checkUsername = 1
+            importAccount(userName.text, passWord.text)
+        }
+    }
+
     Rectangle {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
@@ -143,6 +152,9 @@ Item {
                     passError = 0
                 }
             }
+
+            Keys.onEnterPressed: importWallet()
+            Keys.onReturnPressed: importWallet()
         }
 
         Text {

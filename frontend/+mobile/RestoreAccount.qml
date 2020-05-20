@@ -34,6 +34,15 @@ Item {
     property int loadingSettings:  0
     property int verifyingBalances: 0
 
+    function restore() {
+        closeAllClipboard = true
+        if (userName.text != "" && passWord.text != "" && networkError == 0) {
+            restoreInitiated = true
+            checkUsername = 1
+            restoreAccount(userName.text, passWord.text)
+        }
+    }
+
     Rectangle {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
@@ -143,6 +152,9 @@ Item {
                     passError = 0
                 }
             }
+
+            Keys.onEnterPressed: restore()
+            Keys.onReturnPressed: restore()
         }
 
         Text {
@@ -474,8 +486,8 @@ Item {
             width: doubbleButtonWidth
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignJustify
-            maximumLineCount: 5
-            text: "If you try to restore an account, you need to use a device with which you already used the account."
+            maximumLineCount: 7
+            text: "If you try to restore an account, make sure the .backup file is in the <b>Documents/XCITE_backup</b> folder. If your account uses DEVICE storage your .wallet file needs to be in the <b>Documents/XCITE_wallet</b> folder"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: login.bottom
             anchors.topMargin: 70

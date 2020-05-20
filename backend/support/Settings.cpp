@@ -1393,7 +1393,7 @@ void Settings::NoBackupFile(){
 }
 
 void Settings::CheckCamera(){
-
+    bool passed = true;
 #ifdef Q_OS_ANDROID //added to get camera permission for Android
     auto  result = QtAndroid::checkPermission(QString("android.permission.CAMERA"));
     qDebug() << "Checking camera permission";
@@ -1401,22 +1401,30 @@ void Settings::CheckCamera(){
         QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.CAMERA"}));
         if(resultHash["android.permission.CAMERA"] == QtAndroid::PermissionResult::Denied){
             qDebug() << "No camera permission";
-            emit cameraCheckFailed();
+            //emit cameraCheckFailed();
+            passed = false;
             return;
         }else{
             qDebug() << "Camera permission ok";
-            emit cameraCheckPassed();
+            //emit cameraCheckPassed();
             return;
         }
     }
     else {
         qDebug() << "Camera permission ok";
-        emit cameraCheckPassed();
+        //emit cameraCheckPassed();
     }
 #endif
+    if (passed) {
+        emit cameraCheckPassed();
+    }
+    else {
+        emit cameraCheckFailed();
+    }
 }
 
 void Settings::CheckWriteAccess() {
+    bool passed = true;
 #ifdef Q_OS_ANDROID //added to get camera permission for Android
     auto  result = QtAndroid::checkPermission(QString("android.permission.WRITE_EXTERNAL_STORAGE"));
     qDebug() << "Checking write permission";
@@ -1424,19 +1432,26 @@ void Settings::CheckWriteAccess() {
         QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.WRITE_EXTERNAL_STORAGE"}));
         if(resultHash["android.permission.WRITE_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Denied){
             qDebug() << "No write permission";
-            emit writeCheckFailed();
+            //emit writeCheckFailed();
+            passed = false;
             return;
         }else{
             qDebug() << "Write permission ok";
-            emit writeCheckPassed();
+            //emit writeCheckPassed();
             return;
         }
     }
     else {
         qDebug() << "Write permission ok";
-        emit writeCheckPassed();
+        //emit writeCheckPassed();
     }
 #endif
+    if (passed) {
+        emit writeCheckPassed();
+    }
+    else {
+        emit writeCheckFailed();
+    }
 }
 
 void Settings::downloadImage(QString imageUrl) {
