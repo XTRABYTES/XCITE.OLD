@@ -511,7 +511,7 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
         QJsonObject decodedJson = QJsonDocument::fromJson(decodedSettings).object();
 
         if (fileLocation == "restore") {
-            QString settingsFile = LoadFile(username.toLower() + ".backup", "default");
+            QString settingsFile = LoadFile(username.toLower() + ".backup", fileLocation);
             if (settingsFile != "ERROR"){
                 decodedSettings = encryption.decode(settingsFile.toLatin1(), (password + "xtrabytesxtrabytes").toLatin1());
                 int pos = decodedSettings.lastIndexOf(QChar('}')); // find last bracket to mark the end of the json
@@ -533,7 +533,9 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
             m_password = password;
 
             emit loadingSettings();
-
+            if (fileLocation == "restore") {
+                fileLocation = "default";
+            }
             LoadSettings(decodedSettings, fileLocation);
 
             // Create new rand Num.
@@ -779,7 +781,7 @@ void Settings::changePassword(QString oldPassword, QString newPassword){
                 if (changePasswordSuccess){
                     qDebug() << "valid encrypted settings file";
                     /*      back up encrypted file to device     */
-                    BackupFile(m_username.toLower() + ".backup", DataAsString, "default");
+                    BackupFile(m_username.toLower() + ".backup", DataAsString, "restore");
 
                     QString dec_pincode = encryption.decode(m_pincode.toLatin1(), (oldPassword + "xtrabytesxtrabytes").toLatin1());
                     dec_pincode.chop(1);
@@ -937,7 +939,7 @@ bool Settings::SaveSettings(){
                 if(decodedSaveJson.value("app").toString().startsWith("xtrabytes")){
                     qDebug() << "valid encrypted settings file";
                     /*      back up encrypted file to device     */
-                    BackupFile(m_username.toLower() + ".backup", DataAsString, "default");
+                    BackupFile(m_username.toLower() + ".backup", DataAsString, "restore");
 
                     /*      updating encrypted settings     */
                     QVariantMap feed3;
@@ -1232,7 +1234,7 @@ void Settings::BackupFile(QString fileName, QString encryptedData, QString fileL
         }
     }
 #endif
-    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0];
+    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/XCITE_backup";
     QDir dir;
     dir.mkpath(currentDir);
     qDebug() << " Writing to " + currentDir + "/" + fileName;
@@ -1261,7 +1263,7 @@ void Settings::SaveFile(QString fileName, QString encryptedData, QString fileLoc
         }
     }
 #endif
-    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0];
+    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/XCITE_wallet";
     if (fileLocation == "export"){
         currentDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation)[0];
     }
@@ -1297,9 +1299,12 @@ QString Settings::LoadFile(QString fileName, QString fileLocation){
 #endif
     QString returnFile;
 
-    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0];
+    QString currentDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/XCITE_wallet";
     if (fileLocation == "import"){
         currentDir = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation)[0];
+    }
+    else if (fileLocation == "restore") {
+        currentDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/XCITE_backup";
     }
 
     qDebug() << "Reading from " + currentDir + "/" + fileName;

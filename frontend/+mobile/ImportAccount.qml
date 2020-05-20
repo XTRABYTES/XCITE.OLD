@@ -38,10 +38,12 @@ Item {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
+        anchors.topMargin: (parent.height/2) - (login.height)
         width: parent.width - 50
         height: 250
-        state: importTracker == 1? "up" : "down"
+        //state: importTracker == 1? "up" : "down"
         color: "transparent"
+        visible: importTracker == 1
 
         states: [
             State {
@@ -356,6 +358,18 @@ Item {
             border.color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
             opacity: 0.50
             visible: importButton.visible
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.bottom: importModalBody.bottom
+            anchors.bottomMargin: -10
+            playing: importInitiated == true
+            visible: importInitiated == true
         }
 
         Label {
