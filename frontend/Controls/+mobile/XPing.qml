@@ -333,7 +333,7 @@ Rectangle {
 
                 Text {
                     id: messageText
-                    text: inout == "in"? (author == "staticNet"? "STATIC-net: " + message : message) : ">>>>" + message
+                    text: inout == "in"? (author == "staticNet"? "STATIC-net: " + message : (author == "XCITE"? "XCITE: " + message : message)) : ">>>>" + message
                     anchors.left: msgBox.left
                     anchors.leftMargin: 5
                     anchors.right: msgBox.right

@@ -2614,6 +2614,9 @@ ApplicationWindow {
                 if (b[0] === "dicom") {
                     xPingTread.append({"message": text, "inout": "in", "author": "staticNet", "time": t})
                 }
+                if (b[0] === "backend") {
+                    xPingTread.append({"message": text, "inout": "in", "author": "XCITE", "time": t})
+                }
             }
         }
     }
