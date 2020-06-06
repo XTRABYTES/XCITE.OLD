@@ -1520,7 +1520,7 @@ QString Settings::LoadFile(QString fileName, QString fileLocation){
         if (fileLocation == "restore") {
             NoBackupFile();
         }
-        else {
+        else if (fileLocation == "import") {
             NoWalletFile();
         }
         return "ERROR";

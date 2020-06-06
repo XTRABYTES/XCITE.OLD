@@ -886,6 +886,7 @@ ApplicationWindow {
                     newBalance = parseFloat(balance);
                     if (!isNaN(newBalance)){
                         if (newBalance !== walletList.get(i).balance) {
+                            console.log("updating balance for " + coin + " " + address + ": " + balance)
                             newBalanceTracker = 0
                             changeBalance = newBalance - walletList.get(i).balance
                             if (changeBalance > 0) {
@@ -2260,7 +2261,7 @@ ApplicationWindow {
         }
     }
 
-    function clearWalletList() {
+    function  etList() {
         for (var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).remove === true) {
                 walletList.setProperty(i, "name", "");
@@ -2424,7 +2425,6 @@ ApplicationWindow {
                 transactionConfirmations = confirmations
                 transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
                 transactionDetailsCollected = true
-                //transactionDetailTracker = 1
             }
         }
 
@@ -2464,10 +2464,12 @@ ApplicationWindow {
                     balanceCheck = "xby"
                 }
 
-                clearWalletList()
+                //clearWalletList()
                 var datamodelWallet = []
                 for (var i = 0; i < walletList.count; ++i) {
-                    datamodelWallet.push(walletList.get(i))
+                    if (walletList.get(i).remove === false) {
+                        datamodelWallet.push(walletList.get(i))
+                    }
                 };
                 var walletListJson = JSON.stringify(datamodelWallet)
                 explorerBusy = true

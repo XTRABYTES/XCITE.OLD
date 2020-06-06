@@ -64,7 +64,6 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
         if (coin.length() > 0){
             if ((coin == "xby") || (coin == "xfuel") || (coin == "xfuel-testnet")){
                 if (checkInternet("https://xtrabytes.global")) {
-
                     QString balance = "";
                     QString url = "https://xtrabytes.global/api/"+ coin.toLower() + "/address/" + address;
                     URLObject urlObj {QUrl(url)};
@@ -268,8 +267,7 @@ void Explorer::getBalanceAddressExtSlot(QByteArray response, QMap<QString,QVaria
             double convertFromSAT = balanceLong / 100000000;
             balance = QString::number(convertFromSAT);
         }
-
-        emit updateBalance(coin,address, balance);
+        emit updateBalance(coin.toUpper(),address,balance);
     }
 }
 

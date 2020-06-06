@@ -51,7 +51,9 @@ Item {
             var datamodelPending = []
 
             for (var i = 0; i < walletList.count; ++i) {
-                datamodelWallet.push(walletList.get(i))
+                if (walletList.get(i).remove === false) {
+                    datamodelWallet.push(walletList.get(i))
+                }
             };
             for (var e = 0; e < pendingList.count; ++e) {
                 datamodelPending.push(pendingList.get(e))

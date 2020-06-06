@@ -25,7 +25,7 @@ Item {
     anchors.verticalCenter: xcite.verticalCenter
     clip: true
 
-    property string versionNR: "0.6.1 RC"
+    property string versionNR: "0.6.3 RC"
     property int started: 0
 
     Component.onCompleted: {
