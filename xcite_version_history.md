@@ -9,7 +9,9 @@ All notable changes to this project will be documented in this file.
 
 ## Version [0.6.2 RC]
 
+
 - Added an automatic backup feature
+   - XCITE will be backed up automatically several times while using the XCITE app
 - Minor bug fixes
 
 
