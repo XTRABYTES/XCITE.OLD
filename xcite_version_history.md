@@ -1,6 +1,17 @@
 # XCITE version changelog
 All notable changes to this project will be documented in this file.
 
+## Version [0.6.3 RC]
+
+- Transaction bug fix
+- BTC bug fix
+
+
+## Version [0.6.2 RC]
+
+- Added an automatic backup feature
+- Minor bug fixes
+
 
 ## Version [0.6.1 RC]
 
