@@ -301,6 +301,7 @@ ApplicationWindow {
     property int tttHubTracker: 0
 
     // Global variables
+    property int started: 0
     property int sessionStart: 0
     property int sessionTime: 0
     property int sessionClosed: 0

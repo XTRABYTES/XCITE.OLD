@@ -448,7 +448,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: maincolor
+            color: darktheme == true? "#F2F2F2" : maincolor
             anchors.horizontalCenter: changePasswordButton.horizontalCenter
             anchors.verticalCenter: changePasswordButton.verticalCenter
         }
@@ -987,7 +987,7 @@ Rectangle {
         font.family: "Brandon Grotesque"
         font.pointSize: 14
         font.bold: true
-        color: maincolor
+        color: darktheme == true? "#F2F2F2" : maincolor
         anchors.horizontalCenter: clearButton.horizontalCenter
         anchors.verticalCenter: clearButton.verticalCenter
         visible: clearAllInitiated == false

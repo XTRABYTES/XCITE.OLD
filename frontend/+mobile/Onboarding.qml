@@ -26,7 +26,6 @@ Item {
     clip: true
 
     property string versionNR: "0.6.3 RC"
-    property int started: 0
 
     Component.onCompleted: {
         selectedPage = "login"
