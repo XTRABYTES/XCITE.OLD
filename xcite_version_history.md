@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 - The XTRABYTES™ XCITE Mobile app is no longer in beta
    - First official Mobile release
-- The XCITE Mobile app is avaliable for download in both Google and Apple store
+- The XCITE Mobile app is avaliable for download in both Google and Apple stores
 - Minor GUI fixes
 - Minor bug fixes
 
