@@ -1,6 +1,15 @@
 # XCITE version changelog
 All notable changes to this project will be documented in this file.
 
+## Version [1.0]
+
+- The XTRABYTES™ XCITE Mobile app is no longer in beta
+   - First official Mobile release
+- The XCITE Mobile app is avaliable for download in both Google and Apple store
+- Minor GUI fixes
+- Minor bug fixes
+
+
 ## Version [0.6.3 RC]
 
 - Transaction bug fix
