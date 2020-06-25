@@ -153,7 +153,7 @@ Rectangle {
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    visible: testnet == false
+                    visible: testnet == false && userSettings.showBalance === true
                 }
 
                 Text {
@@ -168,7 +168,7 @@ Rectangle {
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    visible: testnet == false
+                    visible: testnet == false && userSettings.showBalance === true
                 }
 
                 Label {
@@ -180,7 +180,7 @@ Rectangle {
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    visible: testnet == false
+                    visible: testnet == false && userSettings.showBalance === true
                 }
 
                 Text {

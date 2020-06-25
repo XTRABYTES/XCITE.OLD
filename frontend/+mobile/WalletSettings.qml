@@ -42,6 +42,7 @@ Rectangle {
     property int clearFailed: 0
     property int changeVolumeFailed: 0
     property int changeSystemVolumeFailed: 0
+    property int changeBalanceVisibleFailed: 0
 
     MouseArea {
         anchors.fill: parent
@@ -80,7 +81,7 @@ Rectangle {
     Flickable {
         id: scrollArea
         width: parent.width
-        contentHeight: currencyLabel.height + pincodeLabel.height + changePinButton.height + passwordLabel.height + changePasswordButton.height + notificationLabel.height + volumeLabel.height + systemVolumeLabel.height + 360
+        contentHeight: currencyLabel.height + showBalanceLabel.height + pincodeLabel.height + changePinButton.height + passwordLabel.height + changePasswordButton.height + notificationLabel.height + volumeLabel.height + systemVolumeLabel.height + 385
         anchors.left: parent.left
         anchors.top: welcomeText.bottom
         anchors.topMargin: 30
@@ -226,9 +227,9 @@ Rectangle {
         }
 
         Label {
-            id: pincodeLabel
+            id: showBalanceLabel
             z: 1
-            text: "Pinlock active:"
+            text: "Show balance"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
@@ -241,13 +242,91 @@ Rectangle {
         }
 
         Rectangle {
+            id: balanceSwitch
+            z: 1
+            width: 20
+            height: 20
+            radius: 10
+            anchors.verticalCenter: showBalanceLabel.verticalCenter
+            anchors.right: picklistArrow.right
+            color: "transparent"
+            border.color: themecolor
+            border.width: 2
+
+            Rectangle {
+                id: balanceIndicator
+                z: 1
+                width: 12
+                height: 12
+                radius: 8
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                color: userSettings.showBalance === true ? maincolor : "#757575"
+
+                MouseArea {
+                    id: balanceButton
+                    width: 20
+                    height: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    onPressed: {
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        if (changeBalanceVisibleInitiated == false && currencyTracker == 0 && soundTracker == 0) {
+                            oldBalanceVisible = userSettings.volume
+                            if (userSettings.showBalance === true) {
+                                userSettings.showBalance = false
+                            }
+                            else {
+                                userSettings.showBalance = true
+                            }
+                            changeBalanceVisibleInitiated = true
+                            updateToAccount()
+                        }
+                    }
+                }
+            }
+        }
+
+        Label {
+            id: balanceSwitchLabel
+            text: userSettings.showBalance === true ? "Yes" : "No"
+            anchors.right: balanceSwitch.left
+            anchors.rightMargin: 7
+            anchors.verticalCenter: balanceSwitch.verticalCenter
+            anchors.verticalCenterOffset: 1
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.capitalization: Font.SmallCaps
+            color: userSettings.pinlock === true ? maincolor : "#757575"
+        }
+
+        Label {
+            id: pincodeLabel
+            z: 1
+            text: "Pinlock active:"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.bold: true
+            font.capitalization: Font.SmallCaps
+            color: themecolor
+            anchors.top: balanceSwitch.bottom
+            anchors.topMargin: 25
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+        }
+
+        Rectangle {
             id: pincodeSwitch
             z: 1
             width: 20
             height: 20
             radius: 10
             anchors.verticalCenter: pincodeLabel.verticalCenter
-            anchors.right: picklistArrow.right
+            anchors.right: balanceSwitch.right
             color: "transparent"
             border.color: themecolor
             border.width: 2
@@ -295,7 +374,6 @@ Rectangle {
                             clearPinInitiated = true
                             oldPinlock = userSettings.pinlock
                             userSettings.pinlock = false
-                            //saveAppSettings();
                             savePincode("0000")
                         }
                     }
@@ -827,6 +905,9 @@ Rectangle {
                 if (changeSystemVolumeInitiated == true) {
                     changeSystemVolumeInitiated = false
                 }
+                if (changeBalanceVisibleInitiated == true) {
+                    changeBalanceVisibleInitiated = false
+                }
             }
 
             onSaveFailed: {
@@ -839,6 +920,11 @@ Rectangle {
                     userSettings.systemVolume = oldSystemVolume
                     changeSystemVolumeFailed = 1
                     changeSystemVolumeInitiated = false
+                }
+                if (changeBalanceVisibleInitiated == true) {
+                    userSettings.showBalance = oldBalanceVisible
+                    changeBalanceVisibleFailed = 1
+                    changeBalanceVisibleInitiated = false
                 }
             }
 
@@ -1138,7 +1224,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -100
-        visible: volumeChangeFailed == 1
+        visible: changeVolumeFailed == 1
 
         Rectangle {
             id: popupVolumeFail
@@ -1162,10 +1248,10 @@ Rectangle {
 
         Timer {
             repeat: false
-            running: volumeChangeFailed == 1
+            running: changeVolumeFailed == 1
             interval: 2000
 
-            onTriggered: volumeChangeFailed = 0
+            onTriggered: changeVolumeFailed = 0
         }
     }
 
@@ -1176,7 +1262,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -100
-        visible: systemVolumeChangeFailed == 1
+        visible: changeSystemVolumeFailed == 1
 
         Rectangle {
             id: popupSystemVolumeFail
@@ -1200,10 +1286,48 @@ Rectangle {
 
         Timer {
             repeat: false
-            running: systemVolumeChangeFailed == 1
+            running: changeSystemVolumeFailed == 1
             interval: 2000
 
-            onTriggered: systemVolumeChangeFailed = 0
+            onTriggered: changeSystemVolumeFailed = 0
+        }
+    }
+
+    Item {
+        z: 12
+        width: popupShowBalanceFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: changeBalanceVisibleFailed == 1
+
+        Rectangle {
+            id: popupShowBalanceFail
+            height: 50
+            width: popupShowBalanceText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupShowBalanceText
+            text: "<font color='#E55541'><b>FAILED</b></font> to update balance visibility!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#F2F2F2"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: changeBalanceVisibleFailed == 1
+            interval: 2000
+
+            onTriggered: changeBalanceVisibleFailed = 0
         }
     }
 

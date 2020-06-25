@@ -1669,7 +1669,10 @@ Rectangle {
                         var msg = "UI - confirming TX: " + paramsJson
                         xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
                         console.log("request TX broadcast: " + paramsJson)
-                        transactionList.append({"requestID":receivedTxID,"coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":Number.fromLocaleString(Qt.locale("en_US"),replaceComma),"fee":Number.fromLocaleString(Qt.locale("en_US"),txFee)})
+                        var total = Number.fromLocaleString(Qt.locale("en_US"),replaceComma)
+                        var totalFee = Number.fromLocaleString(Qt.locale("en_US"),txFee)
+                        var totalUsed = Number.fromLocaleString(Qt.locale("en_US"),usedCoins)
+                        transactionList.append({"requestID":receivedTxID,"txid":"","coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":total,"fee":totalFee,"used":totalUsed})
                         //requestSend = 1
                         transferTracker = 0
                     }

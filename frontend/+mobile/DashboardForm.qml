@@ -188,10 +188,11 @@ Item {
                         z: 5
                         anchors.left: totalWalletValue.left
                         anchors.bottom: value1.bottom
-                        text: fiatTicker
+                        text: userSettings.showBalance === true? fiatTicker : ""
                         font.pixelSize: totalBalance < 1000000? 60 : 40
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
+                        visible: userSettings.showBalance === true
                     }
 
                     Label {
@@ -199,7 +200,7 @@ Item {
                         z: 5
                         anchors.left: valueTicker.right
                         anchors.verticalCenter: totalWalletValue.verticalCenter
-                        text: balanceArray[0]
+                        text: userSettings.showBalance === true? balanceArray[0] : "****"
                         font.pixelSize: totalBalance < 1000000? 60 : 40
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
@@ -211,7 +212,7 @@ Item {
                         anchors.left: value1.right
                         anchors.bottom: value1.bottom
                         anchors.bottomMargin: 6
-                        text: "." + balanceArray[1]
+                        text: userSettings.showBalance === true? ("." + balanceArray[1]) : ""
                         font.pixelSize: totalBalance < 1000000? 40 : 25
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"

@@ -372,6 +372,7 @@ ApplicationWindow {
     property bool clearPinInitiated: false
     property bool changeVolumeInitiated: false
     property bool changeSystemVolumeInitiated: false
+    property bool changeBalanceVisibleInitiated: false
     property bool clearAllInitiated: false
     property int clearAll: 0
     property int pinOK: 0
@@ -393,6 +394,7 @@ ApplicationWindow {
     property string oldTheme: ""
     property bool oldPinlock: false
     property bool oldLocalKeys: false
+    property bool oldBalanceVisible: true
     property string selectedCoin: "XFUEL"
     property real totalXBY: 0
     property real totalXFUEL: 0
@@ -2110,7 +2112,7 @@ ApplicationWindow {
         if (typeof settingsLoaded !== "undefined") {
             userSettings.accountCreationCompleted = settingsLoaded.accountCreationCompleted === "true";
             userSettings.defaultCurrency = settingsLoaded.defaultCurrency;
-            userSettings.locale =settingsLoaded.locale;
+            userSettings.locale = settingsLoaded.locale;
             userSettings.pinlock = settingsLoaded.pinlock === "true";
             userSettings.theme = settingsLoaded.theme;
             userSettings.localKeys = settingsLoaded.localKeys === "true";
@@ -2125,6 +2127,7 @@ ApplicationWindow {
             userSettings.tagMe = settingsLoaded.tagMe !== undefined? settingsLoaded.tagMe === "true" : true;
             userSettings.tagEveryone = settingsLoaded.tagEveryone !== undefined? settingsLoaded.tagEveryone === "true" : true
             userSettings.xChatDND = settingsLoaded.xChatDND !== undefined? settingsLoaded.xChatDND === "true" : false
+            userSettings.showBalance = settingsLoaded.showBalance !== undefined? settingsLoaded.showBalance === "true" : true
             coinList.setProperty(0, "active", userSettings.xfuel);
             coinList.setProperty(1, "active", userSettings.xby);
             coinList.setProperty(2, "active", userSettings.xtest);
@@ -2328,6 +2331,7 @@ ApplicationWindow {
         userSettings.tagMe = true
         userSettings.tagEveryone = true
         userSettings.xChatDND = false
+        userSettings.showBalance = true
     }
 
     function initialiseLists() {
@@ -3289,6 +3293,7 @@ ApplicationWindow {
         property bool tagMe: true
         property bool tagEveryone: true
         property bool xChatDND: false
+        property bool showBalance: true
 
         onThemeChanged: {
             darktheme = userSettings.theme == "dark"? true : false
