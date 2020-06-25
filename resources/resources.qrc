@@ -344,5 +344,7 @@
         <file>sounds/swipe.wav</file>
         <file>icons/mobile/ping-icon_01_black.svg</file>
         <file>icons/mobile/ping-icon_01_white.svg</file>
+        <file>icons/mobile/show_balance-icon_01_dark.svg</file>
+        <file>icons/mobile/show_balance-icon_01_light.svg</file>
     </qresource>
 </RCC>

@@ -166,11 +166,13 @@ Item {
                             name: "up"
                             PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: 0}
                             PropertyChanges { target: portfolio; opacity:1}
+                            PropertyChanges { target: showBalance; opacity:1}
                         },
                         State {
                             name: "down"
                             PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: appWidth * 1.5}
                             PropertyChanges { target: portfolio; opacity:0}
+                            PropertyChanges { target: showBalance; opacity:0}
                         }
                     ]
 
@@ -180,6 +182,7 @@ Item {
                             to: "*"
                             PropertyAnimation { target: totalWalletValue; property: "anchors.horizontalCenterOffset"; duration: 700; easing.type: Easing.InOutCubic}
                             PropertyAnimation { target: portfolio; property: "opacity"; duration: 700; easing.type: Easing.InOutCubic}
+                            PropertyAnimation { target: showBalance; property: "opacity"; duration: 700; easing.type: Easing.InOutCubic}
                         }
                     ]
 
@@ -247,6 +250,39 @@ Item {
 
                             onClicked: {
                                 portfolioTracker = 1
+                            }
+                        }
+                    }
+                }
+
+                Image {
+                    id: showBalance
+                    z: 5
+                    source: darktheme == true? 'qrc:/icons/mobile/show_balance-icon_01_light.svg' : 'qrc:/icons/mobile/show_balance-icon_01_dark.svg'
+                    width: 15
+                    fillMode: Image.PreserveAspectFit
+                    anchors.verticalCenter: portfolio.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 28
+                    visible: showBalance.opacity > 0 && miniatureTracker == 0 && userSettings.showBalance === false
+
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "transparent"
+
+                        MouseArea {
+                            anchors.fill: parent
+
+                            onPressed: {
+                                detectInteraction()
+                                userSettings.showBalance = true
+                            }
+
+                            onReleased: {
+                                userSettings.showBalance = false
                             }
                         }
                     }

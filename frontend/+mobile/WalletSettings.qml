@@ -301,7 +301,7 @@ Rectangle {
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.capitalization: Font.SmallCaps
-            color: userSettings.pinlock === true ? maincolor : "#757575"
+            color: userSettings.showBalance === true ? maincolor : "#757575"
         }
 
         Label {
