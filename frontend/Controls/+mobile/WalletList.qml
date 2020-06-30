@@ -17,6 +17,7 @@ import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: allWalletCards
@@ -47,7 +48,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
 
-                Controls.CardBody {
+                Mobile.CardBody {
 
                 }
 

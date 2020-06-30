@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: historyModal
@@ -298,7 +299,7 @@ Rectangle {
         ]
 
 
-        Controls.HistoryList {
+        Mobile.HistoryList {
             id: myHistory
         }
     }
@@ -314,7 +315,7 @@ Rectangle {
         clip: true
         visible: transactionSwitch.state == "on"
 
-        Controls.PendingList {
+        Mobile.PendingList {
             id: myPending
         }
     }
@@ -455,7 +456,7 @@ Rectangle {
         }
     }
 
-    Controls.TransactionDetailModal {
+    Mobile.TransactionDetailModal {
         id: myTransactionDetails
         z: 10
         anchors.left: parent.left

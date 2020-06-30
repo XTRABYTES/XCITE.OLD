@@ -1014,7 +1014,7 @@ Rectangle {
                 anchors.left: continueButton.left
                 horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
-                text: "Storing your keys in your account will alow you to access your wallet from any device running XCITE Mobile."
+                text: "Storing your keys in your account will allow you to access your wallet from any device running XCITE Mobile."
                 anchors.top: addWalletText2.bottom
                 anchors.topMargin: 20
                 color: themecolor
@@ -1182,28 +1182,28 @@ Rectangle {
         anchors.top: parent.top
     }
 
-    Controls.DeviceButtons {
+    Mobile.DeviceButtons {
         z: 100
         visible: myOS !== "android" && myOS !== "ios"
     }
 
-    Controls.LogOut {
+    Mobile.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.DragBar {
+    Mobile.DragBar {
         z: 100
         visible: myOS !== "android" && myOS !== "ios"
     }
 
-    Controls.NetworkError {
+    Mobile.NetworkError {
         z:100
         id: myNetworkError
     }
 
-    Controls.Goodbey {
+    Mobile.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

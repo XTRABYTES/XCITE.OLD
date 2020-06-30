@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: pincodeModal
@@ -152,7 +153,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: newPin1
                 height: 70
                 anchors.right: parent.right
@@ -196,7 +197,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: newPin2
                 height: 70
                 anchors.right: parent.right
@@ -432,7 +433,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: currentPin
                 height: 70
                 anchors.right: parent.right
@@ -531,7 +532,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: changePin1
                 height: 70
                 anchors.right: parent.right
@@ -575,7 +576,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: changePin2
                 height: 70
                 anchors.right: parent.right
@@ -826,7 +827,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: pin
                 height: 70
                 anchors.right: parent.right

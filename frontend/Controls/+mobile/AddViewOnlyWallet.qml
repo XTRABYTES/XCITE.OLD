@@ -19,6 +19,7 @@ import QtMultimedia 5.8
 import QtQuick.Window 2.2
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addWalletModal
@@ -568,7 +569,7 @@ Rectangle {
     }
 
     // Save failed state
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: addWalletFailed
         modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
         visible: editFailed == 1

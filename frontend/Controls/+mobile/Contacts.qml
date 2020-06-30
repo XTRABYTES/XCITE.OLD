@@ -17,6 +17,7 @@ import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: allWalletCards
@@ -64,7 +65,7 @@ Rectangle {
                 anchors.top: parent.top
                 clip: true
 
-                Controls.CardBody {
+                Mobile.CardBody {
 
                 }
 
@@ -86,7 +87,7 @@ Rectangle {
                     anchors.leftMargin: 10
                     anchors.top: parent.top
                     anchors.topMargin: 17
-                    text: lastName != ""? (firstName + " " + lastName) : firstName
+                    text: lastName !== ""? (firstName + " " + lastName) : firstName
                     font.pixelSize: 20
                     font.family: xciteMobile.name
                     font.letterSpacing: 2

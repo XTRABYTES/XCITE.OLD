@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addAddressModal
@@ -460,7 +461,7 @@ Rectangle {
                      && editFailed == 0
                      && scanQRTracker == 0
 
-            Controls.CoinPicklist {
+            Mobile.CoinPicklist {
                 id: myCoinPicklist
             }
         }
@@ -662,7 +663,7 @@ Rectangle {
         }
 
         // save failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: addAddressFailed
             modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
@@ -750,7 +751,7 @@ Rectangle {
 
         // save success state
 
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: addAddressSucceed
             modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1

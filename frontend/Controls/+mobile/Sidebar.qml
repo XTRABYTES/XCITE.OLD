@@ -110,7 +110,7 @@ Rectangle {
                         if (selectedPage != "home") {
                             //push of current page
                             selectedPage = "home"
-                            mainRoot.push("../DashboardForm.qml")
+                            mainRoot.push("qrc:/+mobile/DashboardForm.qml")
                         }
                     }
                 }
@@ -164,7 +164,7 @@ Rectangle {
                         if (selectedPage != "settings") {
                             appsTracker = 0
                             selectedPage = "settings"
-                            mainRoot.push("../WalletSettings.qml")
+                            mainRoot.push("qrc:/+mobile/WalletSettings.qml")
                         }
                     }
                 }
@@ -300,7 +300,7 @@ Rectangle {
                         if (selectedPage != "apps") {
                             appsTracker = 0
                             selectedPage = "apps"
-                            mainRoot.push("../Applications.qml")
+                            mainRoot.push("qrc:/+mobile/Applications.qml")
                         }
                     }
                 }
@@ -365,7 +365,7 @@ Rectangle {
                         if (selectedPage != "notif") {
                             appsTracker = 0
                             selectedPage = "notif"
-                            mainRoot.push("../Notifications.qml")
+                            mainRoot.push("qrc:/+mobile/Notifications.qml")
                         }
                     }
                 }
@@ -437,7 +437,7 @@ Rectangle {
                     standBy = 1
                     screenSaver = 0
                     timer.start()
-                    mainRoot.push("../StandBy.qml")
+                    mainRoot.push("qrc:/+mobile/StandBy.qml")
                     appsTracker = 0
                 }
             }

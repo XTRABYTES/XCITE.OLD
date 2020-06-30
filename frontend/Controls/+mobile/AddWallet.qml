@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addWalletModal
@@ -411,7 +412,7 @@ Rectangle {
         }
     }
 
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: addWalletComplete
         modalHeight: saveSuccess.height + saveSuccessLabel.height + moreWallets.height + 75
         visible: selectWallet == 1 && walletAdded == true
@@ -535,32 +536,32 @@ Rectangle {
         }
     }
 
-    Controls.CreateWallet {
+    Mobile.CreateWallet {
         z: 10
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.ImportKey {
+    Mobile.ImportKey {
         z: 10
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.AddViewOnlyWallet {
+    Mobile.AddViewOnlyWallet {
         z: 10
         anchors.left: parent.left
         anchors.top: parent.top
         coin: coin
     }
 
-    Controls.LogOut {
+    Mobile.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.Goodbey {
+    Mobile.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

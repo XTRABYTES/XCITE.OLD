@@ -18,6 +18,7 @@ import QZXing 2.3
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addWalletModal
@@ -898,7 +899,7 @@ Rectangle {
         }
 
         // Save success state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: addSuccess
             modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
@@ -987,7 +988,7 @@ Rectangle {
         }
 
         // Import key failed
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: createWalletFailed
             modalHeight: saveError.height + errorLabel.height + closeError.height + 75
             visible: importWalletFailed == 1

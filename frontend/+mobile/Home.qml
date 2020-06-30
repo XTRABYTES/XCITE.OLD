@@ -27,7 +27,7 @@ Item {
         if (userSettings.accountCreationCompleted === false) {
             mainRoot.pop()
             selectedPage = "initialSetup"
-            mainRoot.push("../InitialSetup.qml")
+            mainRoot.push("qrc:/+mobile/InitialSetup.qml")
         }
         // continue to wallet
         else {
@@ -81,7 +81,7 @@ Item {
             xChatTypingSignal(myUsername,"addToOnline", status)
 
             selectedPage = "home"
-            mainRoot.push("../DashboardForm.qml")
+            mainRoot.push("qrc:/+mobile/DashboardForm.qml")
         }
     }
 }

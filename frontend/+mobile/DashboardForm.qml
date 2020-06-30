@@ -18,6 +18,7 @@ import QtQuick.Layouts 1.3
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Item {
 
@@ -440,7 +441,7 @@ Item {
                         }
                     ]
 
-                    Controls.CoinList {
+                    Mobile.CoinList {
                         id: myCoinCards
                     }
 
@@ -479,7 +480,7 @@ Item {
                         }
                     ]
 
-                    Controls.WalletList {
+                    Mobile.WalletList {
                         id: myWalletCards
 
                     }
@@ -560,7 +561,7 @@ Item {
                     }
                 }
 
-                Controls.AddCoinModal{
+                Mobile.AddCoinModal{
                     z: 3
                     id: addCoinModal
                     visible: addCoinTracker == 1
@@ -1007,7 +1008,7 @@ Item {
                         }
                     ]
 
-                    Controls.Contacts {
+                    Mobile.Contacts {
                         id: myContacts
                         searchFilter: searchCriteria
                     }
@@ -1046,7 +1047,7 @@ Item {
                         }
                     ]
 
-                    Controls.AddressBook {
+                    Mobile.AddressBook {
                         id: myAddressCards
                     }
                 }
@@ -1122,7 +1123,7 @@ Item {
                     }
                 }
 
-                Controls.QrCode{
+                Mobile.QrCode{
                     id: addressDetails
                     z: 3
                     width: appWidth
@@ -1810,63 +1811,63 @@ Item {
         ]
     }
 
-    Controls.HistoryModal {
+    Mobile.HistoryModal {
         id: historyModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.AddContact {
+    Mobile.AddContact {
         id: contactModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.ContactModal {
+    Mobile.ContactModal {
         id: editContactModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.TransferModal{
+    Mobile.TransferModal{
         id: transferModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.AddressModal{
+    Mobile.AddressModal{
         id: addressModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.AddAddressModal{
+    Mobile.AddAddressModal{
         id: addAddressModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.WalletModal {
+    Mobile.WalletModal {
         id: walletModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.PortfolioModal {
+    Mobile.PortfolioModal {
         id: myPortfolio
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.QrScanner {
+    Mobile.QrScanner {
         id: qrScanner
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
@@ -1874,47 +1875,47 @@ Item {
         visible: selectedPage == "home" && scanQRTracker == 1
     }
 
-    Controls.ClickToLogout {
+    Mobile.ClickToLogout {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
         visible: clickToLogout == 1
     }
 
-    Controls.SwipeBack {
+    Mobile.SwipeBack {
         z: 100
         anchors.right: parent.right
         anchors.top: parent.top
     }
 
-    Controls.DeviceButtons {
+    Mobile.DeviceButtons {
         z: 100
         visible: myOS !== "android" && myOS !== "ios"
     }
 
-    Controls.Sidebar{
+    Mobile.Sidebar{
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.LogOut {
+    Mobile.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.DragBar {
+    Mobile.DragBar {
         z: 100
         visible: myOS !== "android" && myOS !== "ios"
     }
 
-    Controls.NetworkError {
+    Mobile.NetworkError {
         z:100
         id: myNetworkError
     }
 
-    Controls.Goodbey {
+    Mobile.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

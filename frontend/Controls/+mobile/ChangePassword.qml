@@ -17,7 +17,7 @@ import QtGraphicalEffects 1.0
 import QtMultimedia 5.8
 import QtQuick.Window 2.2
 
-import "../Controls" as Controls
+import "qrc:/Controls" as Controls
 
 Rectangle {
     id: changePassWordModal

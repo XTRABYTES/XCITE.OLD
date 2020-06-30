@@ -813,7 +813,7 @@ Rectangle {
                      && editFailed == 0
                      && deleteAddressTracker == 0
 
-            Controls.CoinPicklist {
+            Mobile.CoinPicklist {
                 id: myCoinPicklist
             }
         }
@@ -854,7 +854,7 @@ Rectangle {
         }
 
         // Edit failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: editAddressFailed
             modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
@@ -941,7 +941,7 @@ Rectangle {
         }
 
         // Edit saved state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: editAddressSucceed
             modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSaveEdit.height + 75
             visible: editSaved == 1
@@ -1058,7 +1058,7 @@ Rectangle {
 
         // Delete confirm state
 
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteConfirmation
             modalHeight: deleteText.height + deleteAddressName.height + deleteAddressHash.height + confirmationDeleteButton.height + 79
             visible: deleteAddressTracker == 1
@@ -1296,7 +1296,7 @@ Rectangle {
         }
 
         // Delete failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteAddressFailed
             modalHeight: failedIcon.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 85
             visible: deleteFailed == 1
@@ -1386,7 +1386,7 @@ Rectangle {
 
         // Delete success state
 
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteAddressSucceed
             modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 75
             visible: deleteConfirmed == 1

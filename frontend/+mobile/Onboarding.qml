@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Item {
     width: appWidth
@@ -293,34 +294,34 @@ Item {
         id: myRestore
     }
 
-    Controls.SwipeBack {
+    Mobile.SwipeBack {
         z: 100
         anchors.right: parent.right
         anchors.top: parent.top
     }
 
-    Controls.DeviceButtons {
+    Mobile.DeviceButtons {
         z: 100
         visible: myOS !== "android" && myOS !== "ios"
     }
 
-    Controls.LogOut {
+    Mobile.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.DragBar {
+    Mobile.DragBar {
         z: 100
         visible: myOS !== "android" && myOS !== "ios"
     }
 
-    Controls.NetworkError {
+    Mobile.NetworkError {
         z:100
         id: myNetworkError
     }
 
-    Controls.Goodbey {
+    Mobile.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

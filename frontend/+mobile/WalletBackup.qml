@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: backupModal
@@ -143,7 +144,7 @@ Rectangle {
         color: "transparent"
         clip: true
 
-        Controls.WalletDetailList {
+        Mobile.WalletDetailList {
             id: myWallets
         }
     }
@@ -281,39 +282,39 @@ Rectangle {
         }
     }
 
-    Controls.ScreenshotModal {
+    Mobile.ScreenshotModal {
         id: myScreenshotModal
         z: 10
     }
 
-    Controls.SwipeBack {
+    Mobile.SwipeBack {
         z: 100
         anchors.right: parent.right
         anchors.top: parent.top
     }
 
-    Controls.DeviceButtons {
+    Mobile.DeviceButtons {
         z: 100
         visible: myOS !== "android" && myOS !== "ios"
     }
 
-    Controls.LogOut {
+    Mobile.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.DragBar {
+    Mobile.DragBar {
         z: 100
         visible: myOS !== "android" && myOS !== "ios"
     }
 
-    Controls.NetworkError {
+    Mobile.NetworkError {
         z:100
         id: myNetworkError
     }
 
-    Controls.Goodbey {
+    Mobile.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

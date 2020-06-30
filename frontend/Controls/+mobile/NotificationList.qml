@@ -19,6 +19,8 @@ import QtQuick.Window 2.2
 import SortFilterProxyModel 0.2
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
+
 
 Rectangle {
     width: parent.width
@@ -37,7 +39,7 @@ Rectangle {
             color:"transparent"
             clip: true
 
-            Controls.CardBody {
+            Mobile.CardBody {
 
             }
 

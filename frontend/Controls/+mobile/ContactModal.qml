@@ -17,6 +17,7 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: editContactModal
@@ -581,7 +582,7 @@ Rectangle {
         }
 
         // save failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: editAddressFailed
             modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
@@ -669,7 +670,7 @@ Rectangle {
         }
 
         // save succes state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: saveConfirmed
             modalHeight: saveSuccess.height + saveSuccessName.height + saveSuccessLabel.height + closeSave.height + 105
             visible: editSaved == 1
@@ -783,7 +784,7 @@ Rectangle {
         }
 
         // Delete confirm state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteConfirmation
             modalHeight: deleteText.height + deleteContactName.height + confirmationDeleteButton.height + 72
             visible: deleteContactTracker == 1
@@ -1000,7 +1001,7 @@ Rectangle {
         }
 
         // Delete failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteContactFailed
             modalHeight: saveFailed.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 85
             visible: deleteFailed == 1
@@ -1089,7 +1090,7 @@ Rectangle {
         }
 
         // Delete success state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleted
             modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 75
             visible: deleteConfirmed == 1

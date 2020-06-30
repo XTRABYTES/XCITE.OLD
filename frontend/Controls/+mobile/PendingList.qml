@@ -16,6 +16,7 @@ import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     width: parent.width
@@ -57,7 +58,7 @@ Rectangle {
             color:"transparent"
             clip: true
 
-            Controls.CardBody {
+            Mobile.CardBody {
                 id: myCardBody
             }
 

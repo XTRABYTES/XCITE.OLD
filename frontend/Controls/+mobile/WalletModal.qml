@@ -613,7 +613,7 @@ Rectangle {
         }
 
         // Save failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: createWalletFailed
             modalHeight: saveFailed.height + saveFailedLabel.height + closeFail.height + 85
             visible: editFailed == 1
@@ -711,7 +711,7 @@ Rectangle {
         }
 
         // Save succes state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: editWalletSucces
             modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
@@ -793,7 +793,7 @@ Rectangle {
     }
 
     // Delete confirm state
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: deleteConfirmation
         modalHeight: deleteText.height + deleteWalletName.height + deleteWalletHash.height + deleteWarning.height + confirmationDeleteButton.height + 99
         visible: deleteWalletTracker == 1
@@ -1084,7 +1084,7 @@ Rectangle {
     }
 
     // Delete failed state
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: deleteAddresFailed
         modalHeight: failedIcon.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 85
         visible: deleteFailed == 1
@@ -1182,7 +1182,7 @@ Rectangle {
     }
 
     // Delete success state
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: deleted
         modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 100
         visible: deleteConfirmed == 1

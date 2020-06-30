@@ -402,7 +402,7 @@ Item {
                         userSettings.accountCreationCompleted = false
                         mainRoot.pop()
                         selectedPage = "createAccount"
-                        mainRoot.push("../CreateAccount.qml")
+                        mainRoot.push("qrc:/+mobile/CreateAccount.qml")
                         loginTracker = 0
                     }
                 }
@@ -555,7 +555,7 @@ Item {
             console.log("my username is: " + userName.text.trim())
             if (loginTracker == 1){
                 mainRoot.pop()
-                mainRoot.push("../Home.qml")
+                mainRoot.push("qrc:/+mobile/Home.qml")
                 myUsername = userName.text.trim()
                 tttSetUsername(myUsername)
                 initializeTtt()

@@ -18,6 +18,7 @@ import QtQuick.Layouts 1.11
 import QtQuick.Window 2.2
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: xchatUsersModal
@@ -97,7 +98,7 @@ Rectangle {
             color: "transparent"
         }
 
-        Controls.XChatUsersList {
+        Mobile.XChatUsersList {
             id: myUsersList
             width: userNames.width
             anchors.top: userNames.top
