@@ -769,6 +769,7 @@ ApplicationWindow {
                 }
                 else if (pingTracker == 1 && networkError == 0) {
                     pingTracker = 0
+                    setQueue("dicom_testqueue_v4")
                 }
 
                 else if (xgamesTracker == 1 && networkError == 0) {

@@ -26,7 +26,9 @@ Rectangle {
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    onStateChanged: detectInteraction()
+    onStateChanged: {
+        detectInteraction()
+    }
 
     property int myTracker: pingTracker
     property int totalPings: 0
@@ -93,6 +95,62 @@ Rectangle {
         font.letterSpacing: 2
     }
 
+    Controls.TextInput {
+        id: appText
+        height: 34
+        placeholder: "XDAPP"
+        text: xdapp
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.right: appBtn.left
+        anchors.rightMargin: 10
+        anchors.top: pingModalLabel.bottom
+        anchors.topMargin: 20
+        color: themecolor
+        textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+        font.pixelSize: 14
+        mobile: 1
+    }
+
+    Rectangle {
+        id: appBtn
+        width: 50
+        height: 33
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.verticalCenter: appText.verticalCenter
+        color: maincolor
+
+
+        Text {
+            id: appBtnLabel
+            text: "SET"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 10
+            font.family: "Brandon Grotesque"
+            color: "#F2F2F2"
+        }
+
+        MouseArea {
+            anchors.fill: parent
+
+            onPressed: {
+                appBtn.opacity = 0.5
+            }
+
+            onReleased: {
+                appBtn.opacity = 1
+            }
+
+            onClicked: {
+                xdapp = appText.text
+                xPingTread.append({"message": "new XDAPP set: " + appText.text, "inout": "in", "author": "XCITE", "time": sendTime})
+                msgList.positionViewAtEnd()
+            }
+        }
+    }
+    /**
     Rectangle {
         id: pingBtn
         width: (replyWindow.width - 20) / 5
@@ -241,7 +299,7 @@ Rectangle {
             }
         }
     }
-
+    */
     Controls.TextInput {
         id: queueText
         height: 34
@@ -251,7 +309,7 @@ Rectangle {
         anchors.leftMargin: 28
         anchors.right: queueBtn.left
         anchors.rightMargin: 10
-        anchors.top: xbyBtn.bottom
+        anchors.top: appBtn.bottom
         anchors.topMargin: 15
         color: themecolor
         textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
