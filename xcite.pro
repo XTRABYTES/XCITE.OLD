@@ -172,7 +172,7 @@ win32 {
       INCLUDEPATH += $$PWD/dependencies/include/openssl/include
 
 #      LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
-      INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
+#      INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
 
       LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
