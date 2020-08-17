@@ -4,7 +4,7 @@
 # XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
 # blockchain protocol to host decentralized applications
 #
-# Copyright (c) 2017-2019 Zoltan Szabo & XTRABYTES developers
+# Copyright (c) 2017-2020 Zoltan Szabo & XTRABYTES developers
 #
 # This file is part of an XTRABYTES Ltd. project.
 #
@@ -171,13 +171,17 @@ win32 {
       LIBS += -L$$PWD/dependencies/windows/openssl/lib/lib64 -llibssl -llibcrypto -lcrypt32 -lws2_32
       INCLUDEPATH += $$PWD/dependencies/include/openssl/include
 
-      LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
+#      LIBS += -L$$PWD/dependencies/windows/qtmqtt/lib/ -lQt5Mqtt
       INCLUDEPATH += $$PWD/dependencies/windows/qtmqtt/include
 
       LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
-      LIBS += -L$$PWD/dependencies/windows/qamqp/64bit/ -llibqamqp
+      LIBS += -L$$PWD/dependencies/windows/amqp/lib -llibamqpcpp
+
+      LIBS += -L$$PWD/dependencies/windows/poco/64bit -llibPocoNet -llibPocoFoundation
+
+      LIBS += -L$$PWD/dependencies/windows/qamqp/64bit/ -lqamqp
       INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
     }
 
@@ -206,9 +210,17 @@ win32 {
       LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
+      # LIBS += -L$$PWD/dependencies/windows/amqp/lib -llibamqpcpp
+
       LIBS += -L$$PWD/dependencies/windows/qamqp/32bit -llibqamqp
       INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
     }
+
+    INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
+    INCLUDEPATH += $$PWD/dependencies/include/amqpcpp
+    INCLUDEPATH += $$PWD/dependencies/include/kashmir
+    INCLUDEPATH += $$PWD/dependencies/include/poco
+
 }
 
 ios {
