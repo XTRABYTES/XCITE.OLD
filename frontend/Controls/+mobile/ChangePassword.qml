@@ -608,7 +608,7 @@ Rectangle {
             }
         }
     }
-
+    /*
     Label {
         id: closeSettings
         z: 4
@@ -643,4 +643,5 @@ Rectangle {
             }
         }
     }
+    **/
 }

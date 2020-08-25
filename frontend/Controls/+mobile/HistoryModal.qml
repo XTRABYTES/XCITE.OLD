@@ -268,7 +268,7 @@ Rectangle {
         width: parent.width
         anchors.top: historyPrevious.bottom
         anchors.topMargin: 5
-        anchors.bottom: closeHistoryModal.top
+        anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         state: (newHistory == 0)? "down" : "up"
@@ -309,7 +309,7 @@ Rectangle {
         width: parent.width
         anchors.top: historyPrevious.bottom
         anchors.topMargin: 5
-        anchors.bottom: closeHistoryModal.top
+        anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
@@ -404,6 +404,20 @@ Rectangle {
         visible: historyDetailsCollected = false
     }
 
+    Timer {
+        id: timer
+        interval: 300
+        repeat: false
+        running: false
+
+        onTriggered: {
+            switchState = 0
+            transactionPages = 0
+            currentPage = 0
+            historyList.clear()
+        }
+    }
+    /**
     Label {
         id: closeHistoryModal
         z: 10
@@ -429,20 +443,6 @@ Rectangle {
         MouseArea {
             anchors.fill: closeButton
 
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    switchState = 0
-                    transactionPages = 0
-                    currentPage = 0
-                    historyList.clear()
-                }
-            }
-
             onPressed: {
                 click01.play()
                 detectInteraction()
@@ -455,7 +455,7 @@ Rectangle {
             }
         }
     }
-
+    */
     Mobile.TransactionDetailModal {
         id: myTransactionDetails
         z: 10

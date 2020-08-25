@@ -944,8 +944,8 @@ Rectangle {
         tagFilter = ""
         beginTag = 0
         endTag = 0
-        myXchatTaglist.userTag = ""
-        myXchatUsers.usertag = ""
-        myXchat.tagging = ""
+        //myXchatTaglist.userTag = ""
+        //myXchatUsers.usertag = ""
+        //myXchat.tagging = ""
     }
 }

@@ -655,40 +655,4 @@ Rectangle {
             }
         }
     }
-
-    Label {
-        id: closeContactModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: addContactTracker == 1
-                 && editSaved == 0
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth / 2
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                addContactTracker = 0;
-            }
-        }
-    }
 }

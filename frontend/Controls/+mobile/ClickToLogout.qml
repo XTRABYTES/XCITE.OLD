@@ -24,10 +24,52 @@ Rectangle {
     height: appHeight
     color: "transparent"
 
+    property int valueX: 0
+    property int newValueX: 0
+    property int swipeStart: 0
+    property int swipeStop: 0
+
+    function resetValues() {
+        valueX = 0
+        newValueX = 0
+        swipeStart = 0
+        swipeStop = 0
+    }
+
+    function checkSwipe() {
+        if ((valueX - newValueX) > 10) {
+            if (swipeStop - swipeStart < 100) {
+                resetValues()
+                backButtonPressed()
+            }
+            else {
+                resetValues()
+            }
+        }
+        else {
+            resetValues()
+        }
+    }
+
     MouseArea {
         anchors.fill: parent
 
         onClicked: clickToLogout = 0
+
+        onPressed: {
+            resetValues()
+            valueX = mouseX
+            swipeStart = new Date().getTime()
+        }
+
+        onPositionChanged: {
+            newValueX = mouseX
+            swipeStop = new Date().getTime()
+        }
+
+        onReleased: {
+            checkSwipe()
+        }
     }
 
     DropShadow {
@@ -64,7 +106,7 @@ Rectangle {
 
         Label {
             id: popupClickAgainText
-            text: "Press <b>back</b> or <b>swipe left</b> again to log out."
+            text: "Press <b>back</b> to log out."
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true

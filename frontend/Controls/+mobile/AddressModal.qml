@@ -1518,61 +1518,26 @@ Rectangle {
         }
     }
 
-    Label {
-        id: closeAddressModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: editSaved == 0 && editFailed == 0 && deleteAddressTracker == 0
+    Timer {
+        id: timer
+        interval: 300
+        repeat: false
+        running: false
 
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth / 2
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    newCoinPicklist = 0
-                    newCoinSelect = 0
-                    coinListTracker = 0
-                    newName.text = oldAddressName
-                    newAddress.text = oldAddressHash
-                    invalidAddress = 0
-                    editSaved = 0
-                    deleteAddressTracker = 0
-                    deleteConfirmed = 0
-                    scanQRTracker = 0
-                    selectedAddress = ""
-                    scanning = "scanning..."
-                    closeAllClipboard = true
-                }
-            }
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onReleased: {
-                addressTracker = 0;
-            }
+        onTriggered: {
+            newCoinPicklist = 0
+            newCoinSelect = 0
+            coinListTracker = 0
+            newName.text = oldAddressName
+            newAddress.text = oldAddressHash
+            invalidAddress = 0
+            editSaved = 0
+            deleteAddressTracker = 0
+            deleteConfirmed = 0
+            scanQRTracker = 0
+            selectedAddress = ""
+            scanning = "scanning..."
+            closeAllClipboard = true
         }
     }
 }

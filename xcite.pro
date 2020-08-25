@@ -177,9 +177,9 @@ win32 {
       LIBS += -L$$PWD/dependencies/windows/boost/lib/ -llibboost_system-vc140-mt-1_60
       INCLUDEPATH += $$PWD/dependencies/include/boost/include
 
-      LIBS += -L$$PWD/dependencies/windows/amqp/lib -llibamqpcpp
+      LIBS += -L$$PWD/dependencies/windows/amqp/lib/ -llibamqpcpp
 
-      LIBS += -L$$PWD/dependencies/windows/poco/64bit -llibPocoNet -llibPocoFoundation
+      LIBS += -L$$PWD/dependencies/windows/poco/64bit/ -llibPocoNet -llibPocoFoundation
 
       LIBS += -L$$PWD/dependencies/windows/qamqp/64bit/ -lqamqp
       INCLUDEPATH += $$PWD/dependencies/include/qamqp/include

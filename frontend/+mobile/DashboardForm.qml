@@ -26,6 +26,13 @@ Item {
 
     property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
     property string searchCriteria:""
+    property int swipeBack: dashboardIndex
+
+    onSwipeBackChanged: {
+        if(swipeBack == 1) {
+            view.currentIndex = 0
+        }
+    }
 
     Rectangle {
         id: backgroundHome
@@ -1880,12 +1887,6 @@ Item {
         anchors.left: parent.left
         anchors.top: parent.top
         visible: clickToLogout == 1
-    }
-
-    Mobile.SwipeBack {
-        z: 100
-        anchors.right: parent.right
-        anchors.top: parent.top
     }
 
     Mobile.DeviceButtons {

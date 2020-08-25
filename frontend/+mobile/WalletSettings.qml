@@ -1335,7 +1335,7 @@ Rectangle {
     Item {
         z: 3
         width: parent.width
-        height: myOS === "android"? 215 : 235
+        height: myOS === "android"? 165 : 185
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1403,39 +1403,6 @@ Rectangle {
     }
 
     Mobile.DebugConsole {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-    }
-
-    Mobile.SwipeBack {
-        z: 100
-        anchors.right: parent.right
-        anchors.top: parent.top
-    }
-
-    Mobile.DeviceButtons {
-        z: 100
-        visible: myOS !== "android" && myOS !== "ios"
-    }
-
-    Mobile.LogOut {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-    }
-
-    Mobile.DragBar {
-        z: 100
-        visible: myOS !== "android" && myOS !== "ios"
-    }
-
-    Mobile.NetworkError {
-        z:100
-        id: myNetworkError
-    }
-
-    Mobile.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

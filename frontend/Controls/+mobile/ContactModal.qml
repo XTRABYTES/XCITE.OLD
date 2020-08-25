@@ -1211,7 +1211,7 @@ Rectangle {
             }
         }
     }
-
+    /**
     Label {
         id: closeContactModal
         z: 10
@@ -1247,4 +1247,5 @@ Rectangle {
             }
         }
     }
+    */
 }

@@ -160,45 +160,6 @@ Item {
         }
     }
 
-    Rectangle {
-        id: cancelScanButton
-        width: doubbleButtonWidth / 2
-        height: 34
-        color: "transparent"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        visible: scanQRTracker == 1
-
-        MouseArea {
-            anchors.fill: cancelScanButton
-
-            onPressed: {
-                click01.play()
-            }
-
-            onCanceled: {
-            }
-
-            onReleased: {
-            }
-
-            onClicked: {
-                scanQRTracker = 0
-            }
-        }
-    }
-
-    Text {
-        text: "BACK"
-        font.family: xciteMobile.name //"Brandon Grotesque"
-        font.pointSize: 14
-        font.bold: true
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        anchors.horizontalCenter: cancelScanButton.horizontalCenter
-        anchors.verticalCenter: cancelScanButton.verticalCenter
-    }
-
     QZXingFilter {
         id: qrFilter
 

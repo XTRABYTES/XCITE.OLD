@@ -109,37 +109,4 @@ Rectangle {
         anchors.left: parent.left
         anchors.top: parent.top
     }
-
-    Mobile.SwipeBack {
-        z: 100
-        anchors.right: parent.right
-        anchors.top: parent.top
-    }
-
-    Mobile.DeviceButtons {
-        z: 100
-        visible: myOS !== "android" && myOS !== "ios"
-    }
-
-    Mobile.LogOut {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-    }
-
-    Mobile.DragBar {
-        z: 100
-        visible: myOS !== "android" && myOS !== "ios"
-    }
-
-    Mobile.NetworkError {
-        z:100
-        id: myNetworkError
-    }
-
-    Mobile.Goodbey {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-    }
 }

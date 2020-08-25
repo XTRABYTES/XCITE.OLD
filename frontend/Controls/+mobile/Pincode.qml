@@ -855,8 +855,8 @@ Rectangle {
                     running: false
 
                     onTriggered: {
-                        pinOK = 0
                         pincodeTracker = 0
+                        pinOK = 0
                         unlockPin = 0
                         clearAll = 0
                         checkPinInitiated = false
@@ -1153,7 +1153,7 @@ Rectangle {
             }
         }
     }
-
+    /*
     Label {
         id: closePincode
         z: 10
@@ -1186,4 +1186,5 @@ Rectangle {
             }
         }
     }
+    **/
 }

@@ -1638,6 +1638,8 @@ Rectangle {
                             pincodeTracker = 1
                         }
                         else {
+                            timer3.start()
+                            /*
                             var dataModelParams = {"xdapp":network,"method":"sendrawtransaction","payload":rawTX,"id":receivedTxID}
                             var paramsJson = JSON.stringify(dataModelParams)
                             dicomRequest(paramsJson)
@@ -1649,15 +1651,16 @@ Rectangle {
                             var totalFee = Number.fromLocaleString(Qt.locale("en_US"),txFee)
                             var totalUsed = Number.fromLocaleString(Qt.locale("en_US"),usedCoins)
                             transactionList.append({"requestID":receivedTxID,"txid":"","coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":total,"fee":totalFee,"used":totalUsed})
-                            //requestSend = 1
                             transferTracker = 0
+                            transactionInProgress = false
+                            **/
                         }
                     }
                 }
 
                 Timer {
                     id: timer3
-                    interval: 1000
+                    interval: pincodeTracker == 1? 1000 : 100
                     repeat: false
                     running: false
 
@@ -1673,8 +1676,8 @@ Rectangle {
                         var totalFee = Number.fromLocaleString(Qt.locale("en_US"),txFee)
                         var totalUsed = Number.fromLocaleString(Qt.locale("en_US"),usedCoins)
                         transactionList.append({"requestID":receivedTxID,"txid":"","coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":total,"fee":totalFee,"used":totalUsed})
-                        //requestSend = 1
                         transferTracker = 0
+                        transactionInProgress = false
                     }
                 }
 
@@ -1795,35 +1798,8 @@ Rectangle {
             }
         }
 
-        // Wait for feedback
-
-        /*        AnimatedImage {
-*            id: waitingDots
-*            source: 'qrc:/gifs/loading-gif_01.gif'
-*            width: 75
-*            height: 50
-*            anchors.horizontalCenter: parent.horizontalCenter
-*            anchors.verticalCenter: parent.verticalCenter
-*            anchors.verticalCenterOffset: -50
-*            playing: requestSend == 1
-*            visible: requestSend == 1
-*        }
-
-*        Label {
-*            id: waitingText
-*            text: "Waiting for network to confirm transaction"
-*            anchors.bottom: waitingDots.top
-*            anchors.bottomMargin: 70
-*            anchors.horizontalCenter: parent.horizontalCenter
-*            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-*            font.pixelSize: 14
-*            font.family: xciteMobile.name
-*            font.bold: true
-*            visible: requestSend == 1
-*        }
-*/
-
         // Transfer failed state
+
         Controls.ReplyModal {
             id: transferFailed
             modalHeight: failedIcon.height + failedIconLabel.height + closeFail.height + 75
@@ -1946,117 +1922,7 @@ Rectangle {
                          && failedSend == 1
             }
         }
-
-/*        // Transfer sent state
-*        Controls.ReplyModal {
-*            id: transferConfirmed
-*            modalHeight: confirmedIcon.height + confirmedIconLabel.height + closeConfirm.height + 75
-*            visible: transactionSend == 1
-*                     && confirmationSend == 1
-*
-*            Image {
-*                id: confirmedIcon
-*                source: darktheme == true? 'qrc:/icons/mobile/transaction_send-icon_01_light.svg' : 'qrc:/icons/mobile/transaction_send-icon_01_dark.svg'
-*                height: 75
-*                fillMode: Image.PreserveAspectFit
-*                anchors.horizontalCenter: parent.horizontalCenter
-*                anchors.top: transferConfirmed.modalTop
-*                anchors.topMargin: 20
-*                visible: transactionSend == 1
-*                         && confirmationSend == 1
-*            }
-*
-*            Label {
-*                id: confirmedIconLabel
-*                text: "Transaction sent!"
-*                anchors.top: confirmedIcon.bottom
-*                anchors.topMargin: 10
-*                anchors.horizontalCenter: confirmedIcon.horizontalCenter
-*                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-*                font.pixelSize: 14
-*                font.family: xciteMobile.name
-*                font.bold: true
-*                visible: transactionSend == 1
-*                         && confirmationSend == 1
-*            }
-*
-*            Rectangle {
-*                id: closeConfirm
-*                width: doubbleButtonWidth / 2
-*                height: 34
-*                color: maincolor
-*                opacity: darktheme == true? 0.25 : 0.5
-*                anchors.top: confirmedIconLabel.bottom
-*                anchors.topMargin: 25
-*                anchors.horizontalCenter: parent.horizontalCenter
-*                visible: transactionSend == 1
-*                         && confirmationSend == 1
-*
-*                MouseArea {
-*                    anchors.fill: closeConfirm
-*
-*                    onPressed: {
-*                        click01.play()
-*                        detectInteraction()
-*                    }
-*
-*                    onCanceled: {
-*                    }
-*
-*                    onReleased: {
-*                    }
-*
-*                    onClicked: {
-*                        sendAmount.text = ""
-*                        keyInput.text = ""
-*                        referenceInput.text = ""
-*                        selectedAddress = ""
-*                        confirmationSend = 0
-*                        transactionSend = 0
-*                        invalidAddress = 0
-*                        transactionDate = ""
-*                        timestamp = 0
-*                        precision = 0
-*                        rawTX = ""
-*                        txFee = 0
-*                        receivedAmount = ""
-*                        receivedLabel = ""
-*                        receivedReceiver = ""
-*                        receivedSender = ""
-*                        receivedTxID = ""
-*                        transactionInProgress = false
-*                        updateToAccount()
-*                    }
-*                }
-*            }
-*
-*            Text {
-*                text: "OK"
-*                font.family: xciteMobile.name
-*                font.pointSize: 14
-*                font.bold: true
-*                color: darktheme == true? "#F2F2F2" : maincolor
-*                opacity: darktheme == true? 0.5 : 0.75
-*                anchors.horizontalCenter: closeConfirm.horizontalCenter
-*                anchors.verticalCenter: closeConfirm.verticalCenter
-*                visible: transactionSend == 1
-*                         && confirmationSend == 1
-*            }
-*
-*            Rectangle {
-*                width: doubbleButtonWidth / 2
-*                height: 34
-*                color: "transparent"
-*                border.color: maincolor
-*                border.width: 1
-*                opacity: darktheme == true? 0.5 : 0.75
-*                anchors.horizontalCenter: closeConfirm.horizontalCenter
-*                anchors.verticalCenter: closeConfirm.verticalCenter
-*                visible: transactionSend == 1
-*                         && confirmationSend == 1
-*            }
-*        }
-*/    }
+    }
 
     // Addressbook
 
@@ -2073,6 +1939,13 @@ Rectangle {
         visible: transferSwitch.on == true
                  && transactionSend == 0
                  && ( addressbookTracker == 1)
+        state: addressbookTracker == 1? "up" : "down"
+
+        onStateChanged: {
+            if(addressbookTracker == 0) {
+                searchForAddress.text = ""
+            }
+        }
     }
 
     Image {
@@ -2134,7 +2007,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: searchForAddress.bottom
         anchors.topMargin: 20
-        anchors.bottom: cancelAddressButton.top
+        anchors.bottom: parent.bottom
         color: "transparent"
         visible: transferSwitch.on == true
                  && transactionSend == 0
@@ -2166,7 +2039,7 @@ Rectangle {
             }
         }
     }
-
+    /**
     Rectangle {
         id: cancelAddressButton
         width: doubbleButtonWidth / 2
@@ -2211,6 +2084,7 @@ Rectangle {
         anchors.verticalCenter: cancelAddressButton.verticalCenter
         visible: cancelAddressButton.visible
     }
+    */
 
     // Crypto converter
 
@@ -2290,49 +2164,6 @@ Rectangle {
         }
     }
 
-    Label {
-        id: closeTransferModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: xciteMobile.name
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: transferTracker == 1
-                 && transactionSend == 0
-                 && confirmationSend == 0
-                 && calculatorTracker == 0
-                 && scanQRTracker == 0
-                 && addressbookTracker == 0
-                 && viewForScreenshot == 0
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: closeTransferModal.width
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            onPressed: {
-                closeTransferModal.anchors.topMargin = 12
-                click01.play()
-                detectInteraction()
-            }
-
-            onReleased: {
-                closeTransferModal.anchors.topMargin = 10
-                transferTracker = 0;
-            }
-        }
-    }
     Controls.Pincode {
         id: myPincode
         z: 10

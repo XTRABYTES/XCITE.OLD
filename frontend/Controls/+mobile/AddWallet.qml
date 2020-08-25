@@ -62,7 +62,6 @@ Rectangle {
 
     property string walletType: ""
     property int walletSwitchState: 0
-    property int selectWallet: 0
     property int coin: coinIndex
 
 
@@ -482,57 +481,6 @@ Rectangle {
             color: darktheme == true? "#F2F2F2" : maincolor
             anchors.horizontalCenter: moreWallets.horizontalCenter
             anchors.verticalCenter: moreWallets.verticalCenter
-        }
-    }
-
-    Label {
-        id: closeAddWallet
-        z: 4
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: selectWallet == 1? (walletAdded == true? "CLOSE" : "BACK") : "CLOSE"
-        font.pixelSize: 14
-        font.family: xciteMobile.name
-        color: themecolor
-        visible: scanQRTracker == 0
-
-
-        Rectangle {
-            id: backbutton
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
-            height: 34
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: backbutton
-
-            onPressed: detectInteraction()
-
-            onClicked: {
-                if (selectWallet == 1) {
-                    if (walletAdded == true) {
-                        selectedPage = "home"
-                        mainRoot.pop();
-                        selectWallet = 0
-                        walletAdded = false
-                    }
-                    else {
-                        selectWallet = 0
-                        walletAdded = false
-                    }
-                }
-                else {
-                    addWalletTracker = 0
-                    walletAdded = false
-                    selectWallet = 0
-                    selectedPage = "home"
-                    mainRoot.pop("qrc:/Controls/+mobile/AddWallet.qml");
-                }
-            }
         }
     }
 

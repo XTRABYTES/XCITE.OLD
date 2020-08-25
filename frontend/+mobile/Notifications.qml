@@ -45,7 +45,7 @@ Rectangle {
         width: parent.width
         anchors.top: notificationModalLabel.bottom
         anchors.topMargin: 35
-        anchors.bottom: closeNotificationModal.top
+        anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
@@ -95,7 +95,7 @@ Rectangle {
     Item {
         z: 3
         width: parent.width
-        height: myOS === "android"? 125 : 145
+        height: myOS === "android"? 75 : 95
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -109,78 +109,5 @@ Rectangle {
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
             }
         }
-    }
-
-    Label {
-        id: closeNotificationModal
-        z: 10
-        text: "CLOSE"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: parent.width
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                if (updatingWalletsNotif == false) {
-                    alert = false
-                    selectedPage = "home"
-                    mainRoot.pop()
-                }
-            }
-        }
-    }
-
-    Controls.SwipeBack {
-        z: 100
-        anchors.right: parent.right
-        anchors.top: parent.top
-    }
-
-    Controls.DeviceButtons {
-        z: 100
-        visible: myOS !== "android" && myOS !== "ios"
-    }
-
-    Controls.LogOut {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-    }
-
-    Controls.DragBar {
-        z: 100
-        visible: myOS !== "android" && myOS !== "ios"
-    }
-
-    Controls.NetworkError {
-        z:100
-        id: myNetworkError
-    }
-
-    Controls.Goodbey {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
     }
 }

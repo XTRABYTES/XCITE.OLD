@@ -20,6 +20,8 @@ import Qt.labs.folderlistmodel 2.11
 import QtMultimedia 5.8
 import QtGraphicalEffects 1.0
 
+import "qrc:/Controls/+mobile" as Mobile
+
 ApplicationWindow {
     id: xcite
     flags: Qt.Window | Qt.FramelessWindowHint | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.X11BypassWindowManagerHint : 0) | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.WindowStaysOnTopHint : 0)
@@ -313,6 +315,7 @@ ApplicationWindow {
     property int networkLogout: 0
     property int pinLogout: 0
     property int goodbey: 0
+    property int dashboardIndex: 0
     property int networkAvailable: 0
     property int networkError: 0
     property int photoSelect: 0
@@ -382,6 +385,8 @@ ApplicationWindow {
     property bool newAccount: false
     property real changeBalance: 0
     property string notificationDate: ""
+    property int selectWallet: 0
+    property bool addingWallet: false
     property bool walletAdded: false
     property bool alert: false
     property bool updatingWalletsNotif: false
@@ -648,9 +653,15 @@ ApplicationWindow {
     }
 
     function backButtonPressed() {
-        if (logoutTracker == 0 && pincodeTracker == 0 && changePasswordTracker == 0 && miniatureTracker == 0) {
+        if (logoutTracker == 0 && miniatureTracker == 0) {
             if (networkError == 1) {
                 networkError = 0
+            }
+            else if (pincodeTracker == 1) {
+                pincodeTracker = 0
+            }
+            else if (changePasswordTracker == 1) {
+                changePasswordTracker = 0
             }
             else if (selectedPage == "onBoarding") {
                 if (loginTracker == 1 && !loginInitiated) {
@@ -664,13 +675,34 @@ ApplicationWindow {
                 }
             }
             else if (selectedPage == "home") {
-                if (appsTracker == 1) {
-                    appsTracker = 0
+                if (scanQRTracker == 1) {
+                    scanQRTracker = 0
                 }
                 else if (addCoinTracker == 1) {
                     addCoinTracker = 0
                 }
+                else if (portfolioTracker == 1) {
+                    portfolioTracker = 0
+                }
+                else if (transferTracker == 1) {
+                    if (calculatorTracker == 1) {
+                        calculatorTracker =0
+                    }
+                    else if (addressbookTracker == 1) {
+                        addressbookTracker = 0
+                        currentAddress = ""
+                    }
+                    else if (scanQRTracker == 1) {
+                        scanQRTracker = 0
+                    }
+                    else if (viewForScreenshot == 1) {
+                        viewForScreenshot = 0
+                    }
 
+                    else if (transactionInProgress == false){
+                        transferTracker = 0
+                    }
+                }
                 else if (historyTracker == 1) {
                     if (transactionDetailTracker == 1) {
                         transactionDetailTracker = 0
@@ -678,6 +710,18 @@ ApplicationWindow {
                     else {
                         historyTracker = 0
                     }
+                }
+                else if (walletDetailTracker == 1 && !editingWallet && !deletingWallet) {
+                    if (deleteWalletTracker == 1) {
+                        deleteWalletTracker = 0
+                    }
+                    else {
+                        walletDetailTracker = 0
+                    }
+                }
+                else if (coinTracker == 1 && pageTracker == 0) {
+                    countWallets()
+                    coinTracker = 0
                 }
                 else if (addContactTracker == 1 && !addingContact) {
                     addContactTracker = 0
@@ -701,50 +745,16 @@ ApplicationWindow {
                         addressTracker = 0
                     }
                 }
-                else if (walletDetailTracker == 1 && !editingWallet && !deletingWallet) {
-                    if (deleteWalletTracker == 1) {
-                        deleteWalletTracker = 0
-                    }
-                    else {
-                        walletDetailTracker = 0
-                    }
-                }
-
-                else if (portfolioTracker == 1) {
-                    portfolioTracker = 0
-                }
-                else if (scanQRTracker == 1) {
-                    // nothing yet
-                }
-                else if (transferTracker == 1) {
-                    if (calculatorTracker == 1) {
-                        calculatorTracker =0
-                    }
-                    else if (addressbookTracker == 1) {
-                        addressbookTracker = 0
-                    }
-                    else if (scanQRTracker == 1) {
-                        scanQRTracker = 0
-                    }
-                    else if (viewForScreenshot == 1) {
-                        viewForScreenshot = 0
-                    }
-
-                    else if (transactionInProgress == false){
-                        transferTracker = 0
-                    }
-                }
-                else if (coinTracker == 1 && pageTracker == 0) {
-                    countWallets()
-                    coinTracker = 0
-                }
                 else if (contactTracker == 1 && pageTracker == 1) {
                     contactTracker = 0
                 }
                 else if (addressQRTracker == 1 && pageTracker == 1) {
                     addressQRTracker = 0
                 }
-
+                else if (pageTracker == 1) {
+                    dashboardIndex = 1
+                    dashboardIndex = 0
+                }
                 else {
                     if (clickToLogout == 0) {
                         clickToLogout = 1
@@ -759,7 +769,46 @@ ApplicationWindow {
                 }
             }
             else if (selectedPage == "wallet") {
-                // nothing yet
+                if (scanQRTracker == 1) {
+                    scanQRTracker = 0
+                }
+                else if (viewOnlyTracker == 1) {
+                    if (scanQRTracker == 0 && addingWallet == false) {
+                        viewOnlyTracker = 0
+                    }
+                }
+                else if (importKeyTracker == 1) {
+                    if (scanQRTracker == 0 && addingWallet == false) {
+                        importKeyTracker = 0
+                    }
+                }
+                else if (createWalletTracker == 1){
+                    if (addingWallet == false) {
+                        createWalletTracker = 0
+                    }
+                }
+                else {
+                    if (selectWallet == 1) {
+                        if (walletAdded == true) {
+                            addWalletTracker = 0
+                            selectedPage = "home"
+                            mainRoot.pop();
+                            selectWallet = 0
+                            walletAdded = false
+                        }
+                        else {
+                            selectWallet = 0
+                            walletAdded = false
+                        }
+                    }
+                    else {
+                        addWalletTracker = 0
+                        walletAdded = false
+                        selectWallet = 0
+                        selectedPage = "home"
+                        mainRoot.pop("qrc:/Controls/+mobile/AddWallet.qml");
+                    }
+                }
             }
             else if (selectedPage == "apps") {
                 if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 && xgamesTracker == 0 && pingTracker == 0) {
@@ -855,6 +904,7 @@ ApplicationWindow {
                 }
             }
             else if (selectedPage == "notif" && updatingWalletsNotif == false) {
+                alert = false
                 selectedPage = "home"
                 mainRoot.pop()
             }
@@ -3548,6 +3598,39 @@ ApplicationWindow {
                 autoPlay: true
             }
         }
+    }
+
+    Mobile.SwipeBack {
+        z: 100
+        anchors.right: parent.right
+        anchors.top: parent.top
+    }
+
+    Mobile.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Mobile.LogOut {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Mobile.DragBar {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Mobile.NetworkError {
+        z:100
+        id: myNetworkError
+    }
+
+    Mobile.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 
     // native back button

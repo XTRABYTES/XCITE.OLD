@@ -29,6 +29,12 @@ Rectangle {
     color: bgcolor
     anchors.top: parent.top
 
+    onStateChanged: {
+        if (createWalletTracker == 0) {
+            timer.start()
+        }
+    }
+
     Component.onCompleted: darktheme = true
 
     MouseArea {
@@ -57,7 +63,6 @@ Rectangle {
     property int editSaved: 0
     property int editFailed: 0
     property int newWallet: 0
-    property bool addingWallet: false
     property int createFailed: 0
     property int labelExists: 0
     property string walletError: "We were unable to create a wallet for you."
@@ -906,65 +911,23 @@ Rectangle {
         }
     }
 
-    Label {
-        id: closeWalletModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: editSaved == 0
-                 && editFailed == 0
-                 && scanQRTracker == 0
-                 && createFailed == 0
-                 && addingWallet == false
+    Timer {
+        id: timer
+        interval: 300
+        repeat: false
+        running: false
 
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    newName.text = ""
-                    addressHash.text = ""
-                    publicKey.text = ""
-                    privateKey.text = ""
-                    labelExists = 0
-                    newWallet = 0
-
-                }
-            }
-
-            onPressed: {
-                parent.anchors.topMargin = 14
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                parent.anchors.topMargin = 10
-                if (createWalletTracker == 1) {
-                    createWalletTracker = 0;
-                    timer.start()
-                }
-            }
+        onTriggered: {
+            newName.text = ""
+            addressHash.text = ""
+            publicKey.text = ""
+            privateKey.text = ""
+            labelExists = 0
+            newWallet = 0
+            editSaved = 0
+            editFailed = 0
+            createFailed = 0
+            addingWallet = false
         }
     }
 }

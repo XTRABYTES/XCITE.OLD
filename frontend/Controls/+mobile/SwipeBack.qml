@@ -13,6 +13,7 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
 
@@ -22,7 +23,9 @@ Rectangle {
     width: 25
     color: "transparent"
     anchors.right: Screen.right
+    anchors.top: xcite.top
     z: 100
+    visible: logoutTracker == 0 && goodbey == 0 && sessionStart == 1 && transactionInProgress == false
 
     property int valueX: 0
     property int newValueX: 0
@@ -53,7 +56,10 @@ Rectangle {
 
     MouseArea {
         id: swipeZone
-        anchors.fill: parent
+        width: 25
+        height: parent.height
+        anchors.right: parent.right
+        anchors.top: parent.top
 
         onPressed: {
             resetValues()
@@ -75,6 +81,46 @@ Rectangle {
 
         onReleased: {
             checkSwipe()
+        }
+    }
+
+    DropShadow {
+        anchors.fill: backButton2
+        source: backButton2
+        samples: 9
+        radius: 4
+        color: darktheme == true? "#000000" : "#727272"
+        horizontalOffset:0
+        verticalOffset: 0
+        spread: 0
+        visible: myOS == "ios"
+    }
+    Rectangle {
+        id: backButton2
+        z: 3
+        height: 50
+        width: 50
+        radius: 50
+        anchors.right: parent.right
+        anchors.rightMargin: 15
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
+        color: darktheme == true? "#14161B" : "#F2F2F2"
+        visible: myOS == "ios"
+
+        Image {
+            id: backButton
+            source: "qrc:/icons/mobile/back-icon_01.svg"
+            height: 50
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: backButton2.horizontalCenter
+            anchors.verticalCenter: backButton2.verticalCenter
+        }
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: backButtonPressed()
         }
     }
 }

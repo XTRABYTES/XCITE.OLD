@@ -29,6 +29,12 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
+    onStateChanged: {
+        if (importKeyTracker == 0) {
+            timer1.start()
+        }
+    }
+
     MouseArea {
         anchors.fill: parent
     }
@@ -55,7 +61,6 @@ Rectangle {
     property int editSaved: 0
     property int editFailed : 0
     property int newWallet: 0
-    property bool addingWallet: false
     property int importWalletFailed: 0
     property int invalidAddress: 0
     property int addressExists: 0
@@ -68,6 +73,7 @@ Rectangle {
     property int saveErrorNR: 0
     property bool importInitiated: false
     property string failError: ""
+    property bool qrFound: false
 
     function compareTx() {
         addressExists = 0
@@ -1093,6 +1099,14 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         visible: scanQRTracker == 1
+        state: scanQRTracker == 1? "up" : "down"
+
+        onStateChanged: {
+            if (scanQRTracker == 0 && qrFound == false) {
+                selectedAddress = ""
+                publicKey.text = "scanning..."
+            }
+        }
 
         Timer {
             id: timer
@@ -1103,6 +1117,7 @@ Rectangle {
             onTriggered:{
                 scanQRTracker = 0
                 publicKey.text = "scanning..."
+                qrFound = false
             }
         }
 
@@ -1220,7 +1235,7 @@ Rectangle {
 
             }
         }
-
+    /**
         Rectangle {
             id: cancelScanButton
             width: doubbleButtonWidth / 2
@@ -1261,13 +1276,14 @@ Rectangle {
             anchors.horizontalCenter: cancelScanButton.horizontalCenter
             anchors.verticalCenter: cancelScanButton.verticalCenter
         }
-
+    */
         QZXingFilter {
             id: qrFilter
 
             decoder {
                 enabledDecoders: QZXing.DecoderFormat_QR_CODE
                 onTagFound: {
+                    qrFound = true
                     console.log(tag);
                     selectedAddress = ""
                     scanning = ""
@@ -1290,71 +1306,29 @@ Rectangle {
         }
     }
 
-    Label {
-        id: closeWalletModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: importKeyTracker == 1
-                 && editSaved == 0
-                 && editFailed == 0
-                 && scanQRTracker == 0
-                 && importWalletFailed == 0
-                 && addingWallet == false
+    Timer {
+        id: timer1
+        interval: 300
+        repeat: false
+        running: false
 
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            Timer {
-                id: timer1
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    newName.text = ""
-                    newAddress.text = ""
-                    addressHash.text = ""
-                    publicKey.text = ""
-                    privateKey.text = ""
-                    addressExists = 0
-                    labelExists = 0
-                    invalidAddress = 0
-                    scanQRTracker = 0
-                    selectedAddress = ""
-                    scanning = "scanning..."
-                    newWallet = 0
-                }
-            }
-
-            onPressed: {
-                parent.anchors.topMargin = 14
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                parent.anchors.topMargin = 10
-                if (importKeyTracker == 1) {
-                    importKeyTracker = 0;
-                    timer1.start()
-                }
-            }
+        onTriggered: {
+            newName.text = ""
+            newAddress.text = ""
+            addressHash.text = ""
+            publicKey.text = ""
+            privateKey.text = ""
+            addressExists = 0
+            labelExists = 0
+            invalidAddress = 0
+            scanQRTracker = 0
+            selectedAddress = ""
+            scanning = "scanning..."
+            newWallet = 0
+            editSaved = 0
+            editFailed = 0
+            importWalletFailed = 0
+            addingWallet = false
         }
     }
 }

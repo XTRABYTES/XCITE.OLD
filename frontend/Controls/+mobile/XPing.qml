@@ -114,33 +114,29 @@ Rectangle {
 
     Rectangle {
         id: appBtn
-        width: 50
-        height: 33
+        width: 34
+        height: 34
         anchors.right: parent.right
         anchors.rightMargin: 28
         anchors.verticalCenter: appText.verticalCenter
         color: maincolor
-
-
-        Text {
-            id: appBtnLabel
-            text: "SET"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: 10
-            font.family: "Brandon Grotesque"
-            color: "#F2F2F2"
-        }
+        opacity: 0.5
 
         MouseArea {
             anchors.fill: parent
 
             onPressed: {
-                appBtn.opacity = 0.5
+                click01.play()
+                detectInteraction()
+                appBtn.opacity = 1
+            }
+
+            onCanceled: {
+                parent.opacity = 1
             }
 
             onReleased: {
-                appBtn.opacity = 1
+                appBtn.opacity = 0.5
             }
 
             onClicked: {
@@ -149,6 +145,16 @@ Rectangle {
                 msgList.positionViewAtEnd()
             }
         }
+    }
+
+    Text {
+        id: appBtnLabel
+        text: "SET"
+        anchors.horizontalCenter: appBtn.horizontalCenter
+        anchors.verticalCenter: appBtn.verticalCenter
+        font.pixelSize: 10
+        font.family: "Brandon Grotesque"
+        color: "#F2F2F2"
     }
     /**
     Rectangle {
@@ -319,33 +325,29 @@ Rectangle {
 
     Rectangle {
         id: queueBtn
-        width: 50
-        height: 33
+        width: 34
+        height: 34
         anchors.right: parent.right
         anchors.rightMargin: 28
         anchors.verticalCenter: queueText.verticalCenter
         color: maincolor
-
-
-        Text {
-            id: queueBtnLabel
-            text: "SET"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: 10
-            font.family: "Brandon Grotesque"
-            color: "#F2F2F2"
-        }
+        opacity: 0.5
 
         MouseArea {
             anchors.fill: parent
 
             onPressed: {
-                queueBtn.opacity = 0.5
+                click01.play()
+                detectInteraction()
+                queueBtn.opacity = 1
+            }
+
+            onCanceled: {
+                parent.opacity = 1
             }
 
             onReleased: {
-                queueBtn.opacity = 1
+                queueBtn.opacity = 0.5
             }
 
             onClicked: {
@@ -354,13 +356,183 @@ Rectangle {
         }
     }
 
+    Text {
+        id: queueBtnLabel
+        text: "SET"
+        anchors.horizontalCenter: queueBtn.horizontalCenter
+        anchors.verticalCenter: queueBtn.verticalCenter
+        font.pixelSize: 10
+        font.family: "Brandon Grotesque"
+        color: "#F2F2F2"
+    }
+
+    Controls.TextInput {
+        id: requestText
+        height: 34
+        placeholder: xdapp != "ping"? "Method" : "PingID"
+        text: ""
+        anchors.left: parent.left
+        anchors.leftMargin: 28
+        anchors.right: parent.right
+        anchors.rightMargin: 182
+        anchors.top: queueBtn.bottom
+        anchors.topMargin: 15
+        color: themecolor
+        textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+        font.pixelSize: 14
+        mobile: 1
+    }
+
+    Controls.TextInput {
+        id: pingAmount
+        height: 34
+        width: 100
+        placeholder: xdapp != "ping"? "Payload" : "Amount"
+        text: ""
+        inputMethodHints: xdapp == "ping"? Qt.ImhDigitsOnly : Qt.ImhNone
+        anchors.right: parent.right
+        anchors.rightMargin: 72
+        anchors.top: queueBtn.bottom
+        anchors.topMargin: 15
+        color: themecolor
+        textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
+        font.pixelSize: 14
+        mobile: 1
+    }
+
+    Rectangle {
+        id: executeButton
+        width: 34
+        height: 34
+        anchors.right: parent.right
+        anchors.rightMargin: 28
+        anchors.top: queueBtn.bottom
+        anchors.topMargin: 15
+        color: maincolor
+        opacity: 0.5
+
+        MouseArea {
+            anchors.fill: parent
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+                parent.opacity = 1
+            }
+
+            onCanceled: {
+                parent.opacity = 1
+            }
+
+            onReleased: {
+                parent.opacity = 0.5
+            }
+
+            onClicked: {
+                sendTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                console.log("sendTime: " + sendTime)
+                if (requestText.text != "") {
+                    if (xdapp == "ping") {
+                        var pingIdentifier
+                        if (pingAmount.text != "") {
+                            totalPings = Number.fromLocaleString(Qt.locale("en_US"),pingAmount.text)
+                            if (totalPings <= 50) {
+                                xPingTread.append({"message": "UI - ping: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
+                                msgList.positionViewAtEnd()
+                                pingIdentifier = myUsername + "_" + requestText.text + "_" + pingAmount.text
+                                var dataModelParams = {"xdapp":xdapp, "method":"ping","payload":pingIdentifier}
+                                var paramsJson = JSON.stringify(dataModelParams)
+                                dicomRequest(paramsJson)
+                                requestText.text = ""
+                                pingAmount.text = ""
+                            }
+                            else {
+                                xPingTread.append({"message": "Amount too high, max. 50!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
+                                msgList.positionViewAtEnd()
+                                pingAmount.text = ""
+                            }
+                        }
+                        else {
+                            totalPings = 1
+                            xPingTread.append({"message": "UI - ping: " + myUsername + "_" + requestText.text + ", amount: 1", "inout": "out", "author": myUsername, "time": sendTime})
+                            msgList.positionViewAtEnd()
+                            pingIdentifier = myUsername + "_" + requestText.text + "_1"
+                            var dataModelParams2 = {"xdapp":xdapp, "method":"ping","payload":pingIdentifier}
+                            var paramsJson2 = JSON.stringify(dataModelParams2)
+                            dicomRequest(paramsJson2)
+                            requestText.text = ""
+                            pingAmount.text = ""
+                        }
+                    }
+                    else {
+                        xPingTread.append({"message": "UI - " +  xdapp + ": " + requestText.text + " " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
+                        msgList.positionViewAtEnd()
+                        var dataModelParams3 = {"xdapp":xdapp, "method":requestText.text,"payload":pingAmount.text}
+                        var paramsJson3 = JSON.stringify(dataModelParams3)
+                        dicomRequest(paramsJson3)
+                        requestText.text = ""
+                        pingAmount.text = ""
+                    }
+                }
+                else {
+                    if (xdapp == "ping") {
+                        xPingTread.append({"message": "No ping identifier selected!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
+                    }
+                    else {
+                        xPingTread.append({"message": "No method selected!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
+                    }
+
+                    msgList.positionViewAtEnd()
+                }
+            }
+        }
+
+        Connections {
+            target: xChat
+
+            onXchatResponseSignal: {
+                //if (pingTracker == 1) {
+                replyTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                console.log("replyTime: " + replyTime)
+                pingReply = text
+                replyArray = pingReply.split(' ')
+                if (replyArray[0] === "dicom") {
+                    xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
+                    msgList.positionViewAtEnd()
+                }
+                //}
+            }
+        }
+    }
+
+    Image {
+        source: 'qrc:/icons/mobile/ping-icon_01_white.svg'
+        height: 24
+        width: 24
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: executeButton.verticalCenter
+        anchors.horizontalCenter: executeButton.horizontalCenter
+    }
+
+    Rectangle {
+        width: 34
+        height: 34
+        anchors.right: executeButton.right
+        anchors.top: queueBtn.bottom
+        anchors.topMargin: 15
+        color: "transparent"
+        border.color: maincolor
+        border.width: 1
+        opacity: 0.50
+    }
+
     Rectangle {
         id: replyWindow
         width: parent.width - 58
-        anchors.top: queueText.bottom
+        anchors.top: executeButton.bottom
         anchors.topMargin: 20
-        anchors.bottom: requestText.top
-        anchors.bottomMargin: 15
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
@@ -497,7 +669,11 @@ Rectangle {
         }
 
         ListView {
-            anchors.fill: parent
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 5
             id: msgList
             model: xPingTread
             delegate: msgLine
@@ -516,166 +692,6 @@ Rectangle {
         color: "transparent"
         border.color: themecolor
         border.width: 1
-    }
-
-    Controls.TextInput {
-        id: requestText
-        height: 34
-        placeholder: xdapp != "ping"? "Method" : "PingID"
-        text: ""
-        anchors.left: parent.left
-        anchors.leftMargin: 28
-        anchors.right: parent.right
-        anchors.rightMargin: 182
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        color: themecolor
-        textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
-        font.pixelSize: 14
-        mobile: 1
-    }
-
-    Controls.TextInput {
-        id: pingAmount
-        height: 34
-        width: 100
-        placeholder: xdapp != "ping"? "Payload" : "Amount"
-        text: ""
-        inputMethodHints: xdapp == "ping"? Qt.ImhDigitsOnly : Qt.ImhNone
-        anchors.right: parent.right
-        anchors.rightMargin: 72
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        color: themecolor
-        textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
-        font.pixelSize: 14
-        mobile: 1
-    }
-
-    Rectangle {
-        id: executeButton
-        width: 34
-        height: 34
-        anchors.right: parent.right
-        anchors.rightMargin: 28
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        color: maincolor
-        opacity: 0.5
-
-        MouseArea {
-            anchors.fill: parent
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-                parent.opacity = 1
-            }
-
-            onCanceled: {
-                parent.opacity = 1
-            }
-
-            onReleased: {
-                parent.opacity = 0.5
-            }
-
-            onClicked: {
-                sendTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
-                console.log("sendTime: " + sendTime)
-                if (requestText.text != "") {
-                    if (xdapp == "ping") {
-                        var pingIdentifier
-                        if (pingAmount.text != "") {
-                            totalPings = Number.fromLocaleString(Qt.locale("en_US"),pingAmount.text)
-                            if (totalPings <= 50) {
-                                xPingTread.append({"message": "UI - ping: " + myUsername + "_" + requestText.text + ", amount: " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
-                                msgList.positionViewAtEnd()
-                                pingIdentifier = myUsername + "_" + requestText.text + "_" + pingAmount.text
-                                var dataModelParams = {"xdapp":xdapp, "method":"ping","payload":pingIdentifier}
-                                var paramsJson = JSON.stringify(dataModelParams)
-                                dicomRequest(paramsJson)
-                                requestText.text = ""
-                                pingAmount.text = ""
-                            }
-                            else {
-                                xPingTread.append({"message": "Amount too high, max. 50!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
-                                msgList.positionViewAtEnd()
-                                pingAmount.text = ""
-                            }
-                        }
-                        else {
-                            totalPings = 1
-                            xPingTread.append({"message": "UI - ping: " + myUsername + "_" + requestText.text + ", amount: 1", "inout": "out", "author": myUsername, "time": sendTime})
-                            msgList.positionViewAtEnd()
-                            pingIdentifier = myUsername + "_" + requestText.text + "_1"
-                            var dataModelParams2 = {"xdapp":xdapp, "method":"ping","payload":pingIdentifier}
-                            var paramsJson2 = JSON.stringify(dataModelParams2)
-                            dicomRequest(paramsJson2)
-                            requestText.text = ""
-                            pingAmount.text = ""
-                        }
-                    }
-                    else {
-                        xPingTread.append({"message": "UI - " +  xdapp + ": " + requestText.text + " " + pingAmount.text, "inout": "out", "author": myUsername, "time": sendTime})
-                        msgList.positionViewAtEnd()
-                        var dataModelParams3 = {"xdapp":xdapp, "method":requestText.text,"payload":pingAmount.text}
-                        var paramsJson3 = JSON.stringify(dataModelParams3)
-                        dicomRequest(paramsJson3)
-                        requestText.text = ""
-                        pingAmount.text = ""
-                    }
-                }
-                else {
-                    if (xdapp == "ping") {
-                        xPingTread.append({"message": "No ping identifier selected!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
-                    }
-                    else {
-                        xPingTread.append({"message": "No method selected!!", "inout": "in", "author": "xChatRobot", "time": sendTime})
-                    }
-
-                    msgList.positionViewAtEnd()
-                }
-            }
-        }
-
-        Connections {
-            target: xChat
-
-            onXchatResponseSignal: {
-                //if (pingTracker == 1) {
-                replyTime = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
-                console.log("replyTime: " + replyTime)
-                pingReply = text
-                replyArray = pingReply.split(' ')
-                if (replyArray[0] === "dicom") {
-                    xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
-                    msgList.positionViewAtEnd()
-                }
-                //}
-            }
-        }
-    }
-
-    Image {
-        source: 'qrc:/icons/mobile/ping-icon_01_white.svg'
-        height: 24
-        width: 24
-        fillMode: Image.PreserveAspectFit
-        anchors.verticalCenter: executeButton.verticalCenter
-        anchors.horizontalCenter: executeButton.horizontalCenter
-    }
-
-    Rectangle {
-        width: 34
-        height: 34
-        anchors.right: executeButton.right
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        color: "transparent"
-        border.color: maincolor
-        border.width: 1
-        opacity: 0.50
     }
 
     Timer {
