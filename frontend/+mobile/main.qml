@@ -2902,9 +2902,11 @@ ApplicationWindow {
                     var b = ""
                     var j = ""
                     for (var a = 0; a < walletList.count; a ++ ) {
-                        if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
-                            b = walletList.get(a).label
-                            j = walletList.get(a).address
+                        if (walletList.get(a).remove === false) {
+                            if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
+                                b = walletList.get(a).label
+                                j = walletList.get(a).address
+                            }
                         }
                     }
                     if (b === "") {
@@ -2947,8 +2949,10 @@ ApplicationWindow {
                 if (transactionList.get(i).requestID === id) {
                     var b = ""
                     for (var a = 0; a < walletList.count; a ++ ) {
-                        if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
-                            b = walletList.get(a).label
+                        if (walletList.get(a).remove === false) {
+                            if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
+                                b = walletList.get(a).label
+                            }
                         }
                     }
                     if (b === "") {
