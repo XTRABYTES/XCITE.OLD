@@ -675,7 +675,10 @@ ApplicationWindow {
                 }
             }
             else if (selectedPage == "home") {
-                if (scanQRTracker == 1) {
+                if (appsTracker == 1) {
+                    appsTracker = 0
+                }
+                else if (scanQRTracker == 1) {
                     scanQRTracker = 0
                 }
                 else if (addCoinTracker == 1) {

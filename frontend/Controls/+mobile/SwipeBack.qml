@@ -85,8 +85,8 @@ Rectangle {
     }
 
     DropShadow {
-        anchors.fill: backButton2
-        source: backButton2
+        anchors.fill: backButton
+        source: backButton
         samples: 9
         radius: 4
         color: darktheme == true? "#000000" : "#727272"
@@ -97,7 +97,6 @@ Rectangle {
     }
     Rectangle {
         id: backButton2
-        z: 3
         height: 50
         width: 50
         radius: 50
@@ -106,21 +105,22 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         color: darktheme == true? "#14161B" : "#F2F2F2"
+        opacity: 0.25
         visible: myOS == "ios"
-
-        Image {
-            id: backButton
-            source: "qrc:/icons/mobile/back-icon_01.svg"
-            height: 50
-            fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: backButton2.horizontalCenter
-            anchors.verticalCenter: backButton2.verticalCenter
-        }
 
         MouseArea {
             anchors.fill: parent
 
             onClicked: backButtonPressed()
         }
+    }
+    Image {
+        id: backButton
+        source: "qrc:/icons/mobile/back-icon_01.svg"
+        height: 50
+        fillMode: Image.PreserveAspectFit
+        anchors.horizontalCenter: backButton2.horizontalCenter
+        anchors.verticalCenter: backButton2.verticalCenter
+        visible: myOS == "ios"
     }
 }

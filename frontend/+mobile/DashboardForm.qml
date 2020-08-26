@@ -495,8 +495,9 @@ Item {
                 }
 
                 DropShadow {
-                    anchors.fill: addButton4
-                    source: addButton4
+                    z: 3
+                    anchors.fill: addAddress
+                    source: addAddress
                     samples: 9
                     radius: 4
                     color: darktheme == true? "#000000" : "#727272"
@@ -516,6 +517,7 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
                     color: darktheme == true? "#14161B" : "#F2F2F2"
+                    opacity: 0.25
                     visible: view.currentIndex == 0
                     state: coinTracker == 1 ? "inView" : "hidden"
 
@@ -538,15 +540,6 @@ Item {
                         }
                     ]
 
-                    Image {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/mobile/add-icon_01.svg'
-                        width: 50
-                        height: 50
-
-                    }
-
                     MouseArea {
                         anchors.fill: parent
 
@@ -566,6 +559,17 @@ Item {
                             mainRoot.push("qrc:/Controls/+mobile/AddWallet.qml")
                         }
                     }
+                }
+
+                Image {
+                    id: addAddress
+                    z: 3
+                    anchors.verticalCenter: addButton4.verticalCenter
+                    anchors.horizontalCenter: addButton4.horizontalCenter
+                    source: 'qrc:/icons/mobile/add-icon_01.svg'
+                    width: 50
+                    height: 50
+                    visible: addButton4.visible
                 }
 
                 Mobile.AddCoinModal{
@@ -1060,8 +1064,9 @@ Item {
                 }
 
                 DropShadow {
-                    anchors.fill: addButton2
-                    source: addButton2
+                    z: 3
+                    anchors.fill: addWallet
+                    source: addWallet
                     samples: 9
                     radius: 4
                     color: darktheme == true? "#000000" : "#727272"
@@ -1081,6 +1086,7 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
                     color: darktheme == true? "#14161B" : "#F2F2F2"
+                    opacity: 0.25
                     visible: view.currentIndex == 1 && contactIndex != 0
                     state: (contactTracker == 1 && addressQRTracker == 0)? "inView" : "hidden"
 
@@ -1103,15 +1109,6 @@ Item {
                         }
                     ]
 
-                    Image {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/mobile/add-icon_01.svg'
-                        width: 50
-                        height: 50
-
-                    }
-
                     MouseArea {
                         anchors.fill: parent
 
@@ -1128,6 +1125,17 @@ Item {
                             addAddressTracker = 1
                         }
                     }
+                }
+
+                Image {
+                    id: addWallet
+                    z: 3
+                    anchors.verticalCenter: addButton2.verticalCenter
+                    anchors.horizontalCenter: addButton2.horizontalCenter
+                    source: 'qrc:/icons/mobile/add-icon_01.svg'
+                    width: 50
+                    height: 50
+                    visible: addButton2.visible
                 }
 
                 Mobile.QrCode{
