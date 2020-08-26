@@ -346,5 +346,6 @@
         <file>icons/mobile/ping-icon_01_white.svg</file>
         <file>icons/mobile/show_balance-icon_01_dark.svg</file>
         <file>icons/mobile/show_balance-icon_01_light.svg</file>
+        <file>icons/mobile/chart_example.svg</file>
     </qresource>
 </RCC>

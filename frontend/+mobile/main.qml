@@ -234,6 +234,7 @@ ApplicationWindow {
     property int importTracker: 0
     property int restoreTracker: 0
     property int pageTracker: 0
+    property int exchangePageTracker: 0
     property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
@@ -284,6 +285,8 @@ ApplicationWindow {
 
     // Trackers - features
     property int interactionTracker: 0
+    property int coin1Tracker: 0
+    property int coin2Tracker: 0
     property int coinListTracker: 0
     property int currencyTracker: 0
     property int cellTracker: 0
@@ -320,6 +323,7 @@ ApplicationWindow {
     property int networkError: 0
     property int photoSelect: 0
     property int newCoinPicklist: 0
+    property int newCoin2Picklist: 0
     property int newCoinSelect: 0
     property int newWalletPicklist: 0
     property int newWalletSelect: 0
@@ -653,6 +657,7 @@ ApplicationWindow {
     }
 
     function backButtonPressed() {
+        click01.play()
         if (logoutTracker == 0 && miniatureTracker == 0) {
             if (networkError == 1) {
                 networkError = 0

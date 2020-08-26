@@ -79,18 +79,111 @@ Rectangle {
 
             onClicked: {
                 if (updatingWalletsNotif == false) {
+                    updatingWalletsNotif = true
                     clearAlertList();
                     checkNotifications();
-                    updatingWalletsNotif = true
                     updateToAccount()
-                    appsTracker = 0
-                    selectedPage = "home"
-                    mainRoot.pop()
-                    updatingWalletsNotif = false
                 }
             }
         }
     }
+
+    Label {
+        id: updateLabel
+        text: "Updating account"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -50
+        font.pixelSize: 16
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: updatingWalletsNotif == true
+    }
+
+    AnimatedImage  {
+        id: waitingDots
+        source: 'qrc:/gifs/loading-gif_01.gif'
+        width: 90
+        height: 60
+        anchors.horizontalCenter: updateLabel.horizontalCenter
+        anchors.top: updateLabel.bottom
+        anchors.bottomMargin: -10
+        playing: updatingWalletsNotif == true
+        visible: updatingWalletsNotif == true
+    }
+
+    Connections {
+        target: UserSettings
+
+        onSaveSucceeded: {
+            if (updatingWalletsNotif == true) {
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+
+        onSaveFailed: {
+            if (updatingWalletsNotif == true) {
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+
+        onNoInternet: {
+            if (updatingWalletsNotif == true) {
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+
+        onSaveFailedDBError: {
+            if (updatingWalletsNotif == true) {
+                failError = "Database ERROR"
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+
+        onSaveFailedAPIError: {
+            if (updatingWalletsNotif == true) {
+                failError = "Network ERROR"
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+
+        onSaveFailedInputError: {
+            if (updatingWalletsNotif == true) {
+                failError = "Input ERROR"
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+
+        onSaveFailedUnknownError: {
+            if (updatingWalletsNotif == true) {
+                failError = "Unknown ERROR"
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+    }
+
+
 
     Item {
         z: 3

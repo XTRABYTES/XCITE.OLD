@@ -329,7 +329,7 @@ Item {
 
         Label {
             id: importAccount
-            text: "Import an existing account?"
+            text: "Import an existing account"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: login.bottom
             anchors.topMargin: 20
@@ -421,7 +421,7 @@ Item {
 
         Label {
             id: restoreAccount
-            text: "Restore an existing account?"
+            text: "Restore an existing account"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: login.bottom
             anchors.topMargin: 70
