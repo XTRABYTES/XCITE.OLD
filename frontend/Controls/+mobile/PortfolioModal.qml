@@ -28,6 +28,7 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 50
+
     onStateChanged: {
         if (portfolioTracker == 1) {
             if (!isNaN(totalXBY)) {
@@ -43,6 +44,10 @@ Rectangle {
                 pieSeries.find("ETH").value = totalETH * valueETH
             }
         }
+        else {
+            coin = ""
+        }
+
         percentage = (100 / (totalBalance / (coinConversion(totalAmountTicker.text, sumCoinTotal(totalAmountTicker.text))))).toLocaleString(Qt.locale("en_US"), "f", 2)
     }
 
@@ -565,41 +570,6 @@ Rectangle {
                 GradientStop { position: 0.0; color: "transparent" }
                 GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-            }
-        }
-    }
-
-    Label {
-        id: closeWalletModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth / 2
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onReleased: {
-                portfolioTracker = 0;
-                coin = ""
             }
         }
     }
