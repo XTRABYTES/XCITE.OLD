@@ -33,7 +33,9 @@ Rectangle {
         coinListTracker = 0
         newCoinPicklist = 0
         newCoin2Picklist = 3
-        xchangePageTracker = 0
+        exchangePageTracker = 0
+        buyOrderTracker = 0
+        sellOrderTracker = 0
         if (xchangeTracker == 1) {
 
         }
@@ -83,7 +85,9 @@ Rectangle {
     property int orderTracker: 0
     property int orderType: 0
     property int tradeTracker: 0
-
+    property int buyOrderTracker: 0
+    property int sellOrderTracker: 0
+    /*
     Text {
         id: xchangeModalLabel
         text: "X-CHANGE"
@@ -95,7 +99,7 @@ Rectangle {
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
     }
-    /*
+    */
     SwipeView {
         id: view
         z: 2
@@ -116,16 +120,70 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 100
                 color: "transparent"
+                clip: true
 
-                Label {
+                Rectangle {
+                    id: openOrderArea
                     z: 3
-                    text: "no trades available for now"
-                    font.pixelSize: 18
-                    font.family: xciteMobile.name
-                    color: themecolor
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.bold: true
+                    width: parent.width
+                    height: parent.height / 2
+                    anchors.top: parent.top
+                    color: "transparent"
+                    clip: true
+
+                    Label {
+                        z: 3
+                        text: "OPEN ORDERS"
+                        font.pixelSize: 13
+                        font.family: xciteMobile.name
+                        color: themecolor
+                        anchors.top: parent.top
+                        anchors.topMargin: 10
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Label {
+                        z: 3
+                        text: "no trades available for now"
+                        font.pixelSize: 18
+                        font.family: xciteMobile.name
+                        color: themecolor
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.bold: true
+                    }
+                }
+
+                Rectangle {
+                    id: historyOrderArea
+                    z: 3
+                    width: parent.width
+                    height: parent.height / 2
+                    anchors.top: openOrderArea.bottom
+                    color: "transparent"
+                    clip: true
+
+                    Label {
+                        z: 3
+                        text: "TRADE HISTORY"
+                        font.pixelSize: 13
+                        font.family: xciteMobile.name
+                        color: themecolor
+                        anchors.top: parent.top
+                        anchors.topMargin: 10
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Label {
+                        z: 3
+                        text: "no trades available for now"
+                        font.pixelSize: 18
+                        font.family: xciteMobile.name
+                        color: themecolor
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.bold: true
+                    }
                 }
             }
 
@@ -163,157 +221,313 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 100
                 color: "transparent"
-            }
+                clip: true
 
-            DropShadow {
-                z: 4
-                anchors.fill: chartTradeBar
-                source: chartTradeBar
-                horizontalOffset: 0
-                verticalOffset: 4
-                radius: 12
-                samples: 25
-                spread: 0
-                color: "black"
-                opacity: 0.5
-                transparentBorder: true
-            }
+                DropShadow {
+                    z: 4
+                    anchors.fill: chartTradeBar
+                    source: chartTradeBar
+                    horizontalOffset: 0
+                    verticalOffset: 4
+                    radius: 12
+                    samples: 25
+                    spread: 0
+                    color: "black"
+                    opacity: 0.5
+                    transparentBorder: true
+                }
 
-            Rectangle {
-                id: tradeHeader
-                z: 4
-                width: parent.width
-                height: 100
-                color: bgcolor
-            }
+                DropShadow {
+                    z: 4
+                    anchors.fill: tradeHeader
+                    source: tradeHeader
+                    horizontalOffset: 0
+                    verticalOffset: 4
+                    radius: 12
+                    samples: 25
+                    spread: 0
+                    color: "black"
+                    opacity: 0.5
+                    transparentBorder: true
+                }
 
-            Rectangle {
-                id: chartTradeBar
-                z: 4
-                width: parent.width
-                height: 30
-                color: "black"
-                anchors.top: tradeHeader.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
+                Rectangle {
+                    id: tradeHeader
+                    z: 4
+                    width: parent.width
+                    height: 100
+                    color: bgcolor
+                    anchors.top: parent.top
+                    anchors.topMargin: -100
+                }
 
                 Label {
-                    id: chartLabel
-                    z: 4
-                    text: "CHART"
+                    id: lastLabel
+                    z: 3
+                    text: "Last:"
+                    color: themecolor
                     font.pixelSize: 13
                     font.family: xciteMobile.name
-                    color: "#F2F2F2"
                     anchors.left: parent.left
-                    anchors.leftMargin:28
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.bold: false
-                    visible: tradeTracker == 0
-                }
-
-                Image {
-                    id: chartArrow
-                    z: 4
-                    source: 'qrc:/icons/mobile/dropdown-icon_01_light.svg'
-                    height: 18
-                    width: 18
-                    anchors.left: chartLabel.right
-                    anchors.leftMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
-                    visible: tradeTracker == 0
-                    state: chartTracker == 0? "down" : "up"
-
-                    Rectangle{
-                        id: arrowButton
-                        height: 18
-                        width: 18
-                        radius: 10
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: "transparent"
-                    }
-
-                    states: [
-                        State {
-                            name: "up"
-                            PropertyChanges { target: chartArrow; rotation: 180}
-                        },
-                        State {
-                            name: "down"
-                            PropertyChanges { target: chartArrow; rotation: 0}
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: "*"
-                            to: "*"
-                            NumberAnimation { target: chartArrow; property: "rotation"; duration: 300; easing.type: Easing.InOutCubic}
-                        }
-                    ]
-
-                    MouseArea {
-                        anchors.fill: arrowButton
-
-                        onPressed: {
-                            click01.play()
-                            detectInteraction()
-                        }
-
-                        onClicked: {
-                            if (chartTracker == 0) {
-                                chartTracker = 1
-                            }
-                            else {
-                                chartTracker = 0
-                            }
-                        }
-                    }
+                    anchors.leftMargin: 28
+                    anchors.top: tradeHeader.bottom
+                    anchors.topMargin: 15
                 }
 
                 Label {
-                    id: tradeLabel
-                    z: 4
-                    text: "RECENT TRADES"
+                    id: lowLabel
+                    z: 3
+                    text: "Low:"
+                    color: themecolor
                     font.pixelSize: 13
                     font.family: xciteMobile.name
-                    color: "#F2F2F2"
-                    anchors.right: tradeArrow.left
-                    anchors.rightMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.bold: false
-                    visible: chartTracker == 0
+                    anchors.left: parent.left
+                    anchors.leftMargin: 28
+                    anchors.top: lastLabel.bottom
+                    anchors.topMargin: 5
                 }
 
-                Image {
-                    id: tradeArrow
-                    z: 4
-                    source: 'qrc:/icons/mobile/dropdown-icon_01_light.svg'
-                    height: 18
-                    width: 18
+                Label {
+                    id: changeLabel
+                    z: 3
+                    text: "Change:"
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.left: parent.horizontalCenter
+                    anchors.leftMargin: 5
+                    anchors.top: tradeHeader.bottom
+                    anchors.topMargin: 15
+                }
+
+                Label {
+                    id: highLabel
+                    z: 3
+                    text: "High:"
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.left: parent.horizontalCenter
+                    anchors.leftMargin: 5
+                    anchors.top: changeLabel.bottom
+                    anchors.topMargin: 5
+                }
+
+                Label {
+                    id: volumeLabel
+                    z: 3
+                    text: "Volume:"
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: highLabel.bottom
+                    anchors.topMargin: 10
+                }
+
+                Label {
+                    id: volumeCoin1Label
+                    z: 3
+                    text: coinName.text
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.right: parent.horizontalCenter
+                    anchors.rightMargin: 5
+                    anchors.top: volumeLabel.bottom
+                    anchors.topMargin: 5
+                }
+
+                Label {
+                    id: volumeCoin2Label
+                    z: 3
+                    text: coin2Name.text
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
                     anchors.right: parent.right
                     anchors.rightMargin: 28
-                    anchors.verticalCenter: parent.verticalCenter
-                    visible: chartTracker == 0
-                    state: tradeTracker == 0? "down" : "up"
+                    anchors.top: volumeLabel.bottom
+                    anchors.topMargin: 5
+                }
 
-                    Rectangle{
-                        id: tradeButton
+                Rectangle {
+                    id: chartTradeBar
+                    z: 4
+                    width: parent.width
+                    height: 30
+                    color: "black"
+                    anchors.top: volumeCoin1Label.bottom
+                    anchors.topMargin: 10
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Label {
+                        id: chartLabel
+                        z: 4
+                        text: "CHART"
+                        font.pixelSize: 13
+                        font.family: xciteMobile.name
+                        color: "#F2F2F2"
+                        anchors.left: parent.left
+                        anchors.leftMargin:28
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.bold: false
+                        visible: tradeTracker == 0
+                    }
+
+                    Image {
+                        id: chartArrow
+                        z: 4
+                        source: 'qrc:/icons/mobile/dropdown-icon_01_light.svg'
                         height: 18
                         width: 18
-                        radius: 10
+                        anchors.left: chartLabel.right
+                        anchors.leftMargin: 10
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: "transparent"
+                        visible: tradeTracker == 0
+                        state: chartTracker == 0? "down" : "up"
+
+                        Rectangle{
+                            id: arrowButton
+                            height: 18
+                            width: 18
+                            radius: 10
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: "transparent"
+                        }
+
+                        states: [
+                            State {
+                                name: "up"
+                                PropertyChanges { target: chartArrow; rotation: 180}
+                            },
+                            State {
+                                name: "down"
+                                PropertyChanges { target: chartArrow; rotation: 0}
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: "*"
+                                to: "*"
+                                NumberAnimation { target: chartArrow; property: "rotation"; duration: 300; easing.type: Easing.InOutCubic}
+                            }
+                        ]
+
+                        MouseArea {
+                            anchors.fill: arrowButton
+
+                            onPressed: {
+                                click01.play()
+                                detectInteraction()
+                            }
+
+                            onClicked: {
+                                if (chartTracker == 0) {
+                                    chartTracker = 1
+                                }
+                                else {
+                                    chartTracker = 0
+                                }
+                            }
+                        }
                     }
+
+                    Label {
+                        id: tradeLabel
+                        z: 4
+                        text: "RECENT TRADES"
+                        font.pixelSize: 13
+                        font.family: xciteMobile.name
+                        color: "#F2F2F2"
+                        anchors.right: tradeArrow.left
+                        anchors.rightMargin: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.bold: false
+                        visible: chartTracker == 0
+                    }
+
+                    Image {
+                        id: tradeArrow
+                        z: 4
+                        source: 'qrc:/icons/mobile/dropdown-icon_01_light.svg'
+                        height: 18
+                        width: 18
+                        anchors.right: parent.right
+                        anchors.rightMargin: 28
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: chartTracker == 0
+                        state: tradeTracker == 0? "down" : "up"
+
+                        Rectangle{
+                            id: tradeButton
+                            height: 18
+                            width: 18
+                            radius: 10
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: "transparent"
+                        }
+
+                        states: [
+                            State {
+                                name: "up"
+                                PropertyChanges { target: tradeArrow; rotation: 180}
+                            },
+                            State {
+                                name: "down"
+                                PropertyChanges { target: tradeArrow; rotation: 0}
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: "*"
+                                to: "*"
+                                NumberAnimation { target: tradeArrow; property: "rotation"; duration: 300; easing.type: Easing.InOutCubic}
+                            }
+                        ]
+
+                        MouseArea {
+                            anchors.fill: tradeButton
+
+                            onPressed: {
+                                click01.play()
+                                detectInteraction()
+                            }
+
+                            onClicked: {
+                                if (tradeTracker == 0) {
+                                    tradeTracker = 1
+                                }
+                                else {
+                                    tradeTracker = 0
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: tradeChartArea
+                    z: 3
+                    width: parent.width
+                    color: "transparent"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: chartTradeBar.top
+                    state: tradeTracker == 1 || chartTracker == 1? "down" : "up"
+                    clip: true
 
                     states: [
                         State {
                             name: "up"
-                            PropertyChanges { target: tradeArrow; rotation: 180}
+                            PropertyChanges { target: tradeChartArea; height: 30}
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: tradeArrow; rotation: 0}
+                            PropertyChanges { target: tradeChartArea; height: 185}
                         }
                     ]
 
@@ -321,12 +535,156 @@ Rectangle {
                         Transition {
                             from: "*"
                             to: "*"
-                            NumberAnimation { target: tradeArrow; property: "rotation"; duration: 300; easing.type: Easing.InOutCubic}
+                            NumberAnimation { target: tradeChartArea; property: "height"; duration: 300; easing.type: Easing.InOutCubic}
                         }
                     ]
 
+                    Image {
+                        id: chart
+                        z: 3
+                        source: "qrc:/icons/mobile/chart_example.svg"
+                        width: parent.width - 56
+                        fillMode: Image.PreserveAspectFit
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: tradeChartArea.top
+                        state: chartTracker == 0? "up" : "down"
+
+                        Label {
+                            z: 3
+                            text: "DEMO chart"
+                            font.pixelSize: 18
+                            font.family: xciteMobile.name
+                            color: themecolor
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            font.bold: true
+                        }
+
+                        states: [
+                            State {
+                                name: "up"
+                                PropertyChanges { target: chart; anchors.topMargin: -(chart.height + 10)}
+                            },
+                            State {
+                                name: "down"
+                                PropertyChanges { target: chart; anchors.topMargin: 40}
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: "*"
+                                to: "*"
+                                NumberAnimation { target: chart; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+                            }
+                        ]
+                    }
+
+                    Rectangle {
+                        id: tradeList
+                        z: 3
+                        width: parent.width
+                        height: 145
+                        color: "transparent"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: tradeChartArea.top
+                        state: tradeTracker == 0? "up" : "down"
+
+                        Label {
+                            z: 3
+                            text: "no trades available for now"
+                            font.pixelSize: 18
+                            font.family: xciteMobile.name
+                            color: themecolor
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            font.bold: true
+                        }
+
+                        states: [
+                            State {
+                                name: "up"
+                                PropertyChanges { target: tradeList; anchors.topMargin: -(tradeList.height + 10)}
+                            },
+                            State {
+                                name: "down"
+                                PropertyChanges { target: tradeList; anchors.topMargin: 40}
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: "*"
+                                to: "*"
+                                NumberAnimation { target: tradeList; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+                            }
+                        ]
+                    }
+                }
+
+                Label {
+                    id: balanceLabel
+                    z: 3
+                    text: "AVAILABLE BALANCE:"
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: tradeChartArea.bottom
+                    anchors.topMargin: 15
+                }
+
+                Label {
+                    id: coin1Label
+                    z: 3
+                    text: coinName.text
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.right: parent.horizontalCenter
+                    anchors.rightMargin: 5
+                    anchors.top: balanceLabel.bottom
+                    anchors.topMargin: 5
+                }
+
+                Label {
+                    id: coin2Label
+                    z: 3
+                    text: coin2Name.text
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.right: parent.right
+                    anchors.rightMargin: 28
+                    anchors.top: balanceLabel.bottom
+                    anchors.topMargin: 5
+                }
+
+                Rectangle {
+                    id: limitButton
+                    z: 3
+                    width: (parent.width - 110)/2
+                    height: 34
+                    color: "transparent"
+                    border.color: orderType == 0? maincolor : "#757575"
+                    border.width: 1
+                    anchors.left: parent.left
+                    anchors.leftMargin: 50
+                    anchors.top: coin1Label.bottom
+                    anchors.topMargin: 15
+
+                    Label {
+                        id: limitBtnLabel
+                        text: "LIMIT"
+                        color: orderType == 0? maincolor : "#757575"
+                        font.pixelSize: 16
+                        font.family: xciteMobile.name
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
                     MouseArea {
-                        anchors.fill: tradeButton
+                        anchors.fill: parent
 
                         onPressed: {
                             click01.play()
@@ -334,459 +692,452 @@ Rectangle {
                         }
 
                         onClicked: {
-                            if (tradeTracker == 0) {
-                                tradeTracker = 1
-                            }
-                            else {
-                                tradeTracker = 0
+                            if (orderType == 1) {
+                                orderType = 0
                             }
                         }
                     }
                 }
-            }
 
-            Rectangle {
-                id: tradeChartArea
-                z: 3
-                width: parent.width
-                height: 145
-                color: "transparent"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: chartTradeBar.bottom
-                state: tradeTracker == 1 || chartTracker == 1? "down" : "up"
-
-                states: [
-                    State {
-                        name: "up"
-                        PropertyChanges { target: tradeChartArea; anchors.topMargin: -(tradeChartArea.height)}
-                    },
-                    State {
-                        name: "down"
-                        PropertyChanges { target: tradeChartArea; anchors.topMargin: 10}
-                    }
-                ]
-
-                transitions: [
-                    Transition {
-                        from: "*"
-                        to: "*"
-                        NumberAnimation { target: tradeChartArea; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
-                    }
-                ]
-            }
-
-            Image {
-                id: chart
-                z: 3
-                source: "qrc:/icons/mobile/chart_example.svg"
-                width: parent.width - 56
-                fillMode: Image.PreserveAspectFit
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: chartTradeBar.bottom
-                state: chartTracker == 0? "up" : "down"
-
-                Label {
+                Rectangle {
+                    id: marketButton
                     z: 3
-                    text: "DEMO chart"
-                    font.pixelSize: 18
-                    font.family: xciteMobile.name
-                    color: themecolor
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.bold: true
-                }
+                    width: (parent.width - 110)/2
+                    height: 34
+                    color: "transparent"
+                    border.color: orderType == 1? maincolor : "#757575"
+                    border.width: 1
+                    anchors.right: parent.right
+                    anchors.rightMargin: 50
+                    anchors.top: coin1Label.bottom
+                    anchors.topMargin: 15
 
-                states: [
-                    State {
-                        name: "up"
-                        PropertyChanges { target: chart; anchors.topMargin: -(chart.height + 10)}
-                    },
-                    State {
-                        name: "down"
-                        PropertyChanges { target: chart; anchors.topMargin: 10}
-                    }
-                ]
-
-                transitions: [
-                    Transition {
-                        from: "*"
-                        to: "*"
-                        NumberAnimation { target: chart; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
-                    }
-                ]
-            }
-
-            Rectangle {
-                id: tradeList
-                z: 3
-                width: parent.width
-                height: 145
-                color: "transparent"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: chartTradeBar.bottom
-                state: tradeTracker == 0? "up" : "down"
-
-                Label {
-                    z: 3
-                    text: "no trades available for now"
-                    font.pixelSize: 18
-                    font.family: xciteMobile.name
-                    color: themecolor
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.bold: true
-                }
-
-                states: [
-                    State {
-                        name: "up"
-                        PropertyChanges { target: tradeList; anchors.topMargin: -(tradeList.height + 10)}
-                    },
-                    State {
-                        name: "down"
-                        PropertyChanges { target: tradeList; anchors.topMargin: 10}
-                    }
-                ]
-
-                transitions: [
-                    Transition {
-                        from: "*"
-                        to: "*"
-                        NumberAnimation { target: tradeList; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
-                    }
-                ]
-            }
-
-            Label {
-                id: lastLabel
-                z: 3
-                text: "Last:"
-                color: themecolor
-                font.pixelSize: 13
-                font.family: xciteMobile.name
-                anchors.left: parent.left
-                anchors.leftMargin: 28
-                anchors.top: tradeChartArea.bottom
-                anchors.topMargin: 15
-            }
-
-            Label {
-                id: lowLabel
-                z: 3
-                text: "Low:"
-                color: themecolor
-                font.pixelSize: 13
-                font.family: xciteMobile.name
-                anchors.left: parent.left
-                anchors.leftMargin: 28
-                anchors.top: lastLabel.bottom
-                anchors.topMargin: 15
-            }
-
-            Label {
-                id: changeLabel
-                z: 3
-                text: "Change:"
-                color: themecolor
-                font.pixelSize: 13
-                font.family: xciteMobile.name
-                anchors.left: parent.horizontalCenter
-                anchors.leftMargin: 5
-                anchors.top: tradeChartArea.bottom
-                anchors.topMargin: 15
-            }
-
-            Label {
-                id: highLabel
-                z: 3
-                text: "High:"
-                color: themecolor
-                font.pixelSize: 13
-                font.family: xciteMobile.name
-                anchors.left: parent.horizontalCenter
-                anchors.leftMargin: 5
-                anchors.top: changeLabel.bottom
-                anchors.topMargin: 10
-            }
-
-            Label {
-                id: balanceLabel
-                z: 3
-                text: "AVAILABLE BALANCE:"
-                color: themecolor
-                font.pixelSize: 13
-                font.family: xciteMobile.name
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: highLabel.bottom
-                anchors.topMargin: 15
-            }
-
-            Label {
-                id: coin1Label
-                z: 3
-                text: coinName.text + ":"
-                color: themecolor
-                font.pixelSize: 13
-                font.family: xciteMobile.name
-                anchors.left: lowLabel.left
-                anchors.top: balanceLabel.bottom
-                anchors.topMargin: 10
-            }
-
-            Label {
-                id: coin2Label
-                z: 3
-                text: coin2Name.text + ":"
-                color: themecolor
-                font.pixelSize: 13
-                font.family: xciteMobile.name
-                anchors.left: highLabel.left
-                anchors.top: balanceLabel.bottom
-                anchors.topMargin: 10
-            }
-
-            Rectangle {
-                id: limitButton
-                z: 3
-                width: (parent.width - 110)/2
-                height: 34
-                color: "transparent"
-                border.color: orderType == 0? themecolor : "#757575"
-                border.width: 1
-                anchors.left: parent.left
-                anchors.leftMargin: 50
-                anchors.top: balanceLabel.bottom
-                anchors.topMargin: 38
-
-                Label {
-                    id: limitBtnLabel
-                    text: "LIMIT"
-                    color: orderType == 0? themecolor : "#757575"
-                    font.pixelSize: 16
-                    font.family: xciteMobile.name
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onPressed: {
-                        click01.play()
-                        detectInteraction()
+                    Label {
+                        id: marketBtnLabel
+                        text: "MARKET"
+                        color: orderType == 1? maincolor : "#757575"
+                        font.pixelSize: 16
+                        font.family: xciteMobile.name
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
                     }
 
-                    onClicked: {
-                        if (orderType == 1) {
-                            orderType = 0
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            if (orderType == 0) {
+                                orderType = 1
+                            }
                         }
                     }
                 }
-            }
 
-            Rectangle {
-                id: marketButton
-                z: 3
-                width: (parent.width - 110)/2
-                height: 34
-                color: "transparent"
-                border.color: orderType == 1? themecolor : "#757575"
-                border.width: 1
-                anchors.right: parent.right
-                anchors.rightMargin: 50
-                anchors.top: balanceLabel.bottom
-                anchors.topMargin: 38
-
-                Label {
-                    id: marketBtnLabel
-                    text: "MARKET"
-                    color: orderType == 1? themecolor : "#757575"
-                    font.pixelSize: 16
-                    font.family: xciteMobile.name
+                Mobile.AmountInput {
+                    id: amountField
+                    z: 3
+                    width: parent.width - 100
+                    placeholder: "AMOUNT (" + coinName.text + ")"
                     anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.top: limitButton.bottom
+                    anchors.topMargin: 15
+                    color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                    textBackground: bgcolor
+                    font.pixelSize: 14
+                    font.capitalization: Font.AllUppercase
+                    mobile: 1
+                    addressBook: 1
+                    calculator: 0
                 }
 
-                MouseArea {
-                    anchors.fill: parent
+                Mobile.AmountInput {
+                    id: rateField
+                    z: 3
+                    width: parent.width - 100
+                    placeholder: "RATE (" + coin2Name.text + ")"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: amountField.bottom
+                    anchors.topMargin: 5
+                    color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                    textBackground: bgcolor
+                    font.pixelSize: 14
+                    font.capitalization: Font.AllUppercase
+                    mobile: 1
+                    addressBook: 1
+                    calculator: 0
+                    visible: orderType == 0
+                }
 
-                    onPressed: {
-                        click01.play()
-                        detectInteraction()
-                    }
+                Label {
+                    id: avgRateLabel
+                    text: "AVG. RATE:"
+                    color: themecolor
+                    font.pixelSize: 14
+                    font.family: xciteMobile.name
+                    anchors.verticalCenter: amountField.verticalCenter
+                    anchors.verticalCenterOffset: 38
+                    anchors.left: amountField.left
+                    anchors.leftMargin: 18
+                    visible: orderType == 1
+                }
 
-                    onClicked: {
-                        if (orderType == 0) {
-                            orderType = 1
+                Mobile.AmountInput {
+                    id: feeField
+                    z: 3
+                    width: parent.width - 100
+                    placeholder: "FEE (XFUEL)"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: orderType == 0? rateField.bottom : amountField.bottom
+                    anchors.topMargin: orderType == 0? 5 : 41
+                    color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                    textBackground: bgcolor
+                    font.pixelSize: 14
+                    font.capitalization: Font.AllUppercase
+                    mobile: 1
+                    addressBook: 1
+                    calculator: 0
+                    readOnly: true
+                }
+
+                Mobile.AmountInput {
+                    id: totalField
+                    z: 3
+                    width: parent.width - 100
+                    placeholder: "TOTAL (" + coin2Name.text + ")"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: feeField.bottom
+                    anchors.topMargin: 5
+                    color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                    textBackground: bgcolor
+                    font.pixelSize: 14
+                    font.capitalization: Font.AllUppercase
+                    mobile: 1
+                    addressBook: 1
+                    calculator: 0
+                    readOnly: true
+                }
+
+                Rectangle {
+                    id: buyButton
+                    z: 3
+                    width: (parent.width - 110)/2
+                    height: 34
+                    color: "#4BBE2E"
+                    opacity: 0.5
+                    anchors.left: parent.left
+                    anchors.leftMargin: 50
+                    anchors.top: totalField.bottom
+                    anchors.topMargin: 15
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
                         }
                     }
                 }
-            }
 
-            Mobile.AmountInput {
-                id: amountField
-                z: 3
-                width: parent.width - 100
-                placeholder: "AMOUNT (" + coinName.text + ")"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: limitButton.bottom
-                anchors.topMargin: 15
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-                textBackground: bgcolor
-                font.pixelSize: 14
-                font.capitalization: Font.AllUppercase
-                mobile: 1
-                addressBook: 1
-                calculator: 0
-            }
+                Rectangle {
+                    z: 3
+                    width: (parent.width - 110)/2
+                    height: 34
+                    color: "transparent"
+                    border.color: "#4BBE2E"
+                    border.width: 1
+                    anchors.left: buyButton.left
+                    anchors.top: buyButton.top
+                }
 
-            Mobile.AmountInput {
-                id: rateField
-                z: 3
-                width: parent.width - 100
-                placeholder: "RATE (" + coin2Name.text + ")"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: amountField.bottom
-                anchors.topMargin: 5
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-                textBackground: bgcolor
-                font.pixelSize: 14
-                font.capitalization: Font.AllUppercase
-                mobile: 1
-                addressBook: 1
-                calculator: 0
-                readOnly: orderType == 0? true : false
-            }
+                Label {
+                    id: buyBtnLabel
+                    z: 3
+                    text: "BUY"
+                    color: "#4BBE2E"
+                    font.pixelSize: 16
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: buyButton.horizontalCenter
+                    anchors.verticalCenter: buyButton.verticalCenter
+                }
 
-            Mobile.AmountInput {
-                id: feeField
-                z: 3
-                width: parent.width - 100
-                placeholder: "FEE (XFUEL)"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: rateField.bottom
-                anchors.topMargin: 5
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-                textBackground: bgcolor
-                font.pixelSize: 14
-                font.capitalization: Font.AllUppercase
-                mobile: 1
-                addressBook: 1
-                calculator: 0
-                readOnly: true
-            }
+                Rectangle {
+                    id: sellButton
+                    z: 3
+                    width: (parent.width - 110)/2
+                    height: 34
+                    color: "#E55541"
+                    opacity: 0.5
+                    anchors.right: parent.right
+                    anchors.rightMargin: 50
+                    anchors.top: totalField.bottom
+                    anchors.topMargin: 15
 
-            Mobile.AmountInput {
-                id: totalField
-                z: 3
-                width: parent.width - 100
-                placeholder: "TOTAL (" + coin2Name.text + ")"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: feeField.bottom
-                anchors.topMargin: 5
-                color: darktheme == true? "#F2F2F2" : "#2A2C31"
-                textBackground: bgcolor
-                font.pixelSize: 14
-                font.capitalization: Font.AllUppercase
-                mobile: 1
-                addressBook: 1
-                calculator: 0
-                readOnly: true
-            }
+                    MouseArea {
+                        anchors.fill: parent
 
-            Rectangle {
-                id: buyButton
-                z: 3
-                width: (parent.width - 110)/2
-                height: 34
-                color: "#4BBE2E"
-                opacity: 0.5
-                anchors.left: parent.left
-                anchors.leftMargin: 50
-                anchors.top: totalField.bottom
-                anchors.topMargin: 15
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
 
-                MouseArea {
-                    anchors.fill: parent
-
-                    onPressed: {
-                        click01.play()
-                        detectInteraction()
-                    }
-
-                    onClicked: {
+                        onClicked: {
+                        }
                     }
                 }
-            }
 
-            Rectangle {
-                z: 3
-                width: (parent.width - 110)/2
-                height: 34
-                color: "transparent"
-                border.color: "#4BBE2E"
-                border.width: 1
-                anchors.left: buyButton.left
-                anchors.top: buyButton.top
-            }
+                Rectangle {
+                    z: 3
+                    width: (parent.width - 110)/2
+                    height: 34
+                    color: "transparent"
+                    opacity: 0.5
+                    border.color: "#E55541"
+                    border.width: 1
+                    anchors.right: sellButton.right
+                    anchors.top: sellButton.top
+                }
 
-            Label {
-                id: buyBtnLabel
-                z: 3
-                text: "BUY"
-                color: "#4BBE2E"
-                font.pixelSize: 16
-                font.family: xciteMobile.name
-                anchors.horizontalCenter: buyButton.horizontalCenter
-                anchors.verticalCenter: buyButton.verticalCenter
-            }
+                Label {
+                    id: sellBtnLabel
+                    z: 3
+                    text: "SELL"
+                    color: "#E55541"
+                    font.pixelSize: 16
+                    font.family: xciteMobile.name
+                    anchors.horizontalCenter: sellButton.horizontalCenter
+                    anchors.verticalCenter: sellButton.verticalCenter
+                }
 
-            Rectangle {
-                id: sellButton
-                z: 3
-                width: (parent.width - 110)/2
-                height: 34
-                color: "#E55541"
-                opacity: 0.5
-                anchors.right: parent.right
-                anchors.rightMargin: 50
-                anchors.top: totalField.bottom
-                anchors.topMargin: 15
+                Rectangle {
+                    id: buyOrderArea
+                    z:3
+                    anchors.left: parent.left
+                    anchors.leftMargin: -1
+                    anchors.rightMargin: buyOrderTracker == 1? 0 : 10
+                    anchors.top: amountField.top
+                    anchors.bottom: buyButton.bottom
+                    color: bgcolor
+                    border.color: buyOrderTracker == 1? themecolor : "#757575"
+                    border.width: 1
+                    state: buyOrderTracker == 1? "open" : "close"
+                    clip: true
 
-                MouseArea {
-                    anchors.fill: parent
+                    states: [
+                        State {
+                            name: "open"
+                            AnchorChanges { target: buyOrderArea; anchors.right: amountField.right}
+                        },
+                        State {
+                            name: "close"
+                            AnchorChanges { target: buyOrderArea; anchors.right: amountField.left}
+                        }
+                    ]
 
-                    onPressed: {
-                        click01.play()
-                        detectInteraction()
+                    transitions: [
+                        Transition {
+                            from: "*"
+                            to: "*"
+                            AnchorAnimation { duration: 300; easing.type: Easing.InOutCubic}
+                        }
+                    ]
+
+                    MouseArea {
+                        anchors.fill: parent
                     }
 
-                    onClicked: {
+                    Image {
+                        id: buyOrderArrow
+                        z: 4
+                        source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
+                        height: 18
+                        width: 18
+                        anchors.right: buyOrderArea.right
+                        anchors.rightMargin: 10
+                        anchors.top: buyOrderArea.top
+                        anchors.topMargin: 10
+                        state: buyOrderTracker == 1? "open" : "close"
+
+                        states: [
+                            State {
+                                name: "open"
+                                PropertyChanges { target: buyOrderArrow; rotation: 90}
+                            },
+                            State {
+                                name: "close"
+                                PropertyChanges { target: buyOrderArrow; rotation: -90}
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: "*"
+                                to: "*"
+                                NumberAnimation { target: buyOrderArrow; property: "rotation"; duration: 300; easing.type: Easing.InOutCubic}
+                            }
+                        ]
+
+                        Rectangle{
+                            height: 18
+                            width: 18
+                            radius: 10
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: "transparent"
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onPressed: {
+                                    click01.play()
+                                    detectInteraction()
+                                }
+
+                                onClicked: {
+                                    if (buyOrderTracker == 0) {
+                                        buyOrderTracker = 1
+                                        sellOrderTracker = 0
+                                    }
+                                    else {
+                                        buyOrderTracker = 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Label {
+                        id: buyOrderLabel
+                        z: 3
+                        text: "BUY ORDERS"
+                        color: buyOrderTracker == 1? themecolor : "#757575"
+                        font.pixelSize: 13
+                        font.family: xciteMobile.name
+                        anchors.horizontalCenter: buyOrderArrow.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.verticalCenterOffset: 19
+                        rotation: -90
                     }
                 }
-            }
 
-            Rectangle {
-                z: 3
-                width: (parent.width - 110)/2
-                height: 34
-                color: "transparent"
-                opacity: 0.5
-                border.color: "#E55541"
-                border.width: 1
-                anchors.right: sellButton.right
-                anchors.top: sellButton.top
-            }
+                Rectangle {
+                    id: sellOrderArea
+                    z:3
+                    anchors.right: parent.right
+                    anchors.rightMargin: -1
+                    anchors.leftMargin: sellOrderTracker == 1? 0 : 10
+                    anchors.top: amountField.top
+                    anchors.bottom: buyButton.bottom
+                    color: bgcolor
+                    border.color: sellOrderTracker == 1? themecolor : "#757575"
+                    border.width: 1
+                    state: sellOrderTracker == 1? "open" : "close"
+                    clip: true
 
-            Label {
-                id: sellBtnLabel
-                z: 3
-                text: "SELL"
-                color: "#E55541"
-                font.pixelSize: 16
-                font.family: xciteMobile.name
-                anchors.horizontalCenter: sellButton.horizontalCenter
-                anchors.verticalCenter: sellButton.verticalCenter
+                    states: [
+                        State {
+                            name: "open"
+                            AnchorChanges { target: sellOrderArea; anchors.left: amountField.left}
+                        },
+                        State {
+                            name: "close"
+                            AnchorChanges { target: sellOrderArea; anchors.left: amountField.right}
+                        }
+                    ]
+
+                    transitions: [
+                        Transition {
+                            from: "*"
+                            to: "*"
+                            AnchorAnimation { duration: 300; easing.type: Easing.InOutCubic}
+                        }
+                    ]
+
+                    MouseArea {
+                        anchors.fill: parent
+                    }
+
+                    Image {
+                        id: sellOrderArrow
+                        z: 4
+                        source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
+                        height: 18
+                        width: 18
+                        anchors.left: sellOrderArea.left
+                        anchors.leftMargin: 10
+                        anchors.top: sellOrderArea.top
+                        anchors.topMargin: 10
+                        state: sellOrderTracker == 1? "open" : "close"
+
+                        states: [
+                            State {
+                                name: "open"
+                                PropertyChanges { target: sellOrderArrow; rotation: -90}
+                            },
+                            State {
+                                name: "close"
+                                PropertyChanges { target: sellOrderArrow; rotation: 90}
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: "*"
+                                to: "*"
+                                NumberAnimation { target: sellOrderArrow; property: "rotation"; duration: 300; easing.type: Easing.InOutCubic}
+                            }
+                        ]
+
+                        Rectangle{
+                            height: 18
+                            width: 18
+                            radius: 10
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: "transparent"
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onPressed: {
+                                    click01.play()
+                                    detectInteraction()
+                                }
+
+                                onClicked: {
+                                    if (sellOrderTracker == 0) {
+                                        sellOrderTracker = 1
+                                        buyOrderTracker = 0
+                                    }
+                                    else {
+                                        sellOrderTracker = 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Label {
+                        id: sellOrderLabel
+                        z: 3
+                        text: "SELL ORDERS"
+                        color: sellOrderTracker == 1? themecolor : "#757575"
+                        font.pixelSize: 13
+                        font.family: xciteMobile.name
+                        anchors.horizontalCenter: sellOrderArrow.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.verticalCenterOffset: 19
+                        rotation: -90
+                    }
+                }
             }
         }
     }
@@ -797,6 +1148,38 @@ Rectangle {
         width: parent.width
         height: 100
         color: "transparent"
+
+        Image {
+            id: settingsIcon
+            source: 'qrc:/icons/mobile/settings-icon_01.svg'
+            anchors.left: parent.left
+            anchors.leftMargin: 30
+            anchors.verticalCenter: headingLayout.verticalCenter
+            width: 25
+            height: 25
+
+            Rectangle {
+                id: settingsButton
+                width: 25
+                height: 25
+                color: "transparent"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            MouseArea {
+                anchors.fill: settingsButton
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+
+                }
+            }
+        }
 
         Image {
             id: darklight
@@ -932,7 +1315,7 @@ Rectangle {
             anchors.left: parent.left
             anchors.leftMargin: 55
             anchors.bottom: xchangeHeader.bottom
-            anchors.bottomMargin: 5
+            anchors.bottomMargin: 10
             visible: coin1Tracker == 0
         }
 
@@ -1042,50 +1425,6 @@ Rectangle {
             }
         }
 
-        Label {
-            id: orders
-            z: 4
-            text: orderTracker == 0? "OPEN ORDERS" : "HISTORY"
-            font.pixelSize: 13
-            font.family: xciteMobile.name
-            color: themecolor
-            anchors.right: parent.right
-            anchors.rightMargin:28
-            anchors.bottom: xchangeHeader.bottom
-            anchors.bottomMargin: 5
-            font.bold: false
-            visible: exchangePageTracker == 0
-        }
-
-        Rectangle {
-            id: ordersButton
-            z: 4
-            anchors.left: orders.left
-            anchors.right: orders.right
-            height: orders.height
-            anchors.verticalCenter: orders.verticalCenter
-            color: "transparent"
-            visible: exchangePageTracker == 0
-
-            MouseArea {
-                anchors.fill: ordersButton
-
-                onPressed: {
-                    click01.play()
-                    detectInteraction()
-                }
-
-                onClicked: {
-                    if (orderTracker == 1) {
-                        orderTracker = 0
-                    }
-                    else {
-                        orderTracker = 1
-                    }
-                }
-            }
-        }
-
         Image {
             id: coin2Logo
             z: 4
@@ -1109,7 +1448,7 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin: 55
             anchors.bottom: xchangeHeader.bottom
-            anchors.bottomMargin: 5
+            anchors.bottomMargin: 10
             visible: exchangePageTracker == 1 && coin2Tracker == 0
         }
 
@@ -1219,7 +1558,7 @@ Rectangle {
             }
         }
     }
-    */
+    /*
     Image {
         id: underConstruction
         source: darktheme === true? 'qrc:/icons/mobile/construction-icon_01_white.svg' : 'qrc:/icons/mobile/construction-icon_01_black.svg'
@@ -1230,4 +1569,5 @@ Rectangle {
         anchors.verticalCenterOffset: -50
         anchors.horizontalCenter: parent.horizontalCenter
     }
+    */
 }

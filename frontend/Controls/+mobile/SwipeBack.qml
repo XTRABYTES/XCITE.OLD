@@ -53,13 +53,14 @@ Rectangle {
             resetValues()
         }
     }
-
+    /*
     MouseArea {
         id: swipeZone
         width: 25
         height: parent.height
         anchors.right: parent.right
         anchors.top: parent.top
+        propagateComposedEvents: true
 
         onPressed: {
             resetValues()
@@ -83,7 +84,7 @@ Rectangle {
             checkSwipe()
         }
     }
-
+    */
     DropShadow {
         anchors.fill: backButton
         source: backButton
