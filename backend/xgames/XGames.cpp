@@ -15,6 +15,7 @@ unsigned constexpr const_hash(char const *input) {
 void XGames::Initialize(){
 
 }
+/*
 void XGames::xgamesEntry(QByteArray obj){
      QJsonDocument json = QJsonDocument::fromJson(obj);
      QJsonObject jsonObj = json.object();
@@ -151,4 +152,5 @@ void XGames::receiveGameInviteResponse(QJsonObject obj) {
 
     emit responseGameInvite(user, game, gameID, accept);
 }
+*/
 

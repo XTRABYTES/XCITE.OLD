@@ -13,6 +13,7 @@ public:
     void Initialize();
 
 signals:
+    /*
     void sendNewMoveSucceed(QString player, QString game, QString gameID, QString move, QString moveID);
     void newMoveReceived(QString player, QString game, QString gameID, QString move, QString moveID);
     void newMoveConfirmed(QString player, QString game, QString gameID, QString move, QString moveID);
@@ -21,8 +22,10 @@ signals:
     void sendConfirmGameInviteSucceed(QString user, QString opponent, QString game, QString gameID, QString accept);
     void responseGameInvite(QString user, QString game, QString gameID, QString accept);
     void gameCommandFailed();
+    */
 
 public slots:
+    /*
     void sendGameToQueue(const QString player, QString game, QString gameID, QString move);
     void confirmGameSend(const QString player, QString game, QString gameID, QString move, QString moveID);
     void sendGameInvite(const QString user, QString opponent, QString game, QString gameID);
@@ -32,6 +35,7 @@ public slots:
     void receiveGameInvite(QJsonObject);
     void receiveGameInviteResponse(QJsonObject);
     void xgamesEntry(QByteArray obj);
+    */
 
 };
 
