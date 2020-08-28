@@ -235,6 +235,7 @@ ApplicationWindow {
     property int restoreTracker: 0
     property int pageTracker: 0
     property int exchangePageTracker: 0
+    property int exchangeNotifTracker: 1
     property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0

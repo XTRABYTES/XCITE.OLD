@@ -1227,7 +1227,7 @@ Rectangle {
 
             Label {
                 id: trading
-                text: "TRADES"
+                text: "MY TRADES"
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 color: view.currentIndex == 1 ? "#757575" : maincolor
@@ -1260,7 +1260,7 @@ Rectangle {
 
             Label {
                 id: balances
-                text: "BUY/SELL"
+                text: "EXCHANGE"
                 font.pixelSize: 12
                 font.family: xciteMobile.name
                 color: view.currentIndex == 0 ? "#757575" : maincolor
@@ -1426,6 +1426,18 @@ Rectangle {
         }
 
         Image {
+            id: exchangeIcon
+            z: 4
+            source: darktheme == true? "qrc:/icons/mobile/exchange_icon_01_light.svg" : "qrc:/icons/mobile/exchange_icon_01_dark.svg"
+            height: 20
+            width: 20
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: coinName.verticalCenter
+            visible: exchangePageTracker == 1
+        }
+
+        Image {
             id: coin2Logo
             z: 4
             source: getLogo(coin2Name.text)
@@ -1558,6 +1570,115 @@ Rectangle {
             }
         }
     }
+
+    Rectangle {
+        id: notification
+        z: 10
+        width: appWidth
+        height: appHeight
+        state: exchangeNotifTracker == 1? "up" : "down"
+        color: bgcolor
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(0, 0)
+            end: Qt.point(0, parent.height)
+            opacity: 0.05
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 1.0; color: maincolor }
+            }
+        }
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: notification; anchors.topMargin: 0}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: notification; anchors.topMargin: xchangeModal.height}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: notification; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+            }
+        ]
+
+        MouseArea {
+            anchors.fill: parent
+        }
+
+        Text {
+            id: warning
+            text: "This is only a preview of the user interface without any real trading functionality. You will NOT be able to execute any trades."
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignHCenter
+            width: parent.width - 56
+            color: themecolor
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -50
+        }
+
+        Rectangle {
+            id: okButton
+            z: 3
+            width: (parent.width - 56)/2
+            height: 34
+            color: maincolor
+            opacity: 0.5
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: warning.bottom
+            anchors.topMargin: 15
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    if (exchangeNotifTracker == 1) {
+                        exchangeNotifTracker = 0
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            z: 3
+            width: (parent.width - 56)/2
+            height: 34
+            color: "transparent"
+            border.color: maincolor
+            border.width: 1
+            anchors.left: okButton.left
+            anchors.top: okButton.top
+        }
+
+        Label {
+            id: okBtnLabel
+            z: 3
+            text: "UNDERSTOOD"
+            color: maincolor
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            anchors.horizontalCenter: okButton.horizontalCenter
+            anchors.verticalCenter: okButton.verticalCenter
+        }
+    }
+
     /*
     Image {
         id: underConstruction

@@ -347,5 +347,7 @@
         <file>icons/mobile/show_balance-icon_01_dark.svg</file>
         <file>icons/mobile/show_balance-icon_01_light.svg</file>
         <file>icons/mobile/chart_example.svg</file>
+        <file>icons/mobile/exchange_icon_01_dark.svg</file>
+        <file>icons/mobile/exchange_icon_01_light.svg</file>
     </qresource>
 </RCC>
