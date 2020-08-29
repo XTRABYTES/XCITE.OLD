@@ -141,7 +141,7 @@ void BrokerConnection::connectExchange(QString queueName){
        if (temporaryQueue->property("queue").toString() == "xchats"){
            xchatRobot.xchatEntry( message.payload());
        }else if(temporaryQueue->property("queue").toString() == "xgames"){
-           xgames.xgamesEntry( message.payload());
+           //xgames.xgamesEntry( message.payload());
        }else{
 
        }
