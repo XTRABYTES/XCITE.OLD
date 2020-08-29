@@ -27,8 +27,6 @@ void Explorer::DownloadManagerHandler(URLObject *url){
     //  connect(manager,  SIGNAL(readTimeout(QMap<QString,QVariant>)),this,SLOT(internetTimeout(QMap<QString,QVariant>)),Qt::UniqueConnection);
 
     connect(manager,  SIGNAL(readFinished(QByteArray,QMap<QString,QVariant>)), this,SLOT(DownloadManagerRouter(QByteArray,QMap<QString,QVariant>)),Qt::UniqueConnection);
-
-
 }
 
 void Explorer::DownloadManagerRouter(QByteArray response, QMap<QString,QVariant> props){

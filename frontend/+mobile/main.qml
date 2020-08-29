@@ -33,6 +33,7 @@ ApplicationWindow {
 
     Image {
         id: xbyLogo
+        z: 1
         source: 'qrc:/logos/xby_logo_tm.png'
         width: parent.width - 100
         fillMode: Image.PreserveAspectFit
@@ -3598,9 +3599,16 @@ ApplicationWindow {
         }
     }
 
+    Mobile.SwipeBack {
+        z: 100
+        anchors.right: parent.right
+        anchors.top: parent.top
+    }
+
     // Order of the pages
     StackView {
         id: mainRoot
+        z: 1
         anchors.fill: parent
         initialItem:
             Component{
@@ -3611,12 +3619,6 @@ ApplicationWindow {
                 autoPlay: true
             }
         }
-    }
-
-    Mobile.SwipeBack {
-        z: 100
-        anchors.right: parent.right
-        anchors.top: parent.top
     }
 
     Mobile.DeviceButtons {

@@ -986,8 +986,8 @@ Rectangle {
                         ]
 
                         Rectangle{
-                            height: 18
-                            width: 18
+                            height: 28
+                            width: 28
                             radius: 10
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -1097,8 +1097,8 @@ Rectangle {
                         ]
 
                         Rectangle{
-                            height: 18
-                            width: 18
+                            height: 28
+                            width: 28
                             radius: 10
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -1226,7 +1226,7 @@ Rectangle {
             visible: tradingTracker != 1
 
             Label {
-                id: trading
+                id: myTrades
                 text: "MY TRADES"
                 font.pixelSize: 12
                 font.family: xciteMobile.name
@@ -1238,8 +1238,8 @@ Rectangle {
                     width: trading.width
                     height: 2
                     color: maincolor
-                    anchors.top: trading.bottom
-                    anchors.left: trading.left
+                    anchors.top: parent.bottom
+                    anchors.left: parent.left
                     anchors.topMargin: 2
                     visible: view.currentIndex == 0
                 }
@@ -1259,7 +1259,7 @@ Rectangle {
             }
 
             Label {
-                id: balances
+                id: exchange
                 text: "EXCHANGE"
                 font.pixelSize: 12
                 font.family: xciteMobile.name
@@ -1271,8 +1271,8 @@ Rectangle {
                     width: balances.width
                     height: 2
                     color: maincolor
-                    anchors.top: balances.bottom
-                    anchors.left: balances.left
+                    anchors.top: parent.bottom
+                    anchors.left: parent.left
                     anchors.topMargin: 2
                     visible: view.currentIndex == 1
                 }

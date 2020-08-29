@@ -54,6 +54,7 @@ include(backend/support/QZXing/QZXing.pri)
 include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
 
 SOURCES +=  main/main.cpp \
+            backend/integrations/Cex.cpp \
             backend/support/ttt.cpp \
             backend/xchat/xchat.cpp \
             backend/xchat/xchataiml.cpp \
@@ -83,6 +84,7 @@ RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
 
 HEADERS  += backend/xchat/xchat.hpp \
+            backend/integrations/Cex.hpp \
             backend/support/ttt.h \
             backend/xchat/xchataiml.hpp \
             backend/xgames/XGames.hpp \

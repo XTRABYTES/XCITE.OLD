@@ -33,6 +33,7 @@
 #include "../backend/support/ReleaseChecker.hpp"
 #include "../backend/integrations/MarketValue.hpp"
 #include "../backend/integrations/Explorer.hpp"
+#include "../backend/integrations/Cex.hpp"
 #include "../backend/integrations/xutility_integration.hpp"
 #include "../backend/integrations/staticnet_integration.hpp"
 #include "../backend/support/ttt.h"
@@ -76,7 +77,11 @@ int main(int argc, char *argv[])
     // wire-up Explorer
     Explorer explorer;
     engine.rootContext()->setContextProperty("explorer", &explorer);
-    qDebug() << "EXPLORER WIRED UP";
+
+    // wire-up cex
+    Cex cex;
+    engine.rootContext()->setContextProperty("cex", &cex);
+    qDebug() << "CEX WIRED UP";
 
     // wire-up xutility_integration
     xutility_integration xUtil_int;
@@ -174,6 +179,8 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(getDetails(QString, QString)), &explorer, SLOT(getDetails(QString, QString)));
     QObject::connect(rootObject, SIGNAL(walletUpdate(QString, QString, QString)), &explorer, SLOT(WalletUpdate(QString, QString, QString)));
     QObject::connect(rootObject, SIGNAL(checkTxStatus(QString)), &explorer, SLOT(checkTxStatus(QString)));
+
+    // connect QML signals for Cex access
 
     // connect QML signal for ClipboardProxy
     QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));
