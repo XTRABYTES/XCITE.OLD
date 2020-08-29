@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(marketValueChangedSignal(QString)), &marketValue, SLOT(findCurrencyValue(QString)));
     QObject::connect(rootObject, SIGNAL(findAllMarketValues()), &marketValue, SLOT(findAllCurrencyValues()));
 
-    // connect QML signals for Explorer
+    // connect QML signals for Explorer access
     QObject::connect(rootObject, SIGNAL(updateBalanceSignal(QString, QString)), &explorer, SLOT(getBalanceEntireWallet(QString, QString)));
     QObject::connect(rootObject, SIGNAL(updateTransactions(QString, QString, QString)), &explorer, SLOT(getTransactionList(QString, QString, QString)));
     QObject::connect(rootObject, SIGNAL(getDetails(QString, QString)), &explorer, SLOT(getDetails(QString, QString)));

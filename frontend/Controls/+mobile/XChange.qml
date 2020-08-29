@@ -87,6 +87,39 @@ Rectangle {
     property int tradeTracker: 0
     property int buyOrderTracker: 0
     property int sellOrderTracker: 0
+
+    ListModel {
+        id: orderList
+        ListElement {
+            side: ""
+            price: ""
+            quantity: ""
+        }
+    }
+
+    ListModel {
+        id: tradeList
+        ListElement {
+            side: ""
+            price: ""
+            quantity: ""
+            cost: ""
+            time: ""
+        }
+    }
+
+    ListModel {
+        id: chartList
+        ListElement {
+            timestamp: ""
+            open: ""
+            high: ""
+            low: ""
+            close: ""
+            volume: ""
+        }
+    }
+
     /*
     Text {
         id: xchangeModalLabel
