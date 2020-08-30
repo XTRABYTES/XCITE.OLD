@@ -32,6 +32,7 @@ public:
 
 signals:
     //
+    void receivedCoinInfo(QString exchange, QString pair, QString low, QString high, QString last, QString change, QString quoteVolume, QString baseVolume, QString infoDate, QString infoTime);
 
 public slots:
     //

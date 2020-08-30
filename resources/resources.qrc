@@ -349,5 +349,8 @@
         <file>icons/mobile/chart_example.svg</file>
         <file>icons/mobile/exchange_icon_01_dark.svg</file>
         <file>icons/mobile/exchange_icon_01_light.svg</file>
+        <file>icons/mobile/probit_logo.png</file>
+        <file>icons/mobile/crex24_logo.png</file>
+        <file>icons/mobile/crex24_logo_02.png</file>
     </qresource>
 </RCC>

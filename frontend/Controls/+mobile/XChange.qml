@@ -31,13 +31,13 @@ Rectangle {
 
     onStateChanged: {
         coinListTracker = 0
-        newCoinPicklist = 0
-        newCoin2Picklist = 3
-        exchangePageTracker = 0
+        //newCoinPicklist = 0
+        //newCoin2Picklist = 3
         buyOrderTracker = 0
         sellOrderTracker = 0
         if (xchangeTracker == 1) {
-
+            updatingInfo = true
+            getCoinInfo(selectedExchange, exchangePair)
         }
         else {
 
@@ -80,6 +80,8 @@ Rectangle {
 
     property int favoritesTracker: 0
     property int chartTracker: 0
+    property string selectedExchange: "probit"
+    property string exchangePair: coinName.text.toUpperCase() + "-" + coin2Name.text.toUpperCase()
     property int myCoin: xchangeTracker == 1? newCoinPicklist : 0
     property int exchangeCoin: xchangeTracker == 1? newCoin2Picklist : 3
     property int orderTracker: 0
@@ -87,6 +89,14 @@ Rectangle {
     property int tradeTracker: 0
     property int buyOrderTracker: 0
     property int sellOrderTracker: 0
+    property string lastPrice: ""
+    property string lowPrice: ""
+    property string highPrice: ""
+    property string priceChange: ""
+    property var percChange: Number.fromLocaleString(Qt.locale("en_US"), priceChange)
+    property string volume1: ""
+    property string volume2: ""
+    property bool updatingInfo: false
 
     ListModel {
         id: orderList
@@ -120,19 +130,36 @@ Rectangle {
         }
     }
 
-    /*
-    Text {
-        id: xchangeModalLabel
-        text: "X-CHANGE"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 10
-        font.pixelSize: 20
-        font.family: xciteMobile.name
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        font.letterSpacing: 2
+    Connections {
+        target: cex
+
+        onReceivedCoinInfo: {
+            if (exchange === selectedExchange && pair === exchangePair) {
+                lowPrice = low
+                highPrice = high
+                lastPrice = last
+                priceChange = change
+                volume1 = baseVolume
+                volume2 = quoteVolume
+                exchangeInfoDate.text = infoDate
+                exchangeInfoTime.text = infoTime + " UCT"
+                updatingInfo = false
+            }
+        }
     }
-    */
+
+    Timer {
+        id: exchangeTimer
+        interval: 15000
+        repeat: true
+        running: xchangeTracker == 1
+
+        onTriggered: {
+            updatingInfo = true
+            getCoinInfo(selectedExchange, exchangePair)
+        }
+    }
+
     SwipeView {
         id: view
         z: 2
@@ -295,6 +322,32 @@ Rectangle {
                 }
 
                 Label {
+                    id: exchangeInfoDate
+                    z: 3
+                    text: "????-??-??"
+                    color: themecolor
+                    font.pixelSize: 8
+                    font.family: xciteMobile.name
+                    anchors.left: parent.left
+                    anchors.leftMargin: 28
+                    anchors.top: tradeHeader.bottom
+                    anchors.topMargin: 5
+                }
+
+                Label {
+                    id: exchangeInfoTime
+                    z: 3
+                    text: "??:??:????"
+                    color: themecolor
+                    font.pixelSize: 8
+                    font.family: xciteMobile.name
+                    anchors.right: parent.right
+                    anchors.rightMargin: 28
+                    anchors.top: tradeHeader.bottom
+                    anchors.topMargin: 5
+                }
+
+                Label {
                     id: lastLabel
                     z: 3
                     text: "Last:"
@@ -304,7 +357,20 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: 28
                     anchors.top: tradeHeader.bottom
-                    anchors.topMargin: 15
+                    anchors.topMargin: 20
+                }
+
+                Label {
+                    id: lastAmount
+                    z: 3
+                    text: lastPrice
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.right: parent.horizontalCenter
+                    anchors.rightMargin: 5
+                    anchors.top: tradeHeader.bottom
+                    anchors.topMargin: 20
                 }
 
                 Label {
@@ -321,6 +387,19 @@ Rectangle {
                 }
 
                 Label {
+                    id: lowAmount
+                    z: 3
+                    text: lowPrice
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.right: parent.horizontalCenter
+                    anchors.rightMargin: 5
+                    anchors.top: lastLabel.bottom
+                    anchors.topMargin: 5
+                }
+
+                Label {
                     id: changeLabel
                     z: 3
                     text: "Change:"
@@ -330,7 +409,20 @@ Rectangle {
                     anchors.left: parent.horizontalCenter
                     anchors.leftMargin: 5
                     anchors.top: tradeHeader.bottom
-                    anchors.topMargin: 15
+                    anchors.topMargin: 20
+                }
+
+                Label {
+                    id: changeAmount
+                    z: 3
+                    text: priceChange + " %"
+                    color: percChange >= 0? "#4BBE2E" : "#E55541"
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.right: parent.right
+                    anchors.rightMargin: 28
+                    anchors.top: tradeHeader.bottom
+                    anchors.topMargin: 20
                 }
 
                 Label {
@@ -347,15 +439,41 @@ Rectangle {
                 }
 
                 Label {
+                    id: highAmount
+                    z: 3
+                    text: highPrice
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.right: parent.right
+                    anchors.rightMargin: 28
+                    anchors.top: changeLabel.bottom
+                    anchors.topMargin: 5
+                }
+
+                Label {
                     id: volumeLabel
                     z: 3
-                    text: "Volume:"
+                    text: "Volume (24h):"
                     color: themecolor
                     font.pixelSize: 13
                     font.family: xciteMobile.name
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: highLabel.bottom
                     anchors.topMargin: 10
+                }
+
+                Label {
+                    id: volumeCoin1Amount
+                    z: 3
+                    text: volume1
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.right: volumeCoin1Label.left
+                    anchors.rightMargin: 2
+                    anchors.top: volumeLabel.bottom
+                    anchors.topMargin: 5
                 }
 
                 Label {
@@ -367,6 +485,19 @@ Rectangle {
                     font.family: xciteMobile.name
                     anchors.right: parent.horizontalCenter
                     anchors.rightMargin: 5
+                    anchors.top: volumeLabel.bottom
+                    anchors.topMargin: 5
+                }
+
+                Label {
+                    id: volumeCoin2Amount
+                    z: 3
+                    text: volume2
+                    color: themecolor
+                    font.pixelSize: 13
+                    font.family: xciteMobile.name
+                    anchors.right: volumeCoin2Label.left
+                    anchors.rightMargin: 2
                     anchors.top: volumeLabel.bottom
                     anchors.topMargin: 5
                 }
@@ -614,7 +745,7 @@ Rectangle {
                     }
 
                     Rectangle {
-                        id: tradeList
+                        id: tradeListArea
                         z: 3
                         width: parent.width
                         height: 145
@@ -637,11 +768,11 @@ Rectangle {
                         states: [
                             State {
                                 name: "up"
-                                PropertyChanges { target: tradeList; anchors.topMargin: -(tradeList.height + 10)}
+                                PropertyChanges { target: tradeListArea; anchors.topMargin: -(tradeListArea.height + 10)}
                             },
                             State {
                                 name: "down"
-                                PropertyChanges { target: tradeList; anchors.topMargin: 40}
+                                PropertyChanges { target: tradeListArea; anchors.topMargin: 40}
                             }
                         ]
 
@@ -649,7 +780,7 @@ Rectangle {
                             Transition {
                                 from: "*"
                                 to: "*"
-                                NumberAnimation { target: tradeList; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+                                NumberAnimation { target: tradeListArea; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
                             }
                         ]
                     }
@@ -1171,6 +1302,185 @@ Rectangle {
                         rotation: -90
                     }
                 }
+
+                Image {
+                    id: exchangeArrow1
+                    z: 4
+                    source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
+                    height: 18
+                    width: 18
+                    rotation: 90
+                    anchors.right: exchangeView.left
+                    anchors.rightMargin: 10
+                    anchors.verticalCenter: exchangeView.verticalCenter
+                    visible: exchangeView.currentIndex == 1
+
+                    Rectangle{
+                        height: 18
+                        width: 18
+                        radius: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        color: "transparent"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        enabled: updatingInfo == false
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            exchangeView.currentIndex = 0
+                            selectedExchange = "probit"
+                            updatingInfo = true
+                            lowPrice = "---"
+                            highPrice = "---"
+                            lastPrice = "---"
+                            priceChange = "---"
+                            volume1 = "---"
+                            volume2 = "---"
+                            exchangeInfoDate.text = "????-??-??"
+                            exchangeInfoTime.text = "??:??:??"
+                            getCoinInfo(selectedExchange, exchangePair)
+                        }
+                    }
+                }
+
+                Image {
+                    id: exchangeArrow2
+                    z: 4
+                    source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
+                    height: 18
+                    width: 18
+                    rotation: -90
+                    anchors.left: exchangeView.right
+                    anchors.leftMargin: 10
+                    anchors.verticalCenter: exchangeView.verticalCenter
+                    visible: exchangeView.currentIndex == 0
+
+                    Rectangle{
+                        height: 18
+                        width: 18
+                        radius: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        color: "transparent"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        enabled: updatingInfo == false
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            exchangeView.currentIndex = 1
+                            selectedExchange = "crex24"
+                            updatingInfo = true
+                            lowPrice = "---"
+                            highPrice = "---"
+                            lastPrice = "---"
+                            priceChange = "---"
+                            volume1 = "---"
+                            volume2 = "---"
+                            exchangeInfoDate.text = "????-??-??"
+                            exchangeInfoTime.text = "??:??:??"
+                            getCoinInfo(selectedExchange, exchangePair)
+                        }
+                    }
+                }
+
+                SwipeView {
+                    id: exchangeView
+                    z: 3
+                    width: totalField.width
+                    height: 70
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: buyButton.bottom
+                    anchors.topMargin: 5
+                    currentIndex: 0
+                    interactive: false
+                    clip: true
+
+                    Item {
+                        id: probitForm
+
+                        Rectangle {
+                           width: parent.width
+                           height: 70
+                           color: "transparent"
+                           anchors.horizontalCenter: parent.horizontalCenter
+                           anchors.top: parent.top
+
+                           Image {
+                               id: probitImg
+                               z: 3
+                               source: getExchangeLogo("probit")
+                               height: 50
+                               fillMode: Image.PreserveAspectFit
+                               anchors.horizontalCenter: parent.horizontalCenter
+                               anchors.verticalCenter: parent.verticalCenter
+                           }
+                        }
+                    }
+
+                    Item {
+                        id: crex24Form
+
+                        Rectangle {
+                           width: parent.width
+                           height: 70
+                           color: "transparent"
+                           anchors.horizontalCenter: parent.horizontalCenter
+                           anchors.top: parent.top
+
+                           Image {
+                               id: crex24Img
+                               z: 3
+                               source: getExchangeLogo("crex24")
+                               height: 50
+                               fillMode: Image.PreserveAspectFit
+                               anchors.horizontalCenter: parent.horizontalCenter
+                               anchors.verticalCenter: parent.verticalCenter
+                           }
+                        }
+                    }
+                }
+
+                Item {
+                    z: 3
+                    height: 5
+                    width: 15
+                    anchors.top: exchangeView.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Rectangle {
+                        id: page1
+                        height: exchangeView.currentIndex == 0? 7 : 5
+                        width: exchangeView.currentIndex == 0? 7 : 5
+                        radius: exchangeView.currentIndex == 0? 7 : 5
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: exchangeView.currentIndex == 0? maincolor : "#757575"
+                    }
+
+                    Rectangle {
+                        id: page2
+                        height: exchangeView.currentIndex == 1? 7 : 5
+                        width: exchangeView.currentIndex == 1? 7 : 5
+                        radius: exchangeView.currentIndex == 1? 7 : 5
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: exchangeView.currentIndex == 1? maincolor : "#757575"
+                    }
+                }
             }
         }
     }
@@ -1268,7 +1578,7 @@ Rectangle {
 
                 Rectangle {
                     id: titleLine
-                    width: trading.width
+                    width: myTrades.width
                     height: 2
                     color: maincolor
                     anchors.top: parent.bottom
@@ -1301,7 +1611,7 @@ Rectangle {
 
                 Rectangle {
                     id: titleLine2
-                    width: balances.width
+                    width: exchange.width
                     height: 2
                     color: maincolor
                     anchors.top: parent.bottom
@@ -1350,6 +1660,19 @@ Rectangle {
             anchors.bottom: xchangeHeader.bottom
             anchors.bottomMargin: 10
             visible: coin1Tracker == 0
+
+            onTextChanged: {
+                updatingInfo = true
+                lowPrice = "---"
+                highPrice = "---"
+                lastPrice = "---"
+                priceChange = "---"
+                volume1 = "---"
+                volume2 = "---"
+                exchangeInfoDate.text = "????-??-??"
+                exchangeInfoTime.text = "??:??:??"
+                getCoinInfo(selectedExchange, exchangePair)
+            }
         }
 
         Image {
@@ -1375,6 +1698,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton1
+                enabled: updatingInfo == false
 
                 onPressed: {
                     click01.play()
@@ -1467,7 +1791,18 @@ Rectangle {
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: coinName.verticalCenter
-            visible: exchangePageTracker == 1
+            visible: exchangePageTracker == 1 && updatingInfo == false
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: coinName.verticalCenter
+            playing: updatingInfo == true
+            visible: updatingInfo == true
         }
 
         Image {
@@ -1495,6 +1830,19 @@ Rectangle {
             anchors.bottom: xchangeHeader.bottom
             anchors.bottomMargin: 10
             visible: exchangePageTracker == 1 && coin2Tracker == 0
+
+            onTextChanged: {
+                updatingInfo = true
+                lowPrice = "---"
+                highPrice = "---"
+                lastPrice = "---"
+                priceChange = "---"
+                volume1 = "---"
+                volume2 = "---"
+                exchangeInfoDate.text = "????-??-??"
+                exchangeInfoTime.text = "??:??:??"
+                getCoinInfo(selectedExchange, exchangePair)
+            }
         }
 
         Image {
@@ -1520,6 +1868,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton2
+                enabled: updatingInfo == false
 
                 onPressed: {
                     click01.play()

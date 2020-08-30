@@ -197,5 +197,6 @@
         <file>Controls/+mobile/XPing.qml</file>
         <file>Controls/+mobile/ClickToLogout.qml</file>
         <file>+mobile/RestoreAccount.qml</file>
+        <file>Controls/+mobile/XChangeSettings.qml</file>
     </qresource>
 </RCC>

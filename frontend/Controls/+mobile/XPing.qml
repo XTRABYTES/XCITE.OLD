@@ -500,6 +500,11 @@ Rectangle {
                     xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
                     msgList.positionViewAtEnd()
                 }
+                else if (replyArray[0] === "exchange") {
+                    xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
+                    msgList.positionViewAtEnd()
+                }
+
                 //}
             }
         }

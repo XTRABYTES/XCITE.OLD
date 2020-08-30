@@ -181,6 +181,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(checkTxStatus(QString)), &explorer, SLOT(checkTxStatus(QString)));
 
     // connect QML signals for Cex access
+    QObject::connect(rootObject, SIGNAL(getCoinInfo(QString, QString)), &cex, SLOT(getCoinInfo(QString, QString)));
 
     // connect QML signal for ClipboardProxy
     QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));

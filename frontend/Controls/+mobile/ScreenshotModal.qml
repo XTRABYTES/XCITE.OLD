@@ -209,10 +209,9 @@ Rectangle {
     Rectangle {
         id: qrBorder2
         radius: 4
+        height: qrBorder1.height
         width: height
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: privateKeyLabel.top
-        anchors.bottomMargin: 10
         anchors.top: privateKeyTextLabel.bottom
         anchors.topMargin: 5
         color: "#FFFFFF"
@@ -237,8 +236,8 @@ Rectangle {
         width: (implicitWidth/2) + 5
         text: walletList.get(walletIndex).privatekey
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: closeScreenshotModal.top
-        anchors.bottomMargin: 40
+        anchors.top: qrBorder2.bottom
+        anchors.topMargin: 10
         maximumLineCount: 3
         horizontalAlignment: Text.AlignLeft
         wrapMode: Text.WrapAnywhere

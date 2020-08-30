@@ -105,6 +105,10 @@ ApplicationWindow {
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
 
+        exchangeList.setProperty(0, "name", "crex24")
+        exchangeList.setProperty(0, "logo", 'qrc:/icons/mobile/crex24_logo_02.png')
+        exchangeList.append({"name": "probit", "logo": 'qrc:/icons/mobile/probit_logo.png'})
+
 
         tttButtonList.setProperty(0, "number", "1");
         tttButtonList.setProperty(0, "played", false);
@@ -325,7 +329,7 @@ ApplicationWindow {
     property int networkError: 0
     property int photoSelect: 0
     property int newCoinPicklist: 0
-    property int newCoin2Picklist: 0
+    property int newCoin2Picklist: 3
     property int newCoinSelect: 0
     property int newWalletPicklist: 0
     property int newWalletSelect: 0
@@ -566,6 +570,7 @@ ApplicationWindow {
     signal clearUtxoList()
     signal requestQueue()
     signal setQueue(string queue)
+    signal getCoinInfo(string exchange, string pair)
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {
@@ -1478,6 +1483,16 @@ ApplicationWindow {
                 coinIndex = coinList.get(i)
             }
         }
+    }
+
+    function getExchangeLogo(exchange) {
+        var exchangeLogo
+        for(var i = 0; i < exchangeList.count; i ++) {
+            if (exchangeList.get(i).name === exchange) {
+                exchangeLogo = exchangeList.get(i).logo
+            }
+        }
+        return exchangeLogo
     }
 
     function checkNotifications() {
@@ -3331,6 +3346,14 @@ ApplicationWindow {
             amount: 0
             fee: 0
             used: 0
+        }
+    }
+
+    ListModel {
+        id: exchangeList
+        ListElement {
+            name: ""
+            logo: 'qrc:/icons/mobile/crex24_logo.svg'
         }
     }
 

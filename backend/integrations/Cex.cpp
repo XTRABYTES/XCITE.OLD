@@ -161,7 +161,142 @@ void Cex::getOrderBook(QString exchange, QString pair) {
 }
 
 void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
+    QString exchange = props.value("exchange").toString();
+    QString pair = props.value("pair").toString();
+    QJsonDocument jsonResponse = QJsonDocument::fromJson(response);
 
+    QString low = "";
+    QString high = "";
+    QString last = "";
+    QString change = "";
+    QString quoteVolume = "";
+    QString baseVolume ="";
+    QString infoDate = "";
+    QString infoTime = "";
+
+    if (exchange == "crex24") {
+        QJsonObject data = jsonResponse.object();
+        if (data.contains("errorDescription")) {
+            low = "n/a";
+            high = "n/a";
+            last = "n/a";
+            change = "n/a";
+            quoteVolume = "n/a";
+            baseVolume = "n/a";
+            infoDate = "????-??-??";
+            infoTime = "??:??:??";
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorDescription").toString());
+            emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
+        }
+        else {
+            QString strJson(jsonResponse.toJson(QJsonDocument::Compact));
+            strJson.remove(0, 1);
+            strJson.chop(1);
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", info: " + strJson);
+            QJsonDocument doc = QJsonDocument::fromJson(strJson.toUtf8());
+            QJsonObject data = doc.object();
+            double lowdb = 0;
+            double highdb = 0;
+            double lastdb = 0;
+            double changedb = 0;
+            double quoteVoldb = 0;
+            double baseVoldb = 0;
+            try {
+                lowdb = data.value("low").toDouble();
+                low = QString::number(lowdb, 'f', 8);
+                highdb = data.value("high").toDouble();
+                high = QString::number(highdb, 'f', 8);
+                lastdb = data.value("last").toDouble();
+                last = QString::number(lastdb, 'f', 8);
+                changedb = data.value("percentChange").toDouble();
+                change = QString::number(changedb, 'f', 2);
+                quoteVoldb = data.value("quoteVolume").toDouble();
+                quoteVolume = QString::number(quoteVoldb);
+                baseVoldb = data.value("baseVolume").toDouble();
+                baseVolume = QString::number(baseVoldb);
+                QString dateTimeInfo = data.value("timestamp").toString();
+                QDateTime date = QDateTime::fromString(dateTimeInfo,"yyyy-MM-ddThh:mm:ssZ");
+                qint64 epoch = date.toMSecsSinceEpoch();
+                QDateTime local = QDateTime::fromMSecsSinceEpoch(epoch, Qt::LocalTime);
+                dateTimeInfo = local.toString("yyyy-MM-ddThh:mm:ss");
+                QStringList dateAndTime = dateTimeInfo.split("T");
+                infoDate = dateAndTime.at(0);
+                infoTime = dateAndTime.at(1);
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", low: " + low + ", high: " + high + ",last: " + last + ", change: " + change + ", quote-volume: " + quoteVolume + ", base-volume: " + baseVolume + ", date: " + infoDate + ", time: " + infoTime);
+                emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
+            }
+            catch (...) {
+                low = "n/a";
+                high = "n/a";
+                last = "n/a";
+                change = "n/a";
+                quoteVolume = "n/a";
+                baseVolume = "n/a";
+                infoDate = "????-??-??";
+                infoTime = "??:??:??";
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract values" );
+                emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
+            }
+        }
+    }
+    else if (exchange == "probit") {
+        QJsonObject data = jsonResponse.object();
+        if (data.contains("errorCode")) {
+            low = "n/a";
+            high = "n/a";
+            last = "n/a";
+            change = "n/a";
+            quoteVolume = "n/a";
+            baseVolume = "n/a";
+            infoDate = "????-??-??";
+            infoTime = "??:??:??";
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorCode").toString());
+            emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
+        }
+        else {
+            QString strJson(jsonResponse.toJson(QJsonDocument::Compact));
+            strJson.remove(0, 9);
+            strJson.chop(2);
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", info: " + strJson);
+            QJsonDocument doc = QJsonDocument::fromJson(strJson.toUtf8());
+            data = doc.object();
+            try {
+                low = data.value("low").toString();
+                high = data.value("high").toString();
+                last = data.value("last").toString();
+                change = data.value("change").toString();
+                double lastInt = low.toDouble();
+                double changeInt = change.toDouble();
+                double oldInt = lastInt - changeInt;
+                double changePerc = (changeInt / oldInt) * 100;
+                change = QString::number(changePerc,'f', 2);
+                quoteVolume = data.value("quote_volume").toString();
+                baseVolume = data.value("base_volume").toString();
+                QString dateTimeInfo = data.value("time").toString();
+                QDateTime date = QDateTime::fromString(dateTimeInfo,"yyyy-MM-ddThh:mm:ss.zzzZ");
+                qint64 epoch = date.toMSecsSinceEpoch();
+                QDateTime local = QDateTime::fromMSecsSinceEpoch(epoch, Qt::LocalTime);
+                dateTimeInfo = local.toString("yyyy-MM-ddThh:mm:ss");
+                QStringList dateAndTime = dateTimeInfo.split("T");
+                infoDate = dateAndTime.at(0);
+                infoTime = dateAndTime.at(1);
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", low: " + low + ", high: " + high + ",last: " + last + ", change: " + change + ", quote-volume: " + quoteVolume + ", base-volume: " + baseVolume + ", date: " + infoDate + ", time: " + infoTime);
+                emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
+            }
+            catch (...) {
+                low = "n/a";
+                high = "n/a";
+                last = "n/a";
+                change = "n/a";
+                quoteVolume = "n/a";
+                baseVolume = "n/a";
+                infoDate = "????-??-??";
+                infoTime = "??:??:??";
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract values" );
+                emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
+            }
+        }
+    }
 }
 
 void Cex::getRecentTradesSlot(QByteArray response, QMap<QString, QVariant> props) {
