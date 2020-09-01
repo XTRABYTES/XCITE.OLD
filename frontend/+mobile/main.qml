@@ -571,6 +571,7 @@ ApplicationWindow {
     signal requestQueue()
     signal setQueue(string queue)
     signal getCoinInfo(string exchange, string pair)
+    signal getRecentTrades(string exchange, string pair, string limit)
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {

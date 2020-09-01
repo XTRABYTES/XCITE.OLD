@@ -198,5 +198,6 @@
         <file>Controls/+mobile/ClickToLogout.qml</file>
         <file>+mobile/RestoreAccount.qml</file>
         <file>Controls/+mobile/XChangeSettings.qml</file>
+        <file>Controls/+mobile/XChangeRecentTradeList.qml</file>
     </qresource>
 </RCC>

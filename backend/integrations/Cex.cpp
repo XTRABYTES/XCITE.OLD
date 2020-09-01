@@ -66,19 +66,33 @@ void Cex::getCoinInfo(QString exchange, QString pair) {
 void Cex::getRecentTrades(QString exchange, QString pair, QString limit) {
     QUrl url;
     if (exchange == "probit") {
-        // time format: YYYY-mm-ddThh:ii:ssZ
-        startTime = QDateTime::currentMSecsSinceEpoch();
-        QDateTime timestamp1 = QDateTime::fromMSecsSinceEpoch(startTime);
-        startTimeStr = timestamp1.toString("YYYY-mm-ddThh:ii:ssZ");
-        endTime = QDateTime::currentMSecsSinceEpoch() - 86400000;
-        QDateTime timestamp2 = QDateTime::fromMSecsSinceEpoch(endTime);
-        endTimeStr = timestamp2.toString("YYYY-mm-ddThh:ii:ssZ");
+        // time format: yyyy-MM-ddTHH%3Amm%3Ass.zzzZ
+        QString tradeDate;
+        QString tradeHour;
+        QString tradeMin;
+        QString tradeSec;
+        endTime = QDateTime::currentMSecsSinceEpoch();
+        QDateTime timestamp1 = QDateTime::fromMSecsSinceEpoch(endTime);
+        tradeDate = timestamp1.toString("yyyy-MM-dd");
+        tradeHour = timestamp1.toString("HH");
+        tradeMin = timestamp1.toString("mm");
+        tradeSec = timestamp1.toString("ss");
+        endTimeStr = tradeDate + "T" + tradeHour + "%3A" + tradeMin + "%3A" + tradeSec + ".000Z";
+        startTime = QDateTime::currentMSecsSinceEpoch() - 432000000;
+        QDateTime timestamp2 = QDateTime::fromMSecsSinceEpoch(startTime);
+        tradeDate = timestamp2.toString("yyyy-MM-dd");
+        tradeHour = timestamp2.toString("HH");
+        tradeMin = timestamp2.toString("mm");
+        tradeSec = timestamp2.toString("ss");
+        startTimeStr = tradeDate + "T" + tradeHour + "%3A" + tradeMin + "%3A" + tradeSec + ".000Z";
 
         url = "https://api.probit.com/api/exchange/v1/trade?market_id=" + pair + "&start_time=" + startTimeStr + "&end_time=" + endTimeStr + "&limit=" + limit;
     }
     else if (exchange == "crex24") {
-        url = "https://api.crex24.com/v2/public/recentTrades?instrument=" + pair + "LTC-BTC&limit=" + limit;
+        url = "https://api.crex24.com/v2/public/recentTrades?instrument=" + pair + "&limit=" + limit;
     }
+
+    xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", url: " + url.toString().toLatin1());
 
     URLObject urlObj {QUrl(url)};
     urlObj.addProperty("route","getRecentTradesSlot");
@@ -300,7 +314,119 @@ void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
 }
 
 void Cex::getRecentTradesSlot(QByteArray response, QMap<QString, QVariant> props) {
+    QString exchange = props.value("exchange").toString();
+    QString pair = props.value("pair").toString();
+    QJsonDocument jsonResponse = QJsonDocument::fromJson(response);
+    QJsonArray tradesList;
+    QString side;
+    QString price;
+    QString quantity;
+    QString timestamp;
+    QString tradeDate;
+    QString tradeTime;
 
+    if (exchange == "probit") {
+        QJsonObject data = jsonResponse.object();
+        QString strJson(jsonResponse.toJson(QJsonDocument::Compact));
+        xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + strJson );
+        if (data.contains("errorCode")) {
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorCode").toString());
+            emit receivedRecentTrades(exchange, pair, "");
+        }
+        else {
+            QJsonArray trades = jsonResponse.object().value("data").toArray();
+            QJsonDocument doc;
+            doc.setArray(trades);
+            QString dataToString(doc.toJson());
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + dataToString );
+            try {
+                int i;
+                int count = trades.size();
+                for (i = 0; i < count; ++i) {
+                    QJsonObject obj = trades.at(i).toObject();
+                    side = obj.value("side").toString();
+                    price = obj.value("price").toString();
+                    double pricedb = price.toDouble();
+                    price = QString::number(pricedb, 'f', 8);
+                    quantity = obj.value("quantity").toString();
+                    double quantitydb = quantity.toDouble();
+                    quantity = QString::number(quantitydb, 'f', 8);
+                    timestamp = obj.value("time").toString();
+                    timestamp.chop(5);
+                    QStringList timeStrLst = timestamp.split("T");
+                    tradeDate = timeStrLst.at(0);
+                    tradeTime = timeStrLst.at(1);
+                    QJsonObject arrayItem;
+                    arrayItem.insert("side", side);
+                    arrayItem.insert("price", price);
+                    arrayItem.insert("quantity", quantity);
+                    arrayItem.insert("date", tradeDate);
+                    arrayItem.insert("time", tradeTime);
+                    tradesList.append(arrayItem);
+                }
+                QJsonDocument arrayDoc;
+                arrayDoc.setArray(tradesList);
+                QString tradeString(arrayDoc.toJson());
+
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + tradeString );
+                emit receivedRecentTrades(exchange, pair, tradeString);
+            }
+            catch (...) {
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract trades" );
+                emit receivedRecentTrades(exchange, pair, "");
+            }
+
+        }
+    }
+    else if (exchange == "crex24") {
+        QJsonObject data = jsonResponse.object();
+        if (data.contains("errorDescription")) {
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorDescription").toString());
+            emit receivedRecentTrades(exchange, pair, "");
+        }
+        else {
+            QJsonArray trades = jsonResponse.array();
+            QJsonDocument doc;
+            doc.setArray(trades);
+            QString dataToString(doc.toJson());
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + dataToString );
+            try {
+                int i;
+                int count = trades.size();
+                for (i = 0; i < count; ++i) {
+                    QJsonObject obj = trades.at(i).toObject();
+                    side = obj.value("side").toString();
+                    double pricedb = obj.value("price").toDouble();
+                    price = QString::number(pricedb,'f', 8);
+                    double quantitydb = obj.value("volume").toDouble();
+                    quantity = QString::number(quantitydb, 'f', 8);
+                    timestamp = obj.value("timestamp").toString();
+                    timestamp.chop(1);
+                    QStringList timeStrLst = timestamp.split("T");
+                    tradeDate = timeStrLst.at(0);
+                    tradeTime = timeStrLst.at(1);
+                    QJsonObject arrayItem;
+                    arrayItem.insert("side", side);
+                    arrayItem.insert("price", price);
+                    arrayItem.insert("quantity", quantity);
+                    arrayItem.insert("date", tradeDate);
+                    arrayItem.insert("time", tradeTime);
+                    tradesList.append(arrayItem);
+                }
+                QJsonDocument arrayDoc;
+                arrayDoc.setArray(tradesList);
+                QString tradeString(arrayDoc.toJson());
+
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + tradeString );
+                emit receivedRecentTrades(exchange, pair, tradeString);
+            }
+            catch (...) {
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract trades" );
+                emit receivedRecentTrades(exchange, pair, "");
+            }
+
+        }
+    }
 }
 
 void Cex::getOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {

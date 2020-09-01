@@ -37,6 +37,7 @@ Rectangle {
         sellOrderTracker = 0
         if (xchangeTracker == 1) {
             updatingInfo = true
+            tradeList.clear()
             getCoinInfo(selectedExchange, exchangePair)
         }
         else {
@@ -97,6 +98,19 @@ Rectangle {
     property string volume1: ""
     property string volume2: ""
     property bool updatingInfo: false
+    property bool updatingTrades: false
+
+
+    function loadTradeList(trades) {
+        if (typeof trades !== "undefined") {
+            tradeList.clear();
+            var obj = JSON.parse(trades);
+            for (var i in obj){
+                var data = obj[i];
+                tradeList.append(data);
+            }
+        }
+    }
 
     ListModel {
         id: orderList
@@ -113,7 +127,7 @@ Rectangle {
             side: ""
             price: ""
             quantity: ""
-            cost: ""
+            date: ""
             time: ""
         }
     }
@@ -146,6 +160,13 @@ Rectangle {
                 updatingInfo = false
             }
         }
+
+        onReceivedRecentTrades: {
+            if (exchange === selectedExchange && pair === exchangePair) {
+                loadTradeList(recentTradesList)
+                updatingTrades = false
+            }
+        }
     }
 
     Timer {
@@ -157,6 +178,9 @@ Rectangle {
         onTriggered: {
             updatingInfo = true
             getCoinInfo(selectedExchange, exchangePair)
+            if (tradeTracker == 1) {
+                getRecentTrades(selectedExchange, exchangePair, "20")
+            }
         }
     }
 
@@ -656,6 +680,7 @@ Rectangle {
 
                         MouseArea {
                             anchors.fill: tradeButton
+                            enabled: updatingInfo == false
 
                             onPressed: {
                                 click01.play()
@@ -665,6 +690,7 @@ Rectangle {
                             onClicked: {
                                 if (tradeTracker == 0) {
                                     tradeTracker = 1
+                                    getRecentTrades(selectedExchange, exchangePair, "20")
                                 }
                                 else {
                                     tradeTracker = 0
@@ -754,15 +780,13 @@ Rectangle {
                         anchors.top: tradeChartArea.top
                         state: tradeTracker == 0? "up" : "down"
 
-                        Label {
-                            z: 3
-                            text: "no trades available for now"
-                            font.pixelSize: 18
-                            font.family: xciteMobile.name
-                            color: themecolor
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
-                            font.bold: true
+                        property real listAreaTop: anchors.topMargin
+
+                        Mobile.XChangeRecentTradeList {
+                            id: myRecentTrades
+                            list: tradeList
+                            exchange: selectedExchange
+                            coin : coinName.text
                         }
 
                         states: [
@@ -783,6 +807,15 @@ Rectangle {
                                 NumberAnimation { target: tradeListArea; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
                             }
                         ]
+
+                        Rectangle {
+                            width: parent.width
+                            height: 1
+                            color: themecolor
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.bottom: parent.bottom
+                            visible: parent.listAreaTop != -(tradeListArea.height + 10)
+                        }
                     }
                 }
 
@@ -1326,7 +1359,7 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
-                        enabled: updatingInfo == false
+                        enabled: updatingInfo == false && updatingTrades == false
 
                         onPressed: {
                             click01.play()
@@ -1345,6 +1378,7 @@ Rectangle {
                             volume2 = "---"
                             exchangeInfoDate.text = "????-??-??"
                             exchangeInfoTime.text = "??:??:??"
+                            tradeList.clear()
                             getCoinInfo(selectedExchange, exchangePair)
                         }
                     }
@@ -1373,7 +1407,7 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
-                        enabled: updatingInfo == false
+                        enabled: updatingInfo == false && updatingTrades == false
 
                         onPressed: {
                             click01.play()
@@ -1392,6 +1426,7 @@ Rectangle {
                             volume2 = "---"
                             exchangeInfoDate.text = "????-??-??"
                             exchangeInfoTime.text = "??:??:??"
+                            tradeList.clear()
                             getCoinInfo(selectedExchange, exchangePair)
                         }
                     }
@@ -1671,6 +1706,7 @@ Rectangle {
                 volume2 = "---"
                 exchangeInfoDate.text = "????-??-??"
                 exchangeInfoTime.text = "??:??:??"
+                tradeList.clear()
                 getCoinInfo(selectedExchange, exchangePair)
             }
         }
@@ -1841,6 +1877,7 @@ Rectangle {
                 volume2 = "---"
                 exchangeInfoDate.text = "????-??-??"
                 exchangeInfoTime.text = "??:??:??"
+                tradeList.clear()
                 getCoinInfo(selectedExchange, exchangePair)
             }
         }

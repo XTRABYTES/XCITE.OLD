@@ -33,7 +33,7 @@ public:
 signals:
     //
     void receivedCoinInfo(QString exchange, QString pair, QString low, QString high, QString last, QString change, QString quoteVolume, QString baseVolume, QString infoDate, QString infoTime);
-
+    void receivedRecentTrades(QString exchange, QString pair, QString recentTradesList);
 public slots:
     //
     void DownloadManagerRouter(QByteArray, QMap<QString,QVariant>);
