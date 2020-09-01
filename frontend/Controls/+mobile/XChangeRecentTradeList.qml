@@ -1,5 +1,5 @@
 /**
-* Filename: CoinPicklist.qml
+* Filename: XChangeRecentTradeList.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
 * blockchain protocol to host decentralized applications
@@ -49,7 +49,7 @@ Rectangle {
 
             Label {
                 id: tradeTime
-                text: time + " UCT"
+                text: time + " UTC"
                 color: themecolor
                 font.pixelSize: 8
                 font.family: xciteMobile.name

@@ -29,11 +29,14 @@ public:
     explicit Cex(QObject *parent = nullptr);
     void DownloadManagerHandler(URLObject *url);
     void createOlhcv(QString exchange, QString pair,  QString granularity);
+    void findLastInterval(qint64 time);
 
 signals:
     //
     void receivedCoinInfo(QString exchange, QString pair, QString low, QString high, QString last, QString change, QString quoteVolume, QString baseVolume, QString infoDate, QString infoTime);
     void receivedRecentTrades(QString exchange, QString pair, QString recentTradesList);
+    void receivedOrderBook(QString exchange, QString pair, QString orderBookList, QString buyVolume, QString sellVolume);
+
 public slots:
     //
     void DownloadManagerRouter(QByteArray, QMap<QString,QVariant>);
@@ -47,6 +50,7 @@ public slots:
     void getRecentTrades(QString exchange, QString pair, QString limit);
     void getOlhcv(QString exchange, QString pair,  QString granularity);
     void getOrderBook(QString exchange, QString pair);
+
 private:
     //
     bool creatingOlhcv;
@@ -57,6 +61,7 @@ private:
     qint64 startTime;
     qint64 endTime;
     qint64 count;
+
 };
 
 #endif // CEX_HPP

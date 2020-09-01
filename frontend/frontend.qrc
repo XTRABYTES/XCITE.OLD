@@ -199,5 +199,6 @@
         <file>+mobile/RestoreAccount.qml</file>
         <file>Controls/+mobile/XChangeSettings.qml</file>
         <file>Controls/+mobile/XChangeRecentTradeList.qml</file>
+        <file>Controls/+mobile/XChangeOrderBookList.qml</file>
     </qresource>
 </RCC>

@@ -92,8 +92,6 @@ void Cex::getRecentTrades(QString exchange, QString pair, QString limit) {
         url = "https://api.crex24.com/v2/public/recentTrades?instrument=" + pair + "&limit=" + limit;
     }
 
-    xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", url: " + url.toString().toLatin1());
-
     URLObject urlObj {QUrl(url)};
     urlObj.addProperty("route","getRecentTradesSlot");
     urlObj.addProperty("exchange",exchange);
@@ -142,13 +140,29 @@ void Cex::createOlhcv(QString exchange, QString pair,  QString granularity) {
     if (count == 0) {
         // time format: YYYY-mm-ddThh:ii:ssZ
         startTime = QDateTime::currentMSecsSinceEpoch();
+        findLastInterval(startTime);
         endTime = QDateTime::currentMSecsSinceEpoch() - interval;
     }
+    else {
+        endTime = startTime;
+        startTime = endTime - interval;
+    }
 
-    QDateTime timestamp1 = QDateTime::fromMSecsSinceEpoch(startTime);
-    QDateTime timestamp2 = QDateTime::fromMSecsSinceEpoch(endTime);
-    startTimeStr = timestamp1.toString("YYYY-mm-ddThh:ii:ssZ");
-    endTimeStr = timestamp2.toString("YYYY-mm-ddThh:ii:ssZ");
+    QString tradeDate;
+    QString tradeHour;
+    QString tradeMin;
+    QString tradeSec;
+    QDateTime timestamp1 = QDateTime::fromMSecsSinceEpoch(endTime);
+    tradeDate = timestamp1.toString("yyyy-MM-dd");
+    tradeHour = timestamp1.toString("HH");
+    tradeMin = timestamp1.toString("mm");
+    tradeSec = timestamp1.toString("ss");
+    endTimeStr = tradeDate + "T" + tradeHour + "%3A" + tradeMin + "%3A" + tradeSec + ".000Z";
+    QDateTime timestamp2 = QDateTime::fromMSecsSinceEpoch(startTime);
+    tradeDate = timestamp2.toString("yyyy-MM-dd");
+    tradeHour = timestamp2.toString("HH");
+    tradeMin = timestamp2.toString("mm");
+    tradeSec = timestamp2.toString("ss");
 
     url = "https://api.probit.com/api/exchange/v1/trade?market_id=" + pair + "&start_time=" + startTimeStr + "&end_time=" + endTimeStr + "&limit=1000";
     URLObject urlObj {QUrl(url)};
@@ -168,7 +182,7 @@ void Cex::getOrderBook(QString exchange, QString pair) {
     }
 
     URLObject urlObj {QUrl(url)};
-    urlObj.addProperty("route","getOrderbookSlot");
+    urlObj.addProperty("route","getOrderBookSlot");
     urlObj.addProperty("exchange",exchange);
     urlObj.addProperty("pair",pair);
     DownloadManagerHandler(&urlObj);
@@ -185,8 +199,10 @@ void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
     QString change = "";
     QString quoteVolume = "";
     QString baseVolume ="";
+    QString dateTimeInfo = "";
     QString infoDate = "";
     QString infoTime = "";
+    qint64 epoch = 0;
 
     if (exchange == "crex24") {
         QJsonObject data = jsonResponse.object();
@@ -197,8 +213,12 @@ void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
             change = "n/a";
             quoteVolume = "n/a";
             baseVolume = "n/a";
-            infoDate = "????-??-??";
-            infoTime = "??:??:??";
+            epoch = QDateTime::currentMSecsSinceEpoch();
+            QDateTime local = QDateTime::fromMSecsSinceEpoch(epoch, Qt::UTC);
+            dateTimeInfo = local.toString("yyyy-MM-ddThh:mm:ss");
+            QStringList dateAndTime = dateTimeInfo.split("T");
+            infoDate = dateAndTime.at(0);
+            infoTime = dateAndTime.at(1);
             xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorDescription").toString());
             emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
         }
@@ -206,7 +226,6 @@ void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
             QString strJson(jsonResponse.toJson(QJsonDocument::Compact));
             strJson.remove(0, 1);
             strJson.chop(1);
-            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", info: " + strJson);
             QJsonDocument doc = QJsonDocument::fromJson(strJson.toUtf8());
             QJsonObject data = doc.object();
             double lowdb = 0;
@@ -236,7 +255,6 @@ void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
                 QStringList dateAndTime = dateTimeInfo.split("T");
                 infoDate = dateAndTime.at(0);
                 infoTime = dateAndTime.at(1);
-                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", low: " + low + ", high: " + high + ",last: " + last + ", change: " + change + ", quote-volume: " + quoteVolume + ", base-volume: " + baseVolume + ", date: " + infoDate + ", time: " + infoTime);
                 emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
             }
             catch (...) {
@@ -246,8 +264,12 @@ void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
                 change = "n/a";
                 quoteVolume = "n/a";
                 baseVolume = "n/a";
-                infoDate = "????-??-??";
-                infoTime = "??:??:??";
+                epoch = QDateTime::currentMSecsSinceEpoch();
+                QDateTime local = QDateTime::fromMSecsSinceEpoch(epoch, Qt::UTC);
+                dateTimeInfo = local.toString("yyyy-MM-ddThh:mm:ss");
+                QStringList dateAndTime = dateTimeInfo.split("T");
+                infoDate = dateAndTime.at(0);
+                infoTime = dateAndTime.at(1);
                 xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract values" );
                 emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
             }
@@ -262,16 +284,20 @@ void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
             change = "n/a";
             quoteVolume = "n/a";
             baseVolume = "n/a";
-            infoDate = "????-??-??";
-            infoTime = "??:??:??";
-            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorCode").toString());
+            epoch = QDateTime::currentMSecsSinceEpoch();
+            QDateTime local = QDateTime::fromMSecsSinceEpoch(epoch, Qt::UTC);
+            dateTimeInfo = local.toString("yyyy-MM-ddThh:mm:ss");
+            QStringList dateAndTime = dateTimeInfo.split("T");
+            infoDate = dateAndTime.at(0);
+            infoTime = dateAndTime.at(1);
+            QString errorDetails = data.value("details").toString();
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorCode").toString() + ", details: " + errorDetails);
             emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
         }
         else {
             QString strJson(jsonResponse.toJson(QJsonDocument::Compact));
             strJson.remove(0, 9);
             strJson.chop(2);
-            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", info: " + strJson);
             QJsonDocument doc = QJsonDocument::fromJson(strJson.toUtf8());
             data = doc.object();
             try {
@@ -294,7 +320,6 @@ void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
                 QStringList dateAndTime = dateTimeInfo.split("T");
                 infoDate = dateAndTime.at(0);
                 infoTime = dateAndTime.at(1);
-                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", low: " + low + ", high: " + high + ",last: " + last + ", change: " + change + ", quote-volume: " + quoteVolume + ", base-volume: " + baseVolume + ", date: " + infoDate + ", time: " + infoTime);
                 emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
             }
             catch (...) {
@@ -304,8 +329,12 @@ void Cex::getCoinInfoSlot(QByteArray response, QMap<QString, QVariant> props) {
                 change = "n/a";
                 quoteVolume = "n/a";
                 baseVolume = "n/a";
-                infoDate = "????-??-??";
-                infoTime = "??:??:??";
+                epoch = QDateTime::currentMSecsSinceEpoch();
+                QDateTime local = QDateTime::fromMSecsSinceEpoch(epoch, Qt::UTC);
+                dateTimeInfo = local.toString("yyyy-MM-ddThh:mm:ss");
+                QStringList dateAndTime = dateTimeInfo.split("T");
+                infoDate = dateAndTime.at(0);
+                infoTime = dateAndTime.at(1);
                 xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract values" );
                 emit receivedCoinInfo(exchange, pair, low, high, last, change, quoteVolume, baseVolume, infoDate, infoTime);
             }
@@ -327,18 +356,13 @@ void Cex::getRecentTradesSlot(QByteArray response, QMap<QString, QVariant> props
 
     if (exchange == "probit") {
         QJsonObject data = jsonResponse.object();
-        QString strJson(jsonResponse.toJson(QJsonDocument::Compact));
-        xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + strJson );
         if (data.contains("errorCode")) {
-            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorCode").toString());
+            QString errorDetails = data.value("details").toString();
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorCode").toString() + ", details: " + errorDetails);
             emit receivedRecentTrades(exchange, pair, "");
         }
         else {
             QJsonArray trades = jsonResponse.object().value("data").toArray();
-            QJsonDocument doc;
-            doc.setArray(trades);
-            QString dataToString(doc.toJson());
-            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + dataToString );
             try {
                 int i;
                 int count = trades.size();
@@ -368,7 +392,6 @@ void Cex::getRecentTradesSlot(QByteArray response, QMap<QString, QVariant> props
                 arrayDoc.setArray(tradesList);
                 QString tradeString(arrayDoc.toJson());
 
-                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + tradeString );
                 emit receivedRecentTrades(exchange, pair, tradeString);
             }
             catch (...) {
@@ -386,10 +409,6 @@ void Cex::getRecentTradesSlot(QByteArray response, QMap<QString, QVariant> props
         }
         else {
             QJsonArray trades = jsonResponse.array();
-            QJsonDocument doc;
-            doc.setArray(trades);
-            QString dataToString(doc.toJson());
-            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + dataToString );
             try {
                 int i;
                 int count = trades.size();
@@ -417,7 +436,6 @@ void Cex::getRecentTradesSlot(QByteArray response, QMap<QString, QVariant> props
                 arrayDoc.setArray(tradesList);
                 QString tradeString(arrayDoc.toJson());
 
-                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", trades: " + tradeString );
                 emit receivedRecentTrades(exchange, pair, tradeString);
             }
             catch (...) {
@@ -437,6 +455,142 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
 
 }
 
-void Cex::getOrderBookSlot(QByteArray responde, QMap<QString, QVariant> props) {
+void Cex::getOrderBookSlot(QByteArray response, QMap<QString, QVariant> props) {
+    QString exchange = props.value("exchange").toString();
+    QString pair = props.value("pair").toString();
+    QJsonDocument jsonResponse = QJsonDocument::fromJson(response);
+    QJsonArray orderBookList;
+    QString side;
+    QString price;
+    QString quantity;
+    QString accBuyVolume;
+    QString accSellVolume;
+    QString buyVolume;
+    QString sellVolume;
+    double buyVol = 0;
+    double sellVol = 0;
+    int orderID = 0;
 
+    if (exchange == "probit") {
+        QJsonObject data = jsonResponse.object();
+        QString strJson(jsonResponse.toJson(QJsonDocument::Compact));
+        if (data.contains("errorCode")) {
+            QString errorDetails = data.value("details").toString();
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorCode").toString() + ", details: " + errorDetails);
+            emit receivedOrderBook(exchange, pair, "", "", "");
+        }
+        else {
+            QJsonArray orders = jsonResponse.object().value("data").toArray();
+            try {
+                int i;
+                int count = orders.size();
+                for (i = 0; i < count; ++i) {
+                    QJsonObject obj = orders.at(i).toObject();
+                    side = obj.value("side").toString();
+                    price = obj.value("price").toString();
+                    double pricedb = price.toDouble();
+                    quantity = obj.value("quantity").toString();
+                    double quantitydb = quantity.toDouble();
+                    if (side == "buy") {
+                        buyVol = buyVol + quantitydb;
+                    }
+                    else {
+                        sellVol = sellVol + quantitydb;
+                    }
+                    QJsonObject arrayItem;
+                    arrayItem.insert("orderID", orderID);
+                    orderID += 1;
+                    arrayItem.insert("side", side);
+                    arrayItem.insert("price", pricedb);
+                    arrayItem.insert("quantity", quantitydb);
+                    arrayItem.insert("accVolume", 0);
+                    orderBookList.append(arrayItem);
+                }
+
+                QJsonDocument arrayDoc;
+                arrayDoc.setArray(orderBookList);
+                QString orderBookString(arrayDoc.toJson());
+                buyVolume = QString::number(buyVol, 'f', 8);
+                sellVolume = QString::number(sellVol, 'f', 8);
+
+                emit receivedOrderBook(exchange, pair, orderBookString, buyVolume, sellVolume);
+            }
+            catch (...) {
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract orderbook" );
+                emit receivedOrderBook(exchange, pair, "", "", "");
+            }
+        }
+    }
+    else if (exchange == "crex24") {
+        QJsonObject data = jsonResponse.object();
+        if (data.contains("errorDescription")) {
+            xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: " + data.value("errorDescription").toString());
+            emit receivedOrderBook(exchange, pair, "", "", "");
+        }
+        else {
+            QJsonArray buys = jsonResponse.object().value("buyLevels").toArray();
+            QJsonArray sells = jsonResponse.object().value("sellLevels").toArray();
+            try {
+                int i;
+                int countBuys = buys.size();
+                for (i = 0; i < countBuys; ++i) {
+                    QJsonObject obj = buys.at(i).toObject();
+                    side = "buy";
+                    double pricedb = obj.value("price").toDouble();
+                    double quantitydb = obj.value("volume").toDouble();
+                    buyVol = buyVol + quantitydb;
+                    QJsonObject arrayItem;
+                    arrayItem.insert("orderID", orderID);
+                    orderID += 1;
+                    arrayItem.insert("side", side);
+                    arrayItem.insert("price", pricedb);
+                    arrayItem.insert("quantity", quantitydb);
+                    arrayItem.insert("accVolume", buyVol);
+                    orderBookList.append(arrayItem);
+                }
+                int e;
+                int countSells = sells.size();
+                for (e = 0; e < countSells; ++e) {
+                   QJsonObject obj = sells.at(e).toObject();
+                   side = "sell";
+                   double pricedb = obj.value("price").toDouble();
+                   double quantitydb = obj.value("volume").toDouble();
+                   sellVol = sellVol + quantitydb;
+                   QJsonObject arrayItem;
+                   arrayItem.insert("orderID", orderID);
+                   orderID += 1;
+                   arrayItem.insert("side", side);
+                   arrayItem.insert("price", pricedb);
+                   arrayItem.insert("quantity", quantitydb);
+                   arrayItem.insert("accVolume", sellVol);
+                   orderBookList.append(arrayItem);
+                }
+                QJsonDocument arrayDoc;
+                arrayDoc.setArray(orderBookList);
+                QString orderBookString(arrayDoc.toJson());
+                buyVolume = QString::number(buyVol, 'f', 8);
+                sellVolume = QString::number(sellVol, 'f', 8);
+
+                emit receivedOrderBook(exchange, pair, orderBookString, buyVolume, sellVolume);
+            }
+            catch (...) {
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract orderbook" );
+                emit receivedOrderBook(exchange, pair, "", "", "");
+            }
+        }
+    }
+}
+
+void Cex::findLastInterval(qint64 time) {
+    double nTimes = time/interval;
+    int roundedTimes = time/interval;
+    double difference = roundedTimes - nTimes;
+    int n = 0;
+    if (difference <= 0) {
+        n = roundedTimes;
+    }
+    else  {
+        n = roundedTimes - 1;
+    }
+    endTime = n*interval;
 }

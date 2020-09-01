@@ -572,6 +572,7 @@ ApplicationWindow {
     signal setQueue(string queue)
     signal getCoinInfo(string exchange, string pair)
     signal getRecentTrades(string exchange, string pair, string limit)
+    signal getOrderBook(string exchange, string pair)
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {
@@ -3347,6 +3348,17 @@ ApplicationWindow {
             amount: 0
             fee: 0
             used: 0
+        }
+    }
+
+    ListModel {
+        id: orderList
+        ListElement {
+            orderID: 0
+            side: ""
+            price: 0
+            quantity: 0
+            accVolume: 0
         }
     }
 

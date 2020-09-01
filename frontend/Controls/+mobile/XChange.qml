@@ -31,10 +31,12 @@ Rectangle {
 
     onStateChanged: {
         coinListTracker = 0
-        //newCoinPicklist = 0
-        //newCoin2Picklist = 3
+        chartTracker = 0
+        tradeTracker = 0
         buyOrderTracker = 0
         sellOrderTracker = 0
+        timerCounter = 0
+        exchangePageTracker = view.currentIndex
         if (xchangeTracker == 1) {
             updatingInfo = true
             tradeList.clear()
@@ -99,6 +101,14 @@ Rectangle {
     property string volume2: ""
     property bool updatingInfo: false
     property bool updatingTrades: false
+    property bool updatingOrderBook: false
+    property string buyVol: ""
+    property string sellVol: ""
+    property var bVol: Number.fromLocaleString(Qt.locale("en_US"),buyVol)
+    property var sVol: Number.fromLocaleString(Qt.locale("en_US"),sellVol)
+    property real sumSellVolume: 0
+    property real sumBuyVolume: 0
+    property real timerCounter: 0
 
 
     function loadTradeList(trades) {
@@ -112,14 +122,29 @@ Rectangle {
         }
     }
 
-    ListModel {
-        id: orderList
-        ListElement {
-            side: ""
-            price: ""
-            quantity: ""
+    function loadOrderBookList(orders) {
+        if (typeof orders !== "undefined") {
+            orderList.clear();
+            var obj = JSON.parse(orders);
+            for (var i in obj){
+                var data = obj[i];
+                orderList.append(data);
+            }
         }
     }
+
+    function orderListSort(listModel, compareFunction) {
+            let indexes = [ ...Array(listModel.count).keys() ]
+            indexes.sort( (a, b) => compareFunction( listModel.get(a).price, listModel.get(b).price) )
+            let sorted = 0
+            while ( sorted < indexes.length && sorted === indexes[sorted] ) sorted++
+            if ( sorted === indexes.length ) return
+            for ( let i = sorted; i < indexes.length; i++ ) {
+                listModel.move( indexes[i], listModel.count - 1, 1 )
+                listModel.insert( indexes[i], { } )
+            }
+            listModel.remove( sorted, indexes.length - sorted )
+        }
 
     ListModel {
         id: tradeList
@@ -156,7 +181,7 @@ Rectangle {
                 volume1 = baseVolume
                 volume2 = quoteVolume
                 exchangeInfoDate.text = infoDate
-                exchangeInfoTime.text = infoTime + " UCT"
+                exchangeInfoTime.text = infoTime + " UTC"
                 updatingInfo = false
             }
         }
@@ -165,6 +190,39 @@ Rectangle {
             if (exchange === selectedExchange && pair === exchangePair) {
                 loadTradeList(recentTradesList)
                 updatingTrades = false
+            }
+        }
+
+        onReceivedOrderBook: {
+            if (exchange === selectedExchange && pair === exchangePair) {
+                loadOrderBookList(orderBookList)
+                buyVol = buyVolume
+                sellVol = sellVolume
+                if (buyOrderTracker == 1 && orderList.get(0).accVolume === 0) {
+                    orderListSort(orderList, (a, b) => - (a - b))
+                    sumBuyVolume = 0
+                    var bVol
+                    for (var e = 0; e < orderList.count; e ++) {
+                        if (orderList.get(e).side === "buy" && orderList.get(e).accVolume === 0) {
+                        bVol = orderList.get(e).quantity
+                        sumBuyVolume = sumBuyVolume + bVol
+                        orderList.setProperty(e, "accVolume", sumBuyVolume)
+                        }
+                    }
+                }
+                if (sellOrderTracker == 1 && orderList.get(0).accVolume === 0) {
+                    orderListSort(orderList, (a, b) => (a - b))
+                    sumSellVolume = 0
+                    var sVol
+                    for (var o = 0; o < orderList.count; o ++) {
+                        if (orderList.get(o).side === "sell" && orderList.get(o).accVolume === 0) {
+                        sVol = orderList.get(o).quantity
+                            sumSellVolume = sumSellVolume + sVol
+                            orderList.setProperty(o, "accVolume", sumSellVolume)
+                        }
+                    }
+                }
+                updatingOrderBook = false
             }
         }
     }
@@ -176,10 +234,25 @@ Rectangle {
         running: xchangeTracker == 1
 
         onTriggered: {
-            updatingInfo = true
-            getCoinInfo(selectedExchange, exchangePair)
-            if (tradeTracker == 1) {
-                getRecentTrades(selectedExchange, exchangePair, "20")
+            if (view.currentIndex == 1) {
+                updatingInfo = true
+                getCoinInfo(selectedExchange, exchangePair)
+            }
+            if (timerCounter == 0) {
+                if (tradeTracker == 1 && view.currentIndex == 1) {
+                    updatingTrades = true
+                    getRecentTrades(selectedExchange, exchangePair, "20")
+                }
+                if ((buyOrderTracker == 1 || sellOrderTracker == 1) && view.currentIndex == 1) {
+                    updatingOrderBook = true
+                    getOrderBook(selectedExchange, exchangePair)
+                }
+                if (timerCounter < 4) {
+                    timerCounter = timerCounter + 1
+                }
+                else {
+                    timerCounter = 0
+                }
             }
         }
     }
@@ -690,6 +763,7 @@ Rectangle {
                             onClicked: {
                                 if (tradeTracker == 0) {
                                     tradeTracker = 1
+                                    updatingTrades = true
                                     getRecentTrades(selectedExchange, exchangePair, "20")
                                 }
                                 else {
@@ -787,6 +861,17 @@ Rectangle {
                             list: tradeList
                             exchange: selectedExchange
                             coin : coinName.text
+                        }
+
+                        AnimatedImage  {
+                            id: waitingDotsTrades
+                            source: 'qrc:/gifs/loading-gif_01.gif'
+                            width: 90
+                            height: 60
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            playing: updatingTrades == true && tradeTracker == 1
+                            visible: updatingTrades == true && tradeTracker == 1
                         }
 
                         states: [
@@ -1202,9 +1287,12 @@ Rectangle {
                                     if (buyOrderTracker == 0) {
                                         buyOrderTracker = 1
                                         sellOrderTracker = 0
+                                        updatingOrderBook = true
+                                        getOrderBook(selectedExchange, exchangePair)
                                     }
                                     else {
                                         buyOrderTracker = 0
+
                                     }
                                 }
                             }
@@ -1222,6 +1310,38 @@ Rectangle {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.verticalCenterOffset: 19
                         rotation: -90
+                    }
+
+                    Rectangle {
+                        id: buyListArea
+                        z:3
+                        height: parent.height - 2
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left:parent.left
+                        anchors.right: parent.right
+                        anchors.rightMargin: 40
+                        color: bgcolor
+                        clip: true
+                        visible: updatingOrderBook == false
+
+                        Mobile.XChangeOrderBookList {
+                            id: myBuyOrders
+                            exchange: selectedExchange
+                            coin : coinName.text
+                            orderType: "buy"
+                            volume: bVol
+                        }
+                    }
+
+                    AnimatedImage  {
+                        id: waitingDotsBuy
+                        source: 'qrc:/gifs/loading-gif_01.gif'
+                        width: 90
+                        height: 60
+                        anchors.horizontalCenter: buyListArea.horizontalCenter
+                        anchors.verticalCenter: buyListArea.verticalCenter
+                        playing: updatingOrderBook == true && buyOrderTracker == 1
+                        visible: updatingOrderBook == true && buyOrderTracker == 1
                     }
                 }
 
@@ -1313,6 +1433,8 @@ Rectangle {
                                     if (sellOrderTracker == 0) {
                                         sellOrderTracker = 1
                                         buyOrderTracker = 0
+                                        updatingOrderBook = true
+                                        getOrderBook(selectedExchange, exchangePair)
                                     }
                                     else {
                                         sellOrderTracker = 0
@@ -1333,6 +1455,37 @@ Rectangle {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.verticalCenterOffset: 19
                         rotation: -90
+                    }
+
+                    Rectangle {
+                        id: sellListArea
+                        z:3
+                        height: parent.height - 2
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 40
+                        anchors.right: parent.right
+                        color: bgcolor
+                        clip: true
+                        visible: updatingOrderBook == false
+
+                        Mobile.XChangeOrderBookList {
+                            id: mySellOrders
+                            exchange: selectedExchange
+                            coin : coinName.text
+                            orderType: "sell"
+                            volume: sVol
+                        }
+                    }
+                    AnimatedImage  {
+                        id: waitingDotsSell
+                        source: 'qrc:/gifs/loading-gif_01.gif'
+                        width: 90
+                        height: 60
+                        anchors.horizontalCenter: sellListArea.horizontalCenter
+                        anchors.verticalCenter: sellListArea.verticalCenter
+                        playing: updatingOrderBook == true && sellOrderTracker == 1
+                        visible: updatingOrderBook == true && sellOrderTracker == 1
                     }
                 }
 
@@ -1359,7 +1512,7 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
-                        enabled: updatingInfo == false && updatingTrades == false
+                        enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
 
                         onPressed: {
                             click01.play()
@@ -1407,7 +1560,7 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
-                        enabled: updatingInfo == false && updatingTrades == false
+                        enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
 
                         onPressed: {
                             click01.play()
@@ -1448,21 +1601,21 @@ Rectangle {
                         id: probitForm
 
                         Rectangle {
-                           width: parent.width
-                           height: 70
-                           color: "transparent"
-                           anchors.horizontalCenter: parent.horizontalCenter
-                           anchors.top: parent.top
+                            width: parent.width
+                            height: 70
+                            color: "transparent"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: parent.top
 
-                           Image {
-                               id: probitImg
-                               z: 3
-                               source: getExchangeLogo("probit")
-                               height: 50
-                               fillMode: Image.PreserveAspectFit
-                               anchors.horizontalCenter: parent.horizontalCenter
-                               anchors.verticalCenter: parent.verticalCenter
-                           }
+                            Image {
+                                id: probitImg
+                                z: 3
+                                source: getExchangeLogo("probit")
+                                height: 50
+                                fillMode: Image.PreserveAspectFit
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
                         }
                     }
 
@@ -1470,21 +1623,21 @@ Rectangle {
                         id: crex24Form
 
                         Rectangle {
-                           width: parent.width
-                           height: 70
-                           color: "transparent"
-                           anchors.horizontalCenter: parent.horizontalCenter
-                           anchors.top: parent.top
+                            width: parent.width
+                            height: 70
+                            color: "transparent"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: parent.top
 
-                           Image {
-                               id: crex24Img
-                               z: 3
-                               source: getExchangeLogo("crex24")
-                               height: 50
-                               fillMode: Image.PreserveAspectFit
-                               anchors.horizontalCenter: parent.horizontalCenter
-                               anchors.verticalCenter: parent.verticalCenter
-                           }
+                            Image {
+                                id: crex24Img
+                                z: 3
+                                source: getExchangeLogo("crex24")
+                                height: 50
+                                fillMode: Image.PreserveAspectFit
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
                         }
                     }
                 }
@@ -1734,7 +1887,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton1
-                enabled: updatingInfo == false
+                enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
 
                 onPressed: {
                     click01.play()
@@ -1777,6 +1930,12 @@ Rectangle {
             anchors.leftMargin: 28
             visible: coin1Tracker == 1
             clip: true
+
+            onVisibleChanged: {
+                if (visible == false && updatingInfo == true) {
+                    getCoinInfo(selectedExchange, exchangePair)
+                }
+            }
 
             Mobile.CoinPicklist {
                 id: myCoinPicklist
@@ -1905,7 +2064,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton2
-                enabled: updatingInfo == false
+                enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
 
                 onPressed: {
                     click01.play()
@@ -1948,6 +2107,12 @@ Rectangle {
             anchors.rightMargin: 28
             visible: exchangePageTracker == 1 && coin2Tracker == 1
             clip: true
+
+            onVisibleChanged: {
+                if (visible == false && updatingInfo == true) {
+                    getCoinInfo(selectedExchange, exchangePair)
+                }
+            }
 
             Mobile.CoinPicklist {
                 id: exchangeCoinPicklist
