@@ -134,17 +134,17 @@ Rectangle {
     }
 
     function orderListSort(listModel, compareFunction) {
-            let indexes = [ ...Array(listModel.count).keys() ]
-            indexes.sort( (a, b) => compareFunction( listModel.get(a).price, listModel.get(b).price) )
-            let sorted = 0
-            while ( sorted < indexes.length && sorted === indexes[sorted] ) sorted++
-            if ( sorted === indexes.length ) return
-            for ( let i = sorted; i < indexes.length; i++ ) {
-                listModel.move( indexes[i], listModel.count - 1, 1 )
-                listModel.insert( indexes[i], { } )
-            }
-            listModel.remove( sorted, indexes.length - sorted )
+        let indexes = [ ...Array(listModel.count).keys() ]
+        indexes.sort( (a, b) => compareFunction( listModel.get(a).price, listModel.get(b).price) )
+        let sorted = 0
+        while ( sorted < indexes.length && sorted === indexes[sorted] ) sorted++
+        if ( sorted === indexes.length ) return
+        for ( let i = sorted; i < indexes.length; i++ ) {
+            listModel.move( indexes[i], listModel.count - 1, 1 )
+            listModel.insert( indexes[i], { } )
         }
+        listModel.remove( sorted, indexes.length - sorted )
+    }
 
     ListModel {
         id: tradeList
@@ -204,9 +204,9 @@ Rectangle {
                     var bVol
                     for (var e = 0; e < orderList.count; e ++) {
                         if (orderList.get(e).side === "buy" && orderList.get(e).accVolume === 0) {
-                        bVol = orderList.get(e).quantity
-                        sumBuyVolume = sumBuyVolume + bVol
-                        orderList.setProperty(e, "accVolume", sumBuyVolume)
+                            bVol = orderList.get(e).quantity
+                            sumBuyVolume = sumBuyVolume + bVol
+                            orderList.setProperty(e, "accVolume", sumBuyVolume)
                         }
                     }
                 }
@@ -216,7 +216,7 @@ Rectangle {
                     var sVol
                     for (var o = 0; o < orderList.count; o ++) {
                         if (orderList.get(o).side === "sell" && orderList.get(o).accVolume === 0) {
-                        sVol = orderList.get(o).quantity
+                            sVol = orderList.get(o).quantity
                             sumSellVolume = sumSellVolume + sVol
                             orderList.setProperty(o, "accVolume", sumSellVolume)
                         }
@@ -234,16 +234,16 @@ Rectangle {
         running: xchangeTracker == 1
 
         onTriggered: {
-            if (view.currentIndex == 1) {
+            if (updatingInfo == false) {
                 updatingInfo = true
                 getCoinInfo(selectedExchange, exchangePair)
             }
             if (timerCounter == 0) {
-                if (tradeTracker == 1 && view.currentIndex == 1) {
+                if (tradeTracker == 1 && updatingTrades == false) {
                     updatingTrades = true
                     getRecentTrades(selectedExchange, exchangePair, "20")
                 }
-                if ((buyOrderTracker == 1 || sellOrderTracker == 1) && view.currentIndex == 1) {
+                if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
                     updatingOrderBook = true
                     getOrderBook(selectedExchange, exchangePair)
                 }
@@ -261,7 +261,9 @@ Rectangle {
         id: view
         z: 2
         currentIndex: 0
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.bottom: exchangeView.top
+        width: parent.width
         interactive: (appsTracker == 1 && balanceTracker == 1) ? false : true
 
         onCurrentIndexChanged: exchangePageTracker = view.currentIndex
@@ -273,7 +275,7 @@ Rectangle {
                 id:scrollAreaTradignForm
                 z: 3
                 width: xchangeModal.width
-                height: xchangeModal.height - 100
+                height: view.height - 100
                 anchors.top: parent.top
                 anchors.topMargin: 100
                 color: "transparent"
@@ -374,7 +376,7 @@ Rectangle {
                 id: balanceScrollArea
                 z: 3
                 width: xchangeModal.width
-                height: xchangeModal.height - 100
+                height: view.height - 100
                 anchors.top: parent.top
                 anchors.topMargin: 100
                 color: "transparent"
@@ -1204,7 +1206,7 @@ Rectangle {
                     z:3
                     anchors.left: parent.left
                     anchors.leftMargin: -1
-                    anchors.rightMargin: buyOrderTracker == 1? 0 : 10
+                    anchors.right:amountField.left
                     anchors.top: amountField.top
                     anchors.bottom: buyButton.bottom
                     color: bgcolor
@@ -1213,14 +1215,21 @@ Rectangle {
                     state: buyOrderTracker == 1? "open" : "close"
                     clip: true
 
+                    onStateChanged: {
+                        if (buyOrderTracker == 1) {
+                            updatingOrderBook = true
+                            getOrderBook(selectedExchange, exchangePair)
+                        }
+                    }
+
                     states: [
                         State {
                             name: "open"
-                            AnchorChanges { target: buyOrderArea; anchors.right: amountField.right}
+                            PropertyChanges { target: buyOrderArea; anchors.rightMargin: - amountField.width}
                         },
                         State {
                             name: "close"
-                            AnchorChanges { target: buyOrderArea; anchors.right: amountField.left}
+                            PropertyChanges { target: buyOrderArea; anchors.rightMargin: 10}
                         }
                     ]
 
@@ -1299,6 +1308,59 @@ Rectangle {
                         }
                     }
 
+                    MouseArea {
+                        id: swipeZoneBuy
+                        width: 40
+                        height: parent.height
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        propagateComposedEvents: true
+
+                        property real buyX;
+                        property real newBuyX;
+
+                        function resetValues() {
+                            buyX = 0
+                            newBuyX = 0
+                        }
+
+                        onPressed: {
+                            resetValues()
+                            buyX = mouseX
+                            view.interactive = false
+                        }
+
+                        onPositionChanged: {
+                            if (mouseX > buyX && buyOrderTracker == 0) {
+                                newBuyX = mouseX
+                            }
+                            else if (mouseX < buyX && buyOrderTracker == 1) {
+                                newBuyX = mouseX
+                            }
+                        }
+
+                        onReleased: {
+                            if (mouseX > buyX && buyOrderTracker == 0) {
+                                if (mouseX > (amountField.x + 30)) {
+                                    buyOrderTracker = 1
+                                    sellOrderTracker = 0
+                                }
+                                else {
+                                    buyOrderArea.anchors.rightMargin = - amountField.width
+                                }
+                            }
+                            else if (mouseX < buyX && buyOrderTracker == 1) {
+                                if (mouseX < (amountField.x + amountField.width - 30)) {
+                                    buyOrderTracker = 0
+                                }
+                                else {
+                                    buyOrderArea.anchors.rightMargin = 10
+                                }
+                            }
+                            view.interactive = true
+                        }
+                    }
+
                     Label {
                         id: buyOrderLabel
                         z: 3
@@ -1350,7 +1412,7 @@ Rectangle {
                     z:3
                     anchors.right: parent.right
                     anchors.rightMargin: -1
-                    anchors.leftMargin: sellOrderTracker == 1? 0 : 10
+                    anchors.left: amountField.right
                     anchors.top: amountField.top
                     anchors.bottom: buyButton.bottom
                     color: bgcolor
@@ -1359,14 +1421,21 @@ Rectangle {
                     state: sellOrderTracker == 1? "open" : "close"
                     clip: true
 
+                    onStateChanged: {
+                        if (sellOrderTracker == 1) {
+                            updatingOrderBook = true
+                            getOrderBook(selectedExchange, exchangePair)
+                        }
+                    }
+
                     states: [
                         State {
                             name: "open"
-                            AnchorChanges { target: sellOrderArea; anchors.left: amountField.left}
+                            PropertyChanges { target: sellOrderArea; anchors.leftMargin: - amountField.width}
                         },
                         State {
                             name: "close"
-                            AnchorChanges { target: sellOrderArea; anchors.left: amountField.right}
+                            PropertyChanges { target: sellOrderArea; anchors.leftMargin: 10 }
                         }
                     ]
 
@@ -1374,7 +1443,7 @@ Rectangle {
                         Transition {
                             from: "*"
                             to: "*"
-                            AnchorAnimation { duration: 300; easing.type: Easing.InOutCubic}
+                            NumberAnimation { duration: 300; easing.type: Easing.InOutCubic}
                         }
                     ]
 
@@ -1457,6 +1526,59 @@ Rectangle {
                         rotation: -90
                     }
 
+                    MouseArea {
+                        id: swipeZoneSell
+                        width: 40
+                        height: parent.height
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        propagateComposedEvents: true
+
+                        property real sellX;
+                        property real newSellX;
+
+                        function resetValues() {
+                            sellX = 0
+                            newSellX = 0
+                        }
+
+                        onPressed: {
+                            resetValues()
+                            sellX = mouseX
+                            view.interactive = false
+                        }
+
+                        onPositionChanged: {
+                            if (mouseX < sellX && sellOrderTracker == 0) {
+                                newSellX = mouseX
+                            }
+                            else if (mouseX > sellX && sellOrderTracker == 1) {
+                                newSellX = mouseX
+                            }
+                        }
+
+                        onReleased: {
+                            if (mouseX < sellX && sellOrderTracker == 0) {
+                                if (mouseX < (amountField.x + amountField.width - 30)) {
+                                    sellOrderTracker = 1
+                                    buyOrderTracker = 0
+                                }
+                                else {
+                                    sellOrderArea.anchors.leftMargin = 10
+                                }
+                            }
+                            else if (mouseX > sellX && sellOrderTracker == 1) {
+                                if (mouseX > (amountField.x + 30)) {
+                                    sellOrderTracker = 0
+                                }
+                                else {
+                                    sellOrderArea.anchors.leftMargin = - amountField.width
+                                }
+                            }
+                            view.interactive = true
+                        }
+                    }
+
                     Rectangle {
                         id: sellListArea
                         z:3
@@ -1488,191 +1610,297 @@ Rectangle {
                         visible: updatingOrderBook == true && sellOrderTracker == 1
                     }
                 }
+            }
+        }
+    }
+
+    DropShadow {
+        z: 3
+        anchors.fill: exchangeFooter
+        source: exchangeFooter
+        horizontalOffset: 0
+        verticalOffset: -4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.5
+        transparentBorder: true
+    }
+
+    Rectangle {
+        id: exchangeFooter
+        z: 3
+        width: parent.width
+        anchors.top: exchangeView.top
+        anchors.bottom: parent.bottom
+        color: bgcolor
+    }
+
+    SwipeView {
+        id: exchangeView
+        z: 3
+        width: totalField.width
+        height: 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: exchangeIndicator.top
+        anchors.bottomMargin: 5
+        currentIndex: 0
+        //interactive: false
+        //orientation: Qt.Vertical
+        clip: true
+
+        Item {
+            id: probitForm
+
+            Rectangle {
+                width: parent.width
+                height: 60
+                color: "transparent"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
 
                 Image {
-                    id: exchangeArrow1
-                    z: 4
-                    source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
-                    height: 18
-                    width: 18
-                    rotation: 90
-                    anchors.right: exchangeView.left
-                    anchors.rightMargin: 10
-                    anchors.verticalCenter: exchangeView.verticalCenter
-                    visible: exchangeView.currentIndex == 1
-
-                    Rectangle{
-                        height: 18
-                        width: 18
-                        radius: 10
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: "transparent"
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
-
-                        onPressed: {
-                            click01.play()
-                            detectInteraction()
-                        }
-
-                        onClicked: {
-                            exchangeView.currentIndex = 0
-                            selectedExchange = "probit"
-                            updatingInfo = true
-                            lowPrice = "---"
-                            highPrice = "---"
-                            lastPrice = "---"
-                            priceChange = "---"
-                            volume1 = "---"
-                            volume2 = "---"
-                            exchangeInfoDate.text = "????-??-??"
-                            exchangeInfoTime.text = "??:??:??"
-                            tradeList.clear()
-                            getCoinInfo(selectedExchange, exchangePair)
-                        }
-                    }
+                    id: probitImg
+                    z: 3
+                    source: getExchangeLogo("probit")
+                    height: 50
+                    width: 150
+                    fillMode: Image.PreserveAspectFit
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
                 }
+            }
+        }
+
+        Item {
+            id: crex24Form
+
+            Rectangle {
+                width: parent.width
+                height: 70
+                color: "transparent"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
 
                 Image {
-                    id: exchangeArrow2
-                    z: 4
-                    source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
-                    height: 18
-                    width: 18
-                    rotation: -90
-                    anchors.left: exchangeView.right
-                    anchors.leftMargin: 10
-                    anchors.verticalCenter: exchangeView.verticalCenter
-                    visible: exchangeView.currentIndex == 0
-
-                    Rectangle{
-                        height: 18
-                        width: 18
-                        radius: 10
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: "transparent"
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
-
-                        onPressed: {
-                            click01.play()
-                            detectInteraction()
-                        }
-
-                        onClicked: {
-                            exchangeView.currentIndex = 1
-                            selectedExchange = "crex24"
-                            updatingInfo = true
-                            lowPrice = "---"
-                            highPrice = "---"
-                            lastPrice = "---"
-                            priceChange = "---"
-                            volume1 = "---"
-                            volume2 = "---"
-                            exchangeInfoDate.text = "????-??-??"
-                            exchangeInfoTime.text = "??:??:??"
-                            tradeList.clear()
-                            getCoinInfo(selectedExchange, exchangePair)
-                        }
-                    }
-                }
-
-                SwipeView {
-                    id: exchangeView
+                    id: crex24Img
                     z: 3
-                    width: totalField.width
-                    height: 70
+                    source: getExchangeLogo("crex24")
+                    height: 50
+                    width: 150
+                    fillMode: Image.PreserveAspectFit
                     anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.top: buyButton.bottom
-                    anchors.topMargin: 5
-                    currentIndex: 0
-                    interactive: false
-                    clip: true
-
-                    Item {
-                        id: probitForm
-
-                        Rectangle {
-                            width: parent.width
-                            height: 70
-                            color: "transparent"
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.top: parent.top
-
-                            Image {
-                                id: probitImg
-                                z: 3
-                                source: getExchangeLogo("probit")
-                                height: 50
-                                fillMode: Image.PreserveAspectFit
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-                    }
-
-                    Item {
-                        id: crex24Form
-
-                        Rectangle {
-                            width: parent.width
-                            height: 70
-                            color: "transparent"
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.top: parent.top
-
-                            Image {
-                                id: crex24Img
-                                z: 3
-                                source: getExchangeLogo("crex24")
-                                height: 50
-                                fillMode: Image.PreserveAspectFit
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-                    }
-                }
-
-                Item {
-                    z: 3
-                    height: 5
-                    width: 15
-                    anchors.top: exchangeView.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    Rectangle {
-                        id: page1
-                        height: exchangeView.currentIndex == 0? 7 : 5
-                        width: exchangeView.currentIndex == 0? 7 : 5
-                        radius: exchangeView.currentIndex == 0? 7 : 5
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter
-                        color: exchangeView.currentIndex == 0? maincolor : "#757575"
-                    }
-
-                    Rectangle {
-                        id: page2
-                        height: exchangeView.currentIndex == 1? 7 : 5
-                        width: exchangeView.currentIndex == 1? 7 : 5
-                        radius: exchangeView.currentIndex == 1? 7 : 5
-                        anchors.right: parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        color: exchangeView.currentIndex == 1? maincolor : "#757575"
-                    }
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
         }
     }
 
+    Item {
+        id: exchangeIndicator
+        z: 3
+        height: 5
+        width: 15
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 40 : (isIphoneX()? 60 : 40)
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        Rectangle {
+            id: page1
+            height: exchangeView.currentIndex == 0? 7 : 5
+            width: exchangeView.currentIndex == 0? 7 : 5
+            radius: exchangeView.currentIndex == 0? 7 : 5
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            color: exchangeView.currentIndex == 0? maincolor : "#757575"
+
+            onHeightChanged: {
+                if (height == 7) {
+                    selectedExchange = "probit"
+                    lowPrice = "---"
+                    highPrice = "---"
+                    lastPrice = "---"
+                    priceChange = "---"
+                    volume1 = "---"
+                    volume2 = "---"
+                    exchangeInfoDate.text = "????-??-??"
+                    exchangeInfoTime.text = "??:??:??"
+                    tradeList.clear()
+                    orderList.clear()
+                    if (updatingInfo == false) {
+                        updatingInfo = true
+                        getCoinInfo(selectedExchange, exchangePair)
+                    }
+                    if (tradeTracker == 1 && updatingTrades == false) {
+                        updatingTrades = true
+                        getRecentTrades(selectedExchange, exchangePair, "20")
+                    }
+                    if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
+                        updatingOrderBook = true
+                        getOrderBook(selectedExchange, exchangePair)
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: page2
+            height: exchangeView.currentIndex == 1? 7 : 5
+            width: exchangeView.currentIndex == 1? 7 : 5
+            radius: exchangeView.currentIndex == 1? 7 : 5
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            color: exchangeView.currentIndex == 1? maincolor : "#757575"
+
+            onHeightChanged: {
+                if (height == 7) {
+                    selectedExchange = "crex24"
+                    lowPrice = "---"
+                    highPrice = "---"
+                    lastPrice = "---"
+                    priceChange = "---"
+                    volume1 = "---"
+                    volume2 = "---"
+                    exchangeInfoDate.text = "????-??-??"
+                    exchangeInfoTime.text = "??:??:??"
+                    tradeList.clear()
+                    orderList.clear()
+                    if (updatingInfo == false) {
+                        updatingInfo = true
+                        getCoinInfo(selectedExchange, exchangePair)
+                    }
+                    if (tradeTracker == 1 && updatingTrades == false) {
+                        updatingTrades = true
+                        getRecentTrades(selectedExchange, exchangePair, "20")
+                    }
+                    if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
+                        updatingOrderBook = true
+                        getOrderBook(selectedExchange, exchangePair)
+                    }
+                }
+            }
+        }
+    }
+    /*
+    Image {
+        id: exchangeArrow1
+        z: 4
+        source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
+        height: 18
+        width: 18
+        rotation: 180
+        anchors.left: exchangeView.left
+        anchors.leftMargin: 20
+        anchors.verticalCenter: exchangeView.verticalCenter
+        visible: exchangeView.currentIndex == 1
+
+        Rectangle{
+            height: 25
+            width: 25
+            radius: 10
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                exchangeView.currentIndex = 0
+                selectedExchange = "probit"
+                lowPrice = "---"
+                highPrice = "---"
+                lastPrice = "---"
+                priceChange = "---"
+                volume1 = "---"
+                volume2 = "---"
+                exchangeInfoDate.text = "????-??-??"
+                exchangeInfoTime.text = "??:??:??"
+                tradeList.clear()
+                orderList.clear()
+                if (updatingInfo == false) {
+                    updatingInfo = true
+                    getCoinInfo(selectedExchange, exchangePair)
+                }
+                if (tradeTracker == 1 && updatingTrades == false) {
+                    updatingTrades = true
+                    getRecentTrades(selectedExchange, exchangePair, "20")
+                }
+                if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
+                    updatingOrderBook = true
+                    getOrderBook(selectedExchange, exchangePair)
+                }
+            }
+        }
+    }
+
+    Image {
+        id: exchangeArrow2
+        z: 4
+        source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
+        height: 18
+        width: 18
+        rotation: 0
+        anchors.right: exchangeView.right
+        anchors.rightMargin: 20
+        anchors.verticalCenter: exchangeView.verticalCenter
+        visible: exchangeView.currentIndex == 0
+
+        Rectangle{
+            height: 25
+            width: 25
+            radius: 10
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                exchangeView.currentIndex = 1
+                selectedExchange = "crex24"
+                lowPrice = "---"
+                highPrice = "---"
+                lastPrice = "---"
+                priceChange = "---"
+                volume1 = "---"
+                volume2 = "---"
+                exchangeInfoDate.text = "????-??-??"
+                exchangeInfoTime.text = "??:??:??"
+                tradeList.clear()
+                orderList.clear()
+                if (updatingInfo == false) {
+                    updatingInfo = true
+                    getCoinInfo(selectedExchange, exchangePair)
+                }
+                if (tradeTracker == 1 && updatingTrades == false) {
+                    updatingTrades = true
+                    getRecentTrades(selectedExchange, exchangePair, "20")
+                }
+                if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
+                    updatingOrderBook = true
+                    getOrderBook(selectedExchange, exchangePair)
+                }
+            }
+        }
+    }
+    */
     Rectangle {
         id: xchangeHeader
         z: 6
@@ -1859,8 +2087,6 @@ Rectangle {
                 volume2 = "---"
                 exchangeInfoDate.text = "????-??-??"
                 exchangeInfoTime.text = "??:??:??"
-                tradeList.clear()
-                getCoinInfo(selectedExchange, exchangePair)
             }
         }
 
@@ -1933,7 +2159,17 @@ Rectangle {
 
             onVisibleChanged: {
                 if (visible == false && updatingInfo == true) {
+                    tradeList.clear()
+                    orderList.clear()
                     getCoinInfo(selectedExchange, exchangePair)
+                    if (tradeTracker == 1 && updatingTrades == false) {
+                        updatingTrades = true
+                        getRecentTrades(selectedExchange, exchangePair, "20")
+                    }
+                    if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
+                        updatingOrderBook = true
+                        getOrderBook(selectedExchange, exchangePair)
+                    }
                 }
             }
 
@@ -2036,8 +2272,6 @@ Rectangle {
                 volume2 = "---"
                 exchangeInfoDate.text = "????-??-??"
                 exchangeInfoTime.text = "??:??:??"
-                tradeList.clear()
-                getCoinInfo(selectedExchange, exchangePair)
             }
         }
 
@@ -2110,7 +2344,17 @@ Rectangle {
 
             onVisibleChanged: {
                 if (visible == false && updatingInfo == true) {
+                    tradeList.clear()
+                    orderList.clear()
                     getCoinInfo(selectedExchange, exchangePair)
+                    if (tradeTracker == 1 && updatingTrades == false) {
+                        updatingTrades = true
+                        getRecentTrades(selectedExchange, exchangePair, "20")
+                    }
+                    if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
+                        updatingOrderBook = true
+                        getOrderBook(selectedExchange, exchangePair)
+                    }
                 }
             }
 

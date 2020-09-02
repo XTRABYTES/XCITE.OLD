@@ -547,7 +547,7 @@ Item {
             if (loginTracker == 1){
                 loadSettings(settings);
                 loadingSettings = 0
-                verifyingBalances = 1
+                //verifyingBalances = 1
             }
         }
 
@@ -561,7 +561,7 @@ Item {
                 initializeTtt()
                 loginSuccesTimer.start()
                 loadingSettings = 0
-                verifyingBalances = 0
+                //verifyingBalances = 0
                 status = userSettings.xChatDND === true? "dnd" : "idle"
                 loginInitiated  = false
             }

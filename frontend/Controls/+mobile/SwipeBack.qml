@@ -104,7 +104,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 15
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 70 : 50)
         color: darktheme == true? "#14161B" : "#F2F2F2"
         opacity: 0.25
         visible: myOS == "ios"

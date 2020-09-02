@@ -515,7 +515,7 @@ Item {
                     radius: 50
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
+                    anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 70 : 50)
                     color: darktheme == true? "#14161B" : "#F2F2F2"
                     opacity: 0.25
                     visible: view.currentIndex == 0
@@ -1084,7 +1084,7 @@ Item {
                     radius: 50
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
+                    anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 70 : 50)
                     color: darktheme == true? "#14161B" : "#F2F2F2"
                     opacity: 0.25
                     visible: view.currentIndex == 1 && contactIndex != 0
