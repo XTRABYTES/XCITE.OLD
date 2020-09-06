@@ -62,8 +62,8 @@ Item {
             var walletListJson = JSON.stringify(datamodelWallet);
             var pendingListJson = JSON.stringify(datamodelPending);
 
-            //updateBalanceSignal(walletListJson, "all");
-            //checkTxStatus(pendingListJson);
+            updateBalanceSignal(walletListJson, "all");
+            checkTxStatus(pendingListJson);
 
             if (!checkingXchat){
                 checkingXchat = true
