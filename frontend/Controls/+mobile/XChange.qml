@@ -15,6 +15,8 @@ import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
+import QtCharts 2.2
+import QtQml 2.3
 
 import "qrc:/Controls" as Controls
 import "qrc:/Controls/+mobile" as Mobile
@@ -102,6 +104,7 @@ Rectangle {
     property bool updatingInfo: false
     property bool updatingTrades: false
     property bool updatingOrderBook: false
+    property bool updatingOhlcv: false
     property string buyVol: ""
     property string sellVol: ""
     property var bVol: Number.fromLocaleString(Qt.locale("en_US"),buyVol)
@@ -109,7 +112,14 @@ Rectangle {
     property real sumSellVolume: 0
     property real sumBuyVolume: 0
     property real timerCounter: 0
-
+    property string myCandles: ""
+    property string chartInterval: "30m"
+    property real yValueMax: 0
+    property real yValueMin: 0
+    property date minDate
+    property date maxDate
+    property var newSeries
+    property real progressCount: 0
 
     function loadTradeList(trades) {
         if (typeof trades !== "undefined") {
@@ -146,6 +156,12 @@ Rectangle {
         listModel.remove( sorted, indexes.length - sorted )
     }
 
+    function loadOhlcvList(ohlcv) {
+        if (typeof ohlcv !== "undefined") {
+            myCandles = ohlcv
+        }
+    }
+
     ListModel {
         id: tradeList
         ListElement {
@@ -154,18 +170,6 @@ Rectangle {
             quantity: ""
             date: ""
             time: ""
-        }
-    }
-
-    ListModel {
-        id: chartList
-        ListElement {
-            timestamp: ""
-            open: ""
-            high: ""
-            low: ""
-            close: ""
-            volume: ""
         }
     }
 
@@ -188,42 +192,61 @@ Rectangle {
 
         onReceivedRecentTrades: {
             if (exchange === selectedExchange && pair === exchangePair) {
-                loadTradeList(recentTradesList)
+                if (recentTradesList) {
+                    loadTradeList(recentTradesList)
+                }
                 updatingTrades = false
             }
         }
 
         onReceivedOrderBook: {
             if (exchange === selectedExchange && pair === exchangePair) {
-                loadOrderBookList(orderBookList)
-                buyVol = buyVolume
-                sellVol = sellVolume
-                if (buyOrderTracker == 1 && orderList.get(0).accVolume === 0) {
-                    orderListSort(orderList, (a, b) => - (a - b))
-                    sumBuyVolume = 0
-                    var bVol
-                    for (var e = 0; e < orderList.count; e ++) {
-                        if (orderList.get(e).side === "buy" && orderList.get(e).accVolume === 0) {
-                            bVol = orderList.get(e).quantity
-                            sumBuyVolume = sumBuyVolume + bVol
-                            orderList.setProperty(e, "accVolume", sumBuyVolume)
+                if (orderBookList) {
+                    loadOrderBookList(orderBookList)
+                    buyVol = buyVolume
+                    sellVol = sellVolume
+                    if (buyOrderTracker == 1 && orderList.get(0).accVolume === 0) {
+                        orderListSort(orderList, (a, b) => - (a - b))
+                        sumBuyVolume = 0
+                        var bVol
+                        for (var e = 0; e < orderList.count; e ++) {
+                            if (orderList.get(e).side === "buy" && orderList.get(e).accVolume === 0) {
+                                bVol = orderList.get(e).quantity
+                                sumBuyVolume = sumBuyVolume + bVol
+                                orderList.setProperty(e, "accVolume", sumBuyVolume)
+                            }
                         }
                     }
-                }
-                if (sellOrderTracker == 1 && orderList.get(0).accVolume === 0) {
-                    orderListSort(orderList, (a, b) => (a - b))
-                    sumSellVolume = 0
-                    var sVol
-                    for (var o = 0; o < orderList.count; o ++) {
-                        if (orderList.get(o).side === "sell" && orderList.get(o).accVolume === 0) {
-                            sVol = orderList.get(o).quantity
-                            sumSellVolume = sumSellVolume + sVol
-                            orderList.setProperty(o, "accVolume", sumSellVolume)
+                    if (sellOrderTracker == 1 && orderList.get(0).accVolume === 0) {
+                        orderListSort(orderList, (a, b) => (a - b))
+                        sumSellVolume = 0
+                        var sVol
+                        for (var o = 0; o < orderList.count; o ++) {
+                            if (orderList.get(o).side === "sell" && orderList.get(o).accVolume === 0) {
+                                sVol = orderList.get(o).quantity
+                                sumSellVolume = sumSellVolume + sVol
+                                orderList.setProperty(o, "accVolume", sumSellVolume)
+                            }
                         }
                     }
                 }
                 updatingOrderBook = false
             }
+        }
+
+        onReceivedOlhcv: {
+            if (exchange === selectedExchange && pair === exchangePair) {
+                if (ohlcvList !== "") {
+                    loadOhlcvList(ohlcvList)
+                    minDate = startDate
+                    maxDate = endDate
+                }
+                updatingOhlcv = false
+            }
+        }
+
+        onProgressOlhcv: {
+            progressCount = count
         }
     }
 
@@ -690,9 +713,13 @@ Rectangle {
                             onClicked: {
                                 if (chartTracker == 0) {
                                     chartTracker = 1
+                                    updatingOhlcv = true
+                                    chartInterval = "30m"
+                                    getOlhcv(selectedExchange, exchangePair, chartInterval)
                                 }
                                 else {
                                     chartTracker = 0
+                                    updatingOhlcv = false
                                 }
                             }
                         }
@@ -805,35 +832,314 @@ Rectangle {
                         }
                     ]
 
-                    Image {
-                        id: chart
+                    Rectangle {
+                        id: chartArea
                         z: 3
-                        source: "qrc:/icons/mobile/chart_example.svg"
-                        width: parent.width - 56
-                        fillMode: Image.PreserveAspectFit
+                        width: parent.width
+                        height: 155
+                        color: "transparent"
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.top: tradeChartArea.top
+                        anchors.bottom: tradeChartArea.bottom
                         state: chartTracker == 0? "up" : "down"
 
-                        Label {
+                        Rectangle {
+                            id: progressBg
                             z: 3
-                            text: "DEMO chart"
-                            font.pixelSize: 18
+                            width: parent.width
+                            height: 5
+                            color: "#757575"
+                            anchors.bottom: parent.bottom
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            visible: updatingOhlcv == true
+
+                            Rectangle {
+                                id: progressColor
+                                width: (parent.width/15) * progressCount
+                                height: parent.height
+                                color: maincolor
+                                anchors.bottom: parent.bottom
+                                anchors.left: parent.left
+                            }
+                        }
+
+                        ChartView {
+                            id: chartView
+                            z: 3
+                            anchors.fill: parent
+                            backgroundColor: "transparent"
+                            legend.visible: false
+                            margins.top: 5
+                            margins.left: 45
+                            margins.right: 0
+                            margins.bottom: 10
+                            visible: updatingOhlcv == false && chartTracker == 1
+
+                            property string list: myCandles
+                            property real closeTracker: chartTracker
+                            property bool listReady: false
+                            property real timestamp: 0
+                            property real open: 0
+                            property real high: 0
+                            property real low: 0
+                            property real close: 0
+
+                            onListChanged: {
+                                listReady = false
+                                createChartList(list)
+                            }
+
+                            onListReadyChanged: {
+                                if (listReady) {
+                                     candleStickChart.clear()
+                                    for (var e = 0; e < chartList.count; e ++) {
+                                        timestamp = chartList.get(e).timestamp
+                                        open = chartList.get(e).open/100000000
+                                        high = chartList.get(e).high/100000000
+                                        low = chartList.get(e).low/100000000
+                                        close = chartList.get(e).close/100000000
+                                        if (!candleStickChart.append(open,high,low,close,timestamp)) {
+                                            console.log("failed to add candlestick :-(")
+                                        }
+                                        else {
+                                            console.log("succes!!!")
+                                        }
+                                    }
+                                }
+                            }
+
+                            function createChartList(newList) {
+                                chartList.clear();
+                                var obj = JSON.parse(newList);
+                                for (var i in obj){
+                                    var data = obj[i];
+                                    chartList.append(data);
+                                }
+                                yValueMax = chartList.get(0).high
+                                yValueMin = chartList.get(0).low
+                                for (var e = 0; e < chartList.count; e ++) {
+                                    if (chartList.get(e).high > yValueMax) {
+                                        yValueMax = chartList.get(e).high
+                                    }
+                                    if (chartList.get(e).low < yValueMin) {
+                                        yValueMin = chartList.get(e).low
+                                    }
+                                }
+                                yValueMax = yValueMax * 1.01 / 100000000
+                                yValueMin = yValueMin * 0.99 / 100000000
+                                listReady = true
+                            }
+
+                            function getChartTime(interval) {
+                                var format = ""
+                                if (interval === "30m") {
+                                    format = "dd/MM"
+                                }
+                                return format
+                            }
+
+                            ListModel {
+                                id: chartList
+                                ListElement {
+                                    timestamp: 0
+                                    open: 0
+                                    high: 0
+                                    low: 0
+                                    close: 0
+                                }
+                            }
+
+                            CandlestickSeries {
+                                id: candleStickChart
+                                increasingColor: "#4BBE2E"
+                                decreasingColor: "#E55541"
+
+                                axisX: DateTimeAxis {format:"HH:mm";visible:true;gridVisible:false;lineVisible: false;titleVisible:false;max:maxDate; min:minDate}
+                                axisYRight: ValueAxis {labelFormat:"%.8f";color:themecolor;gridVisible:true;gridLineColor:"#757575";lineVisible:false;labelsVisible:true;labelsColor:themecolor;titleVisible:false;labelsFont:xciteMobile.name;min:yValueMin;max:yValueMax}
+                            }
+                        }
+
+                        Label {
+                            id: interval5mLabel
+                            z: 3
+                            text: "5m"
+                            font.pixelSize: 13
                             font.family: xciteMobile.name
-                            color: themecolor
+                            color: chartInterval == "5m"? themecolor : "#757575"
+                            anchors.right: interval30mLabel.right
+                            anchors.top: parent.top
+                            anchors.topMargin: 10
+                            font.bold: chartInterval == "5m"
+
+                            Rectangle {
+                                width: interval30mLabel.width
+                                height: parent.height + 20
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+                                color: "transparent"
+
+                                MouseArea {
+                                    anchors.fill: parent
+
+                                    onClicked: {
+                                        if (chartTracker == 1 && updatingOhlcv == false) {
+                                            updatingOhlcv = true
+                                            chartInterval = "5m"
+                                            getOlhcv(selectedExchange, exchangePair, chartInterval)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Label {
+                            id: interval15mLabel
+                            z: 3
+                            text: "15m"
+                            font.pixelSize: 13
+                            font.family: xciteMobile.name
+                            color: chartInterval == "15m"? themecolor : "#757575"
+                            anchors.right: interval30mLabel.right
+                            y: (interval5mLabel.y + interval30mLabel.y)/2
+                            font.bold: chartInterval == "15m"
+
+                            Rectangle {
+                                width: interval30mLabel.width
+                                height: parent.height + 20
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+                                color: "transparent"
+
+                                MouseArea {
+                                    anchors.fill: parent
+
+                                    onClicked: {
+                                        if (chartTracker == 1 && updatingOhlcv == false) {
+                                            updatingOhlcv = true
+                                            chartInterval = "15m"
+                                            getOlhcv(selectedExchange, exchangePair, chartInterval)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Label {
+                            id: interval30mLabel
+                            z: 3
+                            text: "30m"
+                            font.pixelSize: 13
+                            font.family: xciteMobile.name
+                            color: chartInterval == "30m"? themecolor : "#757575"
+                            anchors.left: parent.left
+                            anchors.leftMargin: 10
+                            y: (interval5mLabel.y + interval4hLabel.y)/2
+                            font.bold: chartInterval == "30m"
+
+                            Rectangle {
+                                width: interval30mLabel.width
+                                height: parent.height + 20
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+                                color: "transparent"
+
+                                MouseArea {
+                                    anchors.fill: parent
+
+                                    onClicked: {
+                                        if (chartTracker == 1 && updatingOhlcv == false) {
+                                            updatingOhlcv = true
+                                            chartInterval = "30m"
+                                            getOlhcv(selectedExchange, exchangePair, chartInterval)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Label {
+                            id: interval1hLabel
+                            z: 3
+                            text: "1h"
+                            font.pixelSize: 13
+                            font.family: xciteMobile.name
+                            color: chartInterval == "1h"? themecolor : "#757575"
+                            anchors.right: interval30mLabel.right
+                            y: (interval30mLabel.y + interval4hLabel.y)/2
+                            font.bold: chartInterval == "1h"
+
+                            Rectangle {
+                                width: interval30mLabel.width
+                                height: parent.height + 20
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+                                color: "transparent"
+
+                                MouseArea {
+                                    anchors.fill: parent
+
+                                    onClicked: {
+                                        if (chartTracker == 1 && updatingOhlcv == false) {
+                                            updatingOhlcv = true
+                                            chartInterval = "1h"
+                                            getOlhcv(selectedExchange, exchangePair, chartInterval)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Label {
+                            id: interval4hLabel
+                            z: 3
+                            text: "4h"
+                            font.pixelSize: 13
+                            font.family: xciteMobile.name
+                            color: chartInterval == "4h"? themecolor : "#757575"
+                            anchors.right: interval30mLabel.right
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 10
+                            font.bold: chartInterval == "4h"
+
+                            Rectangle {
+                                width: interval30mLabel.width
+                                height: parent.height + 20
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+                                color: "transparent"
+
+                                MouseArea {
+                                    anchors.fill: parent
+
+                                    onClicked: {
+                                        if (chartTracker == 1 && updatingOhlcv == false) {
+                                            updatingOhlcv = true
+                                            chartInterval = "4h"
+                                            getOlhcv(selectedExchange, exchangePair, chartInterval)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        AnimatedImage  {
+                            id: waitingDotsOlhcv
+                            source: 'qrc:/gifs/loading-gif_01.gif'
+                            width: 90
+                            height: 60
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
-                            font.bold: true
+                            playing: updatingOhlcv == true && chartTracker == 1
+                            visible: updatingOhlcv == true && chartTracker == 1
                         }
 
                         states: [
                             State {
                                 name: "up"
-                                PropertyChanges { target: chart; anchors.topMargin: -(chart.height + 10)}
+                                PropertyChanges { target: chartArea; anchors.topMargin: -(chartArea.height + 10)}
                             },
                             State {
                                 name: "down"
-                                PropertyChanges { target: chart; anchors.topMargin: 40}
+                                PropertyChanges { target: chartArea; anchors.topMargin: 40}
                             }
                         ]
 
@@ -841,7 +1147,7 @@ Rectangle {
                             Transition {
                                 from: "*"
                                 to: "*"
-                                NumberAnimation { target: chart; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+                                NumberAnimation { target: chartArea; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
                             }
                         ]
                     }
@@ -1646,8 +1952,7 @@ Rectangle {
         anchors.bottom: exchangeIndicator.top
         anchors.bottomMargin: 5
         currentIndex: 0
-        //interactive: false
-        //orientation: Qt.Vertical
+        interactive: updatingInfo == false && updatingTrades == false && updatingOrderBook == false && updatingOhlcv == false
         clip: true
 
         Item {
@@ -1740,6 +2045,12 @@ Rectangle {
                         updatingOrderBook = true
                         getOrderBook(selectedExchange, exchangePair)
                     }
+                    if (chartTracker == 1 && updatingOhlcv == false) {
+                        updatingOhlcv = true
+                        progressCount = 0
+                        chartInterval = "30m"
+                        getOlhcv(selectedExchange, exchangePair, chartInterval)
+                    }
                 }
             }
         }
@@ -1778,129 +2089,17 @@ Rectangle {
                         updatingOrderBook = true
                         getOrderBook(selectedExchange, exchangePair)
                     }
-                }
-            }
-        }
-    }
-    /*
-    Image {
-        id: exchangeArrow1
-        z: 4
-        source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
-        height: 18
-        width: 18
-        rotation: 180
-        anchors.left: exchangeView.left
-        anchors.leftMargin: 20
-        anchors.verticalCenter: exchangeView.verticalCenter
-        visible: exchangeView.currentIndex == 1
-
-        Rectangle{
-            height: 25
-            width: 25
-            radius: 10
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                exchangeView.currentIndex = 0
-                selectedExchange = "probit"
-                lowPrice = "---"
-                highPrice = "---"
-                lastPrice = "---"
-                priceChange = "---"
-                volume1 = "---"
-                volume2 = "---"
-                exchangeInfoDate.text = "????-??-??"
-                exchangeInfoTime.text = "??:??:??"
-                tradeList.clear()
-                orderList.clear()
-                if (updatingInfo == false) {
-                    updatingInfo = true
-                    getCoinInfo(selectedExchange, exchangePair)
-                }
-                if (tradeTracker == 1 && updatingTrades == false) {
-                    updatingTrades = true
-                    getRecentTrades(selectedExchange, exchangePair, "20")
-                }
-                if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
-                    updatingOrderBook = true
-                    getOrderBook(selectedExchange, exchangePair)
+                    if (chartTracker == 1 && updatingOhlcv == false) {
+                        updatingOhlcv = true
+                        progressCount = 0
+                        chartInterval = "30m"
+                        getOlhcv(selectedExchange, exchangePair, chartInterval)
+                    }
                 }
             }
         }
     }
 
-    Image {
-        id: exchangeArrow2
-        z: 4
-        source: darktheme == true? 'qrc:/icons/mobile/dropdown-icon_01_light.svg' : 'qrc:/icons/mobile/dropdown-icon_01_dark.svg'
-        height: 18
-        width: 18
-        rotation: 0
-        anchors.right: exchangeView.right
-        anchors.rightMargin: 20
-        anchors.verticalCenter: exchangeView.verticalCenter
-        visible: exchangeView.currentIndex == 0
-
-        Rectangle{
-            height: 25
-            width: 25
-            radius: 10
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                exchangeView.currentIndex = 1
-                selectedExchange = "crex24"
-                lowPrice = "---"
-                highPrice = "---"
-                lastPrice = "---"
-                priceChange = "---"
-                volume1 = "---"
-                volume2 = "---"
-                exchangeInfoDate.text = "????-??-??"
-                exchangeInfoTime.text = "??:??:??"
-                tradeList.clear()
-                orderList.clear()
-                if (updatingInfo == false) {
-                    updatingInfo = true
-                    getCoinInfo(selectedExchange, exchangePair)
-                }
-                if (tradeTracker == 1 && updatingTrades == false) {
-                    updatingTrades = true
-                    getRecentTrades(selectedExchange, exchangePair, "20")
-                }
-                if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
-                    updatingOrderBook = true
-                    getOrderBook(selectedExchange, exchangePair)
-                }
-            }
-        }
-    }
-    */
     Rectangle {
         id: xchangeHeader
         z: 6
@@ -2113,7 +2312,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton1
-                enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
+                enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false && updatingOhlcv == false
 
                 onPressed: {
                     click01.play()
@@ -2169,6 +2368,12 @@ Rectangle {
                     if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
                         updatingOrderBook = true
                         getOrderBook(selectedExchange, exchangePair)
+                    }
+                    if (chartTracker == 1 && updatingOhlcv == false) {
+                        updatingOhlcv = true
+                        progressCount = 0
+                        chartInterval = "30m"
+                        getOlhcv(selectedExchange, exchangePair, chartInterval)
                     }
                 }
             }
@@ -2298,7 +2503,7 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: picklistButton2
-                enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
+                enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false && updatingOhlcv == false
 
                 onPressed: {
                     click01.play()
@@ -2355,6 +2560,12 @@ Rectangle {
                         updatingOrderBook = true
                         getOrderBook(selectedExchange, exchangePair)
                     }
+                    if (chartTracker == 1 && updatingOhlcv == false) {
+                        updatingOhlcv = true
+                        progressCount = 0
+                        chartInterval = "30m"
+                        getOlhcv(selectedExchange, exchangePair, chartInterval)
+                    }
                 }
             }
 
@@ -2400,7 +2611,7 @@ Rectangle {
     }
 
     Rectangle {
-        id: notification
+        id: notificationPopUp
         z: 10
         width: appWidth
         height: appHeight
@@ -2423,11 +2634,11 @@ Rectangle {
         states: [
             State {
                 name: "up"
-                PropertyChanges { target: notification; anchors.topMargin: 0}
+                PropertyChanges { target: notificationPopUp; anchors.topMargin: 0}
             },
             State {
                 name: "down"
-                PropertyChanges { target: notification; anchors.topMargin: xchangeModal.height}
+                PropertyChanges { target: notificationPopUp; anchors.topMargin: xchangeModal.height}
             }
         ]
 
@@ -2435,7 +2646,7 @@ Rectangle {
             Transition {
                 from: "*"
                 to: "*"
-                NumberAnimation { target: notification; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+                NumberAnimation { target: notificationPopUp; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
             }
         ]
 

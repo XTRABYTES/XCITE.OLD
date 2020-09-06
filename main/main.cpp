@@ -184,6 +184,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(getCoinInfo(QString, QString)), &cex, SLOT(getCoinInfo(QString, QString)));
     QObject::connect(rootObject, SIGNAL(getRecentTrades(QString, QString, QString)), &cex, SLOT(getRecentTrades(QString, QString, QString)));
     QObject::connect(rootObject, SIGNAL(getOrderBook(QString, QString)), &cex, SLOT(getOrderBook(QString, QString)));
+    QObject::connect(rootObject, SIGNAL(getOlhcv(QString, QString, QString)), &cex, SLOT(getOlhcv(QString, QString, QString)));
 
     // connect QML signal for ClipboardProxy
     QObject::connect(rootObject, SIGNAL(copyText2Clipboard(QString)), &clipboardProxy, SLOT(copyText2Clipboard(QString)));

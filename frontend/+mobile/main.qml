@@ -573,6 +573,7 @@ ApplicationWindow {
     signal getCoinInfo(string exchange, string pair)
     signal getRecentTrades(string exchange, string pair, string limit)
     signal getOrderBook(string exchange, string pair)
+    signal getOlhcv(string exchange, string pair, string granularity)
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {
@@ -2567,7 +2568,7 @@ ApplicationWindow {
             explorerBusy = false
         }
     }
-
+    /*
     Connections {
         target: xGames
 
@@ -2606,7 +2607,7 @@ ApplicationWindow {
             gameError = 1
         }
     }
-
+    */
     Connections {
         target: xChat
 

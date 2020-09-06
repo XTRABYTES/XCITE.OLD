@@ -20,6 +20,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QtWidgets>
+#include <QDateTime>
 #include "../support/DownloadManager.hpp"
 
 class Cex : public QObject
@@ -29,13 +30,15 @@ public:
     explicit Cex(QObject *parent = nullptr);
     void DownloadManagerHandler(URLObject *url);
     void createOlhcv(QString exchange, QString pair,  QString granularity);
-    void findLastInterval(qint64 time);
+    void findLastInterval(qint64 time, QString granularity);
 
 signals:
     //
     void receivedCoinInfo(QString exchange, QString pair, QString low, QString high, QString last, QString change, QString quoteVolume, QString baseVolume, QString infoDate, QString infoTime);
     void receivedRecentTrades(QString exchange, QString pair, QString recentTradesList);
     void receivedOrderBook(QString exchange, QString pair, QString orderBookList, QString buyVolume, QString sellVolume);
+    void receivedOlhcv(QString exchange, QString pair, QString ohlcvList, QDateTime startDate, QDateTime endDate);
+    void progressOlhcv(int count);
 
 public slots:
     //
@@ -53,15 +56,19 @@ public slots:
 
 private:
     //
-    bool creatingOlhcv;
+    bool firstReceived;
+    QString gran;
     QString olhcvTime;
     qint64 interval;
     QString startTimeStr;
     QString endTimeStr;
     qint64 startTime;
     qint64 endTime;
-    qint64 count;
-
+    QDateTime startDate;
+    QDateTime endDate;
+    qint64 countSlots;
+    qint64 trySlots;
+    QJsonArray ohlcvList;
 };
 
 #endif // CEX_HPP
