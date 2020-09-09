@@ -360,7 +360,7 @@ void Cex::getRecentTradesSlot(QByteArray response, QMap<QString, QVariant> props
     if (tradePair == pair && tradeExchange == exchange) {
         if (exchange == "probit") {
             QJsonObject data = jsonResponse.object();
-            if (data.isEmpty()) {
+            if (data.contains("errorCode")) {
                 QString errorDetails = data.value("details").toString();
                 xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: no data returned");
                 emit receivedRecentTrades(exchange, pair, "");
@@ -556,59 +556,90 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
 
     if (chartPair == pair && chartExchange == exchange) {
         if (exchange == "probit") {
-            QJsonObject data = jsonResponse.object();
-            qDebug() << data;
-            if (data.isEmpty()) {
-                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: no data returned");
-                emit receivedOlhcv(exchange, pair, "", startDate, endDate);
+            QJsonObject data;
+            QJsonArray trades;
+            try {
+                data = jsonResponse.object();
+            } catch (...) {
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extraction data" );
             }
-            else {
-                QJsonArray trades = jsonResponse.object().value("data").toArray();
-                qDebug() << trades;
-                try {
-                    int i;
-                    int countTrades = trades.size();
-                    for (i = 0; i < countTrades; ++i)  {
-                        QJsonObject obj = trades.at(i).toObject();
-                        if (obj.contains("price")){
-                            price = obj.value("price").toString();
-                            double pricedb = price.toDouble();
-                            price = QString::number(pricedb,'f', 8);
-                            pricedb = price.toDouble() * 100000000;
-                            if (i == 0) {
-                                open = pricedb;
-                                close = pricedb;
-                                high = pricedb;
-                                low = pricedb;
-                            }
-                            else {
-                                if (i == (countTrades - 1)) {
+            if (jsonResponse.object().contains("data") || !data.isEmpty()){
+                trades = jsonResponse.object().value("data").toArray();
+                if (!trades.isEmpty()) {
+                    try {
+                        int i;
+                        int countTrades = trades.size();
+                        for (i = 0; i < countTrades; ++i)  {
+                            QJsonObject obj = trades.at(i).toObject();
+                            if (obj.contains("price")){
+                                price = obj.value("price").toString();
+                                double pricedb = price.toDouble();
+                                price = QString::number(pricedb,'f', 8);
+                                pricedb = price.toDouble() * 100000000;
+                                if (i == 0) {
                                     open = pricedb;
-                                }
-                                if (pricedb > high) {
+                                    close = pricedb;
                                     high = pricedb;
-                                }
-                                if (pricedb < low) {
                                     low = pricedb;
                                 }
+                                else {
+                                    if (i == (countTrades - 1)) {
+                                        open = pricedb;
+                                    }
+                                    if (pricedb > high) {
+                                        high = pricedb;
+                                    }
+                                    if (pricedb < low) {
+                                        low = pricedb;
+                                    }
+                                }
                             }
                         }
-                    }
-                    if (countTrades > 0) {
-                        qDebug() << "adding ohlcv item";
-                        QJsonObject arrayItem;
-                        arrayItem.insert("timestamp", endTime);
-                        arrayItem.insert("open", open);
-                        arrayItem.insert("high", high);
-                        arrayItem.insert("low", low);
-                        arrayItem.insert("close", close);
-                        ohlcvList.append(arrayItem);
-                        if (countSlots < 14) {
-                            qDebug() << "increasing slot count";
-                            ++countSlots;
-                            emit progressOlhcv(countSlots);
+                        if (countTrades > 0) {
+                            qDebug() << "adding ohlcv item";
+                            QJsonObject arrayItem;
+                            arrayItem.insert("timestamp", endTime);
+                            arrayItem.insert("open", open);
+                            arrayItem.insert("high", high);
+                            arrayItem.insert("low", low);
+                            arrayItem.insert("close", close);
+                            ohlcvList.append(arrayItem);
+                            if (countSlots < 14) {
+                                qDebug() << "increasing slot count";
+                                ++countSlots;
+                                emit progressOlhcv(countSlots);
+                            }
+                        }
+                        if (countSlots < 14 && trySlots < 45) {
+                            createOlhcv(exchange, pair, gran);
+                        }
+                        else {
+                            startDate =  QDateTime::fromMSecsSinceEpoch(endTime);
+                            QJsonDocument arrayDoc;
+                            arrayDoc.setArray(ohlcvList);
+                            QString ohlcvString(arrayDoc.toJson());
+                            emit receivedOlhcv(exchange, pair, ohlcvString, startDate, endDate);
+                            qDebug() << "start date: " << startDate;
+                            qDebug() << "end date: " << endDate;
                         }
                     }
+                    catch (...) {
+                        if (countSlots < 14 && trySlots < 45) {
+                            createOlhcv(exchange, pair, gran);
+                        }
+                        else {
+                            startDate =  QDateTime::fromMSecsSinceEpoch(endTime);
+                            QJsonDocument arrayDoc;
+                            arrayDoc.setArray(ohlcvList);
+                            QString ohlcvString(arrayDoc.toJson());
+                            emit receivedOlhcv(exchange, pair, ohlcvString, startDate, endDate);
+                            qDebug() << "start date: " << startDate;
+                            qDebug() << "end date: " << endDate;
+                        }
+                        xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract trades" );
+                    }
+                }
+                else {
                     if (countSlots < 14 && trySlots < 45) {
                         createOlhcv(exchange, pair, gran);
                     }
@@ -621,10 +652,23 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
                         qDebug() << "start date: " << startDate;
                         qDebug() << "end date: " << endDate;
                     }
+                    xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", no trading data for this timeslot");
                 }
-                catch (...) {
-                    xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract trades" );
+            }
+            else {
+                if (countSlots < 14 && trySlots < 45) {
+                    createOlhcv(exchange, pair, gran);
                 }
+                else {
+                    startDate =  QDateTime::fromMSecsSinceEpoch(endTime);
+                    QJsonDocument arrayDoc;
+                    arrayDoc.setArray(ohlcvList);
+                    QString ohlcvString(arrayDoc.toJson());
+                    emit receivedOlhcv(exchange, pair, ohlcvString, startDate, endDate);
+                    qDebug() << "start date: " << startDate;
+                    qDebug() << "end date: " << endDate;
+                }
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error retrieving olhcv data");
             }
         }
     }
