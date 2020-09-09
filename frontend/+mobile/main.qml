@@ -574,6 +574,7 @@ ApplicationWindow {
     signal getRecentTrades(string exchange, string pair, string limit)
     signal getOrderBook(string exchange, string pair)
     signal getOlhcv(string exchange, string pair, string granularity)
+    signal updateOlhcv(string status)
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {

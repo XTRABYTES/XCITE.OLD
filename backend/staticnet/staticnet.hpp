@@ -119,13 +119,16 @@ public Q_SLOTS:
     void sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params);
     void processReply(QString reply, const QJsonArray *params);
     int errorString(QString errorstr);
+    QString selectNode();
 
 private:
     QString msg;
     QString target_addr;
     QString send_amount;
     QString priv_key;
-    //QStringList pendingUtxo;
+    QString Germany_02 = "85.214.143.20";
+    QString selectedNode;
+
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
     void help();

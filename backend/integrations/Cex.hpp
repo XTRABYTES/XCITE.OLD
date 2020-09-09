@@ -53,10 +53,12 @@ public slots:
     void getRecentTrades(QString exchange, QString pair, QString limit);
     void getOlhcv(QString exchange, QString pair,  QString granularity);
     void getOrderBook(QString exchange, QString pair);
+    void updateOlhcv(QString status);
 
 private:
     //
     bool firstReceived;
+    bool olhcvRunning;
     QString gran;
     QString olhcvTime;
     qint64 interval;
@@ -69,6 +71,14 @@ private:
     qint64 countSlots;
     qint64 trySlots;
     QJsonArray ohlcvList;
+    QString infoExchange;
+    QString infoPair;
+    QString tradeExchange;
+    QString tradePair;
+    QString orderExchange;
+    QString orderPair;
+    QString chartExchange;
+    QString chartPair;
 };
 
 #endif // CEX_HPP

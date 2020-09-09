@@ -288,12 +288,19 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
     }
 }
 
+QString SnetKeyWordWorker::selectNode(){
+    // for now ...
+    selectedNode = Germany_02;
+    //
+    return selectedNode;
+}
+
 void SnetKeyWordWorker::sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params) {
     std::string q_name = queueName.toStdString();
     std::string strJson = docByteArray.toStdString();
-
+    std::string selectedCore = selectNode().toStdString();
     const std::string correlation(xUtility.get_uuid());
-    SimplePocoHandler handler("85.214.143.20", 5672);
+    SimplePocoHandler handler(selectedCore, 5672);
     AMQP::Connection connection(&handler, AMQP::Login("guest", "guest"), "/");
 
     AMQP::Channel channel(&connection);
@@ -337,6 +344,9 @@ void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
     xchatRobot.SubmitMsg("dicom - " + dapp + ":" + replyMethod + " id:" + replyId + " reply:" + replyMsg);
     QJsonDocument msgDoc = QJsonDocument::fromJson(replyMsg.toUtf8());
     QJsonObject msgObj = msgDoc.object();
+
+    xchatRobot.SubmitMsg("dicom - " + dapp + ":" + replyMethod + " reply:" + msg);
+
 
     if (replyMethod == "getutxo") {
         if (replyMsg == "rpc error" || msgObj.contains("error")) {

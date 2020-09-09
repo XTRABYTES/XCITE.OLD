@@ -121,6 +121,16 @@ Rectangle {
     property var newSeries
     property real progressCount: 0
 
+    onUpdatingOhlcvChanged: {
+        if (updatingOhlcv) {
+            updateOlhcv("true")
+        }
+        else {
+            updateOlhcv("false")
+            progressCount = 0
+        }
+    }
+
     function loadTradeList(trades) {
         if (typeof trades !== "undefined") {
             tradeList.clear();
@@ -257,21 +267,21 @@ Rectangle {
         running: xchangeTracker == 1
 
         onTriggered: {
-            if (updatingInfo == false) {
+            if (updatingInfo == false && updatingOrderBook == false && updatingOhlcv == false && updatingTrades == false) {
                 updatingInfo = true
                 getCoinInfo(selectedExchange, exchangePair)
             }
-            if (timerCounter == 0) {
-                if (tradeTracker == 1 && updatingTrades == false) {
+            if (timerCounter == 0 && updatingInfo == false) {
+                if (tradeTracker == 1 && updatingTrades == false && updatingOrderBook == false && updatingOhlcv) {
                     updatingTrades = true
                     getRecentTrades(selectedExchange, exchangePair, "20")
                 }
-                if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingOrderBook == false) {
+                if ((buyOrderTracker == 1 || sellOrderTracker == 1) && updatingTrades == false && updatingOrderBook == false && updatingOhlcv) {
                     updatingOrderBook = true
                     getOrderBook(selectedExchange, exchangePair)
                 }
                 if (timerCounter < 4) {
-                    timerCounter = timerCounter + 1
+                    timerCounter++
                 }
                 else {
                     timerCounter = 0
@@ -704,6 +714,7 @@ Rectangle {
 
                         MouseArea {
                             anchors.fill: arrowButton
+                            enabled: updatingInfo == false && updatingTrades == false && updatingOrderBook == false
 
                             onPressed: {
                                 click01.play()
@@ -782,7 +793,7 @@ Rectangle {
 
                         MouseArea {
                             anchors.fill: tradeButton
-                            enabled: updatingInfo == false
+                            enabled: updatingInfo == false && updatingOrderBook == false && updatingOhlcv == false
 
                             onPressed: {
                                 click01.play()
@@ -1426,6 +1437,7 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
+                        enabled: coin1Tracker == 0 && coin2Tracker == 0
 
                         onPressed: {
                             click01.play()
@@ -1473,6 +1485,7 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
+                        enabled: coin1Tracker == 0 && coin2Tracker == 0
 
                         onPressed: {
                             click01.play()
@@ -1592,6 +1605,7 @@ Rectangle {
 
                             MouseArea {
                                 anchors.fill: parent
+                                enabled: updatingInfo == false && updatingTrades == false && updatingOhlcv == false
 
                                 onPressed: {
                                     click01.play()
@@ -1798,6 +1812,7 @@ Rectangle {
 
                             MouseArea {
                                 anchors.fill: parent
+                                enabled: updatingInfo == false && updatingTrades == false && updatingOhlcv == false
 
                                 onPressed: {
                                     click01.play()
