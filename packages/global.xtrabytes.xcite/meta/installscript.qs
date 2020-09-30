@@ -41,7 +41,7 @@ Component.prototype.createOperations = function()
             try {
                 var userProfile = installer.environmentVariable("USERPROFILE");
                 installer.setValue("UserProfile", userProfile);
-                component.addOperation("CreateShortcut", "@TargetDir@/XCITE.exe", "@UserProfile@/Desktop/XCITE.lnk");
+                component.addOperation("CreateShortcut", "@TargetDir@/XCITE.exe", "@UserProfile@/Desktop/XCITE.lnk", "workingDirectory=@TargetDir@");;
             } catch (e) {
                 // Do nothing if key doesn't exist
             }
