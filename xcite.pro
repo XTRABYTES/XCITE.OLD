@@ -333,6 +333,7 @@ macx {
         LIBS += -L$$PWD/dependencies/macos/poco -lPocoFoundation -lPocoUtil -lPocoNet
 }
 
+ICON = xcite.icns
 
 FORMS += \
     packages/global.xtrabytes.xcite/meta/feedbackpage.ui
