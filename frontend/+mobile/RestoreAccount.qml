@@ -47,8 +47,8 @@ Item {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: (parent.height/2) - (login.height)
-        width: parent.width - 50
+        anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)
+        width: (myOS == "android" || myOS == "ios")? parent.width - 50 : 350
         height: 250
         //state: restoreTracker == 1? "up" : "down"
         color: "transparent"
@@ -57,7 +57,7 @@ Item {
         states: [
             State {
                 name: "up"
-                PropertyChanges { target: login; anchors.topMargin: (parent.height/2) - (login.height)}
+                PropertyChanges { target: login; anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)}
             },
             State {
                 name: "down"
@@ -483,16 +483,16 @@ Item {
 
         Label {
             id: noAccount
-            width: doubbleButtonWidth
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignJustify
             maximumLineCount: 7
             text: "If you try to restore an account, make sure the .backup file is in the <b>Documents/XCITE_backup</b> folder. If your account uses DEVICE storage your .wallet file needs to be in the <b>Documents/XCITE_wallet</b> folder"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: login.bottom
-            anchors.topMargin: 70
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? 70 : 15
             color: "#F2F2F2"
-            font.pixelSize: 18
+            font.pixelSize: (myOS == "android" || myOS == "ios")? 18 : 14
             font.family: xciteMobile.name
         }
     }

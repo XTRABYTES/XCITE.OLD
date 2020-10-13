@@ -352,5 +352,6 @@
         <file>icons/mobile/probit_logo.png</file>
         <file>icons/mobile/crex24_logo.png</file>
         <file>icons/mobile/crex24_logo_02.png</file>
+        <file>icons/xby_logo_with_name.svg</file>
     </qresource>
 </RCC>

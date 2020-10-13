@@ -210,7 +210,7 @@ Rectangle {
             Controls.TextInput {
                 id: newName
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 placeholder: "WALLET LABEL"
                 text: ""
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -248,7 +248,7 @@ Rectangle {
             Controls.TextInput {
                 id: newAddress
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 placeholder: "PRIVATE KEY"
                 text: ""
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -442,7 +442,7 @@ Rectangle {
                         && newAddress.text !== ""
                         && invalidAddress == 0
                         && addressExists == 0 && labelExists == 0) ? "#F2F2F2" : "#979797"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: importWalletButton.horizontalCenter
                 anchors.verticalCenter: importWalletButton.verticalCenter
                 visible: scanQRTracker == 0 && importInitiated == false
@@ -486,7 +486,7 @@ Rectangle {
 
             Text {
                 id: walletCreatedText
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 2
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignHCenter
@@ -541,7 +541,7 @@ Rectangle {
 
             Label {
                 id: publicKey
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
                 horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WrapAnywhere
@@ -568,7 +568,7 @@ Rectangle {
 
             Label {
                 id: privateKey
-                width: doubbleButtonWidth
+                width:(myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
                 horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WrapAnywhere
@@ -606,7 +606,7 @@ Rectangle {
 
             Text {
                 id: warningPrivateKey
-                width: doubbleButtonWidth
+                width:(myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
                 anchors.left: addressHash.left
                 horizontalAlignment: Text.AlignJustify
@@ -621,7 +621,7 @@ Rectangle {
 
             Rectangle {
                 id: addWalletButton
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 height: 34
                 anchors.top: warningPrivateKey.bottom
                 anchors.topMargin: 25
@@ -770,7 +770,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 color: "#F2F2F2"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: addWalletButton.horizontalCenter
                 anchors.verticalCenter: addWalletButton.verticalCenter
                 visible: addingWallet == false
@@ -778,7 +778,7 @@ Rectangle {
 
 
             Rectangle {
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 height: 34
                 anchors.bottom: addWalletButton.bottom
                 anchors.left: addWalletButton.left
@@ -824,7 +824,7 @@ Rectangle {
 
             Label {
                 id: saveFailedLabel
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: saveErrorNR == 0? 1 : 4
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
@@ -852,7 +852,7 @@ Rectangle {
 
             Rectangle {
                 id: closeFail
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 color: maincolor
                 opacity: 0.25
@@ -886,14 +886,14 @@ Rectangle {
                 text: saveErrorNR == 0? "TRY AGAIN" : "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 color: "#F2F2F2"
                 anchors.horizontalCenter: closeFail.horizontalCenter
                 anchors.verticalCenter: closeFail.verticalCenter
             }
 
             Rectangle {
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 anchors.bottom: closeFail.bottom
                 anchors.left: closeFail.left
@@ -934,7 +934,7 @@ Rectangle {
 
             Rectangle {
                 id: closeSave
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 color: maincolor
                 opacity: 0.25
@@ -975,14 +975,14 @@ Rectangle {
                 text: "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 color: "#F2F2F2"
                 anchors.horizontalCenter: closeSave.horizontalCenter
                 anchors.verticalCenter: closeSave.verticalCenter
             }
 
             Rectangle {
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 anchors.bottom: closeSave.bottom
                 anchors.left: closeSave.left
@@ -1011,7 +1011,7 @@ Rectangle {
 
             Text {
                 id: errorLabel
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 text: "<b>ERROR</b>:" + walletError
                 anchors.top: saveError.bottom
                 anchors.topMargin: 10
@@ -1026,7 +1026,7 @@ Rectangle {
 
             Rectangle {
                 id: closeError
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 color: maincolor
                 opacity: 0.25
@@ -1054,14 +1054,14 @@ Rectangle {
                 text: "TRY AGAIN"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 color: themecolor
                 anchors.horizontalCenter: closeError.horizontalCenter
                 anchors.verticalCenter: closeError.verticalCenter
             }
 
             Rectangle {
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 anchors.bottom: closeError.bottom
                 anchors.left: closeError.left

@@ -69,7 +69,7 @@ Rectangle {
 
     Timer {
         id: networkErrorTimer
-        interval: 16000
+        interval: 5000
         repeat: false
         running: networkError == 1
         onTriggered:  {

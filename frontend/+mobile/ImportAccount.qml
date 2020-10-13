@@ -47,8 +47,8 @@ Item {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: (parent.height/2) - (login.height)
-        width: parent.width - 50
+        anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)
+        width: (myOS == "android" || myOS == "ios")? parent.width - 50 : 350
         height: 250
         //state: importTracker == 1? "up" : "down"
         color: "transparent"
@@ -57,7 +57,7 @@ Item {
         states: [
             State {
                 name: "up"
-                PropertyChanges { target: login; anchors.topMargin: (parent.height/2) - (login.height)}
+                PropertyChanges { target: login; anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)}
             },
             State {
                 name: "down"
@@ -483,16 +483,16 @@ Item {
 
         Label {
             id: noAccount
-            width: doubbleButtonWidth
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignJustify
             maximumLineCount: 5
             text: "Before you try to import an account, make sure you placed the exported wallet file in your device's download folder."
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: login.bottom
-            anchors.topMargin: 70
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? 70 : 15
             color: "#F2F2F2"
-            font.pixelSize: 18
+            font.pixelSize: (myOS == "android" || myOS == "ios")? 18 : 14
             font.family: xciteMobile.name
         }
     }

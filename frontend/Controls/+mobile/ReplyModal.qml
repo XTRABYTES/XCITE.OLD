@@ -33,7 +33,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
-        width: parent.width - 50
+        width: (myOS == "android" || myOS == "ios")? parent.width - 50 : (appWidth/2) + 50
         color: "#1B2934"
         opacity: 0.05
 

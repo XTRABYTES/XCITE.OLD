@@ -147,7 +147,7 @@ Rectangle {
 
             Text {
                 id: createUsernameText
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
                 anchors.left: userName.left
                 anchors.top: createAccountText.bottom
@@ -156,7 +156,7 @@ Rectangle {
                 wrapMode: Text.WordWrap
                 text: "Choose a username, only alphanumeric characters are allowed, no spaces, minimum 6 and no more than 12 characters"
                 color: "#F2F2F2"
-                font.pixelSize: 18
+                font.pixelSize: (myOS == "android" || myOS == "ios")? 18 : 14
                 font.family: xciteMobile.name
                 visible: accountCreated == 0 && signUpError == 0
             }
@@ -164,7 +164,7 @@ Rectangle {
             Controls.TextInput {
                 id: userName
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 placeholder: "USERNAME"
                 text: ""
                 mobile: 1
@@ -261,7 +261,7 @@ Rectangle {
 
             Text {
                 id: createPasswordText
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 4
                 anchors.left: createUsernameText.left
                 anchors.top: userName.bottom
@@ -270,14 +270,14 @@ Rectangle {
                 wrapMode: Text.WordWrap
                 text: "Choose a password, it should contain at least one capital letter, one number and one special character, and it must be at least 8 characters long."
                 color: "#F2F2F2"
-                font.pixelSize: 18
+                font.pixelSize: (myOS == "android" || myOS == "ios")? 18 : 14
                 font.family: xciteMobile.name
             }
 
             Controls.TextInput {
                 id: passWord1
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 placeholder: "PASSWORD"
                 text: ""
                 mobile: 1
@@ -323,7 +323,7 @@ Rectangle {
             Controls.TextInput {
                 id: passWord2
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 placeholder: "RETYPE PASSWORD"
                 text: ""
                 mobile: 1
@@ -373,7 +373,7 @@ Rectangle {
 
             Rectangle {
                 id: createAccountButton
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 height: 34
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: passWord2.bottom
@@ -590,7 +590,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pointSize: 14
                 color: ((usernameWarning == 0 || usernameWarning == 2) && passwordWarning1 == 0 && passwordWarning2 == 0)? "#F2F2F2" : "#979797"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: createAccountButton.horizontalCenter
                 anchors.verticalCenter: createAccountButton.verticalCenter
                 visible: createAccountInitiated == false
@@ -783,7 +783,7 @@ Rectangle {
 
         Rectangle {
             id: closeFail
-            width: doubbleButtonWidth / 2
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : 150
             height: 34
             color: maincolor
             opacity: 0.25
@@ -818,7 +818,7 @@ Rectangle {
             text: "TRY AGAIN"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
             color: darktheme == true? "#F2F2F2" : maincolor
             anchors.horizontalCenter: closeFail.horizontalCenter
             anchors.verticalCenter: closeFail.verticalCenter
@@ -892,7 +892,7 @@ Rectangle {
 
         Text {
             id: passwordWarning
-            width: doubbleButtonWidth
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
             maximumLineCount: 4
             anchors.left: confirmAccountButton.left
             horizontalAlignment: Text.AlignJustify
@@ -908,7 +908,7 @@ Rectangle {
 
         Rectangle {
             id: confirmAccountButton
-            width: doubbleButtonWidth
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : 150
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
@@ -949,14 +949,14 @@ Rectangle {
             font.family: xciteMobile.name
             font.pointSize: 14
             color: "#F2F2F2"
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
             anchors.horizontalCenter: confirmAccountButton.horizontalCenter
             anchors.verticalCenter: confirmAccountButton.verticalCenter
             visible: selectStorage == 0
         }
 
         Rectangle {
-            width: doubbleButtonWidth
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
             height: 34
             anchors.horizontalCenter: confirmAccountButton.horizontalCenter
             anchors.bottom: confirmAccountButton.bottom
@@ -978,9 +978,9 @@ Rectangle {
 
             Label {
                 id: addWalletText1
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
-                anchors.left: continueButton.left
+                anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
                 text: "You can now add a wallet. You can choose to store your wallet keys on your device or in your account."
@@ -993,9 +993,9 @@ Rectangle {
 
             Label {
                 id: addWalletText2
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
-                anchors.left: continueButton.left
+                anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
                 text: "Storing your keys on your device will require you to import your keys in all the devices you wish to access your wallet from."
@@ -1009,9 +1009,9 @@ Rectangle {
 
             Label {
                 id: addWalletText3
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
-                anchors.left: continueButton.left
+                anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
                 text: "Storing your keys in your account will allow you to access your wallet from any device running XCITE Mobile."
@@ -1065,7 +1065,7 @@ Rectangle {
 
             Rectangle {
                 id: continueButton
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : 150
                 height: 34
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: storageSwitch.bottom
@@ -1135,14 +1135,14 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pointSize: 14
                 color: "#F2F2F2"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: continueButton.horizontalCenter
                 anchors.verticalCenter: continueButton.verticalCenter
                 visible: saveAccountInitiated == false
             }
 
             Rectangle {
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : 150
                 height: 34
                 anchors.horizontalCenter: continueButton.horizontalCenter
                 anchors.bottom: continueButton.bottom
@@ -1165,17 +1165,17 @@ Rectangle {
             }
         }
     }
-
+/*
     Image {
         id: combinationMark
-        source: 'qrc:/icons/xby_logo_TM.svg'
-        height: 23.4
+        source: 'qrc:/icons/xby_logo_with_name.svg'
         width: 150
+        fillMode: Image.PreserveAspectFit
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
     }
-
+*/
     Mobile.SwipeBack {
         z: 100
         anchors.right: parent.right

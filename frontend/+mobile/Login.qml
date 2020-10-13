@@ -47,15 +47,17 @@ Item {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        width: parent.width - 50
+        anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)
+        width: (myOS == "android" || myOS == "ios")? parent.width - 50 : 350
         height: 250
-        state: loginTracker == 1? "up" : "down"
+        //state: loginTracker == 1? "up" : "down"
         color: "transparent"
+        visible: loginTracker == 1
 
         states: [
             State {
                 name: "up"
-                PropertyChanges { target: login; anchors.topMargin: (parent.height/2) - (login.height)}
+                PropertyChanges { target: login; anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)}
             },
             State {
                 name: "down"
@@ -330,9 +332,12 @@ Item {
         Label {
             id: importAccount
             text: "Import an existing account"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: login.bottom
-            anchors.topMargin: 20
+            anchors.horizontalCenter: (myOS == "android" || myOS == "ios")? parent.horizontalCenter : undefined
+            anchors.verticalCenter: (myOS == "android" || myOS == "ios")? undefined : restoreAccount.verticalCenter
+            anchors.top: (myOS == "android" || myOS == "ios")? login.bottom : undefined
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? 20 : undefined
+            anchors.right: (myOS == "android" || myOS == "ios")? undefined : restoreAccount.left
+            anchors.rightMargin: (myOS == "android" || myOS == "ios")? undefined : 50
             color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
@@ -347,6 +352,15 @@ Item {
 
                 MouseArea {
                     anchors.fill: importAccountButton
+                    hoverEnabled: true
+
+                    onEntered: {
+                        underlineImport.visible = true
+                    }
+
+                    onExited: {
+                        underlineImport.visible = false
+                    }
 
                     onClicked: {
                         loginTracker = 0
@@ -363,6 +377,7 @@ Item {
                 anchors.top: importAccount.bottom
                 anchors.topMargin: 5
                 color: "#0ED8D2"
+                visible: (myOS == "android" || myOS == "ios")
             }
         }
 
@@ -375,14 +390,18 @@ Item {
             color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
+            visible: (myOS == "android" || myOS == "ios")
         }
 
         Label {
             id: createAccount
-            text: "Create one here."
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: noAccount.bottom
-            anchors.topMargin: 15
+            text: (myOS == "android" || myOS == "ios")? "Create one here" : "Create an account"
+            anchors.horizontalCenter: (myOS == "android" || myOS == "ios")? parent.horizontalCenter : undefined
+            anchors.verticalCenter: (myOS == "android" || myOS == "ios")? undefined : restoreAccount.verticalCenter
+            anchors.top: (myOS == "android" || myOS == "ios")? noAccount.bottom : undefined
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? 15 : undefined
+            anchors.left: (myOS == "android" || myOS == "ios")? undefined : restoreAccount.right
+            anchors.leftMargin: (myOS == "android" || myOS == "ios")? undefined : 50
             color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
@@ -397,6 +416,15 @@ Item {
 
                 MouseArea {
                     anchors.fill: createAccountButton
+                    hoverEnabled: true
+
+                    onEntered: {
+                        underlineCreate.visible = true
+                    }
+
+                    onExited: {
+                        underlineCreate.visible = false
+                    }
 
                     onClicked: {
                         userSettings.accountCreationCompleted = false
@@ -413,10 +441,11 @@ Item {
             id: underlineCreate
             width: createAccount.width
             height: 1
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.horizontalCenter: createAccount.horizontalCenter
             anchors.top: createAccount.bottom
             anchors.topMargin: 5
             color: "#0ED8D2"
+            visible: (myOS == "android" || myOS == "ios")
         }
 
         Label {
@@ -439,6 +468,15 @@ Item {
 
                 MouseArea {
                     anchors.fill: restoreAccountButton
+                    hoverEnabled: true
+
+                    onEntered: {
+                        underlineRestore.visible = true
+                    }
+
+                    onExited: {
+                        underlineRestore.visible = false
+                    }
 
                     onClicked: {
                         loginTracker = 0
@@ -455,6 +493,7 @@ Item {
                 anchors.top: restoreAccount.bottom
                 anchors.topMargin: 5
                 color: "#0ED8D2"
+                visible: (myOS == "android" || myOS == "ios")
             }
         }
     }

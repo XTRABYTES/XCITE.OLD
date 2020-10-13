@@ -120,10 +120,8 @@ void Cex::getOlhcv(QString exchange, QString pair, QString granularity) {
         findLastInterval(endTime, granularity);
         createOlhcv(exchange, pair, granularity);
     }
-    else {
-        if (exchange == "crex24" && olhcvRunning) {
-            url = "https://api.crex24.com/v2/public/ohlcv?instrument=" + pair + "&granularity=" + granularity + "&limit=15";
-        }
+    else if (exchange == "crex24" && olhcvRunning) {
+        url = "https://api.crex24.com/v2/public/ohlcv?instrument=" + pair + "&granularity=" + granularity + "&limit=15";
 
         URLObject urlObj {QUrl(url)};
         urlObj.addProperty("route","getOlhcvSlot");
@@ -550,18 +548,17 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
     double low = 0;
     double close = 0;
     QDateTime date;
-    xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", slot: " + QString::number(countSlots + 1));
     firstReceived = true;
     ++trySlots;
 
     if (chartPair == pair && chartExchange == exchange) {
         if (exchange == "probit") {
-            QJsonObject data;
-            QJsonArray trades;
+            QJsonObject data = *new QJsonObject;
+            QJsonArray trades = *new QJsonArray;
             try {
                 data = jsonResponse.object();
             } catch (...) {
-                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extraction data" );
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract data" );
             }
             if (jsonResponse.object().contains("data") || !data.isEmpty()){
                 trades = jsonResponse.object().value("data").toArray();
@@ -596,7 +593,6 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
                             }
                         }
                         if (countTrades > 0) {
-                            qDebug() << "adding ohlcv item";
                             QJsonObject arrayItem;
                             arrayItem.insert("timestamp", endTime);
                             arrayItem.insert("open", open);
@@ -605,13 +601,13 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
                             arrayItem.insert("close", close);
                             ohlcvList.append(arrayItem);
                             if (countSlots < 14) {
-                                qDebug() << "increasing slot count";
                                 ++countSlots;
                                 emit progressOlhcv(countSlots);
                             }
                         }
                         if (countSlots < 14 && trySlots < 45) {
                             createOlhcv(exchange, pair, gran);
+                            return;
                         }
                         else {
                             startDate =  QDateTime::fromMSecsSinceEpoch(endTime);
@@ -619,13 +615,14 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
                             arrayDoc.setArray(ohlcvList);
                             QString ohlcvString(arrayDoc.toJson());
                             emit receivedOlhcv(exchange, pair, ohlcvString, startDate, endDate);
-                            qDebug() << "start date: " << startDate;
-                            qDebug() << "end date: " << endDate;
+                            return;
                         }
                     }
                     catch (...) {
+                        xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract trades" );
                         if (countSlots < 14 && trySlots < 45) {
                             createOlhcv(exchange, pair, gran);
+                            return;
                         }
                         else {
                             startDate =  QDateTime::fromMSecsSinceEpoch(endTime);
@@ -633,15 +630,15 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
                             arrayDoc.setArray(ohlcvList);
                             QString ohlcvString(arrayDoc.toJson());
                             emit receivedOlhcv(exchange, pair, ohlcvString, startDate, endDate);
-                            qDebug() << "start date: " << startDate;
-                            qDebug() << "end date: " << endDate;
+                            return;
                         }
-                        xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error: failed to extract trades" );
                     }
                 }
                 else {
+                    xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", no trading data for this timeslot");
                     if (countSlots < 14 && trySlots < 45) {
                         createOlhcv(exchange, pair, gran);
+                        return;
                     }
                     else {
                         startDate =  QDateTime::fromMSecsSinceEpoch(endTime);
@@ -649,15 +646,15 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
                         arrayDoc.setArray(ohlcvList);
                         QString ohlcvString(arrayDoc.toJson());
                         emit receivedOlhcv(exchange, pair, ohlcvString, startDate, endDate);
-                        qDebug() << "start date: " << startDate;
-                        qDebug() << "end date: " << endDate;
+                        return;
                     }
-                    xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", no trading data for this timeslot");
                 }
             }
             else {
+                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error retrieving olhcv data");
                 if (countSlots < 14 && trySlots < 45) {
                     createOlhcv(exchange, pair, gran);
+                    return;
                 }
                 else {
                     startDate =  QDateTime::fromMSecsSinceEpoch(endTime);
@@ -665,10 +662,8 @@ void Cex::createOlhcvSlot(QByteArray response, QMap<QString, QVariant> props) {
                     arrayDoc.setArray(ohlcvList);
                     QString ohlcvString(arrayDoc.toJson());
                     emit receivedOlhcv(exchange, pair, ohlcvString, startDate, endDate);
-                    qDebug() << "start date: " << startDate;
-                    qDebug() << "end date: " << endDate;
+                    return;
                 }
-                xchatRobot.SubmitMsg("exchange - " + exchange + " - pair: " + pair + ", error retrieving olhcv data");
             }
         }
     }
@@ -840,5 +835,4 @@ void Cex::updateOlhcv(QString status) {
     else {
         olhcvRunning = false;
     }
-    qDebug() << olhcvRunning;
 }

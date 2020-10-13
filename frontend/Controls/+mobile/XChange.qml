@@ -264,7 +264,7 @@ Rectangle {
         id: exchangeTimer
         interval: 15000
         repeat: true
-        running: xchangeTracker == 1
+        running: xchangeTracker == 1 && inActive == false
 
         onTriggered: {
             if (updatingInfo == false && updatingOrderBook == false && updatingOhlcv == false && updatingTrades == false) {
@@ -963,6 +963,9 @@ Rectangle {
                                 id: candleStickChart
                                 increasingColor: "#4BBE2E"
                                 decreasingColor: "#E55541"
+                                brush: {
+                                    color: themecolor
+                                }
 
                                 axisX: DateTimeAxis {format:"HH:mm";visible:true;gridVisible:false;lineVisible: false;titleVisible:false;max:maxDate; min:minDate}
                                 axisYRight: ValueAxis {labelFormat:"%.8f";color:themecolor;gridVisible:true;gridLineColor:"#757575";lineVisible:false;labelsVisible:true;labelsColor:themecolor;titleVisible:false;labelsFont:xciteMobile.name;min:yValueMin;max:yValueMax}
@@ -2149,7 +2152,7 @@ Rectangle {
                 }
 
                 onClicked: {
-
+                    xchangeSettingsTracker = 1
                 }
             }
         }
@@ -2623,6 +2626,11 @@ Rectangle {
                 }
             }
         }
+    }
+
+    Mobile.XChangeSettings {
+        id: myExchangeSettings
+        z: 10
     }
 
     Rectangle {

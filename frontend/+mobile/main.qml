@@ -24,7 +24,7 @@ import "qrc:/Controls/+mobile" as Mobile
 
 ApplicationWindow {
     id: xcite
-    flags: Qt.Window | Qt.FramelessWindowHint | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.X11BypassWindowManagerHint : 0) | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.WindowStaysOnTopHint : 0)
+    flags: Qt.Window | Qt.FramelessWindowHint | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.X11BypassWindowManagerHint : 0) //| ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.WindowStaysOnTopHint : 0)
     width: appWidth
     height: appHeight
     title: qsTr("XCITE")
@@ -146,7 +146,8 @@ ApplicationWindow {
         findAllMarketValues()
 
         selectedPage = "onBoarding"
-        mainRoot.push("../Onboarding.qml")
+
+        mainRoot.push("qrc:/+mobile/Onboarding.qml")
     }
 
     onBtcValueXBYChanged: {
@@ -218,8 +219,8 @@ ApplicationWindow {
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
     property real doubbleButtonWidth: appWidth - 56
     property string myOS: Qt.platform.os
-    property int appHeight: Screen.width > Screen.height? (miniatureTracker == 0? 800 : 200) : ((myOS == "android" || myOS == "ios")? Screen.height : (miniatureTracker == 0? 800 : 200))
-    property int appWidth: Screen.width > Screen.height? 400 : ((myOS == "android" || myOS == "ios")? Screen.width : 400)
+    property int appHeight: Screen.width > Screen.height? (miniatureTracker == 0? Screen.height/2 : 200) : ((myOS == "android" || myOS == "ios")? Screen.height : (miniatureTracker == 0? Screen.height/2 : 200))
+    property int appWidth: Screen.width > Screen.height? Screen.width/2 : ((myOS == "android" || myOS == "ios")? Screen.width : Screen.width/2)
     property int previousX: 0
     property int previousY: 0
     property variant notAllowed: ["<del>","</del>","<s>","</s>","<strong>","</strong>", "<br>","<p>","</p>","</font>","<h1>","</h1>","<h2>","</h2>","<h3>","</h3>","<h4>","</h4>","<h5>","</h5>","<h6>","</h6>","a href=","img src=","ol type=","ul type=","<li>","</li>","<pre>","</pre>","&gt","&lt","&amp"]
@@ -279,6 +280,7 @@ ApplicationWindow {
     property int debugTracker: 0
     property int xvaultTracker: 0
     property int xchangeTracker: 0
+    property int xchangeSettingsTracker: 0
     property int xchatTracker: 0
     property int xgamesTracker: 0
     property int tttTracker: 0
@@ -690,6 +692,22 @@ ApplicationWindow {
                     restoreTracker = 0
                 }
             }
+            else if (selectedPage == "createAccount") {
+                if (scanQRTracker == 1) {
+                    scanQRTracker = 0
+                }
+                else if (importKeyTracker == 1) {
+                    if (addingWallet == false) {
+                        importKeyTracker = 0
+                    }
+                }
+                else if (createWalletTracker == 1){
+                    if (addingWallet == false) {
+                        createWalletTracker = 0
+                    }
+                }
+            }
+
             else if (selectedPage == "home") {
                 if (appsTracker == 1) {
                     appsTracker = 0
@@ -865,7 +883,12 @@ ApplicationWindow {
                     xvaultTracker =0
                 }
                 else if (xchangeTracker == 1 && networkError == 0) {
-                    xchangeTracker = 0
+                    if (xchangeSettingsTracker == 1) {
+                        xchangeSettingsTracker = 0
+                    }
+                    else {
+                        xchangeTracker = 0
+                    }
                 }
                 else if (xchatTracker == 1 && networkError == 0) {
                     if (xchatSettingsTracker == 1) {

@@ -81,11 +81,12 @@ Item {
     Image {
         id: largeLogo
         source: 'qrc:/icons/XBY_logo_large.svg'
-        width: backgroundSplash.width * 2
-        height: (largeLogo.width / 75) * 65
+        width: (myOS == "android" || myOS == "ios")? backgroundSplash.width * 2 : undefined
+        height: (myOS == "android" || myOS == "ios")?(largeLogo.width / 75) * 65 : (appHeight / 75 * 65)
         anchors.top: backgroundSplash.top
         anchors.topMargin: 63
-        anchors.right: backgroundSplash.right
+        anchors.right: (myOS == "android" || myOS == "ios")? backgroundSplash.right : undefined
+        anchors.horizontalCenter: (myOS == "android" || myOS == "ios")? undefined : backgroundSplash.left
         opacity: 0.5
     }
 
@@ -134,7 +135,7 @@ Item {
             text: "V" + versionNR
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: welcomeText.bottom
-            anchors.topMargin: -16
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? -16 : -6
             color: maincolor
             font.pixelSize: 24
             font.family: xciteMobile.name
@@ -142,7 +143,7 @@ Item {
 
         Rectangle {
             id: startButton
-            width: doubbleButtonWidth / 2
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : 150
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
@@ -182,6 +183,8 @@ Item {
                 onWriteCheckPassed: {
                     started = 1
                     loginTracker = 1
+                    //appHeight = 800
+                    //appWidth = 400
                     clearAllSettings();
                 }
             }
@@ -193,14 +196,14 @@ Item {
             font.family: xciteMobile.name
             font.pointSize: 14
             color: "#F2F2F2"
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
             anchors.horizontalCenter: startButton.horizontalCenter
             anchors.verticalCenter: startButton.verticalCenter
             anchors.verticalCenterOffset: 1
         }
 
         Rectangle {
-            width: doubbleButtonWidth / 2
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : 150
             height: 33
             anchors.horizontalCenter: startButton.horizontalCenter
             anchors.bottom: startButton.bottom
@@ -232,6 +235,15 @@ Item {
 
         MouseArea {
             anchors.fill: closeButton
+            hoverEnabled: true
+
+            onEntered: {
+                parent.color = maincolor
+            }
+
+            onExited:  {
+                parent.color = "#F2F2F2"
+            }
 
             onClicked: {
                 if (loginTracker == 1 || (loginTracker == 0 && importTracker == 0 && restoreTracker == 0)) {
@@ -251,12 +263,10 @@ Item {
 
     Image {
         id: combinationMark
-        source: 'qrc:/icons/xby_logo_TM.svg'
-        height: 23.4
+        source: 'qrc:/icons/xby_logo_with_name.svg'
         width: 150
+        fillMode: Image.PreserveAspectFit
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
-        //anchors.bottom: backgroundSplash.bottom
-        //anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         state: started == 0? "down" : "up"
 
         states: [
