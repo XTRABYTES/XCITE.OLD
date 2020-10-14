@@ -64,9 +64,9 @@ int main(int argc, char *argv[])
     engine.addImportPath("qrc:/");
 
 //#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
-    qDebug() << "MOBILE DEVICE";
-    QQmlFileSelector *selector = new QQmlFileSelector(&engine);
-    selector->setExtraSelectors(QStringList() << "mobile");
+//    qDebug() << "MOBILE DEVICE";
+//    QQmlFileSelector *selector = new QQmlFileSelector(&engine);
+//    selector->setExtraSelectors(QStringList() << "mobile");
 //#endif
 
     // wire-up market value

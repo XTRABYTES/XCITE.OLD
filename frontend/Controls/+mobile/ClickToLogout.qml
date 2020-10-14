@@ -51,7 +51,7 @@ Rectangle {
         height: popupClickAgain.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 75
+        anchors.bottomMargin: (myOS == "android" || myOS == "ios")? 75 : 100
 
         Rectangle {
             id: popupClickAgain
@@ -67,7 +67,7 @@ Rectangle {
             text: "Press <b>back</b> to log out."
             font.family: "Brandon Grotesque"
             font.pointSize: 14
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
             color: darktheme == true? "#2A2C31" : "#F2F2F2"
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter

@@ -353,5 +353,11 @@
         <file>icons/mobile/crex24_logo.png</file>
         <file>icons/mobile/crex24_logo_02.png</file>
         <file>icons/xby_logo_with_name.svg</file>
+        <file>icons/go-back-arrow_01.png</file>
+        <file>icons/minimize-tab_01.png</file>
+        <file>icons/move_01.png</file>
+        <file>icons/xby_logo_with_name.png</file>
+        <file>icons/mobile/addressbook-icon_01.svg</file>
+        <file>icons/mobile/wallet-backup-icon_01.svg</file>
     </qresource>
 </RCC>

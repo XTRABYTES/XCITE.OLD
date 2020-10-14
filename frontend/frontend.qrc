@@ -201,5 +201,6 @@
         <file>Controls/+mobile/XChangeRecentTradeList.qml</file>
         <file>Controls/+mobile/XChangeOrderBookList.qml</file>
         <file>Controls/+mobile/CandleStickChart.qml</file>
+        <file>+desktop/DashboardForm.qml</file>
     </qresource>
 </RCC>

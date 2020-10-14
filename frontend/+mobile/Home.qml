@@ -81,7 +81,12 @@ Item {
             xChatTypingSignal(myUsername,"addToOnline", status)
 
             selectedPage = "home"
-            mainRoot.push("qrc:/+mobile/DashboardForm.qml")
+            if (myOS == "android" || myOS == "ios") {
+                mainRoot.push("qrc:/+mobile/DashboardForm.qml")
+            }
+            else {
+                mainRoot.push("qrc:/+desktop/DashboardForm.qml")
+            }
         }
     }
 }

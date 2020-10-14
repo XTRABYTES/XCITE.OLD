@@ -156,7 +156,7 @@ Rectangle {
 
         Item {
             id: buttons
-            width: appWidth - 56
+            width: (myOS == "android" || myOS == "ios")? appWidth - 56 : appWidth/2
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: logoutLabel.bottom
@@ -172,7 +172,7 @@ Rectangle {
 
                 Rectangle {
                     id: cancelLogoutButton
-                    width: doubbleButtonWidth / 2
+                    width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : appWidth/4
                     height: 34
                     color: maincolor
                     opacity: 0.25
@@ -233,7 +233,7 @@ Rectangle {
 
                 Rectangle {
                     id: yes
-                    width: (doubbleButtonWidth - 10) / 2
+                    width: (myOS == "android" || myOS == "ios")? (doubbleButtonWidth - 10) / 2 : ((appWidth/2) - 10)/2
                     height: 34
                     color: "#4BBE2E"
                     opacity: 0.5
@@ -294,7 +294,7 @@ Rectangle {
 
                 Rectangle {
                     id: no
-                    width: (doubbleButtonWidth - 10) / 2
+                    width: (myOS == "android" || myOS == "ios")? (doubbleButtonWidth - 10) / 2 : ((appWidth/2) - 10)/2
                     height: 34
                     color: "#E55541"
                     opacity: 0.5

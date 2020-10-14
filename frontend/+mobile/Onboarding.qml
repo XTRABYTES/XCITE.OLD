@@ -26,8 +26,6 @@ Item {
     anchors.verticalCenter: xcite.verticalCenter
     clip: true
 
-    property string versionNR: "1.2.4"
-
     Component.onCompleted: {
         selectedPage = "login"
     }
@@ -127,12 +125,11 @@ Item {
             anchors.top: parent.top
             color: "#F2F2F2"
             font.pixelSize: 64
-            font.family: xciteMobile.name
         }
 
         Label {
             id: version
-            text: "V" + versionNR
+            text: "v" + versionNR
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: welcomeText.bottom
             anchors.topMargin: (myOS == "android" || myOS == "ios")? -16 : -6
@@ -263,7 +260,7 @@ Item {
 
     Image {
         id: combinationMark
-        source: 'qrc:/icons/xby_logo_with_name.svg'
+        source: 'qrc:/icons/xby_logo_with_name.png'
         width: 150
         fillMode: Image.PreserveAspectFit
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
