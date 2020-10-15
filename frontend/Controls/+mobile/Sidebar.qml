@@ -236,7 +236,6 @@ Rectangle {
                     running: false
 
                     onTriggered: {
-                        appsTracker = 0
                         selectedPage = "backup"
                         mainRoot.push("qrc:/+mobile/WalletBackup.qml");
                     }

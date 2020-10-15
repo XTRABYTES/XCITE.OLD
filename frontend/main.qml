@@ -21,6 +21,7 @@ import QtMultimedia 5.8
 import QtGraphicalEffects 1.0
 
 import "qrc:/Controls/+mobile" as Mobile
+import "qrc:/Controls/+desktop" as Desktop
 
 ApplicationWindow {
     id: xcite
@@ -3688,13 +3689,21 @@ ApplicationWindow {
 
     Mobile.DeviceButtons {
         z: 100
-        visible: myOS !== "android" && myOS !== "ios"
+        visible: myOS !== "android" && myOS !== "ios" && selectedPage !== "onBoarding" && selectedPage !== "login"
     }
 
     Mobile.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
+        visible: (myOS == "android" || myOS == "ios")
+    }
+
+    Desktop.LogOut {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+        visible: (myOS !== "android" && myOS !== "ios")
     }
 
     Mobile.DragBar {

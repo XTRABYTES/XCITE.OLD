@@ -217,7 +217,7 @@ Rectangle {
         width: 75
         height: 75
         radius: 38
-        color: "#0B0B09"
+        color: darktheme == true? "#0B0B09" : "#F2F2F2"
 
         MouseArea {
             anchors.fill: parent

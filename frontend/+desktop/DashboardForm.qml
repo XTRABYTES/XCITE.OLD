@@ -18,11 +18,17 @@ import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
 import "qrc:/Controls/+mobile" as Mobile
+import "qrc:/Controls/+desktop" as Desktop
 
 Item {
     width: appWidth
     height: appHeight
     clip: true
+
+    Component.onCompleted: {
+        dashboardIndex = 1
+        mainStack.push("qrc:/+desktop/Wallet.qml")
+    }
 
     Rectangle {
         id: sideMenuArea
@@ -30,7 +36,7 @@ Item {
         height: appHeight
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
-        color: "#0B0B09"
+        color: darktheme == true? "#0B0B09" : "#F2F2F2"
 
         Item {
             id: appID
@@ -98,18 +104,28 @@ Item {
                 color: "transparent"
 
                 Rectangle {
-                    width: parent.width
+                    width: parent.width*0.99
                     height: parent.height*0.85
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.left: parent.left
                     anchors.top: parent.top
-                    color: "#14161B"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
+                    border.width: 2
+                    border.color: (selectedPage == "home" && pageTracker == 0)? maincolor : "transparent"
+
+                    Rectangle {
+                        width: 5
+                        height: parent.height
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        color: (selectedPage == "home" && pageTracker == 0)? maincolor : "transparent"
+                    }
 
                     Image {
                         id: walletIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: 10
-                        source: 'qrc:/icons/mobile/wallet-icon_01.svg'
+                        source: darktheme == true? "qrc:/icons/wallet/WALLETF2F2F2.png" : "qrc:/icons/wallet/WALLET14161B.png"
                         height: parent.height/2
                         width: parent.height/2
                         fillMode: Image.PreserveAspectFit
@@ -117,12 +133,22 @@ Item {
 
                     Label {
                         text: "WALLET"
-                        color: maincolor
+                        color: themecolor
                         font.family: xciteMobile.name
                         font.pixelSize: parent.height/4
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: parent.height
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            selectedPage = "home"
+                            pageTracker = 0
+                            dashboardIndex = 1
+                        }
                     }
                 }
             }
@@ -136,18 +162,28 @@ Item {
                 color: "transparent"
 
                 Rectangle {
-                    width: parent.width
+                    width: parent.width*0.99
                     height: parent.height*0.85
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.left: parent.left
                     anchors.top: parent.top
-                    color: "#14161B"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
+                    border.width: 2
+                    border.color: selectedPage == "backup"? maincolor : "transparent"
+
+                    Rectangle {
+                        width: 5
+                        height: parent.height
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        color: (selectedPage == "backup")? maincolor : "transparent"
+                    }
 
                     Image {
                         id: backupIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: 10
-                        source: 'qrc:/icons/mobile/wallet-backup-icon_01.svg'
+                        source: darktheme == true? "qrc:/icons/backup/BACKUPF2F2F2.png" : "qrc:/icons/backup/BACKUP14161B.png"
                         height: parent.height/2
                         width: parent.height/2
                         fillMode: Image.PreserveAspectFit
@@ -155,12 +191,47 @@ Item {
 
                     Label {
                         text: "BACKUP"
-                        color: maincolor
+                        color: themecolor
                         font.family: xciteMobile.name
                         font.pixelSize: parent.height/4
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: parent.height
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            if (userSettings.pinlock === true) {
+                                backupTracker = 1
+                                pincodeTracker = 1
+                            }
+                            else {
+                                appsTracker = 0
+                                selectedPage = "backup"
+                            }
+                        }
+
+                        Timer {
+                            id: timer3
+                            interval: 1000
+                            repeat: false
+                            running: false
+
+                            onTriggered: {
+                                selectedPage = "backup"
+                            }
+                        }
+
+                        Connections {
+                            target: UserSettings
+                            onPincodeCorrect: {
+                                if (pincodeTracker == 1 && backupTracker == 1) {
+                                    timer3.start()
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -174,30 +245,48 @@ Item {
                 color: "transparent"
 
                 Rectangle {
-                    width: parent.width
+                    width: parent.width*0.99
                     height: parent.height*0.85
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.left: parent.left
                     anchors.top: parent.top
-                    color: "#14161B"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
+                    border.width: 2
+                    border.color: selectedPage == "apps"? maincolor : "transparent"
+
+                    Rectangle {
+                        width: 5
+                        height: parent.height
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        color: (selectedPage == "apps")? maincolor : "transparent"
+                    }
 
                     Image {
                         id: appsIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: 10
-                        source: 'qrc:/icons/mobile/dapps-icon_01.svg'
+                        source: darktheme == true? "qrc:/icons/apps/APPSF2F2F2.png" : "qrc:/icons/apps/APPS14161B.png"
                         height: parent.height/2
                         width: parent.height/2
                         fillMode: Image.PreserveAspectFit
                     }
                     Label {
                         text: "APPS"
-                        color: maincolor
+                        color: themecolor
                         font.family: xciteMobile.name
                         font.pixelSize: parent.height/4
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: parent.height
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked:  {
+                            selectedPage = "apps"
+                        }
                     }
                 }
             }
@@ -211,18 +300,28 @@ Item {
                 color: "transparent"
 
                 Rectangle {
-                    width: parent.width
+                    width: parent.width*0.99
                     height: parent.height*0.85
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.left: parent.left
                     anchors.top: parent.top
-                    color: "#14161B"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
+                    border.width: 2
+                    border.color: selectedPage == "notif"? maincolor : "transparent"
+
+                    Rectangle {
+                        width: 5
+                        height: parent.height
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        color: (selectedPage == "notif")? maincolor : "transparent"
+                    }
 
                     Image {
                         id: alertIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: 10
-                        source: 'qrc:/icons/mobile/notification-icon_01.svg'
+                        source: darktheme == true? "qrc:/icons/notification/notificationF2F2F2.png" : "qrc:/icons/notification/notification14161B.png"
                         height: parent.height/2
                         width: parent.height/2
                         fillMode: Image.PreserveAspectFit
@@ -230,12 +329,20 @@ Item {
 
                     Label {
                         text: "ALERTS"
-                        color: maincolor
+                        color: themecolor
                         font.family: xciteMobile.name
                         font.pixelSize: parent.height/4
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: parent.height
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked:  {
+                            selectedPage = "notif"
+                        }
                     }
                 }
             }
@@ -249,18 +356,28 @@ Item {
                 color: "transparent"
 
                 Rectangle {
-                    width: parent.width
+                    width: parent.width*0.99
                     height: parent.height*0.85
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.left: parent.left
                     anchors.top: parent.top
-                    color: "#14161B"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
+                    border.width: 2
+                    border.color: (selectedPage == "home" && pageTracker == 1)? maincolor : "transparent"
+
+                    Rectangle {
+                        width: 5
+                        height: parent.height
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        color: (selectedPage == "home" && pageTracker == 1)? maincolor : "transparent"
+                    }
 
                     Image {
                         id: addressbookIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: 10
-                        source: 'qrc:/icons/mobile/addressbook-icon_01.svg'
+                        source: darktheme == true? "qrc:/icons/address/ADDRESSF2F2F2.png" : "qrc:/icons/address/ADDRESS14161B.png"
                         height: parent.height/2
                         width: parent.height/2
                         fillMode: Image.PreserveAspectFit
@@ -268,12 +385,22 @@ Item {
 
                     Label {
                         text: "ADDRESSBOOK"
-                        color: maincolor
+                        color: themecolor
                         font.family: xciteMobile.name
                         font.pixelSize: parent.height/4
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: parent.height
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            selectedPage = "home"
+                            pageTracker = 1
+                            dashboardIndex = 0
+                        }
                     }
                 }
             }
@@ -287,18 +414,28 @@ Item {
                 color: "transparent"
 
                 Rectangle {
-                    width: parent.width
+                    width: parent.width*.99
                     height: parent.height*0.85
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.left: parent.left
                     anchors.top: parent.top
-                    color: "#14161B"
+                    color: darktheme == true? "#14161B" : "#FDFDFD"
+                    border.width: 2
+                    border.color: selectedPage == "settings"? maincolor : "transparent"
+
+                    Rectangle {
+                        width: 5
+                        height: parent.height
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        color: (selectedPage == "settings")? maincolor : "transparent"
+                    }
 
                     Image {
                         id: settingsIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: 10
-                        source: 'qrc:/icons/mobile/settings-icon_01.svg'
+                        source: darktheme == true? "qrc:/icons/settings/settingsF2F2F2.png" : "qrc:/icons/settings/settings14161B.png"
                         height: parent.height/2
                         width: parent.height/2
                         fillMode: Image.PreserveAspectFit
@@ -307,12 +444,20 @@ Item {
                     Label {
                         id: settingsLabel
                         text: "SETTINGS"
-                        color: maincolor
+                        color: themecolor
                         font.family: xciteMobile.name
                         font.pixelSize: parent.height/4
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: parent.height
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            selectedPage = "settings"
+                        }
                     }
                 }
             }
@@ -330,7 +475,7 @@ Item {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 anchors.leftMargin: 10
-                source: 'qrc:/icons/mobile/logout-icon_01.svg'
+                source: 'qrc:/icons/logout/LOGOUT0ED8D2.png'
                 width: settingsIcon.width
                 height: settingsIcon.height
                 fillMode: Image.PreserveAspectFit
@@ -372,11 +517,80 @@ Item {
         anchors.left: sideMenuArea.right
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        color: "#14161B"
+        color: darktheme == true? "#14161B" : "#FDFDFD"
+        clip: true
+
+        StackView {
+            id: mainStack
+            anchors.fill: parent
+            initialItem: "qrc:/Controls/+desktop/Loading.qml"
+        }
+
+        Image {
+            id: darklight
+            anchors.right: parent.right
+            anchors.rightMargin: width
+            anchors.top: parent.top
+            anchors.topMargin: height
+            source: darktheme == true? 'qrc:/icons/theme/THEMEF2F2F2.png' : 'qrc:/icons/theme/THEME0ED8D2.png'
+            width: logoutIcon.width
+            height: logoutIcon.height
+            fillMode: Image.PreserveAspectFit
+
+            Rectangle {
+                width: darklight.width
+                height: darklight.height
+                anchors.right: parent.right
+                anchors.verticalCenter: darklight.verticalCenter
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                     onClicked: {
+                        if (darktheme == true) {
+                            userSettings.theme = "light"
+                        }
+                        else {
+                            userSettings.theme = "dark"
+                        }
+                    }
+                }
+            }
+        }
+
+        Text {
+            id: loginLabel
+            text: "Logged in as:"
+            color: themecolor
+            font.pixelSize: logoutText.font.pixelSize
+            font.family: xciteMobile.name
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 15
+        }
+
+        Text {
+            id: loginName
+            text: myUsername
+            color: themecolor
+            font.pixelSize: logoutText.font.pixelSize
+            font.family: xciteMobile.name
+            anchors.left: loginLabel.right
+            anchors.leftMargin: 10
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 15
+        }
 
         Image {
             id: combinationMark
-            source: 'qrc:/icons/xby_logo_with_name.png'
+            source: darktheme == true?  'qrc:/icons/xby_logo_with_name.png' : 'qrc:/icons/xby_logo_with_name_dark.png'
             width: appWidth*0.3
             fillMode: Image.PreserveAspectFit
             anchors.bottom: parent.bottom

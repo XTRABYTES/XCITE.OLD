@@ -202,5 +202,8 @@
         <file>Controls/+mobile/XChangeOrderBookList.qml</file>
         <file>Controls/+mobile/CandleStickChart.qml</file>
         <file>+desktop/DashboardForm.qml</file>
+        <file>Controls/+desktop/LogOut.qml</file>
+        <file>Controls/+desktop/Loading.qml</file>
+        <file>+desktop/Wallet.qml</file>
     </qresource>
 </RCC>

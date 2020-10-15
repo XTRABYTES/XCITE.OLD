@@ -359,5 +359,54 @@
         <file>icons/xby_logo_with_name.png</file>
         <file>icons/mobile/addressbook-icon_01.svg</file>
         <file>icons/mobile/wallet-backup-icon_01.svg</file>
+        <file>icons/address/ADDRESS0ED8D2.png</file>
+        <file>icons/address/ADDRESS0ED8D2.svg</file>
+        <file>icons/address/ADDRESS14161B.svg</file>
+        <file>icons/address/ADDRESSF2F2F2.png</file>
+        <file>icons/address/ADDRESSF2F2F2.svg</file>
+        <file>icons/backup/BACKUP0ED8D2.png</file>
+        <file>icons/backup/BACKUP0ED8D2.svg</file>
+        <file>icons/backup/BACKUP14161B.png</file>
+        <file>icons/backup/BACKUP14161B.svg</file>
+        <file>icons/logout/LOGOUT0ED8D2.png</file>
+        <file>icons/logout/LOGOUT0ED8D2.svg</file>
+        <file>icons/settings/settings0ED8D2.svg</file>
+        <file>icons/settings/settings14161B.png</file>
+        <file>icons/settings/settings14161B.svg</file>
+        <file>icons/settings/settingsF2F2F2.png</file>
+        <file>icons/settings/settingsF2F2F2.svg</file>
+        <file>icons/theme/THEME0ED8D2.png</file>
+        <file>icons/theme/THEME0ED8D2.svg</file>
+        <file>icons/theme/THEME14161B.png</file>
+        <file>icons/theme/THEME14161B.svg</file>
+        <file>icons/theme/THEMEF2F2F2.png</file>
+        <file>icons/theme/THEMEF2F2F2.svg</file>
+        <file>icons/wallet/WALLET0ED8D2.png</file>
+        <file>icons/wallet/WALLET0ED8D2.svg</file>
+        <file>icons/logout/LOGOUT14161B.png</file>
+        <file>icons/logout/LOGOUT14161B.svg</file>
+        <file>icons/logout/LOGOUTF2F2F2.png</file>
+        <file>icons/logout/LOGOUTF2F2F2.svg</file>
+        <file>icons/backup/BACKUPF2F2F2.png</file>
+        <file>icons/backup/BACKUPF2F2F2.svg</file>
+        <file>icons/address/ADDRESS14161B.png</file>
+        <file>icons/settings/settings0ED8D2.png</file>
+        <file>icons/notification/notification0ED8D2.png</file>
+        <file>icons/notification/notification0ED8D2.svg</file>
+        <file>icons/notification/notification14161B.png</file>
+        <file>icons/notification/notification14161B.svg</file>
+        <file>icons/notification/notificationF2F2F2.png</file>
+        <file>icons/notification/notificationF2F2F2.svg</file>
+        <file>icons/apps/APPS0ED8D2.png</file>
+        <file>icons/apps/APPS0ED8D2.svg</file>
+        <file>icons/apps/APPS14161B.png</file>
+        <file>icons/apps/APPS14161B.svg</file>
+        <file>icons/apps/APPSF2F2F2.png</file>
+        <file>icons/apps/APPSF2F2F2.svg</file>
+        <file>icons/wallet/WALLET14161B.png</file>
+        <file>icons/wallet/WALLET14161B.svg</file>
+        <file>icons/wallet/WALLETF2F2F2.png</file>
+        <file>icons/wallet/WALLETF2F2F2.svg</file>
+        <file>icons/xby_logo_with_name_dark.png</file>
     </qresource>
 </RCC>
