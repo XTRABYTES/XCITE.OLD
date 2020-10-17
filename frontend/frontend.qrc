@@ -205,5 +205,14 @@
         <file>Controls/+desktop/LogOut.qml</file>
         <file>Controls/+desktop/Loading.qml</file>
         <file>+desktop/Wallet.qml</file>
+        <file>+desktop/WalletBackup.qml</file>
+        <file>+desktop/Applications.qml</file>
+        <file>+desktop/Notifications.qml</file>
+        <file>+desktop/AddressBook.qml</file>
+        <file>+desktop/WalletSettings.qml</file>
+        <file>Controls/+desktop/ApplicationList.qml</file>
+        <file>Controls/+desktop/Pincode.qml</file>
+        <file>Controls/+desktop/ChangePassword.qml</file>
+        <file>Controls/VolumeSlider.qml</file>
     </qresource>
 </RCC>

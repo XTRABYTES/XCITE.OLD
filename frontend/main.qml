@@ -221,7 +221,7 @@ ApplicationWindow {
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
     property real doubbleButtonWidth: appWidth - 56
     property string myOS: Qt.platform.os
-    property int appHeight: Screen.width > Screen.height? (miniatureTracker == 0? Screen.height*0.6 : 200) : ((myOS == "android" || myOS == "ios")? Screen.height : (miniatureTracker == 0? Screen.height*0.6 : 200))
+    property int appHeight: Screen.width > Screen.height? appWidth*9/16 : ((myOS == "android" || myOS == "ios")? Screen.height : appWidth*9/16)
     property int appWidth: Screen.width > Screen.height? Screen.width*0.6 : ((myOS == "android" || myOS == "ios")? Screen.width : Screen.width*0.6)
     property int previousX: 0
     property int previousY: 0
@@ -443,7 +443,7 @@ ApplicationWindow {
     property int soundChangeFailed: 0
     property int volumeChangeFailed: 0
     property int selectedSound: userSettings.sound
-    property int selectedVolume: userSettings.volume
+    property real selectedVolume: userSettings.volume
     property int oldSystemVolume: 1
     property int systemVolumeChangeFailed: 0
     property int selectedSystemVolume: userSettings.systemVolume
@@ -588,30 +588,12 @@ ApplicationWindow {
 
     // Keyboard shortcuts
     Shortcut {
-        sequence: "Alt+M"
+        sequence: "Ctrl+Down"
         onActivated: minimizeApp()
     }
 
     Shortcut {
-        sequence: "Alt+Down"
-        onActivated: {
-            if (myOS !== "android" || myOS !== "ios") {
-                miniatureTracker = 0
-            }
-        }
-    }
-
-    Shortcut {
-        sequence: "Alt+Up"
-        onActivated: {
-            if (myOS !== "android" || myOS !== "ios") {
-                miniatureTracker = 1
-            }
-        }
-    }
-
-    Shortcut {
-        sequence: "Alt+Left"
+        sequence: "Ctrl+Left"
         onActivated: {
             if (myOS !== "android" || myOS !== "ios") {
                 backButtonPressed()
@@ -620,7 +602,7 @@ ApplicationWindow {
     }
 
     Shortcut {
-        sequence: "Alt+Q"
+        sequence: "Ctrl+Q"
         onActivated: {
             if (myOS !== "android" || myOS !== "ios") {
                 sessionStart = 0
@@ -794,19 +776,23 @@ ApplicationWindow {
                     addressQRTracker = 0
                 }
                 else if (pageTracker == 1) {
-                    dashboardIndex = 1
-                    dashboardIndex = 0
+                    if (myOS == "android" || myOS == "ios") {
+                        dashboardIndex = 1
+                        dashboardIndex = 0
+                    }
                 }
                 else {
-                    if (clickToLogout == 0) {
-                        clickToLogout = 1
-                    }
-                    else {
-                        clickToLogout = 0
-                        sessionStart = 0
-                        sessionTime = 0
-                        manualLogout = 1
-                        logoutTracker = 1
+                    if (myOS == "android" || myOS == "ios") {
+                        if (clickToLogout == 0) {
+                            clickToLogout = 1
+                        }
+                        else {
+                            clickToLogout = 0
+                            sessionStart = 0
+                            sessionTime = 0
+                            manualLogout = 1
+                            logoutTracker = 1
+                        }
                     }
                 }
             }
@@ -832,11 +818,13 @@ ApplicationWindow {
                 else {
                     if (selectWallet == 1) {
                         if (walletAdded == true) {
-                            addWalletTracker = 0
-                            selectedPage = "home"
-                            mainRoot.pop();
-                            selectWallet = 0
-                            walletAdded = false
+                            if (myOS == "android" || myOS == "ios") {
+                                addWalletTracker = 0
+                                selectedPage = "home"
+                                mainRoot.pop();
+                                selectWallet = 0
+                                walletAdded = false
+                            }
                         }
                         else {
                             selectWallet = 0
@@ -844,19 +832,23 @@ ApplicationWindow {
                         }
                     }
                     else {
-                        addWalletTracker = 0
-                        walletAdded = false
-                        selectWallet = 0
-                        selectedPage = "home"
-                        mainRoot.pop("qrc:/Controls/+mobile/AddWallet.qml");
+                        if (myOS == "android" || myOS == "ios") {
+                            addWalletTracker = 0
+                            walletAdded = false
+                            selectWallet = 0
+                            selectedPage = "home"
+                            mainRoot.pop("qrc:/Controls/+mobile/AddWallet.qml");
+                        }
                     }
                 }
             }
             else if (selectedPage == "apps") {
                 if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 && xgamesTracker == 0 && pingTracker == 0) {
-                    appsTracker = 0
-                    selectedPage = "home"
-                    mainRoot.pop()
+                    if (myOS == "android" || myOS == "ios") {
+                        appsTracker = 0
+                        selectedPage = "home"
+                        mainRoot.pop()
+                    }
                 }
                 else if (pingTracker == 1 && networkError == 0) {
                     pingTracker = 0
@@ -931,9 +923,11 @@ ApplicationWindow {
             }
             else if (selectedPage == "backup") {
                 if (screenshotTracker == 0) {
-                    backupTracker = 0
-                    selectedPage = "home"
-                    mainRoot.pop()
+                    if (myOS == "android" || myOS == "ios") {
+                        backupTracker = 0
+                        selectedPage = "home"
+                        mainRoot.pop()
+                    }
                 }
                 else if (screenshotTracker == 1) {
                     screenshotTracker = 0
@@ -944,16 +938,20 @@ ApplicationWindow {
                     debugTracker = 0
                 }
                 else if (!changeVolumeInitiated && ! changeSystemVolumeInitiated && !clearAllInitiated && !saveCurrency && !saveSound) {
-                    currencyTracker = 0
-                    soundTracker = 0
-                    selectedPage = "home"
-                    mainRoot.pop()
+                    if (myOS == "android" || myOS == "ios") {
+                        currencyTracker = 0
+                        soundTracker = 0
+                        selectedPage = "home"
+                        mainRoot.pop()
+                    }
                 }
             }
             else if (selectedPage == "notif" && updatingWalletsNotif == false) {
-                alert = false
-                selectedPage = "home"
-                mainRoot.pop()
+                if (myOS == "android" || myOS == "ios") {
+                    alert = false
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
             }
         }
     }
@@ -3419,8 +3417,8 @@ ApplicationWindow {
         property bool btc
         property bool eth
         property int sound: 0
-        property int volume: 1
-        property int systemVolume: 1
+        property real volume: 1
+        property real systemVolume: 1
         property bool tagMe: true
         property bool tagEveryone: true
         property bool xChatDND: false
@@ -3461,7 +3459,7 @@ ApplicationWindow {
     SoundEffect {
         id: notification
         source: userSettings.sound == 0? 'qrc:/sounds/Bonjour.wav' : (userSettings.sound == 1? 'qrc:/sounds/Hello.wav': (userSettings.sound == 2? 'qrc:/sounds/hola.wav' :(userSettings.sound == 3? 'qrc:/sounds/Servus.wav' : 'qrc:/sounds/Szia.wav')))
-        volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
+        volume: (selectedVolume > 0 && selectedVolume < 1)?selectedVolume : (selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75)))
     }
 
     SoundEffect {

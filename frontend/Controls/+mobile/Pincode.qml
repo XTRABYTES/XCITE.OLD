@@ -1153,38 +1153,4 @@ Rectangle {
             }
         }
     }
-    /*
-    Label {
-        id: closePincode
-        z: 10
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "BACK"
-        font.pixelSize: 14
-        font.family: xciteMobile.name
-        color: themecolor
-
-        Rectangle {
-            id: backbutton
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
-            height: 34
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: backbutton
-
-            onPressed: {
-                detectInteraction()
-            }
-
-            onClicked: {
-                pincodeTracker = 0
-            }
-        }
-    }
-    **/
 }

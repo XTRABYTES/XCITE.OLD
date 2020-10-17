@@ -1,5 +1,5 @@
 /**
-* Filename: Wallet.qml
+* Filename: WalletBackup.qml
 *
 * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
 * blockchain protocol to host decentralized applications
@@ -21,7 +21,7 @@ import "qrc:/Controls" as Controls
 import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
-    id: backgroundWallet
+    id: backgroundBackup
     z: 1
     width: appWidth/6 * 5
     height: appHeight
@@ -29,13 +29,9 @@ Rectangle {
     anchors.top: xcite.top
     color: bgcolor
 
-    property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
-    property string searchCriteria:""
-    property int swipeBack: dashboardIndex
-
     Label {
-        id: walletLabel
-        text: "WALLET"
+        id: walletBackupLabel
+        text: "BACKUP"
         anchors.right: parent.right
         anchors.rightMargin: appWidth/12
         anchors.top: parent.top

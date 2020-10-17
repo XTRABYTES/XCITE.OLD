@@ -26,7 +26,6 @@ Item {
     clip: true
 
     Component.onCompleted: {
-        dashboardIndex = 1
         mainStack.push("qrc:/+desktop/Wallet.qml")
     }
 
@@ -145,9 +144,19 @@ Item {
                         anchors.fill: parent
 
                         onClicked: {
-                            selectedPage = "home"
-                            pageTracker = 0
-                            dashboardIndex = 1
+                            if (selectedPage !== "home") {
+                                selectedPage = "home"
+                                pageTracker = 0
+                                mainStack.pop()
+                                mainStack.push("qrc:/+desktop/Wallet.qml")
+                            }
+                            else {
+                                if (pageTracker !== 0) {
+                                    pageTracker = 0
+                                    mainStack.pop()
+                                    mainStack.push("qrc:/+desktop/Wallet.qml")
+                                }
+                            }
                         }
                     }
                 }
@@ -203,13 +212,17 @@ Item {
                         anchors.fill: parent
 
                         onClicked: {
-                            if (userSettings.pinlock === true) {
-                                backupTracker = 1
-                                pincodeTracker = 1
-                            }
-                            else {
-                                appsTracker = 0
-                                selectedPage = "backup"
+                            if (selectedPage !== "backup") {
+                                if (userSettings.pinlock === true) {
+                                    backupTracker = 1
+                                    pincodeTracker = 1
+                                }
+                                else {
+                                    appsTracker = 0
+                                    selectedPage = "backup"
+                                    mainStack.pop()
+                                    mainStack.push("qrc:/+desktop/WalletBackup.qml")
+                                }
                             }
                         }
 
@@ -221,6 +234,8 @@ Item {
 
                             onTriggered: {
                                 selectedPage = "backup"
+                                mainStack.pop()
+                                mainStack.push("qrc:/+desktop/WalletBackup.qml")
                             }
                         }
 
@@ -285,7 +300,11 @@ Item {
                         anchors.fill: parent
 
                         onClicked:  {
-                            selectedPage = "apps"
+                            if (selectedPage !== "apps") {
+                                selectedPage = "apps"
+                                mainStack.pop()
+                                mainStack.push("qrc:/+desktop/Applications.qml")
+                            }
                         }
                     }
                 }
@@ -341,7 +360,11 @@ Item {
                         anchors.fill: parent
 
                         onClicked:  {
-                            selectedPage = "notif"
+                            if (selectedPage !== "notif") {
+                                selectedPage = "notif"
+                                mainStack.pop()
+                                mainStack.push("qrc:/+desktop/Notifications.qml")
+                            }
                         }
                     }
                 }
@@ -397,9 +420,19 @@ Item {
                         anchors.fill: parent
 
                         onClicked: {
-                            selectedPage = "home"
-                            pageTracker = 1
-                            dashboardIndex = 0
+                            if (selectedPage !== "home") {
+                                selectedPage = "home"
+                                pageTracker = 1
+                                mainStack.pop()
+                                mainStack.push("qrc:/+desktop/AddressBook.qml")
+                            }
+                            else {
+                                if (pageTracker !== 1) {
+                                    pageTracker = 1
+                                    mainStack.pop()
+                                    mainStack.push("qrc:/+desktop/AddressBook.qml")
+                                }
+                            }
                         }
                     }
                 }
@@ -456,7 +489,11 @@ Item {
                         anchors.fill: parent
 
                         onClicked: {
-                            selectedPage = "settings"
+                            if (selectedPage !== "settings") {
+                                selectedPage = "settings"
+                                mainStack.pop()
+                                mainStack.push("qrc:/+desktop/WalletSettings.qml")
+                            }
                         }
                     }
                 }
@@ -552,7 +589,7 @@ Item {
                         detectInteraction()
                     }
 
-                     onClicked: {
+                    onClicked: {
                         if (darktheme == true) {
                             userSettings.theme = "light"
                         }
@@ -600,10 +637,7 @@ Item {
         }
     }
 
-    Mobile.ClickToLogout {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-        visible: clickToLogout == 1
+    Desktop.Pincode {
+        id: myPincode
     }
 }
