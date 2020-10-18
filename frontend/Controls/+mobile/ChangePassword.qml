@@ -407,7 +407,7 @@ Rectangle {
 
     //change password failed
 
-    Controls.ReplyModal {
+    ReplyModal {
         id: changePasswordFailed
         modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
         visible: editFailed == 1
@@ -498,7 +498,7 @@ Rectangle {
 
     //change password succeeded
 
-    Controls.ReplyModal {
+    ReplyModal {
         id: changePasswordSucceed
         modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
         visible: editSaved == 1

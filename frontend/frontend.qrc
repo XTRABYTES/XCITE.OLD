@@ -214,5 +214,8 @@
         <file>Controls/+desktop/Pincode.qml</file>
         <file>Controls/+desktop/ChangePassword.qml</file>
         <file>Controls/VolumeSlider.qml</file>
+        <file>Controls/+desktop/CreatePin.qml</file>
+        <file>Controls/+desktop/ChangePin.qml</file>
+        <file>Controls/+desktop/ProvidePin.qml</file>
     </qresource>
 </RCC>

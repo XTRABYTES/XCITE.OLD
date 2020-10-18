@@ -150,7 +150,7 @@ Rectangle {
         width: appWidth
         height: appHeight
         color: bgcolor
-        opacity: 0.7
+        opacity: 0.9
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
     }
@@ -173,7 +173,7 @@ Rectangle {
             anchors.topMargin: 10
             font.pixelSize: logoutModal.height/12
             font.family: "Brandon Grotesque"
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            color: themecolor
             font.letterSpacing: 2
         }
 

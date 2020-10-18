@@ -33,10 +33,54 @@ Rectangle {
     property int changeVolumeFailed: 0
     property int changeSystemVolumeFailed: 0
     property int changeBalanceVisibleFailed: 0
+    property int checkCreatePin: createPin
+    property int checkChangePin: changePin
+    property int checkUnlockPin: unlockPin
+    property bool screenComplete: false
+
+    onCheckCreatePinChanged: {
+        if (sessionStart == 1 && pincodeTracker == 1) {
+            if (userSettings.pinlock) {
+                pinSwitch.state = "on"
+                pincodeTracker = 0
+            }
+            else {
+                pinSwitch.state = "off"
+                pincodeTracker = 0
+            }
+        }
+    }
+
+    onCheckChangePinChanged: {
+        if (sessionStart == 1 && pincodeTracker == 1) {
+            if (userSettings.pinlock) {
+                pinSwitch.state = "on"
+                pincodeTracker = 0
+            }
+            else {
+                pinSwitch.state = "off"
+                pincodeTracker = 0
+            }
+        }
+    }
+
+    onCheckUnlockPinChanged: {
+        if (sessionStart == 1 && pincodeTracker == 1) {
+            if (userSettings.pinlock) {
+                pinSwitch.state = "on"
+                pincodeTracker = 0
+            }
+            else {
+                pinSwitch.state = "off"
+                pincodeTracker = 0
+            }
+        }
+    }
 
     Component.onCompleted: {
         balanceSwitch.switchOn = userSettings.showBalance
         pinSwitch.switchOn = userSettings.pinlock
+        screenComplete = true
     }
 
     Label {
@@ -213,7 +257,7 @@ Rectangle {
             }
 
             else {
-               userSettings.showBalance = false
+                userSettings.showBalance = false
             }
         }
     }
@@ -259,15 +303,17 @@ Rectangle {
         anchors.leftMargin: appWidth/6*1.75
         switchOn: userSettings.pinlock
 
-        onSwitchOnChanged: {
-            if (switchOn == true) {
-                createPin =1
-                pincodeTracker = 1
-            }
+        onStateChanged: {
+            if (pincodeTracker == 0 && sessionStart == 1 && selectedPage == "settings" && screenComplete == true) {
+                if (state == "on") {
+                    createPin =1
+                    pincodeTracker = 1
+                }
 
-            else {
-                unlockPin = 1
-                pincodeTracker = 1
+                else if (state == "off") {
+                    unlockPin = 1
+                    pincodeTracker = 1
+                }
             }
         }
 
@@ -365,7 +411,6 @@ Rectangle {
                 if (userSettings.pinlock === true) {
                     changePin =1
                     pincodeTracker = 1
-                    pinSelector.visible = false
                 }
             }
         }
@@ -428,7 +473,6 @@ Rectangle {
             }
 
             onClicked: {
-                pasSelector.visible = false
             }
         }
     }
@@ -731,7 +775,7 @@ Rectangle {
             }
 
             else {
-               userSettings.systemVolume = 0
+                userSettings.systemVolume = 0
             }
         }
     }

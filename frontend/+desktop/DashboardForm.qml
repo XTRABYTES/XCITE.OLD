@@ -639,5 +639,6 @@ Item {
 
     Desktop.Pincode {
         id: myPincode
+        anchors.top: parent.top
     }
 }

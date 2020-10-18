@@ -352,7 +352,7 @@ Item {
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             color: (userName.text != "" && passWord.text != "") ? "#F2F2F2" : "#979797"
-            font.bold: true
+            //font.bold: true
             anchors.horizontalCenter: importButton.horizontalCenter
             anchors.verticalCenter: importButton.verticalCenter
             visible: importButton.visible

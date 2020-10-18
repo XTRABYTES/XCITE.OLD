@@ -329,7 +329,7 @@ Rectangle {
                     onSaveFailed: {
                         if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                             if (createPin == 1) {
-                                userSettings.pinlock = true;
+                                userSettings.pinlock = false;
                                 newPin1.text = "";
                                 newPin2.text = "";
                                 failToSave = 1;
@@ -341,7 +341,7 @@ Rectangle {
                         if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                             networkError = 1
                             if (createPin == 1) {
-                                userSettings.pinlock = true;
+                                userSettings.pinlock = false;
                                 newPin1.text = "";
                                 newPin2.text = "";
                                 failToSave = 1;
