@@ -403,6 +403,7 @@ ApplicationWindow {
     property bool addingWallet: false
     property bool walletAdded: false
     property bool alert: false
+    property int newAlerts: 0
     property bool updatingWalletsNotif: false
     property bool testNet: false
     property bool saveCurrency: false
@@ -1545,6 +1546,16 @@ ApplicationWindow {
             alertList.setProperty(i, "remove", true)
         }
         alert = false
+    }
+
+    function countAlerts() {
+        var alertcount = 0
+        for (var i = 0; i < alertList.count; i ++) {
+           if (alertList.get(i).remove === "true") {
+              alertcount = alertcount +1
+           }
+        }
+        return alertcount
     }
 
     function setMarketValue(currency, currencyValue) {
@@ -3249,6 +3260,10 @@ ApplicationWindow {
             message: ""
             origin: ""
             remove: false
+        }
+
+        onCountChanged: {
+            newAlerts = countAlerts()
         }
     }
 

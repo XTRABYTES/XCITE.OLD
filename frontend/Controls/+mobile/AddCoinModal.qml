@@ -28,6 +28,7 @@ Rectangle {
     anchors.right: parent.right
 
     property alias sidebarState: addCoinSidebar.state
+    property real colomnWidth: 150
 
     Rectangle {
         id: addCoinSidebar
@@ -46,7 +47,7 @@ Rectangle {
             },
             State {
                 name: "open"
-                PropertyChanges { target: addCoinSidebar; width: 150}
+                PropertyChanges { target: addCoinSidebar; width: colomnWidth}
                 PropertyChanges { target: clickArea; opacity: 0.5}
             }
         ]
@@ -91,7 +92,7 @@ Rectangle {
                     font.pixelSize: 18
                     font.family: xciteMobile.name
                     color: "#E5E5E5"
-                    font.bold: true
+                    font.bold: (myOS == "android" || myOS == "ios")
                 }
 
                 Rectangle {

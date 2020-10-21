@@ -586,7 +586,9 @@ Item {
             if (loginTracker == 1){
                 loadSettings(settings);
                 loadingSettings = 0
-                verifyingBalances = 1
+                if (userSettings.accountCreationCompleted) {
+                    verifyingBalances = 1
+                }
             }
         }
 

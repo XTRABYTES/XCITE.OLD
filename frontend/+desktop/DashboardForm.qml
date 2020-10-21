@@ -143,6 +143,11 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
                         onClicked: {
                             if (selectedPage !== "home") {
                                 selectedPage = "home"
@@ -210,6 +215,11 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
 
                         onClicked: {
                             if (selectedPage !== "backup") {
@@ -299,6 +309,11 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
                         onClicked:  {
                             if (selectedPage !== "apps") {
                                 selectedPage = "apps"
@@ -356,8 +371,35 @@ Item {
                         anchors.leftMargin: parent.height
                     }
 
+                    Rectangle {
+                        id: notifIndicator
+                        width: parent.height/3
+                        height: width
+                        radius: width/2
+                        color: "#E55541"
+                        anchors.right: parent.right
+                        anchors.rightMargin: width
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: alert == true
+
+                        Label {
+                            id: notifCount
+                            text: newAlerts
+                            color: "#F2F2F2"
+                            font.family: xciteMobile.name
+                            font.pixelSize: parent.height/2
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                    }
+
                     MouseArea {
                         anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
 
                         onClicked:  {
                             if (selectedPage !== "notif") {
@@ -418,6 +460,11 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
 
                         onClicked: {
                             if (selectedPage !== "home") {
@@ -487,6 +534,11 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
 
                         onClicked: {
                             if (selectedPage !== "settings") {

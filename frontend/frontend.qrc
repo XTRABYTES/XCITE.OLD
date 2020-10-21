@@ -217,5 +217,7 @@
         <file>Controls/+desktop/CreatePin.qml</file>
         <file>Controls/+desktop/ChangePin.qml</file>
         <file>Controls/+desktop/ProvidePin.qml</file>
+        <file>Controls/+desktop/CoinList.qml</file>
+        <file>Controls/+desktop/Portfolio.qml</file>
     </qresource>
 </RCC>

@@ -131,7 +131,7 @@ Rectangle {
         font.family: xciteMobile.name
         font.letterSpacing: 2
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: totalXBY == 0 && totalXFUEL == 0
+        visible: totalXBY == 0 && totalXFUEL == 0 && totalETH == 0 && totalBTC == 0
     }
 
     Rectangle {

@@ -225,7 +225,7 @@ Rectangle {
 
             onEntered: {
                 if (controlTracker == 0) {
-                    controlTracker = 1
+                   controlTracker = 1
                 }
             }
         }

@@ -50,20 +50,22 @@ Item {
             var datamodelWallet = []
             var datamodelPending = []
 
-            for (var i = 0; i < walletList.count; ++i) {
-                if (walletList.get(i).remove === false) {
-                    datamodelWallet.push(walletList.get(i))
-                }
-            };
-            for (var e = 0; e < pendingList.count; ++e) {
-                datamodelPending.push(pendingList.get(e))
-            };
+            if (walletList.count !== 0) {
+                for (var i = 0; i < walletList.count; ++i) {
+                    if (walletList.get(i).remove === false) {
+                        datamodelWallet.push(walletList.get(i))
+                    }
+                };
+                for (var e = 0; e < pendingList.count; ++e) {
+                    datamodelPending.push(pendingList.get(e))
+                };
 
-            var walletListJson = JSON.stringify(datamodelWallet);
-            var pendingListJson = JSON.stringify(datamodelPending);
+                var walletListJson = JSON.stringify(datamodelWallet);
+                var pendingListJson = JSON.stringify(datamodelPending);
 
-            updateBalanceSignal(walletListJson, "all");
-            checkTxStatus(pendingListJson);
+                updateBalanceSignal(walletListJson, "all");
+                checkTxStatus(pendingListJson);
+            }
 
             if (!checkingXchat){
                 checkingXchat = true
