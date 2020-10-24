@@ -36,6 +36,7 @@ Rectangle {
             GradientStop { position: 0.0; color: "transparent" }
             GradientStop { position: 1.0; color: maincolor }
         }
+        visible: (myOS == "android" || myOS == "ios")
     }
 
     Image {
@@ -120,7 +121,7 @@ Rectangle {
         Rectangle {
             id: setupScrollArea
             width: parent.width
-            height: 800
+            height: (myOS == "android" || myOS == "ios")? 800 : parent.height
             color: "transparent"
 
             Label {
@@ -128,11 +129,11 @@ Rectangle {
                 text: "WELCOME TO XCITE"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: 25
+                anchors.topMargin: (myOS == "android" || myOS == "ios")? 25 : appWidth/48
                 color: maincolor
                 font.pixelSize: 24
                 font.family: xciteMobile.name
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
             }
 
             Label {
@@ -147,7 +148,7 @@ Rectangle {
 
             Text {
                 id: createUsernameText
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
                 anchors.left: userName.left
                 anchors.top: createAccountText.bottom
@@ -164,7 +165,7 @@ Rectangle {
             Controls.TextInput {
                 id: userName
                 height: 34
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 placeholder: "USERNAME"
                 text: ""
                 mobile: 1
@@ -261,7 +262,7 @@ Rectangle {
 
             Text {
                 id: createPasswordText
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 4
                 anchors.left: createUsernameText.left
                 anchors.top: userName.bottom
@@ -270,14 +271,14 @@ Rectangle {
                 wrapMode: Text.WordWrap
                 text: "Choose a password, it should contain at least one capital letter, one number and one special character, and it must be at least 8 characters long."
                 color: "#F2F2F2"
-                font.pixelSize: (myOS == "android" || myOS == "ios")? 18 : 14
+                font.pixelSize: 18
                 font.family: xciteMobile.name
             }
 
             Controls.TextInput {
                 id: passWord1
                 height: 34
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 placeholder: "PASSWORD"
                 text: ""
                 mobile: 1
@@ -323,7 +324,7 @@ Rectangle {
             Controls.TextInput {
                 id: passWord2
                 height: 34
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 placeholder: "RETYPE PASSWORD"
                 text: ""
                 mobile: 1
@@ -373,7 +374,7 @@ Rectangle {
 
             Rectangle {
                 id: createAccountButton
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/6
                 height: 34
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: passWord2.bottom
@@ -697,7 +698,7 @@ Rectangle {
                         loginTracker = 1
                         selectedPage = "onBoarding"
                         mainRoot.pop()
-                        mainRoot.push("../Onboarding.qml")
+                        mainRoot.push("qrc:/+mobile/Onboarding.qml")
                     }
                 }
             }
@@ -723,7 +724,7 @@ Rectangle {
         id: accountFailed
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        width: 325
+        width: (myOS == "android" || myOS == "ios")? 325 : appWidth/3
         height: failedIcon.height + creationFailedLabel.height + closeFail.height + 130
         state: signUpError == 1? "up" : "down"
         color: "#14161B"
@@ -766,7 +767,7 @@ Rectangle {
             color: maincolor
             font.pixelSize: 14
             font.family: "Brandon Grotesque"
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
         }
 
         Label {
@@ -778,12 +779,12 @@ Rectangle {
             color: maincolor
             font.pixelSize: 14
             font.family: "Brandon Grotesque"
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
         }
 
         Rectangle {
             id: closeFail
-            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : 150
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : appWidth/6
             height: 34
             color: maincolor
             opacity: 0.25
@@ -840,7 +841,7 @@ Rectangle {
         id: accountSuccess
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        width: 325
+        width: (myOS == "android" || myOS == "ios")? 325 : appWidth/3
         height: 270
         state: accountCreated == 1? "up" : "down"
         color: "#14161B"
@@ -892,7 +893,7 @@ Rectangle {
 
         Text {
             id: passwordWarning
-            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
             maximumLineCount: 4
             anchors.left: confirmAccountButton.left
             horizontalAlignment: Text.AlignJustify
@@ -908,7 +909,7 @@ Rectangle {
 
         Rectangle {
             id: confirmAccountButton
-            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : 150
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/6
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
@@ -956,7 +957,7 @@ Rectangle {
         }
 
         Rectangle {
-            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+            width: confirmAccountButton.width
             height: 34
             anchors.horizontalCenter: confirmAccountButton.horizontalCenter
             anchors.bottom: confirmAccountButton.bottom
@@ -978,7 +979,7 @@ Rectangle {
 
             Label {
                 id: addWalletText1
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
@@ -993,7 +994,7 @@ Rectangle {
 
             Label {
                 id: addWalletText2
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
@@ -1009,7 +1010,7 @@ Rectangle {
 
             Label {
                 id: addWalletText3
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
@@ -1065,7 +1066,7 @@ Rectangle {
 
             Rectangle {
                 id: continueButton
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : 150
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/6
                 height: 34
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: storageSwitch.bottom
@@ -1105,7 +1106,7 @@ Rectangle {
                         if (saveAccountInitiated == true) {
                             mainRoot.pop()
                             selectedPage = "initialSetup"
-                            mainRoot.push("../InitialSetup.qml")
+                            mainRoot.push("qrc:/+mobile/InitialSetup.qml")
                             accountCreated = 0
                             selectStorage = 0
                             saveAccountInitiated = false
@@ -1142,7 +1143,7 @@ Rectangle {
             }
 
             Rectangle {
-                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : 150
+                width: continueButton.width
                 height: 34
                 anchors.horizontalCenter: continueButton.horizontalCenter
                 anchors.bottom: continueButton.bottom
@@ -1164,49 +1165,6 @@ Rectangle {
                 visible: saveAccountInitiated == true
             }
         }
-    }
-/*
-    Image {
-        id: combinationMark
-        source: 'qrc:/icons/xby_logo_with_name.svg'
-        width: 150
-        fillMode: Image.PreserveAspectFit
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-    }
-*/
-    Mobile.SwipeBack {
-        z: 100
-        anchors.right: parent.right
-        anchors.top: parent.top
-    }
-
-    Mobile.DeviceButtons {
-        z: 100
-        visible: myOS !== "android" && myOS !== "ios"
-    }
-
-    Mobile.LogOut {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-    }
-
-    Mobile.DragBar {
-        z: 100
-        visible: myOS !== "android" && myOS !== "ios"
-    }
-
-    Mobile.NetworkError {
-        z:100
-        id: myNetworkError
-    }
-
-    Mobile.Goodbey {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
     }
 }
 

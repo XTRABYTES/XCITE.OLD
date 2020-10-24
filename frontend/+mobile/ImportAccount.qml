@@ -23,7 +23,7 @@ Item {
     width: appWidth
     height: appHeight
     anchors.horizontalCenter: xcite.horizontalCenter
-    //anchors.verticalCenter: xcite.verticalCenter
+
 
     property int passError: 0
     property int checkUsername: 0
@@ -48,7 +48,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)
-        width: (myOS == "android" || myOS == "ios")? parent.width - 50 : 350
+        width: (myOS == "android" || myOS == "ios")? parent.width - 50 : appWidth/2
         height: 250
         //state: importTracker == 1? "up" : "down"
         color: "transparent"
@@ -483,7 +483,7 @@ Item {
 
         Label {
             id: noAccount
-            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignJustify
             maximumLineCount: 5

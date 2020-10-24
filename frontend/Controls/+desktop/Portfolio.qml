@@ -90,7 +90,7 @@ Item {
 
     Rectangle {
         id: legendXBY
-        width: appHeight/36
+        width: appHeight/36*0.8
         height: width
         anchors.top: parent.top
         anchors.topMargin: appWidth*1.5/24
@@ -113,10 +113,10 @@ Item {
 
     Rectangle {
         id: legendXFUEL
-        width: appHeight/36
+        width: appHeight/36*0.8
         height: width
         anchors.top: legendXBY.top
-        anchors.topMargin: appWidth/48
+        anchors.topMargin: appWidth/42
         anchors.left: portfolioArea.left
         anchors.leftMargin: appWidth/48
         color: "#FFAE11"
@@ -136,10 +136,10 @@ Item {
 
     Rectangle {
         id: legendBTC
-        width: appHeight/36
+        width: appHeight/36*0.8
         height: width
         anchors.top: legendXFUEL.top
-        anchors.topMargin: appWidth/48
+        anchors.topMargin: appWidth/42
         anchors.left: portfolioArea.left
         anchors.leftMargin: appWidth/48
         color: "#F7931A"
@@ -159,10 +159,10 @@ Item {
 
     Rectangle {
         id: legendETH
-        width: appHeight/36
+        width: appHeight/36*0.8
         height: width
         anchors.top: legendBTC.top
-        anchors.topMargin: appWidth/48
+        anchors.topMargin: appWidth/42
         anchors.left: portfolioArea.left
         anchors.leftMargin: appWidth/48
         color: "#A690FC"

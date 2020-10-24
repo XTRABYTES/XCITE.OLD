@@ -89,6 +89,7 @@ Item {
             else {
                 mainRoot.push("qrc:/+desktop/DashboardForm.qml")
             }
+
         }
     }
 }

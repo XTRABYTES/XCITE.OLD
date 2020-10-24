@@ -561,10 +561,14 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
             }
 
             emit loadingSettings();
+            QString location;
             if (fileLocation == "restore") {
-                fileLocation = "default";
+                location = "default";
             }
-            LoadSettings(decodedSettings, fileLocation);
+            else {
+                location = fileLocation;
+            }
+            LoadSettings(decodedSettings, location);
 
             // Create new rand Num.
             QString randNum = createRandNum();
@@ -1092,6 +1096,7 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
 
     /* Load wallets from JSON from Local or DB */
     bool localKeys = m_settings->value("localKeys").toBool();
+    bool setupComplete = m_settings->value("accountCreationCompleted").toBool();
     QJsonArray walletArray;
     m_wallet.clear();
 
@@ -1104,8 +1109,11 @@ void Settings::LoadSettings(QByteArray settings, QString fileLocation){
             decodedWallet = decodedWallet.left(pos+1); //remove everything after the valid json
             walletArray = QJsonDocument::fromJson(decodedWallet).array();
         }else{
-            emit walletNotFound();
-            return;
+            if (setupComplete) {
+                emit walletNotFound();
+                qDebug() << "No wallet file found";
+                return;
+            }
         }
     }else{
         walletArray = json["walletList"].toArray(); //get walletList from settings from DB
@@ -1522,6 +1530,9 @@ QString Settings::LoadFile(QString fileName, QString fileLocation){
             NoBackupFile();
         }
         else if (fileLocation == "import") {
+            NoImportFile();
+        }
+        else {
             NoWalletFile();
         }
         return "ERROR";
@@ -1573,7 +1584,21 @@ void Settings::CheckSessionId(){
 
 void Settings::NoWalletFile(){
 
-    qDebug() << "No wallet file found!";
+    qDebug() << "No wallet file for account on device!";
+
+    QMessageBox *msgBox = new QMessageBox;
+    msgBox->setParent(0);
+    msgBox->setWindowTitle("Wallet file ERROR!!!");
+    msgBox->setIcon(QMessageBox::Warning);
+    msgBox->setText("No wallet file was found");
+    msgBox->setStandardButtons(QMessageBox::Ok);
+    msgBox->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+    msgBox->show();
+}
+
+void Settings::NoImportFile(){
+
+    qDebug() << "No wallet file for account in Import location!";
 
     QMessageBox *msgBox = new QMessageBox;
     msgBox->setParent(0);

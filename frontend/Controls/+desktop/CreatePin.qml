@@ -23,36 +23,30 @@ Item {
     id: modal
     width: parent.width
     height: modalHeight
-    //state: createPin == 1? "up" : "down"
+
 
     property real modalHeight: newPinSaved == 1? pinSaved.height : (failToSave == 1? saveFailed.height : createNewPin.height)
     property int newPinSaved: 0
     property int failToSave: 0
     property int passError: 0
     property string failError: ""
-    /*
-    states: [
-        State {
-            name: "up"
-            PropertyChanges { target: modal; anchors.topMargin: 0}
-        },
-        State {
-            name: "down"
-            PropertyChanges { target: modal; anchors.topMargin: modal.height}
-        }
-    ]
+    property int myTracker: pincodeTracker
 
-    transitions: [
-        Transition {
-            from: "*"
-            to: "*"
-            NumberAnimation { target: modal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
-        }
-    ]*/
+    onMyTrackerChanged: {
+        newPin1.text = "";
+        newPin2.text = "";
+        newPinSaved = 0
+        failToSave = 0
+        failError = ""
+    }
 
     Rectangle {
         id: createNewPin
-        height: appHeight*44/108
+        height: createPinText1.height + createPinText1.anchors.topMargin +
+                newPin1.height + newPin1.anchors.topMargin +
+                createPinText2.height + createPinText2.anchors.topMargin +
+                 newPin2.height + newPin2.anchors.topMargin +
+                (savePin.height*2) + savePin.anchors.topMargin
         width: parent.width
         color: "transparent"
         anchors.top: parent.top
@@ -64,7 +58,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: appHeight/18
-            font.pixelSize: appHeight/72
+            font.pixelSize: appHeight/60
             font.family: xciteMobile.name
             color: themecolor
         }
@@ -107,7 +101,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: newPin1.bottom
             anchors.topMargin: appHeight/36
-            font.pixelSize: appHeight/72
+            font.pixelSize: appHeight/60
             font.family: xciteMobile.name
             color: themecolor
         }
@@ -246,6 +240,7 @@ Item {
                     if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                         if (createPin == 1) {
                             userSettings.pinlock = false;
+                            savePinInitiated = false;
                             newPin1.text = "";
                             newPin2.text = "";
                             failToSave = 1;
@@ -352,7 +347,7 @@ Item {
 
         Rectangle {
             id: closeFailed
-            width: doubbleButtonWidth / 2
+            width: appWidth/6
             height: appHeight/18
             color: "transparent"
             anchors.top: saveFailedError.bottom
@@ -373,15 +368,15 @@ Item {
                     failToSave = 0;
                 }
             }
-        }
 
-        Text {
-            text: "TRY AGAIN"
-            font.family: xciteMobile.name
-            font.pointSize: parent.height/2
-            color: maincolor
-            anchors.horizontalCenter: closeFailed.horizontalCenter
-            anchors.verticalCenter: closeFailed.verticalCenter
+            Text {
+                text: "TRY AGAIN"
+                font.family: xciteMobile.name
+                font.pointSize: parent.height/2
+                color: maincolor
+                anchors.horizontalCenter: closeFailed.horizontalCenter
+                anchors.verticalCenter: closeFailed.verticalCenter
+            }
         }
     }
 }

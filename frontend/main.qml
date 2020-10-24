@@ -140,6 +140,7 @@ ApplicationWindow {
 
         alertList.clear();
         alertList.append({"date": "", "origin": "", "message": "", "remove": true});
+        newAlerts = countAlerts()
 
         transactionList.clear();
         transactionList.append({"requestID": "","txid": "","coin": "","address": "","receiver": "","amount": 0, "fee": 0, "used": 0});
@@ -696,6 +697,14 @@ ApplicationWindow {
                 }
             }
 
+            else if (selectedPage == "initialSetup") {
+                if (createWalletTracker == 1 && addingWallet == false) {
+                    createWalletTracker = 0
+                }
+                else if (importKeyTracker == 1 && addingWallet == false) {
+                    importKeyTracker = 0
+                }
+            }
             else if (selectedPage == "home") {
                 if (appsTracker == 1) {
                     appsTracker = 0
@@ -1001,6 +1010,7 @@ ApplicationWindow {
                             balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label), "remove": false})
                             alert = true
+                            newAlerts = countAlerts()
                             if (standBy == 1) {
                                 walletUpdate(walletList.get(i).name, walletList.get(i).label, balanceAlert)
                             }
@@ -1057,6 +1067,7 @@ ApplicationWindow {
                 var d = "Confirmed transaction of " + h + transactionList.get(i).coin + " (fee: " + k + transactionList.get(i).coin + ") to " + c
                 alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : coin + " " + b, "remove": false})
                 alert = true
+                newAlerts = countAlerts()
                 notification.play()
             }
         }
@@ -1089,6 +1100,7 @@ ApplicationWindow {
                             var cancelAlert = "transaction canceled: " + txid
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
                             alert = true
+                            newAlerts = countAlerts()
                             notification.play()
                             failedPendingTracker = 1
                         }
@@ -1535,6 +1547,7 @@ ApplicationWindow {
         }
         if (count > 0) {
             alert = true
+            newAlerts = countAlerts()
         }
         else {
             alert = false
@@ -1842,6 +1855,7 @@ ApplicationWindow {
                     if (tttTracker !== 1) {
                         alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " has made a new move in Tic Tact Toe in game #" + gameNR, "origin" : "X-GAMES", "remove": false})
                         alert = true
+                        newAlerts = countAlerts()
                     }
                 }
             }
@@ -1916,11 +1930,13 @@ ApplicationWindow {
             gamesList.append({"game": game, "gameID": gameID, "invited": true, "accepted": false, "started": false, "finished": false})
             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " has has invited you to play a game of " + gameName + " #" + gameNR, "origin" : "X-GAMES", "remove": false})
             alert = true
+            newAlerts = countAlerts()
         }
         else {
             notification.play()
             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " send you a reminder for his invite to play " + gameName + " #" + gameNR, "origin" : "X-GAMES", "remove": false})
             alert = true
+            newAlerts = countAlerts()
         }
     }
 
@@ -1939,6 +1955,7 @@ ApplicationWindow {
                         notification.play()
                         alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " accepted your invite for " + gameName, "origin" : "X-GAMES", "remove": false})
                         alert = true
+                        newAlerts = countAlerts()
                     }
                     else {
                         confirmGameInvite(myUsername, player, game, gameID, "true")
@@ -1951,6 +1968,7 @@ ApplicationWindow {
                         notification.play()
                         alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " did not accept your invite for " + gameName, "origin" : "X-GAMES", "remove": false})
                         alert = true
+                        newAlerts = countAlerts()
                     }
                     else {
                         confirmGameInvite(myUsername, player, game, gameID, "false")
@@ -3003,6 +3021,7 @@ ApplicationWindow {
                     var d = "Accepted transaction of " + h + transactionList.get(i).coin + " (fee: " + k + transactionList.get(i).coin + ") to " + c
                     alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
                     alert = true
+                    newAlerts = countAlerts()
                     notification.play()
                     updatePendingTracker = 0
                     updateToAccount()
@@ -3043,6 +3062,7 @@ ApplicationWindow {
                     var d = "Rejected transaction of " + h + " " + transactionList.get(i).coin + " to " + c
                     alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
                     alert = true
+                    newAlerts = countAlerts()
                     notification.play()
                 }
             }
@@ -3082,6 +3102,7 @@ ApplicationWindow {
                         if (xchatTracker == 0 || inActive == true) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : messageObject.author + " has mentioned you", "origin" : "X-CHAT", "remove": false})
                             alert = true
+                            newAlerts = countAlerts()
                         }
                     }
                     if (messageObject.tag === 2 && messageObject.author !== myUsername) {
@@ -3089,6 +3110,7 @@ ApplicationWindow {
                         if (xchatTracker == 0 || inActive == true) {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT", "remove": false})
                             alert = true
+                            newAlerts = countAlerts()
                         }
                     }
                 }

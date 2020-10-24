@@ -18,7 +18,7 @@ import QtQuick.Layouts 1.3
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
-import "qrc:/Controls/+mobile" as Mobile
+import "qrc:/Controls/+desktop" as Desktop
 
 Rectangle {
     id: backgroundBackup
@@ -28,6 +28,22 @@ Rectangle {
     anchors.right: xcite.right
     anchors.top: xcite.top
     color: bgcolor
+
+    property int walletsExported: 0
+    property int walletsExportedFailed: 0
+    property bool exportInitiated: false
+    property int myTracker: backupTracker
+    property bool myTheme: darktheme
+
+    onMyThemeChanged: {
+        exportWallet.border.color = themecolor
+        exportWalletLabel.color = themecolor
+    }
+
+    onMyTrackerChanged: {
+        walletsExported = 0
+        walletsExportedFailed = 0
+    }
 
     Label {
         id: walletBackupLabel
@@ -40,5 +56,239 @@ Rectangle {
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
+    }
+
+    Rectangle {
+        id: exportWallet
+        height: appHeight/24
+        width: appWidth/6*1.5
+        anchors.top: walletBackupLabel.bottom
+        anchors.topMargin: appWidth/12
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: "transparent"
+        border.width: 1
+        border.color: themecolor
+        visible: userSettings.localKeys
+
+        Label {
+            id: exportWalletLabel
+            text: exportInitiated == false? "EXPORT ALL WALLETS" : "EXPORTING WALLETS ..."
+            font.family: xciteMobile.name
+            font.pointSize: parent.height/2
+            color: themecolor
+            anchors.horizontalCenter: exportWallet.horizontalCenter
+            anchors.verticalCenter: exportWallet.verticalCenter
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onEntered: {
+                if (exportInitiated == false) {
+                    exportWallet.border.color = maincolor
+                    exportWalletLabel.color = maincolor
+                }
+            }
+
+            onExited: {
+                exportWallet.border.color = themecolor
+                exportWalletLabel.color = themecolor
+            }
+
+            onClicked: {
+                if (exportInitiated == false){
+                    exportInitiated = true
+                    exportWallets()
+                }
+            }
+
+            Timer {
+                id: timer1
+                running: false
+                repeat: false
+                interval: 3000
+
+                onTriggered: {
+                    walletsExported = 0
+                }
+            }
+
+            Connections {
+                target: UserSettings
+
+                onSaveFileSucceeded: {
+                      if (exportInitiated == true) {
+                          walletsExported = 1
+                          exportInitiated = false
+                          timer1.start()
+                      }
+                }
+
+                onSaveFileFailed: {
+                    if (exportInitiated == true) {
+                        walletsExportedFailed = 1
+                        exportInitiated = false
+                    }
+                }
+            }
+        }
+    }
+
+    Rectangle {
+        id: walletArea
+        width: parent.width
+        anchors.top: walletBackupLabel.bottom
+        anchors.topMargin: userSettings.localKeys? (appWidth/12 + appHeight/12) : appWidth/12
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: appWidth/24
+        anchors.left: parent.left
+        color: "transparent"
+        clip: true
+
+        Desktop.WalletDetailList {
+            id: myWalletDetails
+            anchors.top: parent.top
+        }
+    }
+
+    Rectangle {
+        height: appWidth/24
+        width: parent.width
+        anchors.bottom: parent.bottom
+        color: darktheme == true? "#14161B" : "#FDFDFD"
+    }
+
+    Rectangle {
+        id: exportReplyModal
+        width: parent.width
+        height: parent.height
+        color: "transparent"
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        state: (walletsExported == 1 || walletsExportedFailed == 1)? "up" : "down"
+
+        onStateChanged: {
+            detectInteraction()
+        }
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: exportReplyModal; anchors.topMargin: 0}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: exportReplyModal; anchors.topMargin: exportReplyModal.height}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: exportReplyModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+            }
+        ]
+
+        Rectangle {
+            anchors.fill: parent
+            color: bgcolor
+            opacity: 0.9
+
+            MouseArea {
+                anchors.fill: parent
+            }
+        }
+
+        //export wallets failed
+
+        Rectangle {
+            id: exportWalletsFailed
+            width: parent.width/3
+            height: exportFailedLabel.height + exportFailedLabel.anchors.topMargin +
+                    (closeFailed.height*2) + closeFailed.anchors.topMargin
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: darktheme == true? "#0B0B09" : "#FFFFFF"
+            border.color: maincolor
+            border.width: 2
+            visible: walletsExportedFailed == 1
+
+            Label {
+                id: exportFailedLabel
+                text: "Failed to export your wallets!"
+                color: themecolor
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: appHeight/9
+                font.pixelSize: appHeight/36*0.8
+                font.family: xciteMobile.name
+            }
+
+            Rectangle {
+                id: closeFailed
+                width: appWidth/6
+                height: appHeight/18
+                color: "transparent"
+                anchors.top: exportFailedLabel.bottom
+                anchors.topMargin: appHeight/18
+                anchors.horizontalCenter: parent.horizontalCenter
+                border.width: 1
+                border.color: maincolor
+
+                MouseArea {
+                    anchors.fill: closeFailed
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        walletsExportedFailed = 0;
+                    }
+                }
+
+                Text {
+                    text: "TRY AGAIN"
+                    font.family: xciteMobile.name
+                    font.pointSize: parent.height/2
+                    color: maincolor
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
+        //export wallets succeeded
+
+        Rectangle {
+            id: exportWalletsSucceed
+            width: parent.width/3
+            height: appHeight*9/36
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: darktheme == true? "#0B0B09" : "#FFFFFF"
+            border.color: maincolor
+            border.width: 2
+            visible: walletsExported == 1
+
+            Label {
+                id: exportSuccessLabel
+                text: "Wallets exported to device!"
+                color: themecolor
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: appHeight/9
+                font.pixelSize: appHeight/36*0.8
+                font.family: xciteMobile.name
+            }
+        }
     }
 }

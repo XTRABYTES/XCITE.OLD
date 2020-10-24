@@ -24,7 +24,9 @@ Rectangle {
     height: appHeight
     state: pincodeTracker == 1? "up" : "down"
     color: "transparent"
-    onStateChanged: detectInteraction()
+    onStateChanged: {
+        detectInteraction()
+    }
 
     MouseArea {
         anchors.fill: parent
@@ -111,6 +113,7 @@ Rectangle {
         border.width: 1
         border.color: maincolor
         visible: createPinModal.newPinSaved == 0 && createPinModal.failToSave == 0
+                 && changePinModal.newPinSaved == 0 && changePinModal.failToSave == 0
                  && pinOK == 0 && pinError == 0
                  && savePinInitiated == false
 

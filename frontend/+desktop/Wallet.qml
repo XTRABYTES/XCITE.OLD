@@ -33,6 +33,19 @@ Rectangle {
 
 
     property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
+    property int newAlert: newAlerts
+    property bool myTheme: darktheme
+
+    onMyThemeChanged: {
+        transferButton.border.color = themecolor
+        transferLabel.color = themecolor
+        coinsButton.border.color = themecolor
+        coinsLabel.color = themecolor
+    }
+
+    onNewAlertChanged: {
+        sumBalance()
+    }
 
     Label {
         id: walletLabel

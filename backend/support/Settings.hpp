@@ -50,6 +50,7 @@ public:
     void loginFile(QString username, QString password, QString fileLocation);
     void NoWalletFile();
     void NoBackupFile();
+    void NoImportFile();
     void DownloadManagerHandler(URLObject *url);
 
 public slots:

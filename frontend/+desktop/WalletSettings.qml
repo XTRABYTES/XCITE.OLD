@@ -140,6 +140,7 @@ Rectangle {
 
                 onClicked: {
                     userSettings.defaultCurrency = 0
+                    sumBalance()
                 }
             }
         }
@@ -178,6 +179,7 @@ Rectangle {
 
                 onClicked: {
                     userSettings.defaultCurrency = 1
+                    sumBalance()
                 }
             }
         }
@@ -216,6 +218,7 @@ Rectangle {
 
                 onClicked: {
                     userSettings.defaultCurrency = 2
+                    sumBalance()
                 }
             }
         }
@@ -373,6 +376,7 @@ Rectangle {
         anchors.verticalCenter: pinYesLabel.verticalCenter
         anchors.left: pinYesLabel.right
         anchors.leftMargin: appWidth/24
+        visible: userSettings.pinlock
 
         Rectangle {
             id: pinSelector
@@ -394,6 +398,11 @@ Rectangle {
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
 
             onEntered: {
                 pinSelector.visible = true
@@ -460,6 +469,11 @@ Rectangle {
             anchors.fill: parent
             hoverEnabled: true
 
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
             onEntered: {
                 pasSelector.visible = true
             }
@@ -473,6 +487,7 @@ Rectangle {
             }
 
             onClicked: {
+                changePasswordTracker = 1
             }
         }
     }

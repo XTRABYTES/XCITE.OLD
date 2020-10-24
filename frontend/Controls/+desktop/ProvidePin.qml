@@ -23,35 +23,23 @@ Item {
     id: modal
     width: parent.width
     height: modalHeight
-    //state: unlockPin == 1? "up" : "down"
 
     property real modalHeight: pinOK == 1? pinCorrect.height : (pinError == 1? pinFail.height : providePin.height)
     property int passTry: 0
     property int passError1: 0
     property int passError2: 0
     property int passError3: 0
-    /*
-    states: [
-        State {
-            name: "up"
-            PropertyChanges { target: modal; anchors.topMargin: 0}
-        },
-        State {
-            name: "down"
-            PropertyChanges { target: modal; anchors.topMargin: modal.height}
-        }
-    ]
 
-    transitions: [
-        Transition {
-            from: "*"
-            to: "*"
-            NumberAnimation { target: modal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
-        }
-    ]*/
+    property int myTracker: pincodeTracker
+
+    onMyTrackerChanged: {
+        pin.text = ""
+    }
+
     Rectangle {
         id: providePin
-        height: providePinLabel.height + providePinLabel.anchors.topMargin + pin.height + pin.anchors.topMargin + appHeight/18
+        height: providePinLabel.height + providePinLabel.anchors.topMargin +
+                pin.height + pin.anchors.topMargin + appHeight/18
         width: parent.width
         color: "transparent"
         anchors.top: parent.top
@@ -63,7 +51,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: appHeight/18
-            font.pixelSize: appHeight/72
+            font.pixelSize: appHeight/60
             font.family: xciteMobile.name
             color: themecolor
         }
@@ -92,6 +80,7 @@ Item {
                 running: false
 
                 onTriggered: {
+                    pincodeTracker = 0
                     pinOK = 0
                     unlockPin = 0
                     clearAll = 0

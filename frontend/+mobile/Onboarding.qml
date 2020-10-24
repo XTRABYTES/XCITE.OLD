@@ -81,6 +81,7 @@ Item {
         source: 'qrc:/icons/XBY_logo_large.svg'
         width: (myOS == "android" || myOS == "ios")? backgroundSplash.width * 2 : undefined
         height: (myOS == "android" || myOS == "ios")?(largeLogo.width / 75) * 65 : (appHeight / 75 * 65)
+        fillMode: Image.PreserveAspectFit
         anchors.top: backgroundSplash.top
         anchors.topMargin: 63
         anchors.right: (myOS == "android" || myOS == "ios")? backgroundSplash.right : undefined

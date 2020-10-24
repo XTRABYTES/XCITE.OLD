@@ -100,7 +100,7 @@ Rectangle {
     }
 
     Label {
-        text: "EXPORT WALLETS"
+        text: "EXPORT ALL WALLETS"
         font.family: xciteMobile.name
         font.pointSize: 14
         font.bold: true

@@ -149,6 +149,7 @@ Item {
                         }
 
                         onClicked: {
+                            backupTracker = 0
                             if (selectedPage !== "home") {
                                 selectedPage = "home"
                                 pageTracker = 0
@@ -315,6 +316,7 @@ Item {
                         }
 
                         onClicked:  {
+                            backupTracker = 0
                             if (selectedPage !== "apps") {
                                 selectedPage = "apps"
                                 mainStack.pop()
@@ -402,6 +404,7 @@ Item {
                         }
 
                         onClicked:  {
+                            backupTracker = 0
                             if (selectedPage !== "notif") {
                                 selectedPage = "notif"
                                 mainStack.pop()
@@ -467,6 +470,7 @@ Item {
                         }
 
                         onClicked: {
+                            backupTracker = 0
                             if (selectedPage !== "home") {
                                 selectedPage = "home"
                                 pageTracker = 1
@@ -541,6 +545,7 @@ Item {
                         }
 
                         onClicked: {
+                            backupTracker = 0
                             if (selectedPage !== "settings") {
                                 selectedPage = "settings"
                                 mainStack.pop()
@@ -573,7 +578,7 @@ Item {
             Text {
                 id: logoutText
                 text: "LOG OUT"
-                color: maincolor
+                color: themecolor
                 font.family: xciteMobile.name
                 font.pixelSize: settingsLabel.font.pixelSize
                 anchors.verticalCenter: logoutIcon.verticalCenter
@@ -587,6 +592,16 @@ Item {
                 color: "transparent"
                 MouseArea {
                     anchors.fill: parent
+                    hoverEnabled: true
+
+                    onEntered: {
+                        logoutText.color = maincolor
+                    }
+
+                    onExited: {
+                        logoutText.color = themecolor
+                    }
+
                     onClicked: {
                         click01.play()
                         detectInteraction()
@@ -691,6 +706,11 @@ Item {
 
     Desktop.Pincode {
         id: myPincode
+        anchors.top: parent.top
+    }
+
+    Desktop.ChangePassword {
+        id: myPassword
         anchors.top: parent.top
     }
 }

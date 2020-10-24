@@ -408,5 +408,9 @@
         <file>icons/wallet/WALLETF2F2F2.png</file>
         <file>icons/wallet/WALLETF2F2F2.svg</file>
         <file>icons/xby_logo_with_name_dark.png</file>
+        <file>icons/mobile/BTC.png</file>
+        <file>icons/mobile/ETH.png</file>
+        <file>icons/mobile/XBY.png</file>
+        <file>icons/mobile/XFUEL.png</file>
     </qresource>
 </RCC>
