@@ -218,10 +218,8 @@ Rectangle {
                             coinTracker = 1
                         }*/
                     }
-
                 }
             }
-
         }
     }
 

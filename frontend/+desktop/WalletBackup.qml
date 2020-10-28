@@ -54,7 +54,7 @@ Rectangle {
         anchors.topMargin: appWidth/24
         font.pixelSize: appHeight/18
         font.family: xciteMobile.name
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        color: themecolor
         font.letterSpacing: 2
     }
 
@@ -144,7 +144,7 @@ Rectangle {
         id: walletArea
         width: parent.width
         anchors.top: walletBackupLabel.bottom
-        anchors.topMargin: userSettings.localKeys? (appWidth/12 + appHeight/12) : appWidth/12
+        anchors.topMargin: appWidth/12
         anchors.bottom: parent.bottom
         anchors.bottomMargin: appWidth/24
         anchors.left: parent.left
@@ -152,7 +152,47 @@ Rectangle {
         clip: true
 
         Desktop.WalletDetailList {
-            id: myWalletDetails
+            id: myWalletList
+            anchors.top: parent.top
+        }
+    }
+
+    Rectangle {
+        id: walletInfoArea
+        width: parent.width
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: appWidth/24
+        anchors.left: parent.left
+        color: bgcolor
+        clip: true
+        state: screenshotTracker == 1? "up" : "down"
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: walletInfoArea; anchors.topMargin: 0}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: walletInfoArea; anchors.topMargin: appHeight}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: walletInfoArea; properties: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+            }
+        ]
+
+        MouseArea {
+            anchors.fill: parent
+        }
+
+        Desktop.WalletInfo {
+            id: myWalletInfo
             anchors.top: parent.top
         }
     }

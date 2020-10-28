@@ -151,6 +151,8 @@ Rectangle {
                     onPressed: {
                         click01.play()
                         detectInteraction()
+                        walletIndex = walletNR
+                        screenshotTracker = 1
                     }
 
                    onClicked: {
