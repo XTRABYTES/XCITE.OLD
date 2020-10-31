@@ -19,10 +19,10 @@ import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
 import "qrc:/Controls/+desktop" as Desktop
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: backgroundApps
-    z: 1
     width: appWidth/6 * 5
     height: appHeight
     anchors.right: xcite.right
@@ -58,5 +58,38 @@ Rectangle {
             anchors.topMargin: appWidth/24
             anchors.horizontalCenter: parent.horizontalCenter
         }
+    }
+
+    Desktop.Console {
+        id: myConsole
+        anchors.top: parent.top
+    }
+
+    Mobile.XChat {
+        id: myXchat
+        anchors.top: parent.top
+        width: parent.width
+        height: parent.height
+    }
+
+    Mobile.XVault {
+        id: myXvault
+        anchors.top: parent.top
+        width: parent.width
+        height: parent.height
+    }
+
+    Mobile.XChange {
+        id: myXchange
+        anchors.top: parent.top
+        width: parent.width
+        height: parent.height
+    }
+
+    Mobile.XGames {
+        id: myXgames
+        anchors.top: parent.top
+        width: parent.width
+        height: parent.height
     }
 }

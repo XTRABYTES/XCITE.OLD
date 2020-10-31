@@ -621,22 +621,20 @@ ApplicationWindow {
             status = userSettings.xChatDND == true? "dnd" : status
             xChatTypingSignal(myUsername,"addToOnline", status)
             xchatTracker = 1
-            selectedApp = ""
         }
         if (app === "X-CHANGE") {
             xchangeTracker = 1
-            selectedApp = ""
         }
         if (app === "X-VAULT") {
             xvaultTracker = 1
-            selectedApp = ""
         }
         if (app === "X-GAMES") {
             xgamesTracker = 1
-            selectedApp = ""
         }
         if (app === "CONSOLE") {
             pingTracker = 1
+        }
+        if (myOS == "android" || myOS == "ios") {
             selectedApp = ""
         }
     }

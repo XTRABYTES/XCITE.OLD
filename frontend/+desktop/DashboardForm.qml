@@ -25,6 +25,17 @@ Item {
     height: appHeight
     clip: true
 
+    property bool myTheme: darktheme
+
+    onMyThemeChanged: {
+        if (darktheme) {
+            logoutText.color = themecolor
+        }
+        else {
+            logoutText.color = themecolor
+        }
+    }
+
     Component.onCompleted: {
         mainStack.push("qrc:/+desktop/Wallet.qml")
     }
@@ -112,6 +123,14 @@ Item {
                     border.color: (selectedPage == "home" && pageTracker == 0)? maincolor : "transparent"
 
                     Rectangle {
+                        id: walletSelector
+                        anchors.fill: parent
+                        color: maincolor
+                        opacity: 0.3
+                        visible: false
+                    }
+
+                    Rectangle {
                         width: 5
                         height: parent.height
                         anchors.left: parent.left
@@ -142,6 +161,16 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
+
+                        onEntered: {
+                            walletSelector.visible = true
+                        }
+
+                        onExited: {
+                            walletSelector.visible = false
+                        }
+
 
                         onPressed: {
                             click01.play()
@@ -186,6 +215,14 @@ Item {
                     border.color: selectedPage == "backup"? maincolor : "transparent"
 
                     Rectangle {
+                        id: backupSelector
+                        anchors.fill: parent
+                        color: maincolor
+                        opacity: 0.3
+                        visible: false
+                    }
+
+                    Rectangle {
                         width: 5
                         height: parent.height
                         anchors.left: parent.left
@@ -216,6 +253,15 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
+
+                        onEntered: {
+                            backupSelector.visible = true
+                        }
+
+                        onExited: {
+                            backupSelector.visible = false
+                        }
 
                         onPressed: {
                             click01.play()
@@ -280,6 +326,14 @@ Item {
                     border.color: selectedPage == "apps"? maincolor : "transparent"
 
                     Rectangle {
+                        id: appSelector
+                        anchors.fill: parent
+                        color: maincolor
+                        opacity: 0.3
+                        visible: false
+                    }
+
+                    Rectangle {
                         width: 5
                         height: parent.height
                         anchors.left: parent.left
@@ -307,8 +361,39 @@ Item {
                         anchors.leftMargin: parent.height
                     }
 
+                    Label {
+                        id: openApp
+                        text: xchangeTracker == 1? "X-CHANGE" :
+                                                   (xchatTracker == 1? "X-CHAT" :
+                                                                       (xvaultTracker == 1? "X-VAULT" :
+                                                                                            (xgamesTracker == 1? "X-GAMES":
+                                                                                                                 (pingTracker == 1? "CONSOLE" : ""))))
+                        color: "#14161B"
+                        font.family: xciteMobile.name
+                        font.pixelSize: parent.height*3/16
+                        anchors.top: parent.top
+                        anchors.topMargin: parent.height/8
+                        anchors.right: parent.right
+                        anchors.rightMargin: parent.height/4
+                        leftPadding: parent.height/4
+                        rightPadding: parent.height/4
+                        background: Rectangle {
+                            color: maincolor
+                            visible: openApp.text != ""
+                        }
+                    }
+
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
+
+                        onEntered: {
+                            appSelector.visible = true
+                        }
+
+                        onExited: {
+                            appSelector.visible = false
+                        }
 
                         onPressed: {
                             click01.play()
@@ -343,6 +428,14 @@ Item {
                     color: darktheme == true? "#14161B" : "#FDFDFD"
                     border.width: 2
                     border.color: selectedPage == "notif"? maincolor : "transparent"
+
+                    Rectangle {
+                        id: alertSelector
+                        anchors.fill: parent
+                        color: maincolor
+                        opacity: 0.3
+                        visible: false
+                    }
 
                     Rectangle {
                         width: 5
@@ -397,6 +490,15 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
+
+                        onEntered: {
+                            alertSelector.visible = true
+                        }
+
+                        onExited: {
+                            alertSelector.visible = false
+                        }
 
                         onPressed: {
                             click01.play()
@@ -433,6 +535,14 @@ Item {
                     border.color: (selectedPage == "home" && pageTracker == 1)? maincolor : "transparent"
 
                     Rectangle {
+                        id: addressbookSelector
+                        anchors.fill: parent
+                        color: maincolor
+                        opacity: 0.3
+                        visible: false
+                    }
+
+                    Rectangle {
                         width: 5
                         height: parent.height
                         anchors.left: parent.left
@@ -463,6 +573,15 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
+
+                        onEntered: {
+                            addressbookSelector.visible = true
+                        }
+
+                        onExited: {
+                            addressbookSelector.visible = false
+                        }
 
                         onPressed: {
                             click01.play()
@@ -507,6 +626,14 @@ Item {
                     border.color: selectedPage == "settings"? maincolor : "transparent"
 
                     Rectangle {
+                        id: settingsSelector
+                        anchors.fill: parent
+                        color: maincolor
+                        opacity: 0.3
+                        visible: false
+                    }
+
+                    Rectangle {
                         width: 5
                         height: parent.height
                         anchors.left: parent.left
@@ -538,6 +665,15 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
+
+                        onEntered: {
+                            settingsSelector.visible = true
+                        }
+
+                        onExited: {
+                            settingsSelector.visible = false
+                        }
 
                         onPressed: {
                             click01.play()

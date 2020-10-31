@@ -123,7 +123,7 @@ Rectangle {
 
                     onClicked: {
                         selectedApp = name
-                        //openApplication(selectedApp)
+                        openApplication(selectedApp)
                         selectIndicator.visible = false
                         selectIndicator.opacity = 0.3
                     }

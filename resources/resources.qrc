@@ -412,5 +412,10 @@
         <file>icons/mobile/ETH.png</file>
         <file>icons/mobile/XBY.png</file>
         <file>icons/mobile/XFUEL.png</file>
+        <file>icons/trashcan_icon_dark01.png</file>
+        <file>icons/trashcan_icon_green01.png</file>
+        <file>icons/trashcan_icon_light01.png</file>
+        <file>icons/clipboard_icon_dark01.png</file>
+        <file>icons/clipboard_icon_light01.png</file>
     </qresource>
 </RCC>

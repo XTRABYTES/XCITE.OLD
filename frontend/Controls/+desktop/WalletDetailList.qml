@@ -58,7 +58,7 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: appWidth/24
                     color: maincolor
-                    opacity: 0.1
+                    opacity: 0.3
                     visible: false
                 }
 

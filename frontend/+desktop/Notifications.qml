@@ -30,6 +30,18 @@ Rectangle {
     color: bgcolor
 
     property int clearFailed: 0
+    property bool myTheme: darktheme
+
+    onMyThemeChanged: {
+        if (myTheme) {
+            trashcan.source = "qrc:/icons/trashcan_icon_light01.png"
+            clearAlerts.border.color = themecolor
+        }
+        else {
+            trashcan.source = "qrc:/icons/trashcan_icon_dark01.png"
+            clearAlerts.border.color = themecolor
+        }
+    }
 
     Label {
         id: notificationsLabel
@@ -55,6 +67,15 @@ Rectangle {
         border.width: 1
         border.color: themecolor
 
+        Image {
+            id: trashcan
+            source: darktheme == true? "qrc:/icons/trashcan_icon_light01.png" : "qrc:/icons/trashcan_icon_dark01.png"
+            height: parent.height*3/4
+            fillMode: Image.PreserveAspectFit
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
 
         MouseArea {
             anchors.fill: parent
@@ -68,11 +89,18 @@ Rectangle {
             onEntered: {
                 if (updatingWalletsNotif == false) {
                     clearAlerts.border.color = maincolor
+                    trashcan.source = "qrc:/icons/trashcan_icon_green01.png"
                 }
             }
 
             onExited: {
                 clearAlerts.border.color = themecolor
+                if (darktheme == true) {
+                    trashcan.source = "qrc:/icons/trashcan_icon_light01.png"
+                }
+                else {
+                    trashcan.source = "qrc:/icons/trashcan_icon_dark01.png"
+                }
             }
 
             onClicked: {
