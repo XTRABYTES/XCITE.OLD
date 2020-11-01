@@ -30,7 +30,7 @@ Rectangle {
     anchors.right: xcite.right
     anchors.top: xcite.top
     color: bgcolor
-
+    clip: true
 
     property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
     property int newAlert: newAlerts
@@ -246,6 +246,11 @@ Rectangle {
             anchors.right: walletArea.right
             colomnWidth: coinsButton.width + coinsButton.anchors.rightMargin
         }
+    }
+
+    Desktop.CoinWallets {
+        id: mycoinWallets
+        anchors.top: parent.top
     }
 
     Rectangle {

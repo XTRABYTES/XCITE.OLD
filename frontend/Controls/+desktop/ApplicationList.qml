@@ -95,7 +95,7 @@ Rectangle {
             }
 
             Rectangle {
-                anchors.fill: rect01
+                anchors.fill: selectIndicator
                 color: "transparent"
 
                 MouseArea {

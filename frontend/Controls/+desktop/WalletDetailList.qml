@@ -137,7 +137,7 @@ Rectangle {
                 }
 
                 MouseArea {
-                    anchors.fill: parent
+                    anchors.fill: selectionIndicator
                     hoverEnabled: true
 
                     onEntered: {
@@ -151,12 +151,11 @@ Rectangle {
                     onPressed: {
                         click01.play()
                         detectInteraction()
-                        walletIndex = walletNR
-                        screenshotTracker = 1
                     }
 
-                   onClicked: {
-
+                    onClicked: {
+                        walletIndex = walletNR
+                        screenshotTracker = 1
                     }
                 }
             }

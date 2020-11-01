@@ -237,6 +237,7 @@ Rectangle {
             anchors.right: parent.left
             color: "black"
             opacity: 0.25
+            visible: addCoinTracker == 1
 
             Timer {
                 id: timer

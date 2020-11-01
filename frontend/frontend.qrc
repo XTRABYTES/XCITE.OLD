@@ -223,5 +223,7 @@
         <file>Controls/+desktop/NotificationList.qml</file>
         <file>Controls/+desktop/WalletInfo.qml</file>
         <file>Controls/+desktop/Console.qml</file>
+        <file>Controls/+desktop/WalletList.qml</file>
+        <file>Controls/+desktop/CoinWallets.qml</file>
     </qresource>
 </RCC>

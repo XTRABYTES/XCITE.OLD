@@ -24,8 +24,6 @@ Rectangle {
     height: parent.height
     color: "transparent"
 
-    property alias cardSpacing: allCoins.spacing
-
     Component {
         id: walletCard
 
@@ -194,7 +192,7 @@ Rectangle {
                 }
 
                 MouseArea {
-                    anchors.fill: parent
+                    anchors.fill: selectionIndicator
                     hoverEnabled: true
 
                     onEntered: {
@@ -210,13 +208,10 @@ Rectangle {
                         detectInteraction()
                     }
 
-                   onClicked: {
-                       /*
-                        if (coinTracker == 0 && appsTracker == 0 && addCoinTracker == 0 && transferTracker == 0) {
-                            coinIndex = coinID
-                            countWallets()
-                            coinTracker = 1
-                        }*/
+                    onClicked: {
+                        console.log(name + " selected")
+                        coinIndex = coinID
+                        coinTracker = 1
                     }
                 }
             }
@@ -243,10 +238,7 @@ Rectangle {
         id: allCoins
         model: filteredCoins
         delegate: walletCard
-        spacing: 0
         anchors.fill: parent
-        contentHeight: (filteredCoins.count * appHeight/12)
-        interactive: appsTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && transferTracker == 0
         onDraggingChanged: detectInteraction()
     }
 }
