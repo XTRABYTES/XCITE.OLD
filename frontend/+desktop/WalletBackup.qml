@@ -63,7 +63,7 @@ Rectangle {
         height: appHeight/24
         width: appWidth/6*1.5
         anchors.top: walletBackupLabel.bottom
-        anchors.topMargin: appWidth/12
+        anchors.topMargin: appHeight/24
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         border.width: 1
@@ -144,7 +144,7 @@ Rectangle {
         id: walletArea
         width: parent.width
         anchors.top: walletBackupLabel.bottom
-        anchors.topMargin: appWidth/12
+        anchors.topMargin: appHeight/8
         anchors.bottom: parent.bottom
         anchors.bottomMargin: appWidth/24
         anchors.left: parent.left

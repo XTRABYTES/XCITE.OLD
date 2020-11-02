@@ -805,4 +805,192 @@ Rectangle {
         font.family: xciteMobile.name
         color: userSettings.systemVolume === 1? maincolor : themecolor
     }
+
+    Rectangle {
+        id: clearButton
+        width: appWidth/6
+        height: appHeight/36*1.5
+        color: "transparent"
+        anchors.verticalCenter: soundSwitch.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: appWidth/12
+        border.color: themecolor
+        border.width: 1
+        visible: clearAllInitiated == false
+
+        Rectangle {
+            id: resetSelector
+            anchors.fill: parent
+            color: maincolor
+            opacity: 0.3
+            visible: false
+        }
+
+        Text {
+            text: "RESET"
+            font.family: xciteMobile.name
+            font.pointSize: parent.height/2
+            color: themecolor
+            anchors.horizontalCenter: clearButton.horizontalCenter
+            anchors.verticalCenter: clearButton.verticalCenter
+        }
+
+        MouseArea {
+            anchors.fill: clearButton
+            hoverEnabled: true
+
+            onEntered: {
+                resetSelector.visible = true
+            }
+
+            onExited: {
+                resetSelector.visible = false
+            }
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                if(userSettings.pinlock === true && currencyTracker == 0 && soundTracker == 0) {
+                    pincodeTracker = 1
+                    clearAll = 1
+                }
+                else if (currencyTracker == 0 && soundTracker == 0) {
+                    clearAllInitiated = true
+                    oldDefaultCurrency = userSettings.defaultCurrency
+                    oldLocale = userSettings.locale
+                    oldPinlock = userSettings.pinlock
+                    oldTheme = userSettings.theme
+                    oldLocalKeys= userSettings.localKeys
+                    oldSound = userSettings.sound
+                    oldVolume = userSettings.volume
+                    oldSystemVolume = userSettings.systemVolume
+                    clearAllSettings()
+                    userSettings.locale = "en_us"
+                    userSettings.defaultCurrency = 0
+                    userSettings.theme = "dark"
+                    userSettings.pinlock = false
+                    userSettings.accountCreationCompleted = true
+                    userSettings.localKeys = oldLocalKeys
+                    userSettings.sound = 0
+                    userSettings.volume = 1
+                    userSettings.systemVolume = 1
+                    saveAppSettings()
+                }
+            }
+
+            Connections {
+                target: UserSettings
+
+                onPincodeCorrect: {
+                    if (pinOK == 1 && clearAll == 1) {
+                        clearAllInitiated = true
+                        oldDefaultCurrency = userSettings.defaultCurrency
+                        oldLocale = userSettings.locale
+                        oldPinlock = userSettings.pinlock
+                        oldTheme = userSettings.theme
+                        oldLocalKeys= userSettings.localKeys
+                        oldSound = userSettings.sound
+                        oldVolume = userSettings.volume
+                        oldSystemVolume = userSettings.systemVolume
+                        clearAllSettings()
+                        userSettings.locale = "en_us"
+                        userSettings.defaultCurrency = 0
+                        userSettings.theme = "dark"
+                        userSettings.pinlock = false
+                        userSettings.accountCreationCompleted = true
+                        userSettings.localKeys = oldLocalKeys
+                        userSettings.sound = 0
+                        userSettings.volume = 1
+                        userSettings.systemVolume = 1
+                        saveAppSettings()
+                    }
+                }
+
+                onSaveSucceeded: {
+                    if (clearAllInitiated == true) {
+                        clearAllInitiated = false
+                    }
+                }
+
+                onSaveFailed: {
+                    if (clearAllInitiated == true) {
+                        userSettings.locale = oldLocale
+                        userSettings.defaultCurrency = oldDefaultCurrency
+                        userSettings.theme = oldTheme
+                        userSettings.pinlock = oldPinlock
+                        userSettings.sound = oldSound
+                        userSettings.volume = oldVolume
+                        userSettings.systemVolume = oldSystemVolume
+                        clearAllInitiated = false
+                        clearFailed = 1
+                    }
+                }
+
+                onNoInternet: {
+                    networkError = 1
+                    if (clearAllInitiated == true) {
+                        userSettings.locale = oldLocale
+                        userSettings.defaultCurrency = oldDefaultCurrency
+                        userSettings.theme = oldTheme
+                        userSettings.pinlock = oldPinlock
+                        userSettings.sound = oldSound
+                        userSettings.volume = oldVolume
+                        userSettings.systemVolume = oldSystemVolume
+                        clearAllInitiated = false
+                        clearFailed = 1
+                    }
+                }
+            }
+        }
+    }
+
+    AnimatedImage {
+        id: waitingDots2
+        source: 'qrc:/gifs/loading-gif_01.gif'
+        width: 90
+        height: 60
+        anchors.horizontalCenter: clearButton.horizontalCenter
+        anchors.verticalCenter: clearButton.verticalCenter
+        playing: clearAllInitiated == true
+        visible: clearAllInitiated == true
+    }
+
+    Item {
+        z: 12
+        width: popupClearAll.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        visible: clearFailed == 1
+
+        Rectangle {
+            id: popupClearAll
+            height: appHeight/12
+            width: popupClearText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupClearText
+            text: "<font color='#E55541'><b>FAILED</b></font> to reset your settings!"
+            font.family: xciteMobile.name
+            font.pointSize: appHeight/36
+            color: "#F2F2F2"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: clearFailed == 1
+            interval: 2000
+
+            onTriggered: clearFailed = 0
+        }
+    }
 }

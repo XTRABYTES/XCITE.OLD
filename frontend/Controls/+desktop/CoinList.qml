@@ -34,17 +34,6 @@ Rectangle {
             height: appHeight/12
             anchors.horizontalCenter: parent.horizontalCenter
 
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered:{
-                    walletTracker = 1
-                }
-            }
-
             Rectangle {
                 id: square
                 width: parent.width

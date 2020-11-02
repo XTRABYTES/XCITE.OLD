@@ -123,7 +123,7 @@ Rectangle {
     Rectangle {
         id: transferButton
         height: appHeight/24
-        width: appWidth/9
+        width: appWidth/6
         anchors.left: parent.left
         anchors.leftMargin: appWidth/24
         anchors.top: totalLabel.bottom
@@ -171,7 +171,7 @@ Rectangle {
     Rectangle {
         id: coinsButton
         height: appHeight/24
-        width: appWidth/9
+        width: appWidth/6
         anchors.right: parent.right
         anchors.rightMargin: appWidth/12
         anchors.top: totalLabel.bottom

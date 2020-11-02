@@ -58,6 +58,11 @@ Rectangle {
                                                                                                                         (valueTicker.text === "BTC"? totalBTC :
                                                                                                                                                     (valueTicker.text === "ETH"? totalETH : 0))))
     property var totalArray: (totalCoinsSum.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+    property bool myTheme: darktheme
+
+    onMyThemeChanged: {
+        addAddressButton.border.color = themecolor
+    }
 
     MouseArea {
         anchors.fill: parent
@@ -186,6 +191,70 @@ Rectangle {
         Desktop.WalletList {
             id: myWalletlist
             anchors.top: parent.top
+        }
+    }
+
+    Item {
+        id: addAddress
+        width: addAddressButton.width + addAddressLabel.width
+        height: addAddressButton.height
+        anchors.left: parent.left
+        anchors.leftMargin: appWidth/24
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: appWidth/24
+
+        Rectangle {
+            id: addAddressButton
+            height: appWidth/48
+            width: height
+            radius: height/2
+            color: "transparent"
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            border.width: 2
+            border.color: themecolor
+
+            Rectangle {
+               height: 2
+               width: parent.width*0.6
+               radius: height/2
+               color: parent.border.color
+               anchors.verticalCenter: parent.verticalCenter
+               anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Rectangle {
+                width: 2
+                height: parent.height*0.6
+                radius: width/2
+                color: parent.border.color
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+
+        Label {
+            id: addAddressLabel
+            text: "ADD ADDRESS"
+            leftPadding: addAddressButton.height/2
+            font.pixelSize: addAddressButton.height/2
+            font.family: xciteMobile.name
+            color: addAddressButton.border.color
+            anchors.left: addAddressButton.right
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onEntered: {
+                addAddressButton.border.color = maincolor
+            }
+
+            onExited: {
+                addAddressButton.border.color = themecolor
+            }
         }
     }
 

@@ -63,6 +63,7 @@ TextField {
 
         width: parent.width
     }
+
     onActiveFocusChanged: {
         if (textInputComponent.focus) {
             EventFilter.focus(this)
@@ -77,7 +78,6 @@ TextField {
         clipBoard = 1
         closeAllClipboard = false
     }
-
 
     property alias placeholder: placeholderTextComponent.text
 

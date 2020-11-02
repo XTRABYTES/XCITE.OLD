@@ -417,5 +417,8 @@
         <file>icons/trashcan_icon_light01.png</file>
         <file>icons/clipboard_icon_dark01.png</file>
         <file>icons/clipboard_icon_light01.png</file>
+        <file>icons/edit_icon_dark01.png</file>
+        <file>icons/edit_icon_green01.png</file>
+        <file>icons/edit_icon_light01.png</file>
     </qresource>
 </RCC>

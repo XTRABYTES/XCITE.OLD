@@ -58,7 +58,7 @@ Rectangle {
 
     Rectangle {
         id: clearAlerts
-        height: appHeight/12
+        height: appHeight/18
         width: height
         anchors.top: notificationsLabel.bottom
         anchors.topMargin: appWidth/24

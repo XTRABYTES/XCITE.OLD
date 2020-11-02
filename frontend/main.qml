@@ -660,6 +660,10 @@ ApplicationWindow {
                 networkError = 0
             }
             else if (pincodeTracker == 1) {
+                createPin = 0
+                changePin = 0
+                unlockPin = 0
+                clearAll = 0
                 pincodeTracker = 0
             }
             else if (changePasswordTracker == 1) {

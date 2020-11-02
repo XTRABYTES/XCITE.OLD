@@ -1,5 +1,5 @@
 /**
- * Filename: WalletDetailList.qml
+ * Filename: Contactst.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
  * blockchain protocol to host decentralized applications
@@ -23,11 +23,24 @@ Rectangle {
     id: allWalletCards
     width: parent.width - appWidth/12
     height: parent.height
-
     color: "transparent"
 
+    property string searchFilter: ""
+
+    Label {
+        id: noResultLabel
+        text: "No contacts matching your search criteria."
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        horizontalAlignment: Text.AlignHCenter
+        font.family: xciteMobile.name
+        font.pixelSize: appHeight/36
+        color: themecolor
+        visible: filteredContacts.count == 0 && searchFilter != ""
+    }
+
     Component {
-        id: walletCard
+        id: contactCard
 
         Item {
             width: grid.cellWidth
@@ -84,7 +97,7 @@ Rectangle {
 
                     Image {
                         id: icon
-                        source: getLogo(name)
+                        source: profilePictures.get(0).photo
                         anchors.left: parent.left
                         anchors.leftMargin: appWidth/48
                         anchors.verticalCenter: parent.verticalCenter
@@ -93,27 +106,14 @@ Rectangle {
                     }
 
                     Label {
-                        id: coinName
-                        text: name
+                        id: contacttName
+                        text: lastName !== ""? (firstName + " " + lastName) : firstName
                         anchors.left: icon.right
                         anchors.leftMargin: appWidth/96
-                        anchors.top: parent.top
-                        anchors.topMargin: parent.height/6
-                        font.pixelSize: parent.height/3
-                        font.family: xciteMobile.name
-                        font.bold: true
-                        color: themecolor
-                    }
-
-                    Label {
-                        id: walletName
                         anchors.right: parent.right
-                        anchors.rightMargin: appWidth/96
-                        anchors.left: coinName.right
-                        anchors.leftMargin: appWidth/96
+                        anchors.rightMargin: appWidth/48
                         anchors.top: parent.top
                         anchors.topMargin: parent.height/6
-                        text: label
                         font.pixelSize: parent.height/3
                         font.family: xciteMobile.name
                         font.bold: true
@@ -122,40 +122,51 @@ Rectangle {
                     }
 
                     Label {
-                        id: addressLabel
-                        text: address
+                        id: addresses
+                        text: addressesCount.text === 1? "address" : "addresses"
+                        anchors.left: addressesCount.right
+                        anchors.leftMargin: parent.height/3
                         anchors.right: parent.right
-                        anchors.rightMargin: appWidth/96
-                        anchors.left: coinName.left
+                        anchors.rightMargin: appWidth/48
                         anchors.bottom: parent.bottom
                         anchors.bottomMargin: parent.height/6
                         font.pixelSize: parent.height/3 *0.8
                         font.family: xciteMobile.name
                         color: themecolor
-                        elide: Text.ElideRight
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: selectionIndicator
-                    hoverEnabled: true
-
-                    onEntered: {
-                        selectionIndicator.visible = true
                     }
 
-                    onExited: {
-                        selectionIndicator.visible = false
+                    Label {
+                        id: addressesCount
+                        text: countAddressesContact(contactNR)
+                        anchors.left: contacttName.left
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: parent.height/6
+                        font.pixelSize: parent.height/3 *0.8
+                        font.family: xciteMobile.name
+                        color: themecolor
                     }
 
-                    onPressed: {
-                        click01.play()
-                        detectInteraction()
-                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
 
-                    onClicked: {
-                        walletIndex = walletNR
-                        screenshotTracker = 1
+                        onEntered: {
+                            selectionIndicator.visible = true
+                        }
+
+                        onExited: {
+                            selectionIndicator.visible = false
+                        }
+
+                        onPressed: {
+                            detectInteraction()
+                            click01.play()
+                        }
+
+                        onClicked: {
+                            contactIndex = contactNR
+                            contactTracker = 1
+                        }
                     }
                 }
             }
@@ -163,22 +174,30 @@ Rectangle {
     }
 
     SortFilterProxyModel {
-        id: filteredWallets
-        sourceModel: walletList
+        id: filteredContacts
+        sourceModel: contactList
         filters: [
             ValueFilter {
                 roleName: "remove"
                 value: false
             },
-            ValueFilter {
-                roleName: "viewOnly"
-                value: false
+            AnyOf {
+                RegExpFilter {
+                    roleName: "firstName"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter {
+                    roleName: "lastName"
+                    pattern: searchFilter
+                    caseSensitivity: Qt.CaseInsensitive
+                }
             }
 
         ]
         sorters: [
-            StringSorter { roleName: "name" },
-            StringSorter { roleName: "label" }
+            RoleSorter { roleName: "lastName" ; sortOrder: Qt.AscendingOrder },
+            StringSorter { roleName: "firstName" }
         ]
     }
 
@@ -192,7 +211,7 @@ Rectangle {
         cellWidth: parent.width/2
         cellHeight: appHeight/9
 
-        model: filteredWallets
-        delegate: walletCard
+        model: filteredContacts
+        delegate: contactCard
     }
 }
