@@ -100,24 +100,24 @@ Rectangle {
         for(var i = 0; i < addressList.count; i++) {
             if (newAddress.text != "") {
                 if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         doubleAddress = 1
                     }
                 }
                 else {
-                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         doubleAddress = 1
                     }
                 }
             }
             else {
                 if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         doubleAddress = 1
                     }
                 }
                 else {
-                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         doubleAddress = 1
                     }
                 }
@@ -419,10 +419,6 @@ Rectangle {
                         var addressListJson = JSON.stringify(datamodel)
 
                         saveAddressBook(addressListJson)
-
-
-
-
                     }
                 }
             }
@@ -439,7 +435,6 @@ Rectangle {
 
                 onSaveFailed: {
                     if (addressTracker == 1 && editingAddress == true) {
-
                         addressList.setProperty(addressIndex, "logo", oldLogo);
                         addressList.setProperty(addressIndex, "coin", oldCoinName);
                         addressList.setProperty(addressIndex, "label", oldAddressName);

@@ -228,5 +228,6 @@
         <file>Controls/+desktop/ContactList.qml</file>
         <file>Controls/+desktop/ContactInfo.qml</file>
         <file>Controls/+desktop/ContactAddressList.qml</file>
+        <file>Controls/+desktop/ContactAddressModal.qml</file>
     </qresource>
 </RCC>

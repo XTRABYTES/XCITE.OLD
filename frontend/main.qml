@@ -260,10 +260,12 @@ ApplicationWindow {
     property int addCoinTracker: 0
     property int addressTracker: 0
     property int addAddressTracker: 0
+    property int editAddressTracker: 0
     property int deleteAddressTracker: 0
     property int contactTracker: 0
     property int addContactTracker: 0
     property int editContactTracker: 0
+    property int editName: 0
     property int deleteContactTracker: 0
     property int deleteWalletTracker: 0
     property int walletListTracker: 0

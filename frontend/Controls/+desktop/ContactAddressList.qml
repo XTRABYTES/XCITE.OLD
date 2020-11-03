@@ -123,6 +123,7 @@ Rectangle {
                     MouseArea {
                         anchors.fill: parent
                         hoverEnabled: true
+                        enabled: editContactTracker == 0 && editName == 0
 
                         onEntered: {
                             selectionIndicator.visible = true
@@ -137,6 +138,10 @@ Rectangle {
                             click01.play()
                         }
 
+                        onClicked: {
+                            addressIndex = uniqueNR
+                            addressTracker = 1
+                        }
                     }
 
                     Item {
