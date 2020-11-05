@@ -23,7 +23,6 @@ import "qrc:/Controls/+desktop" as Desktop
 
 Rectangle {
     id: backgroundWallet
-    z: 1
     width: appWidth/6 * 5
     height: appHeight
     anchors.right: parent.right
@@ -254,6 +253,16 @@ Rectangle {
 
             onExited: {
                 addAddressButton.border.color = themecolor
+            }
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                addWalletTracker = 1
+                selectedPage = "wallet"
             }
         }
     }

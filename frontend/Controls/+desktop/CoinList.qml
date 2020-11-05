@@ -198,7 +198,6 @@ Rectangle {
                     }
 
                     onClicked: {
-                        console.log(name + " selected")
                         coinIndex = coinID
                         coinTracker = 1
                     }

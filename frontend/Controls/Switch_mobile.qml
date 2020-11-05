@@ -21,6 +21,7 @@ Item {
     height: background.height
 
     property bool on: false
+    property bool switchActive: true
 
     function toggle() {
         if (toggleswitch.state == "on"){
@@ -54,6 +55,7 @@ Item {
 
         MouseArea {
             anchors.fill: parent
+            enabled: switchActive
             onClicked: {
                 if (coinListTracker === 0 && walletListTracker === 0) {
                     toggle()
@@ -87,7 +89,7 @@ Item {
             drag.axis: Drag.XAxis
             drag.minimumX: 5
             drag.maximumX: 35
-            enabled: coinListTracker === 0 && walletListTracker === 0
+            enabled: coinListTracker === 0 && walletListTracker === 0 && switchActive == true
             onClicked: {
                 toggle()
             }

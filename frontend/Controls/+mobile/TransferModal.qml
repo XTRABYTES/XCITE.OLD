@@ -930,7 +930,7 @@ Rectangle {
             }
         }
 
-       Label {
+        Label {
             text: "Input amount too low"
             color: "#FD2E2E"
             anchors.left: sendAmount.left
@@ -1238,7 +1238,6 @@ Rectangle {
 
                     onNewNetwork: {
                         if (transferTracker == 1 && selectNetwork == true) {
-                            //transactionSend = 1
                             coinListTracker = 0
                             walletListTracker = 0
                             selectNetwork = false
@@ -1246,7 +1245,7 @@ Rectangle {
                             var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
                             var msg = "UI - send coins - target:" + keyInput.text + ", amount:" +  sendAmount.text + ", private key: " +  getPrivKey(coinID.text, walletLabel.text)
                             xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
-                            sendCoins(keyInput.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
+                            sendCoins(keyInput.text + "-" +  sendAmount.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
                         }
                     }
 
@@ -1266,6 +1265,15 @@ Rectangle {
                         if (transferTracker == 1 && createTx == true) {
                             notification.play()
                             console.log("sender: " + sender_ + " receiver: " + receiver_ + " amount: " + sendAmount_)
+                            var r
+                            var splitReceivers = receiver_.split(";")
+                            var splitReceiverInfo
+                            if (splitReceivers.count > 1) {
+                            }
+                            else {
+                                splitReceiverInfo = splitReceivers.at(0).split("-")
+                                r = splitReceiverInfo.at(0)
+                            }
                             if (getAddress(coinID.text, walletLabel.text) === sender_) {
                                 console.log("raw transaction created: " + rawTx_ + ", fee: " + fee_ + ", id: " + traceId_)
                                 txFee = fee_
@@ -1275,12 +1283,13 @@ Rectangle {
                                 usedCoins = usedCoins_
                                 receivedAmount = sendAmount_
                                 receivedLabel = ""
-                                for (var i = 0; i < walletList.count; i ++) {
-                                    if (walletList.get(i).address === receivedReceiver){
-                                        receivedLabel = walletList.get(i).label
+                                if (splitReceivers.count === 1) {
+                                    for (var i = 0; i < walletList.count; i ++) {
+                                        if (walletList.get(i).address === r){
+                                            receivedLabel = walletList.get(i).label
+                                        }
                                     }
                                 }
-
                                 receivedTxID = traceId_
                                 transactionSend = 1
                                 createTx = false
@@ -1464,8 +1473,11 @@ Rectangle {
             }
 
             Text {
+                property var receiverList: receivedReceiver.split(";")
+                property var countReceivers: receiverList.count
+                property var receiverInfo: countReceivers === 1? receiverList.at(0).split("-") : countReceivers.toLocaleString(Qt.locale("en_US"))
                 id: confirmationAddress
-                text: receivedLabel != ""? receivedLabel : receivedReceiver
+                text: receivedLabel != ""? receivedLabel : (countReceivers === 1? receiverInfo.at(0) : receiverInfo + " receivers")
                 anchors.bottom: to.bottom
                 anchors.bottomMargin: 2
                 anchors.right: cancelSendButton.right
@@ -1639,21 +1651,6 @@ Rectangle {
                         }
                         else {
                             timer3.start()
-                            /*
-                            var dataModelParams = {"xdapp":network,"method":"sendrawtransaction","payload":rawTX,"id":receivedTxID}
-                            var paramsJson = JSON.stringify(dataModelParams)
-                            dicomRequest(paramsJson)
-                            var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
-                            var msg = "UI - confirming TX: " + paramsJson
-                            xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
-                            console.log("request TX broadcast: " + paramsJson)
-                            var total = Number.fromLocaleString(Qt.locale("en_US"),replaceComma)
-                            var totalFee = Number.fromLocaleString(Qt.locale("en_US"),txFee)
-                            var totalUsed = Number.fromLocaleString(Qt.locale("en_US"),usedCoins)
-                            transactionList.append({"requestID":receivedTxID,"txid":"","coin":coinID.text,"address":receivedSender,"receiver":receivedReceiver,"amount":total,"fee":totalFee,"used":totalUsed})
-                            transferTracker = 0
-                            transactionInProgress = false
-                            **/
                         }
                     }
                 }
@@ -1869,7 +1866,7 @@ Rectangle {
                     onCanceled: {
                     }
 
-                   onReleased: {
+                    onReleased: {
                     }
 
                     onClicked: {

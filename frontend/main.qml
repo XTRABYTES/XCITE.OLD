@@ -853,6 +853,10 @@ ApplicationWindow {
                             selectedPage = "home"
                             mainRoot.pop("qrc:/Controls/+mobile/AddWallet.qml");
                         }
+                        else {
+                            selectedPage = "home"
+                            addWalletTracker = 0
+                        }
                     }
                 }
             }
@@ -1049,19 +1053,26 @@ ApplicationWindow {
                 if (b === "") {
                     b = transactionList.get(i).address
                 }
-                var c = ""
-                for (var e = 0; e < addressList.count; e ++ ) {
-                    if (addressList.get(e).coin === coin && addressList.get(e).address === transactionList.get(i).receiver) {
-                        if(addressList.get(e).fullName !== undefined) {
-                            c = addressList.get(e).fullName + " " + addressList.get(e).label
-                        }
-                        else {
-                            c = addressList.get(e).label
+                var c = transactionList.get(i).receiver
+                var splitReceivers = c.split(";")
+                var splitReceiverInfo
+                if (splitReceivers.count > 1) {
+                    c = splitReceivers.count
+                    c = c.toLocaleString(Qt.locale("en_US")) + " receivers"
+                }
+                else {
+                    splitReceiverInfo = splitReceivers.at(0).split("-")
+                    c = splitReceiverInfo.at(0)
+                    for (var e = 0; e < addressList.count; e ++ ) {
+                        if (addressList.get(e).coin === coin && addressList.get(e).address === c) {
+                            if(addressList.get(e).fullName !== undefined) {
+                                c = addressList.get(e).fullName + " " + addressList.get(e).label
+                            }
+                            else {
+                                c = addressList.get(e).label
+                            }
                         }
                     }
-                }
-                if (c === "") {
-                    c = transactionList.get(i).receiver
                 }
                 var h = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
                 var l = transactionList.get(i).amount
@@ -1568,9 +1579,9 @@ ApplicationWindow {
     function countAlerts() {
         var alertcount = 0
         for (var i = 0; i < alertList.count; i ++) {
-           if (alertList.get(i).remove === false) {
-              alertcount = alertcount +1
-           }
+            if (alertList.get(i).remove === false) {
+                alertcount = alertcount +1
+            }
         }
         return alertcount
     }

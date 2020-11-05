@@ -21,9 +21,8 @@ import "qrc:/Controls/+mobile" as Mobile
 import "qrc:/Controls/+desktop" as Desktop
 
 Item {
-    width: appWidth
-    height: appHeight
-    clip: true
+    width: selectedPage == "home"? parent.width : appWidth
+    height: selectedPage == "home"? parent.height : appHeight
 
     property bool myTheme: darktheme
 

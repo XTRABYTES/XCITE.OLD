@@ -18,6 +18,7 @@ Item {
     state: switchOn? "on" : "off"
 
     property bool switchOn: false
+    property bool switchActive: true
 
     function toggle() {
         if (toggleswitch.state == "on")
@@ -48,6 +49,7 @@ Item {
         radius: height/2
         MouseArea {
             anchors.fill: parent
+            enabled: switchActive
             onClicked: toggle()
         }
     }
@@ -62,6 +64,7 @@ Item {
         radius: height/2
         MouseArea {
             anchors.fill: parent
+            enabled: switchActive
             drag.target: knob
             drag.axis: Drag.XAxis
             drag.minimumX: 2

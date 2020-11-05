@@ -253,6 +253,11 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Desktop.AddWallet {
+        id: myAddWallet
+        anchors.top: parent.top
+    }
+
     Rectangle {
         height: appWidth/24
         width: parent.width

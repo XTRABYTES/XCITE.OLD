@@ -61,7 +61,7 @@ Rectangle {
     ]
 
     property string walletType: ""
-    property int walletSwitchState: 0
+    property int walletSwitchState: coinIndex < 3? 0 : 1
     property int coin: coinIndex
 
 
@@ -112,7 +112,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignJustify
             wrapMode: Text.WordWrap
-            text: "A <b>VIEW ONLY</b> wallet allows to track your wallet movement but does not allow you to make transctions using XCITE Mobile."
+            text: "A <b>VIEW ONLY</b> wallet allows to track your wallet movement but does not allow you to make transactions using XCITE Mobile."
             anchors.top: addWalletText2.bottom
             anchors.topMargin: 20
             color: themecolor

@@ -604,7 +604,18 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
 
                 inputs.push_back(detailed_input_tx);
             }
-            outputs.push_back(output_address + "," + StrFromAmount(send_value));
+            // adjust for batch transactions
+            QStringList targetStrLst = target.split(";");
+            QStringList newTarget;
+            std::string newReceiver;
+            std::string newAmount;
+            for (int i = 0; i < targetStrLst.count(); i++) {
+                newTarget = targetStrLst.at(i).split("-");
+                newReceiver = newTarget.at(0).toStdString();
+                newAmount = newTarget.at(1).toStdString();
+                outputs.push_back(newReceiver + "," + newAmount);
+            }
+            //outputs.push_back(output_address + "," + StrFromAmount(send_value));
             int64 leftover = inputs_sum - (send_value + (nMinFee * nBaseFee));
             if (leftover >= dust_soft_limit) {
                 outputs.push_back(sender_address + "," + StrFromAmount(leftover));
@@ -652,7 +663,17 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                 xchatRobot.SubmitMsg("dicom - backend - send_value: " + QString::number(send_value));
                 xchatRobot.SubmitMsg("dicom - backend - final fee: " + QString::number(nMinFee * nBaseFee));
                 outpts.clear();
-                outpts.push_back(output_address + "," + StrFromAmount(send_value));
+                QStringList targetStrLst = target.split(";");
+                QStringList newTarget;
+                std::string newReceiver;
+                std::string newAmount;
+                for (int i = 0; i < targetStrLst.count(); i++) {
+                    newTarget = targetStrLst.at(i).split("-");
+                    newReceiver = newTarget.at(0).toStdString();
+                    newAmount = newTarget.at(1).toStdString();
+                    outpts.push_back(newReceiver + "," + newAmount);
+                }
+                //outpts.push_back(output_address + "," + StrFromAmount(send_value));
                 int64 change = inputs_sum - (send_value + (nMinFee * nBaseFee));
                 if (change >= dust_soft_limit) {
                     xchatRobot.SubmitMsg("dicom - backend - change: " + QString::number(change));
