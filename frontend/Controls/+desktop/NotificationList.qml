@@ -33,7 +33,7 @@ Rectangle {
             id: alertRow
             color: "transparent"
             width: allAlertCards.width
-            height: appHeight/12
+            height: appHeight/9
             anchors.horizontalCenter: parent.horizontalCenter
 
             Rectangle {
@@ -48,7 +48,7 @@ Rectangle {
                 Rectangle {
                     id: selectionIndicator
                     width: parent.width - appWidth*3/24
-                    height: parent.height*0.8
+                    height: parent.height*0.9
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: appWidth/12
@@ -59,7 +59,7 @@ Rectangle {
 
                 Rectangle {
                     width: parent.width - appWidth*3/24
-                    height: parent.height*0.8
+                    height: parent.height*0.9
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: appWidth/12

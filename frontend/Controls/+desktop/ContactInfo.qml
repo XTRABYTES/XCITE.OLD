@@ -191,7 +191,7 @@ Rectangle {
         anchors.leftMargin: appWidth/24
         anchors.top: parent.top
         anchors.topMargin: appHeight/6
-        text: contactList.get(contactIndex).firstName
+        text: coinIndex >= 0? contactList.get(contactIndex).firstName : ""
         font.pixelSize: appHeight/18
         font.family: xciteMobile.name
         color: themecolor
@@ -205,7 +205,7 @@ Rectangle {
         anchors.bottom: firstName.bottom
         anchors.right: parent.right
         anchors.rightMargin: appWidth/6
-        text: contactList.get(contactIndex).lastName
+        text: coinIndex >= 0? contactList.get(contactIndex).lastName : ""
         color: themecolor
         font.pixelSize: appHeight/18
         font.family: xciteMobile.name
@@ -287,7 +287,7 @@ Rectangle {
     Controls.TextInput {
         id: newFirstName
         width: appWidth/6
-        text: contactList.get(contactIndex).firstName
+        text: coinIndex >= 0? contactList.get(contactIndex).firstName : ""
         height: appHeight/27
         placeholder: "FIRST NAME"
         anchors.left: parent.left
@@ -309,7 +309,7 @@ Rectangle {
     Controls.TextInput {
         id: newLastName
         width: appWidth/6
-        text: contactList.get(contactIndex).lastName
+        text: coinIndex >= 0? contactList.get(contactIndex).lastName : ""
         height: appHeight/27
         placeholder: "LAST NAME"
         anchors.left: parent.left
@@ -605,7 +605,7 @@ Rectangle {
 
         Label {
             id: telNr
-            text: contactList.get(contactIndex).telNR
+            text: coinIndex >= 0? contactList.get(contactIndex).telNR : ""
             anchors.left: parent.left
             anchors.leftMargin: appWidth/9
             anchors.right: parent.right
@@ -619,7 +619,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newTel
-            text: contactList.get(contactIndex).telNR
+            text: coinIndex >= 0? contactList.get(contactIndex).telNR : ""
             height: appHeight/27
             placeholder: "TELEPHONE NUMBER"
             anchors.left: parent.left
@@ -652,7 +652,7 @@ Rectangle {
 
         Label {
             id: cellNr
-            text: contactList.get(contactIndex).cellNR
+            text: coinIndex >= 0? contactList.get(contactIndex).cellNR : ""
             anchors.left: parent.left
             anchors.leftMargin: appWidth/9
             anchors.right: parent.right
@@ -666,7 +666,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newCell
-            text: contactList.get(contactIndex).cellNR
+            text: coinIndex >= 0? contactList.get(contactIndex).cellNR : ""
             height: appHeight/27
             placeholder: "CELL PHONE NUMBER"
             anchors.left: parent.left
@@ -699,7 +699,7 @@ Rectangle {
 
         Label {
             id: emailAddress
-            text: contactList.get(contactIndex).mailAddress
+            text: coinIndex >= 0? contactList.get(contactIndex).mailAddress : ""
             anchors.left: parent.left
             anchors.leftMargin: appWidth/9
             anchors.right: parent.right
@@ -755,7 +755,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newMail
-            text: contactList.get(contactIndex).mailAddress
+            text: coinIndex >= 0? contactList.get(contactIndex).mailAddress : ""
             height: appHeight/27
             placeholder: "E-MAIL ADDRESS"
             anchors.left: parent.left
@@ -806,7 +806,7 @@ Rectangle {
 
         Label {
             id: xchatID
-            text: contactList.get(contactIndex).chatID
+            text: coinIndex >= 0? contactList.get(contactIndex).chatID : ""
             anchors.left: parent.left
             anchors.leftMargin: appWidth/9
             anchors.right: parent.right
@@ -862,7 +862,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newChat
-            text: contactList.get(contactIndex).chatID
+            text: coinIndex >= 0? contactList.get(contactIndex).chatID : ""
             height: appHeight/27
             placeholder: "X-CHAT ID"
             anchors.left: parent.left

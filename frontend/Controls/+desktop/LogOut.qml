@@ -160,7 +160,7 @@ Rectangle {
         width: appWidth/3
         height: appHeight/3
         color: darktheme == true? "#0B0B09" : "#FFFFFF"
-        border.color: maincolor
+        border.color: themecolor
         border.width: 2
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter

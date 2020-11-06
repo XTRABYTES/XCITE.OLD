@@ -377,7 +377,7 @@ Rectangle {
                         }
 
                         Label {
-                            text: "TRANSFER"
+                            text: viewOnly? "RECEIVE" : "TRANSFER"
                             font.family: xciteMobile.name
                             font.pointSize: transfer.height/2
                             color: themecolor

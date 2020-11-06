@@ -169,15 +169,6 @@ Rectangle {
         }
     }
 
-    Image {
-        id: bigLogo
-        source: getLogoBig(getName(coinIndex))
-        height: appWidth/6
-        fillMode: Image.PreserveAspectFit
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.left
-    }
-
     Rectangle {
         id: walletArea
         width: parent.width
@@ -201,6 +192,16 @@ Rectangle {
         anchors.leftMargin: appWidth/24
         anchors.bottom: parent.bottom
         anchors.bottomMargin: appWidth/24
+
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            height: parent.height + 6
+            width: parent.width + 6
+            radius: height/2
+            color: bgcolor
+            opacity: 0.9
+        }
 
         Rectangle {
             id: addAddressButton

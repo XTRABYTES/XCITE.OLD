@@ -30,6 +30,18 @@ Rectangle {
     color: "transparent"
     property int addressCopied: 0
     property int privateKeyCopied: 0
+    property bool myTheme: darktheme
+
+    onMyThemeChanged: {
+        if (darktheme) {
+            clipBoard1.source= "qrc:/icons/clipboard_icon_light01.png"
+            clipBoard2.source= "qrc:/icons/clipboard_icon_light01.png"
+        }
+        else {
+            clipBoard1.source= "qrc:/icons/clipboard_icon_dark01.png"
+            clipBoard2.source= "qrc:/icons/clipboard_icon_dark01.png"
+        }
+    }
 
     Label {
         id: walletInfoLabel

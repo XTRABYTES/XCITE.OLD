@@ -230,5 +230,7 @@
         <file>Controls/+desktop/ContactAddressList.qml</file>
         <file>Controls/+desktop/ContactAddressModal.qml</file>
         <file>Controls/+desktop/AddWallet.qml</file>
+        <file>Controls/+desktop/AddViewOnlyWallet.qml</file>
+        <file>Controls/+desktop/ImportWallet.qml</file>
     </qresource>
 </RCC>

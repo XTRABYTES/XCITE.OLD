@@ -76,15 +76,6 @@ Rectangle {
         color: "transparent"
     }
 
-    Image {
-        id: bigLogo
-        source: getLogoBig(getName(coinIndex))
-        height: appWidth/6
-        fillMode: Image.PreserveAspectFit
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.left
-    }
-
     Item {
         id: addWalletAction
         width: (parent.width - appWidth*3/24)/2
@@ -339,6 +330,11 @@ Rectangle {
             font.family: xciteMobile.name
             opacity: !walletSwitch.switchOn? 0.3 : 1
         }
+    }
+
+    Desktop.AddViewOnlyWallet {
+        id: myViewOnly
+        anchors.top: parent.top
     }
 
     Rectangle {

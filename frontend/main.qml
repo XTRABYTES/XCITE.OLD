@@ -358,12 +358,12 @@ ApplicationWindow {
     property bool saveAccountInitiated: false
     property string addressbookName: ""
     property string addressbookHash: ""
-    property int addressIndex: 0
+    property int addressIndex: -1
     property bool addingAddress: false
     property bool saveAddressInitiated: false
     property bool editingAddress: false
     property bool deletingAddress: false
-    property int contactIndex: 0
+    property int contactIndex: -1
     property bool addingContact: false
     property bool editingContact: false
     property bool deletingContact: false
@@ -749,6 +749,24 @@ ApplicationWindow {
                         historyTracker = 0
                     }
                 }
+                else if (addWalletTracker == 1 && !addingWallet) {
+                    if (scanQRTracker == 1) {
+                        scanQRTracker = 0
+                    }
+                    else if (importKeyTracker == 1) {
+                        importKeyTracker = 0
+                    }
+                    else if (viewOnlyTracker == 1) {
+                        viewOnlyTracker = 0
+                    }
+                    else if (createWalletTracker == 1) {
+                        createWalletTracker = 0
+                    }
+                    else {
+                        addWalletTracker = 0
+                    }
+                }
+
                 else if (walletDetailTracker == 1 && !editingWallet && !deletingWallet) {
                     if (deleteWalletTracker == 1) {
                         deleteWalletTracker = 0
@@ -785,9 +803,11 @@ ApplicationWindow {
                 }
                 else if (contactTracker == 1 && pageTracker == 1) {
                     contactTracker = 0
+                    contactIndex = -1
                 }
                 else if (addressQRTracker == 1 && pageTracker == 1) {
                     addressQRTracker = 0
+                    addressIndex = -1
                 }
                 else if (pageTracker == 1) {
                     if (myOS == "android" || myOS == "ios") {
@@ -1015,7 +1035,7 @@ ApplicationWindow {
                             }
                             newBalanceTracker = 1
                             walletList.setProperty(i, "balance", newBalance)
-                            balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
+                            balanceAlert = (myOS == "android" || myOS == "ios")? "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name) : "Your balance has " + difference + " with: <b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label), "type": "alert", "remove": false})
                             alert = true
                             newAlerts = countAlerts()

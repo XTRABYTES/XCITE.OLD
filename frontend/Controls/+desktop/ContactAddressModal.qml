@@ -33,6 +33,7 @@ Rectangle {
         detectInteraction()
 
         if (state == "down") {
+            addressIndex = -1
             timer.start()
         }
         else {
@@ -73,13 +74,17 @@ Rectangle {
     property string oldCoin
     property string oldLabel
     property string oldAddress
+    property int addressCopied: 0
+
 
     onMyThemeChanged: {
         if (darktheme) {
             editButton.source = "qrc:/icons/edit_icon_light01.png"
+            clipBoard.source= "qrc:/icons/clipboard_icon_light01.png"
         }
         else {
             editButton.source = "qrc:/icons/edit_icon_dark01.png"
+            clipBoard.source= "qrc:/icons/clipboard_icon_dark01.png"
         }
     }
 
@@ -87,27 +92,13 @@ Rectangle {
         addressExists = 0
         for(var i = 0; i < addressList.count; i++) {
             if (newAddress.text != "") {
-                if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
+                if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         addressExists = 1
-                    }
-                }
-                else {
-                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
-                        addressExists = 1
-                    }
                 }
             }
             else {
-                if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === addressString.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
+                if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === addressString.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         addressExists = 1
-                    }
-                }
-                else {
-                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === addressString.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
-                        addressExists = 1
-                    }
                 }
             }
         }
@@ -118,27 +109,13 @@ Rectangle {
         for(var i = 0; i < addressList.count; i++) {
             if (addressList.get(i).contact === contactIndex) {
                 if (newName.text != "") {
-                    if (newCoinName.text == "XBY") {
-                        if (addressList.get(i).coin === "XBY" && addressList.get(i).label === newName.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === newName.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                             labelExists = 1
-                        }
-                    }
-                    else {
-                        if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === newName.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
-                            labelExists = 1
-                        }
                     }
                 }
                 else {
-                    if (newCoinName.text == "XBY") {
-                        if (addressList.get(i).coin === "XBY" && addressList.get(i).label === addressName.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === addressName.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                             labelExists = 1
-                        }
-                    }
-                    else {
-                        if (addressList.get(i).coin === newCoinName.text && addressList.get(i).label === addressName.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
-                            labelExists = 1
-                        }
                     }
                 }
             }
@@ -309,7 +286,7 @@ Rectangle {
 
     Label {
         id: newCoinName
-        text: newCoinSelect == 1? coinList.get(newCoinPicklist).name : addressList.get(addressIndex).coin
+        text: newCoinSelect == 1? coinList.get(newCoinPicklist).name : (addressIndex >= 0? addressList.get(addressIndex).coin : "")
         anchors.left: newIcon.right
         anchors.leftMargin: font.pixelSize/2
         anchors.verticalCenter: newIcon.verticalCenter
@@ -407,7 +384,7 @@ Rectangle {
 
     Label {
         id: addressName
-        text: addressList.get(addressIndex).label
+        text: addressIndex >= 0? addressList.get(addressIndex).label : ""
         anchors.left: parent.left
         anchors.leftMargin: appWidth/9
         anchors.right: parent.right
@@ -479,16 +456,87 @@ Rectangle {
 
     Label {
         id: addressString
-        text: addressList.get(addressIndex).address
+        text: addressIndex >= 0? addressList.get(addressIndex).address : ""
         anchors.left: parent.left
         anchors.leftMargin: appWidth/9
-        anchors.right: parent.right
+        anchors.right: clipBoard.left
         anchors.top: addressLabel.top
         color: themecolor
         font.pixelSize: appHeight/54
         font.family: xciteMobile.name
         elide: Text.ElideRight
         visible: addAddressTracker == 0 && editAddressTracker == 0
+    }
+
+    Image {
+        id: clipBoard
+        source: darktheme == true? "qrc:/icons/clipboard_icon_light01.png" : "qrc:/icons/clipboard_icon_dark01.png"
+        height: appHeight/27
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: addressString.verticalCenter
+        anchors.right: parent.right
+        visible: addressString.visible
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    if (copy2clipboard == 0) {
+                        copyText2Clipboard(addressString.text)
+                        copy2clipboard = 1
+                        addressCopied = 1
+                        copyTimer.start()
+                    }
+                }
+            }
+        }
+    }
+
+    DropShadow {
+        anchors.fill: textPopup
+        source: textPopup
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.4
+        transparentBorder: true
+        visible: textPopup.visible
+    }
+
+    Item {
+        id: textPopup
+        width: popupClipboard.width
+        height: popupClipboardText.height
+        anchors.horizontalCenter: addressString.horizontalCenter
+        anchors.verticalCenter: addressString.verticalCenter
+        visible: copy2clipboard == 1 && addressCopied == 1 && addressString.visible
+
+        Rectangle {
+            id: popupClipboard
+            height: appHeight/27
+            width: popupClipboardText.width + appHeight/18
+            color: "#42454F"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupClipboardText
+            text: "Address copied!"
+            font.family: xciteMobile.name
+            font.pointSize: popupClipboard.height/2
+            color: "#F2F2F2"
+            horizontalAlignment: Text.AlignHCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
     }
 
     Controls.TextInput {
@@ -534,6 +582,7 @@ Rectangle {
         visible: editSaved == 0
                  && editFailed == 0
                  && addressExists == 1
+                 && newAddress.text != ""
     }
 
     Label {
@@ -549,6 +598,7 @@ Rectangle {
         visible: editSaved == 0
                  && editFailed == 0
                  && invalidAddress == 1
+                 && newAddress.text != ""
     }
 
     Text {
@@ -588,6 +638,16 @@ Rectangle {
             visible: false
         }
 
+        Text {
+            id: scanButtonText
+            text: "SCAN QR"
+            font.family: xciteMobile.name
+            font.pointSize: parent.height/2
+            color: themecolor
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
         MouseArea {
             anchors.fill: scanQrButton
             hoverEnabled: true
@@ -611,16 +671,6 @@ Rectangle {
                 //scanning = "scanning..."
             }
         }
-
-        Text {
-            id: scanButtonText
-            text: "SCAN QR"
-            font.family: xciteMobile.name
-            font.pointSize: parent.height/2
-            color: themecolor
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-        }
     }
 
     Rectangle {
@@ -640,7 +690,7 @@ Rectangle {
             height: parent.height*0.95
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            source: "image://QZXing/encode/" + addressList.get(addressIndex).address
+            source: addressIndex >= 0? "image://QZXing/encode/" + addressList.get(addressIndex).address : undefined
             cache: false
         }
     }
@@ -1166,9 +1216,25 @@ Rectangle {
                         scanQRTracker = 0
                         selectedAddress = ""
                         scanning = "scanning..."
+                        addressCopied = 0
+                        copy2clipboard = 0
+                        closeAllClipboard = true
                     }
                 }
             }
+        }
+    }
+
+    Timer {
+        id: copyTimer
+        interval: 2000
+        repeat: false
+        running: false
+
+        onTriggered: {
+            addressCopied = 0
+            copy2clipboard = 0
+            closeAllClipboard = true
         }
     }
 
@@ -1191,6 +1257,8 @@ Rectangle {
             scanQRTracker = 0
             selectedAddress = ""
             scanning = "scanning..."
+            addressCopied = 0
+            copy2clipboard = 0
             closeAllClipboard = true
         }
     }

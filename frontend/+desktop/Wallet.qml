@@ -258,6 +258,21 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Desktop.ImportWallet {
+        id: myImportWallet
+        anchors.top: parent.top
+    }
+
+    Image {
+        id: bigLogo
+        source: getLogoBig(getName(coinIndex))
+        height: appWidth/6
+        fillMode: Image.PreserveAspectFit
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.left
+        visible: coinTracker == 1
+    }
+
     Rectangle {
         height: appWidth/24
         width: parent.width
