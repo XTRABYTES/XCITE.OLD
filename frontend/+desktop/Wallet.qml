@@ -263,6 +263,11 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Desktop.CreateWallet {
+        id: myCreateWallet
+        anchors.top: parent.top
+    }
+
     Image {
         id: bigLogo
         source: getLogoBig(getName(coinIndex))

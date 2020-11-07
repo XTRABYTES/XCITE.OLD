@@ -545,7 +545,7 @@ Rectangle {
         width: parent.width/2
         height: saveFailed.height + saveFailed.anchors.topMargin + saveFailedLabel.height + saveFailedLabel.anchors.topMargin + saveFailedError.height + saveFailedError.anchors.topMargin + closeFail.height*2 + closeFail.anchors.topMargin
         color: bgcolor
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         visible: editFailed == 1
 
@@ -652,7 +652,7 @@ Rectangle {
         width: parent.width/2
         height: saveSuccess.height + saveSuccess.anchors.topMargin + saveSuccessLabel.height + saveSuccessLabel.anchors.topMargin + closeSave.height*2 + closeSave.anchors.topMargin
         color: bgcolor
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         visible: editSaved == 1
 

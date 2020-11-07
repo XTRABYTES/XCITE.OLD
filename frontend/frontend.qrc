@@ -232,5 +232,6 @@
         <file>Controls/+desktop/AddWallet.qml</file>
         <file>Controls/+desktop/AddViewOnlyWallet.qml</file>
         <file>Controls/+desktop/ImportWallet.qml</file>
+        <file>Controls/+desktop/CreateWallet.qml</file>
     </qresource>
 </RCC>
