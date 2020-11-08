@@ -31,6 +31,24 @@ Rectangle {
     property int addressCopied: 0
     property int privateKeyCopied: 0
     property bool myTheme: darktheme
+    property string coin: walletList.get(walletIndex).name
+    property bool creatingPaperWallet: false
+
+    Image {
+        id: publicQr
+        width: 150
+        height: 150
+        source: "image://QZXing/encode/" + walletList.get(walletIndex).publickey
+        visible: false
+    }
+
+    Image {
+        id: privateQr
+        width: 150
+        height: 150
+        source: "image://QZXing/encode/" + walletList.get(walletIndex).privatekey
+        visible: false
+    }
 
     onMyThemeChanged: {
         if (darktheme) {
@@ -61,6 +79,83 @@ Rectangle {
     }
 
     Rectangle {
+        id: createButton
+        width: appWidth/6
+        height: appHeight/27
+        anchors.verticalCenter: addressInfo.verticalCenter
+        anchors.right: walletInfoLabel.right
+        border.color: themecolor
+        border.width: 1
+        color: "transparent"
+        visible: !creatingPaperWallet
+
+        Rectangle {
+            id: selectCreate
+            anchors.fill: parent
+            color: maincolor
+            opacity: 0.3
+            visible: false
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onEntered: {
+                selectCreate.visible = true
+            }
+
+            onExited: {
+                selectCreate.visible = false
+            }
+
+            onPressed: {
+                click01.play()
+                detectInteraction()
+            }
+
+            onClicked: {
+                creatingPaperWallet = true
+                pdfprinter.createPaperWallet(coin, addressHashLabel.text, walletList.get(walletIndex).publickey, privateKeyLabel.text, publicQr, privateQr)
+            }
+        }
+
+        Connections {
+            target: pdfprinter
+
+            onPaperWalletCreated: {
+                creatingPaperWallet = false
+            }
+
+            onPaperWalletFailed: {
+                creatingPaperWallet = false
+            }
+        }
+
+        Text {
+            id: createButtonText
+            text: "CREATE PAPER WALLET"
+            font.family: xciteMobile.name
+            font.pointSize: parent.height/2
+            color: themecolor
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+    }
+
+    AnimatedImage {
+        id: waitingDots2
+        source: 'qrc:/gifs/loading-gif_01.gif'
+        width: 90
+        height: 60
+        anchors.horizontalCenter: createButton.horizontalCenter
+        anchors.verticalCenter: createButton.verticalCenter
+        playing: creatingPaperWallet == true
+        visible: creatingPaperWallet == true
+    }
+
+    Rectangle {
+        id: addressInfo
         width: seperatortop.width
         anchors.left: seperatortop.left
         anchors.right: seperatortop.right
@@ -438,6 +533,7 @@ Rectangle {
             privateKeyCopied = 0
             copy2clipboard = 0
             closeAllClipboard = true
+            creatingPaperWallet = false
         }
     }
 

@@ -15,7 +15,7 @@ VERSION_BUILD=0
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
-QT	+= core gui xml quick svg charts sql  network
+QT	+= core gui xml quick svg charts sql network printsupport
 CONFIG  += c++11 qzxing_multimedia qzxing_qml
 CONFIG += resources_big
 CONFIG += static
@@ -55,6 +55,7 @@ include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
 
 SOURCES +=  main/main.cpp \
             backend/integrations/Cex.cpp \
+            backend/support/pdfprinter.cpp \
             backend/support/ttt.cpp \
             backend/xchat/xchat.cpp \
             backend/xchat/xchataiml.cpp \
@@ -85,6 +86,7 @@ RESOURCES += frontend/frontend.qrc
 
 HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/Cex.hpp \
+            backend/support/pdfprinter.hpp \
             backend/support/ttt.h \
             backend/xchat/xchataiml.hpp \
             backend/xgames/XGames.hpp \

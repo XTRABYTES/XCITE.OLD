@@ -423,7 +423,7 @@ Rectangle {
                 onAddressExtracted: {
                     if (importKeyTracker == 1 && importInitiated == true) {
                         privateKey.text = newAddress.text
-                        publicKeyString.text = pubKey
+                        publicKeyString.text = publicKey.text
                         addressHash.text = addressID
                         newWallet = 1
                         importInitiated = false

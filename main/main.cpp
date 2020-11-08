@@ -37,6 +37,7 @@
 #include "../backend/integrations/xutility_integration.hpp"
 #include "../backend/integrations/staticnet_integration.hpp"
 #include "../backend/support/ttt.h"
+#include "../backend/support/pdfprinter.hpp"
 #include "../backend/xutility/BrokerConnection.h"
 
 int main(int argc, char *argv[])
@@ -119,6 +120,11 @@ int main(int argc, char *argv[])
     Ttt tictactoe;
     engine.rootContext()->setContextProperty("tictactoe", &tictactoe);
     qDebug() << "TTT WIRED UP";
+
+    // wire-up pdf printer
+    pdfPrinter pdfprinter;
+    engine.rootContext()->setContextProperty("pdfprinter", &pdfprinter);
+    qDebug() << "pdf printer WIRED UP";
 
     // set app version
     QString APP_VERSION = QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
@@ -203,6 +209,8 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(clearUtxoList()), &static_int, SLOT(clearUtxoList()));
     QObject::connect(rootObject, SIGNAL(setQueue(QString)), &static_int, SLOT(setQueue(QString)));
     QObject::connect(rootObject, SIGNAL(requestQueue()), &static_int, SLOT(requestQueue()));
+
+    // connect QML signals for pdfprinter
 
     // connect signals for X-CHAT
     QObject::connect(rootObject, SIGNAL(xChatSend(QString,QString,QString,QString, QString, QString, QString)), &xchatRobot, SLOT(xchatInc(QString,QString,QString,QString, QString, QString, QString)));
