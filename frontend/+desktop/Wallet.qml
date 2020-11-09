@@ -275,7 +275,7 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
         anchors.top: parent.top
         anchors.horizontalCenter: parent.left
-        visible: coinTracker == 1
+        visible: coinTracker == 1 || transferTracker == 1
     }
 
     Rectangle {

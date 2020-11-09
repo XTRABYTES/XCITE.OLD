@@ -22,34 +22,13 @@ private:
 public:
 
     explicit pdfPrinter(QObject *parent = nullptr);
-    void createPubQrFile(QQuickItem *item);
-    void createPrivQrFile(QQuickItem *item);
-    void createDoc();
-
-    QString destDir;
-    QString tempDir;
-    QString fullName;
-    QString qrName;
-    QFile qrFile;
-    bool qrFileExists;
-    QString walletCoin;
-    QString walletAddress;
-    QString walletPublicKey;
-    QString walletPrivateKey;
-    QQuickItem *publicQRcode;
-    QQuickItem *privateQRcode;
-    QString pubQRfullName;
-    QString privQRfullName;
-    QString qrType;
-    bool pubQrReady;
-    bool privQrReady;
-    bool imageError;
+    void getSize (QString fileName);
 
 public slots:
-    void createPaperWallet(QString coin, QString address, QString publicKey, QString privateKey, QQuickItem *pubQr, QQuickItem *privQr);
+    void createPaperWalletImage(QString coin, QString address, QQuickItem *wallet);
 
 signals:
-    void paperWalletCreated (QString fileName);
+    void paperWalletCreated(QString fileName);
     void paperWalletFailed();
 
 public slots:

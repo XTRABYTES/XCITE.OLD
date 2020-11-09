@@ -306,6 +306,7 @@ ApplicationWindow {
     property int tagListTracker: 0
     property int dndTracker: 0
     property int screenshotTracker: 0
+    property int paperWalletTracker: 0
     property int soundTracker: 0
     property int xchatSettingsTracker: 0
     property int xchatNetworkTracker: 0
@@ -968,7 +969,12 @@ ApplicationWindow {
                     }
                 }
                 else if (screenshotTracker == 1) {
-                    screenshotTracker = 0
+                    if (paperWalletTracker == 1) {
+                        paperWalletTracker = 0
+                    }
+                    else {
+                        screenshotTracker = 0
+                    }
                 }
             }
             else if (selectedPage == "settings") {

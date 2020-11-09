@@ -28,27 +28,15 @@ Rectangle {
     anchors.right: parent.right
     anchors.top: parent.top
     color: "transparent"
+
     property int addressCopied: 0
     property int privateKeyCopied: 0
     property bool myTheme: darktheme
     property string coin: walletList.get(walletIndex).name
     property bool creatingPaperWallet: false
-
-    Image {
-        id: publicQr
-        width: 150
-        height: 150
-        source: "image://QZXing/encode/" + walletList.get(walletIndex).publickey
-        visible: false
-    }
-
-    Image {
-        id: privateQr
-        width: 150
-        height: 150
-        source: "image://QZXing/encode/" + walletList.get(walletIndex).privatekey
-        visible: false
-    }
+    property string fileLocation: ""
+    property int fileSaved: 0
+    property int fileFailed: 0
 
     onMyThemeChanged: {
         if (darktheme) {
@@ -115,20 +103,7 @@ Rectangle {
             }
 
             onClicked: {
-                creatingPaperWallet = true
-                pdfprinter.createPaperWallet(coin, addressHashLabel.text, walletList.get(walletIndex).publickey, privateKeyLabel.text, publicQr, privateQr)
-            }
-        }
-
-        Connections {
-            target: pdfprinter
-
-            onPaperWalletCreated: {
-                creatingPaperWallet = false
-            }
-
-            onPaperWalletFailed: {
-                creatingPaperWallet = false
+                paperWalletTracker = 1
             }
         }
 
@@ -141,17 +116,6 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
-    }
-
-    AnimatedImage {
-        id: waitingDots2
-        source: 'qrc:/gifs/loading-gif_01.gif'
-        width: 90
-        height: 60
-        anchors.horizontalCenter: createButton.horizontalCenter
-        anchors.verticalCenter: createButton.verticalCenter
-        playing: creatingPaperWallet == true
-        visible: creatingPaperWallet == true
     }
 
     Rectangle {
@@ -519,6 +483,324 @@ Rectangle {
                     }
                 }
             }
+        }
+    }
+
+    Rectangle {
+        id: paperWalletModal
+        width: parent.width
+        height: parent.height
+        color: "transparent"
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        state: paperWalletTracker == 1? "up" : "down"
+
+        MouseArea {
+            anchors.fill: parent
+        }
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: paperWalletModal; anchors.topMargin: 0}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: paperWalletModal; anchors.topMargin: paperWalletModal.height}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: paperWalletModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
+            }
+        ]
+
+        Rectangle {
+            anchors.fill: parent
+            color: bgcolor
+            opacity: 0.9
+        }
+
+        Rectangle {
+            id: closePaperWallet
+            width: appWidth/48
+            height: width
+            radius: height/2
+            color: "transparent"
+            border.width: 1
+            border.color: themecolor
+            anchors.right: parent.right
+            anchors.rightMargin: appWidth/12
+            anchors.bottom: myPaperWallet.top
+            anchors.bottomMargin: height/2
+            visible: !creatingPaperWallet
+
+            Item {
+                width: parent.width*0.6
+                height: width
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                rotation: 45
+
+                Rectangle {
+                    width: parent.width
+                    height: 1
+                    color: themecolor
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Rectangle {
+                    height: parent.height
+                    width: 1
+                    color: themecolor
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+            }
+
+            Rectangle {
+                id: closeSelect
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: {
+                    closeSelect.visible = true
+                }
+
+                onExited: {
+                    closeSelect.visible = false
+                }
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    paperWalletTracker = 0
+                }
+            }
+        }
+
+        Rectangle {
+            id: createFileButton
+            width: appWidth/6
+            height: appHeight/27
+            anchors.top: myPaperWallet.bottom
+            anchors.topMargin: height
+            anchors.horizontalCenter: myPaperWallet.horizontalCenter
+            border.color: themecolor
+            border.width: 1
+            color: "transparent"
+            visible: !creatingPaperWallet
+
+            Rectangle {
+                id: selectCreateFile
+                anchors.fill: parent
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: {
+                    selectCreateFile.visible = true
+                }
+
+                onExited: {
+                    selectCreateFile.visible = false
+                }
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    creatingPaperWallet = true
+                    pdfprinter.createPaperWalletImage(coin, myPaperWallet.address, mySavedPaperWallet)
+                }
+            }
+
+            Connections {
+                target: pdfprinter
+
+                onPaperWalletCreated: {
+                    creatingPaperWallet = false
+                    fileSaved = 1
+                    fileLocation = fileName
+                    saveTimer.start()
+                }
+
+                onPaperWalletFailed: {
+                    creatingPaperWallet = false
+                    fileFailed = 1
+                    saveTimer.start()
+                }
+            }
+
+            Text {
+                id: createFileButtonText
+                text: "SAVE TO DEVICE"
+                font.family: xciteMobile.name
+                font.pointSize: parent.height/2
+                color: themecolor
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+
+        AnimatedImage {
+            id: waitingDots2
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: createFileButton.horizontalCenter
+            anchors.verticalCenter: createFileButton.verticalCenter
+            playing: creatingPaperWallet == true
+            visible: creatingPaperWallet == true
+        }
+
+        Desktop.PaperWallet {
+            id: myPaperWallet
+            width: parent.width*0.996 * 0.8
+            height: parent.width*0.562 * 0.8
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+
+            coin : walletList.get(walletIndex).name
+            address: walletList.get(walletIndex).address
+            publicKey: walletList.get(walletIndex).publickey
+            privateKey: walletList.get(walletIndex).privatekey
+            walletLabel: walletList.get(walletIndex).label
+            walletAmount: walletList.get(walletIndex).balance
+
+            DropShadow {
+                z: 4
+                anchors.fill: saveSuccess
+                source: saveSuccess
+                horizontalOffset: 4
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
+                visible: saveSuccess.visible
+            }
+
+            Rectangle {
+                id: saveSuccess
+                z:4
+                width: saveSuccessLabel.implicitWidth
+                height: saveSuccessLabel.font.pixelSize*4
+                color: "#34363D"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                visible: fileSaved == 1
+
+                Label {
+                    id: saveSuccessLabel
+                    text: "File save to: <br><b>" + fileLocation + "</b>"
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/54
+                    textFormat: Text.RichText
+                    horizontalAlignment: Text.AlignHCenter
+                    leftPadding: font.pixelSize*5
+                    rightPadding: font.pixelSize*5
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+            }
+
+            DropShadow {
+                z: 4
+                anchors.fill: saveFailed
+                source: saveFailed
+                horizontalOffset: 4
+                verticalOffset: 4
+                radius: 12
+                samples: 25
+                spread: 0
+                color: "black"
+                opacity: 0.3
+                transparentBorder: true
+                visible: saveFailed.visible
+            }
+
+            Rectangle {
+                id: saveFailed
+                z: 4
+                width: saveFailLabel.implicitWidth
+                height: saveFailLabel.font.pixelSize*2
+                color: "#34363D"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                visible: fileFailed == 1
+
+                Label {
+                    id: saveFailLabel
+                    text: "Failed to save you paper wallet file to you device"
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/54
+                    horizontalAlignment: Text.AlignHCenter
+                    leftPadding: font.pixelSize*5
+                    rightPadding: font.pixelSize*5
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+            }
+        }
+
+        Desktop.PaperWallet {
+            id: mySavedPaperWallet
+            width: 996
+            height: 562
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            visible: false
+
+            coin : walletList.get(walletIndex).name
+            address: walletList.get(walletIndex).address
+            publicKey: walletList.get(walletIndex).publickey
+            privateKey: walletList.get(walletIndex).privatekey
+            walletLabel: walletList.get(walletIndex).label
+            walletAmount: walletList.get(walletIndex).balance
+        }
+
+        Rectangle {
+            anchors.fill: myPaperWallet
+            color: "transparent"
+            border.width: 1
+            border.color: themecolor
+        }
+    }
+
+    Timer {
+        id: saveTimer
+        interval: fileSaved == 1? 5000 : 2000
+        repeat: false
+        running: false
+
+        onTriggered: {
+            fileSaved = 0
+            fileFailed = 0
         }
     }
 

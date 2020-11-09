@@ -420,5 +420,7 @@
         <file>icons/edit_icon_dark01.png</file>
         <file>icons/edit_icon_green01.png</file>
         <file>icons/edit_icon_light01.png</file>
+        <file>backgrounds/Asset 4bg wallet.png</file>
+        <file>icons/white logo.png</file>
     </qresource>
 </RCC>

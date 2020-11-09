@@ -233,5 +233,7 @@
         <file>Controls/+desktop/AddViewOnlyWallet.qml</file>
         <file>Controls/+desktop/ImportWallet.qml</file>
         <file>Controls/+desktop/CreateWallet.qml</file>
+        <file>Controls/+desktop/TransferModal.qml</file>
+        <file>Controls/+desktop/PaperWallet.qml</file>
     </qresource>
 </RCC>
