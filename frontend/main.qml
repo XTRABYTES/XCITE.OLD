@@ -102,6 +102,7 @@ ApplicationWindow {
         applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_02_black.svg'});
         applicationList.append({"name": "X-GAMES", "icon_white": 'qrc:/icons/mobile/games-icon_ph_white.svg', "icon_black": 'qrc:/icons/mobile/games-icon_ph_black.svg'});
         applicationList.append({"name": "CONSOLE", "icon_white": 'qrc:/icons/mobile/ping-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/ping-icon_01_black.svg'});
+        applicationList.append({"name": "PAPER WALLET", "icon_white": 'qrc:/icons/wallet/WALLETF2F2F2.png', "icon_black": 'qrc:/icons/wallet/WALLET14161B.png'});
 
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
@@ -295,6 +296,7 @@ ApplicationWindow {
     property int failedPendingTracker: 0
     property int newBalanceTracker: 0
     property int clickToLogout: 0
+    property int paperWalletGeneratorTracker: 0
 
     // Trackers - features
     property int interactionTracker: 0
@@ -307,6 +309,8 @@ ApplicationWindow {
     property int dndTracker: 0
     property int screenshotTracker: 0
     property int paperWalletTracker: 0
+    property int newWalletTracker: 0
+    property int advancedTransferTracker: 0
     property int soundTracker: 0
     property int xchatSettingsTracker: 0
     property int xchatNetworkTracker: 0
@@ -516,7 +520,7 @@ ApplicationWindow {
     property string selectedApp: ""
     property string copiedConsoleText: ""
     property string failedTX: ""
-
+    property bool createTx: false
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -637,6 +641,10 @@ ApplicationWindow {
         if (app === "CONSOLE") {
             pingTracker = 1
         }
+        if (app === "PAPER WALLET") {
+            paperWalletGeneratorTracker = 1
+        }
+
         if (myOS == "android" || myOS == "ios") {
             selectedApp = ""
         }
@@ -737,9 +745,17 @@ ApplicationWindow {
                     else if (viewForScreenshot == 1) {
                         viewForScreenshot = 0
                     }
-
+                    else if (createTx == false) {
+                        if (myOS !== "android" && myOS !== "ios") {
+                            if (transactionInProgress == false) {
+                                walletDetailTracker = 0
+                            }
+                        }
+                    }
                     else if (transactionInProgress == false){
-                        transferTracker = 0
+                        if (myOS == "android" || myOS == "ios") {
+                            transferTracker = 0
+                        }
                     }
                 }
                 else if (historyTracker == 1) {
@@ -747,7 +763,12 @@ ApplicationWindow {
                         transactionDetailTracker = 0
                     }
                     else {
-                        historyTracker = 0
+                        if (myOS == "android" || myOS == "ios") {
+                            historyTracker = 0
+                        }
+                        else {
+                            walletDetailTracker = 0
+                        }
                     }
                 }
                 else if (addWalletTracker == 1 && !addingWallet) {

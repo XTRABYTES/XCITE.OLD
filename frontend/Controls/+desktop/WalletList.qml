@@ -88,7 +88,8 @@ Rectangle {
                     onReleased: {
                     }
 
-                    onPressAndHold: {
+                    onClicked: {
+                        console.log(walletName.text + "selected")
                         walletIndex = walletNR
                         walletDetailTracker = 1
                     }
@@ -353,11 +354,11 @@ Rectangle {
                 Item {
                     id: transferBtnArea
                     height: cardBorder.height/2
-                    width: appWidth/6 * 0.75
+                    width: 0 //appWidth/6 * 0.75
                     anchors.top: cardBorder.top
                     anchors.right: cardBorder.right
                     anchors.rightMargin: appHeight/72
-
+                    /*
                     Rectangle {
                         id: transfer
                         height: parent.height*0.6
@@ -408,17 +409,17 @@ Rectangle {
                                 transferTracker = 1
                             }
                         }
-                    }
+                    }*/
                 }
 
                 Item {
                     id: historyBtnArea
                     height: cardBorder.height/2
-                    width: appWidth/6 * 0.75
+                    width: 0 //appWidth/6 * 0.75
                     anchors.bottom: cardBorder.bottom
                     anchors.right: cardBorder.right
                     anchors.rightMargin: appHeight/72
-
+                    /*
                     Rectangle {
                         id: history
                         height: parent.height*0.6
@@ -486,7 +487,7 @@ Rectangle {
                                 }
                             }
                         }
-                    }
+                    }*/
                 }
             }
         }

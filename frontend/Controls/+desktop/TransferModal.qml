@@ -24,12 +24,18 @@ Rectangle {
     width: appWidth/6 * 5
     height: appHeight
     state: transferTracker == 1? "up" : "down"
-    color: bgcolor
+    color: "transparent"
 
     onStateChanged: {
         if (transferTracker == 0) {
             closeTimer.start()
         }
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: bgcolor
+        opacity: 0.9
     }
 
     MouseArea {
@@ -41,7 +47,6 @@ Rectangle {
             name: "up"
             PropertyChanges { target: transactionModal; anchors.topMargin: 0}
             PropertyChanges { target: transactionModal; opacity: 1}
-            //PropertyChanges { target: transferSwitch; state: (switchState == 0 ? "off" : "on")}
         },
         State {
             name: "down"
@@ -62,9 +67,7 @@ Rectangle {
     property int confirmationSend: 0
     property int failedSend: 0
     property int invalidAddress: 0
-    //property int decimals: (coinID.text) == "BTC" ? 8 : 4
     property var inputAmount: Number.fromLocaleString(Qt.locale("en_US"),replaceComma)
-    //property string amountTransfer: "AMOUNT (" + coinID.text + ")"
     property string keyTransfer: "SEND TO (ADDRESS)"
     property string referenceTransfer: "REFERENCE"
     property int txFee: 1
@@ -86,7 +89,6 @@ Rectangle {
     property int timestamp: 0
     property string addressName: compareAddress()
     property real currentBalance: getCurrentBalance()
-    //property int selectedWallet: getWalletNR(coinID.text, walletLabel.text)
     property string searchCriteria: ""
     property int copyImage2clipboard: 0
     property int badNetwork: 0
@@ -99,29 +101,6 @@ Rectangle {
     property string replaceComma
     property var transferArray
     property int precision: 0
-
-    Label {
-        id: transferModalLabel
-        text: "WALLET - TRANSACTION"
-        anchors.right: parent.right
-        anchors.rightMargin: appWidth/12
-        anchors.top: parent.top
-        anchors.topMargin: appWidth/24
-        font.pixelSize: appHeight/18
-        font.family: xciteMobile.name
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        font.letterSpacing: 2
-    }
-
-    Rectangle {
-        id: infoBar
-        width: parent.width
-        height: appHeight/18
-        anchors.top: transferModalLabel.bottom
-        anchors.topMargin: appWidth*4/72 + appHeight/27
-        anchors.horizontalCenter: parent.horizontalCenter
-        color: "transparent"
-    }
 
     Timer {
         id: closeTimer
@@ -164,16 +143,6 @@ Rectangle {
             usedCoins = ""
             createTx = false*/
         }
-    }
-
-    Image {
-        id: bigLogo
-        source: getLogoBig(getName(coinIndex))
-        height: appWidth/6
-        fillMode: Image.PreserveAspectFit
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.left
-        visible: transferTracker == 1 && selectedPage == "home" && pageTracker == 1
     }
 
     Rectangle {

@@ -37,8 +37,6 @@ Rectangle {
     property bool myTheme: darktheme
 
     onMyThemeChanged: {
-        transferButton.border.color = themecolor
-        transferLabel.color = themecolor
         coinsButton.border.color = themecolor
         coinsLabel.color = themecolor
     }
@@ -121,54 +119,6 @@ Rectangle {
     }
 
     Rectangle {
-        id: transferButton
-        height: appHeight/24
-        width: appWidth/6
-        anchors.left: parent.left
-        anchors.leftMargin: appWidth/24
-        anchors.top: totalLabel.bottom
-        anchors.topMargin: appHeight/36
-        color: "transparent"
-        border.width: 1
-        border.color: themecolor
-
-        Label {
-            id: transferLabel
-            text: "TRANSFER"
-            anchors.left: parent.left
-            anchors.leftMargin: parent.height/2
-            anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: parent.height/2
-            font.family: xciteMobile.name
-            color: themecolor
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-
-            onEntered: {
-                parent.border.color = maincolor
-                transferLabel.color = maincolor
-            }
-
-            onExited: {
-                parent.border.color = themecolor
-                transferLabel.color = themecolor
-            }
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-
-            }
-        }
-    }
-
-    Rectangle {
         id: coinsButton
         height: appHeight/24
         width: appWidth/6
@@ -182,9 +132,8 @@ Rectangle {
 
         Label {
             id: coinsLabel
-            text: "COINS"
-            anchors.left: parent.left
-            anchors.leftMargin: parent.height/2
+            text: "MANAGE COINS"
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             font.pixelSize: parent.height/2
             font.family: xciteMobile.name
@@ -224,7 +173,7 @@ Rectangle {
     Rectangle {
         id: walletArea
         width: parent.width
-        anchors.top: transferButton.bottom
+        anchors.top: coinsButton.bottom
         anchors.topMargin: appHeight/36
         anchors.bottom: parent.bottom
         anchors.bottomMargin: appWidth/24
@@ -234,6 +183,19 @@ Rectangle {
         Desktop.CoinList {
             id: myCoinlist
             anchors.top: parent.top
+        }
+
+        DropShadow {
+            anchors.fill: addCoins
+            source: addCoins
+            horizontalOffset: -4
+            verticalOffset: -4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.3
+            transparentBorder: true
         }
 
         Mobile.AddCoinModal {
@@ -265,6 +227,11 @@ Rectangle {
 
     Desktop.CreateWallet {
         id: myCreateWallet
+        anchors.top: parent.top
+    }
+
+    Desktop.WalletModal {
+        id: myWalletModal
         anchors.top: parent.top
     }
 

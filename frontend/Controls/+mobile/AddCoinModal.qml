@@ -102,8 +102,19 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                     color: "black"
-                    opacity: .25
+                    opacity: 0.25
                     visible: active == false
+                }
+
+                Rectangle {
+                    id: selectCoin
+                    height: parent.height
+                    width: parent.width
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: maincolor
+                    opacity: 0.3
+                    visible: false
                 }
 
                 Rectangle {
@@ -127,6 +138,7 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
+                    hoverEnabled: true
 
                     function compareCoin() {
                         for(var i = 0; i < coinList.count; i++) {
@@ -192,9 +204,21 @@ Rectangle {
                         }
                     }
 
-                    onClicked: {
+                    onEntered: {
+                        selectCoin.visible = true
+                    }
+
+                    onExited: {
+                        selectCoin.visible = false
+                    }
+
+                    onPressed: {
                         click01.play()
                         detectInteraction()
+
+                    }
+
+                    onClicked: {
                         compareCoin()
                         sumBalance()
                     }

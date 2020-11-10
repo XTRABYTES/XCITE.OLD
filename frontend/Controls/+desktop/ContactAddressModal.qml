@@ -690,7 +690,7 @@ Rectangle {
             height: parent.height*0.95
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            source: addressIndex >= 0? "image://QZXing/encode/" + addressList.get(addressIndex).address : undefined
+            source: addressIndex >= 0? "image://QZXing/encode/" + addressList.get(addressIndex).address : "image://QZXing/encode/undefined"
             cache: false
         }
     }

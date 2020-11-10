@@ -711,7 +711,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                         xchatRobot.SubmitMsg("dicom - backend - update UTXO list command not accepted");
                     }
                     QString rawTx = "[\"" + QString::fromStdString(RawTransaction) + "\"]";
-                    emit staticNet.sendFee(QString::number(send_Fee), rawTx, QString::fromStdString(output_address), QString::fromStdString(sender_address),usedCoins,QString::number(send_Amount), id);
+                    emit staticNet.sendFee(QString::number(send_Fee), rawTx, QString::fromStdString(output_address) + ";", QString::fromStdString(sender_address),usedCoins,QString::number(send_Amount), id);
                 } else {
                     QJsonObject response;
                     response.insert("sender", QJsonValue::fromVariant("SendcoinWorker::unspent_onResponse"));

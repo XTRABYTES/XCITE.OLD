@@ -93,7 +93,6 @@ Rectangle {
     //property int screenShot: 0
     property int badNetwork: 0
     property bool selectNetwork: false
-    property bool createTx: false
     property string txFailError:""
 
     property var commaArray

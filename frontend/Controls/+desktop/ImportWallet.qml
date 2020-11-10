@@ -138,7 +138,6 @@ Rectangle {
         anchors.top: infoBar.bottom
         anchors.bottom: parent.bottom
         anchors.bottomMargin: appWidth/24
-        clip: true
 
         Item {
             id: selectedCoin
@@ -511,13 +510,22 @@ Rectangle {
             }
 
             Rectangle {
+                width: scannerBg.width*1.05
+                height: scannerBg.height*1.05
+                color: bgcolor
+                border.width: 2
+                border.color: themecolor
+                anchors.horizontalCenter: scannerBg.horizontalCenter
+                anchors.verticalCenter: scannerBg.verticalCenter
+            }
+
+            Rectangle {
+                id: scannerBg
                 width: appWidth*5/18
                 height: appHeight/2
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 color: "transparent"
-                border.width: 1
-                border.color: themecolor
                 clip: true
 
                 Label {
@@ -566,7 +574,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     color: "transparent"
                     border.width: 1
-                    border.color: themecolor
+                    border.color: "#f2f2f2"
                 }
 
                 Label {
@@ -588,8 +596,9 @@ Rectangle {
                     padding: appHeight/45
                     maximumLineCount: 3
                     wrapMode: Text.WrapAnywhere
+                    horizontalAlignment: Text.AlignHCenter
                     anchors.top: pubKey.bottom
-                    anchors.topMargin: font.pixelSize
+                    anchors.topMargin: font.pixelSize/2
                     anchors.horizontalCenter: pubKey.horizontalCenter
                     color: themecolor
                     font.family: xciteMobile.name
