@@ -1474,9 +1474,9 @@ Rectangle {
             Text {
                 property var receiverList: receivedReceiver.split(";")
                 property var countReceivers: receiverList.count
-                property var receiverInfo: countReceivers === 1? receiverList.at(0).split("-") : countReceivers.toLocaleString(Qt.locale("en_US"))
+                property var receiverInfo: countReceivers === 1? receiverList[0].split("-") : countReceivers.toLocaleString(Qt.locale("en_US"))
                 id: confirmationAddress
-                text: receivedLabel != ""? receivedLabel : (countReceivers === 1? receiverInfo.at(0) : receiverInfo + " receivers")
+                text: receivedLabel != ""? receivedLabel : (countReceivers === 1? receiverInfo[0] : receiverInfo + " receivers")
                 anchors.bottom: to.bottom
                 anchors.bottomMargin: 2
                 anchors.right: cancelSendButton.right

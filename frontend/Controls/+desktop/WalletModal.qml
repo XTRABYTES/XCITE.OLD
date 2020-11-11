@@ -38,9 +38,8 @@ Rectangle {
         historySwitch.state = "off"
         transferSwitch.state = transferSwitchState == 0 ? "off" : "on"
         transactionSend = 0
-        confirmationSend = 0
-        failedSend = 0
         invalidAddress = 0
+        failedSend = 0
         if (state == "up") {
             historyTracker = 1
             transferTracker = 1
@@ -82,8 +81,8 @@ Rectangle {
     property int addressCopied: 0
 
     property int transactionSend: 0
-    property int confirmationSend: 0
     property int failedSend: 0
+    property int requestSend: 0
     property int invalidAddress: 0
     property var inputAmount: Number.fromLocaleString(Qt.locale("en_US"),replaceComma)
     property int txFee: 1
@@ -313,7 +312,7 @@ Rectangle {
             id: changeButtonText
             text: "CHANGE WALLET"
             font.family: xciteMobile.name
-            font.pointSize: parent.height/2
+            font.pixelSize: parent.height/2
             color: themecolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -328,6 +327,17 @@ Rectangle {
         anchors.topMargin: appWidth/24
         anchors.horizontalCenter: parent.horizontalCenter
         color: bgcolor
+
+        Label {
+            id: viewOnlyLabel
+            text: "VIEW ONLY"
+            font.family: xciteMobile.name
+            font.pixelSize: parent.height/2
+            color: "#E55541"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            visible: walletList.get(walletIndex).viewOnly
+        }
     }
 
     Rectangle {
@@ -694,7 +704,7 @@ Rectangle {
 
                 Controls.TextInput {
                     id: keyInput
-                    text: sendAddress.text
+                    text: ""
                     height: appHeight/18
                     width: parent.width
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -877,7 +887,7 @@ Rectangle {
                         text: "SEND"
                         font.family: xciteMobile.name
                         font.pointSize: parent.height/2
-                        color: themecolor
+                        color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -947,14 +957,14 @@ Rectangle {
                                     notification.play()
                                     console.log("sender: " + sender_ + " receiver: " + receiver_ + " amount: " + sendAmount_)
                                     var r
-                                    var splitReceivers = receiver_.split(";")
+                                    var splitArray = receiver_.split(';')
                                     var receiverInfo
                                     var splitReceiverInfo
-                                    if (splitReceivers.count > 1) {
+                                    if (splitArray.length > 1) {
                                     }
                                     else {
-                                        receiverInfo = splitReceivers[0]
-                                        splitReceiverInfo = receiverInfo.split("-")
+                                        receiverInfo = splitArray[0]
+                                        splitReceiverInfo = receiverInfo.split('-')
                                         r = splitReceiverInfo[0]
                                     }
                                     if (getAddress(walletList.get(walletIndex).name, walletList.get(walletIndex).label) === sender_) {
@@ -966,15 +976,12 @@ Rectangle {
                                         usedCoins = usedCoins_
                                         receivedAmount = sendAmount_
                                         receivedLabel = ""
-                                        if (splitReceivers.count === 1) {
+                                        if (splitArray.length === 1) {
                                             for (var i = 0; i < walletList.count; i ++) {
                                                 if (walletList.get(i).address === r){
                                                     receivedLabel = walletList.get(i).label
                                                 }
                                             }
-                                        }
-                                        else if (splitReceivers.count > 1) {
-                                            receivedLabel = splitReceivers.count
                                         }
                                         receivedTxID = traceId_
                                         transactionSend = 1
@@ -1034,6 +1041,344 @@ Rectangle {
                 anchors.right: parent.right
                 color: themecolor
                 opacity: 0.1
+            }
+
+            Item {
+                id: confirmTransaction
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                anchors.rightMargin: appWidth/24
+                visible: transactionSend == 1
+                         && requestSend == 0
+
+                Text {
+                    id: sendingLabel
+                    text: "SENDING:"
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.topMargin: appHeight/18
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                }
+
+                Item {
+                    id:amount
+                    implicitWidth: confirmationAmount.implicitWidth + confirmationAmount1.implicitWidth + confirmationAmount2.implicitWidth + appHeight/36
+                    implicitHeight: confirmationAmount.implicitHeight
+                    anchors.bottom: sendingLabel.bottom
+                    anchors.right: parent.right
+                }
+
+                Text {
+                    id: confirmationAmount
+                    text: walletList.get(walletIndex).name
+                    anchors.top: amount.top
+                    anchors.right: amount.right
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                }
+
+                Text {
+                    property string transferAmount: receivedAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                    property var amountArray: transferAmount.split('.')
+                    id: confirmationAmount1
+                    text: amountArray[1] !== undefined?  ("." + amountArray[1]) : ".0000"
+                    anchors.bottom: confirmationAmount.bottom
+                    anchors.right: confirmationAmount.left
+                    anchors.rightMargin: appHeight/36
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                }
+
+                Text {
+                    property string transferAmount: receivedAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                    property var amountArray: transferAmount.split('.')
+                    id: confirmationAmount2
+                    text: amountArray[0]
+                    anchors.top: confirmationAmount.top
+                    anchors.left: amount.left
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                }
+
+                Text {
+                    id: to
+                    text: "TO:"
+                    anchors.left: parent.left
+                    anchors.top: sendingLabel.bottom
+                    anchors.topMargin: appHeight/36
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                }
+
+                Text {
+                    property var receiverArray: receivedReceiver.split(';')
+                    property var countReceivers: receiverArray.length
+                    property var splitReceiver: receiverArray[0].split('-')
+                    property var receiverInfo: countReceivers === 1? splitReceiver[0] : countReceivers.toLocaleString(Qt.locale("en_US"), "f", 0)
+                    id: confirmationAddress
+                    text: countReceivers === 1? receiverInfo : receiverInfo + " receivers"
+                    anchors.bottom: to.bottom
+                    anchors.right: parent.right
+                    font.family: xciteMobile.name
+                    font.pixelSize: addressName != ""? 16 : 10
+                    color: themecolor
+                }
+
+                Text {
+                    id: confirmationAddressName
+                    text: "(" + receivedLabel + ")"
+                    anchors.top: confirmationAddress.bottom
+                    anchors.topMargin: font.pixelSize/3
+                    anchors.right: parent.right
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/45
+                    color: themecolor
+                    visible: receivedLabel != ""
+                }
+
+                Text {
+                    id: reference
+                    text: "REF.:"
+                    anchors.left: parent.left
+                    anchors.top: confirmationAddressName.bottom
+                    anchors.topMargin: appHeight/27
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                }
+
+                Text {
+                    id: referenceText
+                    text: referenceInput.text !== ""? referenceInput.text : "no reference"
+                    anchors.bottom: reference.bottom
+                    anchors.right: parent.right
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    font.italic: referenceInput.text !== ""
+                    color: themecolor
+                 }
+
+                Text {
+                    id: feeLabel
+                    text: "TRANSACTION FEE:"
+                    anchors.left: parent.left
+                    anchors.top: reference.bottom
+                    anchors.topMargin: appHeight/36
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                 }
+
+                Item {
+                    id:feeAmount
+                    implicitWidth: confirmationFeeAmount.implicitWidth + confirmationFeeAmount1.implicitWidth + confirmationFeeAmount2.implicitWidth + appHeight/36
+                    implicitHeight: confirmationAmount.implicitHeight
+                    anchors.bottom: feeLabel.bottom
+                    anchors.right: parent.right
+                }
+
+                Text {
+                    id: confirmationFeeAmount
+                    text: walletList.get(walletIndex).name
+                    anchors.top: feeAmount.top
+                    anchors.right: feeAmount.right
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                }
+
+                Text {
+                    property string transferFee: txFee.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                    property var feeArray: transferFee.split('.')
+                    id: confirmationFeeAmount1
+                    text: feeArray[1] !== undefined?  ("." + feeArray[1]) : ".0000"
+                    anchors.bottom: confirmationFeeAmount.bottom
+                    anchors.right: confirmationFeeAmount.left
+                    anchors.rightMargin: font.pixelSize
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                }
+
+                Text {
+                    property string transferFee: txFee.toLocaleString(Qt.locale("en_US"), "f", decimals)
+                    property var feeArray: transferFee.split('.')
+                    id: confirmationFeeAmount2
+                    text: feeArray[0]
+                    anchors.top: confirmationFeeAmount.top
+                    anchors.left: feeAmount.left
+                    font.family: xciteMobile.name
+                    font.pixelSize: appHeight/36
+                    color: themecolor
+                 }
+
+                Rectangle {
+                    id: confirmTX
+                    width: parent.width*0.9/2
+                    height: appHeight/27
+                    anchors.left: parent.left
+                    anchors.top: confirmationFeeAmount.bottom
+                    anchors.topMargin: height
+                    color: "transparent"
+                    border.width: 1
+                    border.color: themecolor
+
+                    Rectangle {
+                        id: selectConfirm
+                        anchors.fill: parent
+                        color: maincolor
+                        opacity: 0.3
+                        visible: false
+                    }
+
+                    Text {
+                        id: confirmButtonText
+                        text: "CONFIRM"
+                        font.family: xciteMobile.name
+                        font.pointSize: parent.height/2
+                        color: parent.border.color
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    MouseArea {
+                        anchors.fill: confirmTX
+                        hoverEnabled: true
+
+                        onEntered: {
+                            selectConfirm.visible = true
+                        }
+
+                        onExited: {
+                            selectConfirm.visible = false
+                        }
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            transactionInProgress = true
+                            if (userSettings.pinlock === true){
+                                pincodeTracker = 1
+                            }
+                            else {
+                                timer3.start()
+                            }
+                        }
+
+                        Timer {
+                            id: timer3
+                            interval: pincodeTracker == 1? 1000 : 100
+                            repeat: false
+                            running: false
+
+                            onTriggered: {
+                                var dataModelParams = {"xdapp":network,"method":"sendrawtransaction","payload":rawTX,"id":receivedTxID}
+                                var paramsJson = JSON.stringify(dataModelParams)
+                                dicomRequest(paramsJson)
+                                var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                                var msg = "UI - confirming TX: " + paramsJson
+                                xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
+                                console.log("request TX broadcast: " + paramsJson)
+                                var total = Number.fromLocaleString(Qt.locale("en_US"),replaceComma)
+                                var totalFee = Number.fromLocaleString(Qt.locale("en_US"),txFee)
+                                var totalUsed = Number.fromLocaleString(Qt.locale("en_US"),usedCoins)
+                                transactionList.append({"requestID":receivedTxID,"txid":"","coin":walletList.get(walletIndex).name,"address":receivedSender,"receiver":receivedReceiver,"amount":total,"fee":totalFee,"used":totalUsed})
+                                transactionSend = 0
+                                transactionInProgress = false
+                                rawTX = ""
+                                txFee = 0
+                                receivedAmount = ""
+                                receivedLabel = ""
+                                receivedReceiver = ""
+                                receivedSender = ""
+                                receivedTxID = ""
+                                usedCoins = ""
+                            }
+                        }
+
+                        Connections {
+                            target: UserSettings
+
+                            onPincodeCorrect: {
+                                if (pincodeTracker == 1 && transferTracker == 1 && advancedTransferTracker == 0) {
+                                    timer3.start()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: cancelTX
+                    width: parent.width*0.9/2
+                    height: appHeight/27
+                    anchors.right: parent.right
+                    anchors.top: confirmationFeeAmount.bottom
+                    anchors.topMargin: height
+                    color: "transparent"
+                    border.width: 1
+                    border.color: themecolor
+
+                    Rectangle {
+                        id: cancelConfirm
+                        anchors.fill: parent
+                        color: maincolor
+                        opacity: 0.3
+                        visible: false
+                    }
+
+                    Text {
+                        id: cancelButtonText
+                        text: "CANCEL"
+                        font.family: xciteMobile.name
+                        font.pointSize: parent.height/2
+                        color: parent.border.color
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    MouseArea {
+                        anchors.fill: cancelTX
+                        hoverEnabled: true
+
+                        onEntered: {
+                            cancelConfirm.visible = true
+                        }
+
+                        onExited: {
+                            cancelConfirm.visible = false
+                        }
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            transactionSend = 0
+                            transactionInProgress = false
+                            rawTX = ""
+                            txFee = 0
+                            receivedAmount = ""
+                            receivedLabel = ""
+                            receivedReceiver = ""
+                            receivedSender = ""
+                            receivedTxID = ""
+                            usedCoins = ""
+                        }
+                    }
+                }
             }
         }
 

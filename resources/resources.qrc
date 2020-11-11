@@ -422,5 +422,17 @@
         <file>icons/edit_icon_light01.png</file>
         <file>backgrounds/Asset 4bg wallet.png</file>
         <file>icons/white logo.png</file>
+        <file>icons/console_icon_dark-01.png</file>
+        <file>icons/console_icon_light-01.png</file>
+        <file>icons/games_icon_dark-01.png</file>
+        <file>icons/games_icon_light-01.png</file>
+        <file>icons/paper-wallet_icon_dark-01.png</file>
+        <file>icons/paper-wallet_icon_light-01.png</file>
+        <file>icons/paper-wallet_icon_dark-01.svg</file>
+        <file>icons/console_icon_dark-01.svg</file>
+        <file>icons/games_icon_dark-01.svg</file>
+        <file>icons/games_icon_light-01.svg</file>
+        <file>icons/console_icon_light-01.svg</file>
+        <file>icons/paper-wallet_icon_light-01.svg</file>
     </qresource>
 </RCC>

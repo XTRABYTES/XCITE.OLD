@@ -100,9 +100,9 @@ ApplicationWindow {
         applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_01_black.svg');
         applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_04_black.svg'});
         applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_02_black.svg'});
-        applicationList.append({"name": "X-GAMES", "icon_white": 'qrc:/icons/mobile/games-icon_ph_white.svg', "icon_black": 'qrc:/icons/mobile/games-icon_ph_black.svg'});
-        applicationList.append({"name": "CONSOLE", "icon_white": 'qrc:/icons/mobile/ping-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/ping-icon_01_black.svg'});
-        applicationList.append({"name": "PAPER WALLET", "icon_white": 'qrc:/icons/wallet/WALLETF2F2F2.png', "icon_black": 'qrc:/icons/wallet/WALLET14161B.png'});
+        applicationList.append({"name": "X-GAMES", "icon_white": 'qrc:/icons/games_icon_light-01.svg', "icon_black": 'qrc:/icons/games_icon_dark-01.svg'});
+        applicationList.append({"name": "CONSOLE", "icon_white": 'qrc:/icons/console_icon_light-01.svg', "icon_black": 'qrc:/icons/console_icon_dark-01.svg'});
+        applicationList.append({"name": "PAPER WALLET", "icon_white": 'qrc:/icons/paper-wallet_icon_light-01.svg', "icon_black": 'qrc:/icons/paper-wallet_icon_dark-01.svg'});
 
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
@@ -1103,13 +1103,13 @@ ApplicationWindow {
                 var c = transactionList.get(i).receiver
                 var splitReceivers = c.split(";")
                 var splitReceiverInfo
-                if (splitReceivers.count > 1) {
+                if (splitReceivers.length > 1) {
                     c = splitReceivers.count
-                    c = c.toLocaleString(Qt.locale("en_US")) + " receivers"
+                    c = c.toLocaleString(Qt.locale("en_US", "f", 0)) + " receivers"
                 }
                 else {
-                    splitReceiverInfo = splitReceivers.at(0).split("-")
-                    c = splitReceiverInfo.at(0)
+                    splitReceiverInfo = splitReceivers[0].split("-")
+                    c = splitReceiverInfo[0]
                     for (var e = 0; e < addressList.count; e ++ ) {
                         if (addressList.get(e).coin === coin && addressList.get(e).address === c) {
                             if(addressList.get(e).fullName !== undefined) {
@@ -1492,11 +1492,21 @@ ApplicationWindow {
 
     function getCoinNR(coin) {
         selectedCoin = 0
-        for (var i = 0; coinList.count; i ++) {
+        for (var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 selectedCoin= coinList.get(i).coinID
             }
         }
+    }
+
+    function getCoinID(coin) {
+        var coinNbr = 0
+        for (var i = 0; i < coinList.count; i ++) {
+            if (coinList.get(i).name === coin) {
+                coinNbr = coinList.get(i).coinID
+            }
+        }
+        return coinNbr
     }
 
     function defaultWallet(coin) {
@@ -3058,19 +3068,25 @@ ApplicationWindow {
                     if (b === "") {
                         b = transactionList.get(i).address
                     }
-                    var c = ""
-                    for (var e = 0; e < addressList.count; e ++ ) {
-                        if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
-                            if(addressList.get(e).fullName !== undefined) {
-                                c = addressList.get(e).fullName + " " + addressList.get(e).label
-                            }
-                            else {
-                                c= addressList.get(e).label
+                    var c = transactionList.get(i).receiver
+                    var splitReceivers = c.split(';')
+                    var countReceivers= splitReceivers.length
+                    if (countReceivers > 1) {
+                        c = countReceivers.toLocaleString(Qt.locale("en_US"), "f", 0) + " receivers"
+                    }
+                    else {
+                        var splitReceiverInfo = splitReceivers[0].split('-')
+                        c = splitReceiverInfo[0]
+                        for (var e = 0; e < addressList.count; e ++ ) {
+                            if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === splitReceiverInfo) {
+                                if(addressList.get(e).fullName !== undefined) {
+                                    c = addressList.get(e).fullName + " " + addressList.get(e).label
+                                }
+                                else {
+                                    c= addressList.get(e).label
+                                }
                             }
                         }
-                    }
-                    if (c === "") {
-                        c = transactionList.get(i).receiver
                     }
 
                     var h = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
@@ -3105,19 +3121,25 @@ ApplicationWindow {
                     if (b === "") {
                         b = transactionList.get(i).address
                     }
-                    var c = ""
-                    for (var e = 0; e < addressList.count; e ++ ) {
-                        if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
-                            if(addressList.get(e).fullName !== undefined) {
-                                c = addressList.get(e).fullName + " " + addressList.get(e).label
-                            }
-                            else {
-                                c= addressList.get(e).label
+                    var c = transactionList.get(i).receiver
+                    var splitReceivers = c.split(';')
+                    var countReceivers= splitReceivers.length
+                    if (countReceivers > 1) {
+                        c = countReceivers.toLocaleString(Qt.locale("en_US", "f", 0)) + " receivers"
+                    }
+                    else {
+                        var splitReceiverInfo = splitReceivers[0].split('-')
+                        c = splitReceiverInfo[0]
+                        for (var e = 0; e < addressList.count; e ++ ) {
+                            if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === splitReceiverInfo) {
+                                if(addressList.get(e).fullName !== undefined) {
+                                    c = addressList.get(e).fullName + " " + addressList.get(e).label
+                                }
+                                else {
+                                    c= addressList.get(e).label
+                                }
                             }
                         }
-                    }
-                    if (c === "") {
-                        c = transactionList.get(i).receiver
                     }
                     var h = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
                     var l = transactionList.get(i).amount

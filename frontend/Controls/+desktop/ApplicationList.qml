@@ -75,7 +75,7 @@ Rectangle {
                 source: darktheme == true? icon_white : icon_black
                 anchors.horizontalCenter: selectIndicator.horizontalCenter
                 anchors.verticalCenter: selectIndicator.verticalCenter
-                height: appWidth/24
+                height: appWidth/18
                 fillMode: Image.PreserveAspectFit
             }
 
@@ -86,8 +86,8 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 elide: Text.ElideRight
                 anchors.horizontalCenter: selectIndicator.horizontalCenter
-                anchors.top: appIcon.bottom
-                anchors.topMargin: appWidth/48
+                anchors.bottom: rect02.bottom
+                anchors.bottomMargin: font.pixelSize/2
                 font.pixelSize: appHeight/48
                 font.family: "Brandon Grotesque"
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"

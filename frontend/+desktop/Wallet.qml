@@ -120,7 +120,7 @@ Rectangle {
 
     Rectangle {
         id: coinsButton
-        height: appHeight/24
+        height: appHeight/27
         width: appWidth/6
         anchors.right: parent.right
         anchors.rightMargin: appWidth/12

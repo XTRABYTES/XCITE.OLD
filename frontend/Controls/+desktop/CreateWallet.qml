@@ -257,9 +257,9 @@ Rectangle {
 
                 onKeyPairCreated: {
                     if (createWalletTracker == 1 && createInitiated == true) {
-                        privateKey.text = privKey
-                        publicKeyString.text = pubKey
-                        addressHash.text = address
+                        privateKey.text = priv
+                        publicKeyString.text = pub
+                        addressHash.text = addr
                         newWallet = 1
                         createInitiated = false
                     }

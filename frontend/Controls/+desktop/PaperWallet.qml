@@ -25,6 +25,7 @@ Rectangle {
     clip: true
 
     property string coin: ""
+    property int coinNr: 0
     property string address: ""
     property string publicKey: ""
     property string privateKey: ""
@@ -189,21 +190,24 @@ Rectangle {
 
         Image {
             id: xbyLogo
-            source: 'qrc:/logos/xby_logo_tm.png'
-            width: parent.width*0.8
+            source: getLogoBig(coin)
+            width: parent.width/3
             fillMode: Image.PreserveAspectFit
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenterOffset: -height/2
         }
 
         Text {
             id: xbyLabel
-            text: "XTRABYTES"
+            text: getFullName(getCoinID(coin))
             color: "black"
             font.pixelSize: nameLabel.font.pixelSize*1.5
             font.letterSpacing: 2
+            font.capitalization: Font.AllUppercase
             anchors.horizontalCenter: xbyLogo.horizontalCenter
-            anchors.bottom: xbyLogo.bottom
+            anchors.top: xbyLogo.bottom
+            anchors.topMargin: font.pixelSize/2
         }
 
         Text {
@@ -215,6 +219,7 @@ Rectangle {
             leftPadding: 1
             anchors.left: xbyLabel.right
             anchors.bottom: xbyLabel.verticalCenter
+            visible: coin == "XBY" || coin == "XFUEL"
         }
 
         Label {

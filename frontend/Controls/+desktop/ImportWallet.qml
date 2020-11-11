@@ -149,7 +149,7 @@ Rectangle {
 
             Image {
                 id: newIcon
-                source: coinList.get(coin).logo
+                source: coinList.get(coinIndex).logo
                 height: appWidth/36
                 fillMode: Image.PreserveAspectFit
                 anchors.left: parent.left
@@ -158,7 +158,7 @@ Rectangle {
 
             Label {
                 id: newCoinName
-                text: coinList.get(coin).name
+                text: coinList.get(coinIndex).name
                 anchors.left: newIcon.right
                 anchors.leftMargin: 7
                 anchors.verticalCenter: newIcon.verticalCenter
@@ -421,9 +421,9 @@ Rectangle {
 
                 onAddressExtracted: {
                     if (importKeyTracker == 1 && importInitiated == true) {
-                        privateKey.text = newAddress.text
-                        publicKeyString.text = publicKey.text
-                        addressHash.text = addressID
+                        privateKey.text = priv
+                        publicKeyString.text = pub
+                        addressHash.text = addr
                         newWallet = 1
                         importInitiated = false
                     }
