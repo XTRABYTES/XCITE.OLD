@@ -237,5 +237,6 @@
         <file>Controls/+desktop/PaperWallet.qml</file>
         <file>Controls/+desktop/WalletModal.qml</file>
         <file>Controls/+desktop/WalletListSmall.qml</file>
+        <file>Controls/+desktop/TransactionList.qml</file>
     </qresource>
 </RCC>

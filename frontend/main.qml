@@ -748,7 +748,12 @@ ApplicationWindow {
                     else if (createTx == false) {
                         if (myOS !== "android" && myOS !== "ios") {
                             if (transactionInProgress == false) {
-                                walletDetailTracker = 0
+                                if (advancedTransferTracker == 1){
+                                    advancedTransferTracker = 0
+                                }
+                                else {
+                                    walletDetailTracker = 0
+                                }
                             }
                         }
                     }
@@ -3517,6 +3522,14 @@ ApplicationWindow {
         ListElement {
             name: ""
             logo: 'qrc:/icons/mobile/crex24_logo.svg'
+        }
+    }
+
+    ListModel {
+        id: advancedTXList
+        ListElement {
+            receiver: ""
+            amount: ""
         }
     }
 

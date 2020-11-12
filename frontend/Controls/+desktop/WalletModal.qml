@@ -446,6 +446,7 @@ Rectangle {
                             }
 
                             onClicked: {
+                                advancedTXList.clear()
                                 advancedTransferTracker = 1
                             }
                         }
@@ -898,7 +899,7 @@ Rectangle {
                         enabled: invalidAddress == 0
                                  && keyInput.text !== ""
                                  && sendAmount.text !== ""
-                                 && inputAmount >= 1
+                                 && (walletList.get(walletIndex).name === "XBY" || walletList.get(walletIndex).name === "XFUEL" || walletList.get(walletIndex).name.text === "XTEST")? inputAmount >= 1 : inputAmount > 0
                                  && precision <= 8
                                  && inputAmount <= ((walletList.get(walletIndex).balance) - 1)
                                  && (network == "xtrabytes" || network == "xfuel" || network == "testnet")
@@ -920,7 +921,6 @@ Rectangle {
                             txFailError = ""
                             selectNetwork = true
                             createTx = true
-                            //transactionInProgress = true
                             setNetwork(network)
                         }
 

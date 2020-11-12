@@ -235,6 +235,11 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Desktop.TransferModal {
+        id: myTransferModal
+        anchors.top: parent.top
+    }
+
     Image {
         id: bigLogo
         source: getLogoBig(getName(coinIndex))

@@ -186,8 +186,8 @@ Rectangle {
 
                 Text {
                     id: amountSizeLabel
-                    anchors.right: transferBtnArea.left
-                    anchors.rightMargin: appHeight/18
+                    anchors.right: cardBorder.right
+                    anchors.rightMargin: appHeight/72
                     anchors.top: cardBorder.top
                     anchors.topMargin: appHeight/72
                     text: name
@@ -349,145 +349,6 @@ Rectangle {
                     font.pixelSize: appHeight/54
                     font.family: xciteMobile.name
                     color: themecolor
-                }
-
-                Item {
-                    id: transferBtnArea
-                    height: cardBorder.height/2
-                    width: 0 //appWidth/6 * 0.75
-                    anchors.top: cardBorder.top
-                    anchors.right: cardBorder.right
-                    anchors.rightMargin: appHeight/72
-                    /*
-                    Rectangle {
-                        id: transfer
-                        height: parent.height*0.6
-                        width: parent.width
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: "transparent"
-                        border.color: themecolor
-                        border.width: 1
-
-                        Rectangle {
-                            id: selectTransfer
-                            anchors.fill: parent
-                            color: maincolor
-                            opacity: 0.3
-                            visible: false
-                        }
-
-                        Label {
-                            text: viewOnly? "RECEIVE" : "TRANSFER"
-                            font.family: xciteMobile.name
-                            font.pointSize: transfer.height/2
-                            color: themecolor
-                            anchors.horizontalCenter: transfer.horizontalCenter
-                            anchors.verticalCenter: transfer.verticalCenter
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-
-                            onEntered: {
-                                selectTransfer.visible = true
-                            }
-
-                            onExited: {
-                                selectTransfer.visible = false
-                            }
-
-                            onPressed: {
-                                click01.play()
-                                detectInteraction()
-                            }
-
-                            onClicked: {
-                                walletIndex = walletNR
-                                switchState = 0
-                                transferTracker = 1
-                            }
-                        }
-                    }*/
-                }
-
-                Item {
-                    id: historyBtnArea
-                    height: cardBorder.height/2
-                    width: 0 //appWidth/6 * 0.75
-                    anchors.bottom: cardBorder.bottom
-                    anchors.right: cardBorder.right
-                    anchors.rightMargin: appHeight/72
-                    /*
-                    Rectangle {
-                        id: history
-                        height: parent.height*0.6
-                        width: parent.width
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: "transparent"
-                        border.color: themecolor
-                        border.width: 1
-
-                        Rectangle {
-                            id: selectHistory
-                            anchors.fill: parent
-                            color: maincolor
-                            opacity: 0.3
-                            visible: false
-                        }
-
-                        Label {
-                            text: "HISTORY"
-                            font.family: xciteMobile.name
-                            font.pointSize: history.height/2
-                            color: themecolor
-                            anchors.horizontalCenter: history.horizontalCenter
-                            anchors.verticalCenter: history.verticalCenter
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-
-                            onEntered: {
-                                selectHistory.visible = true
-                            }
-
-                            onExited: {
-                                selectHistory.visible = false
-                            }
-
-                            onPressed: {
-                                click01.play()
-                                detectInteraction()
-                            }
-
-                            onClicked: {
-                                if (coinIndex < 3){
-                                    historyDetailsCollected = false
-                                    walletIndex = walletNR
-                                    transactionPages = 0
-                                    currentPage = 1
-                                    historyTracker = 1
-                                    updateTransactions(name, address, 1)
-                                }
-                            }
-                        }
-
-                        Connections {
-                            target: explorer
-
-                            onUpdateTransactions: {
-                                if (historyDetailsCollected === false) {
-                                    transactionPages = totalPages;
-                                    loadTransactions(transactions);
-                                    historyDetailsCollected = true
-                                }
-                            }
-                        }
-                    }*/
                 }
             }
         }
