@@ -3130,7 +3130,7 @@ ApplicationWindow {
                     var splitReceivers = c.split(';')
                     var countReceivers= splitReceivers.length
                     if (countReceivers > 1) {
-                        c = countReceivers.toLocaleString(Qt.locale("en_US", "f", 0)) + " receivers"
+                        c = countReceivers.toLocaleString(Qt.locale("en_US"), "f", 0) + " receivers"
                     }
                     else {
                         var splitReceiverInfo = splitReceivers[0].split('-')

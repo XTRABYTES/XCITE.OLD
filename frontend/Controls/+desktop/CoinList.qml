@@ -200,6 +200,7 @@ Rectangle {
                     onClicked: {
                         coinIndex = coinID
                         coinTracker = 1
+                        selectedCoin = name
                     }
                 }
             }

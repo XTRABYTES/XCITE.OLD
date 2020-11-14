@@ -414,9 +414,9 @@ Rectangle {
 
                         onAddressExtracted: {
                             if (importKeyTracker == 1 && importInitiated == true) {
-                                privateKey.text = newAddress.text
-                                publicKey.text = pubKey
-                                addressHash.text = addressID
+                                privateKey.text = priv
+                                publicKey.text = pub
+                                addressHash.text = addr
                                 newWallet = 1
                                 importInitiated = false
                             }

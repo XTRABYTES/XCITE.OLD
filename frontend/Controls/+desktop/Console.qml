@@ -596,7 +596,7 @@ Rectangle {
             Rectangle {
                 id: popupConfirm
                 height: popupConfirmText.height + popupConfirmBtn.height + appHeight/72
-                width: popupConfirmText.width + appHeight/18
+                width: replyWindow.width*0.9
                 color: "#42454F"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -605,8 +605,8 @@ Rectangle {
             Item {
                 id: popupConfirmText
                 height: appHeight/27
-                width: confirmText.width
-                anchors.top: parent.top
+                width: parent.width
+                anchors.bottom: popupConfirm.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Label {
@@ -616,7 +616,8 @@ Rectangle {
                     font.family: xciteMobile.name
                     font.pointSize: parent.height/2
                     color: "#F2F2F2"
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.left: parent.left
+                    anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
                     elide: Text.ElideRight
                     leftPadding: parent.height/2
@@ -628,7 +629,7 @@ Rectangle {
                 id: popupConfirmBtn
                 height: appHeight/27
                 width: parent.width
-                anchors.bottom: parent.bottom
+                anchors.bottom: popupConfirm.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Item {

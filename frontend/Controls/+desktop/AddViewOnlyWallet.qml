@@ -853,7 +853,7 @@ Rectangle {
 
             Label {
                 id: pubKey
-                text: "PUBLIC KEY"
+                text: "ADDRESS"
                 anchors.top: scanFrame.bottom
                 anchors.topMargin: appHeight/36
                 anchors.horizontalCenter: parent.horizontalCenter

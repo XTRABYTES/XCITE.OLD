@@ -579,7 +579,7 @@ Rectangle {
 
                 Label {
                     id: pubKey
-                    text: "PUBLIC KEY"
+                    text: "PRIVATE KEY"
                     anchors.top: scanFrame.bottom
                     anchors.topMargin: appHeight/36
                     anchors.horizontalCenter: parent.horizontalCenter

@@ -615,7 +615,6 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                 newAmount = newTarget.at(1).toStdString();
                 outputs.push_back(newReceiver + "," + newAmount);
             }
-            //outputs.push_back(output_address + "," + StrFromAmount(send_value));
             int64 leftover = inputs_sum - (send_value + (nMinFee * nBaseFee));
             if (leftover >= dust_soft_limit) {
                 outputs.push_back(sender_address + "," + StrFromAmount(leftover));
@@ -626,7 +625,6 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
             for (auto element : inputs) {
                 inputStringList.append(QString::fromStdString(element));
             }
-            //if (inputString.size() > 0)  inputString.resize (inputString.size() - 1);
             inputStr = inputStringList.join(" ");
 
             outputStringList.clear();
@@ -739,8 +737,11 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
     int inputSize = 146;
     int maxSize = 100000;
     int nBaseValue= 1;
-    int outCount = 0;
+    double outCount = 0;
     int nBytes;
+    double dbCount = 0;
+    int intCount = 0;
+    int countFee = 0;
 
     // estimate size of the transaction
     nBytes = (inputSize * inputCount) + (outputSize * outputCount) + 10;
@@ -756,7 +757,7 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
 
     // count number of outputs and check if outvalues are higher than dust_soft_limit
     for (int i = 0; i < outputList.count(); i++) {
-        outCount ++;
+        outCount += 1;
         QString output = outputList.at(i);
         QStringList outputSplit = output.split(',');
         QString outputValue = outputSplit.last();
@@ -765,10 +766,26 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
             nMinFee += nBaseValue;
         }
     }
-    xchatRobot.SubmitMsg("dicom - backend - fee after output check: " + QString::number(nMinFee));
 
     // check if the nMinFee is lower than the expected fee based on the number of outputs
-    if (nMinFee < ((outCount * nBaseValue) / 3 )) nMinFee= (outCount * nBaseValue) / 3 ;
+    qDebug() << "number of outputs: " << outCount;
+    dbCount = (outCount/3);
+    qDebug() << "double calculation: " << outCount << "/" << 3 << " = " << dbCount;
+    intCount = (outCount/3);
+    qDebug() << "integer calculation: " << outCount << "/" << 3 << " = " << intCount;
+    if (dbCount > intCount) {
+       countFee = (intCount + 1)*nBaseValue;
+    }
+    else {
+        countFee = intCount*nBaseValue;
+    }
+    qDebug() << "output count based fee: " << countFee;
+
+    //adjust fee for outputs
+    if (nMinFee < countFee) {
+        nMinFee = countFee ;
+    }
+    xchatRobot.SubmitMsg("dicom - backend - fee after output check: " + QString::number(nMinFee));
 
     xchatRobot.SubmitMsg("dicom - backend - calculated fee: " + QString::number(nMinFee));
 }
