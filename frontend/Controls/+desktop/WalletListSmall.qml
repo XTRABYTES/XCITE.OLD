@@ -83,6 +83,7 @@ Rectangle {
                     }
 
                     onPressed: {
+                        click01.play()
                         detectInteraction()
                     }
 

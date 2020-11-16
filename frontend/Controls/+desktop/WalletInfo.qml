@@ -29,8 +29,7 @@ Rectangle {
     anchors.top: parent.top
     color: "transparent"
 
-    property int addressCopied: 0
-    property int privateKeyCopied: 0
+
     property bool myTheme: darktheme
     property string coin: walletList.get(walletIndex).name
     property bool creatingPaperWallet: false
@@ -290,6 +289,11 @@ Rectangle {
                         MouseArea {
                             anchors.fill: parent
 
+                            onPressed: {
+                                click01.play()
+                                detectInteraction()
+                            }
+
                             onClicked: {
                                 if (copy2clipboard == 0 && screenshotTracker == 1) {
                                     copyText2Clipboard(addressHashLabel.text)
@@ -337,7 +341,7 @@ Rectangle {
 
                     Label {
                         id: popupClipboardText
-                        text: "Text copied!"
+                        text: "Address copied!"
                         font.family: xciteMobile.name
                         font.pointSize: popupClipboard.height/2
                         color: "#F2F2F2"
@@ -426,6 +430,11 @@ Rectangle {
                         MouseArea {
                             anchors.fill: parent
 
+                            onPressed: {
+                                click01.play()
+                                detectInteraction()
+                            }
+
                             onClicked: {
                                 if (copy2clipboard == 0 && screenshotTracker == 1) {
                                     copyText2Clipboard(privateKeyLabel.text)
@@ -473,7 +482,7 @@ Rectangle {
 
                     Label {
                         id: popupClipboardText2
-                        text: "Text copied!"
+                        text: "Private key copied!"
                         font.family: xciteMobile.name
                         font.pointSize: popupClipboard2.height/2
                         color: "#F2F2F2"

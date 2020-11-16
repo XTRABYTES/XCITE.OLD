@@ -118,7 +118,7 @@ Rectangle {
                 Text {
                     id: percentChangeLabel
                     anchors.left: parent.right
-                    anchors.leftMargin: - appWidth*1.5/6
+                    anchors.leftMargin: - appWidth*1.675/6
                     anchors.verticalCenter: coinName.verticalCenter
                     text:"24h: " + (percentage >= 0? "+" + getPercentage(name) + "%" : getPercentage(name) + "%")
                     font.pixelSize: appHeight/54

@@ -65,7 +65,7 @@ Rectangle {
 
                 Rectangle {
                     id: selectionIndicator
-                    width: parent.width - appWidth/24
+                    width: parent.width - appWidth/24 - 5
                     height: parent.height*0.8
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
@@ -76,7 +76,7 @@ Rectangle {
                 }
 
                 Rectangle {
-                    width: parent.width - appWidth/24
+                    width: parent.width - appWidth/24 - 5
                     height: parent.height*0.8
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
@@ -213,5 +213,22 @@ Rectangle {
 
         model: filteredContacts
         delegate: contactCard
+        contentHeight: filteredContacts.count * appHeight/9
+
+        ScrollBar.vertical: ScrollBar {
+            parent: grid.parent
+            anchors.top: grid.top
+            anchors.right: grid.right
+            anchors.bottom: grid.bottom
+            width: 5
+            opacity: 1
+            policy: grid.contentHeight > allWalletCards.height? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
+
+            contentItem: Rectangle {
+                implicitWidth: 5
+                implicitHeight: appWidth/24
+                color: maincolor
+            }
+        }
     }
 }

@@ -82,6 +82,7 @@ Rectangle {
                     }
 
                     onPressed: {
+                        click01.play()
                         detectInteraction()
                     }
 
@@ -91,7 +92,26 @@ Rectangle {
                     onClicked: {
                         console.log(walletName.text + "selected")
                         walletIndex = walletNR
+                        if (coinIndex < 3){
+                            historyDetailsCollected = false
+                            transactionPages = 0
+                            currentPage = 1
+                            historyTracker = 1
+                            updateTransactions(name, address, 1)
+                        }
                         walletDetailTracker = 1
+                    }
+
+                    Connections {
+                        target: explorer
+
+                        onUpdateTransactions: {
+                            if (historyDetailsCollected === false) {
+                                transactionPages = totalPages;
+                                loadTransactions(transactions);
+                                historyDetailsCollected = true
+                            }
+                        }
                     }
                 }
 
@@ -232,6 +252,7 @@ Rectangle {
                     font.pixelSize: appHeight/54
                     font.family: xciteMobile.name
                     color: themecolor
+                    opacity: coinIndex < 3? 1 : 0.3
                 }
 
                 Label {
@@ -248,6 +269,7 @@ Rectangle {
                     font.pixelSize: appHeight/54
                     font.family: xciteMobile.name
                     color: themecolor
+                    opacity: coinIndex < 3? 1 : 0.3
 
                     onNewBalanceChanged: {
                         var unconfirmedDecimals = unconfirmedTx(name, address) === 0? 2 : (unconfirmedTx(name, address) <= 1 ? 8 : (unconfirmedTx(name, address) <= 1000 ? 4 : 2))
@@ -285,6 +307,7 @@ Rectangle {
                     font.pixelSize: appHeight/54
                     font.family: xciteMobile.name
                     color: themecolor
+                    opacity: coinIndex < 3? 1 : 0.3
                 }
 
                 Label {
@@ -296,6 +319,7 @@ Rectangle {
                     font.pixelSize: appHeight/54
                     font.family: xciteMobile.name
                     color: themecolor
+                    opacity: coinIndex < 3? 1 : 0.3
                 }
 
                 Label {
@@ -312,6 +336,7 @@ Rectangle {
                     font.pixelSize: appHeight/54
                     font.family: xciteMobile.name
                     color: themecolor
+                    opacity: coinIndex < 3? 1 : 0.3
 
                     onNewBalanceChanged: {
                         var pendingDecimals = pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
@@ -349,6 +374,7 @@ Rectangle {
                     font.pixelSize: appHeight/54
                     font.family: xciteMobile.name
                     color: themecolor
+                    opacity: coinIndex < 3? 1 : 0.3
                 }
             }
         }

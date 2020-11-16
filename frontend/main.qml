@@ -371,6 +371,7 @@ ApplicationWindow {
     property int contactIndex: -1
     property bool addingContact: false
     property bool editingContact: false
+    property bool editingName: false
     property bool deletingContact: false
     property int walletIndex: 1
     property bool editingWallet: false
@@ -457,6 +458,13 @@ ApplicationWindow {
     property int systemVolumeChangeFailed: 0
     property int selectedSystemVolume: userSettings.systemVolume
     property int copy2clipboard: 0
+    property int historyClipboard: 0
+    property int historyDetailClipboard: 0
+    property int historyAddressClipboard: 0
+    property string selectedList: ""
+    property int addressCopied: 0
+    property int privateKeyCopied: 0
+    property int consoleCopied: 0
     property string address2Copy: ""
     property string txid2Copy: ""
     property bool closeAllClipboard: false
@@ -731,6 +739,19 @@ ApplicationWindow {
                 else if (portfolioTracker == 1) {
                     portfolioTracker = 0
                 }
+                else if (historyTracker == 1) {
+                    if (transactionDetailTracker == 1) {
+                        transactionDetailTracker = 0
+                    }
+                    else {
+                        if (myOS == "android" || myOS == "ios") {
+                            historyTracker = 0
+                        }
+                        else {
+                            walletDetailTracker = 0
+                        }
+                    }
+                }
                 else if (transferTracker == 1) {
                     if (calculatorTracker == 1) {
                         calculatorTracker =0
@@ -760,19 +781,6 @@ ApplicationWindow {
                     else if (transactionInProgress == false){
                         if (myOS == "android" || myOS == "ios") {
                             transferTracker = 0
-                        }
-                    }
-                }
-                else if (historyTracker == 1) {
-                    if (transactionDetailTracker == 1) {
-                        transactionDetailTracker = 0
-                    }
-                    else {
-                        if (myOS == "android" || myOS == "ios") {
-                            historyTracker = 0
-                        }
-                        else {
-                            walletDetailTracker = 0
                         }
                     }
                 }
@@ -809,6 +817,10 @@ ApplicationWindow {
                 else if (addContactTracker == 1 && !addingContact) {
                     addContactTracker = 0
                 }
+                else if (editName == 1 && !editingName) {
+                    editName = 0
+                }
+
                 else if (editContactTracker == 1 && !editingContact && !deletingContact) {
                     if (deleteContactTracker == 1) {
                         deleteContactTracker = 0
@@ -984,6 +996,9 @@ ApplicationWindow {
                         xchatTracker = 0
                         dndTracker = 0
                     }
+                }
+                else if (paperWalletGeneratorTracker == 1) {
+                    paperWalletGeneratorTracker =0
                 }
             }
             else if (selectedPage == "backup") {
@@ -2640,7 +2655,6 @@ ApplicationWindow {
                 loadTransactionAddresses(inputs, outputs)
                 transactionTimestamp = timestamp
                 transactionConfirmations = confirmations
-                transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
                 transactionDetailsCollected = true
             }
         }
@@ -3708,7 +3722,16 @@ ApplicationWindow {
         running: copy2clipboard
         interval: 2000
 
-        onTriggered: copy2clipboard = 0
+        onTriggered: {
+            historyClipboard = 0
+            historyDetailClipboard = 0
+            historyAddressClipboard = 0
+            addressCopied = 0
+            privateKeyCopied = 0
+            consoleCopied = 0
+            copy2clipboard = 0
+            closeAllClipboard = true
+        }
     }
 
     Timer {

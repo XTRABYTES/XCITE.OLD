@@ -235,6 +235,11 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Desktop.TransactionDetailModal {
+        id: myTransactionDetails
+        anchors.top:parent.top
+    }
+
     Desktop.TransferModal {
         id: myTransferModal
         anchors.top: parent.top

@@ -29,7 +29,7 @@ Rectangle {
     color: "transparent"
 
     onStateChanged: {
-        if (transferTracker == 0) {
+        if (advancedTransferTracker == 0) {
             closeTimer.start()
         }
     }
@@ -258,9 +258,8 @@ Rectangle {
             }
         }
         else if (coinID === "BTC") {
-            if (keyInput.length > 25
-                    && keyInput.length < 36
-                    &&(keyInput.text.substring(0,1) == "1" || keyInput.text.substring(0,1) == "3" || keyInput.text.substring(0,3) == "bc1")
+            if (((keyInput.length > 25 && keyInput.length < 36 &&(keyInput.text.substring(0,1) == "1" || keyInput.text.substring(0,1) == "3"))
+                 || (keyInput.length > 36 && keyInput.length < 63 && keyInput.text.substring(0,3) == "bc1"))
                     && keyInput.acceptableInput == true) {
                 validAddress = 1
             }

@@ -90,7 +90,7 @@ Rectangle {
                 onClicked: {
                     clickIndicator.visible = false
                     transactionTimestamp = ""
-                    transactionAmount = 0
+                    transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),value) )/ 100000000
                     transactionNR = txid
                     transactionDirection = direction
                     if (explorerBusy == false) {

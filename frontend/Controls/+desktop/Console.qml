@@ -450,6 +450,11 @@ Rectangle {
                             anchors.fill: parent
                             acceptedButtons: Qt.LeftButton | Qt.RightButton
 
+                            onPressed: {
+                                click01.play()
+                                detectInteraction()
+                            }
+
                             onClicked: {
                                 popupY = mouseY
                                 if (mouse.button == Qt.RightButton && copy2clipboard == 0 && pingTracker == 1 && author !== "xChatRobot") {
@@ -546,7 +551,7 @@ Rectangle {
             height: popupClipboardText.height
             anchors.horizontalCenter: replyWindow.horizontalCenter
             anchors.verticalCenter: replyWindow.verticalCenter
-            visible: copy2clipboard == 1 && pingTracker == 1
+            visible: copy2clipboard == 1 && pingTracker == 1 && consoleCopied == 1
 
             Rectangle {
                 id: popupClipboard
@@ -606,19 +611,18 @@ Rectangle {
                 id: popupConfirmText
                 height: appHeight/27
                 width: parent.width
-                anchors.bottom: popupConfirm.verticalCenter
+                anchors.bottom: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Label {
                     id: confirmText
-                    width: appWidth/6 * 1.5
+                    width: parent.width
                     text: "Copy text: " + copiedConsoleText
                     font.family: xciteMobile.name
-                    font.pointSize: parent.height/2
+                    font.pixelSize: parent.height/2
                     color: "#F2F2F2"
-                    anchors.left: parent.left
-                    anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
                     elide: Text.ElideRight
                     leftPadding: parent.height/2
                     rightPadding: parent.height/2
@@ -651,10 +655,16 @@ Rectangle {
                     MouseArea {
                         anchors.fill: parent
 
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
                         onClicked: {
                             if(copy2clipboard == 0 && pingTracker == 1 && msgAuth !== "xChatRobot") {
                                 confirmCopy = 0
                                 copyText2Clipboard(copiedConsoleText)
+                                consoleCopied = 1
                                 copy2clipboard = 1
                             }
                         }
@@ -679,6 +689,11 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
 
                         onClicked: {
                             if(copy2clipboard == 0 && pingTracker == 1 && msgAuth !== "xChatRobot") {
@@ -722,15 +737,13 @@ Rectangle {
 
         Timer {
             id: timer
-            interval: 300
+            interval: 2000
             repeat: false
             running: false
 
             onTriggered: {
                 pingReply = ""
                 requestText.text = ""
-                copy2clipboard = 0
-                closeAllClipboard = true
             }
         }
     }

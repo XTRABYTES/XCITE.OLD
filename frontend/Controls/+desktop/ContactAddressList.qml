@@ -50,7 +50,7 @@ Rectangle {
 
                 Rectangle {
                     id: selectionIndicator
-                    width: parent.width
+                    width: parent.width - 5
                     height: parent.height*0.8
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
@@ -61,7 +61,7 @@ Rectangle {
 
                 Rectangle {
                     id: cardBorder
-                    width: parent.width
+                    width: parent.width - 5
                     height: parent.height*0.8
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
@@ -196,13 +196,13 @@ Rectangle {
                                     detectInteraction()
                                 }
 
-                                onClicked: {
+                                onClicked: {/*
                                     selectedCoin = coin
                                     walletIndex = defaultWallet(coin)
                                     addressIndex = uniqueNR
                                     switchState = 1
                                     transferTracker = 1
-                                    selectedAddress = addressHash.text
+                                    selectedAddress = addressHash.text*/
                                 }
                             }
                         }
@@ -237,10 +237,27 @@ Rectangle {
     }
 
     ListView {
-        anchors.fill: parent
         id: allAddresses
+        anchors.fill: parent
         model: filteredAddress
         delegate: addressCard
         onDraggingChanged: detectInteraction()
+        contentHeight: filteredAddress.count * appHeight/9
+
+        ScrollBar.vertical: ScrollBar {
+            parent: allAddresses.parent
+            anchors.top: allAddresses.top
+            anchors.right: allAddresses.right
+            anchors.bottom: allAddresses.bottom
+            width: 5
+            opacity: 1
+            policy: allAddresses.contentHeight > allAddressCards.height? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
+
+            contentItem: Rectangle {
+                implicitWidth: 5
+                implicitHeight: appWidth/24
+                color: maincolor
+            }
+        }
     }
 }

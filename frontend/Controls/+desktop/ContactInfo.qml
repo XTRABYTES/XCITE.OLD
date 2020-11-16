@@ -51,15 +51,12 @@ Rectangle {
     ]
 
     onStateChanged: {
-        if (state == "down") {
-            editName = 0
-            editContactTracker = 0
-            addAddressTracker = 0
-            addressTracker = 0
-        }
+        editName = 0
+        editContactTracker = 0
+        addAddressTracker = 0
+        addressTracker = 0
     }
 
-    property bool editingName: false
     property int editSaved: 0
     property int editNameSaved: 0
     property int editNameFailed: 0
@@ -292,7 +289,7 @@ Rectangle {
         placeholder: "FIRST NAME"
         anchors.left: parent.left
         anchors.leftMargin: appWidth/9 + appWidth/24
-         anchors.verticalCenter: firstNameLabel.verticalCenter
+        anchors.verticalCenter: firstNameLabel.verticalCenter
         color: themecolor
         textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
         font.pixelSize: height/2
@@ -314,7 +311,7 @@ Rectangle {
         placeholder: "LAST NAME"
         anchors.left: parent.left
         anchors.leftMargin: appWidth/9 + appWidth/24
-         anchors.verticalCenter: lastNameLabel.verticalCenter
+        anchors.verticalCenter: lastNameLabel.verticalCenter
         color: themecolor
         textBackground: darktheme == true? "#0B0B09" : "#FFFFFF"
         font.pixelSize: height/2

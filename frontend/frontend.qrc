@@ -239,5 +239,10 @@
         <file>Controls/+desktop/WalletListSmall.qml</file>
         <file>Controls/+desktop/TransactionList.qml</file>
         <file>Controls/+desktop/AddressBookPicklist.qml</file>
+        <file>Controls/+desktop/HistoryList.qml</file>
+        <file>Controls/+desktop/PendingList.qml</file>
+        <file>Controls/+desktop/PaperWalletGenerator.qml</file>
+        <file>Controls/+desktop/TransactionDetailModal.qml</file>
+        <file>Controls/+desktop/TransactionAddressList.qml</file>
     </qresource>
 </RCC>

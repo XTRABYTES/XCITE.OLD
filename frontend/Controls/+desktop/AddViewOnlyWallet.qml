@@ -124,7 +124,9 @@ Rectangle {
                 }
             }
             else if (newCoinName.text == "BTC") {
-                if (newAddress.length > 25 && newAddress.length < 36 &&(newAddress.text.substring(0,1) == "1" || newAddress.text.substring(0,1) == "3" || newAddress.text.substring(0,3) == "bc1") && newAddress.acceptableInput == true) {
+                if (((newAddress.length > 25 && newAddress.length < 36 &&(newAddress.text.substring(0,1) == "1" || newAddress.text.substring(0,1) == "3"))
+                     || (newAddress.length > 36 && newAddress.length < 63 && newAddress.text.substring(0,3) == "bc1"))
+                        && newAddress.acceptableInput == true) {
                     invalidAddress = 0
                 }
                 else {
@@ -545,7 +547,7 @@ Rectangle {
         width: parent.width/2
         height: saveFailed.height + saveFailed.anchors.topMargin + saveFailedLabel.height + saveFailedLabel.anchors.topMargin + saveFailedError.height + saveFailedError.anchors.topMargin + closeFail.height*2 + closeFail.anchors.topMargin
         color: bgcolor
-        anchors.top: parent.top
+        anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         visible: editFailed == 1
 
@@ -652,7 +654,7 @@ Rectangle {
         width: parent.width/2
         height: saveSuccess.height + saveSuccess.anchors.topMargin + saveSuccessLabel.height + saveSuccessLabel.anchors.topMargin + closeSave.height*2 + closeSave.anchors.topMargin
         color: bgcolor
-        anchors.top: parent.top
+        anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         visible: editSaved == 1
 

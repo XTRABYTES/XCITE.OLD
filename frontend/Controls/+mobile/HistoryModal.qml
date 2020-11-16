@@ -400,8 +400,8 @@ Rectangle {
         height: 60
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        playing: historyDetailsCollected = false
-        visible: historyDetailsCollected = false
+        playing: historyDetailsCollected == false
+        visible: historyDetailsCollected == false
     }
 
     Timer {
@@ -417,45 +417,7 @@ Rectangle {
             historyList.clear()
         }
     }
-    /**
-    Label {
-        id: closeHistoryModal
-        z: 10
-        text: "CLOSE"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
 
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: closeHistoryModal.width
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                if (historyTracker == 1) {
-                    historyTracker = 0;
-                }
-            }
-        }
-    }
-    */
     Mobile.TransactionDetailModal {
         id: myTransactionDetails
         z: 10

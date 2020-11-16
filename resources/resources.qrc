@@ -434,5 +434,7 @@
         <file>icons/games_icon_light-01.svg</file>
         <file>icons/console_icon_light-01.svg</file>
         <file>icons/paper-wallet_icon_light-01.svg</file>
+        <file>icons/refresh_icon_dark-01.png</file>
+        <file>icons/refresh_icon_light-01.png</file>
     </qresource>
 </RCC>

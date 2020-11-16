@@ -89,7 +89,7 @@ Rectangle {
             }
 
             Label {
-                property real txAmount: (Number.fromLocaleString(Qt.locale("en_US"),amount) )/ 100000000
+                property int txAmount: (Number.fromLocaleString(Qt.locale("en_US"),amount) )/ 100000000
                 property int decimals: txAmount == 0? 2 : (txAmount <= 1000 ? 8 : (txAmount <= 1000000 ? 4 : 2))
                 property var amountArray: (txAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                 id: amountValue1
@@ -105,7 +105,7 @@ Rectangle {
             }
 
             Label {
-                property real txAmount: (Number.fromLocaleString(Qt.locale("en_US"),amount))/ 100000000
+                property int txAmount: (Number.fromLocaleString(Qt.locale("en_US"),amount) )/ 100000000
                 property int decimals: txAmount == 0? 2 : (txAmount <= 1000 ? 8 : (txAmount <= 1000000 ? 4 : 2))
                 property var amountArray: (txAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                 id: amountValue2

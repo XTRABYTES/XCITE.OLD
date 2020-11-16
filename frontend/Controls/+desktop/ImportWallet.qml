@@ -642,7 +642,7 @@ Rectangle {
             width: parent.width/2
             height: saveError.height + saveError.anchors.topMargin + errorLabel.height + errorLabel.anchors.topMargin + closeError.height*2 + closeError.anchors.topMargin
             color: bgcolor
-            anchors.top: parent.top
+            anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             visible: importWalletFailed == 1
 
@@ -1034,7 +1034,7 @@ Rectangle {
             width: parent.width/2
             height: saveFailed.height + saveFailed.anchors.topMargin + saveFailedLabel.height + saveFailedLabel.anchors.topMargin + saveFailedError.height + saveFailedError.anchors.topMargin + closeFail.height*2 + closeFail.anchors.topMargin
             color: bgcolor
-            anchors.top: parent.top
+            anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editFailed == 1
 
@@ -1136,7 +1136,7 @@ Rectangle {
             width: parent.width/2
             height: saveSuccess.height + saveSuccess.anchors.topMargin + saveSuccessLabel.height + saveSuccessLabel.anchors.topMargin + closeSave.height*2 + closeSave.anchors.topMargin
             color: bgcolor
-            anchors.top: parent.top
+            anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 1
 

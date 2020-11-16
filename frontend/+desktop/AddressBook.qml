@@ -62,54 +62,6 @@ Rectangle {
     }
 
     Rectangle {
-        id: transferButton
-        height: appHeight/24
-        width: appWidth/6
-        anchors.left: parent.left
-        anchors.leftMargin: appWidth/24
-        anchors.top: searchAddressBook.bottom
-        anchors.topMargin: appHeight/12
-        color: "transparent"
-        border.width: 1
-        border.color: themecolor
-
-        Label {
-            id: transferLabel
-            text: "TRANSFER"
-            anchors.left: parent.left
-            anchors.leftMargin: parent.height/2
-            anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: parent.height/2
-            font.family: xciteMobile.name
-            color: themecolor
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-
-            onEntered: {
-                parent.border.color = maincolor
-                transferLabel.color = maincolor
-            }
-
-            onExited: {
-                parent.border.color = themecolor
-                transferLabel.color = themecolor
-            }
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-
-            }
-        }
-    }
-
-    Rectangle {
         id: contactButton
         height: appHeight/24
         width: appWidth/6
@@ -160,7 +112,7 @@ Rectangle {
     Rectangle {
         id: walletArea
         width: parent.width
-        anchors.top: transferButton.bottom
+        anchors.top: contactButton.bottom
         anchors.topMargin: appHeight/24
         anchors.bottom: parent.bottom
         anchors.bottomMargin: appWidth/24

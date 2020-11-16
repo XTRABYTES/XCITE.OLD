@@ -78,7 +78,6 @@ Rectangle {
     property bool myTheme: darktheme
     property int transferSwitchState: (coinIndex < 3 || walletList.get(walletIndex).viewOnly)? 0 : 1
     property int myIndex: walletIndex
-    property int addressCopied: 0
 
     property int transactionSend: 0
     property int failedSend: 0
@@ -115,11 +114,19 @@ Rectangle {
     property var transferArray
     property int precision: 0
     property bool qrFound: false
+    property int newHistory: 0
 
     onMyIndexChanged: {
         historySwitch.state = "off"
         transferSwitchState = walletList.get(walletIndex).viewOnly? 0 : transferSwitchState
         transferSwitch.state = transferSwitchState == 0 ? "off" : "on"
+
+        if (coinIndex < 3){
+            historyDetailsCollected = false
+            transactionPages = 0
+            currentPage = 1
+            updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, 1)
+        }
     }
 
     function compareAddress(){
@@ -171,9 +178,8 @@ Rectangle {
             }
         }
         else if (coinID === "BTC") {
-            if (keyInput.length > 25
-                    && keyInput.length < 36
-                    &&(keyInput.text.substring(0,1) == "1" || keyInput.text.substring(0,1) == "3" || keyInput.text.substring(0,3) == "bc1")
+            if (((keyInput.length > 25 && keyInput.length < 36 && (keyInput.text.substring(0,1) == "1" || keyInput.text.substring(0,1) == "3"))
+                 || (keyInput.length > 36 && keyInput.length < 63 && keyInput.text.substring(0,3) == "bc1"))
                     && keyInput.acceptableInput == true) {
                 invalidAddress = 0
             }
@@ -375,7 +381,7 @@ Rectangle {
                 anchors.top: transactionLabel.bottom
                 anchors.topMargin: appWidth/48
                 state: transferSwitchState == 0 ? "off" : "on"
-                switchActive: coinIndex < 3 && !walletList.get(walletIndex).viewOnly
+                switchActive: coinIndex < 3 && !walletList.get(walletIndex).viewOnly && addressbookTracker == 0
                 visible: transactionSend == 0
             }
 
@@ -568,7 +574,6 @@ Rectangle {
 
                     Item {
                         id: textPopup
-                        z: 12
                         width: popupClipboard.width
                         height: popupClipboardText.height
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -588,7 +593,7 @@ Rectangle {
                             id: popupClipboardText
                             text: "Address copied!"
                             font.family: xciteMobile.name
-                            font.pointSize: popupClipboard.height/2
+                            font.pixelSize: appHeight/54
                             color: "#F2F2F2"
                             horizontalAlignment: Text.AlignHCenter
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -1169,7 +1174,7 @@ Rectangle {
 
                 Text {
                     id: feeLabel
-                    text: "TRANSACTION FEE:"
+                    text: "TX FEE:"
                     anchors.left: parent.left
                     anchors.top: reference.bottom
                     anchors.topMargin: appHeight/36
@@ -1307,6 +1312,8 @@ Rectangle {
                                 receivedSender = ""
                                 receivedTxID = ""
                                 usedCoins = ""
+                                keyInput.text = ""
+                                sendAmount.text = ""
                             }
                         }
 
@@ -1511,12 +1518,12 @@ Rectangle {
                 font.pixelSize: appHeight/36
                 font.family: xciteMobile.name
                 anchors.top: parent.top
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenter: historyListArea.horizontalCenter
             }
 
             Controls.Switch {
                 id: historySwitch
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenter: historyListArea.horizontalCenter
                 anchors.top: historyLabel.bottom
                 anchors.topMargin: appWidth/48
                 state: "off"
@@ -1544,7 +1551,332 @@ Rectangle {
                 font.family: xciteMobile.name
                 color: historySwitch.switchOn ? maincolor : "#757575"
             }
+
+            Image {
+               id: refreshButton
+               source: darktheme == true? "qrc:/icons/refresh_icon_light-01.png" : "qrc:/icons/refresh_icon_dark-01.png"
+               height: historySwitch.height
+               fillMode: Image.PreserveAspectFit
+               anchors.right: historyListArea.right
+               anchors.verticalCenter: historySwitch.verticalCenter
+               visible: coinIndex < 3 && historySwitch.state == "off"
+               rotation : 0
+
+               property bool updating: loadTransactionsInitiated
+
+               onUpdatingChanged: {
+                   if (!updating) {
+                       refreshButton.rotation = 0
+                   }
+               }
+
+               Timer {
+                   interval: 100
+                   repeat: true
+                   running: refreshButton.updating
+
+                   onTriggered: {
+                       refreshButton.rotation += 15
+                   }
+               }
+
+               Rectangle {
+                   anchors.fill: parent
+                   radius: width/2
+                   color: "transparent"
+
+                   MouseArea {
+                       anchors.fill: parent
+
+                       onClicked: {
+                           loadTransactionsInitiated = true
+                           click01.play()
+                           detectInteraction()
+                           newHistory = 1
+                           updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                       }
+                   }
+               }
+            }
+
+            Rectangle {
+                id: historyListArea
+                height: parent.height*2/3
+                anchors.left: parent.left
+                anchors.leftMargin: appWidth/24
+                anchors.right: parent.right
+                anchors.top: historySwitch.bottom
+                anchors.topMargin: appWidth/96
+                color: "transparent"
+                clip: true
+
+                Desktop.HistoryList {
+                    id: myHistory
+                    anchors.top: parent.top
+                    visible: historySwitch.state == "off" && historyDetailsCollected == true && coinIndex < 3
+                }
+
+
+
+                Desktop.PendingList {
+                    id: myPending
+                    anchors.top: parent.top
+                    visible: historySwitch.state == "on" && coinIndex < 3
+                }
+            }
+
+            Item {
+                z: 3
+                width: popupExplorerBusy.width
+                height: 50
+                anchors.horizontalCenter: historyListArea.horizontalCenter
+                anchors.verticalCenter: historyListArea.verticalCenter
+                visible: explorerBusy == true && explorerPopup == 1
+
+                Rectangle {
+                    id: popupExplorerBusy
+                    height: popupExplorerText.font.pixelSize*2
+                    width: popupExplorerText.width + popupClipboardText.font.pixelSize*2
+                    color: "#34363D"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Label {
+                    id: popupExplorerText
+                    text: "Explorer is busy. Try again"
+                    font.family: xciteMobile.name
+                    font.pointSize: appHeight/54
+                    color: "#E55541"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Timer {
+                    repeat: false
+                    running: explorerPopup == 1
+                    interval: 2000
+
+                    onTriggered: explorerPopup = 0
+                }
+            }
+
+            Rectangle {
+                z: 3
+                anchors.fill: historyListArea
+                color: "black"
+                opacity: 0.50
+                visible: historyDetailsCollected = false
+
+                MouseArea {
+                    anchors.fill: parent
+                }
+            }
+
+            AnimatedImage  {
+                z: 3
+                id: waitingDots
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 75
+                height: 50
+                anchors.horizontalCenter: historyListArea.horizontalCenter
+                anchors.verticalCenter: historyListArea.verticalCenter
+                playing: historyDetailsCollected == false && coinIndex < 3
+                visible: historyDetailsCollected == false && coinIndex < 3
+            }
+
+            Label {
+                z: 3
+                text: "Not available for this coion"
+                font.family: xciteMobile.name
+                font.pointSize: appHeight/54
+                color: themecolor
+                anchors.horizontalCenter: historyListArea.horizontalCenter
+                anchors.verticalCenter: historyListArea.verticalCenter
+                visible: coinIndex > 2
+            }
+
+            Label {
+                id: historyFirst
+                text: "FIRST"
+                anchors.left: historyListArea.left
+                anchors.top: historyListArea.bottom
+                anchors.topMargin: font.pixelSize
+                font.pixelSize: appHeight/54
+                font.family: xciteMobile.name
+                color: themecolor
+                font.letterSpacing: 2
+                visible: currentPage > 2 && historySwitch.state == "off"
+
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: parent.height + parent.font.pixelSize/2
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            loadTransactionsInitiated = true
+                            currentPage = 1
+                            newHistory = 1
+                            updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                        }
+                    }
+                }
+            }
+
+            Label {
+                id: historyPrevious
+                text: "PREVIOUS"
+                anchors.left: currentPage == 2? historyListArea.left : historyFirst.right
+                anchors.leftMargin: currentPage == 2? 0 : font.pixelSize
+                anchors.top: historyListArea.bottom
+                anchors.topMargin: font.pixelSize
+                font.pixelSize: appHeight/54
+                font.family: xciteMobile.name
+                color: themecolor
+                font.letterSpacing: 2
+                visible: currentPage !== 1 && historySwitch.state == "off"
+
+                Rectangle {
+                    anchors.left: historyPrevious.left
+                    anchors.right: historyPrevious.right
+                    anchors.verticalCenter: historyPrevious.verticalCenter
+                    height: historyPrevious.height + historyPrevious.font.pixelSize/2
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            loadTransactionsInitiated = true
+                            currentPage = currentPage - 1
+                            newHistory = 1
+                            updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                        }
+                    }
+                }
+            }
+
+            Label {
+                id: pageCount
+                text: currentPage + " of " + transactionPages
+                anchors.horizontalCenter: historyListArea.horizontalCenter
+                anchors.top: historyListArea.bottom
+                anchors.topMargin: font.pixelSize
+                font.pixelSize: appHeight/54
+                font.family: xciteMobile.name
+                color: themecolor
+                visible: transactionPages > 0 && historySwitch.state == "off"
+            }
+
+            Label {
+                id: historyNext
+                text: "NEXT"
+                anchors.right: currentPage === transactionPages - 1? historyListArea.right : historyLast.left
+                anchors.rightMargin: currentPage === transactionPages - 1? 0 : font.pixelSize
+                anchors.top: historyListArea.bottom
+                anchors.topMargin: font.pixelSize
+                font.pixelSize: appHeight/54
+                font.family: xciteMobile.name
+                color: themecolor
+                font.letterSpacing: 2
+                visible: currentPage < transactionPages && historySwitch.state == "off"
+
+                Rectangle {
+                    anchors.left: historyNext.left
+                    anchors.right: historyNext.right
+                    anchors.verticalCenter: historyNext.verticalCenter
+                    height: historyNext.height + historyNext.font.pixelSize/2
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            loadTransactionsInitiated = true
+                            currentPage = currentPage + 1
+                            newHistory = 1
+                            updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                        }
+                    }
+                }
+            }
+
+            Label {
+                id: historyLast
+                text: "LAST"
+                anchors.right: historyListArea.right
+                anchors.top: historyListArea.bottom
+                anchors.topMargin: font.pixelSize
+                font.pixelSize: appHeight/54
+                font.family: xciteMobile.name
+                color: themecolor
+                font.letterSpacing: 2
+                visible: currentPage < transactionPages - 1 && historySwitch.state == "off"
+
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: parent.height + parent.font.pixelSize/2
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            loadTransactionsInitiated = true
+                            currentPage = transactionPages
+                            newHistory = 1
+                            updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                        }
+                    }
+                }
+            }
+
+            Connections {
+                target: explorer
+
+                onUpdateTransactions: {
+                    if (historyTracker === 1) {
+                        loadTransactions(transactions);
+                        newHistory = 0
+                        loadTransactionsInitiated = false
+                    }
+                }
+            }
         }
+    }
+
+    Rectangle {
+        anchors.fill: closeAddressList
+        radius: height/2
+        color: bgcolor
+        opacity: 0.9
     }
 
     Rectangle {
@@ -1669,6 +2001,13 @@ Rectangle {
                 }
             }
         }
+    }
+
+    Rectangle {
+        anchors.fill: closeWalletList
+        radius: height/2
+        color: bgcolor
+        opacity: 0.9
     }
 
     Rectangle {
