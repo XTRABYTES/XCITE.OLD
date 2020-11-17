@@ -26,6 +26,10 @@ Rectangle {
     color: "transparent"
 
     property int walletCount: filteredWallets.count
+    property bool onlyView: false
+    property bool onlyViewActive: false
+    property string coinFilter: ""
+    property int availableWallets: filteredWallets.count
 
     Component {
         id: walletCard
@@ -156,11 +160,16 @@ Rectangle {
         filters: [
             RegExpFilter {
                 roleName: "name"
-                pattern: "^" + getName(coinIndex) + "$"
+                pattern: "^" + coinFilter + "$"
             },
             ValueFilter {
                 roleName: "remove"
                 value: false
+            },
+            ValueFilter {
+                roleName: "viewOnly"
+                value: onlyView
+                enabled: onlyViewActive
             }
 
         ]

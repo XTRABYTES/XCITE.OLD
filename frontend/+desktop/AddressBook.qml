@@ -32,8 +32,6 @@ Rectangle {
     property bool myTheme: darktheme
 
     onMyThemeChanged: {
-        transferButton.border.color = themecolor
-        transferLabel.color = themecolor
         contactButton.border.color = themecolor
         contactLabel.color = themecolor
     }
@@ -143,6 +141,11 @@ Rectangle {
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
+    }
+
+    Desktop.AddressBookTransaction {
+        id: myAddressBookTransaction
+        anchors.top: parent.top
     }
 
     Rectangle {

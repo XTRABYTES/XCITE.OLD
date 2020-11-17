@@ -288,7 +288,7 @@ Rectangle {
 
     Label {
         id: newCoinName
-        text: newCoinSelect == 1? coinList.get(newCoinPicklist).name : (addressIndex >= 0? addressList.get(addressIndex).coin : "")
+        text: newCoinSelect == 1? coinList.get(newCoinPicklist).name : (addressIndex >= 0? addressList.get(addressIndex).coin : "XFUEL")
         anchors.left: newIcon.right
         anchors.leftMargin: font.pixelSize/2
         anchors.verticalCenter: newIcon.verticalCenter

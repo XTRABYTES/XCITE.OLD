@@ -161,6 +161,7 @@ Rectangle {
                             color: "transparent"
                             border.color: themecolor
                             border.width: 1
+                            opacity: (coin == "XBY" || coin == "XFUEL" || coin == "XTEST")? 1 : 0.3
 
                             Rectangle {
                                 id: selectTransfer
@@ -182,6 +183,7 @@ Rectangle {
                             MouseArea {
                                 anchors.fill: parent
                                 hoverEnabled: true
+                                enabled: coin == "XBY" || coin == "XFUEL" || coin == "XTEST"
 
                                 onEntered: {
                                     selectTransfer.visible = true
@@ -196,13 +198,13 @@ Rectangle {
                                     detectInteraction()
                                 }
 
-                                onClicked: {/*
+                                onClicked: {
                                     selectedCoin = coin
-                                    walletIndex = defaultWallet(coin)
+                                    selectedAddress = address
+                                    coinIndex = getCoinID(selectedCoin)
                                     addressIndex = uniqueNR
-                                    switchState = 1
+                                    walletIndex = -1
                                     transferTracker = 1
-                                    selectedAddress = addressHash.text*/
                                 }
                             }
                         }

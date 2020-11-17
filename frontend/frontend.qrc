@@ -244,5 +244,6 @@
         <file>Controls/+desktop/PaperWalletGenerator.qml</file>
         <file>Controls/+desktop/TransactionDetailModal.qml</file>
         <file>Controls/+desktop/TransactionAddressList.qml</file>
+        <file>Controls/+desktop/AddressBookTransaction.qml</file>
     </qresource>
 </RCC>

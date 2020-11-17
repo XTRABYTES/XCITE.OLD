@@ -283,6 +283,7 @@ Rectangle {
         border.width: 1
         color: "transparent"
         visible: walletListTracker == 0 && scanQRTracker == 0 && addressbookTracker == 0
+        opacity: myWalletListSmall.availableWallets > 0? 1 : 0.3
 
         Rectangle {
             id: selectChange
@@ -295,6 +296,7 @@ Rectangle {
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
+            enabled: myWalletListSmall.availableWallets > 0
 
             onEntered: {
                 selectChange.visible = true
@@ -932,22 +934,25 @@ Rectangle {
                             target: xUtility
 
                             onNewNetwork: {
-                                if (transferTracker == 1 && selectNetwork == true && advancedTransferTracker == 0) {
+                                if (transferTracker == 1 && selectNetwork == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     coinListTracker = 0
                                     walletListTracker = 0
                                     selectNetwork = false
                                     var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
-                                    var msg = "UI - send coins - target:" + keyInput.text + ", amount:" +  sendAmount.text + ", private key: " +  getPrivKey(walletList.get(walletIndex).name, walletList.get(walletIndex).label)
+                                    var msg = "UI - send coins - target:" + keyInput.text + ", amount:" +  sendAmount.text + ", private key: " +  walletList.get(walletIndex).privatekey
                                     xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
-                                    sendCoins(keyInput.text + "-" +  sendAmount.text + " " +  sendAmount.text + " " +  getPrivKey(walletList.get(walletIndex).name, walletList.get(walletIndex).label))
+                                    sendCoins(keyInput.text + "-" +  sendAmount.text + " " +  sendAmount.text + " " +  walletList.get(walletIndex).privatekey)
                                 }
                             }
 
                             onBadNetwork: {
-                                if (transferTracker == 1 && selectNetwork == true && advancedTransferTracker == 0) {
+                                if (transferTracker == 1 && selectNetwork == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     badNetwork = 1
                                     selectNetwork = false
                                     createTx = false
+                                    txFailError = "Wrong network"
+                                    transactionSend = 1
+                                    failedSend = 1
                                 }
                             }
                         }
@@ -957,7 +962,7 @@ Rectangle {
                             target: StaticNet
 
                             onSendFee: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0) {
+                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     notification.play()
                                     console.log("sender: " + sender_ + " receiver: " + receiver_ + " amount: " + sendAmount_)
                                     var r
@@ -994,7 +999,7 @@ Rectangle {
                                 }
                             }
                             onRawTxFailed: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0) {
+                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     console.log("failed to create raw transaction")
                                     txFailError = "Failed to create raw transaction"
                                     createTx = false
@@ -1003,7 +1008,7 @@ Rectangle {
                                 }
                             }
                             onFundsLow: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0) {
+                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     console.log("Funds too low")
                                     txFailError = error
                                     createTx = false
@@ -1012,7 +1017,7 @@ Rectangle {
                                 }
                             }
                             onUtxoError: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0) {
+                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     console.log("Error retrieving UTXO")
                                     txFailError = "Error retrieving UTXO"
                                     createTx = false
@@ -1049,7 +1054,7 @@ Rectangle {
 
             Item {
                 id: confirmTransaction
-                anchors.top: parent.top
+                anchors.top: transactionLabel.bottom
                 anchors.left: parent.left
                 anchors.bottom: parent.bottom
                 anchors.right: parent.right
@@ -1062,9 +1067,9 @@ Rectangle {
                     text: "SENDING:"
                     anchors.left: parent.left
                     anchors.top: parent.top
-                    anchors.topMargin: appHeight/18
+                    anchors.topMargin: font.pixelSize/2
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1082,7 +1087,7 @@ Rectangle {
                     anchors.top: amount.top
                     anchors.right: amount.right
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1094,9 +1099,9 @@ Rectangle {
                     text: amountArray[1] !== undefined?  ("." + amountArray[1]) : ".0000"
                     anchors.bottom: confirmationAmount.bottom
                     anchors.right: confirmationAmount.left
-                    anchors.rightMargin: appHeight/36
+                    anchors.rightMargin: appHeight/54
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1107,9 +1112,9 @@ Rectangle {
                     id: confirmationAmount2
                     text: amountArray[0]
                     anchors.top: confirmationAmount.top
-                    anchors.left: amount.left
+                    anchors.right: confirmationAmount1.left
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1118,9 +1123,9 @@ Rectangle {
                     text: "TO:"
                     anchors.left: parent.left
                     anchors.top: sendingLabel.bottom
-                    anchors.topMargin: appHeight/36
+                    anchors.topMargin: appHeight/54
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1134,7 +1139,7 @@ Rectangle {
                     anchors.bottom: to.bottom
                     anchors.right: parent.right
                     font.family: xciteMobile.name
-                    font.pixelSize: addressName != ""? 16 : 10
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1145,7 +1150,7 @@ Rectangle {
                     anchors.topMargin: font.pixelSize/3
                     anchors.right: parent.right
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/45
+                    font.pixelSize: appHeight/54
                     color: themecolor
                     visible: receivedLabel != ""
                 }
@@ -1155,9 +1160,9 @@ Rectangle {
                     text: "REF.:"
                     anchors.left: parent.left
                     anchors.top: confirmationAddressName.bottom
-                    anchors.topMargin: appHeight/27
+                    anchors.topMargin: appHeight/36
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1167,7 +1172,7 @@ Rectangle {
                     anchors.bottom: reference.bottom
                     anchors.right: parent.right
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     font.italic: referenceInput.text !== ""
                     color: themecolor
                 }
@@ -1177,9 +1182,9 @@ Rectangle {
                     text: "TX FEE:"
                     anchors.left: parent.left
                     anchors.top: reference.bottom
-                    anchors.topMargin: appHeight/36
+                    anchors.topMargin: appHeight/54
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1197,7 +1202,7 @@ Rectangle {
                     anchors.top: feeAmount.top
                     anchors.right: feeAmount.right
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1211,7 +1216,7 @@ Rectangle {
                     anchors.right: confirmationFeeAmount.left
                     anchors.rightMargin: font.pixelSize
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1222,9 +1227,9 @@ Rectangle {
                     id: confirmationFeeAmount2
                     text: feeArray[0]
                     anchors.top: confirmationFeeAmount.top
-                    anchors.left: feeAmount.left
+                    anchors.right: confirmationFeeAmount1.left
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -2022,7 +2027,7 @@ Rectangle {
         anchors.rightMargin: appWidth/12
         anchors.bottom: selectWalletArea.top
         anchors.bottomMargin: height/2
-        visible: walletListTracker == 1
+        visible: walletListTracker == 1 && pageTracker == 0
 
         Item {
             width: parent.width*0.6
@@ -2101,7 +2106,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.rightMargin: appWidth/12
-        state: walletListTracker == 0 ? "down" : "up"
+        state: walletListTracker == 0 && pageTracker == 0? "down" : "up"
         clip: true
 
         states: [
@@ -2126,6 +2131,8 @@ Rectangle {
         Desktop.WalletListSmall {
             id: myWalletListSmall
             anchors.top: parent.top
+            onlyView: false
+            coinFilter: getName(coinIndex)
         }
     }
 

@@ -1256,10 +1256,10 @@ Rectangle {
                                     var c = advancedTXList.count
                                     var r = c.toLocaleString(Qt.locale("en_US"), "f", 0) + " receivers"
                                     var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
-                                    var msg = "UI - send coins - target:" + r + ", amount:" +  totalSendAmount + ", private key: " +  getPrivKey(walletList.get(walletIndex).name, walletList.get(walletIndex).label)
+                                    var msg = "UI - send coins - target:" + r + ", amount:" +  totalSendAmount + ", private key: " +  walletList.get(walletIndex).privatekey
                                     xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
                                     console.log("creating transaction - Receiverlis: " + receiverList + " total amount: " + totalSendAmount)
-                                    sendCoins(receiverList + " " +  totalSendAmount + " " +  getPrivKey(walletList.get(walletIndex).name, walletList.get(walletIndex).label))
+                                    sendCoins(receiverList + " " +  totalSendAmount + " " +  walletList.get(walletIndex).privatekey)
                                 }
                             }
 
@@ -1268,6 +1268,9 @@ Rectangle {
                                     badNetwork = 1
                                     selectNetwork = false
                                     createTx = false
+                                    txFailError = "Wrong network"
+                                    transactionSend = 1
+                                    failedSend = 1
                                 }
                             }
                         }
@@ -1396,6 +1399,7 @@ Rectangle {
                             receiverList = ""
                             totalSendAmount = "0"
                             estimatedFee = 0
+                            selectClear.visible = false
                         }
                     }
                 }
@@ -1541,7 +1545,7 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.top: parent.top
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1559,7 +1563,7 @@ Rectangle {
                     anchors.top: amount.top
                     anchors.right: amount.right
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1571,9 +1575,9 @@ Rectangle {
                     text: amountArray[1] !== undefined?  ("." + amountArray[1]) : ".0000"
                     anchors.bottom: confirmationAmount.bottom
                     anchors.right: confirmationAmount.left
-                    anchors.rightMargin: appHeight/36
+                    anchors.rightMargin: appHeight/54
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1584,9 +1588,9 @@ Rectangle {
                     id: confirmationAmount2
                     text: amountArray[0]
                     anchors.top: confirmationAmount.top
-                    anchors.left: amount.left
+                    anchors.right: confirmationAmount1.left
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1595,9 +1599,9 @@ Rectangle {
                     text: "TO:"
                     anchors.left: parent.left
                     anchors.top: sendingLabel.bottom
-                    anchors.topMargin: appHeight/36
+                    anchors.topMargin: appHeight/54
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1611,7 +1615,7 @@ Rectangle {
                     anchors.bottom: to.bottom
                     anchors.right: parent.right
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1622,7 +1626,7 @@ Rectangle {
                     anchors.topMargin: font.pixelSize/3
                     anchors.right: parent.right
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/45
+                    font.pixelSize: appHeight/54
                     color: themecolor
                     visible: receivedLabel != ""
                 }
@@ -1632,9 +1636,9 @@ Rectangle {
                     text: "REF.:"
                     anchors.left: parent.left
                     anchors.top: confirmationAddressName.bottom
-                    anchors.topMargin: appHeight/27
+                    anchors.topMargin: appHeight/36
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1647,7 +1651,7 @@ Rectangle {
                     leftPadding: font.pixelSize*2
                     horizontalAlignment: Text.AlignRight
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     font.italic: referenceText.text == "no reference"
                     color: themecolor
                     elide: Text.ElideRight
@@ -1658,9 +1662,9 @@ Rectangle {
                     text: "TX FEE:"
                     anchors.left: parent.left
                     anchors.top: reference.bottom
-                    anchors.topMargin: appHeight/36
+                    anchors.topMargin: appHeight/54
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1678,7 +1682,7 @@ Rectangle {
                     anchors.top: feeAmount.top
                     anchors.right: feeAmount.right
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1691,7 +1695,7 @@ Rectangle {
                     anchors.right: confirmationFeeAmount.left
                     anchors.rightMargin: font.pixelSize
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
@@ -1701,9 +1705,9 @@ Rectangle {
                     id: confirmationFeeAmount2
                     text: feeArray[0]
                     anchors.top: confirmationFeeAmount.top
-                    anchors.left: feeAmount.left
+                    anchors.right: confirmationFeeAmount1.left
                     font.family: xciteMobile.name
-                    font.pixelSize: appHeight/36
+                    font.pixelSize: appHeight/54
                     color: themecolor
                 }
 
