@@ -13,13 +13,25 @@ pdfPrinter::pdfPrinter(QObject *parent) : QObject(parent)
 
 }
 
-void pdfPrinter::createPaperWalletImage(QString coin, QString address, QQuickItem *wallet) {
+void pdfPrinter::createPaperWalletImage(QString coin, QString address, QQuickItem *wallet, QString label) {
     QString walletCoin = coin;
     QString walletAddress = address;
-    QString destDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/XCITE_paperwallet";
+    QString destDir;
+    if (label == "") {
+        destDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/XCITE_paperwallet/backups";
+    }
+    else {
+        destDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/XCITE_paperwallet";
+    }
     QDir dirDest;
     dirDest.mkpath(destDir);
-    QString fileName = walletCoin + "_" + walletAddress + ".png";
+    QString fileName;
+    if (label != "") {
+        fileName = walletCoin + "_" + label + ".png";
+    }
+    else {
+        fileName = walletCoin + "_" + walletAddress + ".png";
+    }
     qDebug() << " Writing to " + destDir + "/" + fileName;
     QString fullFileName = destDir + "/" + fileName;
     bool exists = QFile::exists(fullFileName);

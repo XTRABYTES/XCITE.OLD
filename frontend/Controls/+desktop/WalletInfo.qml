@@ -110,7 +110,7 @@ Rectangle {
             id: createButtonText
             text: "CREATE PAPER WALLET"
             font.family: xciteMobile.name
-            font.pointSize: parent.height/2
+            font.pixelSize: parent.height/2
             color: themecolor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -642,7 +642,7 @@ Rectangle {
 
                 onClicked: {
                     creatingPaperWallet = true
-                    pdfprinter.createPaperWalletImage(coin, myPaperWallet.address, mySavedPaperWallet)
+                    pdfprinter.createPaperWalletImage(coin, myPaperWallet.address, mySavedPaperWallet, "")
                 }
             }
 
@@ -667,7 +667,7 @@ Rectangle {
                 id: createFileButtonText
                 text: "SAVE TO DEVICE"
                 font.family: xciteMobile.name
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: themecolor
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter

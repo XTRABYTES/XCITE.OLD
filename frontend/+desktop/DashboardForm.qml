@@ -362,11 +362,7 @@ Item {
 
                     Label {
                         id: openApp
-                        text: xchangeTracker == 1? "X-CHANGE" :
-                                                   (xchatTracker == 1? "X-CHAT" :
-                                                                       (xvaultTracker == 1? "X-VAULT" :
-                                                                                            (xgamesTracker == 1? "X-GAMES":
-                                                                                                                 (pingTracker == 1? "CONSOLE" : ""))))
+                        text: selectedApp
                         color: "#14161B"
                         font.family: xciteMobile.name
                         font.pixelSize: parent.height*3/16

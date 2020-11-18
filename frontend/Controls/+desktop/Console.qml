@@ -51,7 +51,6 @@ Rectangle {
         else {
             msgList.positionViewAtEnd()
             requestQueue()
-            selectedApp = ""
         }
     }
 

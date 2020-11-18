@@ -920,16 +920,14 @@ ApplicationWindow {
                 }
             }
             else if (selectedPage == "apps") {
-                if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 && xgamesTracker == 0 && pingTracker == 0) {
-                    if (myOS == "android" || myOS == "ios") {
-                        appsTracker = 0
-                        selectedPage = "home"
-                        mainRoot.pop()
-                    }
+                if (paperWalletGeneratorTracker == 1) {
+                    paperWalletGeneratorTracker = 0
+                    selectedApp = ""
                 }
                 else if (pingTracker == 1 && networkError == 0) {
                     pingTracker = 0
                     setQueue("dicom_testqueue_v4")
+                    selectedApp = ""
                 }
 
                 else if (xgamesTracker == 1 && networkError == 0) {
@@ -950,11 +948,13 @@ ApplicationWindow {
                     }
                     else {
                         xgamesTracker = 0
+                        selectedApp = ""
                     }
                 }
 
                 else if (xvaultTracker == 1 && networkError == 0) {
                     xvaultTracker =0
+                    selectedApp = ""
                 }
                 else if (xchangeTracker == 1 && networkError == 0) {
                     if (xchangeSettingsTracker == 1) {
@@ -962,6 +962,7 @@ ApplicationWindow {
                     }
                     else {
                         xchangeTracker = 0
+                        selectedApp = ""
                     }
                 }
                 else if (xchatTracker == 1 && networkError == 0) {
@@ -995,10 +996,13 @@ ApplicationWindow {
                     else {
                         xchatTracker = 0
                         dndTracker = 0
+                        selectedApp = ""
                     }
                 }
-                else if (paperWalletGeneratorTracker == 1) {
-                    paperWalletGeneratorTracker =0
+                else if (myOS == "android" || myOS == "ios") {
+                    appsTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
                 }
             }
             else if (selectedPage == "backup") {

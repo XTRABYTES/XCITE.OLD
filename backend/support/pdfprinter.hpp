@@ -25,7 +25,7 @@ public:
     void getSize (QString fileName);
 
 public slots:
-    void createPaperWalletImage(QString coin, QString address, QQuickItem *wallet);
+    void createPaperWalletImage(QString coin, QString address, QQuickItem *wallet, QString label);
 
 signals:
     void paperWalletCreated(QString fileName);

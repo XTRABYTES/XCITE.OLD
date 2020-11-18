@@ -30,7 +30,8 @@ Rectangle {
     property string publicKey: ""
     property string privateKey: ""
     property string walletLabel: ""
-    property string walletAmount: ""
+    property real walletAmount: 0
+    property int decimals: walletAmount > 1000000? 2 : walletAmount > 1000? 4 : 8
 
     Image {
         id: background
@@ -133,7 +134,7 @@ Rectangle {
             text: "Wallet address (" + coin + ")"
             color: "black"
             font.family: xciteMobile.name
-            font.pixelSize: addressString.font.pixelSize*2
+            font.pixelSize: addressString.font.pixelSize*1.5
             anchors.left: addressString.left
             anchors.bottom: addressString.top
         }
@@ -224,7 +225,7 @@ Rectangle {
 
         Label {
             id: amountValue
-            text: walletAmount
+            text: walletAmount !== 0? walletAmount.toLocaleString(Qt.locale("en_US"), "f", decimals) : "................................."
             color: "black"
             font.family: xciteMobile.name
             font.pixelSize: downloadLabel.font.pixelSize
@@ -261,9 +262,12 @@ Rectangle {
             text: walletLabel
             color: "black"
             font.family: xciteMobile.name
-            font.pixelSize: downloadLabel.font.pixelSize*2.5
+            font.pixelSize: walletLabel.length < 14? downloadLabel.font.pixelSize*2.5 : walletLabel.length < 21? downloadLabel.font.pixelSize*2.5/1.5 : walletLabel.length < 28? downloadLabel.font.pixelSize*2.5/2 : downloadLabel.font.pixelSize
             font.bold: true
             anchors.left: amountValue.left
+            anchors.right: parent.right
+            anchors.rightMargin: parent.width*0.05
+            elide: Text.ElideRight
             anchors.bottom: divider.top
             anchors.bottomMargin: font.pixelSize/4
         }
@@ -374,7 +378,7 @@ Rectangle {
             text: "Private key"
             color: "black"
             font.family: xciteMobile.name
-            font.pixelSize: keyString.font.pixelSize*2
+            font.pixelSize: keyString.font.pixelSize*1.5
             anchors.left: keyString.left
             anchors.bottom: keyString.top
         }

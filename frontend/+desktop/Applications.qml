@@ -65,6 +65,11 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Desktop.PaperWalletGenerator {
+        id: myPaperWalletGenerator
+        anchors.top: parent.top
+    }
+
     Mobile.XChat {
         id: myXchat
         anchors.top: parent.top
