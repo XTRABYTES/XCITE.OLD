@@ -122,6 +122,7 @@ Rectangle {
         id: coinsButton
         height: appHeight/27
         width: appWidth/6
+        radius: height/2
         anchors.right: parent.right
         anchors.rightMargin: appWidth/12
         anchors.top: totalLabel.bottom
@@ -129,6 +130,15 @@ Rectangle {
         color: "transparent"
         border.width: 1
         border.color: themecolor
+
+        Rectangle {
+            id: selectCoins
+            anchors.fill: parent
+            radius: height/2
+            color: maincolor
+            opacity: 0.3
+            visible: false
+        }
 
         Label {
             id: coinsLabel
@@ -145,13 +155,11 @@ Rectangle {
             hoverEnabled: true
 
             onEntered: {
-                parent.border.color = maincolor
-                coinsLabel.color = maincolor
+                selectCoins.visible = true
             }
 
             onExited: {
-                parent.border.color = themecolor
-                coinsLabel.color = themecolor
+                selectCoins.visible = false
             }
 
             onPressed: {

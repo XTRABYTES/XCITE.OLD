@@ -316,11 +316,14 @@ Rectangle {
             id: saveButton
             width: parent.width/3
             height: appHeight/18
-            color: (currentPassword.text != ""
+            radius: height/2
+            color: "transparent"
+            border.width: 1
+            border.color: (currentPassword.text != ""
                     && passWord1.text !== ""
                     && passWord2.text != ""
                     && passwordWarning1 == 0
-                    && passwordWarning2 == 0) ? maincolor : "#727272"
+                    && passwordWarning2 == 0) ? themecolor : "#727272"
             anchors.top: passWord2.bottom
             anchors.topMargin: appHeight/18
             anchors.horizontalCenter: parent.horizontalCenter
@@ -343,8 +346,31 @@ Rectangle {
                 }
             }
 
+            Rectangle {
+                id: selectSave
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
             MouseArea {
                 anchors.fill: saveButton
+                hoverEnabled: true
+                enabled: currentPassword.text != ""
+                         && passWord1.text !== ""
+                         && passWord2.text != ""
+                         && passwordWarning1 == 0
+                         && passwordWarning2 == 0
+
+                onEntered: {
+                    selectSave.visible = true
+                }
+
+                onExited: {
+                    selectSave.visible = false
+                }
 
                 onPressed: {
                     click01.play()
@@ -433,7 +459,7 @@ Rectangle {
                 text: "SAVE"
                 font.pixelSize: parent.height/2
                 font.family: xciteMobile.name
-                color: themecolor
+                color: parent.border.color
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -455,16 +481,35 @@ Rectangle {
         id: cancel
         width: parent.width/6
         height: appHeight/18
-        color: darktheme == true? "#0B0B09" : "#FFFFFF"
+        radius: height/2
+        color: "transparent"
         anchors.top: changePasswordArea.bottom
         anchors.topMargin: appHeight/72
         anchors.horizontalCenter: parent.horizontalCenter
         border.width: 1
-        border.color: maincolor
+        border.color: themecolor
         visible: editFailed == 0 && editSaved == 0 && savePasswordInitiated == false
+
+        Rectangle {
+            id: selectCancel
+            anchors.fill: parent
+            radius: height/2
+            color: maincolor
+            opacity: 0.3
+            visible: false
+        }
 
         MouseArea {
             anchors.fill: parent
+            hoverEnabled: true
+
+            onEntered: {
+                selectCancel.visible = true
+            }
+
+            onExited: {
+                selectCancel.visible = false
+            }
 
             onPressed: {
                 click01.play()
@@ -486,7 +531,7 @@ Rectangle {
             text: "CANCEL"
             font.pixelSize: parent.height/2
             font.family: xciteMobile.name
-            color: maincolor
+            color: themecolor
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
         }
@@ -533,15 +578,34 @@ Rectangle {
             id: closeFailed
             width: appWidth/6
             height: appHeight/18
+            radius: height/2
             color: "transparent"
             anchors.top: saveFailedError.bottom
             anchors.topMargin: appHeight/18
             anchors.horizontalCenter: parent.horizontalCenter
             border.width: 1
-            border.color: maincolor
+            border.color: themecolor
+
+            Rectangle {
+                id: selectFailed
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
 
             MouseArea {
                 anchors.fill: closeFailed
+                hoverEnabled: true
+
+                onEntered: {
+                    selectFailed.visible = true
+                }
+
+                onExited: {
+                    selectFailed.visible = false
+                }
 
                 onPressed: {
                     click01.play()

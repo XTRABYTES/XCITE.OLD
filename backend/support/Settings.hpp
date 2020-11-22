@@ -80,6 +80,7 @@ public slots:
     void CheckSessionId();
     void CheckCamera();
     void CheckWriteAccess();
+    void createRand(int limit);
 
     void downloadImage(QString imgUrl);
     void DownloadManagerRouter(QByteArray,QMap<QString,QVariant>);
@@ -90,6 +91,7 @@ public slots:
 
 signals:
     void oSReturned(const QString os);
+    void randReturn(int rand);
     void loginSucceededChanged();
     void loginFailedChanged();
     void userCreationSucceeded();

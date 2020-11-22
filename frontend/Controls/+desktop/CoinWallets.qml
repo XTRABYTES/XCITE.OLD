@@ -192,6 +192,7 @@ Rectangle {
         anchors.leftMargin: appWidth/24
         anchors.bottom: parent.bottom
         anchors.bottomMargin: appWidth/24
+        visible: editWalletName == 0
 
         Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter

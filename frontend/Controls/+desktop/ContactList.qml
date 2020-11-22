@@ -26,6 +26,27 @@ Rectangle {
     color: "transparent"
 
     property string searchFilter: ""
+    property int randomNR
+    property bool newRand: false
+
+    Connections {
+        target: UserSettings
+
+        onRandReturn: {
+            if (newRand) {
+                randomNR = rand
+                newRand = false
+            }
+        }
+    }
+
+    function randomizer(contact) {
+        var photoNr = (contact+randomNR)*((3+contact-randomNR)*2)
+        for (;photoNr > 3;) {
+            photoNr=photoNr/3
+        }
+        return photoNr
+    }
 
     Label {
         id: noResultLabel
@@ -97,7 +118,7 @@ Rectangle {
 
                     Image {
                         id: icon
-                        source: profilePictures.get(0).photo
+                        source: profilePictures.get(randomizer(contactNR)).photo
                         anchors.left: parent.left
                         anchors.leftMargin: appWidth/48
                         anchors.verticalCenter: parent.verticalCenter
@@ -230,5 +251,10 @@ Rectangle {
                 color: maincolor
             }
         }
+    }
+
+    Component.onCompleted: {
+        newRand = true
+        UserSettings.createRand(4)
     }
 }

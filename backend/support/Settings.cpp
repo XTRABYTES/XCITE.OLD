@@ -51,6 +51,11 @@ void Settings::onCheckOS() {
     emit oSReturned(QSysInfo::productType());
 }
 
+void Settings::createRand(int limit) {
+    int n = QRandomGenerator::global()->bounded(limit);
+    emit randReturn(n);
+}
+
 void Settings::setLocale(QString locale) {
     if (!m_translator.isEmpty()) {
         QCoreApplication::removeTranslator(&m_translator);

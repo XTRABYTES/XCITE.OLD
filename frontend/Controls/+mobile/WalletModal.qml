@@ -950,6 +950,7 @@ Rectangle {
 
                 onSaveFileSucceeded: {
                     if (deleteWalletTracker == 1 && userSettings.localKeys === true && deletingWallet == true) {
+                        walletDeleted = true
                     }
                 }
 

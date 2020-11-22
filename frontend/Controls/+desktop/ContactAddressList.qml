@@ -156,6 +156,7 @@ Rectangle {
                             id: transfer
                             height: parent.height/2*0.6
                             width: parent.width
+                            radius: height/2
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
                             color: "transparent"
@@ -166,6 +167,7 @@ Rectangle {
                             Rectangle {
                                 id: selectTransfer
                                 anchors.fill: parent
+                                radius: height/2
                                 color: maincolor
                                 opacity: 0.3
                                 visible: false

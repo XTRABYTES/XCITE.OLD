@@ -436,5 +436,9 @@
         <file>icons/paper-wallet_icon_light-01.svg</file>
         <file>icons/refresh_icon_dark-01.png</file>
         <file>icons/refresh_icon_light-01.png</file>
+        <file>icons/magnifying-glass-icon-dark_01.png</file>
+        <file>icons/magnifying-glass-icon-light_01.png</file>
+        <file>icons/magnifying-glass-icon-dark_01.svg</file>
+        <file>icons/magnifing-glass-icon-light_01.svg</file>
     </qresource>
 </RCC>

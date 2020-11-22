@@ -122,27 +122,48 @@ Rectangle {
             id: appBtn
             width: appText.height
             height: width
+            radius: height/2
             anchors.right: parent.right
             anchors.rightMargin: appWidth/24
             anchors.verticalCenter: appText.verticalCenter
-            color: maincolor
-            opacity: 0.5
+            color: "transparent"
+            border.color: themecolor
+            border.width: 1
+
+            Rectangle {
+                id: selectApp
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            Text {
+                id: appBtnLabel
+                text: "SET"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height/2
+                font.family: xciteMobile.name
+                color: themecolor
+            }
 
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: {
+                    selectApp.visible = true
+                }
+
+                onExited: {
+                    selectApp.visible = false
+                }
 
                 onPressed: {
                     click01.play()
                     detectInteraction()
-                    appBtn.opacity = 1
-                }
-
-                onCanceled: {
-                    parent.opacity = 1
-                }
-
-                onReleased: {
-                    appBtn.opacity = 0.5
                 }
 
                 onClicked: {
@@ -151,16 +172,6 @@ Rectangle {
                     msgList.positionViewAtEnd()
                 }
             }
-        }
-
-        Text {
-            id: appBtnLabel
-            text: "SET"
-            anchors.horizontalCenter: appBtn.horizontalCenter
-            anchors.verticalCenter: appBtn.verticalCenter
-            font.pixelSize: appBtn.height/2
-            font.family: xciteMobile.name
-            color: "#F2F2F2"
         }
 
         Controls.TextInput {
@@ -183,43 +194,54 @@ Rectangle {
             id: queueBtn
             width: queueText.height
             height: width
+            radius: height/2
             anchors.right: parent.right
             anchors.rightMargin: appWidth/24
             anchors.verticalCenter: queueText.verticalCenter
-            color: maincolor
-            opacity: 0.5
+            color: "transparent"
+            border.color: themecolor
+            border.width: 1
+
+            Rectangle {
+                id: selectQueue
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            Text {
+                id: queueBtnLabel
+                text: "SET"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height/2
+                font.family: xciteMobile.name
+                color: themecolor
+            }
 
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: {
+                    selectQueue.visible = true
+                }
+
+                onExited: {
+                    selectQueue.visible = false
+                }
 
                 onPressed: {
                     click01.play()
                     detectInteraction()
-                    queueBtn.opacity = 1
-                }
-
-                onCanceled: {
-                    parent.opacity = 1
-                }
-
-                onReleased: {
-                    queueBtn.opacity = 0.5
                 }
 
                 onClicked: {
                     setQueue(queueText.text)
                 }
             }
-        }
-
-        Text {
-            id: queueBtnLabel
-            text: "SET"
-            anchors.horizontalCenter: queueBtn.horizontalCenter
-            anchors.verticalCenter: queueBtn.verticalCenter
-            font.pixelSize: queueBtn.height/2
-            font.family: queueBtn.height/2
-            color: "#F2F2F2"
         }
 
         Controls.TextInput {
@@ -259,28 +281,49 @@ Rectangle {
             id: executeButton
             width: requestText.height
             height: width
+            radius: height/2
             anchors.right: parent.right
             anchors.rightMargin: appWidth/24
             anchors.top: queueBtn.bottom
             anchors.topMargin: height/2
-            color: maincolor
-            opacity: 0.5
+            color: "transparent"
+            border.color: themecolor
+            border.width: 1
+
+            Rectangle {
+                id: selectExecute
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            Text {
+                id: executeBtnLabel
+                text: "GO"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height/2
+                font.family: xciteMobile.name
+                color: themecolor
+            }
 
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: {
+                    selectExecute.visible = true
+                }
+
+                onExited: {
+                    selectExecute.visible = false
+                }
 
                 onPressed: {
                     click01.play()
                     detectInteraction()
-                    parent.opacity = 1
-                }
-
-                onCanceled: {
-                    parent.opacity = 1
-                }
-
-                onReleased: {
-                    parent.opacity = 0.5
                 }
 
                 onClicked: {
@@ -363,27 +406,6 @@ Rectangle {
                     //}
                 }
             }
-        }
-
-        Image {
-            source: 'qrc:/icons/mobile/ping-icon_01_white.svg'
-            height: executeButton.height*2/3
-            width: 24
-            fillMode: Image.PreserveAspectFit
-            anchors.verticalCenter: executeButton.verticalCenter
-            anchors.horizontalCenter: executeButton.horizontalCenter
-        }
-
-        Rectangle {
-            width: height
-            height: executeButton.height
-            anchors.right: executeButton.right
-            anchors.top: queueBtn.bottom
-            anchors.topMargin: height/2
-            color: "transparent"
-            border.color: maincolor
-            border.width: 1
-            opacity: 0.50
         }
     }
 

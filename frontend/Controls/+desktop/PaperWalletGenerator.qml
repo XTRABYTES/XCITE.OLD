@@ -112,6 +112,7 @@ Rectangle {
             id: xbyButton
             width: appWidth/9
             height: appHeight/18
+            radius: height/2
             anchors.top: parent.top
             anchors.left: parent.left
             border.color: walletCoin == "XBY"? maincolor : themecolor
@@ -122,6 +123,7 @@ Rectangle {
             Rectangle {
                 id: selectXby
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -171,6 +173,7 @@ Rectangle {
             id: xfuelButton
             width: appWidth/9
             height: appHeight/18
+            radius: height/2
             anchors.top: parent.top
             anchors.left: xbyButton.right
             anchors.leftMargin: appHeight/54
@@ -182,6 +185,7 @@ Rectangle {
             Rectangle {
                 id: selectXfuel
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -247,6 +251,7 @@ Rectangle {
             id: generateButton
             width: appWidth/6
             height: appHeight/18
+            radius: height/2
             anchors.top: parent.top
             anchors.left: xfuelButton.right
             anchors.leftMargin: appWidth/24
@@ -259,6 +264,7 @@ Rectangle {
             Rectangle {
                 id: selectGenerate
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -336,6 +342,7 @@ Rectangle {
             id: createFileButton
             width: appWidth/6
             height: appHeight/18
+            radius: height/2
             anchors.top: generateButton.bottom
             anchors.topMargin: appHeight/27
             anchors.left: generateButton.left
@@ -348,6 +355,7 @@ Rectangle {
             Rectangle {
                 id: selectCreateFile
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -531,6 +539,7 @@ Rectangle {
             id: resetButton
             width: appWidth/9
             height: appHeight/27
+            radius: height/2
             anchors.bottom: myPaperWallet.bottom
             anchors.right: parent.right
             border.color: themecolor
@@ -542,6 +551,7 @@ Rectangle {
             Rectangle {
                 id: selectReset
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false

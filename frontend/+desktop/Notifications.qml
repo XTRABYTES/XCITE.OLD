@@ -60,6 +60,7 @@ Rectangle {
         id: clearAlerts
         height: appHeight/18
         width: height
+        radius: height/2
         anchors.top: notificationsLabel.bottom
         anchors.topMargin: appWidth/24
         anchors.right: notificationsLabel.right
@@ -70,7 +71,7 @@ Rectangle {
         Image {
             id: trashcan
             source: darktheme == true? "qrc:/icons/trashcan_icon_light01.png" : "qrc:/icons/trashcan_icon_dark01.png"
-            height: parent.height*3/4
+            height: parent.height*3/5
             fillMode: Image.PreserveAspectFit
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter

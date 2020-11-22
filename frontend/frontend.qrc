@@ -245,5 +245,6 @@
         <file>Controls/+desktop/TransactionDetailModal.qml</file>
         <file>Controls/+desktop/TransactionAddressList.qml</file>
         <file>Controls/+desktop/AddressBookTransaction.qml</file>
+        <file>Controls/+desktop/AddContactModal.qml</file>
     </qresource>
 </RCC>

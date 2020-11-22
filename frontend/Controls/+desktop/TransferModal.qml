@@ -582,6 +582,7 @@ Rectangle {
                     id: scanQrButton
                     width: ((parent.width - appWidth/12)*0.9) / 2
                     height: appHeight/27
+                    radius: height/2
                     anchors.top: keyInput.bottom
                     anchors.topMargin: height
                     anchors.left: keyInput.left
@@ -592,6 +593,7 @@ Rectangle {
                     Rectangle {
                         id: selectQr
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -635,6 +637,7 @@ Rectangle {
                     id: addressBookButton
                     width: ((parent.width - appWidth/12)*0.9) / 2
                     height: appHeight/27
+                    radius: height/2
                     anchors.top: keyInput.bottom
                     anchors.topMargin: height
                     anchors.right: keyInput.right
@@ -645,6 +648,7 @@ Rectangle {
                     Rectangle {
                         id: selectAddress
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -689,6 +693,7 @@ Rectangle {
                     id: addButton
                     width: parent.width - appWidth/12
                     height: appHeight/27
+                    radius: height/2
                     anchors.top: scanQrButton.bottom
                     anchors.topMargin: height
                     anchors.right: keyInput.right
@@ -705,6 +710,7 @@ Rectangle {
                     Rectangle {
                         id: selectAdd
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -1193,6 +1199,7 @@ Rectangle {
                     id: sendButton
                     width: (outputWindow.width*0.9) / 2
                     height: appHeight/27
+                    radius: height/2
                     anchors.top: referenceInput.bottom
                     anchors.topMargin: height
                     anchors.left: outputWindow.left
@@ -1204,6 +1211,7 @@ Rectangle {
                     Rectangle {
                         id: selectSend
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -1351,6 +1359,7 @@ Rectangle {
                     id: clearButton
                     width: (outputWindow.width*0.9) / 2
                     height: appHeight/27
+                    radius: height/2
                     anchors.top: referenceInput.bottom
                     anchors.topMargin: height
                     anchors.right: outputWindow.right
@@ -1361,6 +1370,7 @@ Rectangle {
                     Rectangle {
                         id: selectClear
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -1453,6 +1463,7 @@ Rectangle {
                     id: closeFail
                     width: appWidth/6
                     height: appHeight/27
+                    radius: height/2
                     color: "transparent"
                     anchors.top: failedIconLabel.bottom
                     anchors.topMargin: height*2
@@ -1461,6 +1472,7 @@ Rectangle {
                     Rectangle {
                         id: selectClose
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -1715,6 +1727,7 @@ Rectangle {
                     id: confirmTX
                     width: parent.width*0.9/2
                     height: appHeight/27
+                    radius: height/2
                     anchors.left: parent.left
                     anchors.top: confirmationFeeAmount.bottom
                     anchors.topMargin: height
@@ -1725,6 +1738,7 @@ Rectangle {
                     Rectangle {
                         id: selectConfirm
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -1806,6 +1820,7 @@ Rectangle {
                     id: cancelTX
                     width: parent.width*0.9/2
                     height: appHeight/27
+                    radius: height/2
                     anchors.right: parent.right
                     anchors.top: confirmationFeeAmount.bottom
                     anchors.topMargin: height
@@ -1816,6 +1831,7 @@ Rectangle {
                     Rectangle {
                         id: cancelConfirm
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false

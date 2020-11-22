@@ -585,6 +585,9 @@ Item {
 
                         onClicked: {
                             backupTracker = 0
+                            walletDetailTracker = 0
+                            transferTracker = 0
+                            historyTracker = 0
                             if (selectedPage !== "home") {
                                 selectedPage = "home"
                                 pageTracker = 1

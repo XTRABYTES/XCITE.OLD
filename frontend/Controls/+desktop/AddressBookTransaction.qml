@@ -305,6 +305,7 @@ Rectangle {
                     id: walletListButton
                     width: sendAmount.width
                     height: appHeight/27
+                    radius: height/2
                     anchors.top: addressInput.bottom
                     anchors.topMargin: height
                     anchors.left: sendAmount.left
@@ -316,6 +317,7 @@ Rectangle {
                     Rectangle {
                         id: selectWallet
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -497,6 +499,7 @@ Rectangle {
                     id: sendButton
                     width: sendAmount.width
                     height: appHeight/27
+                    radius: height/2
                     anchors.top: referenceInput.bottom
                     anchors.topMargin: height
                     anchors.left: sendAmount.left
@@ -512,6 +515,7 @@ Rectangle {
                     Rectangle {
                         id: selectSend
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -857,14 +861,18 @@ Rectangle {
                             id: closeFail
                             width: appWidth/6
                             height: appHeight/27
+                            radius: height/2
                             color: "transparent"
                             anchors.top: failedIconLabel.bottom
                             anchors.topMargin: height*2
                             anchors.horizontalCenter: parent.horizontalCenter
+                            border.color: themecolor
+                            border.width: 1
 
                             Rectangle {
                                 id: selectClose
                                 anchors.fill: parent
+                                radius: height/2
                                 color: maincolor
                                 opacity: 0.3
                                 visible: false
@@ -1117,6 +1125,7 @@ Rectangle {
                             id: confirmTX
                             width: parent.width*0.9/2
                             height: appHeight/27
+                            radius: height/2
                             anchors.left: parent.left
                             anchors.top: confirmationFeeAmount.bottom
                             anchors.topMargin: height
@@ -1127,6 +1136,7 @@ Rectangle {
                             Rectangle {
                                 id: selectConfirm
                                 anchors.fill: parent
+                                radius: height/2
                                 color: maincolor
                                 opacity: 0.3
                                 visible: false
@@ -1208,6 +1218,7 @@ Rectangle {
                             id: cancelTX
                             width: parent.width*0.9/2
                             height: appHeight/27
+                            radius: height/2
                             anchors.right: parent.right
                             anchors.top: confirmationFeeAmount.bottom
                             anchors.topMargin: height
@@ -1218,6 +1229,7 @@ Rectangle {
                             Rectangle {
                                 id: cancelConfirm
                                 anchors.fill: parent
+                                radius: height/2
                                 color: maincolor
                                 opacity: 0.3
                                 visible: false

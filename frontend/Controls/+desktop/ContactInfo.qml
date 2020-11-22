@@ -55,6 +55,9 @@ Rectangle {
         editContactTracker = 0
         addAddressTracker = 0
         addressTracker = 0
+        if (state == "up") {
+            UserSettings.createRand(4)
+        }
     }
 
     property int editSaved: 0
@@ -63,6 +66,7 @@ Rectangle {
     property int editFailed: 0
     property int contactExists: 0
     property int validEmail: 1
+    property int deleteContact: 0
     property int deleteConfirmed: 0
     property int deleteFailed: 0
     property string oldFirstName
@@ -77,13 +81,14 @@ Rectangle {
     property bool myTheme: darktheme
     property int editTracker: editContactTracker
     property int editNameTracker: editName
+    property int photoNr: 0
 
     onEditTrackerChanged: {
         if (editTracker == 1) {
-            oldTel = contactList.get(contactIndex).telNR;
-            oldText = contactList.get(contactIndex).cellNR;
-            oldMail = contactList.get(contactIndex).mailAddress;
-            oldChat = contactList.get(contactIndex).chatID;
+            oldTel = contactIndex >= 0? contactList.get(contactIndex).telNR : ""
+            oldText = contactIndex >= 0? contactList.get(contactIndex).cellNR : ""
+            oldMail = contactIndex >= 0? contactList.get(contactIndex).mailAddress : ""
+            oldChat = contactIndex >= 0? contactList.get(contactIndex).chatID : ""
             validEmail = 1;
             newTel.text = oldTel;
             newCell.text = oldText;
@@ -95,8 +100,8 @@ Rectangle {
     onEditNameTrackerChanged: {
         if (editName == 1) {
             contactExists = 0;
-            oldFirstName = contactList.get(contactIndex).firstName;
-            oldLastName = contactList.get(contactIndex).lastName;
+            oldFirstName = contactIndex >= 0? contactList.get(contactIndex).firstName : ""
+            oldLastName = contactIndex >= 0? contactList.get(contactIndex).lastName : ""
             newFirstName.text = oldFirstName
             newLastName.text = oldLastName
         }
@@ -108,10 +113,20 @@ Rectangle {
         if (darktheme) {
             editButton.source = "qrc:/icons/edit_icon_light01.png"
             editNameButton.source = "qrc:/icons/edit_icon_light01.png"
+            trashcan.source = "qrc:/icons/trashcan_icon_light01.png"
         }
         else {
             editButton.source = "qrc:/icons/edit_icon_dark01.png"
             editNameButton.source = "qrc:/icons/edit_icon_dark01.png"
+            trashcan.source = "qrc:/icons/trashcan_icon_dark01.png"
+        }
+    }
+
+    Connections {
+        target: UserSettings
+
+        onRandReturn: {
+            photoNr = rand
         }
     }
 
@@ -188,7 +203,7 @@ Rectangle {
         anchors.leftMargin: appWidth/24
         anchors.top: parent.top
         anchors.topMargin: appHeight/6
-        text: coinIndex >= 0? contactList.get(contactIndex).firstName : ""
+        text: contactIndex >= 0? contactList.get(contactIndex).firstName : ""
         font.pixelSize: appHeight/18
         font.family: xciteMobile.name
         color: themecolor
@@ -202,7 +217,7 @@ Rectangle {
         anchors.bottom: firstName.bottom
         anchors.right: parent.right
         anchors.rightMargin: appWidth/6
-        text: coinIndex >= 0? contactList.get(contactIndex).lastName : ""
+        text: contactIndex >= 0? contactList.get(contactIndex).lastName : ""
         color: themecolor
         font.pixelSize: appHeight/18
         font.family: xciteMobile.name
@@ -284,7 +299,7 @@ Rectangle {
     Controls.TextInput {
         id: newFirstName
         width: appWidth/6
-        text: coinIndex >= 0? contactList.get(contactIndex).firstName : ""
+        text: contactIndex >= 0? contactList.get(contactIndex).firstName : ""
         height: appHeight/27
         placeholder: "FIRST NAME"
         anchors.left: parent.left
@@ -306,7 +321,7 @@ Rectangle {
     Controls.TextInput {
         id: newLastName
         width: appWidth/6
-        text: coinIndex >= 0? contactList.get(contactIndex).lastName : ""
+        text: contactIndex >= 0? contactList.get(contactIndex).lastName : ""
         height: appHeight/27
         placeholder: "LAST NAME"
         anchors.left: parent.left
@@ -329,6 +344,7 @@ Rectangle {
         id: saveNameButton
         width: (newLastName.width + appWidth/9)/2*0.9
         height: appHeight/27
+        radius: height/2
         color: "transparent"
         anchors.top: newLastName.bottom
         anchors.topMargin: appHeight/27
@@ -343,6 +359,7 @@ Rectangle {
         Rectangle {
             id: selectSaveName
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.3
             visible: false
@@ -351,7 +368,7 @@ Rectangle {
         Text {
             text: "SAVE"
             font.family: xciteMobile.name
-            font.pointSize: parent.height/2
+            font.pixelSize: parent.height/2
             color: parent.border.color
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -477,6 +494,7 @@ Rectangle {
         id: closeButton
         width: (newLastName.width + appWidth/9)/2*0.9
         height: appHeight/27
+        radius: height/2
         color: "transparent"
         anchors.top: newLastName.bottom
         anchors.topMargin: appHeight/27
@@ -490,6 +508,7 @@ Rectangle {
         Rectangle {
             id: selectClose
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.3
             visible: false
@@ -498,7 +517,7 @@ Rectangle {
         Text {
             text: "CLOSE EDIT"
             font.family: xciteMobile.name
-            font.pointSize: parent.height/2
+            font.pixelSize: parent.height/2
             color: parent.border.color
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -530,13 +549,14 @@ Rectangle {
 
     Label {
         id: nameWarning1
-        text: "Contact already exists!"
+        text: "Already a contact with this name!"
         anchors.left: newLastName.left
         anchors.leftMargin: font.pixelSize/2
         anchors.top: newLastName.bottom
         anchors.topMargin: 1
         font.pixelSize: appHeight/72
         font.family: xciteMobile.name
+        color: "#FD2E2E"
         visible: editNameSaved == 0
                  && editNameFailed == 0
                  && editName == 1
@@ -579,7 +599,7 @@ Rectangle {
 
         Image {
             id: photo
-            source: profilePictures.get(contactIndex).photo
+            source: profilePictures.get(photoNr).photo
             anchors.left: parent.left
             anchors.top: parent.top
             height: appWidth/12
@@ -602,7 +622,7 @@ Rectangle {
 
         Label {
             id: telNr
-            text: coinIndex >= 0? contactList.get(contactIndex).telNR : ""
+            text: contactIndex >= 0? contactList.get(contactIndex).telNR : ""
             anchors.left: parent.left
             anchors.leftMargin: appWidth/9
             anchors.right: parent.right
@@ -616,7 +636,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newTel
-            text: coinIndex >= 0? contactList.get(contactIndex).telNR : ""
+            text: contactIndex >= 0? contactList.get(contactIndex).telNR : ""
             height: appHeight/27
             placeholder: "TELEPHONE NUMBER"
             anchors.left: parent.left
@@ -649,7 +669,7 @@ Rectangle {
 
         Label {
             id: cellNr
-            text: coinIndex >= 0? contactList.get(contactIndex).cellNR : ""
+            text: contactIndex >= 0? contactList.get(contactIndex).cellNR : ""
             anchors.left: parent.left
             anchors.leftMargin: appWidth/9
             anchors.right: parent.right
@@ -663,7 +683,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newCell
-            text: coinIndex >= 0? contactList.get(contactIndex).cellNR : ""
+            text: contactIndex >= 0? contactList.get(contactIndex).cellNR : ""
             height: appHeight/27
             placeholder: "CELL PHONE NUMBER"
             anchors.left: parent.left
@@ -696,7 +716,7 @@ Rectangle {
 
         Label {
             id: emailAddress
-            text: coinIndex >= 0? contactList.get(contactIndex).mailAddress : ""
+            text: contactIndex >= 0? contactList.get(contactIndex).mailAddress : ""
             anchors.left: parent.left
             anchors.leftMargin: appWidth/9
             anchors.right: parent.right
@@ -752,7 +772,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newMail
-            text: coinIndex >= 0? contactList.get(contactIndex).mailAddress : ""
+            text: contactIndex >= 0? contactList.get(contactIndex).mailAddress : ""
             height: appHeight/27
             placeholder: "E-MAIL ADDRESS"
             anchors.left: parent.left
@@ -803,7 +823,7 @@ Rectangle {
 
         Label {
             id: xchatID
-            text: coinIndex >= 0? contactList.get(contactIndex).chatID : ""
+            text: contactIndex >= 0? contactList.get(contactIndex).chatID : ""
             anchors.left: parent.left
             anchors.leftMargin: appWidth/9
             anchors.right: parent.right
@@ -859,7 +879,7 @@ Rectangle {
 
         Controls.TextInput {
             id: newChat
-            text: coinIndex >= 0? contactList.get(contactIndex).chatID : ""
+            text: contactIndex >= 0? contactList.get(contactIndex).chatID : ""
             height: appHeight/27
             placeholder: "X-CHAT ID"
             anchors.left: parent.left
@@ -929,6 +949,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
+                enabled: deleteContact == 0
 
                 onEntered: {
                     addAddressButton.border.color = maincolor
@@ -966,6 +987,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     hoverEnabled: true
+                    enabled: deleteContact == 0
 
                     onEntered: {
                         editButton.source = "qrc:/icons/edit_icon_green01.png"
@@ -992,10 +1014,200 @@ Rectangle {
             }
         }
 
+        Image {
+            id: trashcan
+            source: darktheme == true? "qrc:/icons/trashcan_icon_light01.png" : "qrc:/icons/trashcan_icon_dark01.png"
+            height: appHeight/18
+            fillMode: Image.PreserveAspectFit
+            anchors.top: editButton.bottom
+            anchors.topMargin: height/2
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.horizontalCenterOffset: -appWidth/48
+            visible: editContactTracker == 0 && editName == 0 && addAddressTracker == 0 && addressTracker == 0
+
+            Rectangle {
+                anchors.fill: parent
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onEntered: {
+                        trashcan.source = "qrc:/icons/trashcan_icon_green01.png"
+                    }
+
+                    onExited: {
+                        if (darktheme == true) {
+                            trashcan.source = "qrc:/icons/trashcan_icon_light01.png"
+                        }
+                        else {
+                            trashcan.source = "qrc:/icons/trashcan_icon_dark01.png"
+                        }
+                    }
+
+                    onClicked: {
+                        deleteContact = 1
+                    }
+                }
+            }
+        }
+
+        DropShadow {
+            z: 12
+            anchors.fill: confirmPopup
+            source: confirmPopup
+            horizontalOffset: 0
+            verticalOffset: 4
+            radius: 12
+            samples: 25
+            spread: 0
+            color: "black"
+            opacity: 0.4
+            transparentBorder: true
+            visible: confirmPopup.visible
+        }
+
+        Item {
+            id: confirmPopup
+            z: 12
+            width: popupConfirm.width
+            height: popupConfirm.height
+            anchors.horizontalCenter: trashcan.horizontalCenter
+            anchors.verticalCenter: trashcan.verticalCenter
+            visible: deleteContact == 1
+
+            Rectangle {
+                id: popupConfirm
+                height: popupConfirmText.height + popupConfirmBtn.height + appHeight/72
+                width: confirmText.implicitWidth + confirmText.font.pixelSize*4
+                color: "#42454F"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Item {
+                id: popupConfirmText
+                height: appHeight/27
+                width: parent.width
+                anchors.bottom: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Label {
+                    id: confirmText
+                    text: "Are you sure you wan to delete this contact?"
+                    font.family: xciteMobile.name
+                    font.pixelSize: parent.height/2
+                    color: "#F2F2F2"
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+            }
+
+            Item {
+                id: popupConfirmBtn
+                height: appHeight/27
+                width: parent.width
+                anchors.bottom: popupConfirm.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Item {
+                    id: yesBtn
+                    height: parent.height
+                    width: parent.width/2
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+
+                    Label {
+                        text: "Yes"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.family: xciteMobile.name
+                        font.pixelSize: parent.height/2
+                        color: "#F2F2F2"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        enabled: editContactTracker == 0 && editName == 0
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            deleteContact = 0
+                            contactList.setProperty(contactIndex, "remove", true)
+                            deleteContactAddresses(contactIndex);
+                            contactTracker = 0
+                        }
+                    }
+                }
+
+                Item {
+                    id: noBtn
+                    height: parent.height
+                    width: parent.width/2
+                    anchors.top: parent.top
+                    anchors.right: parent.right
+
+                    Label {
+                        text: "No"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.family: xciteMobile.name
+                        font.pixelSize: parent.height/2
+                        color: "#F2F2F2"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        enabled: editContactTracker == 0 && editName == 0
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            deleteContact = 0
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                height: 1
+                width: parent.width - 4
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#F2F2F2"
+                opacity: 0.1
+            }
+
+            Rectangle {
+                height: parent.height/2 - 2
+                width: 1
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 2
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#F2F2F2"
+                opacity: 0.1
+            }
+        }
+
         Rectangle {
             id: saveButton
             width: appWidth/6
             height: appHeight/27
+            radius: height/2
             color: "transparent"
             border.width: 1
             border.color: validEmail == 1? themecolor : "#727272"
@@ -1013,6 +1225,7 @@ Rectangle {
             Rectangle {
                 id: selectSave
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -1021,7 +1234,7 @@ Rectangle {
             Text {
                 text: "SAVE"
                 font.family: xciteMobile.name
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: parent.border.color
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -1133,6 +1346,7 @@ Rectangle {
             id: backButton
             width: appWidth/6
             height: appHeight/27
+            radius: height/2
             color: "transparent"
             anchors.bottom: parent.bottom
             anchors.bottomMargin: appHeight/27
@@ -1147,6 +1361,7 @@ Rectangle {
             Rectangle {
                 id: selectBack
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -1155,7 +1370,7 @@ Rectangle {
             Text {
                 text: "CLOSE EDIT"
                 font.family: xciteMobile.name
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: parent.border.color
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -1232,6 +1447,7 @@ Rectangle {
                 id: closeFail
                 width: appWidth/6
                 height: appHeight/27
+                radius: height/2
                 color: "transparent"
                 anchors.top: saveFailedError.bottom
                 anchors.topMargin: appHeight/18
@@ -1242,6 +1458,7 @@ Rectangle {
                 Rectangle {
                     id: selectCloseFail
                     anchors.fill: parent
+                    radius: height/2
                     color: maincolor
                     opacity: 0.3
                     visible: false
@@ -1250,7 +1467,7 @@ Rectangle {
                 Text {
                     text: "TRY AGAIN"
                     font.family: xciteMobile.name
-                    font.pointSize: parent.height/2
+                    font.pixelSize: parent.height/2
                     color: parent.border.color
                     anchors.horizontalCenter: closeFail.horizontalCenter
                     anchors.verticalCenter: closeFail.verticalCenter
@@ -1317,6 +1534,7 @@ Rectangle {
                 id: closeSave
                 width: appWidth/6
                 height: appHeight/27
+                radius: height/2
                 color: "transparent"
                 anchors.top: saveSuccessLabel.bottom
                 anchors.topMargin: appHeight/18
@@ -1327,6 +1545,7 @@ Rectangle {
                 Rectangle {
                     id: selectCloseSave
                     anchors.fill: parent
+                    radius: height/2
                     color: maincolor
                     opacity: 0.3
                     visible: false
@@ -1335,7 +1554,7 @@ Rectangle {
                 Text {
                     text: "OK"
                     font.family: xciteMobile.name
-                    font.pointSize: parent.height/2
+                    font.pixelSize: parent.height/2
                     color: parent.border.color
                     anchors.horizontalCenter: closeSave.horizontalCenter
                     anchors.verticalCenter: closeSave.verticalCenter

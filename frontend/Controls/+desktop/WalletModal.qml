@@ -35,6 +35,7 @@ Rectangle {
 
     onStateChanged: {
         transferSwitchState = (coinIndex < 3 || walletList.get(walletIndex).viewOnly)? 0 : 1
+        includeSwitch.state = walletList.get(walletIndex).include? "on" : "off"
         historySwitch.state = "off"
         transferSwitch.state = transferSwitchState == 0 ? "off" : "on"
         transactionSend = 0
@@ -43,6 +44,10 @@ Rectangle {
         if (state == "up") {
             historyTracker = 1
             transferTracker = 1
+            oldLabel = walletList.get(walletIndex).label
+            oldInclude = walletList.get(walletIndex).include
+            oldRemove = walletList.get(walletIndex).remove
+            newInclude = oldInclude
         }
         else {
             historyTracker = 0
@@ -115,11 +120,30 @@ Rectangle {
     property int precision: 0
     property bool qrFound: false
     property int newHistory: 0
+    property int deleteWallet: 0
+    property int deleteWarning: 0
+    property string oldLabel: ""
+    property bool oldInclude: false
+    property bool oldRemove: false
+    property bool newInclude: false
+    property bool walletDeleted: false
+    property int deleteFailed: 1
+    property int deleteErrorNr: 1
+
+    onMyThemeChanged: {
+        if (myTheme) {
+            trashcan.source = "qrc:/icons/trashcan_icon_light01.png"
+        }
+        else {
+            trashcan.source = "qrc:/icons/trashcan_icon_dark01.png"
+        }
+    }
 
     onMyIndexChanged: {
         historySwitch.state = "off"
         transferSwitchState = walletList.get(walletIndex).viewOnly? 0 : transferSwitchState
         transferSwitch.state = transferSwitchState == 0 ? "off" : "on"
+        includeSwitch.state = walletList.get(walletIndex).include? "on" : "off"
 
         if (coinIndex < 3){
             historyDetailsCollected = false
@@ -231,6 +255,459 @@ Rectangle {
         elide: Text.ElideRight
     }
 
+    Label {
+        id: includeLabel
+        text: "Include address in wallet total?"
+        color: themecolor
+        font.pixelSize: appHeight/45
+        font.family: xciteMobile.name
+        anchors.bottom: includeSwitch.top
+        anchors.bottomMargin: font.pixelSize
+        anchors.horizontalCenter: includeSwitch.horizontalCenter
+        visible: includeSwitch.visible
+    }
+
+    Controls.Switch {
+        id: includeSwitch
+        anchors.horizontalCenter: walletArea.horizontalCenter
+        anchors.horizontalCenterOffset: -walletArea.width/4
+        anchors.verticalCenter: trashcan.verticalCenter
+        state: walletList.get(walletIndex).include ? "on" : "off"
+        visible: transactionSend == 0 && deleteFailed == 1
+
+        onSwitchOnChanged: {
+            if (switchOn == true) {
+                walletList.setProperty(walletIndex, "include", true)
+                sumBalance()
+            }
+
+            else {
+                walletList.setProperty(walletIndex, "include", false)
+                sumBalance()
+            }
+        }
+    }
+
+    Text {
+        id: noIncludeText
+        text: "NO"
+        anchors.right: includeSwitch.left
+        anchors.rightMargin: font.pixelSize/2
+        anchors.verticalCenter: includeSwitch.verticalCenter
+        font.pixelSize: appHeight/36
+        font.family: xciteMobile.name
+        color: includeSwitch.switchOn ? "#757575" : maincolor
+        visible: includeSwitch.visible
+    }
+
+    Text {
+        id: yesIncludeText
+        text: "YES"
+        anchors.left: includeSwitch.right
+        anchors.leftMargin: font.pixelSize/2
+        anchors.verticalCenter: includeSwitch.verticalCenter
+        font.pixelSize: appHeight/36
+        font.family: xciteMobile.name
+        color: includeSwitch.switchOn ? maincolor : "#757575"
+        visible: includeSwitch.visible
+    }
+
+    Image {
+        id: trashcan
+        source: darktheme == true? "qrc:/icons/trashcan_icon_light01.png" : "qrc:/icons/trashcan_icon_dark01.png"
+        height: appHeight/18
+        fillMode: Image.PreserveAspectFit
+        anchors.bottom: infoBar.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenterOffset: -appWidth/48
+        visible: deleteFailed == 1
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                enabled: transactionSend == 0
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onEntered: {
+                    trashcan.source = "qrc:/icons/trashcan_icon_green01.png"
+                }
+
+                onExited: {
+                    if (darktheme == true) {
+                        trashcan.source = "qrc:/icons/trashcan_icon_light01.png"
+                    }
+                    else {
+                        trashcan.source = "qrc:/icons/trashcan_icon_dark01.png"
+                    }
+                }
+
+                onClicked: {
+                    deleteWallet = 1
+                }
+            }
+        }
+    }
+
+    DropShadow {
+        z: 12
+        anchors.fill: confirmPopup
+        source: confirmPopup
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.4
+        transparentBorder: true
+        visible: confirmPopup.visible
+    }
+
+    Item {
+        id: confirmPopup
+        z: 12
+        width: popupConfirm.width
+        height: popupConfirm.height
+        anchors.horizontalCenter: trashcan.horizontalCenter
+        anchors.verticalCenter: trashcan.verticalCenter
+        visible: deleteWallet == 1
+
+        Rectangle {
+            id: popupConfirm
+            height: popupConfirmText.height + popupConfirmBtn.height + appHeight/72
+            width: confirmText.implicitWidth + confirmText.font.pixelSize*4
+            color: "#42454F"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Item {
+            id: popupConfirmText
+            height: appHeight/27
+            width: parent.width
+            anchors.bottom: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Label {
+                id: confirmText
+                text: "Are you sure you wan to delete this address?"
+                font.family: xciteMobile.name
+                font.pixelSize: parent.height/2
+                color: "#F2F2F2"
+                horizontalAlignment: Text.AlignHCenter
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+
+        Item {
+            id: popupConfirmBtn
+            height: appHeight/27
+            width: parent.width
+            anchors.bottom: popupConfirm.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Item {
+                id: yesBtn
+                height: parent.height
+                width: parent.width/2
+                anchors.top: parent.top
+                anchors.left: parent.left
+
+                Label {
+                    text: "Yes"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.family: xciteMobile.name
+                    font.pixelSize: parent.height/2
+                    color: "#F2F2F2"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: deleteWallet == 1
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        deleteWarning = 1
+                        deleteWallet = 0
+                    }
+                }
+            }
+
+            Item {
+                id: noBtn
+                height: parent.height
+                width: parent.width/2
+                anchors.top: parent.top
+                anchors.right: parent.right
+
+                Label {
+                    text: "No"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.family: xciteMobile.name
+                    font.pixelSize: parent.height/2
+                    color: "#F2F2F2"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: deleteWallet == 1
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        deleteWallet = 0
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            height: 1
+            width: parent.width - 4
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            opacity: 0.1
+        }
+
+        Rectangle {
+            height: parent.height/2 - 2
+            width: 1
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            opacity: 0.1
+        }
+    }
+
+    DropShadow {
+        z: 12
+        anchors.fill: warningPopup
+        source: warningPopup
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.4
+        transparentBorder: true
+        visible: warningPopup.visible
+    }
+
+    Item {
+        id: warningPopup
+        z: 12
+        width: popupWarning.width
+        height: popupWarning.height
+        anchors.horizontalCenter: trashcan.horizontalCenter
+        anchors.verticalCenter: trashcan.verticalCenter
+        visible: deleteWarning == 1
+
+        Rectangle {
+            id: popupWarning
+            height: popupWarningText.height + popupWarningBtn.height + appHeight/72
+            width: warningText.implicitWidth + warningText.font.pixelSize*4
+            color: "#42454F"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Item {
+            id: popupWarningText
+            height: appHeight/27
+            width: parent.width
+            anchors.bottom: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Label {
+                id: warningText
+                text: "If you still have coins in this address, don't forget to back up your private key!"
+                font.family: xciteMobile.name
+                font.pixelSize: parent.height/2
+                color: "#F2F2F2"
+                horizontalAlignment: Text.AlignHCenter
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+
+        Item {
+            id: popupWarningBtn
+            height: appHeight/27
+            width: parent.width
+            anchors.bottom: popupWarning.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Item {
+                id: confirmBtn
+                height: parent.height
+                width: parent.width/2
+                anchors.top: parent.top
+                anchors.left: parent.left
+
+                Label {
+                    text: "Delete address"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.family: xciteMobile.name
+                    font.pixelSize: parent.height/2
+                    color: "#F2F2F2"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: deleteWarning == 1
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        deleteWarning = 0
+                        walletList.setProperty(walletIndex, "remove", true)
+                        editWalletInAddreslist(walletList.get(walletIndex).name, walletList.get(walletIndex).address, oldLabel, true)
+                        if (userSettings.localKeys) {
+                            deletingWallet = true
+                            walletDeleted = false
+                            updateToAccount()
+                        }
+                        else {
+                            sumXBY()
+                            sumXFUEL()
+                            sumXBYTest()
+                            sumXFUELTest()
+                            sumBalance()
+                            walletDetailTracker = 0
+                        }
+                    }
+
+                    Connections {
+                        target: UserSettings
+
+                        onSaveSucceeded: {
+                            if (deletingWallet == true) {
+                                deletingWallet = false
+                                sumXBY()
+                                sumXFUEL()
+                                sumXBYTest()
+                                sumXFUELTest()
+                                sumBalance()
+                                walletDetailTracker = 0
+                            }
+                        }
+
+                        onSaveFailed: {
+                            if (deletingWallet == true && walletDeleted == true) {
+                                walletList.setProperty(walletIndex, "remove", false)
+                                editWalletInAddreslist(walletList.get(walletIndex).name, walletList.get(walletIndex).address, oldLabel, false)
+                                deleteFailed = 1
+                                deleteErrorNr = 1
+                                walletDeleted = false
+                            }
+                        }
+
+                        onNoInternet: {
+                            if (deletingWallet == true && walletDeleted == true) {
+                                networkError = 1
+                                walletList.setProperty(walletIndex, "remove", false)
+                                editWalletInAddreslist(walletList.get(walletIndex).name, walletList.get(walletIndex).address, oldLabel, false)
+                                deleteFailed = 1
+                                deleteErrorNr = 1
+                                walletDeleted = false
+                            }
+                        }
+
+                        onSaveFileSucceeded: {
+                            if (deletingWallet == true) {
+                                walletDeleted = true
+                            }
+                        }
+
+                        onSaveFileFailed: {
+                            if (deletingWallet == true) {
+                                walletList.setProperty(walletIndex, "remove", false)
+                                editWalletInAddreslist(walletList.get(walletIndex).name, walletList.get(walletIndex).address, oldLabel, false)
+                                deleteFailed = 1
+                                deleteErrorNr = 0
+                            }
+                        }
+                    }
+                }
+            }
+
+            Item {
+                id: cancelBtn
+                height: parent.height
+                width: parent.width/2
+                anchors.top: parent.top
+                anchors.right: parent.right
+
+                Label {
+                    text: "Cancel"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.family: xciteMobile.name
+                    font.pixelSize: parent.height/2
+                    color: "#F2F2F2"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: deleteWarning == 1
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        deleteWarning = 0
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            height: 1
+            width: parent.width - 4
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            opacity: 0.1
+        }
+
+        Rectangle {
+            height: parent.height/2 - 2
+            width: 1
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            opacity: 0.1
+        }
+    }
+
     Item {
         id: totalWalletValue
         width: valueTicker.implicitWidth + value1.implicitWidth + value2.implicitWidth
@@ -276,6 +753,7 @@ Rectangle {
         id: changeButton
         width: appWidth/6
         height: appHeight/27
+        radius: height/2
         anchors.bottom: infoBar.top
         anchors.right: parent.right
         anchors.rightMargin: appWidth/12
@@ -288,6 +766,7 @@ Rectangle {
         Rectangle {
             id: selectChange
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.3
             visible: false
@@ -343,6 +822,7 @@ Rectangle {
             font.pixelSize: parent.height/2
             color: "#E55541"
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.horizontalCenterOffset: -appWidth/48
             anchors.verticalCenter: parent.verticalCenter
             visible: walletList.get(walletIndex).viewOnly
         }
@@ -748,6 +1228,7 @@ Rectangle {
                     id: scanQrButton
                     width: (parent.width*0.9) / 2
                     height: appHeight/27
+                    radius: height/2
                     anchors.top: keyInput.bottom
                     anchors.topMargin: height
                     anchors.left: keyInput.left
@@ -758,6 +1239,7 @@ Rectangle {
                     Rectangle {
                         id: selectQr
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -790,7 +1272,7 @@ Rectangle {
                         id: qrButtonText
                         text: "SCAN QR"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: themecolor
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -801,6 +1283,7 @@ Rectangle {
                     id: addressBookButton
                     width: (parent.width*0.9) / 2
                     height: appHeight/27
+                    radius: height/2
                     anchors.top: keyInput.bottom
                     anchors.topMargin: height
                     anchors.right: keyInput.right
@@ -811,6 +1294,7 @@ Rectangle {
                     Rectangle {
                         id: selectAddress
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -820,7 +1304,7 @@ Rectangle {
                         id: addressButtonText
                         text: "ADDRESS BOOK"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: themecolor
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -869,6 +1353,7 @@ Rectangle {
                     id: sendButton
                     width: appWidth/6
                     height: appHeight/27
+                    radius: height/2
                     color: "transparent"
                     border.width: 1
                     border.color: (invalidAddress == 0
@@ -884,6 +1369,7 @@ Rectangle {
                     Rectangle {
                         id: selectSend
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -893,7 +1379,7 @@ Rectangle {
                         id: sendButtonText
                         text: "SEND"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -1061,6 +1547,7 @@ Rectangle {
                 anchors.rightMargin: appWidth/24
                 visible: transactionSend == 1
                          && requestSend == 0
+                         && failedSend == 0
 
                 Text {
                     id: sendingLabel
@@ -1237,6 +1724,7 @@ Rectangle {
                     id: confirmTX
                     width: parent.width*0.9/2
                     height: appHeight/27
+                    radius: height/2
                     anchors.left: parent.left
                     anchors.top: confirmationFeeAmount.bottom
                     anchors.topMargin: height
@@ -1247,6 +1735,7 @@ Rectangle {
                     Rectangle {
                         id: selectConfirm
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -1256,7 +1745,7 @@ Rectangle {
                         id: confirmButtonText
                         text: "CONFIRM"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -1338,6 +1827,7 @@ Rectangle {
                     id: cancelTX
                     width: parent.width*0.9/2
                     height: appHeight/27
+                    radius: height/2
                     anchors.right: parent.right
                     anchors.top: confirmationFeeAmount.bottom
                     anchors.topMargin: height
@@ -1348,6 +1838,7 @@ Rectangle {
                     Rectangle {
                         id: cancelConfirm
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -1441,14 +1932,18 @@ Rectangle {
                     id: closeFail
                     width: appWidth/6
                     height: appHeight/27
+                    radius: height/2
                     color: "transparent"
                     anchors.top: failedIconLabel.bottom
                     anchors.topMargin: height*2
                     anchors.horizontalCenter: parent.horizontalCenter
+                    border.color: themecolor
+                    border.width: 1
 
                     Rectangle {
                         id: selectClose
                         anchors.fill: parent
+                        radius: height/2
                         color: maincolor
                         opacity: 0.3
                         visible: false
@@ -1458,7 +1953,7 @@ Rectangle {
                         id: closeButtonText
                         text: "OK"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -1558,50 +2053,50 @@ Rectangle {
             }
 
             Image {
-               id: refreshButton
-               source: darktheme == true? "qrc:/icons/refresh_icon_light-01.png" : "qrc:/icons/refresh_icon_dark-01.png"
-               height: historySwitch.height
-               fillMode: Image.PreserveAspectFit
-               anchors.right: historyListArea.right
-               anchors.verticalCenter: historySwitch.verticalCenter
-               visible: coinIndex < 3 && historySwitch.state == "off"
-               rotation : 0
+                id: refreshButton
+                source: darktheme == true? "qrc:/icons/refresh_icon_light-01.png" : "qrc:/icons/refresh_icon_dark-01.png"
+                height: historySwitch.height
+                fillMode: Image.PreserveAspectFit
+                anchors.right: historyListArea.right
+                anchors.verticalCenter: historySwitch.verticalCenter
+                visible: coinIndex < 3 && historySwitch.state == "off"
+                rotation : 0
 
-               property bool updating: loadTransactionsInitiated
+                property bool updating: loadTransactionsInitiated
 
-               onUpdatingChanged: {
-                   if (!updating) {
-                       refreshButton.rotation = 0
-                   }
-               }
+                onUpdatingChanged: {
+                    if (!updating) {
+                        refreshButton.rotation = 0
+                    }
+                }
 
-               Timer {
-                   interval: 100
-                   repeat: true
-                   running: refreshButton.updating
+                Timer {
+                    interval: 100
+                    repeat: true
+                    running: refreshButton.updating
 
-                   onTriggered: {
-                       refreshButton.rotation += 15
-                   }
-               }
+                    onTriggered: {
+                        refreshButton.rotation += 15
+                    }
+                }
 
-               Rectangle {
-                   anchors.fill: parent
-                   radius: width/2
-                   color: "transparent"
+                Rectangle {
+                    anchors.fill: parent
+                    radius: width/2
+                    color: "transparent"
 
-                   MouseArea {
-                       anchors.fill: parent
+                    MouseArea {
+                        anchors.fill: parent
 
-                       onClicked: {
-                           loadTransactionsInitiated = true
-                           click01.play()
-                           detectInteraction()
-                           newHistory = 1
-                           updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
-                       }
-                   }
-               }
+                        onClicked: {
+                            loadTransactionsInitiated = true
+                            click01.play()
+                            detectInteraction()
+                            newHistory = 1
+                            updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
+                        }
+                    }
+                }
             }
 
             Rectangle {
@@ -1871,6 +2366,96 @@ Rectangle {
                         loadTransactions(transactions);
                         newHistory = 0
                         loadTransactionsInitiated = false
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            anchors.fill: parent.fill
+            color: bgcolor
+            visible: deleteFailed == 1
+
+            Item {
+                width: parent.width
+                height: failedDeleteIcon.height + failedDeleteIcon.anchors.topMargin + deleteFailedLabel.height + deleteFailedLabel.anchors.topMargin + closeFailDelete.height + closeFailDelete.anchors.topMargin
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+                Image {
+                    id: failedDeleteIcon
+                    source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+                    height: appWidth/24
+                    fillMode: Image.PreserveAspectFit
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+                    anchors.topMargin: height
+                }
+
+                Label {
+                    id: deleteFailedLabel
+                    width: appWidth/3
+                    maximumLineCount: 3
+                    wrapMode: Text.WordWrap
+                    text: "Failed to delete your address! Try again."
+                    anchors.topMargin: font.pixelSize
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: themecolor
+                    font.pixelSize: appHeight/36
+                    font.family: xciteMobile.name
+                }
+
+                Rectangle {
+                    id: closeFailDelete
+                    width: appWidth/6
+                    height: appHeight/27
+                    radius: height/2
+                    color: "transparent"
+                    anchors.top: deleteFailedLabel.bottom
+                    anchors.topMargin: height*2
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Rectangle {
+                        id: selectFailClose
+                        anchors.fill: parent
+                        radius: height/2
+                        color: maincolor
+                        opacity: 0.3
+                        visible: false
+                    }
+
+                    Text {
+                        id: closeFailButtonText
+                        text: "OK"
+                        font.family: xciteMobile.name
+                        font.pixelSize: parent.height/2
+                        color: parent.border.color
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+
+                        onEntered: {
+                            selectFailClose.visible = true
+                        }
+
+                        onExited: {
+                            selectFailClose.visible = false
+                        }
+
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
+                        onClicked: {
+                            deleteErrorNr = 0
+                            deleteFailed = 0
+                            deletingWallet = false
+                        }
                     }
                 }
             }

@@ -106,19 +106,38 @@ Rectangle {
         id: cancel
         width: parent.width/6
         height: appHeight/18
+        radius: height/2
         color: "transparent"
         anchors.top: pincodeArea.bottom
         anchors.topMargin: appHeight/72
         anchors.horizontalCenter: parent.horizontalCenter
         border.width: 1
-        border.color: maincolor
+        border.color: themecolor
         visible: createPinModal.newPinSaved == 0 && createPinModal.failToSave == 0
                  && changePinModal.newPinSaved == 0 && changePinModal.failToSave == 0
                  && pinOK == 0 && pinError == 0
                  && savePinInitiated == false
 
+        Rectangle {
+            id: selectCancel
+            anchors.fill: parent
+            radius: height/2
+            color: maincolor
+            opacity: 0.3
+            visible: false
+        }
+
         MouseArea {
             anchors.fill: parent
+            hoverEnabled: true
+
+            onEntered: {
+                selectCancel.visible = true
+            }
+
+            onExited: {
+                selectCancel.visible = false
+            }
 
             onPressed: {
                 click01.play()
@@ -138,7 +157,7 @@ Rectangle {
             text: "CANCEL"
             font.pixelSize: parent.height/2
             font.family: xciteMobile.name
-            color: maincolor
+            color: themecolor
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
         }

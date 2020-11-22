@@ -75,16 +75,18 @@ Rectangle {
     property string oldLabel
     property string oldAddress
     property int addressCopied: 0
-
+    property int deleteAddress: 0
 
     onMyThemeChanged: {
         if (darktheme) {
             editButton.source = "qrc:/icons/edit_icon_light01.png"
             clipBoard.source= "qrc:/icons/clipboard_icon_light01.png"
+            trashcan.source = "qrc:/icons/trashcan_icon_light01.png"
         }
         else {
             editButton.source = "qrc:/icons/edit_icon_dark01.png"
             clipBoard.source= "qrc:/icons/clipboard_icon_dark01.png"
+            trashcan.source = "qrc:/icons/trashcan_icon_dark01.png"
         }
     }
 
@@ -237,7 +239,7 @@ Rectangle {
         anchors.verticalCenter: addressModalLabel.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: appWidth/24
-        visible: addressTracker == 1 && editAddressTracker == 0
+        visible: addressTracker == 1 && editAddressTracker == 0 && deleteAddress == 0
 
         Rectangle {
             anchors.fill: parent
@@ -367,6 +369,192 @@ Rectangle {
                 coinListLines(false)
                 coinListTracker = 1
             }
+        }
+    }
+
+    Image {
+        id: trashcan
+        source: darktheme == true? "qrc:/icons/trashcan_icon_light01.png" : "qrc:/icons/trashcan_icon_dark01.png"
+        height: appHeight/18
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: newIcon.verticalCenter
+        anchors.right: parent.right
+        visible: addressTracker == 1 && editAddressTracker == 0
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onEntered: {
+                    trashcan.source = "qrc:/icons/trashcan_icon_green01.png"
+                }
+
+                onExited: {
+                    if (darktheme == true) {
+                        trashcan.source = "qrc:/icons/trashcan_icon_light01.png"
+                    }
+                    else {
+                        trashcan.source = "qrc:/icons/trashcan_icon_dark01.png"
+                    }
+                }
+
+                onClicked: {
+                    deleteAddress = 1
+                }
+            }
+        }
+    }
+
+    DropShadow {
+        z: 12
+        anchors.fill: confirmPopup
+        source: confirmPopup
+        horizontalOffset: 0
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.4
+        transparentBorder: true
+        visible: confirmPopup.visible
+    }
+
+    Item {
+        id: confirmPopup
+        z: 12
+        width: popupConfirm.width
+        height: popupConfirm.height
+        anchors.right: trashcan.right
+        anchors.verticalCenter: trashcan.verticalCenter
+        visible: deleteAddress == 1
+
+        Rectangle {
+            id: popupConfirm
+            height: popupConfirmText.height + popupConfirmBtn.height + appHeight/72
+            width: confirmText.implicitWidth + confirmText.font.pixelSize*4
+            color: "#42454F"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Item {
+            id: popupConfirmText
+            height: appHeight/27
+            width: parent.width
+            anchors.bottom: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Label {
+                id: confirmText
+                text: "Are you sure you wan to delete this address?"
+                font.family: xciteMobile.name
+                font.pixelSize: parent.height/2
+                color: "#F2F2F2"
+                horizontalAlignment: Text.AlignHCenter
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+
+        Item {
+            id: popupConfirmBtn
+            height: appHeight/27
+            width: parent.width
+            anchors.bottom: popupConfirm.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Item {
+                id: yesBtn
+                height: parent.height
+                width: parent.width/2
+                anchors.top: parent.top
+                anchors.left: parent.left
+
+                Label {
+                    text: "Yes"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.family: xciteMobile.name
+                    font.pixelSize: parent.height/2
+                    color: "#F2F2F2"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: addressTracker == 1 && editAddressTracker == 0
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        deleteAddress = 0
+                        addressList.setProperty(addressIndex, "remove", true)
+                        addressTracker = 0
+                    }
+                }
+            }
+
+            Item {
+                id: noBtn
+                height: parent.height
+                width: parent.width/2
+                anchors.top: parent.top
+                anchors.right: parent.right
+
+                Label {
+                    text: "No"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.family: xciteMobile.name
+                    font.pixelSize: parent.height/2
+                    color: "#F2F2F2"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: addressTracker == 1 && editAddressTracker == 0
+
+                    onPressed: {
+                        click01.play()
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        deleteAddress = 0
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            height: 1
+            width: parent.width - 4
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            opacity: 0.1
+        }
+
+        Rectangle {
+            height: parent.height/2 - 2
+            width: 1
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#F2F2F2"
+            opacity: 0.1
         }
     }
 
@@ -621,6 +809,7 @@ Rectangle {
         id: scanQrButton
         width: appWidth/6
         height: appHeight/27
+        radius: height/2
         anchors.top: newAddress.bottom
         anchors.topMargin: appHeight/27
         anchors.horizontalCenter: parent.horizontalCenter
@@ -635,6 +824,7 @@ Rectangle {
         Rectangle {
             id: selectQr
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.3
             visible: false
@@ -771,6 +961,7 @@ Rectangle {
         id: saveButton
         width: appWidth/6
         height: appHeight/27
+        radius: height/2
         color: "transparent"
         border.width: 1
         border.color: (invalidAddress == 0
@@ -788,6 +979,7 @@ Rectangle {
         Rectangle {
             id: selectSave
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.3
             visible: false
@@ -974,6 +1166,7 @@ Rectangle {
         id: backButton
         width: appWidth/6
         height: appHeight/27
+        radius: height/2
         color: "transparent"
         anchors.bottom: parent.bottom
         anchors.bottomMargin: appHeight/27
@@ -986,6 +1179,7 @@ Rectangle {
         Rectangle {
             id: selectBack
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.3
             visible: false
@@ -1076,6 +1270,7 @@ Rectangle {
             id: closeFail
             width: appWidth/6
             height: appHeight/27
+            radius: height/2
             color: "transparent"
             anchors.top: saveFailedError.bottom
             anchors.topMargin: appHeight/18
@@ -1086,6 +1281,7 @@ Rectangle {
             Rectangle {
                 id: selectCloseFail
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -1161,6 +1357,7 @@ Rectangle {
             id: closeSave
             width: appWidth/6
             height: appHeight/27
+            radius: height/2
             color: "transparent"
             anchors.top: saveSuccessLabel.bottom
             anchors.topMargin: appHeight/18
@@ -1171,6 +1368,7 @@ Rectangle {
             Rectangle {
                 id: selectCloseSave
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false

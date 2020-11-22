@@ -165,16 +165,28 @@ Item {
             id: savePin
             width: parent.width/2
             height: appHeight/18
-            color: (newPin1.text !== ""
+            radius: height/2
+            color: "transparent"
+            border.width: 1
+            border.color: (newPin1.text !== ""
                     && newPin1.text.length === 4
                     && newPin2.text !== ""
                     && newPin2.text.length === 4
                     && newPin1.acceptableInput == true
                     && newPin2.acceptableInput == true
-                    && passError == 0)? maincolor : "#727272"
+                    && passError == 0)? themecolor : "#727272"
             anchors.top: newPin2.bottom
             anchors.topMargin: appHeight/18
             anchors.horizontalCenter: parent.horizontalCenter
+
+            Rectangle {
+                id: selectSave
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
 
             Text {
                 text: "SAVE"
@@ -200,6 +212,22 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
+                enabled: newPin1.text !== ""
+                          && newPin1.text.length === 4
+                          && newPin2.text !== ""
+                          && newPin2.text.length === 4
+                          && newPin1.acceptableInput == true
+                          && newPin2.acceptableInput == true
+                          && passError == 0
+
+                onEntered: {
+                    selectSave.visible = true
+                }
+
+                onExited: {
+                    selectSave.visible = false
+                }
 
                 onPressed: {
                     click01.play()
@@ -349,15 +377,34 @@ Item {
             id: closeFailed
             width: appWidth/6
             height: appHeight/18
+            radius: height/2
             color: "transparent"
             anchors.top: saveFailedError.bottom
             anchors.topMargin: appHeight/18
             anchors.horizontalCenter: parent.horizontalCenter
             border.width: 1
-            border.color: maincolor
+            border.color: themecolor
+
+            Rectangle {
+                id: selectFailed
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
 
             MouseArea {
                 anchors.fill: closeFailed
+                hoverEnabled: true
+
+                onEntered: {
+                    selectFailed.visible = true
+                }
+
+                onExited: {
+                    selectFailed.visible = false
+                }
 
                 onPressed: {
                     click01.play()

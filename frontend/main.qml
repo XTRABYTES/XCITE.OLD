@@ -374,6 +374,7 @@ ApplicationWindow {
     property bool editingName: false
     property bool deletingContact: false
     property int walletIndex: 1
+    property int editWalletName: 0
     property bool editingWallet: false
     property bool deletingWallet: false
     property int coinIndex: 0
@@ -811,8 +812,13 @@ ApplicationWindow {
                     }
                 }
                 else if (coinTracker == 1 && pageTracker == 0) {
-                    countWallets()
-                    coinTracker = 0
+                    if (editWalletName == 1 && !editingWallet) {
+                        editWalletName = 0
+                    }
+                    else if (!editingWallet) {
+                        countWallets()
+                        coinTracker = 0
+                    }
                 }
                 else if (addContactTracker == 1 && !addingContact) {
                     addContactTracker = 0

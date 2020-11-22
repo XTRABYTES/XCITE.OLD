@@ -36,8 +36,7 @@ Rectangle {
     property bool myTheme: darktheme
 
     onMyThemeChanged: {
-        exportWallet.border.color = themecolor
-        exportWalletLabel.color = themecolor
+
     }
 
     onMyTrackerChanged: {
@@ -62,6 +61,7 @@ Rectangle {
         id: exportWallet
         height: appHeight/24
         width: appWidth/6*1.5
+        radius: height/2
         anchors.top: walletBackupLabel.bottom
         anchors.topMargin: appHeight/24
         anchors.horizontalCenter: parent.horizontalCenter
@@ -69,6 +69,15 @@ Rectangle {
         border.width: 1
         border.color: themecolor
         visible: userSettings.localKeys
+
+        Rectangle {
+            id: selectExport
+            anchors.fill: parent
+            radius: height/2
+            color: maincolor
+            opacity: 0.3
+            visible: false
+        }
 
         Label {
             id: exportWalletLabel
@@ -91,14 +100,12 @@ Rectangle {
 
             onEntered: {
                 if (exportInitiated == false) {
-                    exportWallet.border.color = maincolor
-                    exportWalletLabel.color = maincolor
+                    selectExport.visible = true
                 }
             }
 
             onExited: {
-                exportWallet.border.color = themecolor
-                exportWalletLabel.color = themecolor
+               selectExport.visible = false
             }
 
             onClicked: {
@@ -275,6 +282,7 @@ Rectangle {
                 id: closeFailed
                 width: appWidth/6
                 height: appHeight/18
+                radius: height/2
                 color: "transparent"
                 anchors.top: exportFailedLabel.bottom
                 anchors.topMargin: appHeight/18
@@ -282,8 +290,26 @@ Rectangle {
                 border.width: 1
                 border.color: maincolor
 
+                Rectangle {
+                    id: selectClose
+                    anchors.fill: parent
+                    radius: height/2
+                    color: maincolor
+                    opacity: 0.3
+                    visible: false
+                }
+
                 MouseArea {
                     anchors.fill: closeFailed
+                    hoverEnabled: true
+
+                    onEntered: {
+                        selectClose.visible = true
+                    }
+
+                    onExited: {
+                        selectClose.visible = false
+                    }
 
                     onPressed: {
                         click01.play()

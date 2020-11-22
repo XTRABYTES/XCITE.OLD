@@ -194,6 +194,7 @@ Rectangle {
             id: createWalletButton
             width: appWidth/6
             height: appHeight/27
+            radius: height/2
             color: "transparent"
             border.width: 1
             border.color: (newName.text != ""
@@ -207,6 +208,7 @@ Rectangle {
             Rectangle {
                 id: selectCreate
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -318,6 +320,7 @@ Rectangle {
                 id: closeError
                 width: appWidth/6
                 height: appHeight/27
+                radius: height/2
                 color: "transparent"
                 anchors.top: errorLabel.bottom
                 anchors.topMargin: appHeight/18
@@ -328,6 +331,7 @@ Rectangle {
                 Rectangle {
                     id: selectCreateFail
                     anchors.fill: parent
+                    radius: height/2
                     color: maincolor
                     opacity: 0.3
                     visible: false
@@ -491,6 +495,7 @@ Rectangle {
             id: addWalletButton
             width: appWidth/6
             height: appHeight/27
+            radius: height/2
             anchors.top: warningPrivateKey.bottom
             anchors.topMargin: appHeight*2/27
             anchors.horizontalCenter: parent.horizontalCenter
@@ -502,6 +507,7 @@ Rectangle {
             Rectangle {
                 id: selectSave
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -712,6 +718,7 @@ Rectangle {
                 id: closeFail
                 width: appWidth/6
                 height: appHeight/27
+                radius: height/2
                 color: "transparent"
                 anchors.top: saveFailedError.bottom
                 anchors.topMargin: appHeight/18
@@ -722,6 +729,7 @@ Rectangle {
                 Rectangle {
                     id: selectCloseFail
                     anchors.fill: parent
+                    radius: height/2
                     color: maincolor
                     opacity: 0.3
                     visible: false
@@ -801,6 +809,7 @@ Rectangle {
                 id: closeSave
                 width: appWidth/6
                 height: appHeight/27
+                radius: height/2
                 color: "transparent"
                 anchors.top: saveSuccessLabel.bottom
                 anchors.topMargin: appHeight/18
@@ -811,6 +820,7 @@ Rectangle {
                 Rectangle {
                     id: selectCloseSave
                     anchors.fill: parent
+                    radius: height/2
                     color: maincolor
                     opacity: 0.3
                     visible: false

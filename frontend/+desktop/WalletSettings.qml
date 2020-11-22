@@ -370,6 +370,7 @@ Rectangle {
         id: changePinButton
         height: appHeight/36*1.5
         width: appWidth/6
+        radius: height/2
         color: "transparent"
         border.width: 1
         border.color: themecolor
@@ -381,6 +382,7 @@ Rectangle {
         Rectangle {
             id: pinSelector
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.5
             visible: false
@@ -441,6 +443,7 @@ Rectangle {
         id: changePasButton
         height: appHeight/36*1.5
         width: appWidth/6
+        radius: height/2
         color: "transparent"
         border.width: 1
         border.color: themecolor
@@ -451,6 +454,7 @@ Rectangle {
         Rectangle {
             id: pasSelector
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.5
             visible: false
@@ -810,6 +814,7 @@ Rectangle {
         id: clearButton
         width: appWidth/6
         height: appHeight/36*1.5
+        radius: height/2
         color: "transparent"
         anchors.verticalCenter: soundSwitch.verticalCenter
         anchors.right: parent.right
@@ -821,6 +826,7 @@ Rectangle {
         Rectangle {
             id: resetSelector
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.3
             visible: false

@@ -32,12 +32,20 @@ Rectangle {
     property bool myTheme: darktheme
 
     onMyThemeChanged: {
-        contactButton.border.color = themecolor
-        contactLabel.color = themecolor
+        addContactButton.border.color = themecolor
     }
 
     MouseArea {
         anchors.fill: parent
+    }
+
+    Image {
+        source: darktheme? "qrc:/icons/magnifying-glass-icon-light_01.png" : "qrc:/icons/magnifying-glass-icon-dark_01.png"
+        height: searchAddressBook.height/2
+        fillMode: Image.PreserveAspectFit
+        anchors.verticalCenter: searchAddressBook.verticalCenter
+        anchors.right: searchAddressBook.left
+        anchors.rightMargin: height/2
     }
 
     Controls.TextInput {
@@ -59,27 +67,64 @@ Rectangle {
         anchors.topMargin: appHeight/24
     }
 
-    Rectangle {
+    Item {
         id: contactButton
-        height: appHeight/24
-        width: appWidth/6
+        width: addContactButton.width + addContactLabel.width
+        height: addContactButton.height
         anchors.right: parent.right
         anchors.rightMargin: appWidth/12
         anchors.top: searchAddressBook.bottom
         anchors.topMargin: appHeight/12
-        color: "transparent"
-        border.width: 1
-        border.color: themecolor
+
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            height: parent.height + 6
+            width: parent.width + 6
+            radius: height/2
+            color: bgcolor
+            opacity: 0.9
+        }
+
+        Rectangle {
+            id: addContactButton
+            height: appWidth/48
+            width: height
+            radius: height/2
+            color: "transparent"
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            border.width: 2
+            border.color: themecolor
+
+            Rectangle {
+               height: 2
+               width: parent.width*0.6
+               radius: height/2
+               color: parent.border.color
+               anchors.verticalCenter: parent.verticalCenter
+               anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Rectangle {
+                width: 2
+                height: parent.height*0.6
+                radius: width/2
+                color: parent.border.color
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
 
         Label {
-            id: contactLabel
+            id: addContactLabel
             text: "ADD CONTACT"
-            anchors.left: parent.left
-            anchors.leftMargin: parent.height/2
-            anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: parent.height/2
+            leftPadding: addContactButton.height/2
+            font.pixelSize: addContactButton.height/2
             font.family: xciteMobile.name
-            color: themecolor
+            color: addContactButton.border.color
+            anchors.left: addContactButton.right
+            anchors.verticalCenter: parent.verticalCenter
         }
 
         MouseArea {
@@ -87,13 +132,11 @@ Rectangle {
             hoverEnabled: true
 
             onEntered: {
-                parent.border.color = maincolor
-                contactLabel.color = maincolor
+                addContactButton.border.color = maincolor
             }
 
             onExited: {
-                parent.border.color = themecolor
-                contactLabel.color = themecolor
+                addContactButton.border.color = themecolor
             }
 
             onPressed: {
@@ -102,7 +145,7 @@ Rectangle {
             }
 
             onClicked: {
-
+                addContactTracker = 1
             }
         }
     }
@@ -141,6 +184,11 @@ Rectangle {
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
         font.letterSpacing: 2
+    }
+
+    Desktop.AddContactModal {
+        id: myAddContactModal
+        anchors.top: parent.top
     }
 
     Desktop.AddressBookTransaction {

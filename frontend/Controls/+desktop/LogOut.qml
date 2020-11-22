@@ -298,6 +298,7 @@ Rectangle {
                         id: yes
                         width: parent.width/2 * 0.9
                         height: parent.height
+                        radius: height/2
                         color: "#4BBE2E"
                         opacity: 0.5
                         anchors.top: parent.bottom
@@ -346,6 +347,7 @@ Rectangle {
                     Rectangle {
                         width: yes.width
                         height: parent.height
+                        radius: height/2
                         anchors.bottom: yes.bottom
                         anchors.left: yes.left
                         color: "transparent"
@@ -358,6 +360,7 @@ Rectangle {
                         id: no
                         width: parent.width/2 * 0.9
                         height: 34
+                        radius: height/2
                         color: "#E55541"
                         opacity: 0.5
                         anchors.top: parent.bottom
@@ -406,6 +409,7 @@ Rectangle {
                     Rectangle {
                         width: no.width
                         height: 34
+                        radius: height/2
                         anchors.bottom: no.bottom
                         anchors.left: no.left
                         color: "transparent"

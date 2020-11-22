@@ -69,6 +69,7 @@ Rectangle {
         id: createButton
         width: appWidth/6
         height: appHeight/27
+        radius: height/2
         anchors.verticalCenter: addressInfo.verticalCenter
         anchors.right: walletInfoLabel.right
         border.color: themecolor
@@ -79,6 +80,7 @@ Rectangle {
         Rectangle {
             id: selectCreate
             anchors.fill: parent
+            radius: height/2
             color: maincolor
             opacity: 0.3
             visible: false
@@ -607,6 +609,7 @@ Rectangle {
             id: createFileButton
             width: appWidth/6
             height: appHeight/27
+            radius: height/2
             anchors.top: myPaperWallet.bottom
             anchors.topMargin: height
             anchors.horizontalCenter: myPaperWallet.horizontalCenter
@@ -618,6 +621,7 @@ Rectangle {
             Rectangle {
                 id: selectCreateFile
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false

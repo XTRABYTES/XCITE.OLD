@@ -148,6 +148,7 @@ Rectangle {
             id: createButton
             width: appWidth/6
             height: appHeight/27
+            radius: height/2
             anchors.top: walletSwitch.bottom
             anchors.topMargin: appWidth/24
             anchors.horizontalCenter: parent.horizontalCenter
@@ -158,6 +159,7 @@ Rectangle {
             Rectangle {
                 id: selectCreate
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
@@ -205,6 +207,7 @@ Rectangle {
             id: importButton
             width: appWidth/6
             height: appHeight/27
+            radius: height/2
             anchors.top: createButton.bottom
             anchors.topMargin: appHeight/27
             anchors.horizontalCenter: parent.horizontalCenter
@@ -216,6 +219,7 @@ Rectangle {
             Rectangle {
                 id: selectImport
                 anchors.fill: parent
+                radius: height/2
                 color: maincolor
                 opacity: 0.3
                 visible: false
