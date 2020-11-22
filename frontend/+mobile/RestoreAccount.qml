@@ -295,11 +295,14 @@ Item {
                 onLoginSucceededChanged: {
                     if (restoreTracker == 1) {
                         mainRoot.pop()
-                        mainRoot.push("../Home.qml")
+                        mainRoot.push("qrc:/+mobile/Home.qml")
                         myUsername = userName.text.trim()
+                        tttSetUsername(myUsername)
+                        initializeTtt()
                         restoreSuccesTimer.start()
                         loadingSettings = 0
                         verifyingBalances = 0
+                        status = userSettings.xChatDND === true? "dnd" : "idle"
                         restoreInitiated  = false
                     }
                 }

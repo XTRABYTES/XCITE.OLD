@@ -150,7 +150,13 @@ ApplicationWindow {
 
         selectedPage = "onBoarding"
 
-        mainRoot.push("qrc:/+mobile/Onboarding.qml")
+        if (myOS == "android" || myOS == "ios") {
+            mainRoot.push("qrc:/+mobile/Onboarding.qml")
+        }
+        else {
+            mainRoot.push("qrc:/+desktop/Onboarding.qml")
+        }
+
     }
 
     onBtcValueXBYChanged: {

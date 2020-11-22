@@ -27,7 +27,12 @@ Item {
         if (userSettings.accountCreationCompleted === false) {
             mainRoot.pop()
             selectedPage = "initialSetup"
-            mainRoot.push("qrc:/+mobile/InitialSetup.qml")
+            if (myOS === "ios" || myOS === "android") {
+                mainRoot.push("qrc:/+mobile/InitialSetup.qml")
+            }
+            else {
+                mainRoot.push("qrc:/+desktop/InitialSetup.qml")
+            }
         }
         // continue to wallet
         else {

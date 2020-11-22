@@ -121,7 +121,7 @@ Rectangle {
         Rectangle {
             id: appBtn
             width: appText.height
-            height: width
+            height: appHeight/27
             radius: height/2
             anchors.right: parent.right
             anchors.rightMargin: appWidth/24
@@ -193,7 +193,7 @@ Rectangle {
         Rectangle {
             id: queueBtn
             width: queueText.height
-            height: width
+            height: appHeight/27
             radius: height/2
             anchors.right: parent.right
             anchors.rightMargin: appWidth/24
@@ -280,12 +280,11 @@ Rectangle {
         Rectangle {
             id: executeButton
             width: requestText.height
-            height: width
+            height: appHeight/27
             radius: height/2
             anchors.right: parent.right
             anchors.rightMargin: appWidth/24
-            anchors.top: queueBtn.bottom
-            anchors.topMargin: height/2
+            anchors.verticalCenter: pingAmount.verticalCenter
             color: "transparent"
             border.color: themecolor
             border.width: 1

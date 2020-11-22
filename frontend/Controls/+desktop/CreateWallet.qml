@@ -61,13 +61,25 @@ Rectangle {
         }
     ]
 
+    Image {
+        id: largeLogo
+        source: 'qrc:/icons/XBY_logo_large.svg'
+        height: appHeight / 75 * 65
+        fillMode: Image.PreserveAspectFit
+        anchors.top: parent.top
+        anchors.topMargin: appHeight/18
+        anchors.horizontalCenter: parent.left
+        opacity: 0.5
+        visible: selectedPage !== "home"
+    }
+
     property int editSaved: 0
     property int editFailed: 0
     property int newWallet: 0
     property int createFailed: 0
     property int labelExists: 0
     property string walletError: "We were unable to create a wallet for you."
-    property string coin: coinIndex
+    property int coin: coinIndex
     property bool walletSaved: false
     property int saveErrorNR: 0
     property bool createInitiated: false
@@ -168,6 +180,7 @@ Rectangle {
             mobile: 1
             deleteBtn: 0
             visible: createFailed == 0
+            selectByMouse: editFailed == 0 && editSaved == 0
             onTextChanged: {
                 detectInteraction()
                 if(newName.text != "") {
@@ -302,7 +315,7 @@ Rectangle {
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: height/2
+                anchors.topMargin: selectedPage === "home"? height/2 : height/4
             }
 
             Text {
@@ -485,6 +498,8 @@ Rectangle {
             text: "<b>WARNING</b>: Do not forget to backup your private key, you will not be able to restore your wallet without it!"
             anchors.top: addressHash.bottom
             anchors.topMargin: appHeight/18
+            anchors.left: parent.left
+            anchors.right: parent.right
             color: themecolor
             font.pixelSize: appHeight/54
             font.family: xciteMobile.name
@@ -677,6 +692,7 @@ Rectangle {
             height: saveFailed.height + saveFailed.anchors.topMargin + saveFailedLabel.height + saveFailedLabel.anchors.topMargin + saveFailedError.height + saveFailedError.anchors.topMargin + closeFail.height*2 + closeFail.anchors.topMargin
             color: bgcolor
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenterOffset: selectedPage === "home"? 0 : -parent.height/4
             anchors.verticalCenter: parent.verticalCenter
             visible: editFailed == 1
 
@@ -781,6 +797,7 @@ Rectangle {
             height: saveSuccess.height + saveSuccess.anchors.topMargin + saveSuccessLabel.height + saveSuccessLabel.anchors.topMargin + closeSave.height*2 + closeSave.anchors.topMargin
             color: bgcolor
             anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: selectedPage === "home"? 0 : -parent.height/4
             anchors.horizontalCenter: parent.horizontalCenter
             visible: editSaved == 1
 

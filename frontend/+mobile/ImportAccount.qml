@@ -295,11 +295,14 @@ Item {
                 onLoginSucceededChanged: {
                     if (importTracker == 1) {
                         mainRoot.pop()
-                        mainRoot.push("../Home.qml")
+                        mainRoot.push("qrc:/+mobile/Home.qml")
                         myUsername = userName.text.trim()
+                        tttSetUsername(myUsername)
+                        initializeTtt()
                         importSuccesTimer.start()
                         loadingSettings = 0
                         verifyingBalances = 0
+                        status = userSettings.xChatDND === true? "dnd" : "idle"
                         importInitiated  = false
                     }
                 }

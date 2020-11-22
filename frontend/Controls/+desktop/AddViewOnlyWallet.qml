@@ -26,7 +26,7 @@ Rectangle {
     width: appWidth*5/6
     height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
-    state: viewOnlyTracker == 1? "up" : "down"
+    state: viewOnlyTracker == 1 && selectedPage == "home"? "up" : "down"
     color: bgcolor
     anchors.top: parent.top
 

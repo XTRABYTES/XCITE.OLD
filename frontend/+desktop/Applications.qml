@@ -70,28 +70,28 @@ Rectangle {
         anchors.top: parent.top
     }
 
-    Mobile.XChat {
+    Desktop.XCHAT {
         id: myXchat
         anchors.top: parent.top
         width: parent.width
         height: parent.height
     }
 
-    Mobile.XVault {
+    Desktop.XVAULT {
         id: myXvault
         anchors.top: parent.top
         width: parent.width
         height: parent.height
     }
 
-    Mobile.XChange {
+    Desktop.XCHANGE {
         id: myXchange
         anchors.top: parent.top
         width: parent.width
         height: parent.height
     }
 
-    Mobile.XGames {
+    Desktop.XGAMES {
         id: myXgames
         anchors.top: parent.top
         width: parent.width

@@ -24,7 +24,7 @@ Rectangle {
     id: addWalletModal
     width: appWidth*5/6
     height: appHeight
-    state: importKeyTracker == 1? "up" : "down"
+    state: importKeyTracker == 1 && selectedPage == "home"? "up" : "down"
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -60,6 +60,18 @@ Rectangle {
             NumberAnimation { target: addWalletModal; property: "anchors.topMargin"; duration: 300; easing.type: Easing.InOutCubic}
         }
     ]
+
+    Image {
+        id: largeLogo
+        source: 'qrc:/icons/XBY_logo_large.svg'
+        height: appHeight / 75 * 65
+        fillMode: Image.PreserveAspectFit
+        anchors.top: parent.top
+        anchors.topMargin: appHeight/18
+        anchors.horizontalCenter: parent.left
+        opacity: 0.5
+        visible: selectedPage !== "home"
+    }
 
     property int editSaved: 0
     property int editFailed : 0
@@ -191,6 +203,7 @@ Rectangle {
             mobile: 1
             deleteBtn: 0
             visible: importWalletFailed == 0
+            selectByMouse: editFailed == 0 && editSaved == 0
             onTextChanged: {
                 detectInteraction()
                 if(newName.text != "") {
@@ -230,6 +243,7 @@ Rectangle {
             deleteBtn: 0
             validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
             visible: importWalletFailed == 0
+            selectByMouse: editFailed == 0 && editSaved == 0
             onTextChanged: {
                 detectInteraction()
                 if(newAddress.text != ""){
@@ -657,7 +671,7 @@ Rectangle {
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: height/2
+                anchors.topMargin: selectedPage === "home"? height/2 : height/4
             }
 
             Text {
@@ -842,6 +856,8 @@ Rectangle {
             text: "<b>WARNING</b>: Do not forget to backup your private key, you will not be able to restore your wallet without it!"
             anchors.top: addressHash.bottom
             anchors.topMargin: appHeight/18
+            anchors.left: parent.left
+            anchors.right: parent.right
             color: themecolor
             font.pixelSize: appHeight/54
             font.family: xciteMobile.name
@@ -1044,6 +1060,7 @@ Rectangle {
             color: bgcolor
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenterOffset: selectedPage === "home"? 0 : -parent.height/4
             visible: editFailed == 1
 
             Image {
@@ -1148,6 +1165,7 @@ Rectangle {
             color: bgcolor
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenterOffset: selectedPage === "home"? 0 : -parent.height/4
             visible: editSaved == 1
 
             Image {

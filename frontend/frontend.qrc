@@ -246,5 +246,15 @@
         <file>Controls/+desktop/TransactionAddressList.qml</file>
         <file>Controls/+desktop/AddressBookTransaction.qml</file>
         <file>Controls/+desktop/AddContactModal.qml</file>
+        <file>+desktop/Onboarding.qml</file>
+        <file>+desktop/Login.qml</file>
+        <file>+desktop/ImportAccount.qml</file>
+        <file>+desktop/RestoreAccount.qml</file>
+        <file>+desktop/CreateAccount.qml</file>
+        <file>+desktop/InitialSetup.qml</file>
+        <file>Controls/+desktop/XCHAT.qml</file>
+        <file>Controls/+desktop/XCHANGE.qml</file>
+        <file>Controls/+desktop/XGAMES.qml</file>
+        <file>Controls/+desktop/XVAULT.qml</file>
     </qresource>
 </RCC>
