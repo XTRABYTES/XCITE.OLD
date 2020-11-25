@@ -24,7 +24,7 @@ Rectangle {
     id: addWalletModal
     width: appWidth*5/6
     height: appHeight
-    state: importKeyTracker == 1 && selectedPage == "home"? "up" : "down"
+    state: importKeyTracker == 1? "up" : "down"
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top

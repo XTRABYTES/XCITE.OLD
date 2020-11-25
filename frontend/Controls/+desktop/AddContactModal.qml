@@ -30,10 +30,17 @@ Rectangle {
 
     onStateChanged: {
         if (state == "down") {
-            contactSaved = 0
+            addContactTracker = 0
             saveFailed = 0
+            contactSaved = 0
+            contactExists = 0
+            validEmail = 1
             newFirstName.text = ""
             newLastName.text = ""
+            newTel.text = ""
+            newCell.text = ""
+            newMail.text = ""
+            newChat.text = ""
         }
     }
 
@@ -71,7 +78,8 @@ Rectangle {
     property int contactSaved: 0
     property int saveFailed: 0
     property int contactExists: 0
-    property int validEmail: 0
+    property int validEmail: 1
+    property string failError: ""
 
     function compareName() {
         contactExists = 0
@@ -180,6 +188,16 @@ Rectangle {
 
             onClicked: {
                 addContactTracker = 0
+                saveFailed = 0
+                contactSaved = 0
+                contactExists = 0
+                validEmail = 1
+                newFirstName.text = ""
+                newLastName.text = ""
+                newTel.text = ""
+                newCell.text = ""
+                newMail.text = ""
+                newChat.text = ""
             }
         }
     }
@@ -491,7 +509,7 @@ Rectangle {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: appHeight/27
             anchors.horizontalCenter: parent.horizontalCenter
-            border.color: ((newFirstName.text != "" || newLastName.text != "") && contactExists == 0)? themecolor : "#727272"
+            border.color: ((newFirstName.text != "" || newLastName.text != "") && contactExists == 0 && validEmail == 1)? themecolor : "#727272"
             border.width: 1
             color: "transparent"
 
@@ -517,7 +535,8 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
-                enabled: newFirstName.text != "" || newLastName.text != ""
+                enabled: (newFirstName.text !== "" || newLastName.text !== "")
+                              && contactExists == 0 && validEmail == 1
 
                 onEntered: {
                     selectSave.visible = true
@@ -533,7 +552,299 @@ Rectangle {
                 }
 
                 onClicked: {
+                    contactID = contactList.count;
+                    contactList.append({"firstName": newFirstName.text, "lastName": newLastName.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
+                    contactID = contactID +1;
+                    addingContact = true;
+                    updateToAccount();
+                }
 
+                Connections {
+                    target: UserSettings
+
+                    onSaveSucceeded: {
+                        if (addContactTracker == 1 && addingContact == true) {
+                            contactSaved = 1
+                            addingContact = false
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (addContactTracker == 1 && addingContact == true) {
+                            contactID = contactID - 1
+                            contactList.remove(contactID)
+                            saveFailed = 1
+                            addingContact = false
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (addContactTracker == 1 && addingContact == true) {
+                            networkError = 1
+                            contactID = contactID - 1
+                            contactList.remove(contactID)
+                            saveFailed = 1
+                            addingContact = false
+                        }
+                    }
+
+                    onSaveFailedDBError: {
+                        if (addContactTracker == 1 && addingContact == true) {
+                            failError = "Database ERROR"
+                        }
+                    }
+
+                    onSaveFailedAPIError: {
+                        if (addContactTracker == 1 && addingContact == true) {
+                            failError = "Network ERROR"
+                        }
+                    }
+
+                    onSaveFailedInputError: {
+                        if (addContactTracker == 1 && addingContact == true) {
+                            failError = "Input ERROR"
+                        }
+                    }
+
+                    onSaveFailedUnknownError: {
+                        if (addContactTracker == 1 && addingContact == true) {
+                            failError = "Unknown ERROR"
+                        }
+                    }
+                }
+            }
+        }
+
+        AnimatedImage {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: saveButton.horizontalCenter
+            anchors.verticalCenter: saveButton.verticalCenter
+            playing: addingContact == true
+            visible: addingContact == true
+        }
+    }
+
+    // save failed state
+    DropShadow {
+        anchors.fill: editContactFailed
+        source: editContactFailed
+        horizontalOffset: 4
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.3
+        transparentBorder: true
+        visible: editContactFailed.visible
+    }
+
+    Rectangle {
+        id: editContactFailed
+        width: appWidth*1.5/6
+        height: saveFailedIcon.height + saveFailedIcon.anchors.topMargin + saveFailedLabel.height + saveFailedLabel.anchors.topMargin + saveFailedError.height + saveFailedError.anchors.topMargin + closeFail.height*2 + closeFail.anchors.topMargin
+        color: bgcolor
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenterOffset: -appWidth/48
+        visible: saveFailed == 1
+
+        Image {
+            id: saveFailedIcon
+            source: darktheme == true? 'qrc:/icons/mobile/failed-icon_01_light.svg' : 'qrc:/icons/mobile/failed-icon_01_dark.svg'
+            height: appHeight/12
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: height/2
+        }
+
+        Label {
+            id: saveFailedLabel
+            text: "Failed to add your contact!"
+            anchors.top: saveFailed.bottom
+            anchors.topMargin: appHeight/24
+            anchors.horizontalCenter: saveFailed.horizontalCenter
+            color: maincolor
+            font.pixelSize: appHeight/27
+            font.family: xciteMobile.name
+        }
+
+        Label {
+            id: saveFailedError
+            text: failError
+            anchors.top: saveFailedLabel.bottom
+            anchors.topMargin: font.pixelSize/2
+            anchors.horizontalCenter: saveFailed.horizontalCenter
+            color: maincolor
+            font.pixelSize: appHeight/27
+            font.family: xciteMobile.name
+        }
+
+        Rectangle {
+            id: closeFail
+            width: appWidth/6
+            height: appHeight/27
+            radius: height/2
+            color: "transparent"
+            anchors.top: saveFailedError.bottom
+            anchors.topMargin: appHeight/18
+            anchors.horizontalCenter: parent.horizontalCenter
+            border.width: 1
+            border.color: maincolor
+
+            Rectangle {
+                id: selectCloseFail
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            Text {
+                text: "TRY AGAIN"
+                font.family: xciteMobile.name
+                font.pixelSize: parent.height/2
+                color: parent.border.color
+                anchors.horizontalCenter: closeFail.horizontalCenter
+                anchors.verticalCenter: closeFail.verticalCenter
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: {
+                    selectCloseFail.visible = true
+                }
+
+                onExited: {
+                    selectCloseFail.visible = false
+                }
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    saveFailed = 0
+                    failError = ""
+                }
+            }
+        }
+    }
+
+    // save success state
+    DropShadow {
+        anchors.fill: editContactSuccess
+        source: editContactSuccess
+        horizontalOffset: 4
+        verticalOffset: 4
+        radius: 12
+        samples: 25
+        spread: 0
+        color: "black"
+        opacity: 0.3
+        transparentBorder: true
+        visible: editContactSuccess.visible
+    }
+
+    Rectangle {
+        id: editContactSuccess
+        width: appWidth*1.5/6
+        height: saveSuccess.height + saveSuccess.anchors.topMargin + saveSuccessLabel.height + saveSuccessLabel.anchors.topMargin + closeSave.height*2 + closeSave.anchors.topMargin
+        color: bgcolor
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        border.color: themecolor
+        border.width: 1
+        visible: contactSaved == 1
+
+        Image {
+            id: saveSuccess
+            source: darktheme == true? 'qrc:/icons/mobile/add_contact-icon_01_light.svg' : 'qrc:/icons/mobile/add_acontact-icon_01_dark.svg'
+            height: appHeight/12
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: height/2
+        }
+
+        Label {
+            id: saveSuccessLabel
+            text: "Contact added!"
+            anchors.top: saveSuccess.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: saveSuccess.horizontalCenter
+            color: maincolor
+            font.pixelSize: 14
+            font.family: xciteMobile.name
+        }
+
+        Rectangle {
+            id: closeSave
+            width: appWidth/6
+            height: appHeight/27
+            radius: height/2
+            color: "transparent"
+            anchors.top: saveSuccessLabel.bottom
+            anchors.topMargin: appHeight/18
+            anchors.horizontalCenter: parent.horizontalCenter
+            border.width: 1
+            border.color: maincolor
+
+            Rectangle {
+                id: selectCloseSave
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            Text {
+                text: "OK"
+                font.family: xciteMobile.name
+                font.pixelSize: parent.height/2
+                color: parent.border.color
+                anchors.horizontalCenter: closeSave.horizontalCenter
+                anchors.verticalCenter: closeSave.verticalCenter
+            }
+
+            MouseArea {
+                anchors.fill: closeSave
+                hoverEnabled: true
+
+                onEntered: {
+                    selectCloseSave.visible = true
+                }
+
+                onExited: {
+                    selectCloseSave.visible = false
+                }
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    addContactTracker = 0
+                    saveFailed = 0
+                    contactSaved = 0
+                    contactExists = 0
+                    validEmail = 1
+                    newFirstName.text = ""
+                    newLastName.text = ""
+                    newTel.text = ""
+                    newCell.text = ""
+                    newMail.text = ""
+                    newChat.text = ""
                 }
             }
         }
