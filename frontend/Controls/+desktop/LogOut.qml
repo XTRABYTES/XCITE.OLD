@@ -276,7 +276,7 @@ Rectangle {
 
                     Rectangle {
                         width: cancelLogoutButton.width
-                        height: 34
+                        height: cancelLogoutButton.height
                         anchors.bottom: cancelLogoutButton.bottom
                         anchors.left: cancelLogoutButton.left
                         color: "transparent"
@@ -346,7 +346,7 @@ Rectangle {
 
                     Rectangle {
                         width: yes.width
-                        height: parent.height
+                        height: yes.height
                         radius: height/2
                         anchors.bottom: yes.bottom
                         anchors.left: yes.left
@@ -359,7 +359,7 @@ Rectangle {
                     Rectangle {
                         id: no
                         width: parent.width/2 * 0.9
-                        height: 34
+                        height: parent.height
                         radius: height/2
                         color: "#E55541"
                         opacity: 0.5
@@ -408,7 +408,7 @@ Rectangle {
 
                     Rectangle {
                         width: no.width
-                        height: 34
+                        height: no.height
                         radius: height/2
                         anchors.bottom: no.bottom
                         anchors.left: no.left

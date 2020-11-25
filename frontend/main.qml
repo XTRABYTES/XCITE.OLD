@@ -229,8 +229,10 @@ ApplicationWindow {
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
     property real doubbleButtonWidth: appWidth - 56
     property string myOS: Qt.platform.os
-    property int appHeight: Screen.width > Screen.height? appWidth*9/16 : ((myOS == "android" || myOS == "ios")? Screen.height : appWidth*9/16)
-    property int appWidth: Screen.width > Screen.height? Screen.width*0.6 : ((myOS == "android" || myOS == "ios")? Screen.width : Screen.width*0.6)
+    property real baseWidth: (myOS == "android" || myOS == "ios")? Screen.width : Screen.width*0.6
+    property real baseHeight: (myOS == "android" || myOS == "ios")? Screen.height : appWidth*9/16
+    property real appHeight: baseHeight
+    property real appWidth: baseWidth
     property int previousX: 0
     property int previousY: 0
     property variant notAllowed: ["<del>","</del>","<s>","</s>","<strong>","</strong>", "<br>","<p>","</p>","</font>","<h1>","</h1>","<h2>","</h2>","<h3>","</h3>","<h4>","</h4>","<h5>","</h5>","<h6>","</h6>","a href=","img src=","ol type=","ul type=","<li>","</li>","<pre>","</pre>","&gt","&lt","&amp"]
@@ -536,6 +538,8 @@ ApplicationWindow {
     property string copiedConsoleText: ""
     property string failedTX: ""
     property bool createTx: false
+    property int sizeIndex: 0
+    property real sizeCoeficient: sizeIndex == 0? 1 : (sizeIndex == 1? 1.1 : (sizeIndex == 2? 1.2 : (sizeIndex == 3? 1.3 : (sizeIndex == 4? 1.4 : (sizeIndex == 5? 1.5 : 1)))))
 
     // Signals
     signal loginSuccesfulSignal(string username, string password)
@@ -611,10 +615,11 @@ ApplicationWindow {
     }
 
     // Keyboard shortcuts
+        /*
     Shortcut {
         sequence: "Ctrl+Down"
         onActivated: minimizeApp()
-    }
+    }*/
 
     Shortcut {
         sequence: "Ctrl+Left"
@@ -633,6 +638,28 @@ ApplicationWindow {
                 sessionTime = 0
                 manualLogout = 1
                 logoutTracker = 1
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Up"
+        onActivated: {
+            if (sizeIndex < 5) {
+                console.log("Making app bigger")
+                sizeIndex = sizeIndex + 1
+                appWidth= baseWidth * sizeCoeficient
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Down"
+        onActivated: {
+            if (sizeIndex > 0) {
+                    console.log("Making app smaller")
+                sizeIndex = sizeIndex - 1
+                appWidth= baseWidth * sizeCoeficient
             }
         }
     }
