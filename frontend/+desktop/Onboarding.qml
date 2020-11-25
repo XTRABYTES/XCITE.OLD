@@ -26,6 +26,8 @@ Item {
     anchors.verticalCenter: xcite.verticalCenter
     clip: true
 
+    property string versionNR: "0.1.0"
+
     Component.onCompleted: {
         selectedPage = "login"
     }
