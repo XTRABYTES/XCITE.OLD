@@ -17,7 +17,7 @@
 #include <QString>
 #include <QVariant>
 
-#include <QtMqtt/QMqttClient>
+//#include <QtMqtt/QMqttClient>
 #include <QNetworkConfigurationManager>
 
 #include "xchataiml.hpp"
@@ -134,7 +134,7 @@ private:
     bool internetActive = true;
     QObject *window;
     XchatAIML *m_pXchatAiml;
-    QMqttClient *mqtt_client;
+    //QMqttClient *mqtt_client;
     QString topic = "xcite/xchat";
     QString me = "";
     QString fastestServer = "";

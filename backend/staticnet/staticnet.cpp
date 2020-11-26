@@ -19,6 +19,13 @@
 
 #include <QDebug>
 #include <QMetaObject>
+#include <QMessageBox>
+#include <QGuiApplication>
+#include <QScreen>
+#include <QTimer>
+#include <QLabel>
+#include <QLayout>
+#include <QHBoxLayout>
 #include "staticnet.hpp"
 #include "../xchat/xchat.hpp"
 #include "../xutility/xutility.hpp"
@@ -351,6 +358,7 @@ void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
     if (replyMethod == "getutxo") {
         if (replyMsg == "rpc error" || msgObj.contains("error")) {
             emit staticNet.utxoError();
+            staticNet.staticPopup("static-net", "error retrieving UTXO");
         }
         else {
             SendcoinWorker* worker = new SendcoinWorker(params);
@@ -360,11 +368,13 @@ void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
     else if (replyMethod == "sendrawtransaction") {
         if (replyMsg == "rpc error" || msgObj.contains("error")) {
             emit staticNet.txFailed(replyId);
+            staticNet.staticPopup("static-net", "transaction not accepted");
         }
         else {
             replyMsg = replyMsg.replace("\"","");
             replyMsg = replyMsg.trimmed();
             emit staticNet.txSuccess(replyId, replyMsg);
+            staticNet.staticPopup("static-net", ("transaction accepted, txid: " + replyMsg));
             for (int i = 0; i < pendingUtxo.count(); i++) {
                 QStringList confirmedUtxo = pendingUtxo.at(i).split(",");
                 if (confirmedUtxo.at(1) == replyId) {
@@ -376,6 +386,7 @@ void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
     else if (replyMethod == "gettxvouts") {
         if (replyMsg == "rpc error" || msgObj.contains("error")) {
             emit staticNet.txVoutError();
+            staticNet.staticPopup("static-net", "error retrieving vouts");
         }
         else {
             QJsonDocument voutDoc = QJsonDocument::fromJson(replyMsg.toUtf8());
@@ -492,6 +503,7 @@ void SendcoinWorker::process() {
         } else {
             xchatRobot.SubmitMsg("dicom - backend - Bad private key.");
             emit sendcoinFailed();
+            staticNet.staticPopup("static-net", "failed sending coins, bad private key");
             emit finished();
         }
 
@@ -499,6 +511,7 @@ void SendcoinWorker::process() {
     } else {
         xchatRobot.SubmitMsg("dicom - backend - Bad or mising network ID.");
         emit sendcoinFailed();
+        staticNet.staticPopup("static-net", "failed sending coins, network ID error");
         emit finished();
     }
 }
@@ -527,6 +540,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
     } else {
         xchatRobot.SubmitMsg("dicom - backend - Bad private key.");
         emit sendcoinFailed();
+        staticNet.staticPopup("static-net", "failed sending coins, bad private key");
         emit finished();
     }
 
@@ -637,6 +651,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
             if (tooBig) {
                 emit txTooBig();
                 emit sendcoinFailed();
+                staticNet.staticPopup("static-net", "failed sending coins, transaction is too big");
                 return;
             }
             int64 checkInputs = inputs_sum - (send_value + (nMinFee * nBaseFee));
@@ -648,10 +663,12 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
             if (returnedUtxo == 50) {
                 xchatRobot.SubmitMsg("dicom - backend - not enough utxo available to complete transaction, only 50 utxo are returned. Lower the amount of your transaction.");
                 emit staticNet.fundsLow("Not enough utxo available");
+                staticNet.staticPopup("static-net", "failed sending coins, not enough UTXO available");
             }
             else if (returnedUtxo < 50 && inptCount == returnedUtxo) {
                 xchatRobot.SubmitMsg("dicom - backend - your available coins are currently used for unconfirmed transactions. Wait until your previous transactions are confirmed");
                 emit staticNet.fundsLow("Not enough coins available");
+                staticNet.staticPopup("static-net", "failed sending coins, not enough coins available");
             }
         } else {
             if (secret != ""){
@@ -717,10 +734,12 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                     response.insert("error", "Invalid RAW transaction.");
                     QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
                     emit staticNet.rawTxFailed();
+                    staticNet.staticPopup("static-net", "failed sending coins, invalid raw transaction");
                 }
             }
             else {
                 xchatRobot.SubmitMsg("dicom - backend - error: no private key");
+                staticNet.staticPopup("static-net", "failed sending coins, no private key available");
             }
         }
     }
@@ -788,4 +807,44 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
     xchatRobot.SubmitMsg("dicom - backend - fee after output check: " + QString::number(nMinFee));
 
     xchatRobot.SubmitMsg("dicom - backend - calculated fee: " + QString::number(nMinFee));
+}
+
+void StaticNet::staticPopup(QString author, QString msg){
+    QString osType = QSysInfo::productType();
+    QString device = "desktop";
+    if (osType == "android" || osType == "ios") {
+        device = "mobile";
+    }
+    if (device == "desktop") {
+        QWidget *dialog = new QWidget;
+        QHBoxLayout *msgBox = new QHBoxLayout;
+        QLabel *message = new QLabel;
+        message->setMaximumWidth(400);
+        message->setMaximumHeight(68);
+        message->setStyleSheet("font: 10pt; color:rgb(242,242,242);");
+        message->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+        message->setWordWrap(true);
+        QString auth = "<font color='#0ED8D2'><b>" + author + "</b></font>";
+        QString xchatMsg = auth + ":<br><i>" + msg + "</i>";
+        message->setText(xchatMsg);
+        QSize size = QGuiApplication::screens()[0]->size();
+        int xBox = size.width(); int yBox = size.height();
+        QPoint recB;
+        int xBottom; int yBottom;
+        xBottom = xBox - 5; yBottom = yBox - 50;
+        recB.setX(xBottom); recB.setY(yBottom);
+        QPoint recT;
+        int xTop; int yTop;
+        xTop = xBox - 405; yTop = yBox - 118;
+        recT.setX(xTop); recT.setY(yTop);
+        QRect rec;
+        rec.setTopLeft(recT); rec.setBottomRight(recB);
+        dialog->setGeometry(rec);
+        dialog->setStyleSheet("background-color:rgb(20,22,27);");
+        dialog->setWindowFlags(Qt::Window | Qt::FramelessWindowHint |Qt::WindowStaysOnTopHint);
+        msgBox->addWidget(message);
+        dialog->setLayout(msgBox);
+        dialog->show();
+        QTimer::singleShot(3000, dialog, SLOT(hide()));
+    }
 }

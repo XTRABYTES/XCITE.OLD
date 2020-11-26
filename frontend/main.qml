@@ -223,7 +223,7 @@ ApplicationWindow {
     property real percentageETH
 
     // Global theme settings, non-editable
-    property string versionNR: "1.2.4"
+    property string versionNR: (myOS == "android" || myOS == "ios")? "1.2.4" : "0.1.1"
     property color maincolor: "#0ED8D2"
     property color themecolor: darktheme == true? "#F2F2F2" : "#2A2C31"
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
@@ -607,6 +607,7 @@ ApplicationWindow {
     signal getOrderBook(string exchange, string pair)
     signal getOlhcv(string exchange, string pair, string granularity)
     signal updateOlhcv(string status)
+    signal staticPopup(string author, string msg)
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {
@@ -1129,6 +1130,7 @@ ApplicationWindow {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label), "type": "alert", "remove": false})
                             alert = true
                             newAlerts = countAlerts()
+                            staticPopup("explorer", ("Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)))
                             if (standBy == 1) {
                                 walletUpdate(walletList.get(i).name, walletList.get(i).label, balanceAlert)
                             }
@@ -1193,6 +1195,7 @@ ApplicationWindow {
                 alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : coin + " " + b, "type": "alert", "remove": false})
                 alert = true
                 newAlerts = countAlerts()
+                staticPopup("explorer", d)
                 notification.play()
             }
         }
@@ -1226,6 +1229,7 @@ ApplicationWindow {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "type": "warning", "remove": false})
                             alert = true
                             newAlerts = countAlerts()
+                            staticPopup("explorer", cancelAlert)
                             notification.play()
                             failedPendingTracker = 1
                         }
@@ -3687,7 +3691,7 @@ ApplicationWindow {
         running: true
 
         onTriggered: {
-            checkXChatSignal();
+            // checkXChatSignal();
         }
     }
 
@@ -3708,7 +3712,7 @@ ApplicationWindow {
         repeat: true
         running: pingTimeRemain > 0 && inActive == false && xchatNetworkTracker == 1
 
-        onTriggered: {
+        onTriggered: {/*
             pingTimeRemain = pingTimeRemain - 1
             if (pingTimeRemain == 0) {
                 if (xChatConnection && !pingingXChat) {
@@ -3719,7 +3723,7 @@ ApplicationWindow {
                     updateServerStatus();
                     pingingXChat = false
                 }
-            }
+            }*/
         }
     }
 
@@ -3781,7 +3785,7 @@ ApplicationWindow {
         id: marketValueTimer
         interval: 60000
         repeat: true
-        running: sessionStart == 1 && inActive == false
+        running: sessionStart == 1 && ((myOS == "android" || myOS == "ios")? (inActive? false : true) : true)
         onTriggered:  {
             findAllMarketValues()
         }
@@ -3789,7 +3793,7 @@ ApplicationWindow {
 
     Timer {
         id: explorerTimer1
-        interval: inActive == false? 15000 : 30000
+        interval: ((myOS == "android" || myOS == "ios")? (inActive? 30000 : 15000) : 15000)
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
@@ -3816,7 +3820,7 @@ ApplicationWindow {
         id: loginTimer
         interval: 30000
         repeat: true
-        running: sessionStart == 1 && inActive == false
+        running: sessionStart == 1 && ((myOS == "android" || myOS == "ios")? (inActive? false : true) : true)
 
         onTriggered: {
             if (interactionTracker == 1) {
@@ -3839,7 +3843,7 @@ ApplicationWindow {
         id: networkTimer
         interval: 60000
         repeat: true
-        running: sessionStart == 1 && inActive == false
+        running: sessionStart == 1 && ((myOS == "android" || myOS == "ios")? (inActive? false : true) : true)
 
         onTriggered: {
             if (checkingSessionID == false) {

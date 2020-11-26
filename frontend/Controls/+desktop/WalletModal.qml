@@ -273,7 +273,7 @@ Rectangle {
         anchors.horizontalCenterOffset: -walletArea.width/4
         anchors.verticalCenter: trashcan.verticalCenter
         state: walletList.get(walletIndex).include ? "on" : "off"
-        visible: transactionSend == 0 && deleteFailed == 1
+        visible: transactionSend == 0 && deleteFailed == 1 && !coinList.get(coinIndex).testnet
 
         onSwitchOnChanged: {
             if (switchOn == true) {
@@ -1848,7 +1848,7 @@ Rectangle {
                         id: cancelButtonText
                         text: "CANCEL"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter

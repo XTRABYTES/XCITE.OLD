@@ -149,7 +149,7 @@ void XchatObject::xchatPopup(QString author, QString msg){
         message->setStyleSheet("font: 10pt; color:rgb(242,242,242);");
         message->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         message->setWordWrap(true);
-        QString auth = "<font color='#F2C94C'><b>" + author + "</b></font>";
+        QString auth = "<font color='#0ED8D2'><b>" + author + "</b></font>";
         QString xchatMsg = auth + ":<br><i>" + msg + "</i>";
         message->setText(xchatMsg);
         QSize size = QGuiApplication::screens()[0]->size();

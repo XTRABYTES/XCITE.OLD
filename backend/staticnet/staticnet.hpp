@@ -157,6 +157,7 @@ public:
 
 public slots:
     void errorString(const QString error);
+    void staticPopup(QString auth, QString msg);
     void onResponseFromStaticnet(QJsonObject response) {
         qDebug() << "staticnet response recevied";       
     }
