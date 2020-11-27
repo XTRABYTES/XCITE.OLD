@@ -31,6 +31,7 @@ Rectangle {
     state: pingTracker == 1? "up" : "down"
     onStateChanged: {
         detectInteraction()
+        msgList.positionViewAtEnd()
     }
 
     property int myTracker: pingTracker

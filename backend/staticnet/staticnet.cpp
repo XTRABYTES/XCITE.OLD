@@ -358,7 +358,7 @@ void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
     if (replyMethod == "getutxo") {
         if (replyMsg == "rpc error" || msgObj.contains("error")) {
             emit staticNet.utxoError();
-            staticNet.staticPopup("static-net", "error retrieving UTXO");
+            //staticNet.staticPopup("static-net", "error retrieving UTXO");
         }
         else {
             SendcoinWorker* worker = new SendcoinWorker(params);
@@ -368,13 +368,13 @@ void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
     else if (replyMethod == "sendrawtransaction") {
         if (replyMsg == "rpc error" || msgObj.contains("error")) {
             emit staticNet.txFailed(replyId);
-            staticNet.staticPopup("static-net", "transaction not accepted");
+            //staticNet.staticPopup("static-net", "transaction not accepted");
         }
         else {
             replyMsg = replyMsg.replace("\"","");
             replyMsg = replyMsg.trimmed();
             emit staticNet.txSuccess(replyId, replyMsg);
-            staticNet.staticPopup("static-net", ("transaction accepted, txid: " + replyMsg));
+            //staticNet.staticPopup("static-net", ("transaction accepted, txid: " + replyMsg));
             for (int i = 0; i < pendingUtxo.count(); i++) {
                 QStringList confirmedUtxo = pendingUtxo.at(i).split(",");
                 if (confirmedUtxo.at(1) == replyId) {
@@ -386,7 +386,7 @@ void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
     else if (replyMethod == "gettxvouts") {
         if (replyMsg == "rpc error" || msgObj.contains("error")) {
             emit staticNet.txVoutError();
-            staticNet.staticPopup("static-net", "error retrieving vouts");
+            //staticNet.staticPopup("static-net", "error retrieving vouts");
         }
         else {
             QJsonDocument voutDoc = QJsonDocument::fromJson(replyMsg.toUtf8());
@@ -503,7 +503,7 @@ void SendcoinWorker::process() {
         } else {
             xchatRobot.SubmitMsg("dicom - backend - Bad private key.");
             emit sendcoinFailed();
-            staticNet.staticPopup("static-net", "failed sending coins, bad private key");
+            //staticNet.staticPopup("static-net", "failed sending coins, bad private key");
             emit finished();
         }
 
@@ -511,7 +511,7 @@ void SendcoinWorker::process() {
     } else {
         xchatRobot.SubmitMsg("dicom - backend - Bad or mising network ID.");
         emit sendcoinFailed();
-        staticNet.staticPopup("static-net", "failed sending coins, network ID error");
+        //staticNet.staticPopup("static-net", "failed sending coins, network ID error");
         emit finished();
     }
 }
@@ -540,7 +540,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
     } else {
         xchatRobot.SubmitMsg("dicom - backend - Bad private key.");
         emit sendcoinFailed();
-        staticNet.staticPopup("static-net", "failed sending coins, bad private key");
+        //staticNet.staticPopup("static-net", "failed sending coins, bad private key");
         emit finished();
     }
 
@@ -651,7 +651,7 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
             if (tooBig) {
                 emit txTooBig();
                 emit sendcoinFailed();
-                staticNet.staticPopup("static-net", "failed sending coins, transaction is too big");
+                //staticNet.staticPopup("static-net", "failed sending coins, transaction is too big");
                 return;
             }
             int64 checkInputs = inputs_sum - (send_value + (nMinFee * nBaseFee));
@@ -663,12 +663,12 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
             if (returnedUtxo == 50) {
                 xchatRobot.SubmitMsg("dicom - backend - not enough utxo available to complete transaction, only 50 utxo are returned. Lower the amount of your transaction.");
                 emit staticNet.fundsLow("Not enough utxo available");
-                staticNet.staticPopup("static-net", "failed sending coins, not enough UTXO available");
+                //staticNet.staticPopup("static-net", "failed sending coins, not enough UTXO available");
             }
             else if (returnedUtxo < 50 && inptCount == returnedUtxo) {
                 xchatRobot.SubmitMsg("dicom - backend - your available coins are currently used for unconfirmed transactions. Wait until your previous transactions are confirmed");
                 emit staticNet.fundsLow("Not enough coins available");
-                staticNet.staticPopup("static-net", "failed sending coins, not enough coins available");
+                //staticNet.staticPopup("static-net", "failed sending coins, not enough coins available");
             }
         } else {
             if (secret != ""){
@@ -734,12 +734,12 @@ void SendcoinWorker::unspent_onResponse( QString id, QString res, QString target
                     response.insert("error", "Invalid RAW transaction.");
                     QMetaObject::invokeMethod(&staticNet, "ResponseFromStaticnet", Qt::DirectConnection, Q_ARG(QJsonObject, response));
                     emit staticNet.rawTxFailed();
-                    staticNet.staticPopup("static-net", "failed sending coins, invalid raw transaction");
+                    //staticNet.staticPopup("static-net", "failed sending coins, invalid raw transaction");
                 }
             }
             else {
                 xchatRobot.SubmitMsg("dicom - backend - error: no private key");
-                staticNet.staticPopup("static-net", "failed sending coins, no private key available");
+                //staticNet.staticPopup("static-net", "failed sending coins, no private key available");
             }
         }
     }
@@ -808,7 +808,7 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
 
     xchatRobot.SubmitMsg("dicom - backend - calculated fee: " + QString::number(nMinFee));
 }
-
+/*
 void StaticNet::staticPopup(QString author, QString msg){
     QString osType = QSysInfo::productType();
     QString device = "desktop";
@@ -847,4 +847,4 @@ void StaticNet::staticPopup(QString author, QString msg){
         dialog->show();
         QTimer::singleShot(3000, dialog, SLOT(hide()));
     }
-}
+}*/

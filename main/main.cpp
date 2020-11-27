@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
     QObject::connect(rootObject, SIGNAL(setQueue(QString)), &static_int, SLOT(setQueue(QString)));
     QObject::connect(rootObject, SIGNAL(requestQueue()), &static_int, SLOT(requestQueue()));
 
-    QObject::connect(rootObject, SIGNAL(staticPopup(QString, QString)), &staticNet, SLOT(staticPopup(QString, QString)));
+    //QObject::connect(rootObject, SIGNAL(staticPopup(QString, QString)), &staticNet, SLOT(staticPopup(QString, QString)));
 
     // connect QML signals for pdfprinter
 

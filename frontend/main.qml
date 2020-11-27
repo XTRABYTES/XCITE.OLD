@@ -607,7 +607,7 @@ ApplicationWindow {
     signal getOrderBook(string exchange, string pair)
     signal getOlhcv(string exchange, string pair, string granularity)
     signal updateOlhcv(string status)
-    signal staticPopup(string author, string msg)
+    //signal staticPopup(string author, string msg)
 
     onTttCurrentGameChanged: {
         if (tttCurrentGame != "") {
@@ -1130,7 +1130,7 @@ ApplicationWindow {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label), "type": "alert", "remove": false})
                             alert = true
                             newAlerts = countAlerts()
-                            staticPopup("explorer", ("Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)))
+                            //staticPopup("explorer", ("Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)))
                             if (standBy == 1) {
                                 walletUpdate(walletList.get(i).name, walletList.get(i).label, balanceAlert)
                             }
@@ -1195,7 +1195,7 @@ ApplicationWindow {
                 alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : coin + " " + b, "type": "alert", "remove": false})
                 alert = true
                 newAlerts = countAlerts()
-                staticPopup("explorer", d)
+                //staticPopup("explorer", d)
                 notification.play()
             }
         }
@@ -1229,7 +1229,7 @@ ApplicationWindow {
                             alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "type": "warning", "remove": false})
                             alert = true
                             newAlerts = countAlerts()
-                            staticPopup("explorer", cancelAlert)
+                            //staticPopup("explorer", cancelAlert)
                             notification.play()
                             failedPendingTracker = 1
                         }
