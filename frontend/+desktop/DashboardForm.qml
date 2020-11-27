@@ -25,6 +25,7 @@ Item {
     height: selectedPage == "home"? parent.height : appHeight
 
     property bool myTheme: darktheme
+    property int showUrl: 0
 
     onMyThemeChanged: {
         if (darktheme) {
@@ -826,6 +827,41 @@ Item {
             anchors.bottomMargin: 15
         }
 
+        DropShadow {
+            anchors.fill: urlInfo
+            source: urlInfo
+            horizontalOffset: 0
+            verticalOffset: 1
+            radius: 12
+            samples: 25
+            spread: 0
+            color: darktheme == true? "#727272" : "black"
+            opacity: 0.4
+            transparentBorder: true
+            visible: urlInfo.visible
+        }
+
+        Rectangle {
+            id: urlInfo
+            height: appHeight/36
+            width: urlLabel.implicitWidth + height
+            anchors.horizontalCenter: combinationMark.horizontalCenter
+            anchors.bottom: combinationMark.top
+            anchors.bottomMargin: height/2
+            color: "#34363D"
+            visible: showUrl == 1
+
+            Label {
+                id: urlLabel
+                text: "Go to xtrabytes.global"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: xciteMobile.name
+                font.pixelSize: parent.height/2
+                color: "#f2f2f2"
+            }
+        }
+
         Image {
             id: combinationMark
             source: darktheme == true?  'qrc:/icons/xby_logo_with_name.png' : 'qrc:/icons/xby_logo_with_name_dark.png'
@@ -835,6 +871,33 @@ Item {
             anchors.bottomMargin: 15
             anchors.right: parent.right
             anchors.rightMargin: -50
+
+            Rectangle {
+                anchors.fill: parent
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onEntered: {
+                        showUrl = 1
+                        urlTimer.start()
+                    }
+
+                    onExited: {
+                        showUrl = 0
+                    }
+
+                    onPressed: {
+
+                    }
+
+                    onClicked: {
+                        Qt.openUrlExternally("http://xtrabytes.global/")
+                    }
+                }
+            }
         }
     }
 
@@ -846,5 +909,16 @@ Item {
     Desktop.ChangePassword {
         id: myPassword
         anchors.top: parent.top
+    }
+
+    Timer {
+        id: urlTimer
+        interval: 1000
+        repeat: false
+        running: showUrl == 1
+
+        onTriggered: {
+            showUrl = 0
+        }
     }
 }

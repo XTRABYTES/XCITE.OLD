@@ -336,11 +336,6 @@ Rectangle {
         }
     }
 
-    Desktop.AddViewOnlyWallet {
-        id: myViewOnly
-        anchors.top: parent.top
-    }
-
     Rectangle {
         height: appWidth/24
         width: parent.width

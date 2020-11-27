@@ -27,6 +27,9 @@ Rectangle {
 
     property real controlTracker: 0
     property bool movePressed: false
+    property int showMinimize: 0
+    property int showDrag: 0
+    property int showBack: 0
 
     Image {
         z: 2
@@ -37,6 +40,41 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         state: controlTracker == 0? "down" : "up"
+
+        DropShadow {
+            anchors.fill: dragInfo
+            source: dragInfo
+            horizontalOffset: 0
+            verticalOffset: 1
+            radius: 12
+            samples: 25
+            spread: 0
+            color: darktheme == true? "#727272" : "black"
+            opacity: 0.4
+            transparentBorder: true
+            visible: dragInfo.visible
+        }
+
+        Rectangle {
+            id: dragInfo
+            height: appHeight/36
+            width: dragLabel.implicitWidth + height
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.top
+            anchors.bottomMargin: height/2
+            color: "#34363D"
+            visible: showDrag == 1 && controlTracker == 1
+
+            Label {
+                id: dragLabel
+                text: "Drag window"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: xciteMobile.name
+                font.pixelSize: parent.height/2
+                color: "#f2f2f2"
+            }
+        }
 
         states: [
             State {
@@ -71,6 +109,12 @@ Rectangle {
 
                 onEntered: {
                     controlTimer.restart()
+                    dragTimer.start()
+                    showDrag = 1
+                }
+
+                onExited: {
+                    showDrag = 0
                 }
 
                 onPressed: {
@@ -108,6 +152,41 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         state: controlTracker == 0? "down" : "up"
 
+        DropShadow {
+            anchors.fill: minimizeInfo
+            source: minimizeInfo
+            horizontalOffset: 0
+            verticalOffset: 1
+            radius: 12
+            samples: 25
+            spread: 0
+            color: darktheme == true? "#727272" : "black"
+            opacity: 0.4
+            transparentBorder: true
+            visible: minimizeInfo.visible
+        }
+
+        Rectangle {
+            id: minimizeInfo
+            height: appHeight/36
+            width: minimizeLabel.implicitWidth + height
+            anchors.left: parent.horizontalCenter
+            anchors.bottom: parent.top
+            anchors.bottomMargin: height/2
+            color: "#34363D"
+            visible: showMinimize == 1 && controlTracker == 1
+
+            Label {
+                id: minimizeLabel
+                text: "Minimize"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: xciteMobile.name
+                font.pixelSize: parent.height/2
+                color: "#f2f2f2"
+            }
+        }
+
         states: [
             State {
                 name: "up"
@@ -144,6 +223,12 @@ Rectangle {
 
                 onEntered: {
                     controlTimer.restart()
+                    minimizeTimer.start()
+                    showMinimize = 1
+                }
+
+                onExited: {
+                    showMinimize = 0
                 }
 
                 onClicked:{
@@ -163,6 +248,41 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         state: controlTracker == 0? "down" : "up"
+
+        DropShadow {
+            anchors.fill: backInfo
+            source: backInfo
+            horizontalOffset: 0
+            verticalOffset: 1
+            radius: 12
+            samples: 25
+            spread: 0
+            color: darktheme == true? "#727272" : "black"
+            opacity: 0.4
+            transparentBorder: true
+            visible: backInfo.visible
+        }
+
+        Rectangle {
+            id: backInfo
+            height: appHeight/36
+            width: backLabel.implicitWidth + height
+            anchors.right: parent.horizontalCenter
+            anchors.bottom: parent.top
+            anchors.bottomMargin: height/2
+            color: "#34363D"
+            visible: showBack == 1 && controlTracker == 1
+
+            Label {
+                id: backLabel
+                text: "Back"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: xciteMobile.name
+                font.pixelSize: parent.height/2
+                color: "#f2f2f2"
+            }
+        }
 
         states: [
             State {
@@ -200,6 +320,12 @@ Rectangle {
 
                 onEntered: {
                     controlTimer.restart()
+                    backTimer.start()
+                    showBack = 1
+                }
+
+                onExited: {
+                    showBack = 0
                 }
 
                 onClicked: {
@@ -226,6 +352,15 @@ Rectangle {
             onEntered: {
                 if (controlTracker == 0) {
                    controlTracker = 1
+                }
+            }
+
+            onClicked: {
+                if (controlTracker == 1) {
+                    controlTracker = 0
+                }
+                else {
+                    controlTracker = 1
                 }
             }
         }
@@ -263,6 +398,39 @@ Rectangle {
         anchors.verticalCenter: centerDot.verticalCenter
         anchors.left: centerDot.right
         anchors.leftMargin: 6
+    }
+
+    Timer {
+        id: backTimer
+        interval: 1000
+        repeat: false
+        running: showBack == 1
+
+        onTriggered: {
+            showBack = 0
+        }
+    }
+
+    Timer {
+        id: dragTimer
+        interval: 1000
+        repeat: false
+        running: showDrag == 1
+
+        onTriggered: {
+            showDrag = 0
+        }
+    }
+
+    Timer {
+        id: minimizeTimer
+        interval: 1000
+        repeat: false
+        running: showMinimize == 1
+
+        onTriggered: {
+            showMinimize = 0
+        }
     }
 
     Timer {

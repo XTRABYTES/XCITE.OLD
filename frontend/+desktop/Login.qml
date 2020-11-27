@@ -145,7 +145,7 @@ Item {
             anchors.leftMargin: 5
             anchors.top: passWord.bottom
             anchors.topMargin: 1
-            font.pixelSize: appHeight/45
+            font.pixelSize: appHeight/54
             font.family: xciteMobile.name
             visible: passError == 1
         }

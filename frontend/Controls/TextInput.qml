@@ -1,4 +1,4 @@
- /**
+/**
  * Filename: TextInput.qml
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature
@@ -74,9 +74,26 @@ TextField {
         if (textInputComponent.focus) {
             EventFilter.focus(this)
         }
-        closeAllClipboard = true
-        clipBoard = 1
-        closeAllClipboard = false
+        if (myOS === "ios" || myOS === "android") {
+            closeAllClipboard = true
+            clipBoard = 1
+            closeAllClipboard = false
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        propagateComposedEvents: true
+        visible: myOS !== "ios" && myOS !== "android"
+
+        onClicked: {
+            if (mouse.button === Qt.RightButton) {
+                closeAllClipboard = true
+                clipBoard = 1
+                closeAllClipboard = false
+            }
+        }
     }
 
     property alias placeholder: placeholderTextComponent.text
@@ -139,11 +156,11 @@ TextField {
     Item {
         id: clipBoardPopup
         z: 12
-        width: 190
-        height: 40
+        width: (myOS === "ios" || myOS === "android")? 190 : appWidth/6
+        height: (myOS === "ios" || myOS === "android")? 40 : appHeight/18
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.bottomMargin: 10
+        anchors.verticalCenterOffset: -height/4
         visible: clipBoard == 1
 
         MouseArea {
@@ -157,8 +174,8 @@ TextField {
 
         Rectangle {
             id: copyToClipboard
-            height: 40
-            width: 75
+            height: parent.height
+            width: (parent.width - parent.height)/2
             color: "#34363D"
             anchors.left: parent.left
             anchors.verticalCenter: clipBoardPopup.verticalCenter
@@ -183,9 +200,9 @@ TextField {
         Label {
             id: toClipboardText
             text: "Copy"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
+            font.family: xciteMobile.name
+            font.pixelSize: parent.height/2.5
+            font.bold: myOS === "ios" || myOS === "android"
             color: "#F2F2F2"
             anchors.horizontalCenter: copyToClipboard.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -193,8 +210,8 @@ TextField {
 
         Rectangle {
             id: copyFromClipboard
-            height: 40
-            width: 75
+            height: parent.height
+            width: (parent.width - parent.height)/2
             color: "#34363D"
             anchors.left: copyToClipboard.right
             anchors.verticalCenter: clipBoardPopup.verticalCenter
@@ -212,9 +229,9 @@ TextField {
         Label {
             id: fromClipboardText
             text: "Paste"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
+            font.family: xciteMobile.name
+            font.pixelSize: parent.height/2.5
+            font.bold: myOS === "ios" || myOS === "android"
             color: "#F2F2F2"
             anchors.horizontalCenter: copyFromClipboard.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -224,8 +241,8 @@ TextField {
 
         Rectangle {
             id: closeClipboard
-            height: 40
-            width: 40
+            height: parent.height
+            width: height
             color: "#34363D"
             anchors.left: copyFromClipboard.right
             anchors.verticalCenter: parent.verticalCenter
@@ -242,7 +259,7 @@ TextField {
         Image {
             id: closeClipboardImage
             source:'qrc:/icons/mobile/delete-icon_01_light.svg'
-            height: 15
+            height: parent.height/2
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: closeClipboard.horizontalCenter
             anchors.verticalCenter: closeClipboard.verticalCenter
@@ -268,16 +285,16 @@ TextField {
         id: copiedPopup
         z: 12
         width: popupCopied.width
-        height: 40
+        height: (myOS === "ios" || myOS === "android")? 40 : appHeight/18
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: 10
+        anchors.verticalCenterOffset: -height/4
         visible: textCopied == 1
 
         Rectangle {
             id: popupCopied
-            height: 40
-            width: popupCopiedText.width + 56
+            height: parent.height
+            width: popupCopiedText.width + height
             color: "#34363D"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -286,9 +303,9 @@ TextField {
         Label {
             id: popupCopiedText
             text: "Copied to clipboard!"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
+            font.family: xciteMobile.name
+            font.pointSize: parent.height/2
+            font.bold: myOS === "ios" || myOS === "android"
             color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter

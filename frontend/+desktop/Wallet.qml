@@ -238,6 +238,11 @@ Rectangle {
         anchors.top: parent.top
     }
 
+    Desktop.AddViewOnlyWallet {
+        id: myViewOnlyWallet
+        anchors.top: parent.top
+    }
+
     Desktop.WalletModal {
         id: myWalletModal
         anchors.top: parent.top
