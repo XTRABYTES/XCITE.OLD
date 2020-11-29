@@ -588,7 +588,7 @@ Rectangle {
                 id: resetButtonText
                 text: "RESET"
                 font.family: xciteMobile.name
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: themecolor
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter

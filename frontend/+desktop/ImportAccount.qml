@@ -187,7 +187,7 @@ Item {
                 id: logInButtonText
                 text: "IMPORT ACCOUNT"
                 font.family: xciteMobile.name
-                font.pointSize: 14
+                font.pixelSize: parent.height/2
                 color: parent.border.color
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter

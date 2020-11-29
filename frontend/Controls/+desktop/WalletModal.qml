@@ -2146,7 +2146,7 @@ Rectangle {
                     id: popupExplorerText
                     text: "Explorer is busy. Try again"
                     font.family: xciteMobile.name
-                    font.pointSize: appHeight/54
+                    font.pixelSize: appHeight/54
                     color: "#E55541"
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
@@ -2189,7 +2189,7 @@ Rectangle {
                 z: 3
                 text: "Not available for this coion"
                 font.family: xciteMobile.name
-                font.pointSize: appHeight/54
+                font.pixelSize: appHeight/54
                 color: themecolor
                 anchors.horizontalCenter: historyListArea.horizontalCenter
                 anchors.verticalCenter: historyListArea.verticalCenter

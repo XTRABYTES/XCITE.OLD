@@ -25,18 +25,20 @@ import "qrc:/Controls/+desktop" as Desktop
 
 ApplicationWindow {
     id: xcite
-    flags: Qt.Window | Qt.FramelessWindowHint | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.X11BypassWindowManagerHint : 0) //| ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.WindowStaysOnTopHint : 0)
+    flags: Qt.Window | Qt.FramelessWindowHint | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.X11BypassWindowManagerHint : 0)
     width: appWidth
     height: appHeight
     title: qsTr("XCITE")
     color: darktheme === "false"? "#F2F2F2" : "#14161B"
     visible: true
 
+
     Image {
         id: xbyLogo
         z: 1
         source: 'qrc:/logos/xby_logo_tm.png'
-        width: parent.width - 100
+        width: (myOS == "android" || myOS == "ios")? parent.width - 100 : undefined
+        height: (myOS == "android" || myOS == "ios")? undefined : parent.height*0.9
         fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50

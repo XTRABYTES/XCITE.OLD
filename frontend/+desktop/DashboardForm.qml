@@ -36,10 +36,6 @@ Item {
         }
     }
 
-    Component.onCompleted: {
-        mainStack.push("qrc:/+desktop/Wallet.qml")
-    }
-
     Rectangle {
         id: sideMenuArea
         width: appWidth/6
@@ -759,10 +755,20 @@ Item {
         color: darktheme == true? "#14161B" : "#FDFDFD"
         clip: true
 
+        Label {
+            id: loadingLabel
+            text: "LOADING ..."
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: appHeight/24
+            font.family: xciteMobile.name
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            font.letterSpacing: 2
+        }
+
         StackView {
             id: mainStack
             anchors.fill: parent
-            initialItem: "qrc:/Controls/+desktop/Loading.qml"
         }
 
         Image {
@@ -920,5 +926,9 @@ Item {
         onTriggered: {
             showUrl = 0
         }
+    }
+
+    Component.onCompleted: {
+        mainStack.push("qrc:/+desktop/Wallet.qml")
     }
 }

@@ -196,7 +196,7 @@ Rectangle {
                 id: createButtonText
                 text: !walletSwitch.switchOn? "CREATE NEW WALLET" : "ADD NEW WALLET"
                 font.family: xciteMobile.name
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: themecolor
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -251,7 +251,7 @@ Rectangle {
                 id: scanButtonText
                 text: "IMPORT PRIVATE KEY"
                 font.family: xciteMobile.name
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: themecolor
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter

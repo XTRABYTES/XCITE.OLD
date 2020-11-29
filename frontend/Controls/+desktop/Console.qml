@@ -587,7 +587,7 @@ Rectangle {
                 id: popupClipboardText
                 text: "Text copied!"
                 font.family: xciteMobile.name
-                font.pointSize: popupClipboard.height/2
+                font.pixelSize: popupClipboard.height/2
                 color: "#F2F2F2"
                 horizontalAlignment: Text.AlignHCenter
                 anchors.horizontalCenter: parent.horizontalCenter

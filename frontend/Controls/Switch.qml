@@ -41,7 +41,7 @@ Item {
 
     Rectangle {
         id: background
-        width: appWidth/18
+        width: height*2
         height: appHeight/27
         color: switchOn? maincolor : (darktheme == true? "#000000" : "#FFFFFF")
         border.width: 1

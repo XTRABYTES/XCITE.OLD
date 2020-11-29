@@ -23,6 +23,7 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.top
     width: appWidth
+    height: (myOS === "ios" || myOS === "android")? 20 : appHeight/21
     state: networkError == 0? "up" : "down"
     color: "#E55541"
     clip: true
@@ -40,12 +41,10 @@ Rectangle {
         State {
             name: "up"
             PropertyChanges { target: serverError; anchors.bottomMargin: 0}
-            PropertyChanges { target: serverError; height: 0}
         },
         State {
             name: "down"
-            PropertyChanges { target: serverError; anchors.bottomMargin: -20}
-            PropertyChanges { target: serverError; height: 20}
+            PropertyChanges { target: serverError; anchors.bottomMargin: -serverError.height}
         }
     ]
 
@@ -63,7 +62,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         color: "#F2F2F2"
-        font.pixelSize: 12
+        font.pixelSize: parent.height/2
         font.family: xciteMobile.name
     }
 

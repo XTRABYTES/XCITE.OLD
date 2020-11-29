@@ -526,7 +526,7 @@ Rectangle {
                 id: saveButtonText
                 text: "SAVE"
                 font.family: xciteMobile.name
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: parent.border.color
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter

@@ -151,7 +151,7 @@ Item {
                 id: startButtonText
                 text: "LET'S GO"
                 font.family: xciteMobile.name
-                font.pointSize: 14
+                font.pixelSize: parent.height/2
                 color: "#F2F2F2"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter

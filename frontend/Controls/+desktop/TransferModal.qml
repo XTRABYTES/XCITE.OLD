@@ -626,7 +626,7 @@ Rectangle {
                         id: qrButtonText
                         text: "SCAN QR"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: themecolor
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -682,7 +682,7 @@ Rectangle {
                         id: addressButtonText
                         text: "ADDRESS BOOK"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: themecolor
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -755,7 +755,7 @@ Rectangle {
                         id: addButtonText
                         text: "ADD TRANSACTION"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -1221,7 +1221,7 @@ Rectangle {
                         id: sendButtonText
                         text: "SEND"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -1380,7 +1380,7 @@ Rectangle {
                         id: clearButtonText
                         text: "CLEAR LIST"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -1482,7 +1482,7 @@ Rectangle {
                         id: closeButtonText
                         text: "OK"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -1748,7 +1748,7 @@ Rectangle {
                         id: confirmButtonText
                         text: "CONFIRM"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
@@ -1841,7 +1841,7 @@ Rectangle {
                         id: cancelButtonText
                         text: "CANCEL"
                         font.family: xciteMobile.name
-                        font.pointSize: parent.height/2
+                        font.pixelSize: parent.height/2
                         color: parent.border.color
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter

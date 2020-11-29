@@ -324,7 +324,7 @@ Rectangle {
                 id: scanButtonText
                 text: "SCAN QR"
                 font.family: "Brandon Grotesque"
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: parent.border.color
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -385,7 +385,7 @@ Rectangle {
             Text {
                 text: "IMPORT KEY"
                 font.family: xciteMobile.name
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: parent.border.color
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -709,7 +709,7 @@ Rectangle {
                 Text {
                     text:  "OK"
                     font.family: xciteMobile.name
-                    font.pointSize: parent.height/2
+                    font.pixelSize: parent.height/2
                     color: parent.border.color
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
@@ -890,7 +890,7 @@ Rectangle {
                 id: saveButtonText
                 text: "SAVE"
                 font.family: xciteMobile.name
-                font.pointSize: parent.height/2
+                font.pixelSize: parent.height/2
                 color: themecolor
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -1121,7 +1121,7 @@ Rectangle {
                 Text {
                     text: saveErrorNR == 0? "TRY AGAIN" : "OK"
                     font.family: xciteMobile.name
-                    font.pointSize: parent.height/2
+                    font.pixelSize: parent.height/2
                     color: parent.border.color
                     anchors.horizontalCenter: closeFail.horizontalCenter
                     anchors.verticalCenter: closeFail.verticalCenter
@@ -1213,7 +1213,7 @@ Rectangle {
                 Text {
                     text: "OK"
                     font.family: xciteMobile.name
-                    font.pointSize: parent.height/2
+                    font.pixelSize: parent.height/2
                     color: parent.border.color
                     anchors.horizontalCenter: closeSave.horizontalCenter
                     anchors.verticalCenter: closeSave.verticalCenter
