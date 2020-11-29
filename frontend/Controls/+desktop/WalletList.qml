@@ -339,6 +339,7 @@ Rectangle {
                     property string unconfirmedAmount: ((unconfirmedTx(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
                     property int updateTracker1: failedPendingTracker
                     property int updateTracker2: updatePendingTracker
+                    property int updateTracker3: interactionTracker
                     property int newBalance: newBalanceTracker
                     id: unconfirmedTotal
                     text: unconfirmedAmount
@@ -375,6 +376,15 @@ Rectangle {
                             }
                         }
                     }
+                    
+                    onUpdateTracker3Changed: {
+                        for (var e = 0; e < pendingList.count; e ++) {
+                            if (pendingList.get(e).coin === name && pendingList.get(e).address === address && failedTX === pendingList.get(e).txid) {
+                                decimals = unconfirmedTx(name, address) === 0? 2 : (unconfirmedTx(name, address) <= 1 ? 8 : (unconfirmedTx(name, address) <= 1000 ? 4 : 2))
+                                unconfirmedTotal.text = ((unconfirmedTx(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                            }
+                        }
+                    }
                 }
 
                 Label {
@@ -406,6 +416,7 @@ Rectangle {
                     property string unavailableAmount: (pendingCoins(name, address).toLocaleString(Qt.locale("en_US"), "f", decimals))
                     property int updateTracker1: failedPendingTracker
                     property int updateTracker2: updatePendingTracker
+                    property int updateTracker3: interactionTracker
                     property int newBalance: newBalanceTracker
                     id: unavailableTotal
                     text: unavailableAmount
@@ -439,6 +450,15 @@ Rectangle {
                             if (pendingList.get(i-1).coin === name && pendingList.get(i-1).address === address) {
                                 decimals = pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
                                 unavailableTotal.text = (pendingCoins(name, address).toLocaleString(Qt.locale("en_US"), "f", decimals))
+                            }
+                        }
+                    }
+                    
+                    onUpdateTracker3Changed: {
+                        for (var e = 0; e < pendingList.count; e ++) {
+                            if (pendingList.get(e).coin === name && pendingList.get(e).address === address && failedTX === pendingList.get(e).txid) {
+                                decimals = pendingCoins(name, address) === 0? 2 : (pendingCoins(name, address) <= 1 ? 8 : (pendingCoins(name, address) <= 1000 ? 4 : 2))
+                                unavailableTotal.text = ((pendingCoins(name, address)).toLocaleString(Qt.locale("en_US"), "f", decimals))
                             }
                         }
                     }

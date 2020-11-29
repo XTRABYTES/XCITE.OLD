@@ -105,7 +105,7 @@ Rectangle {
     Rectangle {
         id: cancel
         width: parent.width/6
-        height: appHeight/18
+        height: appHeight/27
         radius: height/2
         color: "transparent"
         anchors.top: pincodeArea.bottom

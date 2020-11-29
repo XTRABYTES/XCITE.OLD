@@ -1257,14 +1257,14 @@ Rectangle {
                             target: xUtility
 
                             onNewNetwork: {
-                                if (transferTracker == 1 && selectNetwork == true && advancedTransferTracker == 1) {
+                                if (selectNetwork == true && advancedTransferTracker == 1) {
                                     coinListTracker = 0
                                     walletListTracker = 0
                                     selectNetwork = false
                                     var c = advancedTXList.count
                                     var r = c.toLocaleString(Qt.locale("en_US"), "f", 0) + " receivers"
                                     var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
-                                    var msg = "UI - send coins - target:" + r + ", amount:" +  totalSendAmount + ", private key: " +  walletList.get(walletIndex).privatekey
+                                    var msg = "UI - send coins - target:" + r + ", amount:" +  totalSendAmount + ", private key: ********************"
                                     xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
                                     console.log("creating transaction - Receiverlis: " + receiverList + " total amount: " + totalSendAmount)
                                     sendCoins(receiverList + " " +  totalSendAmount + " " +  walletList.get(walletIndex).privatekey)
@@ -1272,7 +1272,7 @@ Rectangle {
                             }
 
                             onBadNetwork: {
-                                if (transferTracker == 1 && selectNetwork == true && advancedTransferTracker == 1) {
+                                if (selectNetwork == true && advancedTransferTracker == 1) {
                                     badNetwork = 1
                                     selectNetwork = false
                                     createTx = false
@@ -1287,7 +1287,7 @@ Rectangle {
                             target: StaticNet
 
                             onSendFee: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 1) {
+                                if (createTx == true && advancedTransferTracker == 1) {
                                     notification.play()
                                     console.log("sender: " + sender_ + " receiver: " + receiver_ + " amount: " + sendAmount_)
                                     var r
@@ -1324,7 +1324,7 @@ Rectangle {
                                 }
                             }
                             onRawTxFailed: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 1) {
+                                if (createTx == true && advancedTransferTracker == 1) {
                                     console.log("failed to create raw transaction")
                                     txFailError = "Failed to create raw transaction"
                                     createTx = false
@@ -1333,9 +1333,9 @@ Rectangle {
                                 }
                             }
                             onFundsLow: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 1) {
+                                if (createTx == true && advancedTransferTracker == 1) {
                                     console.log("Funds too low")
-                                    txFailError = error
+                                    txFailError = "Funds to low"
                                     createTx = false
                                     transactionSend = 1
                                     failedSend = 1
@@ -1423,7 +1423,7 @@ Rectangle {
 
             Item {
                 id: transferFailed
-                height: failedIcon.height + failedIconLabel.height + failedIconLabel.anchors.topMargin + closeFail.height + closeFail.anchors.topMargin
+                height: failedIcon.height + failedIconLabel.height + failedIconLabel.anchors.topMargin + failedErrorLabel.height + failedErrorLabel.anchors.topMargin + closeFail.height + closeFail.anchors.topMargin
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
@@ -1465,9 +1465,11 @@ Rectangle {
                     height: appHeight/27
                     radius: height/2
                     color: "transparent"
-                    anchors.top: failedIconLabel.bottom
-                    anchors.topMargin: height*2
+                    anchors.top: failedErrorLabel.bottom
+                    anchors.topMargin: height*1.5
                     anchors.horizontalCenter: parent.horizontalCenter
+                    border.width: 1
+                    border.color: themecolor
 
                     Rectangle {
                         id: selectClose
@@ -1506,16 +1508,8 @@ Rectangle {
                         }
 
                         onClicked: {
-                            sendAmount.text = ""
-                            keyInput.text = ""
-                            referenceInput.text = ""
                             failedSend = 0
                             transactionSend = 0
-                            invalidAddress = 0
-                            transactionDate = ""
-                            timestamp = 0
-                            precision = 0
-                            transactionInProgress = false
                             rawTX = ""
                             txFee = 0
                             receivedAmount = ""
@@ -1523,11 +1517,6 @@ Rectangle {
                             receivedReceiver = ""
                             receivedSender = ""
                             receivedTxID = ""
-                            usedCoins = ""
-                            advancedTXList.clear()
-                            receiverList = ""
-                            totalSendAmount = "0"
-                            estimatedFee = 0
                         }
                     }
                 }
@@ -1580,9 +1569,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int dec: receivedAmount > 1000? 2 : (receivedAmount > 1? 4 : 8)
-                    property string transferAmount: receivedAmount.toLocaleString(Qt.locale("en_US"), "f", dec)
-                    property var amountArray: transferAmount.split('.')
+                    property var amountArray: receivedAmount.split('.')
                     id: confirmationAmount1
                     text: amountArray[1] !== undefined?  ("." + amountArray[1]) : ".0000"
                     anchors.bottom: confirmationAmount.bottom
@@ -1594,9 +1581,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int dec: receivedAmount > 1000? 2 : (receivedAmount > 1? 4 : 8)
-                    property string transferAmount: receivedAmount.toLocaleString(Qt.locale("en_US"), "f", dec)
-                    property var amountArray: transferAmount.split('.')
+                    property var amountArray: receivedAmount.split('.')
                     id: confirmationAmount2
                     text: amountArray[0]
                     anchors.top: confirmationAmount.top
@@ -1866,7 +1851,6 @@ Rectangle {
 
                         onClicked: {
                             transactionSend = 0
-                            transactionInProgress = false
                             rawTX = ""
                             txFee = 0
                             receivedAmount = ""

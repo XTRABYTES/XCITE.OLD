@@ -1242,7 +1242,7 @@ Rectangle {
                             selectNetwork = false
                             createTx = true
                             var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
-                            var msg = "UI - send coins - target:" + keyInput.text + ", amount:" +  sendAmount.text + ", private key: " +  getPrivKey(coinID.text, walletLabel.text)
+                            var msg = "UI - send coins - target:" + keyInput.text + ", amount:" +  sendAmount.text + ", private key: ********************"
                             xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
                             sendCoins(keyInput.text + "-" +  sendAmount.text + " " +  sendAmount.text + " " +  getPrivKey(coinID.text, walletLabel.text))
                         }

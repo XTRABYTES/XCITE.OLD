@@ -1,4 +1,6 @@
-import QtQuick 2.0
+import QtQuick.Controls 2.3
+import QtQuick 2.7
+import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 
 Item {
@@ -12,7 +14,18 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#42454F"
+        color: "#14161B"
+
+        Label {
+            id: loadingLabel
+            text: "LOADING ..."
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: appHeight/24
+            font.family: xciteMobile.name
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            font.letterSpacing: 2
+        }
     }
 
     Component.onCompleted: {

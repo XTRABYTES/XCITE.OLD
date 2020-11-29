@@ -1112,7 +1112,7 @@ ApplicationWindow {
 
         for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
-                if (walletList.get(i).address === address) {
+                if (walletList.get(i).address === address && walletList.get(i).remove === false) {
                     newBalance = parseFloat(balance);
                     if (!isNaN(newBalance)){
                         if (newBalance !== walletList.get(i).balance) {

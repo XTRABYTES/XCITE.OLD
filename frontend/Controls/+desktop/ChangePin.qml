@@ -267,7 +267,7 @@ Item {
         Rectangle {
             id: savePin
             width: parent.width/2
-            height: appHeight/18
+            height: appHeight/27
             radius: height/2
             color: "transparent"
             border.width: 1

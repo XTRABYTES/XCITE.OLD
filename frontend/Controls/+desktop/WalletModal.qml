@@ -279,11 +279,21 @@ Rectangle {
             if (switchOn == true) {
                 walletList.setProperty(walletIndex, "include", true)
                 sumBalance()
+                sumXBY()
+                sumXFUEL()
+                sumXTest()
+                sumBTC()
+                sumETH()
             }
 
             else {
                 walletList.setProperty(walletIndex, "include", false)
                 sumBalance()
+                sumXBY()
+                sumXFUEL()
+                sumXTest()
+                sumBTC()
+                sumETH()
             }
         }
     }
@@ -586,19 +596,21 @@ Rectangle {
                     onClicked: {
                         deleteWarning = 0
                         walletList.setProperty(walletIndex, "remove", true)
-                        editWalletInAddreslist(walletList.get(walletIndex).name, walletList.get(walletIndex).address, oldLabel, true)
+                        editWalletInAddreslist(coinList.get(coinIndex).name, walletList.get(walletIndex).address, oldLabel, true)
                         if (userSettings.localKeys) {
                             deletingWallet = true
                             walletDeleted = false
                             updateToAccount()
                         }
                         else {
+                            walletDetailTracker = 0
+                            walletIndex = -1
+                            sumBalance()
                             sumXBY()
                             sumXFUEL()
-                            sumXBYTest()
-                            sumXFUELTest()
-                            sumBalance()
-                            walletDetailTracker = 0
+                            sumXTest()
+                            sumBTC()
+                            sumETH()
                         }
                     }
 
@@ -607,20 +619,22 @@ Rectangle {
 
                         onSaveSucceeded: {
                             if (deletingWallet == true) {
+                                walletDetailTracker = 0
+                                walletIndex = -1
                                 deletingWallet = false
+                                sumBalance()
                                 sumXBY()
                                 sumXFUEL()
-                                sumXBYTest()
-                                sumXFUELTest()
-                                sumBalance()
-                                walletDetailTracker = 0
+                                sumXTest()
+                                sumBTC()
+                                sumETH()
                             }
                         }
 
                         onSaveFailed: {
                             if (deletingWallet == true && walletDeleted == true) {
                                 walletList.setProperty(walletIndex, "remove", false)
-                                editWalletInAddreslist(walletList.get(walletIndex).name, walletList.get(walletIndex).address, oldLabel, false)
+                                editWalletInAddreslist(coinList.get(coinIndex).name, walletList.get(walletIndex).address, oldLabel, false)
                                 deleteFailed = 1
                                 deleteErrorNr = 1
                                 walletDeleted = false
@@ -631,7 +645,7 @@ Rectangle {
                             if (deletingWallet == true && walletDeleted == true) {
                                 networkError = 1
                                 walletList.setProperty(walletIndex, "remove", false)
-                                editWalletInAddreslist(walletList.get(walletIndex).name, walletList.get(walletIndex).address, oldLabel, false)
+                                editWalletInAddreslist(coinList.get(coinIndex).name, walletList.get(walletIndex).address, oldLabel, false)
                                 deleteFailed = 1
                                 deleteErrorNr = 1
                                 walletDeleted = false
@@ -647,7 +661,7 @@ Rectangle {
                         onSaveFileFailed: {
                             if (deletingWallet == true) {
                                 walletList.setProperty(walletIndex, "remove", false)
-                                editWalletInAddreslist(walletList.get(walletIndex).name, walletList.get(walletIndex).address, oldLabel, false)
+                                editWalletInAddreslist(coinList.get(coinIndex).name, walletList.get(walletIndex).address, oldLabel, false)
                                 deleteFailed = 1
                                 deleteErrorNr = 0
                             }
@@ -1420,19 +1434,19 @@ Rectangle {
                             target: xUtility
 
                             onNewNetwork: {
-                                if (transferTracker == 1 && selectNetwork == true && advancedTransferTracker == 0 && pageTracker == 0) {
+                                if (selectNetwork == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     coinListTracker = 0
                                     walletListTracker = 0
                                     selectNetwork = false
                                     var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
-                                    var msg = "UI - send coins - target:" + keyInput.text + ", amount:" +  sendAmount.text + ", private key: " +  walletList.get(walletIndex).privatekey
+                                    var msg = "UI - send coins - target:" + keyInput.text + ", amount:" +  sendAmount.text + ", private key: ********************"
                                     xPingTread.append({"message": msg, "inout": "out", "author": myUsername, "time": t})
                                     sendCoins(keyInput.text + "-" +  sendAmount.text + " " +  sendAmount.text + " " +  walletList.get(walletIndex).privatekey)
                                 }
                             }
 
                             onBadNetwork: {
-                                if (transferTracker == 1 && selectNetwork == true && advancedTransferTracker == 0 && pageTracker == 0) {
+                                if (selectNetwork == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     badNetwork = 1
                                     selectNetwork = false
                                     createTx = false
@@ -1448,7 +1462,7 @@ Rectangle {
                             target: StaticNet
 
                             onSendFee: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
+                                if (createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     notification.play()
                                     console.log("sender: " + sender_ + " receiver: " + receiver_ + " amount: " + sendAmount_)
                                     var r
@@ -1463,7 +1477,6 @@ Rectangle {
                                         r = splitReceiverInfo[0]
                                     }
                                     if (getAddress(walletList.get(walletIndex).name, walletList.get(walletIndex).label) === sender_) {
-                                        console.log("raw transaction created: " + rawTx_ + ", fee: " + fee_ + ", id: " + traceId_)
                                         txFee = fee_
                                         rawTX = rawTx_
                                         receivedReceiver = receiver_
@@ -1480,13 +1493,13 @@ Rectangle {
                                         }
                                         receivedTxID = traceId_
                                         transactionSend = 1
+                                        failedSend = 0
                                         createTx = false
                                     }
                                 }
                             }
                             onRawTxFailed: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
-                                    console.log("failed to create raw transaction")
+                                if (createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     txFailError = "Failed to create raw transaction"
                                     createTx = false
                                     failedSend = 1
@@ -1494,17 +1507,15 @@ Rectangle {
                                 }
                             }
                             onFundsLow: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
-                                    console.log("Funds too low")
-                                    txFailError = error
+                                if (createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
+                                    txFailError = "Funds too low"
                                     createTx = false
                                     failedSend = 1
                                     transactionSend = 1
                                 }
                             }
                             onUtxoError: {
-                                if (transferTracker == 1 && createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
-                                    console.log("Error retrieving UTXO")
+                                if (createTx == true && advancedTransferTracker == 0 && pageTracker == 0) {
                                     txFailError = "Error retrieving UTXO"
                                     createTx = false
                                     failedSend = 1
@@ -1579,9 +1590,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int dec: receivedAmount > 1000? 2 : (receivedAmount > 1? 4 : 8)
-                    property string transferAmount: receivedAmount.toLocaleString(Qt.locale("en_US"), "f", dec)
-                    property var amountArray: transferAmount.split('.')
+                    property var amountArray: receivedAmount.split('.')
                     id: confirmationAmount1
                     text: amountArray[1] !== undefined?  ("." + amountArray[1]) : ".0000"
                     anchors.bottom: confirmationAmount.bottom
@@ -1593,9 +1602,7 @@ Rectangle {
                 }
 
                 Text {
-                    property int dec: receivedAmount > 1000? 2 : (receivedAmount > 1? 4 : 8)
-                    property string transferAmount: receivedAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)
-                    property var amountArray: transferAmount.split('.')
+                    property var amountArray: receivedAmount.split('.')
                     id: confirmationAmount2
                     text: amountArray[0]
                     anchors.top: confirmationAmount.top
@@ -1797,6 +1804,7 @@ Rectangle {
                                 var totalUsed = Number.fromLocaleString(Qt.locale("en_US"),usedCoins)
                                 transactionList.append({"requestID":receivedTxID,"txid":"","coin":walletList.get(walletIndex).name,"address":receivedSender,"receiver":receivedReceiver,"amount":total,"fee":totalFee,"used":totalUsed})
                                 transactionSend = 0
+                                failedSend = 0
                                 transactionInProgress = false
                                 rawTX = ""
                                 txFee = 0
@@ -1873,7 +1881,7 @@ Rectangle {
 
                         onClicked: {
                             transactionSend = 0
-                            transactionInProgress = false
+                            failedSend = 0
                             rawTX = ""
                             txFee = 0
                             receivedAmount = ""
@@ -1889,7 +1897,7 @@ Rectangle {
 
             Item {
                 id: transferFailed
-                height: failedIcon.height + failedIconLabel.height + failedIconLabel.anchors.topMargin + closeFail.height + closeFail.anchors.topMargin
+                height: failedIcon.height + failedIconLabel.height + failedIconLabel.anchors.topMargin + failedErrorLabel.height +failedErrorLabel.anchors.topMargin + closeFail.height + closeFail.anchors.topMargin
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.rightMargin: appWidth/24
@@ -1933,12 +1941,12 @@ Rectangle {
                     width: appWidth/6
                     height: appHeight/27
                     radius: height/2
-                    color: "transparent"
-                    anchors.top: failedIconLabel.bottom
-                    anchors.topMargin: height*2
+                    anchors.top: failedErrorLabel.bottom
+                    anchors.topMargin: height*1.5
                     anchors.horizontalCenter: parent.horizontalCenter
-                    border.color: themecolor
+                    color: "transparent"
                     border.width: 1
+                    border.color: themecolor
 
                     Rectangle {
                         id: selectClose
@@ -1977,16 +1985,8 @@ Rectangle {
                         }
 
                         onClicked: {
-                            sendAmount.text = ""
-                            keyInput.text = ""
-                            referenceInput.text = ""
                             failedSend = 0
                             transactionSend = 0
-                            invalidAddress = 0
-                            transactionDate = ""
-                            timestamp = 0
-                            precision = 0
-                            transactionInProgress = false
                             rawTX = ""
                             txFee = 0
                             receivedAmount = ""

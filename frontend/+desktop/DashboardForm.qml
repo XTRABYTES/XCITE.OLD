@@ -138,7 +138,7 @@ Item {
                         id: walletIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
-                        anchors.leftMargin: 10
+                        anchors.leftMargin: walletLabel.font.pixelSize
                         source: darktheme == true? "qrc:/icons/wallet/WALLETF2F2F2.png" : "qrc:/icons/wallet/WALLET14161B.png"
                         height: parent.height/2
                         width: parent.height/2
@@ -146,6 +146,7 @@ Item {
                     }
 
                     Label {
+                        id: walletLabel
                         text: "WALLET"
                         color: themecolor
                         font.family: xciteMobile.name
@@ -230,7 +231,7 @@ Item {
                         id: backupIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
-                        anchors.leftMargin: 10
+                        anchors.leftMargin: walletLabel.font.pixelSize
                         source: darktheme == true? "qrc:/icons/backup/BACKUPF2F2F2.png" : "qrc:/icons/backup/BACKUP14161B.png"
                         height: parent.height/2
                         width: parent.height/2
@@ -341,7 +342,7 @@ Item {
                         id: appsIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
-                        anchors.leftMargin: 10
+                        anchors.leftMargin: walletLabel.font.pixelSize
                         source: darktheme == true? "qrc:/icons/apps/APPSF2F2F2.png" : "qrc:/icons/apps/APPS14161B.png"
                         height: parent.height/2
                         width: parent.height/2
@@ -441,7 +442,7 @@ Item {
                         id: alertIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
-                        anchors.leftMargin: 10
+                        anchors.leftMargin: walletLabel.font.pixelSize
                         source: darktheme == true? "qrc:/icons/notification/notificationF2F2F2.png" : "qrc:/icons/notification/notification14161B.png"
                         height: parent.height/2
                         width: parent.height/2
@@ -546,7 +547,7 @@ Item {
                         id: addressbookIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
-                        anchors.leftMargin: 10
+                        anchors.leftMargin: walletLabel.font.pixelSize
                         source: darktheme == true? "qrc:/icons/address/ADDRESSF2F2F2.png" : "qrc:/icons/address/ADDRESS14161B.png"
                         height: parent.height/2
                         width: parent.height/2
@@ -640,7 +641,7 @@ Item {
                         id: settingsIcon
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
-                        anchors.leftMargin: 10
+                        anchors.leftMargin: walletLabel.font.pixelSize
                         source: darktheme == true? "qrc:/icons/settings/settingsF2F2F2.png" : "qrc:/icons/settings/settings14161B.png"
                         height: parent.height/2
                         width: parent.height/2
@@ -693,13 +694,13 @@ Item {
             width: sideMenuArea.width
             height: logoutIcon.height
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 15
+            anchors.bottomMargin: loginLabel.font.pixelSize
 
             Image {
                 id: logoutIcon
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
-                anchors.leftMargin: 10
+                anchors.leftMargin: walletLabel.font.pixelSize
                 source: 'qrc:/icons/logout/LOGOUT0ED8D2.png'
                 width: settingsIcon.width
                 height: settingsIcon.height
@@ -769,6 +770,7 @@ Item {
         StackView {
             id: mainStack
             anchors.fill: parent
+            initialItem: "qrc:/Controls/+desktop/Loading.qml"
         }
 
         Image {
@@ -816,9 +818,9 @@ Item {
             font.pixelSize: logoutText.font.pixelSize
             font.family: xciteMobile.name
             anchors.left: parent.left
-            anchors.leftMargin: 10
+            anchors.leftMargin: font.pixelSize*2
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 15
+            anchors.bottomMargin: font.pixelSize
         }
 
         Text {
@@ -828,9 +830,9 @@ Item {
             font.pixelSize: logoutText.font.pixelSize
             font.family: xciteMobile.name
             anchors.left: loginLabel.right
-            anchors.leftMargin: 10
+            anchors.leftMargin: font.pixelSize
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 15
+            anchors.bottomMargin: font.pixelSize
         }
 
         DropShadow {
@@ -874,9 +876,8 @@ Item {
             width: appWidth*0.3
             fillMode: Image.PreserveAspectFit
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 15
+            anchors.bottomMargin: height/4
             anchors.right: parent.right
-            anchors.rightMargin: -50
 
             Rectangle {
                 anchors.fill: parent

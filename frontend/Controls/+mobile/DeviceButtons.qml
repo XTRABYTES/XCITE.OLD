@@ -330,6 +330,7 @@ Rectangle {
 
                 onClicked: {
                     backButtonPressed()
+                    detectInteraction()
                 }
             }
         }

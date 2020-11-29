@@ -164,7 +164,7 @@ Item {
         Rectangle {
             id: savePin
             width: parent.width/2
-            height: appHeight/18
+            height: appHeight/27
             radius: height/2
             color: "transparent"
             border.width: 1
@@ -192,7 +192,7 @@ Item {
                 text: "SAVE"
                 font.pixelSize: parent.height/2
                 font.family: xciteMobile.name
-                color: themecolor
+                color: parent.border.color
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
             }
