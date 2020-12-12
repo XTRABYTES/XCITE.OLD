@@ -608,8 +608,20 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
             }
 
             broker.me = m_username;
-            broker.connectExchange("xchats");
-            broker.connectExchange("xgames");
+           QJsonObject obj;
+           obj.insert("dicom","1.0");
+           obj.insert("type","request");
+           obj.insert("id","000");
+           obj.insert("xdapp","ping");
+           obj.insert("method","ping");
+           obj.insert("payload","Sending Message from XCITE Login");
+           obj.insert("tasks_done","");
+           obj.insert("sender_name",username);
+           QJsonDocument doc(obj);
+           QString strJson(doc.toJson(QJsonDocument::Compact));
+
+           broker.connectQueue("xcite");
+           broker.sendXChatMessage("fedcore_exchange",strJson);
 
         }else{
             emit loginFailedChanged();
