@@ -193,7 +193,7 @@ void XchatObject::xchatInc(const QString &user, QString platform, QString status
 
         QJsonDocument doc(obj);
         QString strJson(doc.toJson(QJsonDocument::Compact));
-        broker.sendMessage("xchats",strJson);
+        broker.sendXChatMessage("xchats",strJson);
         return;
     }
 }
@@ -210,7 +210,7 @@ void XchatObject::sendTypingToQueue(const QString user, QString route, QString s
         obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
         QJsonDocument doc(obj);
         QString strJson(doc.toJson(QJsonDocument::Compact));
-        broker.sendMessage("xchats",strJson);
+      //  broker.sendXChatMessage("xchats",strJson);
 
         return;
     }

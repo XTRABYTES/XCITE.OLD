@@ -17,30 +17,37 @@ BrokerConnection::BrokerConnection(QObject *parent) :
 void BrokerConnection::Initialize(QString user) {
     me = "";
 
-//    chooseServer();
-//    qDebug() << "Connecting to " + selectedServer;
-//    m_client.setHost(selectedServer);
-//    m_client.setPort(5672);
-//    m_client.setUsername("xchat");
-//    m_client.setPassword("nopwd");
-//    m_client.setVirtualHost("xtrabytes");
-//    reconnectTimer.setSingleShot(true);
-//    reconnectTimer.start(10000);
-//    //m_client.setAutoReconnect(true);
-//    connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
+    chooseServer();
+    qDebug() << "Connecting to " + selectedServer;
+    m_client.setHost(selectedServer);
+    m_client.setPort(5671);
+    m_client.setVirtualHost("xtrabytes");
+    m_client.setSslConfiguration(createSslConfiguration());
+    connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
+    QObject::connect(&m_client, SIGNAL(sslErrors(QList<QSslError>)),
+                     &m_client, SLOT(ignoreSslErrors(QList<QSslError>)));
+    m_client.connectToHost();
 
-//    m_client.connectToHost();
 
+}
+
+QSslConfiguration BrokerConnection::createSslConfiguration()
+{
+
+
+    QSslConfiguration sslConfiguration;
+    sslConfiguration.setProtocol(QSsl::TlsV1_2);
+    return sslConfiguration;
 }
 
 void BrokerConnection::chooseServer(){
 
-//    boost::random::mt19937 gen;
-//    gen.seed(time(NULL));
-//    boost::random::uniform_int_distribution<> dist(0, servers.size()-1);
-//    int randIndex = dist(gen);
-//    selectedServer = servers.at(randIndex);
-//    qDebug() << "selected: " + selectedServer;
+    boost::random::mt19937 gen;
+    gen.seed(time(NULL));
+    boost::random::uniform_int_distribution<> dist(0, servers.size()-1);
+    int randIndex = dist(gen);
+    selectedServer = servers.at(randIndex);
+    qDebug() << "selected: " + selectedServer;
 
 }
 
@@ -71,48 +78,33 @@ bool BrokerConnection::isConnected(){
 void BrokerConnection::clientConnected() {
     qDebug() << "Connected to MQ Server";
     emit selectedXchatServer(selectedServer);
-
-    connectExchange("xgames");
-    connectExchange("xchats");
    }
 
-void BrokerConnection::connectExchange(QString queueName){
+void BrokerConnection::connectQueue(QString queueName){
     if ( m_client.isConnected() && !me.isEmpty()){
         try{
-            QAmqpExchange *exchange = m_client.createExchange(queueName);
-            disconnect(exchange, 0, 0, 0); // in case this is a reconnect
-            exchange->setProperty("queue",queueName);
-            connect(exchange, SIGNAL(declared()), this, SLOT(exchangeDeclared()));
-            QAmqpTable exchangeProps;
-            exchangeProps.insert("x-cache-size",500);
-            exchange->declare(QAmqpExchange::Deduplication, QAmqpExchange::Durable, exchangeProps);
-        }catch(...){
-            qDebug() << "Exception in Connect Exchange";
+            QAmqpQueue *queue = m_client.createQueue(queueName + "_" + me);
+            connect(queue, &QAmqpQueue::declared,  this, &BrokerConnection::queueDeclared);
+            connect(queue, &QAmqpQueue::bound,  this, &BrokerConnection::queueBound);
+            connect(queue, &QAmqpQueue::messageReceived,  this, &BrokerConnection::messageReceived);
 
+            queue->declare();
+        }catch(...){
+            qDebug() << "Exception in Connect Queue";
         }
     }else{
         qDebug() << "Not connected";
     }
 }
 
-   void BrokerConnection::exchangeDeclared() {
-       QAmqpExchange *exchange = qobject_cast<QAmqpExchange*>(sender());
-       QAmqpQueue *temporaryQueue = m_client.createQueue(exchange->property("queue").toString() + "-" + me); //
-
-       disconnect(temporaryQueue, 0, 0, 0); // in case this is a reconnect
-
-       temporaryQueue->setProperty("queue",exchange->property("queue"));
-       connect(temporaryQueue, &QAmqpQueue::declared,  this, &BrokerConnection::queueDeclared);
-       connect(temporaryQueue, &QAmqpQueue::bound,  this, &BrokerConnection::queueBound);
-       connect(temporaryQueue, &QAmqpQueue::messageReceived,  this, &BrokerConnection::messageReceived);
-       temporaryQueue->declare(QAmqpQueue::AutoDelete);
-   }
-
    void BrokerConnection::queueDeclared() {
        QAmqpQueue *temporaryQueue = qobject_cast<QAmqpQueue*>(sender());
        if (!temporaryQueue)
            return;
-       temporaryQueue->bind(temporaryQueue->property("queue").toString(), "xcite.xchat");
+       temporaryQueue->setProperty("x-match","any");
+       temporaryQueue->setProperty("dest","xcite_" + me);
+       temporaryQueue->setProperty("dest_all","1");
+       temporaryQueue->bind("fedcore_exchange","all");
    }
 
    void BrokerConnection::queueBound() {
@@ -138,7 +130,8 @@ void BrokerConnection::connectExchange(QString queueName){
            return;
 
        QAmqpMessage message = temporaryQueue->dequeue();
-       if (temporaryQueue->property("queue").toString() == "xchats"){
+       qDebug() << "MEssage Received = " + message.payload();
+       if (temporaryQueue->property("queue").toString().startsWith("xcite_")){
            xchatRobot.xchatEntry( message.payload());
        }else if(temporaryQueue->property("queue").toString() == "xgames"){
            //xgames.xgamesEntry( message.payload());
@@ -148,22 +141,19 @@ void BrokerConnection::connectExchange(QString queueName){
 
    }
 
-   void BrokerConnection::sendMessage(QString queue, QString message){
-
+   void BrokerConnection::sendMessage(QString queue, QString message, QAmqpTable headers){
+    qDebug() << "Sending Message";
        if (m_client.isConnected()){
            QAmqpExchange *exchange = m_client.createExchange(queue);
            QAmqpMessage::PropertyHash properties = QAmqpMessage::PropertyHash();
            properties.insert(QAmqpMessage::Property::ContentType,"application/json");
            QUuid uuid = QUuid::createUuid();
            QAmqpTable headers;
-               headers.insert("x-deduplication-header", uuid.toString(QUuid::Id128));
-               headers.insert("x-dicom-version","1.0.0");
-               headers.insert("x-dicom-msgtype","xchat");
-               headers.insert("x-cache-size",500);
-               headers.insert("x-cache-ttl",10000);
-
+               headers.insert("dest_all", "1");
+               headers.insert("type","xchat");
+               headers.insert("sender","xcite_" + me);
            properties.insert(QAmqpMessage::Property::Headers,headers);
-           exchange->publish(message, "xcite.xchat", properties);
+           exchange->publish(message, "all", properties);
        }else{
            if(!me.isEmpty()){
                //reconnect();
@@ -171,4 +161,31 @@ void BrokerConnection::connectExchange(QString queueName){
              qDebug() << "not connected send";
            }
        }
+   }
+
+
+   void BrokerConnection::sendXChatMessage(QString queue, QString message){
+       QAmqpTable headers;
+           headers.insert("dest_all", "1");
+           headers.insert("type","xchat");
+           headers.insert("sender","xcite_" + me);
+           this->sendMessage(queue,message,headers);
+   }
+
+   void BrokerConnection::sendXChatDMMessage(QString queue, QString receiver, QString message){
+       QAmqpTable headers;
+           headers.insert("dest", receiver);
+           headers.insert("type","xchat");
+           headers.insert("sender","xcite_" + me);
+           this->sendMessage(queue,message,headers);
+
+   }
+
+   void BrokerConnection::sendDicomMessage(QString queue, QString message){
+       QAmqpTable headers;
+           headers.insert("dest", "");
+           headers.insert("type","dicom");
+           headers.insert("sender","xcite_" + me);
+           this->sendMessage(queue,message,headers);
+
    }
