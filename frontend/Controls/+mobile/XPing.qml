@@ -355,7 +355,10 @@ Rectangle {
                     xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
                     msgList.positionViewAtEnd()
                 }
-
+                else if (replyArray[0] === "xchat") {
+                    xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
+                    msgList.positionViewAtEnd()
+                }
                 //}
             }
         }

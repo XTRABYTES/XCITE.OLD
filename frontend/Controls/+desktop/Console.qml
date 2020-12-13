@@ -402,8 +402,176 @@ Rectangle {
                         xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
                         msgList.positionViewAtEnd()
                     }
+                    else if (replyArray[0] === "xchat") {
+                        xPingTread.append({"message": pingReply, "inout": "in", "author": "staticNet", "time": replyTime})
+                        msgList.positionViewAtEnd()
+                    }
 
                     //}
+                }
+            }
+        }
+
+        Rectangle {
+            id: testXchatGeneral
+            width: (parent.width-appWidth/24-height)/3
+            height: appHeight/27
+            radius: height/2
+            anchors.left: parent.left
+            anchors.top: requestText.bottom
+            anchors.topMargin: height/2
+            color: "transparent"
+            border.color: themecolor
+            border.width: 1
+
+            Rectangle {
+                id: selectXchatGen
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            Text {
+                id: xchatGenLabel
+                text: "X-CHAT all"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height/2
+                font.family: xciteMobile.name
+                color: themecolor
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: {
+                    selectXchatGen.visible = true
+                }
+
+                onExited: {
+                    selectXchatGen.visible = false
+                }
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    broker.testXchat()
+                }
+            }
+        }
+
+        Rectangle {
+            id: testXchatDM
+            width: (parent.width-appWidth/24-height)/3
+            height: appHeight/27
+            radius: height/2
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.horizontalCenterOffset: -appWidth/48
+            anchors.top: requestText.bottom
+            anchors.topMargin: height/2
+            color: "transparent"
+            border.color: themecolor
+            border.width: 1
+
+            Rectangle {
+                id: selectXchatDM
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            Text {
+                id: xchatDMLabel
+                text: "X-CHAT DM"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height/2
+                font.family: xciteMobile.name
+                color: themecolor
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: {
+                    selectXchatDM.visible = true
+                }
+
+                onExited: {
+                    selectXchatDM.visible = false
+                }
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    broker.testDM()
+                }
+            }
+        }
+
+        Rectangle {
+            id: testDicom
+            width: (parent.width-appWidth/24-height)/3
+            height: appHeight/27
+            radius: height/2
+            anchors.right: parent.right
+            anchors.rightMargin: appWidth/24
+            anchors.top: requestText.bottom
+            anchors.topMargin: height/2
+            color: "transparent"
+            border.color: themecolor
+            border.width: 1
+
+            Rectangle {
+                id: selectDicom
+                anchors.fill: parent
+                radius: height/2
+                color: maincolor
+                opacity: 0.3
+                visible: false
+            }
+
+            Text {
+                id: dicomLabel
+                text: "DICOM"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height/2
+                font.family: xciteMobile.name
+                color: themecolor
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: {
+                    selectDicom.visible = true
+                }
+
+                onExited: {
+                    selectDicom.visible = false
+                }
+
+                onPressed: {
+                    click01.play()
+                    detectInteraction()
+                }
+
+                onClicked: {
+                    broker.testDicom()
                 }
             }
         }

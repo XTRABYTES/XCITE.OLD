@@ -98,6 +98,9 @@ int main(int argc, char *argv[])
 
     broker.Initialize("");
     engine.rootContext()->setContextProperty("broker",&broker);
+    if (broker.isConnected()) {
+        qDebug() << "Broker WIRED UP";
+    }
 
     xgames.Initialize();
     engine.rootContext()->setContextProperty("xGames", &xgames);

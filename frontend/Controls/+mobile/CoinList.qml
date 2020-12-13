@@ -16,7 +16,7 @@ import QtQuick.Window 2.2
 import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
-import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Controls
 
 Rectangle {
     id: allWalletCards

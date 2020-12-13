@@ -15,6 +15,7 @@ import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: sidebar
@@ -510,7 +511,7 @@ Rectangle {
         }
     }
 
-    Controls.Pincode {
+    Mobile.Pincode {
         id: myPincode
         z: 100
         anchors.top: parent.top

@@ -193,7 +193,7 @@ void XchatObject::xchatInc(const QString &user, QString platform, QString status
 
         QJsonDocument doc(obj);
         QString strJson(doc.toJson(QJsonDocument::Compact));
-        broker.sendXChatMessage("xchats",strJson);
+        //broker.sendToXchat("xchats",strJson);
         return;
     }
 }

@@ -452,7 +452,7 @@ Rectangle {
                      && viewForScreenshot == 0
             clip: true
 
-            Controls.CoinPicklist {
+            Mobile.CoinPicklist {
                 id: myCoinPicklist
                 onlyActive: true
             }
@@ -575,7 +575,7 @@ Rectangle {
                      && viewForScreenshot == 0
             clip: true
 
-            Controls.WalletPicklist {
+            Mobile.WalletPicklist {
                 id: myWalletPicklist
                 coin: coinID.text
             }
@@ -1372,7 +1372,7 @@ Rectangle {
         }
 
         // Transfer confirm state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: sendConfirmation
             modalHeight: sendingLabel.height + to.height + confirmationAddressName.height + reference.height + feeLabel.height + cancelSendButton.height + 105
             visible: transactionSend == 1
@@ -1796,7 +1796,7 @@ Rectangle {
 
         // Transfer failed state
 
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: transferFailed
             modalHeight: failedIcon.height + failedIconLabel.height + closeFail.height + 75
             visible: transactionSend == 1
@@ -2160,7 +2160,7 @@ Rectangle {
         }
     }
 
-    Controls.Pincode {
+    Mobile.Pincode {
         id: myPincode
         z: 10
         anchors.top: parent.top

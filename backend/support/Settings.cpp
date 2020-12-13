@@ -25,6 +25,7 @@
 #include <QNetworkAccessManager>
 #include "DownloadManager.hpp"
 #include "../xchat/xchat.hpp"
+#include "../xutility/BrokerConnection.h"
 
 #ifdef Q_OS_ANDROID //added to get write permission for Android
 #include <QtAndroid>
@@ -607,7 +608,7 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
                 return;
             }
 
-            broker.me = m_username;
+           broker.me = m_username;
            QJsonObject obj;
            obj.insert("dicom","1.0");
            obj.insert("type","request");
@@ -621,7 +622,7 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
            QString strJson(doc.toJson(QJsonDocument::Compact));
 
            broker.connectQueue("xcite");
-           broker.sendXChatMessage("fedcore_exchange",strJson);
+           broker.sendXChatAllMessage("fedcore_exchange",strJson);
 
         }else{
             emit loginFailedChanged();

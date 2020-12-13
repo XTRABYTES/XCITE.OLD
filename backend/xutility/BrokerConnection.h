@@ -34,10 +34,14 @@ public slots:
     void messageReceived();
     void queueDeclared();
     void clientConnected();
-    void sendMessage(QString,QString,QAmqpTable);
-    void sendXChatMessage(QString,QString);
+    void sendToXchat(QString,QString,QAmqpTable);
+    void sendToDicom(QString,QString, QAmqpTable);
+    void sendXChatAllMessage(QString,QString);
     void sendXChatDMMessage(QString,QString,QString);
     void sendDicomMessage(QString,QString);
+    void testXchat();
+    void testDM();
+    void testDicom();
 
     void connectQueue(QString);
     void reconnect();
@@ -58,6 +62,5 @@ private:
 
 };
 extern BrokerConnection broker;
-
 
 #endif // BROKERCONNECTION_H
