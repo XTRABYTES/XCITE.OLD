@@ -1,6 +1,7 @@
 #include "BrokerConnection.h"
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
+#include "../staticnet/staticnet.hpp"
 
 
 BrokerConnection broker;
@@ -20,7 +21,6 @@ void BrokerConnection::Initialize(QString user) {
     chooseServer();
     qDebug() << "Connecting to " + selectedServer;
     m_client.setHost(selectedServer);
-    qDebug() << "Connecting to selectedServer";
     m_client.setPort(5671);
     m_client.setVirtualHost("xtrabytes");
     m_client.setUsername("****"); //add correct username
@@ -28,7 +28,7 @@ void BrokerConnection::Initialize(QString user) {
     m_client.setSslConfiguration(createSslConfiguration());
     connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
     QObject::connect(&m_client, SIGNAL(sslErrors(QList<QSslError>)),
-                     &m_client, SLOT(ignoreSslErrors(QList<QSslError>)));
+                         &m_client, SLOT(ignoreSslErrors(QList<QSslError>)));
     m_client.connectToHost();
 
     qDebug() << "Connection to Lite network established: " << isConnected();
@@ -39,6 +39,12 @@ QSslConfiguration BrokerConnection::createSslConfiguration()
     QSslConfiguration sslConfiguration;
     sslConfiguration.setProtocol(QSsl::TlsV1_2);
     return sslConfiguration;
+}
+
+void BrokerConnection::SSLErrors(QList<QSslError> errors){
+    foreach( const QSslError &error, errors ) {
+        qDebug() << "SSL Error: " << error.errorString();
+    }
 }
 
 void BrokerConnection::chooseServer(){
@@ -150,6 +156,8 @@ void BrokerConnection::messageReceived() {
             // reply from staticnet
             qDebug() << "Reply from Static-net: " << message.payload();
             xchatRobot.SubmitMsg("dicom - backend - reply: " + message.payload());
+            replyMsg = message.payload();
+            staticNet.replyFromNetwork(replyMsg);
         }
     }
     //
@@ -163,7 +171,7 @@ void BrokerConnection::messageReceived() {
 }
 
 void BrokerConnection::sendToXchat(QString xchange, QString message, QAmqpTable headers){
-    qDebug() << "Sending Message";
+    qDebug() << "Sending X-CHAT Message";
     if (m_client.isConnected()){
         QAmqpExchange *exchange = m_client.createExchange(xchange);
         QAmqpMessage::PropertyHash properties = QAmqpMessage::PropertyHash();
@@ -182,7 +190,7 @@ void BrokerConnection::sendToXchat(QString xchange, QString message, QAmqpTable 
 }
 
 void BrokerConnection::sendToDicom(QString xchange, QString message, QAmqpTable headers){
-    qDebug() << "Sending Message";
+    qDebug() << "Sending DICOM Message";
     if (m_client.isConnected()){
         QAmqpExchange *exchange = m_client.createExchange(xchange);
         QAmqpMessage::PropertyHash properties = QAmqpMessage::PropertyHash();

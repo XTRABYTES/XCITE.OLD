@@ -116,7 +116,8 @@ public Q_SLOTS:
     void request(const QJsonArray *params);
     void srequest(const QJsonArray *params);
     void onResponse(QJsonArray params, QJsonObject );
-    void sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params);
+    //void sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params);
+    void sendToDicom(QByteArray docByteArray, QString msgID, const QJsonArray *params);
     void processReply(QString reply, const QJsonArray *params);
     int errorString(QString errorstr);
     QString selectNode();
@@ -158,6 +159,7 @@ public:
 public slots:
     void errorString(const QString error);
     //void staticPopup(QString auth, QString msg);
+    void replyFromNetwork(QString msg);
     void onResponseFromStaticnet(QJsonObject response) {
         qDebug() << "staticnet response recevied";       
     }

@@ -20,6 +20,7 @@ public:
     bool isConnected();
     QAmqpClient m_client;
     QString me;
+    QString replyMsg;
 
 
 signals:
@@ -42,6 +43,7 @@ public slots:
     void testXchat();
     void testDM();
     void testDicom();
+    void SSLErrors(QList<QSslError>);
 
     void connectQueue(QString);
     void reconnect();

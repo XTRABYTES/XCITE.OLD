@@ -32,12 +32,14 @@
 #include "../xutility/crypto/ctools.h"
 #include "../xutility/transaction/transaction.h"
 #include "../support/Settings.hpp"
+#include "../xutility/BrokerConnection.h"
 
 
 StaticNet staticNet;
 QStringList usedUtxo;
 QStringList pendingUtxo;
 QString queue_name  = "dicom_testqueue_v4";
+QJsonObject commandList;
 
 void StaticNet::Initialize() {
 
@@ -291,7 +293,8 @@ void SnetKeyWordWorker::srequest(const QJsonArray *params) {
 
     for (int i = 0; i < repeat; i++){
         // I would like to move this to a worker so we don't have to wait until a request is completed before sending a new one.
-        sendToDicom(docByteArray, queue_name, params);
+        //sendToDicom(docByteArray, queue_name, params);
+        sendToDicom(docByteArray, xid, params);
     }
 }
 
@@ -302,9 +305,17 @@ QString SnetKeyWordWorker::selectNode(){
     return selectedNode;
 }
 
-void SnetKeyWordWorker::sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params) {
-    std::string q_name = queueName.toStdString();
-    std::string strJson = docByteArray.toStdString();
+void SnetKeyWordWorker::sendToDicom(QByteArray docByteArray, QString msgID, const QJsonArray *params) {
+    //std::string q_name = queueName.toStdString();
+    //std::string strJson = docByteArray.toStdString();
+    QString strJson = QString::fromStdString(docByteArray.toStdString());
+
+    broker.connectQueue("xcite");
+    broker.sendDicomMessage("",strJson);
+
+    commandList.insert(msgID, QJsonValue::fromVariant(params->toVariantList()));
+
+    /*
     std::string selectedCore = selectNode().toStdString();
     const std::string correlation(xUtility.get_uuid());
     SimplePocoHandler handler(selectedCore, 5672);
@@ -338,7 +349,20 @@ void SnetKeyWordWorker::sendToDicom(QByteArray docByteArray, QString queueName, 
 
     channel.consume("", AMQP::noack).onReceived(receiveCallback);
 
-    handler.loop();
+    handler.loop();*/
+}
+
+void StaticNet::replyFromNetwork(QString msg) {
+    QJsonDocument replyDoc = QJsonDocument::fromJson(msg.toUtf8());
+    QJsonObject replyObject = replyDoc.object();
+    QString replyId = replyObject.value("id").toString().toLatin1();
+    QString payload = replyObject.value("payload").toString().toLatin1();
+
+    if (commandList.contains(replyId)) {
+        qDebug() << "reply to request: " << replyId << ", reply: " << payload;
+        //xchatRobot.SubmitMsg("dicom - backend - reply: " + payload);
+        //const QJsonArray *params = QJsonArray::fromVariantList(commandList.value(replyId).toVariantList());
+    }
 }
 
 void SnetKeyWordWorker::processReply(QString msg, const QJsonArray *params) {
@@ -793,7 +817,7 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
     intCount = (outCount/3);
     qDebug() << "integer calculation: " << outCount << "/" << 3 << " = " << intCount;
     if (dbCount > intCount) {
-       countFee = (intCount + 1)*nBaseValue;
+        countFee = (intCount + 1)*nBaseValue;
     }
     else {
         countFee = intCount*nBaseValue;
