@@ -1270,8 +1270,8 @@ Rectangle {
                             if (splitReceivers.count > 1) {
                             }
                             else {
-                                splitReceiverInfo = splitReceivers.at(0).split("-")
-                                r = splitReceiverInfo.at(0)
+                                splitReceiverInfo = splitReceivers[0].split("-")
+                                r = splitReceiverInfo[0]
                             }
                             if (getAddress(coinID.text, walletLabel.text) === sender_) {
                                 console.log("raw transaction created: " + rawTx_ + ", fee: " + fee_ + ", id: " + traceId_)
@@ -1472,15 +1472,20 @@ Rectangle {
             }
 
             Text {
-                property var receiverList: receivedReceiver.split(";")
-                property var countReceivers: receiverList.count
-                property var receiverInfo: countReceivers === 1? receiverList[0].split("-") : countReceivers.toLocaleString(Qt.locale("en_US"))
+                property var receiverArray: receivedReceiver.split(';')
+                property var countReceivers: receiverArray.length
+                property var splitReceiver: receiverArray[0].split('-')
+                property var receiverInfo: countReceivers === 1? splitReceiver[0] : countReceivers.toLocaleString(Qt.locale("en_US"), "f", 0)
                 id: confirmationAddress
-                text: receivedLabel != ""? receivedLabel : (countReceivers === 1? receiverInfo[0] : receiverInfo + " receivers")
+                text: countReceivers === 1? getContact(coinID.text, receiverInfo) : receiverInfo + " receivers"
                 anchors.bottom: to.bottom
                 anchors.bottomMargin: 2
                 anchors.right: cancelSendButton.right
                 anchors.rightMargin: 10
+                anchors.left: to.right
+                anchors.leftMargin: 5
+                horizontalAlignment: Text.AlignRight
+                elide: Text.ElideRight
                 font.family: xciteMobile.name
                 font.pixelSize: addressName != ""? 16 : 10
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"

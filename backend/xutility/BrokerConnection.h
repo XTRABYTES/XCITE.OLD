@@ -16,7 +16,7 @@ class BrokerConnection : public QObject
     Q_OBJECT
 public:
     explicit BrokerConnection(QObject *parent = nullptr);
-    void Initialize(QString);
+    void Initialize();
     bool isConnected();
     QAmqpClient m_client;
     QString me;

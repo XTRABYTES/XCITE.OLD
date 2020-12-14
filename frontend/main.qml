@@ -618,7 +618,7 @@ ApplicationWindow {
     }
 
     // Keyboard shortcuts
-        /*
+    /*
     Shortcut {
         sequence: "Ctrl+Down"
         onActivated: minimizeApp()
@@ -660,7 +660,7 @@ ApplicationWindow {
         sequence: "Ctrl+Down"
         onActivated: {
             if (sizeIndex > 0) {
-                    console.log("Making app smaller")
+                console.log("Making app smaller")
                 sizeIndex = sizeIndex - 1
                 appWidth= baseWidth * sizeCoeficient
             }
@@ -803,20 +803,16 @@ ApplicationWindow {
                     else if (viewForScreenshot == 1) {
                         viewForScreenshot = 0
                     }
-                    else if (createTx == false) {
+                    else if (createTx == false && transactionInProgress == false) {
                         if (myOS !== "android" && myOS !== "ios") {
-                            if (transactionInProgress == false) {
-                                if (advancedTransferTracker == 1){
-                                    advancedTransferTracker = 0
-                                }
-                                else {
-                                    walletDetailTracker = 0
-                                }
+                            if (advancedTransferTracker == 1){
+                                advancedTransferTracker = 0
+                            }
+                            else {
+                                walletDetailTracker = 0
                             }
                         }
-                    }
-                    else if (transactionInProgress == false){
-                        if (myOS == "android" || myOS == "ios") {
+                        else {
                             transferTracker = 0
                         }
                     }
@@ -1643,6 +1639,31 @@ ApplicationWindow {
                 contactIndex = contactList.get(i)
             }
         }
+    }
+
+    function getContact(coin, address) {
+        var myContact = "Unknown contact"
+        for(var i = 0; i < addressList.count; i++) {
+            if (addressList.get(i).coin === coin && addressList.get(i).address === address && addressList.get(i).remove === false) {
+                for(var e = 0; e < contactList.count; e++) {
+                    if (contactList.get(e).contactNR === addressList.get(i).contact) {
+                        if (contactList.get(e).firstName !== "") {
+                            myContact = contactList.get(e).firstName
+                        }
+                        if (contactList.get(e).lastName !== "") {
+                            if (myContact === "Unknown contact") {
+                                myContact = contactList.get(e).lastName
+                            }
+                            else {
+                                myContact = myContact + " " + contactList.get(e).lastName
+                            }
+                        }
+                        myContact = myContact + " (" + addressList.get(i).label + ")"
+                    }
+                }
+            }
+        }
+        return myContact
     }
 
     function replaceName(id, first, last) {

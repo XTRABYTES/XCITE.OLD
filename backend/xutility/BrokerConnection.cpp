@@ -15,7 +15,7 @@ BrokerConnection::BrokerConnection(QObject *parent) :
 }
 
 
-void BrokerConnection::Initialize(QString user) {
+void BrokerConnection::Initialize() {
     me = "";
 
     chooseServer();
@@ -23,15 +23,13 @@ void BrokerConnection::Initialize(QString user) {
     m_client.setHost(selectedServer);
     m_client.setPort(5671);
     m_client.setVirtualHost("xtrabytes");
-    m_client.setUsername("****"); //add correct username
-    m_client.setPassword("****"); // add correct password
+    m_client.setUsername("xc_node"); //add correct username
+    m_client.setPassword("Xc.n0dE"); // add correct password
     m_client.setSslConfiguration(createSslConfiguration());
     connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
     QObject::connect(&m_client, SIGNAL(sslErrors(QList<QSslError>)),
                          &m_client, SLOT(ignoreSslErrors(QList<QSslError>)));
     m_client.connectToHost();
-
-    qDebug() << "Connection to Lite network established: " << isConnected();
 }
 
 QSslConfiguration BrokerConnection::createSslConfiguration()
@@ -85,7 +83,6 @@ bool BrokerConnection::isConnected(){
 void BrokerConnection::clientConnected() {
     qDebug() << "Connected to MQ Server";
     emit selectedXchatServer(selectedServer);
-    //emit selectedXchatServer("85.214.78.233");
 }
 
 void BrokerConnection::connectQueue(QString queueName){
@@ -141,42 +138,32 @@ void BrokerConnection::messageReceived() {
     qDebug() << "Message Received = " + message.payload();
     QAmqpTable headers = message.headers();
     QString sender = headers.value("sender").toString();
-    QString msg = message.payload();
+    replyMsg = message.payload();
     if (headers.contains("dest_all")) {
         // general message
         qDebug() << "General X-CHAT message from: " << sender << " message: " << message.payload();
         xchatRobot.SubmitMsg("xchat - all - message from: " + sender + " message: " + message.payload());
     } else if (headers.contains("dest")) {
         // message just for you
-        if (headers.value("type").toString() == "xchat" && (headers.value("dest").toString() == "xcite_" + me || headers.value("sender").toString() == "xcite_" + me)) {
+        if (headers.value("type").toString() == "xchat" && headers.value("dest").toString() == "xcite_" + me) {
             // DM messages
             qDebug() << "Direct X-CHAT message: " << message.payload();
             xchatRobot.SubmitMsg("xchat - " + sender + " - message: " + message.payload());
         } else if (headers.value("type").toString() == "dicom") {
             // reply from staticnet
-            qDebug() << "Reply from Static-net: " << message.payload();
-            xchatRobot.SubmitMsg("dicom - backend - reply: " + message.payload());
-            replyMsg = message.payload();
+            qDebug() << "Reply from Static-net: " << replyMsg;
             staticNet.replyFromNetwork(replyMsg);
         }
-    }
-    //
-    if (temporaryQueue->property("queue").toString().startsWith("xcite_")){
-        //xchatRobot.xchatEntry( message.payload());
-    }else if(temporaryQueue->property("queue").toString() == "xgames"){
-        //xgames.xgamesEntry( message.payload());
-    }else{
-
     }
 }
 
 void BrokerConnection::sendToXchat(QString xchange, QString message, QAmqpTable headers){
     qDebug() << "Sending X-CHAT Message";
+    xchatRobot.SubmitMsg("dicom - backend - sending xchat message to: " + selectedServer + ", message: " + message);
     if (m_client.isConnected()){
         QAmqpExchange *exchange = m_client.createExchange(xchange);
         QAmqpMessage::PropertyHash properties = QAmqpMessage::PropertyHash();
         properties.insert(QAmqpMessage::Property::ContentType,"application/json");
-        //QUuid uuid = QUuid::createUuid();
         properties.insert(QAmqpMessage::Property::Headers,headers);
         exchange->publish(message, "all", properties);
     }else{
@@ -191,11 +178,11 @@ void BrokerConnection::sendToXchat(QString xchange, QString message, QAmqpTable 
 
 void BrokerConnection::sendToDicom(QString xchange, QString message, QAmqpTable headers){
     qDebug() << "Sending DICOM Message";
+    xchatRobot.SubmitMsg("dicom - backend - sending dicom message to: " + selectedServer + ", message: " + message);
     if (m_client.isConnected()){
         QAmqpExchange *exchange = m_client.createExchange(xchange);
         QAmqpMessage::PropertyHash properties = QAmqpMessage::PropertyHash();
         properties.insert(QAmqpMessage::Property::ContentType,"application/json");
-        //QUuid uuid = QUuid::createUuid();
         properties.insert(QAmqpMessage::Property::Headers,headers);
         exchange->publish(message, "fedcore_Txxdapp1queue", properties);
     }else{

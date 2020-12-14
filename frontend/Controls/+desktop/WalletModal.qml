@@ -1629,9 +1629,13 @@ Rectangle {
                     property var splitReceiver: receiverArray[0].split('-')
                     property var receiverInfo: countReceivers === 1? splitReceiver[0] : countReceivers.toLocaleString(Qt.locale("en_US"), "f", 0)
                     id: confirmationAddress
-                    text: countReceivers === 1? receiverInfo : receiverInfo + " receivers"
+                    text: countReceivers === 1? getContact(coinID.text, receiverInfo) : receiverInfo + " receivers"
                     anchors.bottom: to.bottom
                     anchors.right: parent.right
+                    anchors.left: to.right
+                    anchors.leftMargin: font.pixelSize
+                    horizontalAlignment: Text.AlignRight
+                    elide: Text.ElideRight
                     font.family: xciteMobile.name
                     font.pixelSize: appHeight/54
                     color: themecolor
