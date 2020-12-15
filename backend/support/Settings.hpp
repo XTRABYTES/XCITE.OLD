@@ -71,6 +71,7 @@ public slots:
     void ExportWallet(QString walletlist);
     void UpdateAccount(QString addresslist, QString contactlist, QString walletlist, QString pendinglist);
     bool checkInternet(QString url);
+    void sendHello();
 
     void onCheckOS();
     void initialisePincode(QString pincode);

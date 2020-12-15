@@ -39,7 +39,7 @@ StaticNet staticNet;
 QStringList usedUtxo;
 QStringList pendingUtxo;
 QString queue_name  = "dicom_testqueue_v4";
-QJsonObject commandList;
+QJsonObject* commandList = new QJsonObject;
 
 void StaticNet::Initialize() {
 
@@ -90,10 +90,9 @@ void StaticNet::replyFromNetwork(QString msg) {
     QString replyId = replyObject.value("id").toString().toLatin1();
     QString payload = replyObject.value("payload").toString().toLatin1();
 
-    if (commandList.contains(replyId)) {
-        qDebug() << "reply to request: " << replyId << ", reply: " << payload;
-        xchatRobot.SubmitMsg("dicom - backend - reply: " + payload);
-        QJsonValue qParams = commandList.value(replyId);
+    if (commandList->contains(replyId)) {
+        xchatRobot.SubmitMsg("dicom - backend - reply to request: " + replyId + " - reply: " + payload);
+        QJsonValue qParams = commandList->value(replyId);
         QJsonArray* params = new QJsonArray(qParams.toArray());
 
         ProcessReplyWorker* worker = new ProcessReplyWorker(params);
@@ -313,10 +312,19 @@ QString SnetKeyWordWorker::selectNode(){
 
 void SnetKeyWordWorker::sendToDicom(QByteArray docByteArray, QString msgID, const QJsonArray *params) {
     QString strJson = QString::fromStdString(docByteArray.toStdString());
-    broker.sendDicomMessage("",strJson);
-    commandList.insert(msgID, QJsonValue::fromVariant(params->toVariantList()));
-    qDebug() << "params: " << params;
-    qDebug() << "converted params: " << QJsonValue::fromVariant(params->toVariantList());
+    if (broker.readyToConsume) {
+        broker.sendDicomMessage("",strJson);
+        if (!commandList->contains(msgID)) {
+            commandList->insert(msgID, QJsonValue::fromVariant(params->toVariantList()));
+        }
+    }
+    else {
+        qDebug() << "Reply queue is not ready";
+        xchatRobot.SubmitMsg("dicom - backend - Reply queue is not ready, try again");
+        connect(&broker.m_client, SIGNAL(connected()), &broker, SLOT(reconnectQueue()));
+        connect(&broker.m_client, SIGNAL(connected()), &broker, SLOT(clientConnected()));
+        broker.reconnect();
+    }
 
     /* GENESIS NETWORK CONNECTION
     std::string q_name = queueName.toStdString();
@@ -755,35 +763,38 @@ void SendcoinWorker::calculate_fee(const QString inputStr, const QString outputS
 
 ProcessReplyWorker::ProcessReplyWorker(const QJsonArray *params) {
 
-   // FIXMEE need to validate each params
-   qDebug() << "params: " << params;
+    // FIXMEE need to validate each params
+    qDebug() << "params: " << params;
+    target_addr = "";
+    send_amount = "";
+    priv_key = "";
 
-   int paramSize = params ->count();
-   QString xparams;
-   for (int i = 2; i < paramSize - 1; i++) {
-       if (i == 2) {
-           xparams = params ->at(i).toString();
-       }
-       else {
-           xparams = xparams + " " + params -> at(i).toString();
-       }
-   }
-   qDebug() << "trimmed params: " << xparams;
+    int paramSize = params ->count();
+    QString xparams;
+    for (int i = 2; i < paramSize - 1; i++) {
+        if (i == 2) {
+            xparams = params ->at(i).toString();
+        }
+        else {
+            xparams = xparams + " " + params -> at(i).toString();
+        }
+    }
 
-   QJsonDocument requestDoc = QJsonDocument::fromJson(xparams.toUtf8());
-   QJsonObject requestObject = requestDoc.object();
+    if (xparams != "") {
 
-   if (requestObject.contains("target")){
-       target_addr = requestObject.value("target").toString();
-   }
-   if (requestObject.contains("send_amount")){
-       send_amount = requestObject.value("send_amount").toString();
-   }
-   if (requestObject.contains("secret")){
-       priv_key = requestObject.value("secret").toString();
-   }
+        QJsonDocument requestDoc = QJsonDocument::fromJson(xparams.toUtf8());
+        QJsonObject requestObject = requestDoc.object();
 
-   qDebug() << "target_address: " << target_addr << ", send_amount: " << send_amount << ", priv_key: "  << priv_key;
+        if (requestObject.contains("target")){
+            target_addr = requestObject.value("target").toString();
+        }
+        if (requestObject.contains("send_amount")){
+            send_amount = requestObject.value("send_amount").toString();
+        }
+        if (requestObject.contains("secret")){
+            priv_key = requestObject.value("secret").toString();
+        }
+    }
 }
 
 ProcessReplyWorker::~ProcessReplyWorker() {
@@ -799,9 +810,6 @@ void ProcessReplyWorker::processReply(QString msg, const QJsonArray *params) {
     xchatRobot.SubmitMsg("dicom - " + dapp + ":" + replyMethod + " id:" + replyId + " reply:" + replyMsg);
     QJsonDocument msgDoc = QJsonDocument::fromJson(replyMsg.toUtf8());
     QJsonObject msgObj = msgDoc.object();
-
-    xchatRobot.SubmitMsg("dicom - " + dapp + ":" + replyMethod + " reply:" + msg);
-
 
     if (replyMethod == "getutxo") {
         if (replyMsg == "rpc error" || msgObj.contains("error")) {

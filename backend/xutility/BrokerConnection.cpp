@@ -2,6 +2,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include "../staticnet/staticnet.hpp"
+#include "../support/Settings.hpp"
 
 
 BrokerConnection broker;
@@ -17,14 +18,16 @@ BrokerConnection::BrokerConnection(QObject *parent) :
 
 void BrokerConnection::Initialize() {
     me = "";
+    readyToConsume = false;
+    sendHello = false;
 
     chooseServer();
     qDebug() << "Connecting to " + selectedServer;
     m_client.setHost(selectedServer);
     m_client.setPort(5671);
     m_client.setVirtualHost("xtrabytes");
-    m_client.setUsername("xc_node"); //add correct username
-    m_client.setPassword("Xc.n0dE"); // add correct password
+    m_client.setUsername("*****"); //add correct username
+    m_client.setPassword("*****"); // add correct password
     m_client.setSslConfiguration(createSslConfiguration());
     connect(&m_client, SIGNAL(connected()), this, SLOT(clientConnected()));
     QObject::connect(&m_client, SIGNAL(sslErrors(QList<QSslError>)),
@@ -64,8 +67,15 @@ void BrokerConnection::disconnectMQ(){
     }
 
 }
+
+void BrokerConnection::clientDisconnected() {
+    reconnect();
+}
+
 void BrokerConnection::reconnect(){
     if (!reconnectTimer.isActive()){
+        readyToConsume = false;
+        sendHello = false;
         reconnectTimer.setSingleShot(true);
         reconnectTimer.start(10000);
         qDebug() << "reconnecting";
@@ -80,9 +90,15 @@ void BrokerConnection::reconnect(){
 bool BrokerConnection::isConnected(){
     return (m_client.isConnected());
 }
+
 void BrokerConnection::clientConnected() {
-    qDebug() << "Connected to MQ Server";
+    qDebug() << "Connected to MQ Server " << selectedServer;
     emit selectedXchatServer(selectedServer);
+}
+
+void BrokerConnection::reconnectQueue() {
+    qDebug() << "Reply queue closed, trying to reconnect";
+    connectQueue("xcite");
 }
 
 void BrokerConnection::connectQueue(QString queueName){
@@ -92,7 +108,6 @@ void BrokerConnection::connectQueue(QString queueName){
             connect(queue, &QAmqpQueue::declared,  this, &BrokerConnection::queueDeclared);
             connect(queue, &QAmqpQueue::bound,  this, &BrokerConnection::queueBound);
             connect(queue, &QAmqpQueue::messageReceived,  this, &BrokerConnection::messageReceived);
-
             queue->declare();
         }catch(...){
             qDebug() << "Exception in Connect Queue";
@@ -123,6 +138,8 @@ void BrokerConnection::queueBound() {
 
         qDebug() << " [*] Waiting for logs on " + temporaryQueue->property("queue").toString() + " --- " + temporaryQueue->name() + ".";
         temporaryQueue->consume(QAmqpQueue::coNoAck);
+        readyToConsume = true;
+        emit replyQueueReady();
     } catch (...) {
         qDebug() << "Exception here queue bound";
     }
@@ -133,28 +150,9 @@ void BrokerConnection::messageReceived() {
     QAmqpQueue *temporaryQueue = qobject_cast<QAmqpQueue*>(sender());
     if (!temporaryQueue)
         return;
-
     QAmqpMessage message = temporaryQueue->dequeue();
-    qDebug() << "Message Received = " + message.payload();
-    QAmqpTable headers = message.headers();
-    QString sender = headers.value("sender").toString();
-    replyMsg = message.payload();
-    if (headers.contains("dest_all")) {
-        // general message
-        qDebug() << "General X-CHAT message from: " << sender << " message: " << message.payload();
-        xchatRobot.SubmitMsg("xchat - all - message from: " + sender + " message: " + message.payload());
-    } else if (headers.contains("dest")) {
-        // message just for you
-        if (headers.value("type").toString() == "xchat" && headers.value("dest").toString() == "xcite_" + me) {
-            // DM messages
-            qDebug() << "Direct X-CHAT message: " << message.payload();
-            xchatRobot.SubmitMsg("xchat - " + sender + " - message: " + message.payload());
-        } else if (headers.value("type").toString() == "dicom") {
-            // reply from staticnet
-            qDebug() << "Reply from Static-net: " << replyMsg;
-            staticNet.replyFromNetwork(replyMsg);
-        }
-    }
+    ProcessMessageWorker* worker = new ProcessMessageWorker(message);
+    worker->processMessage();
 }
 
 void BrokerConnection::sendToXchat(QString xchange, QString message, QAmqpTable headers){
@@ -169,7 +167,6 @@ void BrokerConnection::sendToXchat(QString xchange, QString message, QAmqpTable 
     }else{
         if(!me.isEmpty()){
             qDebug() << "not connected, trying to reconnect";
-            reconnect();
         }else{
             qDebug() << "not connected send";
         }
@@ -188,7 +185,6 @@ void BrokerConnection::sendToDicom(QString xchange, QString message, QAmqpTable 
     }else{
         if(!me.isEmpty()){
             qDebug() << "not connected, trying to reconnect";
-            reconnect();
         }else{
             qDebug() << "not connected send";
         }
@@ -256,4 +252,32 @@ void BrokerConnection::sendDicomMessage(QString xchange, QString message){
     headers.insert("type","dicom");
     headers.insert("sender","xcite_" + me);
     this->sendToDicom(xchange,message,headers);
+}
+
+ProcessMessageWorker::ProcessMessageWorker(QAmqpMessage message) {
+    msg = message;
+    headers = msg.headers();
+    sender = headers.value("sender").toString();
+}
+
+ProcessMessageWorker::~ProcessMessageWorker() {
+}
+
+void ProcessMessageWorker::processMessage() {
+    headers = msg.headers();
+    sender = headers.value("sender").toString();
+    replyMsg = msg.payload();
+    if (headers.contains("dest_all")) {
+        // general message
+        xchatRobot.SubmitMsg("xchat - all - message from: " + sender + " message: " + msg.payload());
+    } else if (headers.contains("dest")) {
+        // message just for you
+        if (headers.value("type").toString() == "xchat" && headers.value("dest").toString() == "xcite_" + broker.me) {
+            // DM messages
+            xchatRobot.SubmitMsg("xchat - " + sender + " - message: " + msg.payload());
+        } else if (headers.value("type").toString() == "dicom") {
+            // reply from staticnet
+            staticNet.replyFromNetwork(replyMsg);
+        }
+    }
 }

@@ -168,6 +168,7 @@ public:
     void Initialize();
     bool CheckUserInputForKeyWord(const QString msg, int *traceID);
 
+
     QString GetConnectStr() {
         return ConnectStr;
     };

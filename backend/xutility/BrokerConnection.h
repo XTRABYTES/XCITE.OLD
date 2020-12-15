@@ -10,6 +10,28 @@
 #include <QJsonObject>
 #include "../xchat/xchat.hpp"
 #include "../xgames/xgames.hpp"
+#include "../support/Settings.hpp"
+
+class ProcessMessageWorker : public QObject {
+    Q_OBJECT
+
+public:
+    ProcessMessageWorker(QAmqpMessage message);
+    ~ProcessMessageWorker();
+
+public slots:
+
+signals:
+
+public Q_SLOTS:
+    void processMessage();
+
+private:
+    QAmqpTable headers;
+    QString sender;
+    QAmqpMessage msg;
+    QString replyMsg;
+};
 
 class BrokerConnection : public QObject
 {
@@ -20,21 +42,22 @@ public:
     bool isConnected();
     QAmqpClient m_client;
     QString me;
-    QString replyMsg;
-
+    bool readyToConsume;
+    bool sendHello;
 
 signals:
     void xchatConnectionFail();
     void xchatInternetOk();
     void xchatConnectionSuccess();
     void selectedXchatServer(QString server);
-
+    void replyQueueReady();
 
 public slots:
     void queueBound();
     void messageReceived();
     void queueDeclared();
     void clientConnected();
+    void clientDisconnected();
     void sendToXchat(QString,QString,QAmqpTable);
     void sendToDicom(QString,QString, QAmqpTable);
     void sendXChatAllMessage(QString,QString);
@@ -46,6 +69,7 @@ public slots:
     void SSLErrors(QList<QSslError>);
 
     void connectQueue(QString);
+    void reconnectQueue();
     void reconnect();
     void disconnectMQ();
     void chooseServer();

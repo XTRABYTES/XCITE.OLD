@@ -20,6 +20,8 @@
 #include <openssl/err.h>
 #include <cstdint>
 #include <cstring>
+#include <chrono>
+#include <thread>
 #include <tuple>
 #include <QMessageBox>
 #include <QNetworkAccessManager>
@@ -608,21 +610,10 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
                 return;
             }
 
-           broker.me = m_username;
-           QJsonObject obj;
-           obj.insert("dicom","1.0");
-           obj.insert("type","request");
-           obj.insert("id","000");
-           obj.insert("xdapp","ping");
-           obj.insert("method","ping");
-           obj.insert("payload","Sending Message from XCITE Login");
-           obj.insert("tasks_done","");
-           obj.insert("sender_name",username);
-           QJsonDocument doc(obj);
-           QString strJson(doc.toJson(QJsonDocument::Compact));
+            connect(&broker, SIGNAL(replyQueueReady()), this, SLOT(sendHello()));
 
-           broker.connectQueue("xcite");
-           broker.sendXChatAllMessage("fedcore_exchange",strJson);
+            broker.me = m_username;
+            broker.connectQueue("xcite");
 
         }else{
             emit loginFailedChanged();
@@ -636,6 +627,13 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
     }
 }
 
+void Settings::sendHello() {
+    if (!broker.sendHello) {
+
+        broker.sendXChatAllMessage("fedcore_exchange",m_username + " reporting for duty!");
+        broker.sendHello = true;
+    }
+}
 
 void Settings::changePassword(QString oldPassword, QString newPassword){
     if (checkInternet("http://37.59.57.212:8080")) {
