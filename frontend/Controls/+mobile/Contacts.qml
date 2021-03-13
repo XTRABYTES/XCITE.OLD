@@ -17,10 +17,11 @@ import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: allWalletCards
-    width: Screen.width
+    width: appWidth
     height: parent.height - 75
     color: "transparent"
 
@@ -50,7 +51,7 @@ Rectangle {
         Rectangle {
             id: cardRow
             color: "transparent"
-            width: Screen.width
+            width: appWidth
             height: 100
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -64,7 +65,7 @@ Rectangle {
                 anchors.top: parent.top
                 clip: true
 
-                Controls.CardBody {
+                Mobile.CardBody {
 
                 }
 
@@ -86,7 +87,7 @@ Rectangle {
                     anchors.leftMargin: 10
                     anchors.top: parent.top
                     anchors.topMargin: 17
-                    text: lastName != ""? (firstName + " " + lastName) : firstName
+                    text: lastName !== ""? (firstName + " " + lastName) : firstName
                     font.pixelSize: 20
                     font.family: xciteMobile.name
                     font.letterSpacing: 2
@@ -134,8 +135,6 @@ Rectangle {
 
                     onPressAndHold: {
                         contactIndex = contactNR
-                        console.log("contact index = " + contactIndex)
-                        console.log("contactname: " + contactList.get(contactIndex).firstName)
                         editContactTracker = 1
                     }
                 }

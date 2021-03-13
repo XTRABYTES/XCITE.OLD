@@ -17,17 +17,29 @@ import QtGraphicalEffects 1.0
 import QtMultimedia 5.8
 import QtQuick.Window 2.2
 
-import "../Controls" as Controls
+import "qrc:/Controls" as Controls
 
 Rectangle {
     id: changePassWordModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: changePasswordTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     onStateChanged: detectInteraction()
+
+    property int myTracker: changePasswordTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            currentPassword.text = ""
+            passWord1.text = ""
+            passWord2.text = ""
+            editSaved = 0
+            editFailed = 0
+        }
+    }
 
     states: [
         State {
@@ -36,7 +48,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: changePassWordModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: changePassWordModal; anchors.topMargin: changePassWordModal.height}
         }
     ]
 
@@ -56,7 +68,6 @@ Rectangle {
     property int passwordWarning2: 0
     property int editSaved: 0
     property int editFailed: 0
-    property bool saveInitiated: false
     property string failError: ""
 
     function validation(text){
@@ -141,7 +152,6 @@ Rectangle {
         visible: editSaved == 0 & editFailed == 0
 
         onTextChanged: {
-            //check if password has valid format
             validation(passWord1.text);
         }
 
@@ -252,7 +262,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         visible: editSaved == 0
                  && editFailed == 0
-                 && saveInitiated == false
+                 && savePasswordInitiated == false
 
         MouseArea {
             anchors.fill: saveButton
@@ -274,7 +284,7 @@ Rectangle {
                         && passWord2.text != ""
                         && passwordWarning1 == 0
                         && passwordWarning2 == 0) {
-                    saveInitiated = true
+                    savePasswordInitiated = true
                     changePassword(currentPassword.text, passWord1.text)
                 }
             }
@@ -284,47 +294,63 @@ Rectangle {
             target: UserSettings
 
             onSaveSucceeded: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     editSaved = 1
-                    saveInitiated = false
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailed: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     editFailed = 1
-                    saveInitiated = false
+                    savePasswordInitiated = false
+                }
+            }
+
+            onNoInternet: {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
+                    networkError = 1
+                    editFailed = 1
+                    savePasswordInitiated = false
                 }
             }
 
             onPasswordChangedFailed: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     editFailed = 1
-                    saveInitiated = false
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailedDBError: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     failError = "Database ERROR"
+                    editFailed = 1
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailedAPIError: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     failError = "Network ERROR"
+                    editFailed = 1
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailedInputError: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     failError = "Input ERROR"
+                    editFailed = 1
+                    savePasswordInitiated = false
                 }
             }
 
             onSaveFailedUnknownError: {
-                if (changePasswordTracker == 1 && saveInitiated == true) {
+                if (changePasswordTracker == 1 && savePasswordInitiated == true) {
                     failError = "Unknown ERROR"
+                    editFailed = 1
+                    savePasswordInitiated = false
                 }
             }
         }
@@ -344,7 +370,7 @@ Rectangle {
         anchors.verticalCenter: saveButton.verticalCenter
         visible: editSaved == 0
                  && editFailed == 0
-                 && saveInitiated == false
+                 && savePasswordInitiated == false
     }
 
     Rectangle {
@@ -362,7 +388,7 @@ Rectangle {
         border.width: 1
         visible: editSaved == 0
                  && editFailed == 0
-                 && saveInitiated == false
+                 && savePasswordInitiated == false
     }
 
     AnimatedImage {
@@ -372,15 +398,15 @@ Rectangle {
         height: 60
         anchors.horizontalCenter: saveButton.horizontalCenter
         anchors.verticalCenter: saveButton.verticalCenter
-        playing: saveInitiated == true
+        playing: savePasswordInitiated == true
         visible: editSaved == 0
                  && editFailed == 0
-                 && saveInitiated == true
+                 && savePasswordInitiated == true
     }
 
     //change password failed
 
-    Controls.ReplyModal {
+    ReplyModal {
         id: changePasswordFailed
         modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
         visible: editFailed == 1
@@ -471,7 +497,7 @@ Rectangle {
 
     //change password succeeded
 
-    Controls.ReplyModal {
+    ReplyModal {
         id: changePasswordSucceed
         modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
         visible: editSaved == 1
@@ -565,7 +591,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 195 : 215
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -578,46 +604,6 @@ Rectangle {
                 GradientStop { position: 0.0; color: "transparent" }
                 GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-            }
-        }
-    }
-
-    Label {
-        id: closeSettings
-        z: 4
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "BACK"
-        font.pixelSize: 14
-        font.family: xciteMobile.name
-        color: themecolor
-        visible: editSaved == 0 & editFailed == 0
-
-        Rectangle {
-            id: backbutton
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
-            height: 34
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: backbutton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                changePasswordTracker = 0
-                currentPassword.text = ""
-                passWord1.text = ""
-                passWord2.text = ""
-                editSaved = 0
-                editFailed = 0
             }
         }
     }

@@ -20,11 +20,12 @@ import "qrc:/Controls" as Controls
 
 Item {
     id: importModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+
 
     property int passError: 0
-    property bool importInitiated: false
     property int checkUsername: 0
     property int keyPairSend: 0
     property int checkIdentity: 0
@@ -33,19 +34,30 @@ Item {
     property int loadingSettings:  0
     property int verifyingBalances: 0
 
+    function importWallet() {
+        closeAllClipboard = true
+        if (userName.text != "" && passWord.text != "" && networkError == 0) {
+            importInitiated = true
+            checkUsername = 1
+            importAccount(userName.text, passWord.text)
+        }
+    }
+
     Rectangle {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        width: parent.width - 50
+        anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)
+        width: (myOS == "android" || myOS == "ios")? parent.width - 50 : appWidth/2
         height: 250
-        state: importTracker == 1? "up" : "down"
+        //state: importTracker == 1? "up" : "down"
         color: "transparent"
+        visible: importTracker == 1
 
         states: [
             State {
                 name: "up"
-                PropertyChanges { target: login; anchors.topMargin: (parent.height/2) - (login.height)}
+                PropertyChanges { target: login; anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)}
             },
             State {
                 name: "down"
@@ -140,6 +152,9 @@ Item {
                     passError = 0
                 }
             }
+
+            Keys.onEnterPressed: importWallet()
+            Keys.onReturnPressed: importWallet()
         }
 
         Text {
@@ -279,13 +294,16 @@ Item {
 
                 onLoginSucceededChanged: {
                     if (importTracker == 1) {
-                        selectedPage = "home"
                         mainRoot.pop()
-                        mainRoot.push("../Home.qml")
-                        username = userName.text
+                        mainRoot.push("qrc:/+mobile/Home.qml")
+                        myUsername = userName.text.trim()
+                        tttSetUsername(myUsername)
+                        initializeTtt()
                         importSuccesTimer.start()
                         loadingSettings = 0
                         verifyingBalances = 0
+                        status = userSettings.xChatDND === true? "dnd" : "idle"
+                        importInitiated  = false
                     }
                 }
 
@@ -297,6 +315,23 @@ Item {
                         sessionKey = 0
                         receiveSessionID = 0
                         loadingSettings = 0
+                        verifyingBalances = 0
+                        passError = 1
+                        passWord.text = ""
+                        importInitiated  = false
+                    }
+                }
+
+                onNoInternet: {
+                    if (importTracker == 1) {
+                        networkError = 1
+                        checkUsername = 0
+                        keyPairSend = 0
+                        checkIdentity = 0
+                        sessionKey = 0
+                        receiveSessionID = 0
+                        loadingSettings = 0
+                        verifyingBalances = 0
                         passError = 1
                         passWord.text = ""
                         importInitiated  = false
@@ -320,7 +355,7 @@ Item {
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             color: (userName.text != "" && passWord.text != "") ? "#F2F2F2" : "#979797"
-            font.bold: true
+            //font.bold: true
             anchors.horizontalCenter: importButton.horizontalCenter
             anchors.verticalCenter: importButton.verticalCenter
             visible: importButton.visible
@@ -338,6 +373,18 @@ Item {
             border.color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
             opacity: 0.50
             visible: importButton.visible
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: importButton.horizontalCenter
+            anchors.bottom: importModalBody.bottom
+            anchors.bottomMargin: -10
+            playing: importInitiated == true
+            visible: importInitiated == true
         }
 
         Label {
@@ -439,16 +486,16 @@ Item {
 
         Label {
             id: noAccount
-            width: doubbleButtonWidth
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignJustify
             maximumLineCount: 5
             text: "Before you try to import an account, make sure you placed the exported wallet file in your device's download folder."
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: login.bottom
-            anchors.topMargin: 70
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? 70 : 15
             color: "#F2F2F2"
-            font.pixelSize: 18
+            font.pixelSize: (myOS == "android" || myOS == "ios")? 18 : 14
             font.family: xciteMobile.name
         }
     }

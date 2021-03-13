@@ -17,15 +17,31 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addContactModal
-    width: Screen.width
-    state: addContactTracker == 1? "up" : "down"
-    height: Screen.height
-    color: bgcolor
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    state: addContactTracker == 1? "up" : "down"
+    color: bgcolor
     anchors.top: parent.top
+
+    property int myTracker: addContactTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            newFirstname.text = "";
+            newLastname.text = "";
+            newTel.text = "";
+            newCell.text = "";
+            newMail.text = "";
+            newChat.text = "";
+            contactExists = 0;
+            validEmail = 1;
+        }
+    }
 
     states: [
         State {
@@ -34,7 +50,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addContactModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addContactModal; anchors.topMargin: addContactModal.height}
         }
     ]
 
@@ -48,7 +64,6 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
-    property bool addingContact: false
     property int contactExists: 0
     property int validEmail: 1
     property string failError: ""
@@ -293,9 +308,12 @@ Rectangle {
                 anchors.fill: saveButton
 
                 onPressed: {
-                    parent.opacity = 0.5
-                    click01.play()
-                    detectInteraction()
+                    if ((newFirstname.text !== "" || newLastname.text !== "")
+                            && contactExists == 0 && validEmail == 1) {
+                        parent.opacity = 0.5
+                        click01.play()
+                        detectInteraction()
+                    }
                 }
 
                 onCanceled: {
@@ -313,13 +331,7 @@ Rectangle {
                         contactList.append({"firstName": newFirstname.text, "lastName": newLastname.text, "photo": profilePictures.get(0).photo, "telNR": newTel.text, "cellNR": newCell.text, "mailAddress": newMail.text, "chatID": newChat.text, "favorite": false, "active": true, "contactNR": contactID, "remove": false});
                         contactID = contactID +1;
                         addingContact = true
-
-                        var datamodel = []
-                        for (var i = 0; i < contactList.count; ++i)
-                            datamodel.push(contactList.get(i))
-
-                        var contactListJson = JSON.stringify(datamodel)
-                        saveContactList(contactListJson)
+                        updateToAccount()
                     }
                 }
             }
@@ -337,6 +349,17 @@ Rectangle {
 
                 onSaveFailed: {
                     if (addContactTracker == 1 && addingContact == true) {
+                        failSound.play()
+                        contactID = contactID - 1
+                        contactList.remove(contactID)
+                        editFailed = 1
+                        addingContact = false
+                    }
+                }
+
+                onNoInternet: {
+                    if (addContactTracker == 1 && addingContact == true) {
+                        networkError = 1
                         failSound.play()
                         contactID = contactID - 1
                         contactList.remove(contactID)
@@ -416,7 +439,7 @@ Rectangle {
         }
 
         // save failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: addContactFailed
             modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
@@ -503,7 +526,7 @@ Rectangle {
 
         // save success state
 
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: addContactSucceed
             modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 105
             visible: editSaved == 1
@@ -616,7 +639,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -629,50 +652,6 @@ Rectangle {
                 GradientStop { position: 0.0; color: "transparent" }
                 GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-            }
-        }
-    }
-
-    Label {
-        id: closeContactModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: addContactTracker == 1
-                 && editSaved == 0
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth / 2
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                addContactTracker = 0;
-                newFirstname.text = "";
-                newLastname.text = "";
-                newTel.text = "";
-                newCell.text = "";
-                newMail.text = "";
-                newChat.text = "";
-                contactExists = 0;
-                validEmail = 1;
             }
         }
     }

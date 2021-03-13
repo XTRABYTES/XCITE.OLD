@@ -20,14 +20,15 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: addCoinModal
-    width: parent.width
-    height: parent.height - 180
+    width: appWidth
+    height: appHeight - 180
     color: "transparent"
     anchors.top: parent.top
     anchors.topMargin: 180
     anchors.right: parent.right
 
     property alias sidebarState: addCoinSidebar.state
+    property real colomnWidth: 150
 
     Rectangle {
         id: addCoinSidebar
@@ -46,7 +47,7 @@ Rectangle {
             },
             State {
                 name: "open"
-                PropertyChanges { target: addCoinSidebar; width: 150}
+                PropertyChanges { target: addCoinSidebar; width: colomnWidth}
                 PropertyChanges { target: clickArea; opacity: 0.5}
             }
         ]
@@ -66,7 +67,7 @@ Rectangle {
             Rectangle {
                 id: currencyRow
                 color: "transparent"
-                width: Screen.width
+                width: parent.width
                 height: 50
 
                 Image {
@@ -91,7 +92,7 @@ Rectangle {
                     font.pixelSize: 18
                     font.family: xciteMobile.name
                     color: "#E5E5E5"
-                    font.bold: true
+                    font.bold: (myOS == "android" || myOS == "ios")
                 }
 
                 Rectangle {
@@ -101,8 +102,19 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                     color: "black"
-                    opacity: .25
+                    opacity: 0.25
                     visible: active == false
+                }
+
+                Rectangle {
+                    id: selectCoin
+                    height: parent.height
+                    width: parent.width
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: maincolor
+                    opacity: 0.3
+                    visible: false
                 }
 
                 Rectangle {
@@ -126,6 +138,7 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
+                    hoverEnabled: true
 
                     function compareCoin() {
                         for(var i = 0; i < coinList.count; i++) {
@@ -191,9 +204,21 @@ Rectangle {
                         }
                     }
 
-                    onClicked: {
+                    onEntered: {
+                        selectCoin.visible = true
+                    }
+
+                    onExited: {
+                        selectCoin.visible = false
+                    }
+
+                    onPressed: {
                         click01.play()
                         detectInteraction()
+
+                    }
+
+                    onClicked: {
                         compareCoin()
                         sumBalance()
                     }
@@ -231,12 +256,12 @@ Rectangle {
 
         Rectangle {
             id: clickArea
-            width: Screen.width - parent.width
-            height: parent.height
-            anchors.top: parent.top
+            width: appWidth - parent.width
+            height: appHeight
             anchors.right: parent.left
             color: "black"
             opacity: 0.25
+            visible: addCoinTracker == 1
 
             Timer {
                 id: timer

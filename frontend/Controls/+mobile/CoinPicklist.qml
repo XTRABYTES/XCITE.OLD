@@ -86,11 +86,23 @@ Rectangle {
 
                 onClicked: {
                     clickIndicator.visible = false
-                    newCoinPicklist = coinID;
-                    newCoinSelect = 1
-                    newWalletSelect = 0
+                    if (coin2Tracker == 1) {
+                        newCoin2Picklist = coinID;
+                        coin2Tracker = 0
+                    }
+                    else {
+                        if (coin1Tracker == 1) {
+                            newCoinPicklist = coinID;
+                            coin1Tracker = 0
+                        }
+                        else {
+                            newCoinPicklist = coinID;
+                            newCoinSelect = 1
+                            newWalletSelect = 0
+                            coinIndex = coinID
+                        }
+                    }
                     coinListTracker = 0
-                    coinIndex = coinID
                 }
             }
 
@@ -108,10 +120,10 @@ Rectangle {
     SortFilterProxyModel {
         id: filteredCurrencies
         sourceModel: coinList
-        filters: [
+        filters:[
             ValueFilter {
                 roleName: "active"
-                value: true
+                value: onlyActive? true : undefined
             }
         ]
         sorters: [

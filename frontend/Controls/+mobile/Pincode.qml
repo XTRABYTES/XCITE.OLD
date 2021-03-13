@@ -17,14 +17,34 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: pincodeModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: pincodeTracker == 1? "up" : "down"
-    height: Screen.height
     color: darktheme == false? "#F7F7F7" : "#14161B"
     onStateChanged: detectInteraction()
+
+    property int myTracker: pincodeTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            createPin = 0
+            changePin = 0
+            unlockPin = 0
+            passError1 = 0
+            passError2 = 0
+            passError3 = 0
+            pin.text = ""
+            newPin1.text = ""
+            newPin2.text = ""
+            currentPin.text = ""
+            changePin1.text = ""
+            changePin2.text = ""
+        }
+    }
 
     LinearGradient {
         anchors.fill: parent
@@ -49,7 +69,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: pincodeModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: pincodeModal; anchors.topMargin: pincodeModal.height}
         }
     ]
 
@@ -133,7 +153,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: newPin1
                 height: 70
                 anchors.right: parent.right
@@ -177,7 +197,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: newPin2
                 height: 70
                 anchors.right: parent.right
@@ -257,6 +277,7 @@ Rectangle {
                         pincodeTracker = 0
                         createPin = 0
                         newPinSaved = 0
+                        savePinInitiated = false
                     }
                 }
 
@@ -283,7 +304,7 @@ Rectangle {
                                 && newPin2.text !== ""
                                 && newPin2.text.length === 4
                                 && passError3 == 0) {
-                            console.log("attempting to save pincode");
+                            savePinInitiated = true
                             newPinSaved = 0;
                             userSettings.pinlock = true;
                             savePincode(newPin1.text);
@@ -295,10 +316,8 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                             if (createPin == 1){
-                                console.log("save succeeded");
-                                console.log("locale: " + userSettings.locale + ", default currency: " + userSettings.defaultCurrency + ", theme: " + userSettings.theme + ", pinlock: " + userSettings.pinlock + ", account complete: " + userSettings.accountCreationCompleted + ", local keys: " + userSettings.localKeys)
                                 newPin1.text = "";
                                 newPin2.text = "";
                                 newPinSaved = 1
@@ -308,10 +327,21 @@ Rectangle {
                     }
 
                     onSaveFailed: {
-                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                             if (createPin == 1) {
-                                console.log("save failed");
-                                userSettings.pinlock = true;
+                                userSettings.pinlock = false;
+                                newPin1.text = "";
+                                newPin2.text = "";
+                                failToSave = 1;
+                            }
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
+                            networkError = 1
+                            if (createPin == 1) {
+                                userSettings.pinlock = false;
                                 newPin1.text = "";
                                 newPin2.text = "";
                                 failToSave = 1;
@@ -320,32 +350,32 @@ Rectangle {
                     }
 
                     onSaveFailedDBError: {
-                        if (pincodeTracker == 1 && selectedPage == "settings") {
-                            if (changePin == 0){
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
+                            if (createPin == 0){
                                 failError = "Database ERROR"
                             }
                         }
                     }
 
                     onSaveFailedAPIError: {
-                        if (pincodeTracker == 1  && selectedPage == "settings") {
-                            if (changePin == 0){
+                        if (pincodeTracker == 1  && selectedPage == "settings" && savePinInitiated == true) {
+                            if (createPin == 0){
                                 failError = "Network ERROR"
                             }
                         }
                     }
 
                     onSaveFailedInputError: {
-                        if (pincodeTracker == 1  && selectedPage == "settings") {
-                            if (changePin == 0){
+                        if (pincodeTracker == 1  && selectedPage == "settings" && savePinInitiated == true) {
+                            if (createPin == 0){
                                 failError = "Input ERROR"
                             }
                         }
                     }
 
                     onSaveFailedUnknownError: {
-                        if (pincodeTracker == 1  && selectedPage == "settings") {
-                            if (changePin == 0){
+                        if (pincodeTracker == 1  && selectedPage == "settings" && savePinInitiated == true) {
+                            if (createPin == 0){
                                 failError = "Unknown ERROR"
                             }
                         }
@@ -403,7 +433,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: currentPin
                 height: 70
                 anchors.right: parent.right
@@ -502,7 +532,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: changePin1
                 height: 70
                 anchors.right: parent.right
@@ -546,7 +576,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: changePin2
                 height: 70
                 anchors.right: parent.right
@@ -629,6 +659,7 @@ Rectangle {
                         pincodeTracker = 0
                         changePin = 0
                         newPinSaved = 0
+                        savePinInitiated = false
                     }
                 }
 
@@ -658,6 +689,7 @@ Rectangle {
                                 && changePin2.text.length === 4
                                 && passError3 == 0
                                 && passError1 == 0) {
+                            savePinInitiated = true
                             savePincode(changePin1.text)
                         }
                     }
@@ -667,7 +699,7 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (pincodeTracker == 1 && selectedPage == "settings"){
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true){
                             if (changePin == 1) {
                                 if (newPinSaved == 0) {
                                     newPinSaved = 1
@@ -682,7 +714,7 @@ Rectangle {
                     }
 
                     onSaveFailed: {
-                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                             if (changePin == 1){
                                 currentPin.text = ""
                                 changePin1.text = ""
@@ -691,8 +723,21 @@ Rectangle {
                             }
                         }
                     }
+
+                    onNoInternet: {
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
+                            networkError = 1
+                            if (changePin == 1){
+                                currentPin.text = ""
+                                changePin1.text = ""
+                                changePin2.text = ""
+                                failToSave = 1
+                            }
+                        }
+                    }
+
                     onSaveFailedDBError: {
-                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                             if (changePin == 1){
                                 failError = "Database ERROR"
                             }
@@ -700,7 +745,7 @@ Rectangle {
                     }
 
                     onSaveFailedAPIError: {
-                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                             if (changePin == 1){
                                 failError = "Network ERROR"
                             }
@@ -708,7 +753,7 @@ Rectangle {
                     }
 
                     onSaveFailedInputError: {
-                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                             if (changePin == 1){
                                 failError = "Input ERROR"
                             }
@@ -716,7 +761,7 @@ Rectangle {
                     }
 
                     onSaveFailedUnknownError: {
-                        if (pincodeTracker == 1 && selectedPage == "settings") {
+                        if (pincodeTracker == 1 && selectedPage == "settings" && savePinInitiated == true) {
                             if (changePin == 1){
                                 failError = "Unknown ERROR"
                             }
@@ -782,7 +827,7 @@ Rectangle {
                 color: darktheme == true? "#F2F2F2" : "#2A2C31"
             }
 
-            Controls.AmountInput {
+            Mobile.AmountInput {
                 id: pin
                 height: 70
                 anchors.right: parent.right
@@ -810,10 +855,11 @@ Rectangle {
                     running: false
 
                     onTriggered: {
-                        pinOK = 0
                         pincodeTracker = 0
+                        pinOK = 0
                         unlockPin = 0
                         clearAll = 0
+                        checkPinInitiated = false
                     }
                 }
 
@@ -828,9 +874,11 @@ Rectangle {
                             pincodeTracker = 0
                             unlockPin = 0
                             clearAll = 0
+                            checkPinInitiated = false
                         }
                         else {
                             pinError = 0
+                            checkPinInitiated = false
                         }
                     }
                 }
@@ -838,6 +886,7 @@ Rectangle {
                 onTextChanged: {
                     detectInteraction()
                     if ((pin.text).length === 4){
+                        checkPinInitiated = true
                         passError1 = 0
                         passError2 = 0
                         passTry = passTry + 1
@@ -1085,120 +1134,10 @@ Rectangle {
         }
     }
 
-    Rectangle {
-        id: serverError
-        z: 10
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.top
-        width: Screen.width
-        state: networkError == 0? "up" : "down"
-        color: "black"
-        opacity: 0.9
-        clip: true
-        onStateChanged: detectInteraction()
-
-        states: [
-            State {
-                name: "up"
-                PropertyChanges { target: serverError; anchors.bottomMargin: 0}
-                PropertyChanges { target: serverError; height: 0}
-            },
-            State {
-                name: "down"
-                PropertyChanges { target: serverError; anchors.bottomMargin: -100}
-                PropertyChanges { target: serverError; height: 100}
-            }
-        ]
-
-        transitions: [
-            Transition {
-                from: "*"
-                to: "*"
-                NumberAnimation { target: serverError; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
-            }
-        ]
-
-        Label {
-            id: serverErrorText
-            text: "A network error occured, please try again later."
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            color: "#FD2E2E"
-            font.pixelSize: 18
-            font.family: xciteMobile.name
-        }
-
-        Rectangle {
-            id: okButton
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            color: "#1B2934"
-            opacity: 0.5
-
-            LinearGradient {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(x, y)
-                end: Qt.point(x, parent.height)
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 1.0; color: "#0ED8D2" }
-                }
-            }
-
-
-            MouseArea {
-                anchors.fill: parent
-
-                onPressed: {
-                    detectInteraction()
-                }
-
-                onReleased: {
-                    networkError = 0
-                }
-            }
-        }
-
-        Text {
-            id: okButtonText
-            text: "OK"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            color: "#F2F2F2"
-            font.bold: true
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.verticalCenter: okButton.verticalCenter
-        }
-
-        Rectangle {
-            width: doubbleButtonWidth / 2
-            height: 34
-            anchors.horizontalCenter: okButton.horizontalCenter
-            anchors.bottom: okButton.bottom
-            color: "transparent"
-            opacity: 0.5
-            border.width: 1
-            border.color: "#0ED8D2"
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            color: bgcolor
-        }
-    }
-
     Item {
         id: bottomGradient
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1211,53 +1150,6 @@ Rectangle {
                 GradientStop { position: 0.0; color: "transparent" }
                 GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-            }
-        }
-    }
-
-    Label {
-        id: closePincode
-        z: 10
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "BACK"
-        font.pixelSize: 14
-        font.family: xciteMobile.name
-        color: themecolor
-        //visible: pinOK == 0
-        //         && pinError == 0
-
-        Rectangle {
-            id: backbutton
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
-            height: 34
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: backbutton
-
-            onPressed: {
-                detectInteraction()
-            }
-
-            onClicked: {
-                pincodeTracker = 0
-                createPin = 0
-                changePin = 0
-                unlockPin = 0
-                passError1 = 0
-                passError2 = 0
-                passError3 = 0
-                pin.text = ""
-                newPin1.text = ""
-                newPin2.text = ""
-                currentPin.text = ""
-                changePin1.text = ""
-                changePin2.text = ""
             }
         }
     }

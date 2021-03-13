@@ -16,6 +16,7 @@ import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     width: parent.width
@@ -57,7 +58,7 @@ Rectangle {
             color:"transparent"
             clip: true
 
-            Controls.CardBody {
+            Mobile.CardBody {
                 id: myCardBody
             }
 
@@ -107,8 +108,9 @@ Rectangle {
             }
 
             Label {
-                property int decimals: amount == 0? 2 : (amount <= 1000 ? 8 : (amount <= 1000000 ? 4 : 2))
-                property var amountArray: (amount.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                property int txTotal: (amount + getFee(coin,txid))
+                property int decimals: txTotal == 0? 2 : (txTotal <= 1000 ? 8 : (txTotal <= 1000000 ? 4 : 2))
+                property var amountArray: (txTotal.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                 id: amountValue1
                 text: "." + amountArray[1]
                 anchors.right: amountTicker.left
@@ -122,8 +124,9 @@ Rectangle {
             }
 
             Label {
-                property int decimals: amount == 0? 2 : (amount <= 1000 ? 8 : (amount <= 1000000 ? 4 : 2))
-                property var amountArray: (amount.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
+                property int txTotal: (amount + getFee(coin,txid))
+                property int decimals: txTotal == 0? 2 : (txTotal <= 1000 ? 8 : (txTotal <= 1000000 ? 4 : 2))
+                property var amountArray: (txTotal.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                 id: amountValue2
                 text: "- " + amountArray[0]
                 anchors.right: amountValue1.left
@@ -204,15 +207,13 @@ Rectangle {
                 roleName: "coin"
                 pattern: pendingCoin
             },
-            AnyOf {
-                RegExpFilter {
-                    roleName: "txid"
-                    pattern: searchCriteria
-                }
-                RegExpFilter {
-                    roleName: "value"
-                    pattern: searchCriteria
-                }
+            RegExpFilter {
+                roleName: "txid"
+                pattern: searchCriteria
+            },
+            RegExpFilter {
+                roleName: "value"
+                pattern: "false"
             }
         ]
     }

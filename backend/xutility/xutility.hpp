@@ -22,7 +22,7 @@
 
 #include <amqpcpp.h>
 #include "kashmir/uuid.h"
-#include "kashmir/devrand.h"
+//#include "kashmir/devrand.h"
 
 class Xutility : public QObject {
     Q_OBJECT
@@ -39,8 +39,8 @@ public:
     void privkey2address(const QJsonArray *params);
     std::string get_uuid();
 signals:
-    void keyPairCreated(const QString &address, const QString &pubKey, const QString &privKey);
-    void addressExtracted(const QString &priv, const QString &pubKey, const QString &addressID);
+    void keyPairCreated(const QString &addr, const QString &pub, const QString &priv);
+    void addressExtracted(const QString &priv, const QString &pub, const QString &addr);
     void createKeypairFailed();
     void badKey();
     void newNetwork(const QString &currentNetwork);

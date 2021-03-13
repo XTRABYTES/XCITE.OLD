@@ -17,15 +17,32 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: editContactModal
-    width: Screen.width
-    state: editContactTracker == 1? "up" : "down"
-    height: Screen.height
-    color: bgcolor
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    state: editContactTracker == 1? "up" : "down"
+    color: bgcolor
     anchors.top: parent.top
+
+    property int myTracker: editContactTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            contactExists = 0;
+            newFirstname.text = oldFirstName;
+            newLastname.text = oldLastName;
+            newTel.text = oldTel;
+            newCell.text = oldText;
+            newMail.text = oldMail;
+            newChat.text = oldChat;
+            validEmail = 1;
+            contactIndex = 0;
+        }
+    }
 
     onStateChanged: {
         if (editContactModal.state === "up") {
@@ -62,7 +79,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: editContactModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: editContactModal; anchors.topMargin: editContactModal.height}
         }
     ]
 
@@ -76,11 +93,8 @@ Rectangle {
 
     property int editSaved: 0
     property int editFailed: 0
-    property bool editingContact: false
-    property bool deletingContact: false
     property int contactExists: 0
     property int validEmail: 1
-    property int deleteContactTracker: 0
     property int deleteConfirmed: 0
     property int deleteFailed: 0
     property string oldFirstName
@@ -308,7 +322,7 @@ Rectangle {
 
         Label {
             id: nameWarning1
-            text: "Contact alreade exists!"
+            text: "Contact already exists!"
             color: "#FD2E2E"
             anchors.horizontalCenter: newLastname.horizontalCenter
             anchors.top: newLastname.bottom
@@ -439,6 +453,7 @@ Rectangle {
 
                 onClicked: {
                     if (contactExists == 0 && validEmail == 1) {
+                        editingContact = true
                         if (newFirstname.text !== "") {
                             contactList.setProperty(contactIndex, "firstName", newFirstname.text)
                             newFirst = newFirstname.text
@@ -462,7 +477,6 @@ Rectangle {
                         contactList.setProperty(contactIndex, "cellNR", newCell.text);
                         contactList.setProperty(contactIndex, "mailAddress", newMail.text);
                         contactList.setProperty(contactIndex, "chatID", newChat.text);
-                        editingContact = true
 
                         updateToAccount()
                     }
@@ -475,7 +489,7 @@ Rectangle {
                 onSaveSucceeded: {
                     if (editContactTracker == 1 && editingContact == true) {
                         editSaved = 1
-                        editingContact = false
+                        editingContactInitiated = false
                     }
                 }
 
@@ -489,7 +503,20 @@ Rectangle {
                         contactList.setProperty(contactIndex, "mailAddress", oldMail);
                         contactList.setProperty(contactIndex, "chatID", oldChat);
                         editFailed = 1
-                        editingContact = false
+                    }
+                }
+
+                onNoInternet: {
+                    if (editContactTracker == 1 && editingContact == true) {
+                        networkError = 1
+                        replaceName(contactIndex, oldFirstName, oldFirstName);
+                        contactList.setProperty(contactIndex, "firstName", oldFirstName);
+                        contactList.setProperty(contactIndex, "lastName", oldLastName);
+                        contactList.setProperty(contactIndex, "telNR", oldTel);
+                        contactList.setProperty(contactIndex, "cellNR", oldText);
+                        contactList.setProperty(contactIndex, "mailAddress", oldMail);
+                        contactList.setProperty(contactIndex, "chatID", oldChat);
+                        editFailed = 1
                     }
                 }
 
@@ -555,7 +582,7 @@ Rectangle {
         }
 
         // save failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: editAddressFailed
             modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
@@ -615,6 +642,7 @@ Rectangle {
                     onClicked: {
                         editFailed = 0
                         failError = ""
+                        editingContact = false
                     }
                 }
             }
@@ -642,7 +670,7 @@ Rectangle {
         }
 
         // save succes state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: saveConfirmed
             modalHeight: saveSuccess.height + saveSuccessName.height + saveSuccessLabel.height + closeSave.height + 105
             visible: editSaved == 1
@@ -725,6 +753,7 @@ Rectangle {
                         contactIndex = 0;
                         editSaved = 0
                         closeAllClipboard = true
+                        editingContact = false
                     }
                 }
             }
@@ -755,7 +784,7 @@ Rectangle {
         }
 
         // Delete confirm state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteConfirmation
             modalHeight: deleteText.height + deleteContactName.height + confirmationDeleteButton.height + 72
             visible: deleteContactTracker == 1
@@ -822,13 +851,8 @@ Rectangle {
 
                         contactList.setProperty(contactIndex, "remove", true)
                         deletingContact = true
-
-                        var datamodel = []
-                        for (var i = 0; i < contactList.count; ++i)
-                            datamodel.push(contactList.get(i))
-
-                        var contactListJson = JSON.stringify(datamodel)
-                        saveContactList(contactListJson)
+                        deleteContactAddresses(contactIndex);
+                        updateToAccount();
                     }
                 }
 
@@ -840,7 +864,6 @@ Rectangle {
                             deleteConfirmed = 1
                             contactExists = 0
                             validEmail = 1
-                            deletingContact = false
                         }
                     }
 
@@ -849,7 +872,14 @@ Rectangle {
 
                             contactList.setProperty(contactIndex, "remove", false);
                             deleteFailed = 1
-                            deletingContact = false
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (editContactTracker == 1 && deletingContact == true) {
+                            networkError = 1
+                            contactList.setProperty(contactIndex, "remove", false);
+                            deleteFailed = 1
                         }
                     }
 
@@ -971,7 +1001,7 @@ Rectangle {
         }
 
         // Delete failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteContactFailed
             modalHeight: saveFailed.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 85
             visible: deleteFailed == 1
@@ -1032,6 +1062,7 @@ Rectangle {
                         deleteContactTracker = 0
                         deleteFailed = 0
                         failError = ""
+                        deletingContact = false
                     }
                 }
             }
@@ -1059,7 +1090,7 @@ Rectangle {
         }
 
         // Delete success state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleted
             modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 75
             visible: deleteConfirmed == 1
@@ -1070,7 +1101,7 @@ Rectangle {
                 height: 75
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: deleted.ModalTop
+                anchors.top: deleted.modalTop
                 anchors.topMargin: 20
                 visible: deleteConfirmed == 1
             }
@@ -1112,6 +1143,7 @@ Rectangle {
                             deleteContactTracker = 0
                             deleteConfirmed = 0
                             closeAllClipboard = true
+                            deletingContact = false
                         }
                     }
 
@@ -1163,7 +1195,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1179,13 +1211,13 @@ Rectangle {
             }
         }
     }
-
+    /**
     Label {
         id: closeContactModal
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -1212,16 +1244,8 @@ Rectangle {
 
             onClicked: {
                 editContactTracker = 0;
-                contactExists = 0;
-                newFirstname.text = oldFirstName;
-                newLastname.text = oldLastName;
-                newTel.text = oldTel;
-                newCell.text = oldText;
-                newMail.text = oldMail;
-                newChat.text = oldChat;
-                validEmail = 1;
-                contactIndex = 0;
             }
         }
     }
+    */
 }

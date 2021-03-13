@@ -2,7 +2,11 @@
     <qresource prefix="/">
         <file>buttons/ok.png</file>
         <file>logos/xby_logo_200.png</file>
-        <file>backgrounds/polygonal.png</file>
+        <file>backgrounds/polygonal.jpg</file>
+        <file>backgrounds/launchscreen-logo.png</file>
+        <file>backgrounds/mobile-chart-placeholder.png</file>
+        <file>backgrounds/stars.jpg</file>
+        <file>backgrounds/launchScreen-logo_01.png</file>
         <file>aiml/substitutions.xml</file>
         <file>icons/avatar.svg</file>
         <file>icons/chat.svg</file>
@@ -80,10 +84,8 @@
         <file>icons/happiness.svg</file>
         <file>icons/chat-avatar.svg</file>
         <file>ios/LaunchScreen.storyboard</file>
-        <file>backgrounds/launchscreen-logo.png</file>
         <file>icons/mobile-receive.svg</file>
         <file>icons/mobile-send.svg</file>
-        <file>backgrounds/mobile-chart-placeholder.png</file>
         <file>icons/mobile-back.svg</file>
         <file>icons/mobile-menu.svg</file>
         <file>icons/graph5.svg</file>
@@ -161,8 +163,6 @@
         <file>icons/icon-phone_02.svg</file>
         <file>icons/icon-text_01.svg</file>
         <file>icons/icon-pen_01.svg</file>
-        <file>sounds/click_01.wav</file>
-        <file>sounds/click_02.wav</file>
         <file>icons/XBY_card_logo_colored_01.svg</file>
         <file>icons/XFUEL_card_logo_colored_01.svg</file>
         <file>icons/xby_logo_TM.svg</file>
@@ -172,7 +172,6 @@
         <file>icons/XBY_logo_large.svg</file>
         <file>icons/icon-questionmark_01.svg</file>
         <file>icons/icon-ok_01.svg</file>
-        <file>backgrounds/stars.jpg</file>
         <file>scan-window_02.svg</file>
         <file>icons/XBY_logo_big.svg</file>
         <file>icons/XFUEL_logo_big.svg</file>
@@ -225,7 +224,6 @@
         <file>icons/mobile/theme_switch-icon_01_on.svg</file>
         <file>icons/mobile/notification-icon_01.svg</file>
         <file>icons/mobile/menu-icon_01.svg</file>
-        <file>backgrounds/launchScreen-logo_01.png</file>
         <file>icons/mobile/debug-icon_01_dark.svg</file>
         <file>icons/mobile/debug-icon_01_light.svg</file>
         <file>icons/TESTNET_card_logo_colored_01.svg</file>
@@ -240,9 +238,6 @@
         <file>icons/ETH_card_logo_01.svg</file>
         <file>icons/ETH_logo_big.svg</file>
         <file>icons/mobile/standby-icon_01.svg</file>
-        <file>sounds/notification_1.wav</file>
-        <file>sounds/notification_2.wav</file>
-        <file>sounds/notification_3.wav</file>
         <file>icons/mobile/volume_level_1-icon_dark.svg</file>
         <file>icons/mobile/volume_level_1-icon_focus.svg</file>
         <file>icons/mobile/volume_level_1-icon_light.svg</file>
@@ -255,12 +250,9 @@
         <file>icons/mobile/volume_level_0-icon_dark.svg</file>
         <file>icons/mobile/volume_level_0-icon_focus.svg</file>
         <file>icons/mobile/volume_level_0-icon_light.svg</file>
-        <file>sounds/fail_01.wav</file>
+        <file>sounds/click_02.wav</file>
+        <file>sounds/notification_1.wav</file>
         <file>sounds/intro_01.wav</file>
-        <file>sounds/outro_01.wav</file>
-        <file>sounds/succes_01.wav</file>
-        <file>gifs/screensaver_01.gif</file>
-        <file>gifs/xby_screensaver_01.gif</file>
         <file>sounds/Bonjour.wav</file>
         <file>sounds/Fail.wav</file>
         <file>sounds/Hello.wav</file>
@@ -286,5 +278,167 @@
         <file>icons/mobile/portfolio-icon_02_light.svg</file>
         <file>logos/xby_logo_tm.png</file>
         <file alias="dejavusans">fonts/dejavusans.ttf</file>
+        <file>icons/mobile/online_blue_icon.svg</file>
+        <file>icons/mobile/online_red_icon.svg</file>
+        <file>icons/mobile/no_internet_icon.svg</file>
+        <file>icons/mobile/computer-icon_01_black.svg</file>
+        <file>icons/mobile/computer-icon_01_white.svg</file>
+        <file>icons/mobile/phone-icon_02_black.svg</file>
+        <file>icons/mobile/phone-icon_02_white.svg</file>
+        <file>icons/mobile/send-icon_01.svg</file>
+        <file>icons/mobile/blank_app-icon_black.svg</file>
+        <file>icons/mobile/blank_app-icon_white.svg</file>
+        <file>icons/mobile/xchat-icon_black.svg</file>
+        <file>icons/mobile/xchat-icon_white.svg</file>
+        <file>icons/mobile/send-icon_02.svg</file>
+        <file>icons/mobile/send_rotated_03.svg</file>
+        <file>icons/mobile/xchange-icon_01_black.svg</file>
+        <file>icons/mobile/robot-icon_01_black.svg</file>
+        <file>icons/mobile/robot-icon_01_white.svg</file>
+        <file>icons/mobile/users-icon_01.svg</file>
+        <file>icons/mobile/xvault-icon_01_black.svg</file>
+        <file>icons/mobile/close-icon_01_white.svg</file>
+        <file>icons/mobile/xvault-icon_02_white.svg</file>
+        <file>icons/mobile/info-icon_01_black.svg</file>
+        <file>icons/mobile/info-icon_01_white.svg</file>
+        <file>icons/mobile/not_available-icon_01.svg</file>
+        <file>icons/mobile/portfolio-icon_02_black.svg</file>
+        <file>icons/mobile/portfolio-icon_02_white.svg</file>
+        <file>icons/mobile/connected-icon_01_black.svg</file>
+        <file>icons/mobile/connected-icon_01_white.svg</file>
+        <file>icons/mobile/dnd-icon_01.svg</file>
+        <file>icons/mobile/warning-icon_01_red.svg</file>
+        <file>icons/mobile/warning-icon_01_yellow.svg</file>
+        <file>icons/mobile/construction-icon_01_black.svg</file>
+        <file>icons/mobile/construction-icon_01_white.svg</file>
+        <file>icons/mobile/xchange-icon_04_black.svg</file>
+        <file>icons/mobile/xchange-icon_01_white.svg</file>
+        <file>icons/mobile/xchange-icon_02_white.svg</file>
+        <file>icons/mobile/xchat-icon_01_black.svg</file>
+        <file>icons/mobile/xchat-icon_01_white.svg</file>
+        <file>icons/mobile/xvault-icon_02_black.svg</file>
+        <file>icons/mobile/image-icon_01_blue.svg</file>
+        <file>icons/mobile/image-icon_01_grey.svg</file>
+        <file>icons/mobile/link-icon_01_blue.svg</file>
+        <file>icons/mobile/link-icon_01_grey.svg</file>
+        <file>icons/mobile/quote-icon_01_blue.svg</file>
+        <file>icons/mobile/quote-icon_01_grey.svg</file>
+        <file>icons/mobile/eye-icon_01_black.svg</file>
+        <file>icons/mobile/eye-icon_01_white.svg</file>
+        <file>icons/mobile/ok-icon_01_green.svg</file>
+        <file>icons/mobile/ok-icon_01_grey.svg</file>
+        <file>icons/mobile/image_large-icon_01_grey.svg</file>
+        <file>icons/mobile/games-icon_ph_black.svg</file>
+        <file>icons/mobile/games-icon_ph_white.svg</file>
+        <file>icons/mobile/ttt-icon_ph_black.svg</file>
+        <file>icons/mobile/ttt-icon_ph_white.svg</file>
+        <file>icons/mobile/trophy-icon_01_blue.svg</file>
+        <file>icons/mobile/accept-icon_01.svg</file>
+        <file>icons/mobile/decline-icon_01.svg</file>
+        <file>icons/mobile/robot_bee_01.svg</file>
+        <file>icons/mobile/move-icon_01_blue.svg</file>
+        <file>icons/mobile/return-icon_01.svg</file>
+        <file>icons/mobile/minimize-icon_01_blue.svg</file>
+        <file>icons/mobile/miniature-icon_01.svg</file>
+        <file>icons/mobile/miniature-icon_02.svg</file>
+        <file>sounds/swipe.wav</file>
+        <file>icons/mobile/ping-icon_01_black.svg</file>
+        <file>icons/mobile/ping-icon_01_white.svg</file>
+        <file>icons/mobile/show_balance-icon_01_dark.svg</file>
+        <file>icons/mobile/show_balance-icon_01_light.svg</file>
+        <file>icons/mobile/chart_example.svg</file>
+        <file>icons/mobile/exchange_icon_01_dark.svg</file>
+        <file>icons/mobile/exchange_icon_01_light.svg</file>
+        <file>icons/mobile/probit_logo.png</file>
+        <file>icons/mobile/crex24_logo.png</file>
+        <file>icons/mobile/crex24_logo_02.png</file>
+        <file>icons/xby_logo_with_name.svg</file>
+        <file>icons/go-back-arrow_01.png</file>
+        <file>icons/minimize-tab_01.png</file>
+        <file>icons/move_01.png</file>
+        <file>icons/xby_logo_with_name.png</file>
+        <file>icons/mobile/addressbook-icon_01.svg</file>
+        <file>icons/mobile/wallet-backup-icon_01.svg</file>
+        <file>icons/address/ADDRESS0ED8D2.png</file>
+        <file>icons/address/ADDRESS0ED8D2.svg</file>
+        <file>icons/address/ADDRESS14161B.svg</file>
+        <file>icons/address/ADDRESSF2F2F2.png</file>
+        <file>icons/address/ADDRESSF2F2F2.svg</file>
+        <file>icons/backup/BACKUP0ED8D2.png</file>
+        <file>icons/backup/BACKUP0ED8D2.svg</file>
+        <file>icons/backup/BACKUP14161B.png</file>
+        <file>icons/backup/BACKUP14161B.svg</file>
+        <file>icons/logout/LOGOUT0ED8D2.png</file>
+        <file>icons/logout/LOGOUT0ED8D2.svg</file>
+        <file>icons/settings/settings0ED8D2.svg</file>
+        <file>icons/settings/settings14161B.png</file>
+        <file>icons/settings/settings14161B.svg</file>
+        <file>icons/settings/settingsF2F2F2.png</file>
+        <file>icons/settings/settingsF2F2F2.svg</file>
+        <file>icons/theme/THEME0ED8D2.png</file>
+        <file>icons/theme/THEME0ED8D2.svg</file>
+        <file>icons/theme/THEME14161B.png</file>
+        <file>icons/theme/THEME14161B.svg</file>
+        <file>icons/theme/THEMEF2F2F2.png</file>
+        <file>icons/theme/THEMEF2F2F2.svg</file>
+        <file>icons/wallet/WALLET0ED8D2.png</file>
+        <file>icons/wallet/WALLET0ED8D2.svg</file>
+        <file>icons/logout/LOGOUT14161B.png</file>
+        <file>icons/logout/LOGOUT14161B.svg</file>
+        <file>icons/logout/LOGOUTF2F2F2.png</file>
+        <file>icons/logout/LOGOUTF2F2F2.svg</file>
+        <file>icons/backup/BACKUPF2F2F2.png</file>
+        <file>icons/backup/BACKUPF2F2F2.svg</file>
+        <file>icons/address/ADDRESS14161B.png</file>
+        <file>icons/settings/settings0ED8D2.png</file>
+        <file>icons/notification/notification0ED8D2.png</file>
+        <file>icons/notification/notification0ED8D2.svg</file>
+        <file>icons/notification/notification14161B.png</file>
+        <file>icons/notification/notification14161B.svg</file>
+        <file>icons/notification/notificationF2F2F2.png</file>
+        <file>icons/notification/notificationF2F2F2.svg</file>
+        <file>icons/apps/APPS0ED8D2.png</file>
+        <file>icons/apps/APPS0ED8D2.svg</file>
+        <file>icons/apps/APPS14161B.png</file>
+        <file>icons/apps/APPS14161B.svg</file>
+        <file>icons/apps/APPSF2F2F2.png</file>
+        <file>icons/apps/APPSF2F2F2.svg</file>
+        <file>icons/wallet/WALLET14161B.png</file>
+        <file>icons/wallet/WALLET14161B.svg</file>
+        <file>icons/wallet/WALLETF2F2F2.png</file>
+        <file>icons/wallet/WALLETF2F2F2.svg</file>
+        <file>icons/xby_logo_with_name_dark.png</file>
+        <file>icons/mobile/BTC.png</file>
+        <file>icons/mobile/ETH.png</file>
+        <file>icons/mobile/XBY.png</file>
+        <file>icons/mobile/XFUEL.png</file>
+        <file>icons/trashcan_icon_dark01.png</file>
+        <file>icons/trashcan_icon_green01.png</file>
+        <file>icons/trashcan_icon_light01.png</file>
+        <file>icons/clipboard_icon_dark01.png</file>
+        <file>icons/clipboard_icon_light01.png</file>
+        <file>icons/edit_icon_dark01.png</file>
+        <file>icons/edit_icon_green01.png</file>
+        <file>icons/edit_icon_light01.png</file>
+        <file>backgrounds/Asset 4bg wallet.png</file>
+        <file>icons/white logo.png</file>
+        <file>icons/console_icon_dark-01.png</file>
+        <file>icons/console_icon_light-01.png</file>
+        <file>icons/games_icon_dark-01.png</file>
+        <file>icons/games_icon_light-01.png</file>
+        <file>icons/paper-wallet_icon_dark-01.png</file>
+        <file>icons/paper-wallet_icon_light-01.png</file>
+        <file>icons/paper-wallet_icon_dark-01.svg</file>
+        <file>icons/console_icon_dark-01.svg</file>
+        <file>icons/games_icon_dark-01.svg</file>
+        <file>icons/games_icon_light-01.svg</file>
+        <file>icons/console_icon_light-01.svg</file>
+        <file>icons/paper-wallet_icon_light-01.svg</file>
+        <file>icons/refresh_icon_dark-01.png</file>
+        <file>icons/refresh_icon_light-01.png</file>
+        <file>icons/magnifying-glass-icon-dark_01.png</file>
+        <file>icons/magnifying-glass-icon-light_01.png</file>
+        <file>icons/magnifying-glass-icon-dark_01.svg</file>
+        <file>icons/magnifing-glass-icon-light_01.svg</file>
     </qresource>
 </RCC>

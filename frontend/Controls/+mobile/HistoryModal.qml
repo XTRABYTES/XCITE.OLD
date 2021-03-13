@@ -17,17 +17,25 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: historyModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: historyTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
     property int newHistory: 0
+    property int myTracker: historyTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            timer.start()
+        }
+    }
 
     states: [
         State {
@@ -36,7 +44,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: historyModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: historyModal; anchors.topMargin: historyModal.height}
         }
     ]
 
@@ -185,22 +193,12 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
+                    loadTransactionsInitiated = true
                     click01.play()
                     detectInteraction()
                     currentPage = currentPage - 1
                     newHistory = 1
                     updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
-                }
-            }
-
-            Connections {
-                target: explorer
-
-                onUpdateTransactions: {
-                    if (historyTracker === 1) {
-                        loadTransactions(transactions);
-                        newHistory = 0
-                    }
                 }
             }
         }
@@ -242,6 +240,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
+                    loadTransactionsInitiated = true
                     click01.play()
                     detectInteraction()
                     currentPage = currentPage + 1
@@ -249,16 +248,17 @@ Rectangle {
                     updateTransactions(walletList.get(walletIndex).name, walletList.get(walletIndex).address, currentPage)
                 }
             }
+        }
+    }
 
-            Connections {
-                target: explorer
+    Connections {
+        target: explorer
 
-                onUpdateTransactions: {
-                    if (historyTracker === 1) {
-                        loadTransactions(transactions);
-                        newHistory = 0
-                    }
-                }
+        onUpdateTransactions: {
+            if (historyTracker === 1) {
+                loadTransactions(transactions);
+                newHistory = 0
+                loadTransactionsInitiated = false
             }
         }
     }
@@ -268,12 +268,12 @@ Rectangle {
         width: parent.width
         anchors.top: historyPrevious.bottom
         anchors.topMargin: 5
-        anchors.bottom: closeHistoryModal.top
+        anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         state: (newHistory == 0)? "down" : "up"
         clip: true
-        visible: transactionSwitch.state == "off"
+        visible: transactionSwitch.state == "off" && historyDetailsCollected == true
 
         states: [
             State {
@@ -299,7 +299,7 @@ Rectangle {
         ]
 
 
-        Controls.HistoryList {
+        Mobile.HistoryList {
             id: myHistory
         }
     }
@@ -309,13 +309,13 @@ Rectangle {
         width: parent.width
         anchors.top: historyPrevious.bottom
         anchors.topMargin: 5
-        anchors.bottom: closeHistoryModal.top
+        anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
         visible: transactionSwitch.state == "on"
 
-        Controls.PendingList {
+        Mobile.PendingList {
             id: myPending
         }
     }
@@ -360,7 +360,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -377,62 +377,48 @@ Rectangle {
         }
     }
 
-    Label {
-        id: closeHistoryModal
-        z: 10
-        text: "CLOSE"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+    Rectangle {
+        z: 3
+        width: parent.width
+        height: parent.height
         anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: closeHistoryModal.width
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-
-        }
+        anchors.verticalCenter: parent.verticalCenter
+        color: "black"
+        opacity: 0.50
+        visible: historyDetailsCollected = false
 
         MouseArea {
-            anchors.fill: closeButton
-
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    switchState = 0
-                    transactionPages = 0
-                    currentPage = 0
-                    historyList.clear()
-                }
-            }
-
-            onPressed: {
-                parent.anchors.topMargin = 14
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                parent.anchors.topMargin = 10
-                if (historyTracker == 1) {
-                    historyTracker = 0;
-                    timer.start()
-                }
-            }
+            anchors.fill: parent
         }
     }
 
-    Controls.TransactionDetailModal {
+    AnimatedImage  {
+        z: 3
+        id: waitingDots
+        source: 'qrc:/gifs/loading-gif_01.gif'
+        width: 90
+        height: 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        playing: historyDetailsCollected == false
+        visible: historyDetailsCollected == false
+    }
+
+    Timer {
+        id: timer
+        interval: 300
+        repeat: false
+        running: false
+
+        onTriggered: {
+            switchState = 0
+            transactionPages = 0
+            currentPage = 0
+            historyList.clear()
+        }
+    }
+
+    Mobile.TransactionDetailModal {
         id: myTransactionDetails
         z: 10
         anchors.left: parent.left

@@ -17,13 +17,14 @@ import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Item {
-    height: Screen.height
-    width: Screen.width
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     clip: true
-
-    property string versionNR: "0.4"
 
     Component.onCompleted: {
         selectedPage = "login"
@@ -32,18 +33,18 @@ Item {
     Image {
         id: pictureBG
         source: "qrc:/backgrounds/stars.jpg"
-        height: Screen.height
-        width: pictureBG.height/4741 * 7360
+        height: parent.height
+        fillMode: Image.PreserveAspectFit
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
     }
 
     Rectangle {
         id: backgroundSplash
-        width: Screen.width
-        height: Screen.height
+        width: parent.width
+        height: parent.height
         color: "#14161B"
-        state: loginTracker == 0? (importTracker == 0? "hidden" : "inView") : "inView"
+        state: started == 1? "inView" : "hidden"
 
         LinearGradient {
             anchors.fill: parent
@@ -78,11 +79,13 @@ Item {
     Image {
         id: largeLogo
         source: 'qrc:/icons/XBY_logo_large.svg'
-        width: backgroundSplash.width * 2
-        height: (largeLogo.width / 75) * 65
+        width: (myOS == "android" || myOS == "ios")? backgroundSplash.width * 2 : undefined
+        height: (myOS == "android" || myOS == "ios")?(largeLogo.width / 75) * 65 : (appHeight / 75 * 65)
+        fillMode: Image.PreserveAspectFit
         anchors.top: backgroundSplash.top
         anchors.topMargin: 63
-        anchors.right: backgroundSplash.right
+        anchors.right: (myOS == "android" || myOS == "ios")? backgroundSplash.right : undefined
+        anchors.horizontalCenter: (myOS == "android" || myOS == "ios")? undefined : backgroundSplash.left
         opacity: 0.5
     }
 
@@ -95,7 +98,7 @@ Item {
         anchors.verticalCenterOffset: -50
         color: "transparent"
 
-        state: loginTracker == 0? (importTracker == 0? "inView": "hidden") : "hidden"
+        state: started == 0? "inView" : "hidden"
 
         states: [
             State {
@@ -123,15 +126,14 @@ Item {
             anchors.top: parent.top
             color: "#F2F2F2"
             font.pixelSize: 64
-            font.family: xciteMobile.name
         }
 
         Label {
             id: version
-            text: "V" + versionNR
+            text: "v" + versionNR
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: welcomeText.bottom
-            anchors.topMargin: -20
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? -16 : -6
             color: maincolor
             font.pixelSize: 24
             font.family: xciteMobile.name
@@ -139,7 +141,7 @@ Item {
 
         Rectangle {
             id: startButton
-            width: doubbleButtonWidth / 2
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : 150
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
@@ -161,30 +163,45 @@ Item {
                 anchors.fill: startButton
 
                 onReleased: {
-                    loginTracker = 1
-                    clearAllSettings();
-                    console.log("checking OS")
-                    checkOS();
-                    console.log("requesting state camera permission")
                     checkCamera();
+                }
+            }
+
+            Connections {
+                target: UserSettings
+
+                onCameraCheckPassed: {
+                    checkWriteAccess();
+                }
+
+                onCameraCheckFailed: {
+                    checkWriteAccess();
+                }
+
+                onWriteCheckPassed: {
+                    started = 1
+                    loginTracker = 1
+                    //appHeight = 800
+                    //appWidth = 400
+                    clearAllSettings();
                 }
             }
         }
 
         Text {
-            id: qrButtonText
+            id: startButtonText
             text: "LET'S GO"
             font.family: xciteMobile.name
             font.pointSize: 14
             color: "#F2F2F2"
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
             anchors.horizontalCenter: startButton.horizontalCenter
             anchors.verticalCenter: startButton.verticalCenter
             anchors.verticalCenterOffset: 1
         }
 
         Rectangle {
-            width: doubbleButtonWidth / 2
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : 150
             height: 33
             anchors.horizontalCenter: startButton.horizontalCenter
             anchors.bottom: startButton.bottom
@@ -197,9 +214,9 @@ Item {
 
     Label {
         id: closeButtonLabel
-        text: loginTracker == 0 && importTracker == 0? "CLOSE" : (loginTracker == 0? "BACK" : "CLOSE")
-        anchors.bottom: combinationMark.top
-        anchors.bottomMargin: 25
+        text: loginTracker == 0 && importTracker == 0 && restoreTracker == 0? "CLOSE" : (loginTracker == 0? "BACK" : "CLOSE")
+        anchors.bottom: started == 0? combinationMark.top : backgroundSplash.bottom
+        anchors.bottomMargin: started == 0? 25 : myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -216,13 +233,26 @@ Item {
 
         MouseArea {
             anchors.fill: closeButton
+            hoverEnabled: true
+
+            onEntered: {
+                parent.color = maincolor
+            }
+
+            onExited:  {
+                parent.color = "#F2F2F2"
+            }
 
             onClicked: {
-                if (loginTracker == 1 || (loginTracker == 0 && importTracker == 0)) {
+                if (loginTracker == 1 || (loginTracker == 0 && importTracker == 0 && restoreTracker == 0)) {
                 Qt.quit()
                 }
                 if (importTracker == 1) {
                     importTracker = 0
+                    loginTracker = 1
+                }
+                if (restoreTracker == 1) {
+                    restoreTracker = 0
                     loginTracker = 1
                 }
             }
@@ -231,12 +261,33 @@ Item {
 
     Image {
         id: combinationMark
-        source: 'qrc:/icons/xby_logo_TM.svg'
-        height: 23.4
+        source: 'qrc:/icons/xby_logo_with_name.png'
         width: 150
+        fillMode: Image.PreserveAspectFit
         anchors.horizontalCenter: backgroundSplash.horizontalCenter
-        anchors.bottom: backgroundSplash.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+        state: started == 0? "down" : "up"
+
+        states: [
+            State {
+                name: "up"
+                PropertyChanges { target: combinationMark; anchors.bottom: backgroundSplash.top}
+                PropertyChanges { target: combinationMark; anchors.bottomMargin: -50}
+            },
+            State {
+                name: "down"
+                PropertyChanges { target: combinationMark; anchors.bottom: backgroundSplash.bottom}
+                PropertyChanges { target: combinationMark; anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)}
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "*"
+                to: "*"
+                NumberAnimation { target: combinationMark; property: "anchors.bottom"; duration: 300; easing.type: Easing.OutCubic}
+                NumberAnimation { target: combinationMark; property: "anchors.bottomMargin"; duration: 300; easing.type: Easing.OutCubic}
+            }
+        ]
     }
 
     Login {
@@ -245,5 +296,42 @@ Item {
 
     ImportAccount {
         id: myImport
+    }
+
+    RestoreAccount {
+        id: myRestore
+    }
+
+    Mobile.SwipeBack {
+        z: 100
+        anchors.right: parent.right
+        anchors.top: parent.top
+    }
+
+    Mobile.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Mobile.LogOut {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Mobile.DragBar {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Mobile.NetworkError {
+        z:100
+        id: myNetworkError
+    }
+
+    Mobile.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 }

@@ -17,12 +17,13 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addWalletModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: addWalletTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
 
     LinearGradient {
@@ -47,7 +48,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addWalletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: addWalletModal.height}
         }
     ]
 
@@ -60,10 +61,7 @@ Rectangle {
     ]
 
     property string walletType: ""
-    property int walletSwitchState: 0
-    property int selectWallet: 0
-    property int addActive: 0
-    property int addViewOnly: 0
+    property int walletSwitchState: coinIndex < 3? 0 : 1
     property int coin: coinIndex
 
 
@@ -114,7 +112,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignJustify
             wrapMode: Text.WordWrap
-            text: "A <b>VIEW ONLY</b> wallet allows to track your wallet movement but does not allow you to make transctions using XCITE Mobile."
+            text: "A <b>VIEW ONLY</b> wallet allows to track your wallet movement but does not allow you to make transactions using XCITE Mobile."
             anchors.top: addWalletText2.bottom
             anchors.topMargin: 20
             color: themecolor
@@ -413,7 +411,7 @@ Rectangle {
         }
     }
 
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: addWalletComplete
         modalHeight: saveSuccess.height + saveSuccessLabel.height + moreWallets.height + 75
         visible: selectWallet == 1 && walletAdded == true
@@ -486,83 +484,32 @@ Rectangle {
         }
     }
 
-    Label {
-        id: closeAddWallet
-        z: 4
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: selectWallet == 1? (walletAdded == true? "CLOSE" : "BACK") : "CLOSE"
-        font.pixelSize: 14
-        font.family: xciteMobile.name
-        color: themecolor
-        visible: scanQRTracker == 0
-
-
-        Rectangle {
-            id: backbutton
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
-            height: 34
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: backbutton
-
-            onPressed: detectInteraction()
-
-            onClicked: {
-                if (selectWallet == 1) {
-                    if (walletAdded == true) {
-                        selectedPage = "home"
-                        mainRoot.pop();
-                        selectWallet = 0
-                        walletAdded = false
-                    }
-                    else {
-                        selectWallet = 0
-                        walletAdded = false
-                    }
-                }
-                else {
-                    addWalletTracker = 0
-                    walletAdded = false
-                    selectWallet = 0
-                    selectedPage = "home"
-                    mainRoot.pop("qrc:/Controls/+mobile/AddWallet.qml");
-                }
-            }
-        }
-    }
-
-    Controls.CreateWallet {
+    Mobile.CreateWallet {
         z: 10
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.ImportKey {
+    Mobile.ImportKey {
         z: 10
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.AddViewOnlyWallet {
+    Mobile.AddViewOnlyWallet {
         z: 10
         anchors.left: parent.left
         anchors.top: parent.top
         coin: coin
     }
 
-    Controls.LogOut {
+    Mobile.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.Goodbey {
+    Mobile.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top

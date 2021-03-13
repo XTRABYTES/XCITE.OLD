@@ -20,13 +20,22 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: debugModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: debugTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     onStateChanged: detectInteraction()
+
+    property int myTracker: debugTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            debugError = 0
+            timer.start()
+        }
+    }
 
     LinearGradient {
         anchors.fill: parent
@@ -46,7 +55,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: debugModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: debugModal; anchors.topMargin: debugModal.height}
         }
     ]
 
@@ -79,7 +88,7 @@ Rectangle {
 
     Rectangle {
         id: replyWindow
-        width: Screen.width - 56
+        width: parent.width - 56
         anchors.top: debugModalLabel.bottom
         anchors.topMargin: 30
         anchors.bottom: requestText.top
@@ -156,7 +165,7 @@ Rectangle {
         anchors.bottom: closeDebugModal.top
         anchors.bottomMargin: 25
         color: maincolor
-        opacity: 0.25
+        opacity: 0.5
 
         MouseArea {
             anchors.fill: parent
@@ -164,11 +173,11 @@ Rectangle {
             onPressed: {
                 click01.play()
                 detectInteraction()
-                parent.opacity = 0.5
+                parent.opacity = 1
             }
 
             onCanceled: {
-                parent.opacity = 0.5
+                parent.opacity = 1
             }
 
             onReleased: {
@@ -196,7 +205,6 @@ Rectangle {
                     requestText.text = ""
                 }
                 else if (deBugArray[0] === "!!staticnet" && deBugArray[1] === "sendcoin") {
-                    console.log(deBugArray[2] + " " + deBugArray[3] + " " + deBugArray[4])
                     sendCoins(deBugArray[2] + " " + deBugArray[3] + " " + deBugArray[4]);
 
                     requestText.text = ""
@@ -301,7 +309,6 @@ Rectangle {
                 }
             }
         }
-
     }
 
     Image {
@@ -329,7 +336,7 @@ Rectangle {
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -369,15 +376,13 @@ Rectangle {
             onReleased: {
                 if (debugTracker == 1) {
                     debugTracker = 0;
-                    debugError = 0
-                    timer.start()
                 }
             }
         }
     }
 
     Component.onDestruction: {
-        replyText.text = ""
+        requestText.text = ""
         replyText.text = ""
         debugTracker = 0
         debugError = 0

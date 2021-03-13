@@ -18,22 +18,29 @@ import QtQuick.Layouts 1.3
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Item {
 
     // shared vars
 
-    property int pageTracker: view.currentIndex == 0 ? 0 : 1
     property var balanceArray: ((totalBalance).toLocaleString(Qt.locale("en_US"), "f", 2)).split('.')
     property string searchCriteria:""
+    property int swipeBack: dashboardIndex
 
-    onPageTrackerChanged: detectInteraction()
+    onSwipeBackChanged: {
+        if(swipeBack == 1) {
+            view.currentIndex = 0
+        }
+    }
 
     Rectangle {
         id: backgroundHome
         z: 1
-        width: Screen.width
-        height: Screen.height
+        width: appWidth
+        height: appHeight
+        anchors.horizontalCenter: xcite.horizontalCenter
+        anchors.verticalCenter: xcite.verticalCenter
         color: darktheme == true? "#14161B" : "#FDFDFD"
 
         LinearGradient {
@@ -51,8 +58,10 @@ Item {
     Rectangle {
         id: homeView
         z: 1
-        width: Screen.width
-        height: Screen.height
+        width: appWidth
+        height: appHeight
+        anchors.horizontalCenter: xcite.horizontalCenter
+        anchors.verticalCenter: xcite.verticalCenter
         color: "transparent"
         state: (walletTracker == 1 || historyTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addContactTracker == 1 || editContactTracker == 1) ? "dark" : ((appsTracker == 1)? "medium" : "clear")
         clip: true
@@ -81,6 +90,11 @@ Item {
             anchors.fill: parent
             interactive: (appsTracker == 1 || transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || addCoinTracker == 1) ? false : true
             clip: true
+
+            onCurrentIndexChanged: {
+                detectInteraction()
+                pageTracker = view.currentIndex
+            }
 
             Item {
                 id: dashForm
@@ -160,11 +174,13 @@ Item {
                             name: "up"
                             PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: 0}
                             PropertyChanges { target: portfolio; opacity:1}
+                            PropertyChanges { target: showBalance; opacity:1}
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: Screen.width * 1.5}
+                            PropertyChanges { target: totalWalletValue; anchors.horizontalCenterOffset: appWidth * 1.5}
                             PropertyChanges { target: portfolio; opacity:0}
+                            PropertyChanges { target: showBalance; opacity:0}
                         }
                     ]
 
@@ -174,6 +190,7 @@ Item {
                             to: "*"
                             PropertyAnimation { target: totalWalletValue; property: "anchors.horizontalCenterOffset"; duration: 700; easing.type: Easing.InOutCubic}
                             PropertyAnimation { target: portfolio; property: "opacity"; duration: 700; easing.type: Easing.InOutCubic}
+                            PropertyAnimation { target: showBalance; property: "opacity"; duration: 700; easing.type: Easing.InOutCubic}
                         }
                     ]
 
@@ -182,10 +199,11 @@ Item {
                         z: 5
                         anchors.left: totalWalletValue.left
                         anchors.bottom: value1.bottom
-                        text: fiatTicker
+                        text: userSettings.showBalance === true? fiatTicker : ""
                         font.pixelSize: totalBalance < 1000000? 60 : 40
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
+                        visible: userSettings.showBalance === true
                     }
 
                     Label {
@@ -193,7 +211,7 @@ Item {
                         z: 5
                         anchors.left: valueTicker.right
                         anchors.verticalCenter: totalWalletValue.verticalCenter
-                        text: balanceArray[0]
+                        text: userSettings.showBalance === true? balanceArray[0] : "****"
                         font.pixelSize: totalBalance < 1000000? 60 : 40
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
@@ -205,7 +223,7 @@ Item {
                         anchors.left: value1.right
                         anchors.bottom: value1.bottom
                         anchors.bottomMargin: 6
-                        text: "." + balanceArray[1]
+                        text: userSettings.showBalance === true? ("." + balanceArray[1]) : ""
                         font.pixelSize: totalBalance < 1000000? 40 : 25
                         font.family: xciteMobile.name
                         color: darktheme == true? "#F2F2F2" : "#14161B"
@@ -215,14 +233,14 @@ Item {
                 Image {
                     id: portfolio
                     z: 5
-                    source: darktheme == true? 'qrc:/icons/mobile/portfolio-icon_02_light.svg' : 'qrc:/icons/mobile/portfolio-icon_02_dark.svg'
+                    source: darktheme == true? 'qrc:/icons/mobile/portfolio-icon_02_white.svg' : 'qrc:/icons/mobile/portfolio-icon_02_black.svg'
                     width: 15
                     fillMode: Image.PreserveAspectFit
                     anchors.top: totalWalletValue.bottom
                     anchors.topMargin: totalBalance > 1000000? -5 : -15
                     anchors.left: parent.left
                     anchors.leftMargin: 28
-                    visible: portfolio.opacity > 0
+                    visible: portfolio.opacity > 0 && miniatureTracker == 0
 
                     Rectangle {
                         width: 30
@@ -245,10 +263,43 @@ Item {
                     }
                 }
 
+                Image {
+                    id: showBalance
+                    z: 5
+                    source: darktheme == true? 'qrc:/icons/mobile/show_balance-icon_01_light.svg' : 'qrc:/icons/mobile/show_balance-icon_01_dark.svg'
+                    width: 15
+                    fillMode: Image.PreserveAspectFit
+                    anchors.verticalCenter: portfolio.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 28
+                    visible: showBalance.opacity > 0 && miniatureTracker == 0 && userSettings.showBalance === false
+
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "transparent"
+
+                        MouseArea {
+                            anchors.fill: parent
+
+                            onPressed: {
+                                detectInteraction()
+                                userSettings.showBalance = true
+                            }
+
+                            onReleased: {
+                                userSettings.showBalance = false
+                            }
+                        }
+                    }
+                }
+
                 Item {
                     id: coinInfo1
                     z:5
-                    width: Screen.width - 56
+                    width: appWidth - 56
                     height: fullName.height
                     anchors.top: parent.top
                     anchors.topMargin: 60
@@ -262,7 +313,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: coinInfo1; anchors.rightMargin: Screen.width +20}
+                            PropertyChanges { target: coinInfo1; anchors.rightMargin: appWidth +20}
                         }
                     ]
 
@@ -367,10 +418,11 @@ Item {
                 Rectangle {
                     id:scrollAreaCoinList
                     z: 3
-                    width: Screen.width
+                    width: appWidth
                     anchors.top: parent.top
                     color: "transparent"
                     state: (coinTracker == 0 && scrollAreaWalletList.height == 0)? "down" : "up"
+                    clip: true
 
                     states: [
                         State {
@@ -381,7 +433,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaCoinList; height: Screen.height - 180}
+                            PropertyChanges { target: scrollAreaCoinList; height: appHeight - 180}
                             PropertyChanges { target: scrollAreaCoinList; anchors.topMargin: 180}
                             PropertyChanges { target: myCoinCards; cardSpacing: 0}
                         }
@@ -396,7 +448,7 @@ Item {
                         }
                     ]
 
-                    Controls.CoinList {
+                    Mobile.CoinList {
                         id: myCoinCards
                     }
 
@@ -405,10 +457,11 @@ Item {
                 Rectangle {
                     id:scrollAreaWalletList
                     z: 3
-                    width: Screen.width
+                    width: appWidth
                     anchors.top: parent.top
                     color: "transparent"
                     state: (coinTracker == 1 && scrollAreaCoinList.height == 0)? "down" : "up"
+                    clip: true
 
                     states: [
                         State {
@@ -419,7 +472,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaWalletList; height: Screen.height - 180}
+                            PropertyChanges { target: scrollAreaWalletList; height: appHeight - 180}
                             PropertyChanges { target: scrollAreaWalletList; anchors.topMargin: 180}
                             PropertyChanges { target: myWalletCards; cardSpacing: 0}
                         }
@@ -434,114 +487,24 @@ Item {
                         }
                     ]
 
-                    Controls.WalletList {
+                    Mobile.WalletList {
                         id: myWalletCards
 
                     }
 
                 }
 
-                Item {
+                DropShadow {
                     z: 3
-                    width: Screen.width
-                    height: coinTracker == 0? 50 : 125
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    LinearGradient {
-                        anchors.fill: parent
-                        start: Qt.point(x, y)
-                        end: Qt.point(x, y + height)
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: "transparent" }
-                            GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
-                            GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-                        }
-                    }
-                }
-
-                Rectangle {
-                    id: backButton1
-                    z: 3
-                    radius: 25
-                    anchors.fill: backButton
-                    color: darktheme == true? "#14161B" : "#FDFDFD"
-                    opacity: 0.1
-                    visible: backButton.visible
-
-                }
-
-                Rectangle {
-                    id: backButton
-                    z: 3
-                    height: 50
-                    width: 50
-                    radius: 25
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 50
-                    color: "transparent"
-                    visible: anchors.rightMargin > -110
-                    state: coinTracker == 1 ? "inView" : "hidden"
-
-                    states: [
-                        State {
-                            name: "inView"
-                            PropertyChanges { target: backButton; anchors.rightMargin: 15}
-                        },
-                        State {
-                            name: "hidden"
-                            PropertyChanges { target: backButton; anchors.rightMargin: -110}
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: "*"
-                            to: "*"
-                            NumberAnimation { target: backButton; properties: "anchors.rightMargin "; duration: 300; easing.type: Easing.InOutCubic}
-                        }
-                    ]
-
-                    Image {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/mobile/back-icon_01.svg'
-                        width: 50
-                        height: 50
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onPressed: {
-                            click01.play()
-                            backButton1.opacity = 0.5
-                            detectInteraction()
-                        }
-
-                        onReleased: {
-                            backButton1.opacity = 0.1
-                        }
-
-                        onClicked: {
-                            if (coinTracker == 1) {
-                                countWallets()
-                                coinTracker = 0
-                            }
-                        }
-                    }
-                }
-
-                Rectangle {
-                    id: addButton5
-                    z: 3
-                    radius: 25
-                    anchors.fill: addButton4
-                    color: darktheme == true? "#14161B" : "#FDFDFD"
-                    opacity: 0.1
+                    anchors.fill: addAddress
+                    source: addAddress
+                    samples: 9
+                    radius: 4
+                    color: darktheme == true? "#000000" : "#727272"
+                    horizontalOffset:0
+                    verticalOffset: 0
+                    spread: 0
                     visible: addButton4.visible
-
                 }
 
                 Rectangle {
@@ -549,12 +512,13 @@ Item {
                     z: 3
                     height: 50
                     width: 50
-                    radius: 25
+                    radius: 50
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 50
-                    color: "transparent"
-                    visible: anchors.leftMargin > -110
+                    anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 70 : 50)
+                    color: darktheme == true? "#14161B" : "#F2F2F2"
+                    opacity: 0.25
+                    visible: view.currentIndex == 0
                     state: coinTracker == 1 ? "inView" : "hidden"
 
                     states: [
@@ -576,26 +540,16 @@ Item {
                         }
                     ]
 
-                    Image {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/mobile/add-icon_01.svg'
-                        width: 50
-                        height: 50
-
-                    }
-
                     MouseArea {
                         anchors.fill: parent
 
                         onPressed: {
                             click01.play()
-                            addButton5.opacity = 0.5
                             detectInteraction()
                         }
 
                         onReleased: {
-                            addButton5.opacity = 0.1
+
                         }
 
                         onClicked: {
@@ -607,7 +561,18 @@ Item {
                     }
                 }
 
-                Controls.AddCoinModal{
+                Image {
+                    id: addAddress
+                    z: 3
+                    anchors.verticalCenter: addButton4.verticalCenter
+                    anchors.horizontalCenter: addButton4.horizontalCenter
+                    source: 'qrc:/icons/mobile/add-icon_01.svg'
+                    width: 50
+                    height: 50
+                    visible: addButton4.visible
+                }
+
+                Mobile.AddCoinModal{
                     z: 3
                     id: addCoinModal
                     visible: addCoinTracker == 1
@@ -616,9 +581,10 @@ Item {
                 Rectangle {
                     id: homeHeader
                     z: 4.1
-                    width: parent.width
+                    width: appWidth
                     height: 150
                     anchors.top: parent.top
+                    anchors.horizontalCenter: parent.horizontalCenter
                     color: darktheme == true? "#14161B" : "#FDFDFD"
 
                     MouseArea {
@@ -629,69 +595,130 @@ Item {
                 Rectangle {
                     id: iconBar3
                     z: 6
-                    width: Screen.width
+                    width: appWidth
                     height: 30
                     anchors.verticalCenter: flipable.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.horizontalCenter: homeHeader.horizontalCenter
                     color: darktheme == true? "#14161B" : "#FDFDFD"
                 }
 
                 Flipable {
                     id: flipable
                     z: 6
-                    width: Screen.Width
+                    width: appWidth
                     height: 30
                     anchors.top: homeHeader.bottom
                     anchors.horizontalCenter: homeHeader.horizontalCenter
 
                     front:
-                        Item {
-
                         Rectangle {
-                            id: iconBar
+                        id: iconBar
+                        z: 6
+                        width: appWidth
+                        height: 30
+                        anchors.top: parent.top
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        color: "black"
+
+                        Label {
+                            id: transfer
                             z: 6
-                            width: Screen.width
-                            height: 30
-                            anchors.top: parent.top
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            color: "black"
+                            text: "TRANSFER"
+                            font.pixelSize: 13
+                            font.family: xciteMobile.name
+                            color: "white"
+                            anchors.left: parent.left
+                            anchors.leftMargin: 28
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.verticalCenterOffset: 2
+                            font.bold: true
+
+                            Rectangle {
+                                id: transferButton
+                                anchors.left: transfer.left
+                                anchors.right: transfer2.right
+                                height: iconBar.height
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.verticalCenterOffset: -2
+                                color: "transparent"
+                            }
+
+                            Image {
+                                id: transfer2
+                                anchors.verticalCenter: transfer.verticalCenter
+                                anchors.verticalCenterOffset: -2
+                                anchors.left: parent.right
+                                anchors.leftMargin: 8
+                                source: 'qrc:/icons/mobile/transfer-icon_01.svg'
+                                fillMode: Image.PreserveAspectFit
+                                height: 18
+                            }
+
+                            MouseArea {
+                                anchors.fill: transferButton
+
+                                onPressed: {
+                                    click01.play()
+                                    detectInteraction()
+                                }
+
+                                onReleased: {
+
+                                }
+
+                                onClicked: {
+                                    if (transferTracker == 0 && addCoinTracker == 0) {
+                                        selectedCoin = "XFUEL"
+                                        switchState = 0
+                                        transferTracker = 1
+                                    }
+                                }
+                            }
+
+                        }
+
+                        Image {
+                            id: coins
+                            z: 6
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            anchors.rightMargin: 28
+                            source: 'qrc:/icons/mobile/coin-icon_01.svg'
+                            fillMode: Image.PreserveAspectFit
+                            height: 18
 
                             Label {
-                                id: transfer
-                                z: 6
-                                text: "TRANSFER"
+                                id: addCoin
+                                text: "COINS"
                                 font.pixelSize: 13
                                 font.family: xciteMobile.name
                                 color: "white"
-                                anchors.left: parent.left
-                                anchors.leftMargin: 28
+                                anchors.right: parent.left
+                                anchors.rightMargin: 8
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.verticalCenterOffset: 2
                                 font.bold: true
+                            }
 
-                                Rectangle {
-                                    id: transferButton
-                                    anchors.left: transfer.left
-                                    anchors.right: transfer2.right
-                                    height: iconBar.height
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.verticalCenterOffset: -2
-                                    color: "transparent"
-                                }
+                            Rectangle {
+                                id: addCoinButton
+                                anchors.right: coins.right
+                                anchors.left: addCoin.left
+                                height: iconBar.height
+                                anchors.verticalCenter: parent.verticalCenter
+                                color: "transparent"
 
-                                Image {
-                                    id: transfer2
-                                    anchors.verticalCenter: transfer.verticalCenter
-                                    anchors.verticalCenterOffset: -2
-                                    anchors.left: parent.right
-                                    anchors.leftMargin: 8
-                                    source: 'qrc:/icons/mobile/transfer-icon_01.svg'
-                                    fillMode: Image.PreserveAspectFit
-                                    height: 18
+                                Timer {
+                                    id: timer2
+                                    interval: 300
+                                    repeat: false
+                                    running: false
+
+                                    onTriggered: addCoinTracker = 0
                                 }
 
                                 MouseArea {
-                                    anchors.fill: transferButton
+                                    anchors.fill: parent
 
                                     onPressed: {
                                         click01.play()
@@ -703,77 +730,13 @@ Item {
                                     }
 
                                     onClicked: {
-                                        if (transferTracker == 0 && addCoinTracker == 0) {
-                                            selectedCoin = "XFUEL"
-                                            switchState = 0
-                                            transferTracker = 1
+                                        if (addCoinTracker == 1) {
+                                            addCoinModal.sidebarState = "closed"
+                                            timer2.start()
                                         }
-                                    }
-                                }
-
-                            }
-
-                            Image {
-                                id: coins
-                                z: 6
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.right: parent.right
-                                anchors.rightMargin: 28
-                                source: 'qrc:/icons/mobile/coin-icon_01.svg'
-                                fillMode: Image.PreserveAspectFit
-                                height: 18
-
-                                Label {
-                                    id: addCoin
-                                    text: "COINS"
-                                    font.pixelSize: 13
-                                    font.family: xciteMobile.name
-                                    color: "white"
-                                    anchors.right: parent.left
-                                    anchors.rightMargin: 8
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.verticalCenterOffset: 2
-                                    font.bold: true
-                                }
-
-                                Rectangle {
-                                    id: addCoinButton
-                                    anchors.right: coins.right
-                                    anchors.left: addCoin.left
-                                    height: iconBar.height
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    color: "transparent"
-
-                                    Timer {
-                                        id: timer2
-                                        interval: 300
-                                        repeat: false
-                                        running: false
-
-                                        onTriggered: addCoinTracker = 0
-                                    }
-
-                                    MouseArea {
-                                        anchors.fill: parent
-
-                                        onPressed: {
-                                            click01.play()
-                                            detectInteraction()
-                                        }
-
-                                        onReleased: {
-
-                                        }
-
-                                        onClicked: {
-                                            if (addCoinTracker == 1) {
-                                                addCoinModal.sidebarState = "closed"
-                                                timer2.start()
-                                            }
-                                            if (transferTracker == 0 && addCoinTracker == 0){
-                                                addCoinTracker = 1
-                                                addCoinModal.sidebarState = "open"
-                                            }
+                                        if (transferTracker == 0 && addCoinTracker == 0){
+                                            addCoinTracker = 1
+                                            addCoinModal.sidebarState = "open"
                                         }
                                     }
                                 }
@@ -794,10 +757,10 @@ Item {
                         Rectangle {
                             id: iconBar2
                             z: 6
-                            width: Screen.width
+                            width: appWidth
                             height: 30
                             anchors.top: parent.top
-                            anchors.horizontalCenter: parent.horizontalCenter
+                            //anchors.left: parent.left
                             color: "black"
 
                             Label {
@@ -846,7 +809,7 @@ Item {
 
                     transform: Rotation {
                         id: rotation
-                        origin.x: flipable.width/2
+                        //origin.x: flipable.width/2
                         origin.y: flipable.height/2
                         axis.x: 1; axis.y: 0; axis.z: 0
                         angle: 0
@@ -873,7 +836,7 @@ Item {
                     z: 5
                     height: firstName.implicitHeight +  lastName.implicitHeight + 5
                     anchors.verticalCenter: bigPhoto.verticalCenter
-                    width: homeHeader2.width -140
+                    width: homeHeader2.width - 140
                     anchors.left: parent.left
                     state: contactTracker == 0? "hidden" : "inView"
                     visible: x < parent.width
@@ -1010,7 +973,7 @@ Item {
                         State {
                             name: "inView"
                             PropertyChanges { target: searchForAddress; height: 34}
-                            PropertyChanges { target: searchForAddress; width: Screen.width - 56}
+                            PropertyChanges { target: searchForAddress; width: appWidth - 56}
                             PropertyChanges { target: searchForAddress; anchors.bottomMargin: 25}
                         }
                     ]
@@ -1027,7 +990,7 @@ Item {
                 Rectangle {
                     id: scrollAreaContactList
                     z: 3
-                    width: Screen.width
+                    width: appWidth
                     anchors.top: parent.top
                     color: "transparent"
                     state: (contactTracker == 0 && scrollAreaAddressBook.height == 0)? "down" : "up"
@@ -1041,7 +1004,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaContactList; height: Screen.height - 180}
+                            PropertyChanges { target: scrollAreaContactList; height: appHeight - 180}
                             PropertyChanges { target: scrollAreaContactList; anchors.topMargin: 180}
                             PropertyChanges { target: myContacts; cardSpacing: 0}
                         }
@@ -1056,7 +1019,7 @@ Item {
                         }
                     ]
 
-                    Controls.Contacts {
+                    Mobile.Contacts {
                         id: myContacts
                         searchFilter: searchCriteria
                     }
@@ -1065,10 +1028,11 @@ Item {
                 Rectangle {
                     id:scrollAreaAddressBook
                     z: 3
-                    width: Screen.width
+                    width: appWidth
                     anchors.top: parent.top
                     color: "transparent"
                     state: (contactTracker == 1 && scrollAreaContactList.height == 0)? "down" : "up"
+                    clip: true
 
                     states: [
                         State {
@@ -1079,7 +1043,7 @@ Item {
                         },
                         State {
                             name: "down"
-                            PropertyChanges { target: scrollAreaAddressBook; height: Screen.height - 180}
+                            PropertyChanges { target: scrollAreaAddressBook; height: appHeight - 180}
                             PropertyChanges { target: scrollAreaAddressBook; anchors.topMargin: 180}
                             PropertyChanges { target: myAddressCards; cardSpacing: 0}
                         }
@@ -1094,118 +1058,22 @@ Item {
                         }
                     ]
 
-                    Controls.AddressBook {
+                    Mobile.AddressBook {
                         id: myAddressCards
                     }
                 }
 
-                Item {
+                DropShadow {
                     z: 3
-                    width: Screen.width
-                    height: contactTracker == 0? 50 : 125
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    LinearGradient {
-                        anchors.fill: parent
-                        start: Qt.point(x, y)
-                        end: Qt.point(x, y + height)
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: "transparent" }
-                            GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
-                            GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-                        }
-                    }
-                }
-
-                Rectangle {
-                    id: backButton3
-                    z: 3.5
-                    radius: 25
-                    anchors.fill: backButton2
-                    color: darktheme == true? "#14161B" : "#FDFDFD"
-                    opacity: 0.1
-                    visible: backButton2.visible
-
-                }
-
-                Rectangle {
-                    id: backButton2
-                    z: 3.5
-                    height: 50
-                    width: 50
-                    radius: 25
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 50
-                    color: "transparent"
-                    visible: anchors.rightMargin > -110
-                    state: contactTracker == 1 ? "inView" : "hidden"
-
-                    states: [
-                        State {
-                            name: "inView"
-                            PropertyChanges { target: backButton2; anchors.rightMargin: 15}
-                        },
-                        State {
-                            name: "hidden"
-                            PropertyChanges { target: backButton2; anchors.rightMargin: -110}
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: "*"
-                            to: "*"
-                            NumberAnimation { target: backButton2; properties: "anchors.rightMargin"; duration: 300; easing.type: Easing.InOutCubic}
-                        }
-                    ]
-
-                    Image {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/mobile/back-icon_01.svg'
-                        width: 50
-                        height: 50
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onPressed: {
-                            click01.play()
-                            backButton3.opacity = 0.5
-                            detectInteraction()
-                        }
-
-                        onReleased: {
-                            backButton3.opacity = 0.1
-                        }
-
-                        onClicked: {
-                            if (addressQRTracker == 0) {
-                                if (contactTracker == 1) {
-                                    contactTracker = 0
-                                    //contactIndex = 0
-                                }
-                            }
-
-                            else if (addressQRTracker == 1) {
-                                addressQRTracker = 0
-                            }
-                        }
-                    }
-                }
-
-                Rectangle {
-                    id: addButton3
-                    z: 3
-                    radius: 25
-                    anchors.fill: addButton2
-                    color: darktheme == true? "#14161B" : "#FDFDFD"
-                    opacity: 0.1
+                    anchors.fill: addWallet
+                    source: addWallet
+                    samples: 9
+                    radius: 4
+                    color: darktheme == true? "#000000" : "#727272"
+                    horizontalOffset:0
+                    verticalOffset: 0
+                    spread: 0
                     visible: addButton2.visible
-
                 }
 
                 Rectangle {
@@ -1213,12 +1081,13 @@ Item {
                     z: 3
                     height: 50
                     width: 50
-                    radius: 25
+                    radius: 50
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 50
-                    color: "transparent"
-                    visible: (anchors.leftMargin > -110) && contactIndex != 0
+                    anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 70 : 50)
+                    color: darktheme == true? "#14161B" : "#F2F2F2"
+                    opacity: 0.25
+                    visible: view.currentIndex == 1 && contactIndex != 0
                     state: (contactTracker == 1 && addressQRTracker == 0)? "inView" : "hidden"
 
                     states: [
@@ -1240,26 +1109,16 @@ Item {
                         }
                     ]
 
-                    Image {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        source: 'qrc:/icons/mobile/add-icon_01.svg'
-                        width: 50
-                        height: 50
-
-                    }
-
                     MouseArea {
                         anchors.fill: parent
 
                         onPressed: {
                             click01.play()
-                            addButton3.opacity = 0.5
                             detectInteraction()
                         }
 
                         onReleased: {
-                            addButton3.opacity = 0.1
+
                         }
 
                         onClicked: {
@@ -1268,14 +1127,25 @@ Item {
                     }
                 }
 
-                Controls.QrCode{
+                Image {
+                    id: addWallet
+                    z: 3
+                    anchors.verticalCenter: addButton2.verticalCenter
+                    anchors.horizontalCenter: addButton2.horizontalCenter
+                    source: 'qrc:/icons/mobile/add-icon_01.svg'
+                    width: 50
+                    height: 50
+                    visible: addButton2.visible
+                }
+
+                Mobile.QrCode{
                     id: addressDetails
                     z: 3
-                    width: Screen.width
-                    height: Screen.height - 180
+                    width: appWidth
+                    height: appHeight - 180
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: iconBar6.bottom
-                    visible: anchors.topMargin > - (Screen.height - 180)
+                    visible: anchors.topMargin > - (addressDetails.height)
                     state: addressQRTracker == 1 ? "inView" : "hidden"
 
                     states: [
@@ -1285,7 +1155,7 @@ Item {
                         },
                         State {
                             name: "hidden"
-                            PropertyChanges { target: addressDetails; anchors.topMargin: -(Screen.height - 180)}
+                            PropertyChanges { target: addressDetails; anchors.topMargin: -(addressDetails.height)}
                         }
                     ]
 
@@ -1303,7 +1173,7 @@ Item {
                 Rectangle {
                     id: homeHeader2
                     z: 4.1
-                    width: parent.width
+                    width: appWidth
                     height: 150
                     anchors.top: parent.top
                     color: darktheme == true? "#14161B" : "#FDFDFD"
@@ -1316,138 +1186,129 @@ Item {
                 Rectangle {
                     id: iconBar6
                     z: 6
-                    width: Screen.width
+                    width: appWidth
                     height: 30
                     anchors.verticalCenter: flipable2.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.horizontalCenter: homeHeader2.horizontalCenter
                     color: darktheme == true? "#14161B" : "#FDFDFD"
                 }
 
                 Flipable {
                     id: flipable2
                     z: 6
-                    width: Screen.Width
+                    width: appWidth
                     height: 30
                     anchors.top: homeHeader2.bottom
                     anchors.horizontalCenter: homeHeader2.horizontalCenter
 
                     front:
-                        Item {
-
                         Rectangle {
-                            id: iconBar4
+                        id: iconBar4
+                        z: 6
+                        width: appWidth
+                        height: 30
+                        anchors.top: parent.top
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        color: "black"
+                        Label {
+                            id: transfer3
                             z: 6
-                            width: Screen.width
-                            height: 30
-                            anchors.top: parent.top
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            color: "black"
+                            text: "TRANSFER"
+                            font.pixelSize: 13
+                            font.family: xciteMobile.name
+                            color: "white"
+                            anchors.left: parent.left
+                            anchors.leftMargin: 28
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.verticalCenterOffset: 2
+                            font.bold: true
+
+                            Image {
+                                id: transfer4
+                                anchors.verticalCenter: transfer3.verticalCenter
+                                anchors.verticalCenterOffset: -2
+                                anchors.left: parent.right
+                                anchors.leftMargin: 8
+                                source: 'qrc:/icons/mobile/transfer-icon_01.svg'
+                                fillMode: Image.PreserveAspectFit
+                                height: 18
+                            }
+
+                            Rectangle {
+                                id: transferButton2
+                                anchors.left: transfer3.left
+                                anchors.right: transfer4.right
+                                height: iconBar4.height
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.verticalCenterOffset: -2
+                                color: "transparent"
+                            }
+
+                            MouseArea {
+                                anchors.fill: transferButton2
+
+                                onPressed: {
+                                    click01.play()
+                                    detectInteraction()
+                                }
+
+                                onClicked: {
+                                    if (transferTracker == 0 && addAddressTracker == 0) {
+                                        switchState = 0
+                                        transferTracker = 1
+                                    }
+                                }
+                            }
+
+                        }
+
+                        Image {
+                            id: plus
+                            z: 6
+                            anchors.verticalCenter: iconBar4.verticalCenter
+                            anchors.right: parent.right
+                            anchors.rightMargin: 28
+                            source: 'qrc:/icons/mobile/contact-icon_01.svg'
+                            fillMode: Image.PreserveAspectFit
+                            height: 18
+                            visible: pageTracker == 1
+
                             Label {
-                                id: transfer3
-                                z: 6
-                                text: "TRANSFER"
+                                id: addContact
+                                text: "ADD CONTACT"
                                 font.pixelSize: 13
                                 font.family: xciteMobile.name
                                 color: "white"
-                                anchors.left: parent.left
-                                anchors.leftMargin: 28
+                                anchors.right: parent.left
+                                anchors.rightMargin: 8
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.verticalCenterOffset: 2
                                 font.bold: true
+                            }
 
-                                Image {
-                                    id: transfer4
-                                    anchors.verticalCenter: transfer3.verticalCenter
-                                    anchors.verticalCenterOffset: -2
-                                    anchors.left: parent.right
-                                    anchors.leftMargin: 8
-                                    source: 'qrc:/icons/mobile/transfer-icon_01.svg'
-                                    fillMode: Image.PreserveAspectFit
-                                    height: 18
-                                }
-
-                                Rectangle {
-                                    id: transferButton2
-                                    anchors.left: transfer3.left
-                                    anchors.right: transfer4.right
-                                    height: iconBar4.height
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.verticalCenterOffset: -2
-                                    color: "transparent"
-                                }
+                            Rectangle {
+                                id: addContactButton
+                                anchors.left: addContact.left
+                                anchors.right: plus.right
+                                height: iconBar4.height
+                                anchors.verticalCenter: parent.verticalCenter
+                                color: "transparent"
 
                                 MouseArea {
-                                    anchors.fill: transferButton2
+                                    anchors.fill: addContactButton
 
                                     onPressed: {
                                         click01.play()
                                         detectInteraction()
                                     }
 
-                                    onClicked: {
-                                        if (transferTracker == 0 && addAddressTracker == 0) {
-                                            switchState = 0
-                                            transferTracker = 1
-                                        }
+                                    onReleased: {
+
                                     }
-                                }
 
-                            }
-
-                            Image {
-                                id: plus
-                                z: 6
-                                anchors.verticalCenter: iconBar4.verticalCenter
-                                anchors.right: parent.right
-                                anchors.rightMargin: 28
-                                source: 'qrc:/icons/mobile/contact-icon_01.svg'
-                                fillMode: Image.PreserveAspectFit
-                                height: 18
-                                visible: pageTracker == 1
-
-                                ColorOverlay {
-                                    anchors.fill: plus
-                                    source: plus
-                                    color: maincolor
-                                }
-
-                                Label {
-                                    id: addContact
-                                    text: "ADD CONTACT"
-                                    font.pixelSize: 13
-                                    font.family: xciteMobile.name
-                                    color: "white"
-                                    anchors.right: parent.left
-                                    anchors.rightMargin: 8
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.verticalCenterOffset: 2
-                                    font.bold: true
-                                }
-
-                                Rectangle {
-                                    id: addContactButton
-                                    anchors.left: addContact.left
-                                    anchors.right: plus.right
-                                    height: iconBar4.height
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    color: "transparent"
-
-                                    MouseArea {
-                                        anchors.fill: addContactButton
-
-                                        onPressed: {
-                                            click01.play()
-                                            detectInteraction()
-                                        }
-
-                                        onReleased: {
-
-                                        }
-
-                                        onClicked: {
-                                            if (transferTracker == 0 && addContactTracker == 0) {
-                                                addContactTracker = 1
-                                            }
+                                    onClicked: {
+                                        if (transferTracker == 0 && addContactTracker == 0) {
+                                            addContactTracker = 1
                                         }
                                     }
                                 }
@@ -1458,20 +1319,18 @@ Item {
                     back:
 
                         Item {
-
                         transform: Rotation {
                             origin.y: flipable2.height/2
                             axis.x: 1; axis.y: 0; axis.z: 0
-                            angle: 180
-                        }
+                            angle: 180 }
 
                         Rectangle {
                             id: iconBar5
                             z: 6
-                            width: Screen.width
+                            width: appWidth
                             height: 30
                             anchors.top: parent.top
-                            anchors.horizontalCenter: parent.horizontalCenter
+                            //anchors.right: parent.right
                             color: "black"
 
                             MouseArea {
@@ -1571,13 +1430,12 @@ Item {
                                     }
                                 }
                             }
-
                         }
                     }
 
                     transform: Rotation {
                         id: rotation2
-                        origin.x: flipable2.width/2
+                        //origin.x: flipable2.width/2
                         origin.y: flipable2.height/2
                         axis.x: 1; axis.y: 0; axis.z: 0
                         angle: 0
@@ -1599,10 +1457,10 @@ Item {
         Item {
             id: callText
             z: 7
-            width: Screen.width
-            height: Screen.height
-            anchors.horizontalCenter: Screen.horizontalCenter
-            anchors.verticalCenter: Screen.verticalCenter
+            width: appWidth
+            height: appHeight
+            anchors.horizontalCenter: xcite.horizontalCenter
+            anchors.verticalCenter: xcite.verticalCenter
             visible: cellTracker == 1 && callTextModal.height > 0
 
             Rectangle {
@@ -1730,7 +1588,7 @@ Item {
         Rectangle {
             id: homeHeader3
             z: 6
-            width: parent.width
+            width: appWidth
             height: 150
             anchors.top: parent.top
             color: "transparent"
@@ -1761,7 +1619,7 @@ Item {
                     color: "#E55541"
                     anchors.horizontalCenter: parent.right
                     anchors.verticalCenter: parent.top
-                    visible: alertList.count > 1
+                    visible: alert == true
                 }
 
                 MouseArea {
@@ -1773,8 +1631,10 @@ Item {
                     }
 
                     onClicked: {
-                        if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0) {
-                            appsTracker = 1
+                        if (miniatureTracker == 0) {
+                            if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0) {
+                                appsTracker = 1
+                            }
                         }
                     }
                 }
@@ -1804,8 +1664,7 @@ Item {
                             detectInteraction()
                         }
 
-                        onClicked: {
-                            console.log("theme switch pushed")
+                         onClicked: {
                             if (transferTracker == 0 && addressTracker == 0 && addAddressTracker == 0 && addCoinTracker == 0 && darktheme == true) {
                                 userSettings.theme = "light"
                             }
@@ -1819,7 +1678,7 @@ Item {
 
             Rectangle {
                 id: topBar
-                width: Screen.width
+                width: appWidth
                 height: 50
                 color: "transparent"
             }
@@ -1843,9 +1702,16 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
                         onClicked: {
-                            swipe.play()
-                            view.currentIndex = 0
+                            if (miniatureTracker == 0) {
+                                swipe.play()
+                                view.currentIndex = 0
+                            }
                         }
                     }
                 }
@@ -1862,10 +1728,17 @@ Item {
                     MouseArea {
                         anchors.fill: parent
 
+                        onPressed: {
+                            click01.play()
+                            detectInteraction()
+                        }
+
                         onClicked: {
-                            swipe.play()
-                            if (addCoinTracker == 0)
-                                view.currentIndex = 1
+                            if (miniatureTracker == 0) {
+                                swipe.play()
+                                if (addCoinTracker == 0)
+                                    view.currentIndex = 1
+                            }
                         }
                     }
                 }
@@ -1953,63 +1826,63 @@ Item {
         ]
     }
 
-    Controls.HistoryModal {
+    Mobile.HistoryModal {
         id: historyModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.AddContact {
+    Mobile.AddContact {
         id: contactModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.ContactModal {
+    Mobile.ContactModal {
         id: editContactModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.TransferModal{
+    Mobile.TransferModal{
         id: transferModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.AddressModal{
+    Mobile.AddressModal{
         id: addressModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.AddAddressModal{
+    Mobile.AddAddressModal{
         id: addAddressModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.WalletModal {
+    Mobile.WalletModal {
         id: walletModal
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.PortfolioModal {
+    Mobile.PortfolioModal {
         id: myPortfolio
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
         anchors.top: homeView.top
     }
 
-    Controls.QrScanner {
+    Mobile.QrScanner {
         id: qrScanner
         z: 10
         anchors.horizontalCenter: homeView.horizontalCenter
@@ -2017,22 +1890,43 @@ Item {
         visible: selectedPage == "home" && scanQRTracker == 1
     }
 
-    Controls.Sidebar{
+    Mobile.ClickToLogout {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+        visible: clickToLogout == 1
+    }
+
+    Mobile.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Mobile.Sidebar{
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.LogOut {
+    Mobile.LogOut {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.Goodbey {
+    Mobile.DragBar {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Mobile.NetworkError {
+        z:100
+        id: myNetworkError
+    }
+
+    Mobile.Goodbey {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
-
 }

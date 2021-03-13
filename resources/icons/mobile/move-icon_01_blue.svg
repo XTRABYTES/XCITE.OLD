@@ -1,0 +1,7 @@
+<svg width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M125 0L168.301 75H81.6987L125 0Z" fill="#0ED8D2"/>
+<path d="M125 250L81.6987 175H168.301L125 250Z" fill="#0ED8D2"/>
+<path d="M0 125L75 81.6987V168.301L0 125Z" fill="#0ED8D2"/>
+<path d="M250 125L175 168.301V81.6987L250 125Z" fill="#0ED8D2"/>
+<circle cx="125" cy="125" r="25" fill="#0ED8D2"/>
+</svg>

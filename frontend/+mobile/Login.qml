@@ -20,11 +20,12 @@ import "qrc:/Controls" as Controls
 
 Item {
     id: loginModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
 
     property int passError: 0
-    property bool loginInitiated: false
     property int checkUsername: 0
     property int keyPairSend: 0
     property int checkIdentity: 0
@@ -33,19 +34,30 @@ Item {
     property int loadingSettings:  0
     property int verifyingBalances: 0
 
+    function logIn() {
+        closeAllClipboard = true
+        if (userName.text != "" && passWord.text != "" && networkError == 0) {
+            loginInitiated = true
+            checkUsername = 1
+            userLogin(userName.text, passWord.text)
+        }
+    }
+
     Rectangle {
         id: login
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        width: parent.width - 50
+        anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)
+        width: (myOS == "android" || myOS == "ios")? parent.width - 50 : 350
         height: 250
-        state: loginTracker == 1? "up" : "down"
+        //state: loginTracker == 1? "up" : "down"
         color: "transparent"
+        visible: loginTracker == 1
 
         states: [
             State {
                 name: "up"
-                PropertyChanges { target: login; anchors.topMargin: (parent.height/2) - (login.height)}
+                PropertyChanges { target: login; anchors.topMargin: (myOS == "android" || myOS == "ios")? ((parent.height/2) - (login.height)) : (parent.height/2 - (login.height/4)*3)}
             },
             State {
                 name: "down"
@@ -60,8 +72,6 @@ Item {
                 NumberAnimation { target: login; property: "anchors.topMargin"; duration: 300; easing.type: Easing.OutCubic}
             }
         ]
-
-        // login function
 
         Label {
             id: loginModalLabel
@@ -151,6 +161,9 @@ Item {
                     passError = 0
                 }
             }
+
+            Keys.onEnterPressed: logIn()
+            Keys.onReturnPressed: logIn()
         }
 
         Text {
@@ -180,23 +193,6 @@ Item {
             opacity: 0.50
             visible: loginInitiated == false
 
-            Timer {
-                id: loginSuccesTimer
-                interval: 2000
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    passError = 0
-                    networkError = 0
-                    loginTracker = 0
-                    sessionClosed = 0
-                    sessionStart = 1
-                    loginInitiated  = false
-                    verifyingBalances = 0
-                }
-            }
-
             MouseArea {
                 anchors.fill: parent
 
@@ -205,137 +201,10 @@ Item {
                 }
 
                 onReleased: {
-                    closeAllClipboard = true
-                    if (userName.text != "" && passWord.text != "" && networkError == 0) {
-                        loginInitiated = true
-                        checkUsername = 1
-                        userLogin(userName.text, passWord.text)
-                    }
+                    logIn()
                 }
             }
-            Connections {
-                target: UserSettings
 
-                onCreateUniqueKeyPair: {
-                    if (loginTracker == 1){
-                        checkUsername = 0
-                        keyPairSend = 1
-                    }
-                }
-
-                onCheckIdentity: {
-                    if (loginTracker == 1){
-                        keyPairSend = 0
-                        checkIdentity = 1
-                    }
-                }
-
-                onReceiveSessionEncryptionKey: {
-                    if (loginTracker == 1){
-                        checkIdentity = 0
-                        sessionKey = 1
-                    }
-                }
-
-                onReceiveSessionID: {
-                    if (loginTracker == 1){
-                        sessionKey = 0
-                        receiveSessionID = 1
-                    }
-                }
-
-                onLoadingSettings: {
-                    if (loginTracker == 1){
-                        receiveSessionID = 0
-                        loadingSettings = 1
-                    }
-                }
-
-                onContactsLoaded: {
-                    if (loginTracker == 1){
-                        loadContactList(contacts)
-                    }
-                }
-
-                onAddressesLoaded: {
-                    if (loginTracker == 1){
-                        loadAddressList(addresses)
-                    }
-                }
-                onWalletLoaded: {
-                    if (loginTracker == 1){
-                        loadWalletList(wallets)
-                    }
-                }
-
-                onPendingLoaded: {
-                    if (loginTracker == 1){
-                        loadPendingList(pending)
-                    }
-                }
-
-                onClearSettings:{
-                    if (loginTracker == 1){
-                        clearSettings();
-                    }
-                }
-
-                onSettingsLoaded: {
-                    if (loginTracker == 1){
-                        loadSettings(settings);
-                        loadingSettings = 0
-                        verifyingBalances = 1
-                    }
-                }
-
-                onLoginSucceededChanged: {
-                    if (loginTracker == 1){
-                        selectedPage = "home"
-                        mainRoot.pop()
-                        mainRoot.push("../Home.qml")
-                        username = userName.text
-                        loginSuccesTimer.start()
-                        loadingSettings = 0
-                        verifyingBalances = 0
-                    }
-                }
-
-                onLoginFailedChanged: {
-                    if (loginTracker == 1){
-                        checkUsername = 0
-                        keyPairSend = 0
-                        checkIdentity = 0
-                        sessionKey = 0
-                        receiveSessionID = 0
-                        loadingSettings = 0
-                        passError = 1
-                        passWord.text = ""
-                        loginInitiated  = false
-                    }
-                }
-
-                onUsernameAvailable: {
-                    if (loginTracker == 1){
-                        checkUsername = 0
-                        passError = 1
-                        passWord.text = ""
-                        loginInitiated  = false
-                    }
-                }
-
-                onWalletNotFound: {
-                    if (loginTracker == 1){
-                        checkUsername = 0
-                        keyPairSend = 0
-                        checkIdentity = 0
-                        sessionKey = 0
-                        receiveSessionID = 0
-                        loadingSettings = 0
-                        passWord.text = ""
-                        loginInitiated  = false
-                    }
-                }
-            }
         }
 
         Text {
@@ -344,7 +213,7 @@ Item {
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             color: (userName.text != "" && passWord.text != "") ? "#F2F2F2" : "#979797"
-            font.bold: true
+            //font.bold: true
             anchors.horizontalCenter: logInButton.horizontalCenter
             anchors.verticalCenter: logInButton.verticalCenter
             visible: logInButton.visible
@@ -362,6 +231,18 @@ Item {
             border.color: (userName.text != "" && passWord.text != "") ? maincolor : "#727272"
             opacity: 0.50
             visible: logInButton.visible
+        }
+
+        AnimatedImage  {
+            id: waitingDots
+            source: 'qrc:/gifs/loading-gif_01.gif'
+            width: 90
+            height: 60
+            anchors.horizontalCenter: logInButton.horizontalCenter
+            anchors.bottom: loginModalBody.bottom
+            anchors.bottomMargin: -10
+            playing: loginInitiated == true
+            visible: loginInitiated == true
         }
 
         Label {
@@ -450,10 +331,13 @@ Item {
 
         Label {
             id: importAccount
-            text: "Import an existing account?"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: login.bottom
-            anchors.topMargin: 20
+            text: "Import an existing account"
+            anchors.horizontalCenter: (myOS == "android" || myOS == "ios")? parent.horizontalCenter : undefined
+            anchors.verticalCenter: (myOS == "android" || myOS == "ios")? undefined : restoreAccount.verticalCenter
+            anchors.top: (myOS == "android" || myOS == "ios")? login.bottom : undefined
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? 20 : undefined
+            anchors.right: (myOS == "android" || myOS == "ios")? undefined : restoreAccount.left
+            anchors.rightMargin: (myOS == "android" || myOS == "ios")? undefined : 50
             color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
@@ -468,6 +352,15 @@ Item {
 
                 MouseArea {
                     anchors.fill: importAccountButton
+                    hoverEnabled: true
+
+                    onEntered: {
+                        underlineImport.visible = true
+                    }
+
+                    onExited: {
+                        underlineImport.visible = false
+                    }
 
                     onClicked: {
                         loginTracker = 0
@@ -484,6 +377,7 @@ Item {
                 anchors.top: importAccount.bottom
                 anchors.topMargin: 5
                 color: "#0ED8D2"
+                visible: (myOS == "android" || myOS == "ios")
             }
         }
 
@@ -492,18 +386,22 @@ Item {
             text: "You don't have an account?"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: login.bottom
-            anchors.topMargin: 70
+            anchors.topMargin: 120
             color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
+            visible: (myOS == "android" || myOS == "ios")
         }
 
         Label {
             id: createAccount
-            text: "Create one here."
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: noAccount.bottom
-            anchors.topMargin: 15
+            text: (myOS == "android" || myOS == "ios")? "Create one here" : "Create an account"
+            anchors.horizontalCenter: (myOS == "android" || myOS == "ios")? parent.horizontalCenter : undefined
+            anchors.verticalCenter: (myOS == "android" || myOS == "ios")? undefined : restoreAccount.verticalCenter
+            anchors.top: (myOS == "android" || myOS == "ios")? noAccount.bottom : undefined
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? 15 : undefined
+            anchors.left: (myOS == "android" || myOS == "ios")? undefined : restoreAccount.right
+            anchors.leftMargin: (myOS == "android" || myOS == "ios")? undefined : 50
             color: "#F2F2F2"
             font.pixelSize: 18
             font.family: xciteMobile.name
@@ -518,11 +416,21 @@ Item {
 
                 MouseArea {
                     anchors.fill: createAccountButton
+                    hoverEnabled: true
+
+                    onEntered: {
+                        underlineCreate.visible = true
+                    }
+
+                    onExited: {
+                        underlineCreate.visible = false
+                    }
 
                     onClicked: {
                         userSettings.accountCreationCompleted = false
                         mainRoot.pop()
-                        mainRoot.push("../CreateAccount.qml")
+                        selectedPage = "createAccount"
+                        mainRoot.push("qrc:/+mobile/CreateAccount.qml")
                         loginTracker = 0
                     }
                 }
@@ -533,10 +441,222 @@ Item {
             id: underlineCreate
             width: createAccount.width
             height: 1
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.horizontalCenter: createAccount.horizontalCenter
             anchors.top: createAccount.bottom
             anchors.topMargin: 5
             color: "#0ED8D2"
+            visible: (myOS == "android" || myOS == "ios")
+        }
+
+        Label {
+            id: restoreAccount
+            text: "Restore an existing account"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: login.bottom
+            anchors.topMargin: 70
+            color: "#F2F2F2"
+            font.pixelSize: 18
+            font.family: xciteMobile.name
+
+            Rectangle {
+                id: restoreAccountButton
+                width: restoreAccount.width
+                height: 30
+                anchors.horizontalCenter: restoreAccount.horizontalCenter
+                anchors.verticalCenter: restoreAccount.verticalCenter
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: restoreAccountButton
+                    hoverEnabled: true
+
+                    onEntered: {
+                        underlineRestore.visible = true
+                    }
+
+                    onExited: {
+                        underlineRestore.visible = false
+                    }
+
+                    onClicked: {
+                        loginTracker = 0
+                        restoreTracker = 1
+                    }
+                }
+            }
+
+            Rectangle {
+                id: underlineRestore
+                width: restoreAccount.width
+                height: 1
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: restoreAccount.bottom
+                anchors.topMargin: 5
+                color: "#0ED8D2"
+                visible: (myOS == "android" || myOS == "ios")
+            }
+        }
+    }
+
+    Timer {
+        id: loginSuccesTimer
+        interval: 2000
+        repeat: false
+        running: false
+
+        onTriggered: {
+            passError = 0
+            networkError = 0
+            loginTracker = 0
+            sessionClosed = 0
+            sessionStart = 1
+            loginInitiated  = false
+            verifyingBalances = 0
+        }
+    }
+
+    Connections {
+        target: UserSettings
+
+        onCreateUniqueKeyPair: {
+            if (loginTracker == 1){
+                checkUsername = 0
+                keyPairSend = 1
+            }
+        }
+
+        onCheckIdentity: {
+            if (loginTracker == 1){
+                keyPairSend = 0
+                checkIdentity = 1
+            }
+        }
+
+        onReceiveSessionEncryptionKey: {
+            if (loginTracker == 1){
+                checkIdentity = 0
+                sessionKey = 1
+            }
+        }
+
+        onReceiveSessionID: {
+            if (loginTracker == 1){
+                sessionKey = 0
+                receiveSessionID = 1
+            }
+        }
+
+        onLoadingSettings: {
+            if (loginTracker == 1){
+                receiveSessionID = 0
+                loadingSettings = 1
+            }
+        }
+
+        onContactsLoaded: {
+            if (loginTracker == 1){
+                loadContactList(contacts)
+            }
+        }
+
+        onAddressesLoaded: {
+            if (loginTracker == 1){
+                loadAddressList(addresses)
+            }
+        }
+        onWalletLoaded: {
+            if (loginTracker == 1){
+                loadWalletList(wallets)
+            }
+        }
+
+        onPendingLoaded: {
+            if (loginTracker == 1){
+                loadPendingList(pending)
+            }
+        }
+
+        onClearSettings:{
+            if (loginTracker == 1){
+                clearSettings();
+            }
+        }
+
+        onSettingsLoaded: {
+            if (loginTracker == 1){
+                loadSettings(settings);
+                loadingSettings = 0
+                if (userSettings.accountCreationCompleted) {
+                    verifyingBalances = 1
+                }
+            }
+        }
+
+        onLoginSucceededChanged: {
+            console.log("my username is: " + userName.text.trim())
+            if (loginTracker == 1){
+                mainRoot.pop()
+                mainRoot.push("qrc:/+mobile/Home.qml")
+                myUsername = userName.text.trim()
+                tttSetUsername(myUsername)
+                initializeTtt()
+                loginSuccesTimer.start()
+                loadingSettings = 0
+                verifyingBalances = 0
+                status = userSettings.xChatDND === true? "dnd" : "idle"
+                loginInitiated  = false
+            }
+        }
+
+        onLoginFailedChanged: {
+            if (loginTracker == 1){
+                verifyingBalances = 0
+                checkUsername = 0
+                keyPairSend = 0
+                checkIdentity = 0
+                sessionKey = 0
+                receiveSessionID = 0
+                loadingSettings = 0
+                passError = 1
+                passWord.text = ""
+                loginInitiated  = false
+            }
+        }
+
+        onNoInternet: {
+            if (loginTracker == 1){
+                networkError = 1
+                checkUsername = 0
+                keyPairSend = 0
+                checkIdentity = 0
+                sessionKey = 0
+                receiveSessionID = 0
+                loadingSettings = 0
+                passWord.text = ""
+                loginInitiated  = false
+            }
+        }
+
+        onUsernameAvailable: {
+            if (loginTracker == 1){
+                checkUsername = 0
+                passError = 1
+                passWord.text = ""
+                loginInitiated  = false
+            }
+        }
+
+        onWalletNotFound: {
+            if (loginTracker == 1){
+                checkUsername = 0
+                keyPairSend = 0
+                checkIdentity = 0
+                sessionKey = 0
+                receiveSessionID = 0
+                loadingSettings = 0
+                passWord.text = ""
+                loginInitiated  = false
+            }
         }
     }
 }

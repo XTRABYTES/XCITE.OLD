@@ -17,16 +17,19 @@ import QtGraphicalEffects 1.0
 import QtMultimedia 5.8
 import QtQuick.Window 2.2
 
-import "../Controls" as Controls
+import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: backgroundSettings
     z: 1
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     color: darktheme == true? "#14161B" : "#FDFDFD"
 
-    LinearGradient {
+   LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
         end: Qt.point(0, parent.height)
@@ -38,11 +41,9 @@ Rectangle {
     }
 
     property int clearFailed: 0
-    property bool clearAllInitiated: false
-    property bool changeVolumeInitiated: false
     property int changeVolumeFailed: 0
-    property bool changeSystemVolumeInitiated: false
     property int changeSystemVolumeFailed: 0
+    property int changeBalanceVisibleFailed: 0
 
     MouseArea {
         anchors.fill: parent
@@ -72,7 +73,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onDoubleClicked: {
-                    debugTracker = 1
+                    //debugTracker = 1
                 }
             }
         }
@@ -81,7 +82,7 @@ Rectangle {
     Flickable {
         id: scrollArea
         width: parent.width
-        contentHeight: currencyLabel.height + pincodeLabel.height + changePinButton.height + passwordLabel.height + changePasswordButton.height + notificationLabel.height + volumeLabel.height + systemVolumeLabel.height + 360
+        contentHeight: currencyLabel.height + showBalanceLabel.height + pincodeLabel.height + changePinButton.height + passwordLabel.height + changePasswordButton.height + notificationLabel.height + volumeLabel.height + systemVolumeLabel.height + 385
         anchors.left: parent.left
         anchors.top: welcomeText.bottom
         anchors.topMargin: 30
@@ -92,13 +93,14 @@ Rectangle {
         Label {
             id: currencyLabel
             z: 1
-            text: "WALLET CURRENCY:"
+            text: "Wallet currency:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
-            anchors.top: welcomeText.bottom
-            anchors.topMargin: 30
+            anchors.top: parent.top
+            anchors.topMargin: 10
             anchors.left: parent.left
             anchors.leftMargin: 28
         }
@@ -150,7 +152,7 @@ Rectangle {
             id: selectedCurrency
             z: 1
             text: fiatCurrencies.get(userSettings.defaultCurrency).currency + " - " + fiatCurrencies.get(userSettings.defaultCurrency).ticker
-            font.pixelSize: 20
+            font.pixelSize: 16
             font.family: xciteMobile.name
             color: themecolor
             anchors.verticalCenter: picklistArrow.verticalCenter
@@ -226,15 +228,94 @@ Rectangle {
         }
 
         Label {
-            id: pincodeLabel
+            id: showBalanceLabel
             z: 1
-            text: "PINLOCK ACTIVE:"
+            text: "Show balance"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: picklistArrow.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 25
+            anchors.left: parent.left
+            anchors.leftMargin: 28
+        }
+
+        Rectangle {
+            id: balanceSwitch
+            z: 1
+            width: 20
+            height: 20
+            radius: 10
+            anchors.verticalCenter: showBalanceLabel.verticalCenter
+            anchors.right: picklistArrow.right
+            color: "transparent"
+            border.color: themecolor
+            border.width: 2
+
+            Rectangle {
+                id: balanceIndicator
+                z: 1
+                width: 12
+                height: 12
+                radius: 8
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                color: userSettings.showBalance === true ? maincolor : "#757575"
+
+                MouseArea {
+                    id: balanceButton
+                    width: 20
+                    height: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    onPressed: {
+                        detectInteraction()
+                    }
+
+                    onClicked: {
+                        if (changeBalanceVisibleInitiated == false && currencyTracker == 0 && soundTracker == 0) {
+                            oldBalanceVisible = userSettings.volume
+                            if (userSettings.showBalance === true) {
+                                userSettings.showBalance = false
+                            }
+                            else {
+                                userSettings.showBalance = true
+                            }
+                            changeBalanceVisibleInitiated = true
+                            updateToAccount()
+                        }
+                    }
+                }
+            }
+        }
+
+        Label {
+            id: balanceSwitchLabel
+            text: userSettings.showBalance === true ? "Yes" : "No"
+            anchors.right: balanceSwitch.left
+            anchors.rightMargin: 7
+            anchors.verticalCenter: balanceSwitch.verticalCenter
+            anchors.verticalCenterOffset: 1
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.capitalization: Font.SmallCaps
+            color: userSettings.showBalance === true ? maincolor : "#757575"
+        }
+
+        Label {
+            id: pincodeLabel
+            z: 1
+            text: "Pinlock active:"
+            font.pixelSize: 16
+            font.family: xciteMobile.name
+            font.bold: true
+            font.capitalization: Font.SmallCaps
+            color: themecolor
+            anchors.top: balanceSwitch.bottom
+            anchors.topMargin: 25
             anchors.left: parent.left
             anchors.leftMargin: 28
         }
@@ -246,7 +327,7 @@ Rectangle {
             height: 20
             radius: 10
             anchors.verticalCenter: pincodeLabel.verticalCenter
-            anchors.right: picklistArrow.right
+            anchors.right: balanceSwitch.right
             color: "transparent"
             border.color: themecolor
             border.width: 2
@@ -291,9 +372,31 @@ Rectangle {
 
                     onPincodeCorrect: {
                         if (pinOK == 1 && unlockPin == 1) {
+                            clearPinInitiated = true
+                            oldPinlock = userSettings.pinlock
                             userSettings.pinlock = false
-                            saveAppSettings();
                             savePincode("0000")
+                        }
+                    }
+
+                    onSaveSucceeded: {
+                        if (clearPinInitiated == true) {
+                            clearPinInitiated = false
+                        }
+                    }
+
+                    onSaveFailed: {
+                        if (clearPinInitiated == true) {
+                            clearPinInitiated = false
+                            userSettings.pinlock = oldPinlock
+                        }
+                    }
+
+                    onNoInternet: {
+                        networkError = 1
+                        if (clearPinInitiated == true) {
+                            clearPinInitiated = false
+                            userSettings.pinlock = oldPinlock
                         }
                     }
                 }
@@ -302,13 +405,14 @@ Rectangle {
 
         Label {
             id: pincodeSwitchLabel
-            text: userSettings.pinlock === true ? "ACTIVE" : "NOT ACTIVE"
+            text: userSettings.pinlock === true ? "Active" : "Not active"
             anchors.right: pincodeSwitch.left
             anchors.rightMargin: 7
             anchors.verticalCenter: pincodeSwitch.verticalCenter
             anchors.verticalCenterOffset: 1
-            font.pixelSize: 20
+            font.pixelSize: 16
             font.family: xciteMobile.name
+            font.capitalization: Font.SmallCaps
             color: userSettings.pinlock === true ? maincolor : "#757575"
         }
 
@@ -319,7 +423,7 @@ Rectangle {
             color: userSettings.pinlock === true? maincolor : "#727272"
             opacity: 0.25
             anchors.top: pincodeSwitchLabel.bottom
-            anchors.topMargin: 25
+            anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
 
             MouseArea {
@@ -372,10 +476,11 @@ Rectangle {
         Label {
             id: passwordLabel
             z: 1
-            text: "ACCOUNT PASSWORD:"
+            text: "Account password:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: changePinButton.bottom
             anchors.topMargin: 25
@@ -390,7 +495,7 @@ Rectangle {
             color: maincolor
             opacity: 0.25
             anchors.top: passwordLabel.bottom
-            anchors.topMargin: 25
+            anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
 
             MouseArea {
@@ -422,7 +527,7 @@ Rectangle {
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: maincolor
+            color: darktheme == true? "#F2F2F2" : maincolor
             anchors.horizontalCenter: changePasswordButton.horizontalCenter
             anchors.verticalCenter: changePasswordButton.verticalCenter
         }
@@ -441,10 +546,11 @@ Rectangle {
         Label {
             id: notificationLabel
             z: 1
-            text: "NOTIFICATION SOUND:"
+            text: "Notification sounds:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: changePasswordButton.bottom
             anchors.topMargin: 25
@@ -499,7 +605,7 @@ Rectangle {
             id: chosenSound
             z: 1
             text: soundList.get(selectedSound).name
-            font.pixelSize: 20
+            font.pixelSize: 16
             font.family: xciteMobile.name
             color: themecolor
             anchors.verticalCenter: picklistArrow2.verticalCenter
@@ -546,7 +652,7 @@ Rectangle {
             visible: soundTracker == 1
             clip: true
 
-            Controls.SoundPicklist {
+            Mobile.SoundPicklist {
                 id: mySoundPicklist
             }
         }
@@ -586,13 +692,14 @@ Rectangle {
         Label {
             id: volumeLabel
             z: 1
-            text: "NOTIFICATION VOLUME:"
+            text: "Notification volume:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: picklistArrow2.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 25
             anchors.left: parent.left
             anchors.leftMargin: 28
         }
@@ -603,7 +710,7 @@ Rectangle {
             height: selectedVolume == 0? 40 : 30
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.left
-            anchors.horizontalCenterOffset: 58
+            anchors.horizontalCenterOffset: 48
             anchors.verticalCenter: volumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -632,8 +739,8 @@ Rectangle {
             source: selectedVolume == 1? 'qrc:/icons/mobile/volume_level_1-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_1-icon_light.svg' : 'qrc:/icons/mobile/volume_level_1-icon_dark.svg')
             height: selectedVolume == 1? 40 : 30
             fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: volumeLevel0.right
-            anchors.horizontalCenterOffset: 60
+            anchors.horizontalCenter: volumeLevel0.horizontalCenter
+            anchors.horizontalCenterOffset: (appWidth - 96)/3
             anchors.verticalCenter: volumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -662,8 +769,8 @@ Rectangle {
             source: selectedVolume == 2? 'qrc:/icons/mobile/volume_level_2-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_2-icon_light.svg' : 'qrc:/icons/mobile/volume_level_2-icon_dark.svg')
             height: selectedVolume == 2? 40 : 30
             fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: volumeLevel3.left
-            anchors.horizontalCenterOffset: -60
+            anchors.horizontalCenter: volumeLevel3.horizontalCenter
+            anchors.horizontalCenterOffset: -(appWidth - 96)/3
             anchors.verticalCenter: volumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -720,10 +827,11 @@ Rectangle {
         Label {
             id: systemVolumeLabel
             z: 1
-            text: "APP SYSTEM SOUND VOLUME:"
+            text: "App system volume:"
             font.pixelSize: 16
             font.family: xciteMobile.name
             font.bold: true
+            font.capitalization: Font.SmallCaps
             color: themecolor
             anchors.top: volumeLabel.bottom
             anchors.topMargin: 60
@@ -736,8 +844,7 @@ Rectangle {
             source: selectedSystemVolume == 0? 'qrc:/icons/mobile/volume_level_0-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_0-icon_light.svg' : 'qrc:/icons/mobile/volume_level_0-icon_dark.svg')
             height: selectedSystemVolume == 0? 40 : 30
             fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: parent.left
-            anchors.horizontalCenterOffset: 58
+            anchors.horizontalCenter: volumeLevel0.horizontalCenter
             anchors.verticalCenter: systemVolumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -765,8 +872,7 @@ Rectangle {
             source: selectedSystemVolume == 1? 'qrc:/icons/mobile/volume_level_3-icon_focus.svg' : (darktheme == true? 'qrc:/icons/mobile/volume_level_3-icon_light.svg' : 'qrc:/icons/mobile/volume_level_3-icon_dark.svg')
             height: selectedSystemVolume == 1? 40 : 30
             fillMode: Image.PreserveAspectFit
-            anchors.horizontalCenter: systemVolumeLevel0.right
-            anchors.horizontalCenterOffset: 60
+            anchors.horizontalCenter: volumeLevel1.horizontalCenter
             anchors.verticalCenter: systemVolumeLabel.bottom
             anchors.verticalCenterOffset: 30
 
@@ -800,9 +906,31 @@ Rectangle {
                 if (changeSystemVolumeInitiated == true) {
                     changeSystemVolumeInitiated = false
                 }
+                if (changeBalanceVisibleInitiated == true) {
+                    changeBalanceVisibleInitiated = false
+                }
             }
 
             onSaveFailed: {
+                if (changeVolumeInitiated == true) {
+                    userSettings.volume = oldVolume
+                    changeVolumeFailed = 1
+                    changeVolumeInitiated = false
+                }
+                if (changeSystemVolumeInitiated == true) {
+                    userSettings.systemVolume = oldSystemVolume
+                    changeSystemVolumeFailed = 1
+                    changeSystemVolumeInitiated = false
+                }
+                if (changeBalanceVisibleInitiated == true) {
+                    userSettings.showBalance = oldBalanceVisible
+                    changeBalanceVisibleFailed = 1
+                    changeBalanceVisibleInitiated = false
+                }
+            }
+
+            onNoInternet: {
+                networkError = 1
                 if (changeVolumeInitiated == true) {
                     userSettings.volume = oldVolume
                     changeVolumeFailed = 1
@@ -824,8 +952,8 @@ Rectangle {
         height: 34
         color: maincolor
         opacity: 0.25
-        anchors.bottom: closeSettings.top
-        anchors.bottomMargin: 35
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         visible: clearAllInitiated == false
 
@@ -906,7 +1034,6 @@ Rectangle {
                 onSaveSucceeded: {
                     if (clearAllInitiated == true) {
                         clearAllInitiated = false
-                        pinClearInitiated = false
                     }
                 }
 
@@ -920,7 +1047,21 @@ Rectangle {
                         userSettings.volume = oldVolume
                         userSettings.systemVolume = oldSystemVolume
                         clearAllInitiated = false
-                        pinClearInitiated = false
+                        clearFailed = 1
+                    }
+                }
+
+                onNoInternet: {
+                    networkError = 1
+                    if (clearAllInitiated == true) {
+                        userSettings.locale = oldLocale
+                        userSettings.defaultCurrency = oldDefaultCurrency
+                        userSettings.theme = oldTheme
+                        userSettings.pinlock = oldPinlock
+                        userSettings.sound = oldSound
+                        userSettings.volume = oldVolume
+                        userSettings.systemVolume = oldSystemVolume
+                        clearAllInitiated = false
                         clearFailed = 1
                     }
                 }
@@ -933,7 +1074,7 @@ Rectangle {
         font.family: "Brandon Grotesque"
         font.pointSize: 14
         font.bold: true
-        color: maincolor
+        color: darktheme == true? "#F2F2F2" : maincolor
         anchors.horizontalCenter: clearButton.horizontalCenter
         anchors.verticalCenter: clearButton.verticalCenter
         visible: clearAllInitiated == false
@@ -983,11 +1124,11 @@ Rectangle {
 
         Label {
             id: popupClearText
-            text: "FAILED to reset your settings!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to reset your settings!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -1021,11 +1162,11 @@ Rectangle {
 
         Label {
             id: popupCurrencyText
-            text: "FAILED to change your currency!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to change your currency!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -1059,11 +1200,11 @@ Rectangle {
 
         Label {
             id: popupSoundText
-            text: "FAILED to change your sound!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to change your sound!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -1084,7 +1225,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -100
-        visible: volumeChangeFailed == 1
+        visible: changeVolumeFailed == 1
 
         Rectangle {
             id: popupVolumeFail
@@ -1097,21 +1238,21 @@ Rectangle {
 
         Label {
             id: popupVolumeText
-            text: "FAILED to change your notification volume!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to change your notification volume!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
 
         Timer {
             repeat: false
-            running: volumeChangeFailed == 1
+            running: changeVolumeFailed == 1
             interval: 2000
 
-            onTriggered: volumeChangeFailed = 0
+            onTriggered: changeVolumeFailed = 0
         }
     }
 
@@ -1122,7 +1263,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -100
-        visible: systemVolumeChangeFailed == 1
+        visible: changeSystemVolumeFailed == 1
 
         Rectangle {
             id: popupSystemVolumeFail
@@ -1135,35 +1276,66 @@ Rectangle {
 
         Label {
             id: popupSystemVolumeText
-            text: "FAILED to change your system sound volume!"
+            text: "<font color='#E55541'><b>FAILED</b></font> to change your system sound volume!"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
             font.bold: true
-            color: "#E55541"
+            color: "#F2F2F2"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
         }
 
         Timer {
             repeat: false
-            running: systemVolumeChangeFailed == 1
+            running: changeSystemVolumeFailed == 1
             interval: 2000
 
-            onTriggered: systemVolumeChangeFailed = 0
+            onTriggered: changeSystemVolumeFailed = 0
         }
     }
 
-    Controls.Pincode {
-        id: myPincode
-        z: 5
-        anchors.top: parent.top
-        anchors.left: parent.left
+    Item {
+        z: 12
+        width: popupShowBalanceFail.width
+        height: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -100
+        visible: changeBalanceVisibleFailed == 1
+
+        Rectangle {
+            id: popupShowBalanceFail
+            height: 50
+            width: popupShowBalanceText.width + 56
+            color: "#34363D"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            id: popupShowBalanceText
+            text: "<font color='#E55541'><b>FAILED</b></font> to update balance visibility!"
+            font.family: "Brandon Grotesque"
+            font.pointSize: 14
+            font.bold: true
+            color: "#F2F2F2"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Timer {
+            repeat: false
+            running: changeBalanceVisibleFailed == 1
+            interval: 2000
+
+            onTriggered: changeBalanceVisibleFailed = 0
+        }
     }
 
     Item {
         z: 3
-        width: Screen.width
-        height: myOS === "android"? 215 : 235
+        width: parent.width
+        height: myOS === "android"? 165 : 185
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -1178,12 +1350,12 @@ Rectangle {
             }
         }
     }
-
+    /**
     Label {
         id: closeSettings
         z: 4
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         text: "BACK"
         font.pixelSize: 14
@@ -1216,28 +1388,29 @@ Rectangle {
             }
         }
     }
+    */
+    Mobile.Pincode {
+        id: myPincode
+        z: 5
+        anchors.top: parent.top
+        anchors.left: parent.left
+    }
 
-    Controls.ChangePassword {
+    Mobile.ChangePassword {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.DebugConsole {
+    Mobile.DebugConsole {
         z: 100
         anchors.left: parent.left
         anchors.top: parent.top
     }
 
-    Controls.LogOut {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
-    }
-
-    Controls.Goodbey {
-        z: 100
-        anchors.left: parent.left
-        anchors.top: parent.top
+    Component.onDestruction: {
+        currencyTracker = 0
+        soundTracker = 0
+        appsTracker = 0
     }
 }

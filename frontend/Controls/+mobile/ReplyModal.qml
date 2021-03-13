@@ -18,9 +18,9 @@ import QtQuick.Layouts 1.3
 
 Item {
     id: replyModal
-    width: Screen.width
-    height: Screen.height
-    anchors.top: Screen.top
+    width: appWidth
+    height: appHeight
+    anchors.top: xcite.top
 
 
     property alias modalHeight: replyModalBody.height
@@ -33,7 +33,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
-        width: parent.width - 50
+        width: (myOS == "android" || myOS == "ios")? parent.width - 50 : (appWidth/3) + 50
         color: "#1B2934"
         opacity: 0.05
 

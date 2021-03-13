@@ -17,11 +17,14 @@ import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: backgroundSignUp
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     color: "#14161B"
 
     LinearGradient {
@@ -33,6 +36,7 @@ Rectangle {
             GradientStop { position: 0.0; color: "transparent" }
             GradientStop { position: 1.0; color: maincolor }
         }
+        visible: (myOS == "android" || myOS == "ios")
     }
 
     Image {
@@ -55,8 +59,6 @@ Rectangle {
     property int selectStorage: 0
     property int storageSwitchState: 0
     property int verifyUsername : 0
-    property bool createAccountInitiated: false
-    property bool saveInitiated: false
     property int saveFailed: 0
     property string failError: ""
     property int checkUsername: 0
@@ -119,7 +121,7 @@ Rectangle {
         Rectangle {
             id: setupScrollArea
             width: parent.width
-            height: 800
+            height: (myOS == "android" || myOS == "ios")? 800 : parent.height
             color: "transparent"
 
             Label {
@@ -127,11 +129,11 @@ Rectangle {
                 text: "WELCOME TO XCITE"
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: 25
+                anchors.topMargin: (myOS == "android" || myOS == "ios")? 25 : appWidth/48
                 color: maincolor
                 font.pixelSize: 24
                 font.family: xciteMobile.name
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
             }
 
             Label {
@@ -146,7 +148,7 @@ Rectangle {
 
             Text {
                 id: createUsernameText
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
                 anchors.left: userName.left
                 anchors.top: createAccountText.bottom
@@ -155,7 +157,7 @@ Rectangle {
                 wrapMode: Text.WordWrap
                 text: "Choose a username, only alphanumeric characters are allowed, no spaces, minimum 6 and no more than 12 characters"
                 color: "#F2F2F2"
-                font.pixelSize: 18
+                font.pixelSize: (myOS == "android" || myOS == "ios")? 18 : 14
                 font.family: xciteMobile.name
                 visible: accountCreated == 0 && signUpError == 0
             }
@@ -163,7 +165,7 @@ Rectangle {
             Controls.TextInput {
                 id: userName
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 placeholder: "USERNAME"
                 text: ""
                 mobile: 1
@@ -175,6 +177,7 @@ Rectangle {
                 color: themecolor
                 textBackground: "#0B0B09"
                 font.pixelSize: 14
+                validator: RegExpValidator { regExp: /[0-9A-Za-z]+/ }
 
                 onTextChanged: {
                     usernameLength(userName.text)
@@ -219,6 +222,10 @@ Rectangle {
                                 usernameWarning = 2
                             }
 
+                            onNoInternet: {
+                                networkError = 1
+                            }
+
                             onSettingsServerError: {
                                 networkError = 1
                             }
@@ -255,7 +262,7 @@ Rectangle {
 
             Text {
                 id: createPasswordText
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 4
                 anchors.left: createUsernameText.left
                 anchors.top: userName.bottom
@@ -271,7 +278,7 @@ Rectangle {
             Controls.TextInput {
                 id: passWord1
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 placeholder: "PASSWORD"
                 text: ""
                 mobile: 1
@@ -317,7 +324,7 @@ Rectangle {
             Controls.TextInput {
                 id: passWord2
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 placeholder: "RETYPE PASSWORD"
                 text: ""
                 mobile: 1
@@ -367,7 +374,7 @@ Rectangle {
 
             Rectangle {
                 id: createAccountButton
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/6
                 height: 34
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: passWord2.bottom
@@ -417,7 +424,7 @@ Rectangle {
                         if ((usernameWarning == 0 || usernameWarning == 2)  && passwordWarning1 == 0 && passwordWarning2 == 0 && userName.text != "" && passWord1.text != "" && passWord2.text != "") {
                             createAccountInitiated = true
                             checkUsername = 1
-                            createUser(userName.text, passWord1.text)
+                            createUser(userName.text.toLocaleLowerCase(), passWord1.text)
                         }
                     }
                 }
@@ -459,11 +466,13 @@ Rectangle {
                             userSettings.sound = 0
                             userSettings.volume = 1
                             userSettings.systemVolume = 1
+                            userSettings.tagMe = true
+                            userSettings.tagEveryone = true
                             userSettings.accountCreationCompleted = false
                             initialisePincode("0000");
                             contactList.setProperty(0, "firstName", "My addresses");
                             updateToAccount();
-                            username = userName.text
+                            myUsername = userName.text.trim()
                             newAccount = true
                             accountCreated = 1
                             availableUsername = 0
@@ -495,27 +504,82 @@ Rectangle {
                         }
                     }
 
+                    onNoInternet: {
+                        if (createAccountInitiated == true) {
+                            networkError = 1
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
+                        }
+                    }
+
                     onSaveFailedDBError: {
                         if (createAccountInitiated == true) {
                             failError = "Database ERROR"
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
+
                         }
                     }
 
                     onSaveFailedAPIError: {
                         if (createAccountInitiated == true) {
                             failError = "Network ERROR"
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
                         }
                     }
 
                     onSaveFailedInputError: {
                         if (createAccountInitiated == true) {
-                            failError = "Input ERROR"
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
                         }
                     }
 
                     onSaveFailedUnknownError: {
                         if (createAccountInitiated == true) {
-                            failError = "Unknown ERROR"
+                            signUpError = 1
+                            checkUsername = 0
+                            keyPairSend = 0
+                            sessionKey = 0
+                            receiveSessionID = 0
+                            savingSettings = 0
+                            userName.text = ""
+                            passWord1.text = ""
+                            passWord2.text = ""
+                            createAccountInitiated = false
                         }
                     }
                 }
@@ -527,7 +591,7 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pointSize: 14
                 color: ((usernameWarning == 0 || usernameWarning == 2) && passwordWarning1 == 0 && passwordWarning2 == 0)? "#F2F2F2" : "#979797"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: createAccountButton.horizontalCenter
                 anchors.verticalCenter: createAccountButton.verticalCenter
                 visible: createAccountInitiated == false
@@ -632,8 +696,9 @@ Rectangle {
 
                     onClicked: {
                         loginTracker = 1
+                        selectedPage = "onBoarding"
                         mainRoot.pop()
-                        mainRoot.push("../Onboarding.qml")
+                        mainRoot.push("qrc:/+mobile/Onboarding.qml")
                     }
                 }
             }
@@ -641,8 +706,8 @@ Rectangle {
     }
 
     Rectangle {
-        width: Screen.width
-        height: Screen.height
+        width: parent.width
+        height: parent.height
         color: bgcolor
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
@@ -659,11 +724,10 @@ Rectangle {
         id: accountFailed
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        width: 325
+        width: (myOS == "android" || myOS == "ios")? 325 : appWidth/3
         height: failedIcon.height + creationFailedLabel.height + closeFail.height + 130
         state: signUpError == 1? "up" : "down"
         color: "#14161B"
-
 
         states: [
             State {
@@ -672,7 +736,7 @@ Rectangle {
             },
             State {
                 name: "down"
-                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: 1.5 * Screen.height}
+                PropertyChanges { target: accountFailed; anchors.verticalCenterOffset: appHeight * 1.5}
             }
         ]
 
@@ -703,7 +767,7 @@ Rectangle {
             color: maincolor
             font.pixelSize: 14
             font.family: "Brandon Grotesque"
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
         }
 
         Label {
@@ -715,12 +779,12 @@ Rectangle {
             color: maincolor
             font.pixelSize: 14
             font.family: "Brandon Grotesque"
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
         }
 
         Rectangle {
             id: closeFail
-            width: doubbleButtonWidth / 2
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : appWidth/6
             height: 34
             color: maincolor
             opacity: 0.25
@@ -755,7 +819,7 @@ Rectangle {
             text: "TRY AGAIN"
             font.family: "Brandon Grotesque"
             font.pointSize: 14
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
             color: darktheme == true? "#F2F2F2" : maincolor
             anchors.horizontalCenter: closeFail.horizontalCenter
             anchors.verticalCenter: closeFail.verticalCenter
@@ -777,7 +841,7 @@ Rectangle {
         id: accountSuccess
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        width: 325
+        width: (myOS == "android" || myOS == "ios")? 325 : appWidth/3
         height: 270
         state: accountCreated == 1? "up" : "down"
         color: "#14161B"
@@ -790,7 +854,7 @@ Rectangle {
             },
             State {
                 name: "down"
-                PropertyChanges { target: accountSuccess; anchors.verticalCenterOffset: 1.5 * Screen.height}
+                PropertyChanges { target: accountSuccess; anchors.verticalCenterOffset: appHeight * 1.5}
             }
         ]
 
@@ -804,7 +868,7 @@ Rectangle {
 
         Label {
             id: welcomeUser
-            text: "WELCOME " + username
+            text: "WELCOME " + myUsername
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 20
@@ -829,7 +893,7 @@ Rectangle {
 
         Text {
             id: passwordWarning
-            width: doubbleButtonWidth
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
             maximumLineCount: 4
             anchors.left: confirmAccountButton.left
             horizontalAlignment: Text.AlignJustify
@@ -845,7 +909,7 @@ Rectangle {
 
         Rectangle {
             id: confirmAccountButton
-            width: doubbleButtonWidth
+            width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/6
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
@@ -886,14 +950,14 @@ Rectangle {
             font.family: xciteMobile.name
             font.pointSize: 14
             color: "#F2F2F2"
-            font.bold: true
+            font.bold: (myOS == "android" || myOS == "ios")
             anchors.horizontalCenter: confirmAccountButton.horizontalCenter
             anchors.verticalCenter: confirmAccountButton.verticalCenter
             visible: selectStorage == 0
         }
 
         Rectangle {
-            width: doubbleButtonWidth
+            width: confirmAccountButton.width
             height: 34
             anchors.horizontalCenter: confirmAccountButton.horizontalCenter
             anchors.bottom: confirmAccountButton.bottom
@@ -915,9 +979,9 @@ Rectangle {
 
             Label {
                 id: addWalletText1
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
-                anchors.left: continueButton.left
+                anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
                 text: "You can now add a wallet. You can choose to store your wallet keys on your device or in your account."
@@ -930,9 +994,9 @@ Rectangle {
 
             Label {
                 id: addWalletText2
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
-                anchors.left: continueButton.left
+                anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
                 text: "Storing your keys on your device will require you to import your keys in all the devices you wish to access your wallet from."
@@ -946,12 +1010,12 @@ Rectangle {
 
             Label {
                 id: addWalletText3
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
-                anchors.left: continueButton.left
+                anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignJustify
                 wrapMode: Text.WordWrap
-                text: "Storing your keys in your account will alow you to access your wallet from any device running XCITE Mobile."
+                text: "Storing your keys in your account will allow you to access your wallet from any device running XCITE Mobile."
                 anchors.top: addWalletText2.bottom
                 anchors.topMargin: 20
                 color: themecolor
@@ -1002,14 +1066,14 @@ Rectangle {
 
             Rectangle {
                 id: continueButton
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/6
                 height: 34
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: storageSwitch.bottom
                 anchors.topMargin: 30
                 color: "transparent"
                 opacity: 0.5
-                visible: saveInitiated == false
+                visible: saveAccountInitiated == false
 
                 LinearGradient {
                     anchors.fill: parent
@@ -1030,7 +1094,7 @@ Rectangle {
                     }
 
                     onReleased: {
-                        saveInitiated = true
+                        saveAccountInitiated = true
                         saveAppSettings()
                     }
                 }
@@ -1039,19 +1103,28 @@ Rectangle {
                     target: UserSettings
 
                     onSaveSucceeded: {
-                        if (saveInitiated == true) {
+                        if (saveAccountInitiated == true) {
                             mainRoot.pop()
-                            mainRoot.push("../InitialSetup.qml")
+                            selectedPage = "initialSetup"
+                            mainRoot.push("qrc:/+mobile/InitialSetup.qml")
                             accountCreated = 0
                             selectStorage = 0
-                            saveInitiated = false
+                            saveAccountInitiated = false
                         }
                     }
 
                     onSaveFailed: {
-                        if (saveInitiated == true) {
+                        if (saveAccountInitiated == true) {
                             saveFailed = 1
-                            saveInitiated = false
+                            saveAccountInitiated = false
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (saveAccountInitiated == true) {
+                            networkError = 1
+                            saveFailed = 1
+                            saveAccountInitiated = false
                         }
                     }
                 }
@@ -1063,14 +1136,14 @@ Rectangle {
                 font.family: xciteMobile.name
                 font.pointSize: 14
                 color: "#F2F2F2"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: continueButton.horizontalCenter
                 anchors.verticalCenter: continueButton.verticalCenter
-                visible: saveInitiated == false
+                visible: saveAccountInitiated == false
             }
 
             Rectangle {
-                width: doubbleButtonWidth
+                width: continueButton.width
                 height: 34
                 anchors.horizontalCenter: continueButton.horizontalCenter
                 anchors.bottom: continueButton.bottom
@@ -1078,7 +1151,7 @@ Rectangle {
                 opacity: 0.5
                 border.width: 1
                 border.color: "#0ED8D2"
-                visible: saveInitiated == false
+                visible: saveAccountInitiated == false
             }
 
             AnimatedImage {
@@ -1088,20 +1161,10 @@ Rectangle {
                 height: 60
                 anchors.horizontalCenter: continueButton.horizontalCenter
                 anchors.verticalCenter: continueButton.verticalCenter
-                playing: saveInitiated == true
-                visible: saveInitiated == true
+                playing: saveAccountInitiated == true
+                visible: saveAccountInitiated == true
             }
         }
-    }
-
-    Image {
-        id: combinationMark
-        source: 'qrc:/icons/xby_logo_TM.svg'
-        height: 23.4
-        width: 150
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
     }
 }
 

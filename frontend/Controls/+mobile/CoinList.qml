@@ -16,11 +16,11 @@ import QtQuick.Window 2.2
 import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
-import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Controls
 
 Rectangle {
     id: allWalletCards
-    width: Screen.width
+    width: appWidth
     height: parent.height - 75
     color: "transparent"
 
@@ -32,7 +32,7 @@ Rectangle {
         Rectangle {
             id: currencyRow
             color: "transparent"
-            width: Screen.width
+            width: appWidth
             height: 100
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -153,7 +153,7 @@ Rectangle {
                     font.pixelSize: 14
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    visible: testnet == false
+                    visible: testnet == false && userSettings.showBalance === true
                 }
 
                 Text {
@@ -168,7 +168,7 @@ Rectangle {
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    visible: testnet == false
+                    visible: testnet == false && userSettings.showBalance === true
                 }
 
                 Label {
@@ -180,7 +180,7 @@ Rectangle {
                     font.pixelSize: 18
                     font.family:  xciteMobile.name
                     color: "#828282"
-                    visible: testnet == false
+                    visible: testnet == false && userSettings.showBalance === true
                 }
 
                 Text {
@@ -207,7 +207,6 @@ Rectangle {
                    onClicked: {
                         if (coinTracker == 0 && appsTracker == 0 && addCoinTracker == 0 && transferTracker == 0) {
                             coinIndex = coinID
-                            console.log("coinIndex: " + coinIndex)
                             countWallets()
                             coinTracker = 1
                         }

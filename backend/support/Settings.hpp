@@ -38,6 +38,7 @@ public:
     void setLocale(QString);
     QString CheckStatusCode(QString);
     void SaveFile(QString, QString, QString);
+    void BackupFile(QString, QString, QString);
     QString LoadFile(QString, QString);
     std::pair<QByteArray, QByteArray> createKeyPair();
     int rsaEncrypt(const unsigned char *message, size_t messageLength, unsigned char **encryptedMessage, unsigned char **encryptedKey,
@@ -48,6 +49,8 @@ public:
     QString createRandNum();
     void loginFile(QString username, QString password, QString fileLocation);
     void NoWalletFile();
+    void NoBackupFile();
+    void NoImportFile();
     void DownloadManagerHandler(URLObject *url);
 
 public slots:
@@ -58,6 +61,7 @@ public slots:
 
     bool SaveSettings();
     void ImportWallet(QString, QString);
+    void RestoreAccount(QString, QString);
     void LoadSettings(QByteArray settings, QString location);
     bool UserExists(QString username);
     void CreateUser(QString username, QString password);
@@ -67,6 +71,7 @@ public slots:
     void ExportWallet(QString walletlist);
     void UpdateAccount(QString addresslist, QString contactlist, QString walletlist, QString pendinglist);
     bool checkInternet(QString url);
+    void sendHello();
 
     void onCheckOS();
     void initialisePincode(QString pincode);
@@ -75,6 +80,8 @@ public slots:
     QString RestAPIPostCall(QString apiURL, QByteArray payload);
     void CheckSessionId();
     void CheckCamera();
+    void CheckWriteAccess();
+    void createRand(int limit);
 
     void downloadImage(QString imgUrl);
     void DownloadManagerRouter(QByteArray,QMap<QString,QVariant>);
@@ -85,6 +92,7 @@ public slots:
 
 signals:
     void oSReturned(const QString os);
+    void randReturn(int rand);
     void loginSucceededChanged();
     void loginFailedChanged();
     void userCreationSucceeded();
@@ -118,8 +126,11 @@ signals:
     void saveFailedInputError();
     void saveFailedUnknownError();
     void walletNotFound();
+    void settingsNotFound();
     void cameraCheckFailed();
     void cameraCheckPassed();
+    void writeCheckFailed();
+    void writeCheckPassed();
     void passwordChangedSucceeded();
     void passwordChangedFailed();
     void xchatConnectedLogin(QString username, QString route, QString status);

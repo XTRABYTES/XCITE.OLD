@@ -12,6 +12,7 @@
 
 #include <QSettings>
 #include "Explorer.hpp"
+#include "../xchat/xchat.hpp"
 #include <QWindow>
 
 
@@ -26,8 +27,6 @@ void Explorer::DownloadManagerHandler(URLObject *url){
     //  connect(manager,  SIGNAL(readTimeout(QMap<QString,QVariant>)),this,SLOT(internetTimeout(QMap<QString,QVariant>)),Qt::UniqueConnection);
 
     connect(manager,  SIGNAL(readFinished(QByteArray,QMap<QString,QVariant>)), this,SLOT(DownloadManagerRouter(QByteArray,QMap<QString,QVariant>)),Qt::UniqueConnection);
-
-
 }
 
 void Explorer::DownloadManagerRouter(QByteArray response, QMap<QString,QVariant> props){
@@ -63,7 +62,6 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
         if (coin.length() > 0){
             if ((coin == "xby") || (coin == "xfuel") || (coin == "xfuel-testnet")){
                 if (checkInternet("https://xtrabytes.global")) {
-
                     QString balance = "";
                     QString url = "https://xtrabytes.global/api/"+ coin.toLower() + "/address/" + address;
                     URLObject urlObj {QUrl(url)};
@@ -92,6 +90,7 @@ void Explorer::getBalanceEntireWallet(QString walletList, QString wallets){
             }
         }
     }
+    emit walletChecked();
     return;
 }
 
@@ -266,8 +265,7 @@ void Explorer::getBalanceAddressExtSlot(QByteArray response, QMap<QString,QVaria
             double convertFromSAT = balanceLong / 100000000;
             balance = QString::number(convertFromSAT);
         }
-
-        emit updateBalance(coin,address, balance);
+        emit updateBalance(coin.toUpper(),address,balance);
     }
 }
 
@@ -291,20 +289,27 @@ void Explorer::getTransactionStatusSlot(QByteArray response, QMap<QString,QVaria
 
     if (jsonResponse.object().contains("message")) {
         qDebug() << "transaction not found";
-        emit txidNotFound(coin, address, transaction, "true");
+        emit txidNotFound(coin, address, transaction, "rejected");
+        xchatRobot.SubmitMsg("dicom - explorer - transaction not found, coin: " + coin + " address: " + address + " txid: " + transaction);
     }
     else if (jsonResponse.object().contains("result")) {
         qDebug() << "transaction found";
 
         QJsonObject result = jsonResponse.object().value("result").toObject();
         int confirms = result.value("confirmations").toInt();
-        qDebug() << "confirmations: " + confirms;
+        qDebug() << "confirmations: " << confirms;
 
-        if (confirms >= 1) {
+        if (confirms >= 1 && confirms < 3) {
             emit txidConfirmed(coin, address, transaction, "true");
+            xchatRobot.SubmitMsg("dicom - explorer - transaction confirmed, coin: " + coin + " address: " + address + " txid: " + transaction + " confirmations: " + QString::number(confirms));
+        }
+        else if (confirms >= 3) {
+            emit txidConfirmed(coin, address, transaction, "confirmed");
+            xchatRobot.SubmitMsg("dicom - explorer - transaction confirmed, coin: " + coin + " address: " + address + " txid: " + transaction + " confirmations: " + QString::number(confirms));
         }
         else {
             emit txidExists(coin, address, transaction, "false");
+            xchatRobot.SubmitMsg("dicom - explorer - transaction found, coin: " + coin + " address: " + address + " txid: " + transaction);
         }
     }
 }

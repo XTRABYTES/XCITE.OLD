@@ -20,14 +20,23 @@ import "qrc:/Controls" as Controls
 
 Rectangle {
     id: logoutModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: (logoutTracker == 1 && goodbey == 0)? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
 
     property int logoutTimeout: 0
+    property int myTracker: logoutTracker
+
+
+
+    onMyTrackerChanged: {
+        if (myTracker == 0 && goodbey == 0) {
+
+        }
+    }
 
     states: [
         State {
@@ -36,7 +45,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: logoutModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: logoutModal; anchors.topMargin: logoutModal.height}
         }
     ]
 
@@ -115,7 +124,7 @@ Rectangle {
             id: logoutLabel
             width: parent.width - 56
             text: manualLogout == 1? ("Are you sure you want to log out?") :
-                                     (networkLogout == 1? ("Your session ID is no longer valid, someone else logged in using your account. You will be logged out automatically.") :
+                                     (networkLogout == 1? ("Your session ID could not be verified . You will be logged out automatically.") :
                                                           (sessionClosed == 1? ("Your session was closed by the server. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s). Do you wish to reconnect?") :
                                                                                (autoLogout == 1? ("You have not interacted for 5 minutes. You will be logged out automatically after " + (15 - logoutTimeout) + " second(s)") :
                                                                                                  (pinLogout == 1? ("Your gave 3 wrong pin numbers.") : ""))))
@@ -147,7 +156,7 @@ Rectangle {
 
         Item {
             id: buttons
-            width: parent.width - 56
+            width: (myOS == "android" || myOS == "ios")? appWidth - 56 : appWidth/2
             height: 34
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: logoutLabel.bottom
@@ -163,7 +172,7 @@ Rectangle {
 
                 Rectangle {
                     id: cancelLogoutButton
-                    width: doubbleButtonWidth / 2
+                    width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : appWidth/4
                     height: 34
                     color: maincolor
                     opacity: 0.25
@@ -224,7 +233,7 @@ Rectangle {
 
                 Rectangle {
                     id: yes
-                    width: (doubbleButtonWidth - 10) / 2
+                    width: (myOS == "android" || myOS == "ios")? (doubbleButtonWidth - 10) / 2 : ((appWidth/2) - 10)/2
                     height: 34
                     color: "#4BBE2E"
                     opacity: 0.5
@@ -285,7 +294,7 @@ Rectangle {
 
                 Rectangle {
                     id: no
-                    width: (doubbleButtonWidth - 10) / 2
+                    width: (myOS == "android" || myOS == "ios")? (doubbleButtonWidth - 10) / 2 : ((appWidth/2) - 10)/2
                     height: 34
                     color: "#E55541"
                     opacity: 0.5
@@ -307,9 +316,11 @@ Rectangle {
 
                         onReleased: {
                             parent.opacity = 0.5
+                            logoutTracker = 0
                             if (manualLogout == 1) {
                                 manualLogout = 0
                                 logoutTracker = 0
+                                sessionStart = 1
                             }
                             else if (sessionClosed == 1) {
                                 goodbey = 1

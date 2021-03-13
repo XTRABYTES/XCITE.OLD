@@ -17,11 +17,14 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: backupModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     color: bgcolor
 
     property int walletsExported: 0
@@ -97,7 +100,7 @@ Rectangle {
     }
 
     Label {
-        text: "EXPORT WALLETS"
+        text: "EXPORT ALL WALLETS"
         font.family: xciteMobile.name
         font.pointSize: 14
         font.bold: true
@@ -133,21 +136,22 @@ Rectangle {
     Rectangle {
         id: walletScrollArea
         width: parent.width
-        anchors.bottom: closeBackupModal.top
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.top: selectLabel.bottom
         anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
 
-        Controls.WalletDetailList {
+        Mobile.WalletDetailList {
             id: myWallets
         }
     }
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -160,44 +164,6 @@ Rectangle {
                 GradientStop { position: 0.0; color: "transparent" }
                 GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-            }
-        }
-    }
-
-    Label {
-        id: closeBackupModal
-        z: 10
-        text: "CLOSE"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: parent.width
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                backupTracker = 0
-                selectedPage = "home"
-                mainRoot.pop()
             }
         }
     }
@@ -278,7 +244,7 @@ Rectangle {
         }
     }
 
-    Controls.ScreenshotModal {
+    Mobile.ScreenshotModal {
         id: myScreenshotModal
         z: 10
     }

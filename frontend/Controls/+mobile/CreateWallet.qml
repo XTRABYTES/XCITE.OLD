@@ -17,16 +17,23 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     z: 1
     id: addWalletModal
-    width: Screen.width
-    state: createWalletTracker == 1? "up" : "down"
-    height: Screen.height
-    color: bgcolor
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    state: createWalletTracker == 1? "up" : "down"
+    color: bgcolor
     anchors.top: parent.top
+
+    onStateChanged: {
+        if (createWalletTracker == 0) {
+            timer.start()
+        }
+    }
 
     Component.onCompleted: darktheme = true
 
@@ -41,7 +48,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addWalletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: addWalletModal.height}
         }
     ]
 
@@ -56,7 +63,6 @@ Rectangle {
     property int editSaved: 0
     property int editFailed: 0
     property int newWallet: 0
-    property bool addingWallet: false
     property int createFailed: 0
     property int labelExists: 0
     property string walletError: "We were unable to create a wallet for you."
@@ -80,7 +86,7 @@ Rectangle {
 
     Rectangle {
         z: 2
-        width: Screen.width
+        width: parent.width
         height: 50
         color: bgcolor
         anchors.horizontalCenter: parent.horizontalCenter
@@ -94,7 +100,7 @@ Rectangle {
         text: "CREATE NEW WALLET"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 10
+        anchors.topMargin: (myOS == "android" || myOS == "ios")? 10 : appWidth/24
         font.pixelSize: 20
         font.family: xciteMobile.name
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
@@ -117,7 +123,7 @@ Rectangle {
         Rectangle {
             id: addWalletScrollArea
             width: parent.width
-            height: newWallet == 1? walletInfo.height : ((editSaved == 1 || editFailed == 1)? createWalletSucces.height : (createFailed == 1? createWalletError.height : createWallet.height))
+            height: newWallet == 1? walletInfo.height : ((editSaved == 1 || editFailed == 1)? createWalletSuccess.height : (createFailed == 1? createWalletError.height : createWallet.height))
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
@@ -164,7 +170,7 @@ Rectangle {
 
             Text {
                 id: createWalletText
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 2
                 anchors.left: newName.left
                 horizontalAlignment: Text.AlignHCenter
@@ -180,7 +186,7 @@ Rectangle {
             Controls.TextInput {
                 id: newName
                 height: 34
-                width: doubbleButtonWidth
+                width:(myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 placeholder: "WALLET LABEL"
                 text: ""
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -214,11 +220,11 @@ Rectangle {
 
             Rectangle {
                 id: createWalletButton
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/6
                 height: 34
                 anchors.top: newName.bottom
                 anchors.topMargin: 30
-                anchors.left: newName.left
+                anchors.horizontalCenter: newName.horizontalCenter
                 color: (newName.text != "" && labelExists == 0) ? maincolor : "#727272"
                 opacity: 0.25
                 visible: createInitiated == false
@@ -249,12 +255,9 @@ Rectangle {
 
                         onKeyPairCreated: {
                             if (createWalletTracker == 1 && createInitiated == true) {
-                                console.log("Address is: " + address)
-                                console.log("PubKey is: " + pubKey)
-                                console.log("PrivKey is: " + privKey)
-                                privateKey.text = privKey
-                                publicKey.text = pubKey
-                                addressHash.text = address
+                                privateKey.text = priv
+                                publicKey.text = pub
+                                addressHash.text = addr
                                 newWallet = 1
                                 createInitiated = false
                             }
@@ -274,7 +277,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 color: (newName.text != "" && labelExists == 0) ? "#F2F2F2" : "#979797"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: createWalletButton.horizontalCenter
                 anchors.verticalCenter: createWalletButton.verticalCenter
                 visible: createInitiated == false
@@ -310,12 +313,12 @@ Rectangle {
             height: walletCreatedText.height + coinID.height + publicKeyLabel.height + publicKey.height + privateKeyLabel.height + privateKey.height + addressLabel.height + addressHash.height + warningPrivateKey.height + addWalletButton.height + 115
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: 10
-            visible: newWallet == 1 && editSaved == 0
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? 10 : appWidth/24
+            visible: newWallet == 1 && editSaved == 0 && editFailed == 0
 
             Text {
                 id: walletCreatedText
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : undefined
                 maximumLineCount: 2
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignHCenter
@@ -358,7 +361,7 @@ Rectangle {
 
             Label {
                 id: publicKeyLabel
-                anchors.left: walletCreatedText. left
+                anchors.left: publicKey. left
                 anchors.top: coinID.bottom
                 anchors.topMargin: 10
                 text: "Public Key:"
@@ -370,11 +373,11 @@ Rectangle {
 
             Label {
                 id: publicKey
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
                 horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WrapAnywhere
-                anchors.left: publicKeyLabel. left
+                anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: publicKeyLabel.bottom
                 anchors.topMargin: 5
                 text: "Here you will find your public key"
@@ -397,7 +400,7 @@ Rectangle {
 
             Label {
                 id: privateKey
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
                 horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WrapAnywhere
@@ -424,7 +427,7 @@ Rectangle {
 
             Label {
                 id: addressHash
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 2
                 horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WrapAnywhere
@@ -439,7 +442,7 @@ Rectangle {
 
             Text {
                 id: warningPrivateKey
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: 3
                 anchors.left: addressHash.left
                 horizontalAlignment: Text.AlignJustify
@@ -454,7 +457,7 @@ Rectangle {
 
             Rectangle {
                 id: addWalletButton
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/6
                 height: 34
                 anchors.top: warningPrivateKey.bottom
                 anchors.topMargin: 25
@@ -472,10 +475,12 @@ Rectangle {
                     }
 
                     onReleased: {
-                        addingWallet = true
-                        walletSaved = false
-                        saveErrorNR = 0
-                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                        if (addingWallet == false) {
+                            addingWallet = true
+                            walletSaved = false
+                            saveErrorNR = 0
+                            addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                        }
                     }
                 }
 
@@ -501,10 +506,6 @@ Rectangle {
                                 walletList.remove(walletID)
                                 addressID = addressID -1
                                 addressList.remove(addressID)
-                                newName.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 editFailed = 1
                                 addingWallet = false
                                 walletSaved = false
@@ -513,10 +514,30 @@ Rectangle {
                                 addressID = addressID -1
                                 addressList.remove(addressID)
                                 labelExists = 0
-                                newName.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
+                                editFailed = 1
+                                saveErrorNR = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (createWalletTracker == 1 && addingWallet == true) {
+                            networkError = 1
+                            if (userSettings.localKeys === false) {
+                                walletID = walletID - 1
+                                walletList.remove(walletID)
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                editFailed = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
+                            else if (userSettings.localKeys === true && walletSaved == true) {
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                labelExists = 0
                                 editFailed = 1
                                 saveErrorNR = 1
                                 addingWallet = false
@@ -574,7 +595,7 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 color: "#F2F2F2"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: addWalletButton.horizontalCenter
                 anchors.verticalCenter: addWalletButton.verticalCenter
                 visible: addingWallet == false
@@ -582,7 +603,7 @@ Rectangle {
 
 
             Rectangle {
-                width: doubbleButtonWidth
+                width: addWalletButton.width
                 height: 34
                 anchors.bottom: addWalletButton.bottom
                 anchors.left: addWalletButton.left
@@ -626,7 +647,7 @@ Rectangle {
 
             Label {
                 id: saveFailedLabel
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                 maximumLineCount: saveErrorNR == 0? 1 : 4
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
@@ -654,7 +675,7 @@ Rectangle {
 
             Rectangle {
                 id: closeFail
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : appWidth/6
                 height: 34
                 color: maincolor
                 opacity: 0.25
@@ -689,14 +710,14 @@ Rectangle {
                 text: saveErrorNR == 0? "TRY AGAIN" : "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 color: "#F2F2F2"
                 anchors.horizontalCenter: closeFail.horizontalCenter
                 anchors.verticalCenter: closeFail.verticalCenter
             }
 
             Rectangle {
-                width: doubbleButtonWidth / 2
+                width: closeFail.width
                 height: 34
                 anchors.bottom: closeFail.bottom
                 anchors.left: closeFail.left
@@ -708,7 +729,7 @@ Rectangle {
         }
 
         // Save succes state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: createWalletSuccess
             modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
@@ -737,7 +758,7 @@ Rectangle {
 
             Rectangle {
                 id: closeSave
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : appWidth/6
                 height: 34
                 color: maincolor
                 opacity: 0.25
@@ -760,6 +781,11 @@ Rectangle {
                         walletAdded = true
                         addWalletTracker = 0;
                         editSaved = 0;
+                        newName.text = ""
+                        addressHash.text = ""
+                        publicKey.text = ""
+                        privateKey.text = ""
+                        labelExists = 0
                         newWallet = 0
                         createWalletTracker = 0
                     }
@@ -770,14 +796,14 @@ Rectangle {
                 text: "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 color: "#F2F2F2"
                 anchors.horizontalCenter: closeSave.horizontalCenter
                 anchors.verticalCenter: closeSave.verticalCenter
             }
 
             Rectangle {
-                width: doubbleButtonWidth / 2
+                width: closeSave.width
                 height: 34
                 anchors.bottom: closeSave.bottom
                 anchors.left: closeSave.left
@@ -789,7 +815,7 @@ Rectangle {
         }
 
         // Create wallet failed
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: createWalletError
             modalHeight: saveError.height + errorLabel.height + closeError.height + 75
             visible: createFailed == 1
@@ -806,7 +832,7 @@ Rectangle {
 
             Text {
                 id: errorLabel
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/6
                 text: "<b>ERROR</b>:<br>" + walletError
                 anchors.top: saveError.bottom
                 anchors.topMargin: 10
@@ -821,7 +847,7 @@ Rectangle {
 
             Rectangle {
                 id: closeError
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth / 2 : appWidth/6
                 height: 34
                 color: maincolor
                 opacity: 0.25
@@ -847,14 +873,14 @@ Rectangle {
                 text: "TRY AGAIN"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 color: themecolor
                 anchors.horizontalCenter: closeError.horizontalCenter
                 anchors.verticalCenter: closeError.verticalCenter
             }
 
             Rectangle {
-                width: doubbleButtonWidth / 2
+                width: closeError.width
                 height: 34
                 anchors.bottom: closeError.bottom
                 anchors.left: closeError.left
@@ -868,10 +894,11 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
+        visible: (myOS == "android" || myOS == "ios")
 
         LinearGradient {
             anchors.fill: parent
@@ -885,58 +912,23 @@ Rectangle {
         }
     }
 
-    Label {
-        id: closeWalletModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: editSaved == 0
-                 && newWallet == 0
-                 && scanQRTracker == 0
-                 && createFailed == 0
+    Timer {
+        id: timer
+        interval: 300
+        repeat: false
+        running: false
 
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    newName.text = ""
-                }
-            }
-
-            onPressed: {
-                parent.anchors.topMargin = 14
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                parent.anchors.topMargin = 10
-                if (createWalletTracker == 1) {
-                    createWalletTracker = 0;
-                    timer.start()
-                }
-            }
+        onTriggered: {
+            newName.text = ""
+            addressHash.text = ""
+            publicKey.text = ""
+            privateKey.text = ""
+            labelExists = 0
+            newWallet = 0
+            editSaved = 0
+            editFailed = 0
+            createFailed = 0
+            addingWallet = false
         }
     }
 }

@@ -21,14 +21,22 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addressModal
-    width: Screen.width
-    state: addressTracker == 0 ? "down" : "up"
-    height: Screen.height
-    color: bgcolor
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    state: addressTracker == 0 ? "down" : "up"
+    color: bgcolor
     anchors.top: parent.top
     anchors.topMargin: 50
     visible: scanQRTracker == 0
+
+    property int myTracker: addressTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            timer.start()
+        }
+    }
 
     states: [
         State {
@@ -37,7 +45,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addressModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addressModal; anchors.topMargin: addressModal.height}
         }
     ]
 
@@ -70,11 +78,8 @@ Rectangle {
     property string addressHash: addressList.get(addressIndex).address
     property string addressName: addressList.get(addressIndex).label
     property int contact: addressList.get(addressIndex).contact
-    property int deleteAddressTracker: 0
     property int editSaved: 0
     property int editFailed: 0
-    property bool editingAddress: false
-    property bool deletingAddress: false
     property int deleteConfirmed: 0
     property int deleteFailed: 0
     property int favoriteChanged: 0
@@ -95,24 +100,24 @@ Rectangle {
         for(var i = 0; i < addressList.count; i++) {
             if (newAddress.text != "") {
                 if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         doubleAddress = 1
                     }
                 }
                 else {
-                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.text && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         doubleAddress = 1
                     }
                 }
             }
             else {
                 if (newCoinName.text == "XBY") {
-                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === "XBY" && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         doubleAddress = 1
                     }
                 }
                 else {
-                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && adressList.get(i).uniqueNR !== addressIndex) {
+                    if (addressList.get(i).coin === newCoinName.text && addressList.get(i).address === newAddress.placeholder && addressList.get(i).remove === false && addressList.get(i).uniqueNR !== addressIndex) {
                         doubleAddress = 1
                     }
                 }
@@ -414,10 +419,6 @@ Rectangle {
                         var addressListJson = JSON.stringify(datamodel)
 
                         saveAddressBook(addressListJson)
-
-
-
-
                     }
                 }
             }
@@ -429,13 +430,11 @@ Rectangle {
                     if (addressTracker == 1 && editingAddress == true) {
                         editSaved = 1
                         coinListTracker = 0
-                        editingAddress = false
                     }
                 }
 
                 onSaveFailed: {
                     if (addressTracker == 1 && editingAddress == true) {
-
                         addressList.setProperty(addressIndex, "logo", oldLogo);
                         addressList.setProperty(addressIndex, "coin", oldCoinName);
                         addressList.setProperty(addressIndex, "label", oldAddressName);
@@ -443,7 +442,19 @@ Rectangle {
                         addressList.setProperty(addressIndex, "favorite", oldFavorite);
                         editFailed = 1
                         coinListTracker = 0
-                        editingAddress = false
+                    }
+                }
+
+                onNoInternet: {
+                    if (addressTracker == 1 && editingAddress == true) {
+                        networkError = 1
+                        addressList.setProperty(addressIndex, "logo", oldLogo);
+                        addressList.setProperty(addressIndex, "coin", oldCoinName);
+                        addressList.setProperty(addressIndex, "label", oldAddressName);
+                        addressList.setProperty(addressIndex, "address", oldAddressHash);
+                        addressList.setProperty(addressIndex, "favorite", oldFavorite);
+                        editFailed = 1
+                        coinListTracker = 0
                     }
                 }
 
@@ -797,7 +808,7 @@ Rectangle {
                      && editFailed == 0
                      && deleteAddressTracker == 0
 
-            Controls.CoinPicklist {
+            Mobile.CoinPicklist {
                 id: myCoinPicklist
             }
         }
@@ -838,7 +849,7 @@ Rectangle {
         }
 
         // Edit failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: editAddressFailed
             modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
             visible: editFailed == 1
@@ -897,6 +908,7 @@ Rectangle {
 
                     onClicked: {
                         editFailed = 0
+                        editingAddress = false
                     }
                 }
             }
@@ -924,7 +936,7 @@ Rectangle {
         }
 
         // Edit saved state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: editAddressSucceed
             modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSaveEdit.height + 75
             visible: editSaved == 1
@@ -989,6 +1001,7 @@ Rectangle {
                             selectedAddress = ""
                             scanning = "scanning..."
                             closeAllClipboard = true
+                            editingAddress = false
                         }
                     }
 
@@ -1040,7 +1053,7 @@ Rectangle {
 
         // Delete confirm state
 
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteConfirmation
             modalHeight: deleteText.height + deleteAddressName.height + deleteAddressHash.height + confirmationDeleteButton.height + 79
             visible: deleteAddressTracker == 1
@@ -1124,14 +1137,7 @@ Rectangle {
                         labelExists = 0
                         invalidAddress = 0
                         deletingAddress = true
-
-                        var datamodel = []
-                        for (var i = 0; i < addressList.count; ++i)
-                            datamodel.push(addressList.get(i))
-
-                        var addressListJson = JSON.stringify(datamodel)
-
-                        saveAddressBook(addressListJson)
+                        updateToAccount()
                     }
                 }
 
@@ -1142,7 +1148,6 @@ Rectangle {
                         if (addressTracker == 1 && deletingAddress == true) {
                             deleteConfirmed = 1
                             coinListTracker = 0
-                            deletingAddress = false
                         }
                     }
 
@@ -1152,7 +1157,15 @@ Rectangle {
                             addressList.setProperty(addressIndex, "remove", oldRemove);
                             deleteFailed = 1
                             coinListTracker = 0
-                            deletingAddress = false
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (addressTracker == 1 && deletingAddress == true) {
+                            networkError = 1
+                            addressList.setProperty(addressIndex, "remove", oldRemove);
+                            deleteFailed = 1
+                            coinListTracker = 0
                         }
                     }
 
@@ -1278,7 +1291,7 @@ Rectangle {
         }
 
         // Delete failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteAddressFailed
             modalHeight: failedIcon.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 85
             visible: deleteFailed == 1
@@ -1339,6 +1352,7 @@ Rectangle {
                         deleteAddressTracker = 0
                         deleteFailed = 0
                         failError = ""
+                        deletingAddress = false
                     }
                 }
             }
@@ -1367,7 +1381,7 @@ Rectangle {
 
         // Delete success state
 
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: deleteAddressSucceed
             modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 75
             visible: deleteConfirmed == 1
@@ -1430,6 +1444,7 @@ Rectangle {
                             selectedAddress = ""
                             scanning = "scanning..."
                             closeAllClipboard = true
+                            deletingAddress = false
                         }
                     }
 
@@ -1481,7 +1496,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1498,62 +1513,26 @@ Rectangle {
         }
     }
 
-    Label {
-        id: closeAddressModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: editSaved == 0 && editFailed == 0 && deleteAddressTracker == 0
+    Timer {
+        id: timer
+        interval: 300
+        repeat: false
+        running: false
 
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth / 2
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    newCoinPicklist = 0
-                    newCoinSelect = 0
-                    coinListTracker = 0
-                    newName.text = oldAddressName
-                    newAddress.text = oldAddressHash
-                    invalidAddress = 0
-                    editSaved = 0
-                    deleteAddressTracker = 0
-                    deleteConfirmed = 0
-                    scanQRTracker = 0
-                    selectedAddress = ""
-                    scanning = "scanning..."
-                    closeAllClipboard = true
-                }
-            }
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onReleased: {
-                addressTracker = 0;
-                timer.start()
-            }
+        onTriggered: {
+            newCoinPicklist = 0
+            newCoinSelect = 0
+            coinListTracker = 0
+            newName.text = oldAddressName
+            newAddress.text = oldAddressHash
+            invalidAddress = 0
+            editSaved = 0
+            deleteAddressTracker = 0
+            deleteConfirmed = 0
+            scanQRTracker = 0
+            selectedAddress = ""
+            scanning = "scanning..."
+            closeAllClipboard = true
         }
     }
 }

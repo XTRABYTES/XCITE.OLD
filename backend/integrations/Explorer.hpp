@@ -42,6 +42,7 @@ signals:
     void allTxChecked();
     void explorerBusy();
     void detailsCollected();
+    void walletChecked();
     void noInternet();
     void internetStatusSignal(bool);
   //  void quitLoop();
@@ -58,7 +59,7 @@ public slots:
     void getBalanceAddressExtSlot(QByteArray, QMap<QString,QVariant>);
     void getTransactionStatusSlot(QByteArray, QMap<QString,QVariant>);
 
-//    void internetTimeout(QMap<QString,QVariant>);
+//  void internetTimeout(QMap<QString,QVariant>);
     void DownloadManagerRouter(QByteArray, QMap<QString,QVariant>);
 
 

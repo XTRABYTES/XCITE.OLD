@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>DashboardForm.qml</file>
-        <file>XchatPopup.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>XCITE/Nodes/RegistrationConfirmation.qml</file>
         <file>XCITE/Nodes/RegistrationDetails.qml</file>
@@ -24,8 +23,6 @@
         <file>Controls/ImageLogo.qml</file>
         <file>Controls/BalanceItem.qml</file>
         <file>XCITE/Home/Layout.qml</file>
-        <file>X-Chat/Conversation.qml</file>
-        <file>X-Chat/Header.qml</file>
         <file>XCITE/Home/ChartDiode.qml</file>
         <file>Controls/SideMenu.qml</file>
         <file>Controls/SideMenuButton.qml</file>
@@ -70,17 +67,6 @@
         <file>Controls/Version.qml</file>
         <file>Controls/AddressForm.qml</file>
         <file>Controls/AccountCreateForm.qml</file>
-        <file>X-Chat/Channels.qml</file>
-        <file>X-Chat/Layout.qml</file>
-        <file>X-Chat/Home/ChannelGroup.qml</file>
-        <file>X-Chat/Home/ChannelList.qml</file>
-        <file>X-Chat/Home/ChannelsDiode.qml</file>
-        <file>X-Chat/Home/ChatDiode.qml</file>
-        <file>X-Chat/Home/Layout.qml</file>
-        <file>X-Chat/Home/ChatBox.qml</file>
-        <file>X-Chat/Home/StatusBox.qml</file>
-        <file>X-Chat/Home/ConversationBox.qml</file>
-        <file>X-Chat/Home/StatusGroup.qml</file>
         <file>Controls/ComboBox.qml</file>
         <file>+mobile/DashboardForm.qml</file>
         <file>Theme/Theme.qml</file>
@@ -122,7 +108,6 @@
         <file>XCITE/Nodes/RegistrationLevelBox.qml</file>
         <file>Controls/LoadingBar.qml</file>
         <file>Controls/TransactionTable.qml</file>
-        <file>+mobile/xchange.qml</file>
         <file>Controls/+mobile/TransferModal.qml</file>
         <file>Controls/+mobile/Sidebar.qml</file>
         <file>Controls/Switch_mobile.qml</file>
@@ -178,5 +163,98 @@
         <file>Controls/+mobile/PendingList.qml</file>
         <file>Controls/+mobile/ReplyModal.qml</file>
         <file>Controls/+mobile/ChangePassword.qml</file>
+        <file>Controls/+mobile/XChat.qml</file>
+        <file>Controls/+mobile/XChatList.qml</file>
+        <file>Controls/+mobile/ApplicationList.qml</file>
+        <file>Controls/+mobile/XChatSettings.qml</file>
+        <file>Controls/+mobile/XChatUsers.qml</file>
+        <file>Controls/+mobile/XChatUsersList.qml</file>
+        <file>Controls/+mobile/XChatTagList.qml</file>
+        <file>Controls/+mobile/XChatServerList.qml</file>
+        <file>Controls/+mobile/XChatNetworkInfo.qml</file>
+        <file>Controls/+mobile/XChatDndNotification.qml</file>
+        <file>Controls/+mobile/NetworkError.qml</file>
+        <file>Controls/+mobile/addMessage.js</file>
+        <file>Controls/+mobile/XChange.qml</file>
+        <file>Controls/+mobile/XVault.qml</file>
+        <file>Controls/+mobile/XChatQuote.qml</file>
+        <file>Controls/+mobile/XChatLink.qml</file>
+        <file>Controls/+mobile/XChatImage.qml</file>
+        <file>Controls/+mobile/XChatLargeImage.qml</file>
+        <file>Controls/fun/TttBoard.qml</file>
+        <file>Controls/fun/TttGrid.qml</file>
+        <file>Controls/+mobile/XGames.qml</file>
+        <file>Controls/fun/TttHub.qml</file>
+        <file>Controls/fun/Unfinished.qml</file>
+        <file>Controls/fun/Invitations.qml</file>
+        <file>Controls/fun/InviteModal.qml</file>
+        <file>Controls/fun/LeaderBoard.qml</file>
+        <file>Controls/fun/LeaderBoardList.qml</file>
+        <file>Controls/fun/PlayerNotAvailable.qml</file>
+        <file>Controls/+mobile/DeviceButtons.qml</file>
+        <file>Controls/+mobile/DragBar.qml</file>
+        <file>Controls/+mobile/SwipeBack.qml</file>
+        <file>Controls/+mobile/XPing.qml</file>
+        <file>Controls/+mobile/ClickToLogout.qml</file>
+        <file>+mobile/RestoreAccount.qml</file>
+        <file>Controls/+mobile/XChangeSettings.qml</file>
+        <file>Controls/+mobile/XChangeRecentTradeList.qml</file>
+        <file>Controls/+mobile/XChangeOrderBookList.qml</file>
+        <file>Controls/+mobile/CandleStickChart.qml</file>
+        <file>+desktop/DashboardForm.qml</file>
+        <file>Controls/+desktop/LogOut.qml</file>
+        <file>Controls/+desktop/Loading.qml</file>
+        <file>+desktop/Wallet.qml</file>
+        <file>+desktop/WalletBackup.qml</file>
+        <file>+desktop/Applications.qml</file>
+        <file>+desktop/Notifications.qml</file>
+        <file>+desktop/AddressBook.qml</file>
+        <file>+desktop/WalletSettings.qml</file>
+        <file>Controls/+desktop/ApplicationList.qml</file>
+        <file>Controls/+desktop/Pincode.qml</file>
+        <file>Controls/+desktop/ChangePassword.qml</file>
+        <file>Controls/VolumeSlider.qml</file>
+        <file>Controls/+desktop/CreatePin.qml</file>
+        <file>Controls/+desktop/ChangePin.qml</file>
+        <file>Controls/+desktop/ProvidePin.qml</file>
+        <file>Controls/+desktop/CoinList.qml</file>
+        <file>Controls/+desktop/Portfolio.qml</file>
+        <file>Controls/+desktop/WalletDetailList.qml</file>
+        <file>Controls/+desktop/NotificationList.qml</file>
+        <file>Controls/+desktop/WalletInfo.qml</file>
+        <file>Controls/+desktop/Console.qml</file>
+        <file>Controls/+desktop/WalletList.qml</file>
+        <file>Controls/+desktop/CoinWallets.qml</file>
+        <file>Controls/+desktop/ContactList.qml</file>
+        <file>Controls/+desktop/ContactInfo.qml</file>
+        <file>Controls/+desktop/ContactAddressList.qml</file>
+        <file>Controls/+desktop/ContactAddressModal.qml</file>
+        <file>Controls/+desktop/AddWallet.qml</file>
+        <file>Controls/+desktop/AddViewOnlyWallet.qml</file>
+        <file>Controls/+desktop/ImportWallet.qml</file>
+        <file>Controls/+desktop/CreateWallet.qml</file>
+        <file>Controls/+desktop/TransferModal.qml</file>
+        <file>Controls/+desktop/PaperWallet.qml</file>
+        <file>Controls/+desktop/WalletModal.qml</file>
+        <file>Controls/+desktop/WalletListSmall.qml</file>
+        <file>Controls/+desktop/TransactionList.qml</file>
+        <file>Controls/+desktop/AddressBookPicklist.qml</file>
+        <file>Controls/+desktop/HistoryList.qml</file>
+        <file>Controls/+desktop/PendingList.qml</file>
+        <file>Controls/+desktop/PaperWalletGenerator.qml</file>
+        <file>Controls/+desktop/TransactionDetailModal.qml</file>
+        <file>Controls/+desktop/TransactionAddressList.qml</file>
+        <file>Controls/+desktop/AddressBookTransaction.qml</file>
+        <file>Controls/+desktop/AddContactModal.qml</file>
+        <file>+desktop/Onboarding.qml</file>
+        <file>+desktop/Login.qml</file>
+        <file>+desktop/ImportAccount.qml</file>
+        <file>+desktop/RestoreAccount.qml</file>
+        <file>+desktop/CreateAccount.qml</file>
+        <file>+desktop/InitialSetup.qml</file>
+        <file>Controls/+desktop/XCHAT.qml</file>
+        <file>Controls/+desktop/XCHANGE.qml</file>
+        <file>Controls/+desktop/XGAMES.qml</file>
+        <file>Controls/+desktop/XVAULT.qml</file>
     </qresource>
 </RCC>

@@ -15,8 +15,10 @@ Item {
     id: toggleswitch
     width: background.width
     height: background.height
+    state: switchOn? "on" : "off"
 
-    property bool on: false
+    property bool switchOn: false
+    property bool switchActive: true
 
     function toggle() {
         if (toggleswitch.state == "on")
@@ -26,37 +28,47 @@ Item {
     }
 
     function releaseSwitch() {
-        if (knob.x == 1) {
+        if (knob.x == 2) {
             if (toggleswitch.state == "off")
                 return
         }
-        if (knob.x == 78) {
+        if (knob.x == (background.width/2 - knob.width/2)) {
             if (toggleswitch.state == "on")
                 return
         }
         toggle()
     }
 
-    Image {
+    Rectangle {
         id: background
-        source: "../../icons/switch_back.svg"
+        width: height*2
+        height: appHeight/27
+        color: switchOn? maincolor : (darktheme == true? "#000000" : "#FFFFFF")
+        border.width: 1
+        border.color: themecolor
+        radius: height/2
         MouseArea {
             anchors.fill: parent
+            enabled: switchActive
             onClicked: toggle()
         }
     }
 
-    Image {
+    Rectangle {
         id: knob
         x: 2
-        y: 3
-        source: "../../icons/switch_butt.svg"
+        y: 2
+        height: background.height - 4
+        width: height
+        color: themecolor
+        radius: height/2
         MouseArea {
             anchors.fill: parent
+            enabled: switchActive
             drag.target: knob
             drag.axis: Drag.XAxis
             drag.minimumX: 2
-            drag.maximumX: 34
+            drag.maximumX: background.width - (knob.width + 3)
             onClicked: toggle()
             onReleased: releaseSwitch()
         }
@@ -67,22 +79,22 @@ Item {
             name: "on"
             PropertyChanges {
                 target: knob
-                x: 34
+                x: background.width - (knob.width + 3)
             }
             PropertyChanges {
                 target: toggleswitch
-                on: true
+                switchOn: true
             }
         },
         State {
             name: "off"
             PropertyChanges {
                 target: knob
-                x: 2
+                x: 3
             }
             PropertyChanges {
                 target: toggleswitch
-                on: false
+                switchOn: false
             }
         }
     ]

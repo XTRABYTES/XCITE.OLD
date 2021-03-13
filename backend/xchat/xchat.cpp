@@ -13,6 +13,7 @@
 #include "xchat.hpp"
 #include "../staticnet/staticnet.hpp"
 #include "../xutility/xutility.hpp"
+//#include "../testnet/xchattestnetclient.hpp"
 #include <QString>
 #include <set>
 #include <QtNetwork>
@@ -86,9 +87,6 @@ XchatObject::~XchatObject() {
 
 
 void XchatObject::Initialize() {
-	
-    m_pXchatAiml = new XchatAIML;
-    m_pXchatAiml->loadAIMLSet();
 
 //    m_pXchatAiml = new XchatAIML;
 //    m_pXchatAiml->loadAIMLSet();
@@ -151,7 +149,7 @@ void XchatObject::xchatPopup(QString author, QString msg){
         message->setStyleSheet("font: 10pt; color:rgb(242,242,242);");
         message->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         message->setWordWrap(true);
-        QString auth = "<font color='#F2C94C'><b>" + author + "</b></font>";
+        QString auth = "<font color='#0ED8D2'><b>" + author + "</b></font>";
         QString xchatMsg = auth + ":<br><i>" + msg + "</i>";
         message->setText(xchatMsg);
         QSize size = QGuiApplication::screens()[0]->size();
@@ -195,7 +193,7 @@ void XchatObject::xchatInc(const QString &user, QString platform, QString status
 
         QJsonDocument doc(obj);
         QString strJson(doc.toJson(QJsonDocument::Compact));
-        broker.sendMessage("xchats",strJson);
+        //broker.sendToXchat("xchats",strJson);
         return;
     }
 }
@@ -212,7 +210,7 @@ void XchatObject::sendTypingToQueue(const QString user, QString route, QString s
         obj.insert("lastActiveTime", QDateTime::currentDateTime().toString());
         QJsonDocument doc(obj);
         QString strJson(doc.toJson(QJsonDocument::Compact));
-        broker.sendMessage("xchats",strJson);
+      //  broker.sendXChatMessage("xchats",strJson);
 
         return;
     }
@@ -324,32 +322,6 @@ void XchatObject::sendToFront(QJsonObject obj){
     emit xchatSuccess(author, date, time, device, message, link, image, quote, msgID);
 }
 
-
-void XchatObject::SubmitMsgCall(const QString &msg) {
-	
-	 
-	 if (!msg.isEmpty() && msg.front()=="@") {
-//	 	 if (mqtt_client->publish(topic, msg.toUtf8()) == -1) {
-//	 	    xchatRobot.SubmitMsg("@mqtt-ERROR: Could not publish message.");
-//	 	 }
-       return;
-    }
-
-    QString message;
-    xUtility.Initialize();
-    
-    int staticNet_traceID;
-    if (!((staticNet.CheckUserInputForKeyWord(msg,&staticNet_traceID)) || (xUtility.CheckUserInputForKeyWord(msg)))) {
-    
-        bool keyWordUsedUserInput = this->CheckUserInputForKeyWord(msg);
-        bool keyWordUsedAIInput = this->CheckAIInputForKeyWord(m_pXchatAiml->getResponse(msg));
-	
-        
-            emit xchatResponseSignal(m_pXchatAiml->getResponse(msg));
-        
-    }
-}
-
 void XchatObject::SubmitMsg(const QString &msg) {
     emit xchatResponseSignal(msg);
     qDebug() << msg;
@@ -385,7 +357,6 @@ void XchatObject::forcedReconnect() {
     return;
 }
 
-/*
 void XchatObject::mqtt_StateChanged() {
     if (broker.isConnected()){
       emit xchatInternetOk();
@@ -398,7 +369,7 @@ void XchatObject::mqtt_StateChanged() {
         emit xchatStateChanged();
     }
 }
-*/
+
 void XchatObject::sendOnlineUsers(){
     QJsonArray onlineJson;
     QDateTime now = QDateTime::currentDateTime();

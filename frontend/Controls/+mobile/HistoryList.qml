@@ -16,6 +16,7 @@ import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     width: parent.width
@@ -55,7 +56,7 @@ Rectangle {
             color:"transparent"
             clip: true
 
-            Controls.CardBody {
+            Mobile.CardBody {
                 id: myCardBody
             }
 
@@ -89,10 +90,12 @@ Rectangle {
                 onClicked: {
                     clickIndicator.visible = false
                     transactionTimestamp = ""
-                    transactionAmount = 0
+                    transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),value) )/ 100000000
                     transactionNR = txid
                     transactionDirection = direction
                     if (explorerBusy == false) {
+                        transactionDetailsCollected = false
+                        transactionDetailTracker = 1
                         getDetails(amountTicker.text, txid)
                     }
                     else {

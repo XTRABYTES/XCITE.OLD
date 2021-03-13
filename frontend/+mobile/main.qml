@@ -20,29 +20,22 @@ import Qt.labs.folderlistmodel 2.11
 import QtMultimedia 5.8
 import QtGraphicalEffects 1.0
 
+import "qrc:/Controls/+mobile" as Mobile
+
 ApplicationWindow {
-    property bool isNetworkActive: false
-
     id: xcite
-
-    visible: true
-
-    width: Screen.width
-    height: Screen.height
+    flags: Qt.Window | Qt.FramelessWindowHint | ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.X11BypassWindowManagerHint : 0) //| ((Qt.platform.os !== "ios" && Qt.platform.os !== "android")? Qt.WindowStaysOnTopHint : 0)
+    width: appWidth
+    height: appHeight
     title: qsTr("XCITE")
-    color: "#2A2C31"
-
-    MediaPlayer {
-        id: introSound
-        source: "qrc:/sounds/intro_01.wav"
-        volume: 1
-        autoPlay: true
-    }
+    color: darktheme === "false"? "#F2F2F2" : "#14161B"
+    visible: true
 
     Image {
         id: xbyLogo
+        z: 1
         source: 'qrc:/logos/xby_logo_tm.png'
-        width: Screen.width - 100
+        width: parent.width - 100
         fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: -50
@@ -92,34 +85,70 @@ ApplicationWindow {
         coinList.setProperty(0, "coinValueBTC", btcValueXFUEL);
         coinList.setProperty(0, "percentage", percentageXFUEL);
         coinList.setProperty(0, "totalBalance", 0);
-        coinList.setProperty(0, "active", true);
+        coinList.setProperty(0, "active", userSettings.xfuel);
         coinList.setProperty(0, "testnet", false );
         coinList.setProperty(0, "xby", 1);
         coinList.setProperty(0, "coinID", 0);
-        coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": true, "testnet" : false, "xby": 1,"coinID": 1});
-        coinList.append({"name": "XTEST", "fullname": "testnet", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": true, "testnet" : true, "xby": 1,"coinID": 2});
-        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 3});
-        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": true, "testnet" : false, "xby": 0,"coinID": 4});
+        coinList.append({"name": nameXBY, "fullname": "xtrabytes", "logo": 'qrc:/icons/XBY_card_logo_01.svg', "logoBig": 'qrc:/icons/XBY_logo_big.svg', "coinValueBTC": btcValueXBY, "percentage": percentageXBY, "totalBalance": 0, "active": userSettings.xby, "testnet" : false, "xby": 1,"coinID": 1});
+        coinList.append({"name": "XTEST", "fullname": "testnet", "logo": 'qrc:/icons/TESTNET_card_logo_01.svg', "logoBig": 'qrc:/icons/TESTNET_logo_big.svg', "coinValueBTC": 0, "percentage": 0, "totalBalance": 0, "active": userSettings.xtest, "testnet" : true, "xby": 1,"coinID": 2});
+        coinList.append({"name": "BTC", "fullname": "bitcoin", "logo": 'qrc:/icons/BTC_card_logo_01.svg', "logoBig": 'qrc:/icons/BTC_logo_big.svg', "coinValueBTC": btcValueBTC, "percentage": percentageBTC, "totalBalance": 0, "active": userSettings.btc, "testnet" : false, "xby": 0,"coinID": 3});
+        coinList.append({"name": "ETH", "fullname": "ethereum", "logo": 'qrc:/icons/ETH_card_logo_01.svg', "logoBig": 'qrc:/icons/ETH_logo_big.svg', "coinValueBTC": btcValueETH, "percentage": percentageETH, "totalBalance": 0, "active": userSettings.eth, "testnet" : false, "xby": 0,"coinID": 4});
+
+        applicationList.setProperty(0, "name", "X-CHAT");
+        applicationList.setProperty(0, "icon_white", 'qrc:/icons/mobile/xchat-icon_01_white.svg');
+        applicationList.setProperty(0, "icon_black", 'qrc:/icons/mobile/xchat-icon_01_black.svg');
+        applicationList.append({"name": "X-CHANGE", "icon_white": 'qrc:/icons/mobile/xchange-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xchange-icon_04_black.svg'});
+        applicationList.append({"name": "X-VAULT", "icon_white": 'qrc:/icons/mobile/xvault-icon_02_white.svg', "icon_black": 'qrc:/icons/mobile/xvault-icon_02_black.svg'});
+        applicationList.append({"name": "X-GAMES", "icon_white": 'qrc:/icons/mobile/games-icon_ph_white.svg', "icon_black": 'qrc:/icons/mobile/games-icon_ph_black.svg'});
+        applicationList.append({"name": "CONSOLE", "icon_white": 'qrc:/icons/mobile/ping-icon_01_white.svg', "icon_black": 'qrc:/icons/mobile/ping-icon_01_black.svg'});
 
         txStatusList.setProperty(0, "type", "confirmed");
         txStatusList.append({"type": "pending"});
 
-        marketValueChangedSignal("btcusd");
-        marketValueChangedSignal("btceur");
-        marketValueChangedSignal("btcgbp");
-        marketValueChangedSignal("xbybtc");
-        marketValueChangedSignal("xbycha");
-        marketValueChangedSignal("xflbtc");
-        marketValueChangedSignal("xflcha");
-        marketValueChangedSignal("btccha");
-        marketValueChangedSignal("ethbtc");
-        marketValueChangedSignal("ethcha");
+        exchangeList.setProperty(0, "name", "crex24")
+        exchangeList.setProperty(0, "logo", 'qrc:/icons/mobile/crex24_logo_02.png')
+        exchangeList.append({"name": "probit", "logo": 'qrc:/icons/mobile/probit_logo.png'})
+
+
+        tttButtonList.setProperty(0, "number", "1");
+        tttButtonList.setProperty(0, "played", false);
+        tttButtonList.setProperty(0, "player", "");
+        tttButtonList.setProperty(0, "online", false);
+        tttButtonList.setProperty(0, "confirmed", false);
+        for (var i = 2; i < 10; i ++) {
+            tttButtonList.append({"number": Number(i).toLocaleString(), "played": false, "player": "", "online": false, "confirmed": false})
+        }
+
+        scoreList.setProperty(0, "game", "ttt");
+        scoreList.setProperty(0, "player", "computer");
+        scoreList.setProperty(0, "win", 0);
+        scoreList.setProperty(0, "lost", 0);
+        scoreList.setProperty(0, "draw", 0);
+
+        gamesList.clear();
+
+        xChatOnline.clear();
+
+        xChatUsers.clear();
+
+        xChatServers.clear();
+
+        clearUtxoList();
+
+        requestQueue();
+
+        alertList.clear();
+        alertList.append({"date": "", "origin": "", "message": "", "remove": true});
+
+        transactionList.clear();
+        transactionList.append({"requestID": "","txid": "","coin": "","address": "","receiver": "","amount": 0, "fee": 0, "used": 0});
+
+        findAllMarketValues()
 
         selectedPage = "onBoarding"
-        mainRoot.push("../Onboarding.qml")
+
+        mainRoot.push("qrc:/+mobile/Onboarding.qml")
     }
-
-
 
     onBtcValueXBYChanged: {
         coinList.setProperty(1, "coinValueBTC", btcValueXBY);
@@ -188,19 +217,31 @@ ApplicationWindow {
     property color maincolor: "#0ED8D2"
     property color themecolor: darktheme == true? "#F2F2F2" : "#2A2C31"
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
-    property real doubbleButtonWidth: Screen.width - 56
-    property string myOS: "android"
+    property real doubbleButtonWidth: appWidth - 56
+    property string myOS: Qt.platform.os
+    property int appHeight: Screen.width > Screen.height? (miniatureTracker == 0? Screen.height/2 : 200) : ((myOS == "android" || myOS == "ios")? Screen.height : (miniatureTracker == 0? Screen.height/2 : 200))
+    property int appWidth: Screen.width > Screen.height? Screen.width/2 : ((myOS == "android" || myOS == "ios")? Screen.width : Screen.width/2)
+    property int previousX: 0
+    property int previousY: 0
+    property variant notAllowed: ["<del>","</del>","<s>","</s>","<strong>","</strong>", "<br>","<p>","</p>","</font>","<h1>","</h1>","<h2>","</h2>","<h3>","</h3>","<h4>","</h4>","<h5>","</h5>","<h6>","</h6>","a href=","img src=","ol type=","ul type=","<li>","</li>","<pre>","</pre>","&gt","&lt","&amp"]
 
     // Global setting, editable
-    property bool darktheme: userSettings.theme == "dark"? true : false
-    property string fiatTicker: fiatCurrencies.get(userSettings.defaultCurrency).ticker
-    property string username: ""
+    property bool darktheme: userSettings.theme !== "dark"? false : true
+    property string fiatTicker: userSettings.defaultCurrency == 0? "$" : userSettings.defaultCurrency == 1? "€" : userSettings.defaultCurrency == 2? "£" : "₿"
+    property string myUsername: ""
     property string selectedPage: ""
+    property string status: "online"
+    property bool isNetworkActive: false
+    property int pingSNR: 0
+    property string queueName: ""
 
-    // Trackers
-    property int interactionTracker: 0
+    // Trackers - pages
     property int loginTracker: 0
     property int importTracker: 0
+    property int restoreTracker: 0
+    property int pageTracker: 0
+    property int exchangePageTracker: 0
+    property int exchangeNotifTracker: 1
     property int logoutTracker: 0
     property int addWalletTracker: 0
     property int createWalletTracker: 0
@@ -209,15 +250,19 @@ ApplicationWindow {
     property int appsTracker: 0
     property int coinTracker: 0
     property int walletTracker: 0
+    property int addActive: 0
+    property int addViewOnly: 0
     property int transferTracker: 0
     property int historyTracker: 0
-    property int addressTracker: 0
-    property int contactTracker: 0
-    property int addAddressTracker: 0
     property int addCoinTracker: 0
+    property int addressTracker: 0
+    property int addAddressTracker: 0
+    property int deleteAddressTracker: 0
+    property int contactTracker: 0
     property int addContactTracker: 0
     property int editContactTracker: 0
-    property int coinListTracker: 0
+    property int deleteContactTracker: 0
+    property int deleteWalletTracker: 0
     property int walletListTracker: 0
     property int addressbookTracker: 0
     property int scanQRTracker: 0
@@ -226,48 +271,100 @@ ApplicationWindow {
     property int calculatorTracker: 0
     property int addressQRTracker: 0
     property int pictureTracker: 0
-    property int cellTracker: 0
-    property int currencyTracker: 0
     property int pincodeTracker: 0
-    property int debugTracker: 0
-    property int backupTracker: 0
-    property int screenshotTracker: 0
-    property int walletDetailTracker: 0
-    property int portfolioTracker: 0
-    property int transactionDetailTracker: 0
-    property int soundTracker: 0
     property int changePasswordTracker: 0
+    property int portfolioTracker: 0
+    property int walletDetailTracker: 0
+    property int transactionDetailTracker: 0
+    property int backupTracker: 0
+    property int debugTracker: 0
+    property int xvaultTracker: 0
+    property int xchangeTracker: 0
+    property int xchangeSettingsTracker: 0
+    property int xchatTracker: 0
+    property int xgamesTracker: 0
+    property int tttTracker: 0
+    property int miniatureTracker: 0
+    property int pingTracker: 0
+    property int updatePendingTracker: 0
+    property int failedPendingTracker: 0
+    property int newBalanceTracker: 0
+    property int clickToLogout: 0
+
+    // Trackers - features
+    property int interactionTracker: 0
+    property int coin1Tracker: 0
+    property int coin2Tracker: 0
+    property int coinListTracker: 0
+    property int currencyTracker: 0
+    property int cellTracker: 0
+    property int tagListTracker: 0
+    property int dndTracker: 0
+    property int screenshotTracker: 0
+    property int soundTracker: 0
+    property int xchatSettingsTracker: 0
+    property int xchatNetworkTracker: 0
+    property int xchatUserTracker: 0
+    property int xChatQuoteTracker: 0
+    property int xChatLinkTracker: 0
+    property int xChatImageTracker: 0
+    property int xChatLargeImageTracker: 0
+    property int inviteTracker: 0
+    property int leaderBoardTracker: 0
+    property int tttHubTracker: 0
 
     // Global variables
+    property int started: 0
     property int sessionStart: 0
     property int sessionTime: 0
     property int sessionClosed: 0
     property int standBy: 0
+    property bool inActive: false
     property int screenSaver: 0
     property int autoLogout: 0
     property int manualLogout: 0
     property int networkLogout: 0
     property int pinLogout: 0
     property int goodbey: 0
+    property int dashboardIndex: 0
     property int networkAvailable: 0
     property int networkError: 0
     property int photoSelect: 0
     property int newCoinPicklist: 0
+    property int newCoin2Picklist: 3
     property int newCoinSelect: 0
     property int newWalletPicklist: 0
     property int newWalletSelect: 0
     property int switchState: 0
+    property int viewForScreenshot: 0
+    property bool transactionInProgress: false
     property string scannedAddress: ""
     property string selectedAddress: ""
     property string currentAddress: ""
     property var calculatedAmount: ""
     property string scanningKey: ""
     property string scanning: "scanning..."
+    property string typing: ""
+    property bool checkingSessionID: false
+    property bool loginInitiated: false
+    property bool importInitiated: false
+    property bool restoreInitiated: false
+    property bool createAccountInitiated: false
+    property bool saveAccountInitiated: false
     property string addressbookName: ""
     property string addressbookHash: ""
     property int addressIndex: 0
+    property bool addingAddress: false
+    property bool saveAddressInitiated: false
+    property bool editingAddress: false
+    property bool deletingAddress: false
     property int contactIndex: 0
+    property bool addingContact: false
+    property bool editingContact: false
+    property bool deletingContact: false
     property int walletIndex: 1
+    property bool editingWallet: false
+    property bool deletingWallet: false
     property int coinIndex: 0
     property int pictureIndex: 0
     property int totalLines: 4
@@ -285,16 +382,26 @@ ApplicationWindow {
     property int createPin: 0
     property int changePin: 0
     property int unlockPin: 0
-    property bool pinClearInitiated: false
+    property bool savePinInitiated: false
+    property bool checkPinInitiated: false
+    property bool clearPinInitiated: false
+    property bool changeVolumeInitiated: false
+    property bool changeSystemVolumeInitiated: false
+    property bool changeBalanceVisibleInitiated: false
+    property bool clearAllInitiated: false
     property int clearAll: 0
     property int pinOK: 0
     property int pinError: 0
+    property bool savePasswordInitiated: false
     property int requestSend: 0
     property bool newAccount: false
     property real changeBalance: 0
     property string notificationDate: ""
+    property int selectWallet: 0
+    property bool addingWallet: false
     property bool walletAdded: false
     property bool alert: false
+    property bool updatingWalletsNotif: false
     property bool testNet: false
     property bool saveCurrency: false
     property int oldCurrency: 0
@@ -304,6 +411,7 @@ ApplicationWindow {
     property string oldTheme: ""
     property bool oldPinlock: false
     property bool oldLocalKeys: false
+    property bool oldBalanceVisible: true
     property string selectedCoin: "XFUEL"
     property real totalXBY: 0
     property real totalXFUEL: 0
@@ -316,6 +424,9 @@ ApplicationWindow {
     property real totalBTCFiat: totalBTC * valueBTC
     property real totalETHFiat: totalETH * valueETH
     property string historyCoin: ""
+    property bool loadTransactionsInitiated: false
+    property bool transactionDetailsCollected: false
+    property bool historyDetailsCollected: false
     property int transactionPages: 0
     property int currentPage: 0
     property string transactionNR: ""
@@ -323,6 +434,7 @@ ApplicationWindow {
     property bool transactionDirection: false
     property real transactionAmount: 0
     property string transactionConfirmations: ""
+    property string transactionID: ""
     property bool saveSound: false
     property int oldSound: 0
     property int oldVolume: 1
@@ -348,12 +460,62 @@ ApplicationWindow {
     property real pendingXTEST: 0
     property real pendingBTC: 0
     property real pendingETH: 0
+    property string selectedXChatServer: ""
+    property bool pingingXChat: false
+    property int pingTimeRemain: 60
+    property string xChatMessage: ""
+    property bool newMessages: false
+    property bool messageAdded: false
+    property bool xChatScrolling: false
+    property int xChatID: 1
+    property int xChatTag: 0
+    property int xChatFilterResults: 0
+    property string dndUser: ""
+    property variant messageArray
+    property string tagFilter: ""
+    property string xchatLink: ""
+    property string url2Copy: ""
+    property int urlCopy2Clipboard: 0
+    property int xChatClipBoard: 0
+    property bool urlFormat: false
+    property string xchatImage: ""
+    property string xchatLargeImage: ""
+    property string xchatQuote: ""
+    property bool quoteAdded: false
+    property bool linkAdded: false
+    property bool imageAdded: false
+    property string longMessage: ""
+    property string shortMessage: ""
+    property bool sendTyping: true
+    property bool xChatConnection: false
+    property bool xChatConnecting: false
+    property bool xChatDisconnected: false
+    property bool checkingXchat: false
+    property bool tagMeChangeInitiated: false
+    property bool tagEveryoneChangeInitiated: false
+    property bool dndChangeInitiated: false
+    property bool tttGameStarted: false
+    property bool tttYourTurn: false
+    property bool tttFinished: false
+    property bool tttquit: false
+    property string tttCurrentGame: ""
+    property string tttPlayer:""
+    property bool alertTtt: false
+    property int gameError: 0
+    property bool loadingGame: false
+    property string inviteGame: ""
+    property string invitedPlayer: ""
+    property int playerNotAvailable: 0
+    property string selectedApp: ""
+    property string copiedConsoleText: ""
+    property string failedTX: ""
+
 
     // Signals
-    signal checkOS()
     signal loginSuccesfulSignal(string username, string password)
     signal loginFailed()
     signal marketValueChangedSignal(string currency)
+    signal findAllMarketValues()
     signal localeChange(string locale)
     signal userLogin(string username, string password)
     signal createUser(string username, string password)
@@ -364,11 +526,13 @@ ApplicationWindow {
     signal saveAppSettings()
     signal saveWalletList(string walletlist, string addresses)
     signal importAccount(string username, string password)
+    signal restoreAccount(string username, string password)
     signal exportAccount(string walletlist)
     signal updateBalanceSignal(string walletlist, string wallets)
     signal createKeyPair(string network)
     signal importPrivateKey(string network, string privKey)
     signal helpMe()
+    signal xChatSend(string usr, string platform, string status, string msg , string link, string image, string quote)
     signal setNetwork(string network)
     signal testTransaction(string test)
     signal updateAccount(string addresslist, string contactlist, string walletlist, string pendinglist)
@@ -382,34 +546,456 @@ ApplicationWindow {
     signal copyText2Clipboard(string text)
     signal sendCoins(string message)
     signal checkCamera()
+    signal checkWriteAccess()
     signal checkTxStatus(string pendinglist)
     signal changePassword(string oldPassword, string newPassword)
+    signal xChatTypingSignal(string user, string route, string status)
+    signal checkXChatSignal()
+    signal pingXChatServers()
+    signal xChatReconnect()
+    signal xchatPopup(string author, string msg)
+    signal downloadImage(string url)
+    signal tttSetUsername(string username)
+    signal tttGetScore()
+    signal tttResetScore(string win, string lost, string draw)
+    signal tttNewGame()
+    signal tttQuitGame()
+    signal tttButtonClicked(string button)
+    signal tttGetMoveID(string move)
+    signal tttNewMove(string player, string move)
+    signal tttcreateGameId(string me, string opponent)
+    signal sendGameToQueue(string user, string game, string gameID, string move)
+    signal confirmGameSend(string user, string game, string gameID, string move, string moveID)
+    signal sendGameInvite(string user, string opponent, string game, string gameID)
+    signal confirmGameInvite(string user, string opponent, string game, string gameID, string accept)
+    signal dicomRequest(string params)
+    signal clearUtxoList()
+    signal requestQueue()
+    signal setQueue(string queue)
+    signal getCoinInfo(string exchange, string pair)
+    signal getRecentTrades(string exchange, string pair, string limit)
+    signal getOrderBook(string exchange, string pair)
+    signal getOlhcv(string exchange, string pair, string granularity)
+    signal updateOlhcv(string status)
+
+    onTttCurrentGameChanged: {
+        if (tttCurrentGame != "") {
+            tttPlayer = findOpponent(tttCurrentGame)
+        }
+    }
+
+    // Keyboard shortcuts
+    Shortcut {
+        sequence: "Alt+M"
+        onActivated: minimizeApp()
+    }
+
+    Shortcut {
+        sequence: "Alt+Down"
+        onActivated: {
+            if (myOS !== "android" || myOS !== "ios") {
+                miniatureTracker = 0
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: "Alt+Up"
+        onActivated: {
+            if (myOS !== "android" || myOS !== "ios") {
+                miniatureTracker = 1
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: "Alt+Left"
+        onActivated: {
+            if (myOS !== "android" || myOS !== "ios") {
+                backButtonPressed()
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: "Alt+Q"
+        onActivated: {
+            if (myOS !== "android" || myOS !== "ios") {
+                sessionStart = 0
+                sessionTime = 0
+                manualLogout = 1
+                logoutTracker = 1
+            }
+        }
+    }
 
     // functions
+    function openApplication(app) {
+        if (app === "X-CHAT") {
+            status = userSettings.xChatDND == true? "dnd" : status
+            xChatTypingSignal(myUsername,"addToOnline", status)
+            xchatTracker = 1
+            selectedApp = ""
+        }
+        if (app === "X-CHANGE") {
+            xchangeTracker = 1
+            selectedApp = ""
+        }
+        if (app === "X-VAULT") {
+            xvaultTracker = 1
+            selectedApp = ""
+        }
+        if (app === "X-GAMES") {
+            xgamesTracker = 1
+            selectedApp = ""
+        }
+        if (app === "CONSOLE") {
+            pingTracker = 1
+            selectedApp = ""
+        }
+    }
+
+    function moveWindowX(dx) {
+        xcite.setX(xcite.x + dx)
+    }
+
+    function moveWindowY(dy) {
+        xcite.setY(xcite.y + dy)
+    }
+
+    function minimizeApp() {
+        if (myOS !== "android" || myOS !== "ios") {
+            showMinimized()
+        }
+    }
+
+    function backButtonPressed() {
+        click01.play()
+        if (logoutTracker == 0 && miniatureTracker == 0) {
+            if (networkError == 1) {
+                networkError = 0
+            }
+            else if (pincodeTracker == 1) {
+                pincodeTracker = 0
+            }
+            else if (changePasswordTracker == 1) {
+                changePasswordTracker = 0
+            }
+            else if (selectedPage == "onBoarding") {
+                if (loginTracker == 1 && !loginInitiated) {
+                    loginTracker = 0
+                }
+                else if (importTracker == 1 && !importInitiated) {
+                    importTracker = 0
+                }
+                else if (restoreTracker == 1 && !restoreInitiated) {
+                    restoreTracker = 0
+                }
+            }
+            else if (selectedPage == "createAccount") {
+                if (scanQRTracker == 1) {
+                    scanQRTracker = 0
+                }
+                else if (importKeyTracker == 1) {
+                    if (addingWallet == false) {
+                        importKeyTracker = 0
+                    }
+                }
+                else if (createWalletTracker == 1){
+                    if (addingWallet == false) {
+                        createWalletTracker = 0
+                    }
+                }
+            }
+
+            else if (selectedPage == "home") {
+                if (appsTracker == 1) {
+                    appsTracker = 0
+                }
+                else if (scanQRTracker == 1) {
+                    scanQRTracker = 0
+                }
+                else if (addCoinTracker == 1) {
+                    addCoinTracker = 0
+                }
+                else if (portfolioTracker == 1) {
+                    portfolioTracker = 0
+                }
+                else if (transferTracker == 1) {
+                    if (calculatorTracker == 1) {
+                        calculatorTracker =0
+                    }
+                    else if (addressbookTracker == 1) {
+                        addressbookTracker = 0
+                        currentAddress = ""
+                    }
+                    else if (scanQRTracker == 1) {
+                        scanQRTracker = 0
+                    }
+                    else if (viewForScreenshot == 1) {
+                        viewForScreenshot = 0
+                    }
+
+                    else if (transactionInProgress == false){
+                        transferTracker = 0
+                    }
+                }
+                else if (historyTracker == 1) {
+                    if (transactionDetailTracker == 1) {
+                        transactionDetailTracker = 0
+                    }
+                    else {
+                        historyTracker = 0
+                    }
+                }
+                else if (walletDetailTracker == 1 && !editingWallet && !deletingWallet) {
+                    if (deleteWalletTracker == 1) {
+                        deleteWalletTracker = 0
+                    }
+                    else {
+                        walletDetailTracker = 0
+                    }
+                }
+                else if (coinTracker == 1 && pageTracker == 0) {
+                    countWallets()
+                    coinTracker = 0
+                }
+                else if (addContactTracker == 1 && !addingContact) {
+                    addContactTracker = 0
+                }
+                else if (editContactTracker == 1 && !editingContact && !deletingContact) {
+                    if (deleteContactTracker == 1) {
+                        deleteContactTracker = 0
+                    }
+                    else   {
+                        editContactTracker = 0
+                    }
+                }
+                else if (addAddressTracker == 1 && !addingAddress && !saveAddressInitiated) {
+                    addAddressTracker = 0
+                }
+                else if (addressTracker == 1 && !editingAddress && !deletingAddress) {
+                    if (deleteAddressTracker == 1) {
+                        deleteAddressTracker = 0
+                    }
+                    else {
+                        addressTracker = 0
+                    }
+                }
+                else if (contactTracker == 1 && pageTracker == 1) {
+                    contactTracker = 0
+                }
+                else if (addressQRTracker == 1 && pageTracker == 1) {
+                    addressQRTracker = 0
+                }
+                else if (pageTracker == 1) {
+                    dashboardIndex = 1
+                    dashboardIndex = 0
+                }
+                else {
+                    if (clickToLogout == 0) {
+                        clickToLogout = 1
+                    }
+                    else {
+                        clickToLogout = 0
+                        sessionStart = 0
+                        sessionTime = 0
+                        manualLogout = 1
+                        logoutTracker = 1
+                    }
+                }
+            }
+            else if (selectedPage == "wallet") {
+                if (scanQRTracker == 1) {
+                    scanQRTracker = 0
+                }
+                else if (viewOnlyTracker == 1) {
+                    if (scanQRTracker == 0 && addingWallet == false) {
+                        viewOnlyTracker = 0
+                    }
+                }
+                else if (importKeyTracker == 1) {
+                    if (scanQRTracker == 0 && addingWallet == false) {
+                        importKeyTracker = 0
+                    }
+                }
+                else if (createWalletTracker == 1){
+                    if (addingWallet == false) {
+                        createWalletTracker = 0
+                    }
+                }
+                else {
+                    if (selectWallet == 1) {
+                        if (walletAdded == true) {
+                            addWalletTracker = 0
+                            selectedPage = "home"
+                            mainRoot.pop();
+                            selectWallet = 0
+                            walletAdded = false
+                        }
+                        else {
+                            selectWallet = 0
+                            walletAdded = false
+                        }
+                    }
+                    else {
+                        addWalletTracker = 0
+                        walletAdded = false
+                        selectWallet = 0
+                        selectedPage = "home"
+                        mainRoot.pop("qrc:/Controls/+mobile/AddWallet.qml");
+                    }
+                }
+            }
+            else if (selectedPage == "apps") {
+                if (xchangeTracker == 0 && xchatTracker == 0 && xvaultTracker == 0 && xgamesTracker == 0 && pingTracker == 0) {
+                    appsTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
+                else if (pingTracker == 1 && networkError == 0) {
+                    pingTracker = 0
+                    setQueue("dicom_testqueue_v4")
+                }
+
+                else if (xgamesTracker == 1 && networkError == 0) {
+                    if (inviteTracker == 1) {
+                        inviteTracker = 0
+                    }
+                    else if (tttTracker == 1) {
+                        if (tttHubTracker == 1) {
+                            tttHubTracker = 0
+                            tttquit = false
+                        }
+                        else if (leaderBoardTracker == 1) {
+                            leaderBoardTracker = 0
+                        }
+                        else {
+                            tttTracker = 0
+                        }
+                    }
+                    else {
+                        xgamesTracker = 0
+                    }
+                }
+
+                else if (xvaultTracker == 1 && networkError == 0) {
+                    xvaultTracker =0
+                }
+                else if (xchangeTracker == 1 && networkError == 0) {
+                    if (xchangeSettingsTracker == 1) {
+                        xchangeSettingsTracker = 0
+                    }
+                    else {
+                        xchangeTracker = 0
+                    }
+                }
+                else if (xchatTracker == 1 && networkError == 0) {
+                    if (xchatSettingsTracker == 1) {
+                        if (!tagMeChangeInitiated && !tagEveryoneChangeInitiated && !dndChangeInitiated) {
+                            xchatSettingsTracker = 0
+                        }
+                    }
+                    else if (xchatNetworkTracker == 1) {
+                        xchatNetworkTracker = 0
+                    }
+                    else if (xchatUserTracker == 1) {
+                        xchatUserTracker = 0
+                    }
+                    else if (xChatImageTracker == 1) {
+                        xChatImageTracker = 0
+                    }
+                    else if (xChatLinkTracker == 1) {
+                        xChatLinkTracker = 0
+                    }
+                    else if (xChatQuoteTracker == 1) {
+                        xChatQuoteTracker = 0
+                    }
+                    else if (xChatLargeImageTracker == 1) {
+                        xChatLargeImageTracker = 0
+                    }
+                    else if (xChatClipBoard == 1) {
+                        xChatClipBoard = 0
+                    }
+
+                    else {
+                        xchatTracker = 0
+                        dndTracker = 0
+                    }
+                }
+            }
+            else if (selectedPage == "backup") {
+                if (screenshotTracker == 0) {
+                    backupTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
+                else if (screenshotTracker == 1) {
+                    screenshotTracker = 0
+                }
+            }
+            else if (selectedPage == "settings") {
+                if (debugTracker == 1) {
+                    debugTracker = 0
+                }
+                else if (!changeVolumeInitiated && ! changeSystemVolumeInitiated && !clearAllInitiated && !saveCurrency && !saveSound) {
+                    currencyTracker = 0
+                    soundTracker = 0
+                    selectedPage = "home"
+                    mainRoot.pop()
+                }
+            }
+            else if (selectedPage == "notif" && updatingWalletsNotif == false) {
+                alert = false
+                selectedPage = "home"
+                mainRoot.pop()
+            }
+        }
+    }
+
+    function isIphoneX() {
+        if (Qt.platform.os === "ios"){
+            switch(appHeight * Screen.devicePixelRatio) {
+            case 1792: //("iPhone_XR");
+            case 2436: //("iPhone_X_XS");
+            case 2688: //("iPhone_XRS_MAX");
+                return true;
+            default: //("not an iPhone X");
+                return false;
+            }
+        }
+        else {
+            //("not an iPhone");
+            return false;
+        }
+    }
+
     function updateBalance(coin, address, balance) {
         var balanceAlert
         var difference
         var newBalance
         changeBalance = 0
 
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).address === address) {
                     newBalance = parseFloat(balance);
                     if (!isNaN(newBalance)){
                         if (newBalance !== walletList.get(i).balance) {
-
+                            console.log("updating balance for " + coin + " " + address + ": " + balance)
+                            newBalanceTracker = 0
                             changeBalance = newBalance - walletList.get(i).balance
                             if (changeBalance > 0) {
                                 difference = "increased"
                             }
                             else {
                                 difference = "decreased"
+                                newBalancePending(coin, address)
                             }
-
+                            newBalanceTracker = 1
                             walletList.setProperty(i, "balance", newBalance)
                             balanceAlert = "Your balance has " + difference + " with:<br><b>" + changeBalance + "</b>" + " " + (walletList.get(i).name)
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label)})
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : balanceAlert, "origin" : (walletList.get(i).name + " " + walletList.get(i).label), "remove": false})
                             alert = true
                             if (standBy == 1) {
                                 walletUpdate(walletList.get(i).name, walletList.get(i).label, balanceAlert)
@@ -428,16 +1014,57 @@ ApplicationWindow {
         }
     }
 
+    function confirmTransaction(coin, address, txid) {
+        for (var u = 0; u <pendingList.count; u ++) {
+            if (pendingList.get(u).coin === coin && pendingList.get(u).address === address && pendingList.get(u).txid === txid) {
+                pendingList.setProperty(u, "value", "confirmed")
+            }
+        }
+        for (var i = 0; i < transactionList.count; i ++) {
+            if (transactionList.get(i).txid === txid) {
+                var b = ""
+                for (var a = 0; a < walletList.count; a ++ ) {
+                    if (walletList.get(a).name === coin && walletList.get(a).address === address) {
+                        b = walletList.get(a).label
+                    }
+                }
+                if (b === "") {
+                    b = transactionList.get(i).address
+                }
+                var c = ""
+                for (var e = 0; e < addressList.count; e ++ ) {
+                    if (addressList.get(e).coin === coin && addressList.get(e).address === transactionList.get(i).receiver) {
+                        if(addressList.get(e).fullName !== undefined) {
+                            c = addressList.get(e).fullName + " " + addressList.get(e).label
+                        }
+                        else {
+                            c = addressList.get(e).label
+                        }
+                    }
+                }
+                if (c === "") {
+                    c = transactionList.get(i).receiver
+                }
+                var h = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
+                var l = transactionList.get(i).amount
+                var k = Number(transactionList.get(i).fee).toLocaleString(Qt.locale("en_US"))
+                var m = transactionList.get(i).used
+                var o = Number(transactionList.get(i).used).toLocaleString(Qt.locale("en_US"))
+                var d = "Confirmed transaction of " + h + transactionList.get(i).coin + " (fee: " + k + transactionList.get(i).coin + ") to " + c
+                alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : coin + " " + b, "remove": false})
+                alert = true
+                notification.play()
+            }
+        }
+    }
+
     function updatePending(coin, address, txid, result) {
-        console.log("updating pending list")
-        console.log("checking transaction: " + coin + ", " + address + ", " + txid + ", " + result)
-        for (var i = 0; i < pendingList.count; ++i){
-            if(pendingList.get(i).coin === coin) {
-                if(pendingList.get(i).address === address) {
-                    if(pendingList.get(i).txid === txid) {
-                        if(result === "true") {
-                            console.log("remove pending transaction")
-                            pendingList.remove(i)
+        for (var u = 0; u < pendingList.count; u ++){
+            if(pendingList.get(u).coin === coin) {
+                if(pendingList.get(u).address === address) {
+                    if(pendingList.get(u).txid === txid) {
+                        if(result === "true" || result === "confirmed") {
+                            pendingList.setProperty(u,"value",result)
                         }
                     }
                 }
@@ -446,18 +1073,20 @@ ApplicationWindow {
     }
 
     function pendingUnconfirmed(coin, address, txid, result) {
-        for (var i = 0; i < pendingList.count; ++i){
-            if(pendingList.get(i).coin === coin) {
+        for (var i = 0; i < pendingList.count; i ++){
+            if(pendingList.get(i).coin === coin && pendingList.get(i).value === "false") {
                 if(pendingList.get(i).address === address) {
                     if(pendingList.get(i).txid === txid) {
-                        if(pendingList.get(i).check >= 40) {
-                            console.log("pending transaction canceled")
-                            console.log("canceled transaction: " + coin + ", " + address + ", " + txid)
+                        if(pendingList.get(i).check >= 10) {
+                            pendingList.setProperty(i,"value",result)
+                            failedTX = txid
+                            failedPendingTracker = 0
                             var addressname = getLabelAddress(coin, address)
                             var cancelAlert = "transaction canceled: " + txid
-                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname})
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : cancelAlert, "origin" : coin + " " + addressname, "remove": false})
                             alert = true
-                            updatePending(coin, address, txid, "true")
+                            notification.play()
+                            failedPendingTracker = 1
                         }
                     }
                 }
@@ -468,7 +1097,7 @@ ApplicationWindow {
     function countWallets() {
         totalWallets = 0
         if (coinTracker == 0) {
-            for(var i = 0; i < coinList.count; i++) {
+            for(var i = 0; i < coinList.count; i ++) {
                 if (coinList.get(i).active === 1) {
                     totalWallets += 1
                 }
@@ -476,7 +1105,7 @@ ApplicationWindow {
         }
         else {
             var name = getName(coinIndex)
-            for(var e = 0; e < walletList.count; e++){
+            for(var e = 0; e < walletList.count; e ++){
                 if (walletList.get(e).name === name) {
                     totalWallets += 1
                 }
@@ -488,7 +1117,7 @@ ApplicationWindow {
 
     function coinWalletLines(coin) {
         totalCoinWallets = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).remove === false) {
                     totalCoinWallets += 1
@@ -498,7 +1127,7 @@ ApplicationWindow {
     }
 
     function resetFavorites(coin) {
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 walletList.setProperty(i, "favorite", false)
             }
@@ -507,7 +1136,7 @@ ApplicationWindow {
 
     function countAddresses() {
         totalAddresses = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             totalAddresses += 1
         }
         return totalAddresses
@@ -515,7 +1144,7 @@ ApplicationWindow {
 
     function countAddressesContact(contactID) {
         var contactAddresses = 0
-        for(var i = 0; i < addressList.count; i++) {
+        for(var i = 0; i < addressList.count; i ++) {
             if (addressList.get(i).contact === contactID) {
                 if (addressList.get(i).remove === false) {
                     contactAddresses += 1
@@ -527,7 +1156,7 @@ ApplicationWindow {
 
     function sumBalance() {
         totalBalance = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).active === true && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 if (walletList.get(i).name === "XBY") {
                     totalBalance += (walletList.get(i).balance * btcValueXBY * valueBTC)
@@ -546,19 +1175,48 @@ ApplicationWindow {
         return totalBalance
     }
 
+    function newBalancePending(coin, address) {
+        for (var i = 0; i < pendingList.count; i ++) {
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value !== "confirmed") {
+                confirmTransaction(coin, address, pendingList.get(i).txid)
+            }
+        }
+    }
+
     function pendingCoins(coin, address) {
         var pending = 0
-        for (var i = 0; i < pendingList.count; i++) {
-            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address) {
-                pending += pendingList.get(i).amount
+        for (var i = 0; i < pendingList.count; i ++) {
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value !== "confirmed" && pendingList.get(i).value !== "rejected") {
+                pending += pendingList.get(i).used
             }
         }
         return pending
     }
 
+    function unconfirmedTx(coin, address) {
+        var unconfirmed = 0
+        for (var i = 0; i < pendingList.count; i ++) {
+            if (pendingList.get(i).coin === coin && pendingList.get(i).address === address && pendingList.get(i).value !== "confirmed" && pendingList.get(i).value !== "rejected") {
+                unconfirmed += pendingList.get(i).amount
+                unconfirmed += getFee(coin, pendingList.get(i).txid)
+            }
+        }
+        return unconfirmed
+    }
+
+    function getFee(coin, txid) {
+        var fee = 0
+        for (var e = 0; e < transactionList.count; e ++) {
+            if (coin === transactionList.get(e).coin && txid === transactionList.get(e).txid) {
+                fee = transactionList.get(e).fee
+            }
+        }
+        return fee
+    }
+
     function sumXBY() {
         totalXBY =0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "XBY" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXBY += walletList.get(i).balance
             }
@@ -568,7 +1226,7 @@ ApplicationWindow {
 
     function sumXFUEL() {
         totalXFUEL = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "XFUEL" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXFUEL += walletList.get(i).balance
             }
@@ -578,7 +1236,7 @@ ApplicationWindow {
 
     function sumXTest() {
         totalXFUELTest = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "XTEST" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalXFUELTest += walletList.get(i).balance
             }
@@ -588,7 +1246,7 @@ ApplicationWindow {
 
     function sumBTC() {
         totalBTC = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "BTC" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalBTC += walletList.get(i).balance
             }
@@ -598,7 +1256,7 @@ ApplicationWindow {
 
     function sumETH() {
         totalETH = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === "ETH" && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 totalETH += walletList.get(i).balance
             }
@@ -608,7 +1266,7 @@ ApplicationWindow {
 
     function sumCoinTotal(coin) {
         var coinTotal = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 coinTotal += walletList.get(i).balance
             }
@@ -618,7 +1276,7 @@ ApplicationWindow {
 
     function sumCoinUnconfirmed(coin) {
         var unconfirmedTotal = 0
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin && walletList.get(i).include === true && walletList.get(i).remove === false) {
                 unconfirmedTotal += unconfirmedTotal + walletList.get(i).unconfirmedCoins
             }
@@ -628,7 +1286,7 @@ ApplicationWindow {
 
     function coinConversion(coin, quantity) {
         var converted = 0
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 converted = (quantity * coinList.get(i).coinValueBTC * valueBTC)
             }
@@ -638,7 +1296,7 @@ ApplicationWindow {
 
     function getLogo(coin) {
         var logo = ''
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 logo = coinList.get(i).logo
             }
@@ -648,7 +1306,7 @@ ApplicationWindow {
 
     function getTestnet(coin) {
         testNet = false
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 testNet = coinList.get(i).testnet
             }
@@ -658,7 +1316,7 @@ ApplicationWindow {
 
     function getLogoBig(coin) {
         var logo = ''
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 logo = coinList.get(i).logoBig
             }
@@ -668,7 +1326,7 @@ ApplicationWindow {
 
     function getName(coin) {
         var name = ""
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).coinID === coin) {
                 name = coinList.get(i).name
             }
@@ -678,7 +1336,7 @@ ApplicationWindow {
 
     function getFullName(coin) {
         var name = ""
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).coinID === coin) {
                 name = coinList.get(i).fullname
             }
@@ -688,7 +1346,7 @@ ApplicationWindow {
 
     function getPercentage(coin) {
         var percentage = 0
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 percentage = coinList.get(i).percentage
             }
@@ -698,7 +1356,7 @@ ApplicationWindow {
 
     function getValue(coin) {
         var value = 0
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 value = coinList.get(i).coinValueBTC
             }
@@ -708,7 +1366,7 @@ ApplicationWindow {
 
     function getPrivKey(coin, label) {
         var privKey = ""
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).label === label) {
                     privKey = walletList.get(i).privatekey
@@ -720,7 +1378,7 @@ ApplicationWindow {
 
     function getAddress(coin, label) {
         var address = ""
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).label === label) {
                     address = walletList.get(i).address
@@ -732,7 +1390,7 @@ ApplicationWindow {
 
     function getWalletNR(coin, label) {
         var walletID = ""
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).label === label) {
                     walletID = walletList.get(i).walletNR
@@ -744,7 +1402,7 @@ ApplicationWindow {
 
     function getLabelAddress(coin, address) {
         var label = ""
-        for(var i = 0; i < walletList.count; i++) {
+        for(var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).name === coin) {
                 if (walletList.get(i).address === address) {
                     label = walletList.get(i).label
@@ -756,7 +1414,7 @@ ApplicationWindow {
 
     function getCoinNR(coin) {
         selectedCoin = 0
-        for (var i = 0; coinList.count; i++) {
+        for (var i = 0; coinList.count; i ++) {
             if (coinList.get(i).name === coin) {
                 selectedCoin= coinList.get(i).coinID
             }
@@ -767,9 +1425,9 @@ ApplicationWindow {
         var balance = 0
         var wallet = 0
         var favorite = false
-        for(var i = 0; i < walletList.count; i++){
+        for(var i = 0; i < walletList.count; i ++){
             if (walletList.get(i).name === coin){
-                if (favorite == false) {
+                if (favorite === false) {
                     if (walletList.get(i).favorite === true){
                         balance = walletList.get(i).balance
                         wallet = walletList.get(i).walletNR
@@ -780,7 +1438,7 @@ ApplicationWindow {
                             balance = walletList.get(i).balance
                             wallet = walletList.get(i).walletNR
                         }
-                        else if (wallet == 0) {
+                        else if (wallet === 0) {
                             balance = walletList.get(i).balance
                             wallet = walletList.get(i).walletNR
                         }
@@ -801,7 +1459,7 @@ ApplicationWindow {
 
     function coinListLines(active) {
         totalLines = 0
-        for(var i = 0; i < coinList.count; i++) {
+        for(var i = 0; i < coinList.count; i ++) {
             if (active === false) {
                 totalLines += 1
             }
@@ -854,13 +1512,36 @@ ApplicationWindow {
         }
     }
 
+    function getExchangeLogo(exchange) {
+        var exchangeLogo
+        for(var i = 0; i < exchangeList.count; i ++) {
+            if (exchangeList.get(i).name === exchange) {
+                exchangeLogo = exchangeList.get(i).logo
+            }
+        }
+        return exchangeLogo
+    }
+
     function checkNotifications() {
-        if (alertList.count > 1) {
+        var count = 0
+        for (var i = 0; i < alertList.count; i ++) {
+            if(alertList.get(i).remove === false) {
+                count = count +1
+            }
+        }
+        if (count > 0) {
             alert = true
         }
         else {
             alert = false
         }
+    }
+
+    function clearAlertList() {
+        for (var i = 0; i < alertList.count; i ++) {
+            alertList.setProperty(i, "remove", true)
+        }
+        alert = false
     }
 
     function setMarketValue(currency, currencyValue) {
@@ -905,6 +1586,584 @@ ApplicationWindow {
         }
     }
 
+    // X-CHAT
+
+    function dndNotification (user) {
+        dndUser = user
+        dndTracker = 1
+    }
+
+    function getUserStatus(user) {
+        var userStatus = ""
+        for(var i = 0; i < xChatUsers.count; i ++) {
+            if (user === xChatUsers.get(i).username) {
+                userStatus = xChatUsers.get(i).status
+            }
+        }
+
+        return userStatus
+    }
+
+    function xChatTyping(user, route, status){
+        xChatTypingSignal(user, route, status)
+    }
+
+    function loadOnlineUsers(online) {
+        xChatOnline.clear()
+        if (typeof online !== "undefined") {
+            var obj = JSON.parse(online);
+            for (var i in obj){
+                var data = obj[i];
+                xChatOnline.append(data)
+            }
+            for (var a = 0; a < xChatOnline.count; a ++) {
+                xChatOnline.setProperty(a,"newUser",true)
+            }
+            for (var u = 0; u < xChatUsers.count; u ++) {
+                xChatUsers.setProperty(u,"updated",false)
+            }
+            for (var e = 0; e < xChatUsers.count; e ++) {
+                var user = xChatUsers.get(e).username
+                for (var o = 0; o < xChatOnline.count; o ++) {
+                    if (user === xChatOnline.get(o).username) {
+                        xChatUsers.setProperty(e,"date",xChatOnline.get(o).date)
+                        xChatUsers.setProperty(e,"time",xChatOnline.get(o).time)
+                        xChatUsers.setProperty(e,"status",xChatOnline.get(o).status)
+                        xChatUsers.setProperty(e,"updated",true)
+                        xChatOnline.setProperty(o,"newUser",false)
+                    }
+                }
+            }
+            for (var y = 0; y < xChatOnline.count; y ++) {
+                var act = xChatOnline.get(y).newUser
+                if (act === true) {
+                    var userID = xChatOnline.get(y).username
+                    xChatUsers.append({"username":userID, "date":xChatOnline.get(y).date, "time":xChatOnline.get(y).time, "status":xChatOnline.get(y).status, "active":true, "updated": true, "noCapitals": userID.toLowerCase()})
+                }
+            }
+            for (var b = 0; b < xChatUsers.count; b ++) {
+                var updated = xChatUsers.get(b).updated
+                if (updated === false) {
+                    xChatUsers.setProperty(b,"status","offline")
+                }
+            }
+        }
+    }
+
+    function updateServerResponseTime(server, responseTime, serverStatus) {
+        if(xChatServers.count != 0) {
+            var serverFound = false
+            for (var i = 0; i < xChatServers.count; i ++) {
+                if (server === xChatServers.get(i).name) {
+                    xChatServers.setProperty(i, "responseTime", responseTime)
+                    xChatServers.setProperty(i, "serverStatus", serverStatus)
+                    xChatServers.setProperty(i, "updated", true)
+                    serverFound = true
+                }
+            }
+            if(!serverFound) {
+                xChatServers.append({"name": server, "responseTime": responseTime, "serverStatus": serverStatus, "updated": true})
+            }
+        }
+        else {
+            xChatServers.append({"name": server, "responseTime": responseTime, "serverStatus": serverStatus, "updated": true})
+        }
+    }
+
+    function updateServerStatus() {
+        for (var i = 0; i < xChatServers.count; i ++) {
+            if (!xChatServers.get(i).updated) {
+                xChatServers.setProperty(i, "serverStatus", "down")
+                xChatServers.setProperty(i, "updated", true)
+            }
+        }
+    }
+
+    function resetServerUpdateStatus () {
+        for (var i = 0; i < xChatServers.count; i ++) {
+            xChatServers.setProperty(i, "updated", false)
+        }
+    }
+
+    function addQuote(user, message) {
+        var remove = ["<font color='#0ED8D2'><b>","<font color='#5E8BFF'><b>","</b></font>"]
+        for(var o = 0; o < remove.length; o ++) {
+            var u = new RegExp( remove[o], "gi")
+            message = message.replace(u, "")
+        }
+        xchatQuote = user + ": " + message
+        quoteAdded = true
+    }
+
+    // X-GAMES
+    function findLastMove(game, gameID) {
+        var lastMoveNR = ""
+        var lastMove = ""
+        var moveID = 0
+        for (var i = 0; i < movesList.count; i ++) {
+            if (movesList.get(i).game === game && movesList.get(i).gameID === gameID){
+                moveID = Number.fromLocaleString(movesList.get(i).moveID)
+                if (moveID > lastMoveNR) {
+                    lastMoveNR = moveID
+                    lastMove = movesList.get(i).move
+                }
+            }
+        }
+        return lastMove;
+    }
+
+    function findLastMoveID(game, gameID) {
+        var lastMoveNR = 0
+        var moveID = 0
+        for (var i = 0; i < movesList.count; i ++) {
+            if (movesList.get(i).game === game && movesList.get(i).gameID === gameID){
+                moveID = Number.fromLocaleString(movesList.get(i).moveID)
+                if (moveID > lastMoveNR) {
+                    lastMoveNR = moveID
+                }
+            }
+        }
+        return lastMoveNR;
+    }
+
+    function findGameNr(gameID) {
+        var gameNR = ""
+        var gameIDArray = gameID.split(':')
+        gameNR = gameIDArray[2]
+        return gameNR;
+    }
+
+    function findOpponent(gameID) {
+        var opponent = ""
+        var gameIDArray = gameID.split(':')
+        if (gameIDArray[0] === myUsername) {
+            opponent = gameIDArray[1]
+        }
+        if (gameIDArray[1] === myUsername) {
+            opponent = gameIDArray[0]
+        }
+        return opponent;
+    }
+
+    function findInviter(gameID, place) {
+        var gameIDArray = gameID.split(':')
+        var inviter = ""
+        if (place === 1) {
+            inviter = gameIDArray[0]
+        }
+        else if (place === 2) {
+            inviter = gameIDArray[1]
+        }
+        return inviter;
+    }
+
+    function checkForUserScore(player, game) {
+        var exists = false
+        for (var i = 0; i < scoreList.count; i ++) {
+            if (scoreList.get(i).game === game && scoreList.get(i).player === player) {
+                exists = true
+            }
+        }
+        if (!exists) {
+            scoreList.append({"game": game, "player": player, "win": 0, "lost": 0, "draw": 0})
+        }
+    }
+
+    function checkIfMoveExists(game, gameID, player, move, moveID) {
+        var opponent = findOpponent(gameID)
+        for(var o = 0; o < gamesList.count; o ++) {
+            if(gamesList.get(o).game === game && gamesList.get(o).gameID === gameID) {
+                gamesList.setProperty(o, "started", true)
+            }
+        }
+
+        var exists = false
+        for(var i = 0; i < movesList.count; i ++) {
+            if(movesList.get(i).game === game && movesList.get(i).gameID === gameID && movesList.get(i).moveID === moveID){
+                exists = true
+            }
+        }
+
+        if(!exists){
+            console.log("move does not exist")
+            console.log("adding move for: " + player + " to movesList, game: " + game + ", move: " + move + ", moveID: " + moveID)
+            movesList.append({"game": game, "gameID": gameID, "player": player, "move": move, "moveID": moveID, "confirmed": false});
+        }
+        else {
+            console.log("move exists")
+        }
+
+        if (opponent !== "computer" || loadingGame === true) {
+            console.log("sending move to back end")
+            newMove(game, gameID, player, move)
+        }
+
+        if (player !== myUsername) {
+            console.log("send confirmation to opponent")
+            confirmGameSend(myUsername, game, gameID,  move, moveID)
+            confirmMove(game, gameID, move, moveID)
+        }
+    }
+
+    function newMove(game, gameID, player, move) {
+        var gameNR = findGameNr(gameID)
+        console.log("playing new move: " + move + " for player: " + player)
+        for (var i = 0; i < gamesList; i ++) {
+            if(gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                console.log("mark game as started")
+                gamesList.setProperty(i, "started", true)
+            }
+        }
+        if (game === "ttt") {
+            console.log("convert move to button")
+            var number = Number.fromLocaleString(move) - 1;
+            console.log("move: " + move + " to nr: " + number)
+            if (game === "ttt" && gameID === tttCurrentGame) {
+                tttNewMove(player, move)
+                if (player !== myUsername) {
+                    tttButtonList.setProperty(number, "confirmed", true);
+                }
+                if(player !== myUsername && loadingGame !== true) {
+                    notification.play()
+                    if (tttTracker !== 1) {
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " has made a new move in Tic Tact Toe in game #" + gameNR, "origin" : "X-GAMES", "remove": false})
+                        alert = true
+                    }
+                }
+            }
+        }
+    }
+
+    function confirmMove(game, gameID, move, moveID) {
+        var number = (Number.fromLocaleString(move) - 1);
+        for (var i = 0; i < movesList.count; i ++) {
+            if (movesList.get(i).game === game && movesList.get(i).gameID === gameID && movesList.get(i).moveID === moveID) {
+                movesList.setProperty(i, "confirmed", true)
+                if (game === "ttt" && gameID === tttCurrentGame) {
+                    tttButtonList.setProperty(number, "confirmed", true);
+                }
+            }
+        }
+    }
+
+    function correctUser(user, gameID) {
+        var opponent = false
+        var gameIDArray = gameID.split(':')
+        if (gameIDArray[0] === user) {
+            opponent = true
+        }
+        if (gameIDArray[1] === user) {
+            opponent = true
+        }
+        return opponent;
+    }
+
+    function isMyGame(gameID) {
+        var gameIDArray = gameID.split(':')
+        var isMine = false
+        if (gameIDArray[0] === myUsername) {
+            isMine = true
+        }
+        if (gameIDArray[1] === myUsername) {
+            isMine = true
+        }
+
+        return isMine;
+    }
+
+    function inviteSent(game, gameID) {
+        for (var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                gamesList.setProperty(i, "invited", true)
+            }
+        }
+    }
+
+    function getGameName(game) {
+        var gameName = ""
+        if (game === "ttt" ) {
+            gameName = "Tic Tac Toe"
+        }
+        return gameName
+    }
+
+    function checkIfInviteExists(game, gameID) {
+        var gameNR = findGameNr(gameID)
+        var gameName = getGameName(game)
+        var exists = false
+        var opponent = findOpponent(gameID)
+        for (var i = 0; i < gamesList.count; i ++) {
+            if(gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                exists = true
+            }
+        }
+        if(!exists) {
+            notification.play()
+            gamesList.append({"game": game, "gameID": gameID, "invited": true, "accepted": false, "started": false, "finished": false})
+            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " has has invited you to play a game of " + gameName + " #" + gameNR, "origin" : "X-GAMES", "remove": false})
+            alert = true
+        }
+        else {
+            notification.play()
+            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : opponent + " send you a reminder for his invite to play " + gameName + " #" + gameNR, "origin" : "X-GAMES", "remove": false})
+            alert = true
+        }
+    }
+
+    function acceptGameInvite(user, game, gameID, accept) {
+        console.log("accept game initiated")
+        var gameName = getGameName(game)
+        var player = findOpponent(gameID)
+        for(var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                console.log("game found")
+                if(accept === "true") {
+                    gamesList.setProperty(i, "accepted", true)
+                    checkForUserScore(player, game)
+                    console.log("game accepted")
+                    if (user !== myUsername) {
+                        notification.play()
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " accepted your invite for " + gameName, "origin" : "X-GAMES", "remove": false})
+                        alert = true
+                    }
+                    else {
+                        confirmGameInvite(myUsername, player, game, gameID, "true")
+                    }
+                }
+                else if (accept === "false") {
+                    gamesList.remove(i, 1)
+                    console.log("game rejected")
+                    if (user !== myUsername) {
+                        notification.play()
+                        alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : player + " did not accept your invite for " + gameName, "origin" : "X-GAMES", "remove": false})
+                        alert = true
+                    }
+                    else {
+                        confirmGameInvite(myUsername, player, game, gameID, "false")
+                    }
+                }
+            }
+        }
+    }
+
+    function removeGame(game, gameID) {
+        for(var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                gamesList.remove(i, 1)
+            }
+        }
+        removeMoves(game, gameID)
+    }
+
+    function removeMoves(game, gameID) {
+        for(var o = 0; o < movesList.count; o ++) {
+            if (movesList.get(o).game === game && movesList.get(o).gameID === gameID) {
+                console.log("removing move from movesList")
+                movesList.remove(o, 1)
+                o = o - 1
+            }
+        }
+    }
+
+    function updateScore(game, player, wn, lst, drw) {
+        for (var i = 0; i < scoreList.count; i ++) {
+            if(scoreList.get(i).game === game && scoreList.get(i).player === player) {
+                var currentWin = scoreList.get(i).win
+                var currentLost = scoreList.get(i).lost
+                var currentDraw = scoreList.get(i).draw
+                scoreList.setProperty(i, "win", currentWin + wn)
+                scoreList.setProperty(i, "lost", currentLost + lst)
+                scoreList.setProperty(i, "draw", currentDraw + drw)
+                var newWin = scoreList.get(i).win
+                var newLost = scoreList.get(i).lost
+                var newDraw = scoreList.get(i).draw
+            }
+        }
+        loadScore(game, player)
+    }
+
+    function loadScore(game, player) {
+        if (game === "ttt") {
+            tttResetScore(0, 0, 0)
+            for (var i = 0; i < scoreList.count; i ++) {
+                if (scoreList.get(i).game === game && scoreList.get(i).player === player) {
+                    var win = scoreList.get(i).win
+                    var lost = scoreList.get(i).lost
+                    var draw = scoreList.get(i).draw
+                    tttResetScore(win, lost, draw)
+                }
+            }
+            tttGetScore()
+        }
+        loadingGame = false
+    }
+
+    function getTurn(game, gameID) {
+        var opponent = findOpponent(gameID)
+        if (opponent === "computer") {
+            return true;
+        }
+        else {
+            var gameIDArray = gameID.split(':')
+            if (gameIDArray[0] === myUsername) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    function gameStarted(game, gameID) {
+        var started = false
+        for(var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                if (gamesList.get(i).started){
+                    started = true
+                    return started;
+                }
+                else {
+                    return started
+                }
+            }
+        }
+    }
+
+    function isAccepted(game, gameID) {
+        var accepted = false
+        for (var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                if (gamesList.get(i).accepted === true) {
+                    accepted = true
+                }
+                else {
+                    accepted = false
+                }
+            }
+        }
+        console.log("current game is accepted: " + accepted)
+        return accepted;
+    }
+
+    function isFinished(game, gameID) {
+        var finished = false
+        if (gameID === "") {
+            finished = true
+        }
+        else {
+            for (var i = 0; i < gamesList.count; i ++) {
+                if (gamesList.get(i).game === game && gamesList.get(i).gameID === gameID) {
+                    if (gamesList.get(i).finished === true) {
+                        finished = true
+                    }
+                    else {
+                        finished = false
+                    }
+                }
+            }
+        }
+        console.log("current game is finished: " + finished)
+        return finished;
+    }
+
+    function initializeTtt() {
+        var opponent = ""
+        for (var i = 0; i < gamesList.count; i ++) {
+            if (gamesList.get(i).game === "ttt" && gamesList.get(i).gameID !== "" && gamesList.get(i).finished === false) {
+                opponent = findOpponent(gamesList.get(i).gameID)
+                if (opponent === "computer") {
+                    console.log("found ongoing tic tac toe game against computer")
+                    tttCurrentGame = gamesList.get(i).gameID
+                }
+                else {
+                    console.log("no ongoing game against computer found")
+                }
+            }
+        }
+        if (tttCurrentGame !== "") {
+            console.log("loading existing tic tac toe game against computer")
+            playGame("ttt", tttCurrentGame)
+        }
+        else {
+            console.log("creating new tic tac toe game against computer")
+            tttcreateGameId(myUsername,"computer")
+        }
+        for (var e = 0; e < tttButtonList.count; e ++) {
+            tttButtonList.setProperty(e, "online", false)
+        }
+    }
+
+    function playGame(game, gameID){
+        loadingGame = true
+        console.log("initiate load game")
+        var player = findOpponent(gameID)
+        console.log("opponent: " + player)
+        if (game === "ttt") {
+            tttCurrentGame = gameID
+            console.log("gameID: " + tttCurrentGame)
+            tttYourTurn = getTurn(game, gameID)
+            console.log("my turn: " + tttYourTurn)
+            console.log("loading game")
+            tttLoadGame(game, gameID)
+            console.log("loading score initiated")
+            loadScore(game, player)
+            tttHubTracker = 0
+            if (tttTracker == 0 && xgamesTracker == 1) {
+                tttTracker = 1
+            }
+        }
+    }
+
+    function tttLoadGame(game, gameID) {
+        console.log("load ttt game started")
+        console.log("reset ttt board")
+        var opponent = findOpponent(gameID)
+        tttNewGame()
+        console.log("setting online/offline")
+        for (var e = 0; e < tttButtonList.count; e ++) {
+            if (opponent === "computer") {
+                tttButtonList.setProperty(e, "online", false)
+            }
+            else {
+                tttButtonList.setProperty(e, "online", true)
+            }
+        }
+        console.log("replay existing moves")
+        for (var i = 0; i < movesList.count; i ++) {
+            if (movesList.get(i).game === game && movesList.get(i).gameID === gameID) {
+                var player = movesList.get(i).player
+                var move = movesList.get(i).move
+                tttNewMove(player, move)
+            }
+        }
+        console.log("confirming existing moves")
+        var lastMove = findLastMoveID(game, gameID)
+        for (var o = 0; o < movesList.count; o ++) {
+            if (movesList.get(o).game === game && movesList.get(o).gameID === gameID && movesList.get(o).moveID !== lastMove) {
+                var number = (Number.fromLocaleString(movesList.get(o).move) - 1)
+                tttButtonList.setProperty(number, "confirmed", true)
+            }
+        }
+    }
+
+    function getScore(player, game, result) {
+        var score = 0
+        for (var i = 0; i < scoreList.count; i ++) {
+            if (scoreList.get(i).player === player && scoreList.get(i).game === game) {
+                if (result === "win") {
+                    score = scoreList.get(i).win
+                }
+                if (result === "lost") {
+                    score = scoreList.get(i).lost
+                }
+                if (result === "draw") {
+                    score = scoreList.get(i).draw
+                }
+            }
+        }
+        return score;
+    }
+
     // Start up
     function loadContactList(contacts) {
         if (typeof contacts !== "undefined") {
@@ -927,6 +2186,8 @@ ApplicationWindow {
             }
         }
     }
+
+
 
     function loadWalletList(wallet) {
         if (typeof wallet !== "undefined") {
@@ -961,11 +2222,15 @@ ApplicationWindow {
             userSettings.xby = settingsLoaded.xby === "true";
             userSettings.xfuel = settingsLoaded.xfuel === "true";
             userSettings.xtest = settingsLoaded.xtest === "true";
-            userSettings.xby = settingsLoaded.btc === "true";
-            userSettings.xfuel = settingsLoaded.eth === "true";
+            userSettings.btc = settingsLoaded.btc === "true";
+            userSettings.eth = settingsLoaded.eth === "true";
             userSettings.sound = settingsLoaded.sound;
             userSettings.volume = settingsLoaded.volume;
             userSettings.systemVolume = settingsLoaded.systemVolume;
+            userSettings.tagMe = settingsLoaded.tagMe !== undefined? settingsLoaded.tagMe === "true" : true;
+            userSettings.tagEveryone = settingsLoaded.tagEveryone !== undefined? settingsLoaded.tagEveryone === "true" : true
+            userSettings.xChatDND = settingsLoaded.xChatDND !== undefined? settingsLoaded.xChatDND === "true" : false
+            userSettings.showBalance = settingsLoaded.showBalance !== undefined? settingsLoaded.showBalance === "true" : true
             coinList.setProperty(0, "active", userSettings.xfuel);
             coinList.setProperty(1, "active", userSettings.xby);
             coinList.setProperty(2, "active", userSettings.xtest);
@@ -975,7 +2240,7 @@ ApplicationWindow {
     }
 
     function loadTransactions(transactions){
-        if (typeof transactions !== "undifined") {
+        if (typeof transactions !== "undefined") {
             historyList.clear();
             var obj = JSON.parse(transactions);
             for (var i in obj){
@@ -986,7 +2251,7 @@ ApplicationWindow {
     }
 
     function loadTransactionAddresses(inputs, outputs){
-        if (typeof inputs !== "undifined") {
+        if (typeof inputs !== "undefined") {
             inputAddresses.clear();
             var objInput = JSON.parse(inputs);
             for (var i in objInput){
@@ -994,7 +2259,7 @@ ApplicationWindow {
                 inputAddresses.append(dataInput);
             }
         }
-        if (typeof outputs !== "undifined") {
+        if (typeof outputs !== "undefined") {
             outputAddresses.clear();
             var objOutput = JSON.parse(outputs);
             for (var e in objOutput){
@@ -1008,7 +2273,7 @@ ApplicationWindow {
     function exportWallets(){
         var dataModelWallet = []
 
-        for (var i = 0; i < walletList.count; ++i){
+        for (var i = 0; i < walletList.count; i ++){
             dataModelWallet.push(walletList.get(i))
         }
 
@@ -1025,17 +2290,19 @@ ApplicationWindow {
         var datamodelAddress = []
         var datamodelPending = []
 
-        for (var i = 0; i < walletList.count; ++i){
+        for (var i = 0; i < walletList.count; i ++){
             dataModelWallet.push(walletList.get(i))
         }
-        for (var e = 0; e < addressList.count; ++e){
+        for (var e = 0; e < addressList.count; e ++){
             datamodelAddress.push(addressList.get(e))
         }
-        for (var o = 0; o < contactList.count; ++o){
+        for (var o = 0; o < contactList.count; o ++){
             datamodelContact.push(contactList.get(o))
         }
-        for (var u = 0; u < pendingList.count; ++u){
-            datamodelPending.push(pendingList.get(u))
+        for (var u = 0; u < pendingList.count; u ++){
+            if (pendingList.get(u).value !== "confirmed" && pendingList.get(u).value !== "rejected") {
+                datamodelPending.push(pendingList.get(u))
+            }
         }
 
         var walletListJson = JSON.stringify(dataModelWallet)
@@ -1101,7 +2368,7 @@ ApplicationWindow {
         }
     }
 
-    function clearWalletList() {
+    function  etList() {
         for (var i = 0; i < walletList.count; i ++) {
             if (walletList.get(i).remove === true) {
                 walletList.setProperty(i, "name", "");
@@ -1122,7 +2389,7 @@ ApplicationWindow {
     function addWalletToList(coin, label, addr, pubkey, privkey, view){
         var favorite = true
         for(var o = 0; o < walletList.count; o ++) {
-            if (favorite == true) {
+            if (favorite === true) {
                 if (walletList.get(o).name === coin && walletList.get(o).favorite === true) {
                     favorite = false
                 }
@@ -1132,20 +2399,18 @@ ApplicationWindow {
         walletID = walletID + 1
         addressList.append({"contact": 0, "fullname": "My addresses", "address": addr, "label": label, "logo": getLogo(coin), "coin": coin, "favorite": 0, "active": true, "uniqueNR": addressID, "remove": false});
         addressID = addressID +1;
-
         var dataModelWallet = []
         var datamodel = []
 
-        for (var i = 0; i < walletList.count; ++i){
+        for (var i = 0; i < walletList.count; i ++){
             dataModelWallet.push(walletList.get(i))
         }
-        for (var e = 0; e < addressList.count; ++e){
+        for (var e = 0; e < addressList.count; e ++){
             datamodel.push(addressList.get(e))
         }
 
         var walletListJson = JSON.stringify(dataModelWallet)
         var addressListJson = JSON.stringify(datamodel)
-
         saveWalletList(walletListJson, addressListJson)
     }
 
@@ -1166,6 +2431,10 @@ ApplicationWindow {
         userSettings.sound = 0
         userSettings.volume = 1
         userSettings.systemVolume = 1
+        userSettings.tagMe = true
+        userSettings.tagEveryone = true
+        userSettings.xChatDND = false
+        userSettings.showBalance = true
     }
 
     function initialiseLists() {
@@ -1178,12 +2447,14 @@ ApplicationWindow {
     }
 
     // loggin out
-    function logOut () {
+    function logOut() {
+        xChatTypingSignal(myUsername,"addToOnline", "offline");
         updateToAccount()
     }
 
     // check for user interaction
     function detectInteraction() {
+        inActive = false;
         if (interactionTracker == 0) {
             interactionTracker = 1
         }
@@ -1202,11 +2473,22 @@ ApplicationWindow {
         target: UserSettings
 
         onSessionIdCheck: {
-            if (sessionAlive === false && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
+            checkingSessionID = false
+            if (sessionAlive === "false" && goodbey == 0 && manualLogout == 0 && autoLogout == 0) {
+                console.log("session ID check failed")
                 networkLogout = 1
                 logoutTracker = 1
                 sessionStart = 0
                 sessionClosed = 1
+            }
+            else if (sessionAlive === "no_internet") {
+                console.log("session ID check - no internet")
+            }
+            else if (sessionAlive == "no_response") {
+                console.log("session ID check - no response")
+            }
+            else {
+                console.log("session ID check passed")
             }
         }
 
@@ -1217,6 +2499,12 @@ ApplicationWindow {
         }
 
         onSaveFailed: {
+            if (goodbey == 1) {
+                Qt.quit()
+            }
+        }
+
+        onNoInternet: {
             if (goodbey == 1) {
                 Qt.quit()
             }
@@ -1244,7 +2532,7 @@ ApplicationWindow {
                 transactionTimestamp = timestamp
                 transactionConfirmations = confirmations
                 transactionAmount = (Number.fromLocaleString(Qt.locale("en_US"),balance) )/ 100000000
-                transactionDetailTracker = 1
+                transactionDetailsCollected = true
             }
         }
 
@@ -1252,8 +2540,12 @@ ApplicationWindow {
             updateBalance(coin, address, balance)
         }
 
+        onWalletChecked: {
+            explorerBusy = false
+        }
+
         onTxidExists: {
-            pendingUnconfirmed(coin, address, txid, result)
+            updatePending(coin, address, txid, result)
         }
 
         onTxidConfirmed: {
@@ -1270,14 +2562,541 @@ ApplicationWindow {
 
         onAllTxChecked: {
             explorerBusy = false
+            if (inActive == false) {
+                timerCount = timerCount + 1
+                if (timerCount == 4) {
+                    balanceCheck = "all"
+                    timerCount = 0
+                }
+                else {
+                    balanceCheck = "xby"
+                }
+
+                //clearWalletList()
+                var datamodelWallet = []
+                for (var i = 0; i < walletList.count; ++i) {
+                    if (walletList.get(i).remove === false) {
+                        datamodelWallet.push(walletList.get(i))
+                    }
+                };
+                var walletListJson = JSON.stringify(datamodelWallet)
+                explorerBusy = true
+                updateBalanceSignal(walletListJson, balanceCheck);
+            }
         }
 
         onDetailsCollected: {
             explorerBusy = false
         }
+        onNoInternet: {
+            explorerBusy = false
+        }
+    }
+    /*
+    Connections {
+        target: xGames
+
+        // X-GAME related functions
+        onNewMoveReceived: {
+            gameError = 0
+            if(isMyGame(gameID) && correctUser(player, gameID)) {
+                checkIfMoveExists(game, gameID, player, move, moveID)
+            }
+        }
+
+        onNewMoveConfirmed: {
+            gameError = 0
+            if(isMyGame(gameID) && correctUser(player, gameID) && player !== myUsername) {
+                confirmMove(game, gameID, move, moveID)
+            }
+        }
+
+        onNewGameInvite: {
+            gameError = 0
+            if(isMyGame(gameID) && player1 !== myUsername) {
+                if (correctUser(player2, gameID)) {
+                    checkIfInviteExists(game, gameID)
+                }
+            }
+        }
+
+        onResponseGameInvite: {
+            gameError = 0
+            if(isMyGame(gameID) && correctUser(user, gameID) && user !== myUsername ) {
+                acceptGameInvite(user, game, gameID, accept)
+            }
+        }
+
+        onGameCommandFailed: {
+            gameError = 1
+        }
+    }
+    */
+    Connections {
+        target: xChat
+
+        onXchatSuccess: {
+            addMessageToThread.sendMessage({"author": author, "date": date, "time": time, "device": device, "msg": message, "link": link, "image": image, "quote": quote, "msgID": msgID, "me": myUsername.trim(), "tagMe": userSettings.tagMe, "tagEveryone": userSettings.tagEveryone, "dnd": userSettings.xChatDND})
+        }
+
+        onXchatConnectionSuccess: {
+            networkError = 0
+            networkAvailable = 1
+            gameError = 0
+            if (xChatConnection == false) {
+                xChatConnection = true
+                xChatDisconnected = false
+                xChatConnecting = false
+                if (!pingingXChat) {
+                    pingTimeRemain = -1
+                    pingingXChat = true
+                    resetServerUpdateStatus();
+                    pingXChatServers();
+                    updateServerStatus();
+                }
+            }
+        }
+
+        onXchatConnectionFail: {
+            xChatConnection = false
+            xChatConnecting = false
+            xChatDisconnected = true
+        }
+
+        onXchatConnecting: {
+            networkError = 0
+            networkAvailable = 1
+            xChatDisconnected = false
+            xChatConnection = false
+            xChatConnecting = true
+        }
+
+        onXchatStateChanged: {
+            if(!xChatConnection) {
+                resetServerUpdateStatus();
+                updateServerStatus();
+            }
+        }
+
+        onXchatNoInternet: {
+            networkError = 1
+            networkAvailable = 0
+            resetServerUpdateStatus();
+            updateServerStatus();
+        }
+
+        onXchatInternetOk: {
+            networkAvailable = 1
+        }
+
+        onOnlineUsersSignal:{
+            loadOnlineUsers(online)
+        }
+        onClearOnlineNodeList: {
+            xChatServers.clear()
+        }
+
+        onServerResponseTime: {
+            updateServerResponseTime(server, responseTime, serverStatus)
+        }
+
+        onSelectedXchatServer: {
+            selectedXChatServer = server
+            checkingXchat = false
+            pingingXChat = false
+            pingTimeRemain = 60
+        }
+
+        onXChatServerDown: {
+            for (var i = 0; i < xChatServers.count; i ++) {
+                if (server === xChatServers.get(i).name) {
+                    xChatServers.setProperty(i, "serverStatus", serverStatus)
+                }
+            }
+        }
+
+        onXchatResponseSignal: {
+            if (pingTracker != 1){
+                var t = new Date().toLocaleString(Qt.locale(),"hh:mm:ss .zzz")
+                console.log("replyTime: " + t)
+                var a = text
+                var b = a.split(' ')
+                if (b[0] === "dicom") {
+                    xPingTread.append({"message": text, "inout": "in", "author": "staticNet", "time": t})
+                }
+                if (b[0] === "backend") {
+                    xPingTread.append({"message": text, "inout": "in", "author": "XCITE", "time": t})
+                }
+            }
+        }
+    }
+
+    Connections {
+        target: broker
+        onSelectedXchatServer: {
+            selectedXChatServer = server
+        }
+
+        onXchatConnectionSuccess: {
+            networkError = 0
+            networkAvailable = 1
+            gameError = 0
+            if (xChatConnection == false) {
+                xChatConnection = true
+                xChatDisconnected = false
+                xChatConnecting = false
+                if (!pingingXChat) {
+                    pingTimeRemain = -1
+                    pingingXChat = true
+                    resetServerUpdateStatus();
+                    pingXChatServers();
+                    updateServerStatus();
+                }
+            }
+        }
+
+        onXchatConnectionFail: {
+            xChatConnection = false
+            xChatConnecting = false
+            xChatDisconnected = true
+        }
+
+
+        onXchatInternetOk: {
+            networkAvailable = 1
+        }
+
+    }
+
+    Connections {
+        target: tictactoe
+
+        onGameFinished: {
+            console.log("game finished")
+            var opponent = findOpponent(tttCurrentGame)
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                tttButtonList.setProperty(i, "played", true)
+            }
+            for (var o = 0; o < gamesList.count; o ++) {
+                if (gamesList.get(o).game === "ttt" && gamesList.get(o).gameID === tttCurrentGame) {
+                    gamesList.setProperty(o, "finished", true)
+                    if (opponent === "computer") {
+                        removeGame("ttt", tttCurrentGame)
+                    }
+                }
+            }
+            if (loadingGame === false) {
+                if(result === "win") {
+                    console.log("you win")
+                    updateScore("ttt", opponent, 1, 0, 0)
+                }
+                else if (result === "loose") {
+                    console.log("you loose")
+                    updateScore("ttt", opponent, 0, 1, 0)
+                }
+                else if (result === "draw") {
+                    console.log("it's a draw")
+                    updateScore("ttt", opponent, 0, 0, 1)
+                }
+            }
+            loadScore("ttt", tttPlayer)
+            tttFinished = true
+            tttCurrentGame = ""
+        }
+
+        onPlayersChoice: {
+            console.log("player's choice: " + btn1)
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                if (tttButtonList.get(i).number === btn1) {
+                    tttButtonList.setProperty(i, "player", myUsername)
+                    tttButtonList.setProperty(i, "played", true)
+                }
+            }
+        }
+
+        onOpponentsChoice: {
+            console.log("opponent's choice: " + btn2)
+            var opponent = findOpponent(tttCurrentGame)
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                if (tttButtonList.get(i).number === btn2) {
+                    tttButtonList.setProperty(i, "player", opponent)
+                    tttButtonList.setProperty(i, "played", true)
+                }
+            }
+        }
+
+        onComputersChoice: {
+            console.log("computer's choice: " + btn2)
+            var opponent = findOpponent(tttCurrentGame)
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                if (tttButtonList.get(i).number === btn2) {
+                    tttButtonList.setProperty(i, "player", "opponent")
+                    tttButtonList.setProperty(i, "played", true)
+                }
+            }
+            if (opponent === "computer") {
+                checkIfMoveExists("ttt", tttCurrentGame, "computer", btn2, moveID)
+                confirmMove("ttt", tttCurrentGame, btn2, moveID)
+            }
+        }
+
+        onBlockButton: {
+        }
+
+        onClearBoard: {
+            var opponent = findOpponent(tttCurrentGame)
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                tttButtonList.setProperty(i, "online", false)
+                tttButtonList.setProperty(i, "played", false)
+                tttButtonList.setProperty(i, "player", "")
+                tttButtonList.setProperty(i, "confirmed", false)
+            }
+            if (opponent === "computer" && loadingGame === false) {
+                console.log("removing moves for game against computer from movesList")
+                for (var o = 0; o < movesList.count; o ++) {
+                    if (movesList.get(o).game === "ttt" && movesList.get(o).gameID === tttCurrentGame) {
+                        movesList.remove(o, 1)
+                    }
+                }
+            }
+            console.log("board cleared")
+        }
+
+        onGameQuit: {
+            for (var i = 0; i < tttButtonList.count; i ++) {
+                tttButtonList.setProperty(i, "online", false)
+                tttButtonList.setProperty(i, "played", false)
+                tttButtonList.setProperty(i, "player", "")
+                tttButtonList.setProperty(i, "confirmed", false)
+            }
+        }
+
+        onNewGameID: {
+            console.log("new gameID: " + gameID)
+            var gameIDArray = gameID.split(':')
+            var opponent = gameIDArray[1]
+            gamesList.append({"game": "ttt", "gameID": gameID, "invited": false, "accepted": false, "started": false, "finished": false})
+            if (opponent !== "computer") {
+                sendGameInvite(myUsername, opponent, "ttt", gameID)
+                inviteSent("ttt", gameID)
+            }
+            else {
+                for (var i = 0; i < gamesList.count; i ++) {
+                    if (gamesList.get(i).game === "ttt" && gamesList.get(i).gameID === gameID) {
+                        gamesList.setProperty(i, "invited", true)
+                        gamesList.setProperty(i, "accepted", true)
+                    }
+                }
+                if (tttTracker == 0 && xgamesTracker == 1) {
+                    tttCurrentGame = gameID
+                    playGame("ttt", tttCurrentGame)
+                    tttYourTurn = true
+                    tttTracker = 1
+                }
+            }
+        }
+
+        onNewMoveID: {
+            checkIfMoveExists("ttt", tttCurrentGame, myUsername, move, moveID)
+            tttButtonClicked(move)
+            confirmMove("ttt", tttCurrentGame, move, moveID)
+        }
+
+        onYourTurn: {
+            console.log("your turn: " + turn)
+            tttYourTurn = turn
+        }
+    }
+
+    Connections {
+        target: Qt.application
+
+        onStateChanged: {
+            if (Qt.application.state === Qt.ApplicationActive) {
+                inActive = false
+                checkSessionId()
+                //   xChatReconnect();
+                status = "online";
+                marketValueTimer.restart()
+                explorerTimer1.restart()
+                loginTimer.restart()
+                networkTimer.restart()
+                findAllMarketValues()
+                var datamodelWallet = []
+
+                for (var i = 0; i < walletList.count; i ++) {
+                    datamodelWallet.push(walletList.get(i))
+                };
+                var walletListJson = JSON.stringify(datamodelWallet)
+                updateBalanceSignal(walletListJson, "all");
+                checkingSessionID = false
+            }
+            else {
+                inActive = true
+                if (Qt.application.state === Qt.ApplicationSuspended) {
+                    status = "offline"
+                }
+                else {
+                    status = "idle"
+                }
+            }
+            xChatTypingSignal(myUsername,"addToOnline", status);
+        }
+    }
+
+    Connections {
+        target: StaticNet
+
+        onTxSuccess: {
+            for (var i = 0; i < transactionList.count; i ++) {
+                if (transactionList.get(i).requestID === id) {
+                    transactionList.setProperty(i, "txid", msg)
+                    var b = ""
+                    var j = ""
+                    for (var a = 0; a < walletList.count; a ++ ) {
+                        if (walletList.get(a).remove === false) {
+                            if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
+                                b = walletList.get(a).label
+                                j = walletList.get(a).address
+                            }
+                        }
+                    }
+                    if (b === "") {
+                        b = transactionList.get(i).address
+                    }
+                    var c = ""
+                    for (var e = 0; e < addressList.count; e ++ ) {
+                        if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
+                            if(addressList.get(e).fullName !== undefined) {
+                                c = addressList.get(e).fullName + " " + addressList.get(e).label
+                            }
+                            else {
+                                c= addressList.get(e).label
+                            }
+                        }
+                    }
+                    if (c === "") {
+                        c = transactionList.get(i).receiver
+                    }
+
+                    var h = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
+                    var l = transactionList.get(i).amount
+                    var k = Number(transactionList.get(i).fee).toLocaleString(Qt.locale("en_US"))
+                    var m = transactionList.get(i).used
+                    var o = Number(transactionList.get(i).used).toLocaleString(Qt.locale("en_US"))
+                    pendingList.append({"coin": transactionList.get(i).coin, "address": j, "txid": msg, "amount": l, "used": m, "value": "false", "check": 0})
+                    updatePendingTracker = 1
+                    var d = "Accepted transaction of " + h + transactionList.get(i).coin + " (fee: " + k + transactionList.get(i).coin + ") to " + c
+                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
+                    alert = true
+                    notification.play()
+                    updatePendingTracker = 0
+                    updateToAccount()
+                }
+            }
+        }
+
+        onTxFailed: {
+            for (var i = 0; i < transactionList.count; i ++) {
+                if (transactionList.get(i).requestID === id) {
+                    var b = ""
+                    for (var a = 0; a < walletList.count; a ++ ) {
+                        if (walletList.get(a).remove === false) {
+                            if (walletList.get(a).name === transactionList.get(i).coin && walletList.get(a).address === transactionList.get(i).address) {
+                                b = walletList.get(a).label
+                            }
+                        }
+                    }
+                    if (b === "") {
+                        b = transactionList.get(i).address
+                    }
+                    var c = ""
+                    for (var e = 0; e < addressList.count; e ++ ) {
+                        if (addressList.get(e).coin === transactionList.get(i).coin && addressList.get(e).address === transactionList.get(i).receiver) {
+                            if(addressList.get(e).fullName !== undefined) {
+                                c = addressList.get(e).fullName + " " + addressList.get(e).label
+                            }
+                            else {
+                                c= addressList.get(e).label
+                            }
+                        }
+                    }
+                    if (c === "") {
+                        c = transactionList.get(i).receiver
+                    }
+                    var h = Number(transactionList.get(i).amount).toLocaleString(Qt.locale("en_US"))
+                    var l = transactionList.get(i).amount
+                    var d = "Rejected transaction of " + h + " " + transactionList.get(i).coin + " to " + c
+                    alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : d, "origin" : "STATIC-net", "remove": false})
+                    alert = true
+                    notification.play()
+                }
+            }
+        }
+
+        onReturnQueue: {
+            queueName = queue_
+        }
+    }
+
+    // Workerscripts
+
+    WorkerScript {
+        id: addMessageToThread
+        source:'qrc:/Controls/+mobile/addMessage.js'
+
+        onMessage: {
+            var playNotif = false
+            for (var b = 0; b < xChatUsers.count; b ++) {
+                if (xChatUsers.get(b).username === messageObject.author) {
+                    if (messageObject.msg !== "") {
+                        xChatTread.append({"author" : messageObject.author, "device" : messageObject.device, "date" : messageObject.date + " at " + messageObject.time, "message" : messageObject.msg, "ID" : xChatID, "tag": messageObject.tag, "webLink": messageObject.link, "image": messageObject.image, "quote": messageObject.quote, "timeID": messageObject.msgID})
+                        xChatID = xChatID + 1
+                        if(xChatScrolling) {
+                            newMessages = true
+                        }
+
+                        if (miniatureTracker == 1 || xchatTracker == 0 || inActive == true) {
+                            xchatPopup(messageObject.author, messageObject.msg)
+                            if ((myOS !== "android" || myOS !== "ios") && messageObject.author !== myUsername) {
+                                playNotif = true
+                            }
+                        }
+                    }
+                    if (messageObject.tag === 1 && messageObject.author !== myUsername) {
+                        playNotif = true
+                        if (xchatTracker == 0 || inActive == true) {
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : messageObject.author + " has mentioned you", "origin" : "X-CHAT", "remove": false})
+                            alert = true
+                        }
+                    }
+                    if (messageObject.tag === 2 && messageObject.author !== myUsername) {
+                        playNotif = true
+                        if (xchatTracker == 0 || inActive == true) {
+                            alertList.append({"date" : new Date().toLocaleDateString(Qt.locale("en_US"),"MMMM d yyyy") + " at " + new Date().toLocaleTimeString(Qt.locale(),"HH:mm"), "message" : "An important message for everyone", "origin" : "X-CHAT", "remove": false})
+                            alert = true
+                        }
+                    }
+                }
+            }
+            if (playNotif) {
+                notification.play()
+                playNotif = false
+            }
+        }
     }
 
     // Listmodels
+
+    ListModel {
+        id: applicationList
+        ListElement {
+            name: ""
+            icon_white: 'qrc:/icons/mobile/blank_app-icon_white.svg'
+            icon_black: 'qrc:/icons/mobile/blank_app-icon_black.svg'
+        }
+    }
+
     ListModel {
         id: addressList
         ListElement {
@@ -1354,6 +3173,7 @@ ApplicationWindow {
             address: ""
             txid: ""
             amount: 0
+            used: 0
             value: ""
             check: 0
         }
@@ -1425,6 +3245,7 @@ ApplicationWindow {
             date: ""
             message: ""
             origin: ""
+            remove: false
         }
     }
 
@@ -1434,6 +3255,143 @@ ApplicationWindow {
             name: ""
             sound: 'qrc:/sounds/notification_1.wav'
             soundNR: 0
+        }
+    }
+
+    ListModel {
+        id: xChatTread
+        ListElement {
+            message: ""
+            author: ""
+            date: ""
+            device: ""
+            tag: 0
+            ID: 0
+            webLink: ""
+            image: ""
+            quote: ""
+            timeID: ""
+        }
+    }
+
+    ListModel {
+        id: xChatOnline
+        ListElement {
+            date: ""
+            status: ""
+            time: ""
+            username:""
+            newUser: false
+        }
+    }
+
+    ListModel {
+        id: xChatUsers
+        ListElement {
+            date: ""
+            status: ""
+            time: ""
+            username:""
+            updated: false
+        }
+    }
+
+    ListModel {
+        id: xChatServers
+        ListElement {
+            name: ""
+            responseTime: ""
+            serverStatus: "down"
+            updated: false
+        }
+    }
+
+    ListModel {
+        id: tttButtonList
+        ListElement {
+            number: ""
+            played: false
+            player: ""
+            online: false
+            confirmed: false
+        }
+    }
+
+    ListModel {
+        id: gamesList
+        ListElement {
+            game: ""
+            gameID: ""
+            invited: false
+            accepted: false
+            started: false
+            finished: false
+        }
+    }
+
+    ListModel {
+        id: movesList
+        ListElement {
+            game: ""
+            gameID: ""
+            player: ""
+            move: ""
+            moveID: ""
+            confirmed: false
+        }
+    }
+
+    ListModel {
+        id: scoreList
+        ListElement {
+            game: ""
+            player: ""
+            win: 0
+            lost: 0
+            draw: 0
+        }
+    }
+
+    ListModel {
+        id: xPingTread
+        ListElement {
+            message:""
+            inout: ""
+            author: ""
+            time: ""
+        }
+    }
+
+    ListModel {
+        id: transactionList
+        ListElement {
+            requestID:""
+            txid: ""
+            coin: ""
+            address: ""
+            receiver: ""
+            amount: 0
+            fee: 0
+            used: 0
+        }
+    }
+
+    ListModel {
+        id: orderList
+        ListElement {
+            orderID: 0
+            side: ""
+            price: 0
+            quantity: 0
+            accVolume: 0
+        }
+    }
+
+    ListModel {
+        id: exchangeList
+        ListElement {
+            name: ""
+            logo: 'qrc:/icons/mobile/crex24_logo.svg'
         }
     }
 
@@ -1458,9 +3416,17 @@ ApplicationWindow {
         property int sound: 0
         property int volume: 1
         property int systemVolume: 1
+        property bool tagMe: true
+        property bool tagEveryone: true
+        property bool xChatDND: false
+        property bool showBalance: true
 
         onThemeChanged: {
             darktheme = userSettings.theme == "dark"? true : false
+        }
+
+        onXChatDNDChanged: {
+            status = userSettings.xChatDND == true? "dnd" : "online"
         }
     }
 
@@ -1475,10 +3441,9 @@ ApplicationWindow {
         source: 'qrc:/fonts/Brandon_reg.otf'
     }
 
-    // need to look into removing this
     Network {
-        id: network
-        handler: wallet
+        //id: network
+        //handler: wallet
     }
 
     // sounds
@@ -1490,13 +3455,13 @@ ApplicationWindow {
 
     SoundEffect {
         id: notification
-        source: soundList.get(selectedSound).sound
+        source: userSettings.sound == 0? 'qrc:/sounds/Bonjour.wav' : (userSettings.sound == 1? 'qrc:/sounds/Hello.wav': (userSettings.sound == 2? 'qrc:/sounds/hola.wav' :(userSettings.sound == 3? 'qrc:/sounds/Servus.wav' : 'qrc:/sounds/Szia.wav')))
         volume: selectedVolume == 0? 0 : (selectedVolume == 1? 0.15 : (selectedVolume == 2? 0.4 : 0.75))
     }
 
     SoundEffect {
         id: succesSound
-        source: "qrc:/sounds/Success.wav"
+        source: "qrc:/sounds/Succes.wav"
         volume: 0.50
     }
 
@@ -1514,11 +3479,92 @@ ApplicationWindow {
 
     SoundEffect {
         id: swipe
-        source: "qrc:/sounds/swipe_01.wav"
+        source: "qrc:/sounds/swipe.wav"
         volume: selectedSystemVolume == 0? 0 : 0.2
     }
 
     // timers
+
+    Timer {
+        id: checkXchatConnection
+        interval: 10000
+        repeat: true
+        running: true
+
+        onTriggered: {
+            checkXChatSignal();
+        }
+    }
+
+    Timer {
+        id: xChatConnectingTimer
+        interval: 35000
+        repeat: true
+        running: xChatConnecting === true && inActive == false
+
+        onTriggered: {
+            // xChatReconnect()
+        }
+    }
+
+    Timer {
+        id: checkXchatPing
+        interval: 1000
+        repeat: true
+        running: pingTimeRemain > 0 && inActive == false && xchatNetworkTracker == 1
+
+        onTriggered: {
+            pingTimeRemain = pingTimeRemain - 1
+            if (pingTimeRemain == 0) {
+                if (xChatConnection && !pingingXChat) {
+                    pingTimeRemain = -1
+                    pingingXChat = true
+                    resetServerUpdateStatus();
+                    pingXChatServers();
+                    updateServerStatus();
+                    pingingXChat = false
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: sendXchatConnection
+        interval: inActive == false? 60000 : 300000
+        repeat: true
+        running: true
+
+        onTriggered: {
+            xChatTypingSignal(myUsername,"addToOnline", status);
+        }
+    }
+
+    Timer {
+        id: checkIfIdle
+        interval: 300000
+        repeat: true
+        running: inActive == false
+
+        onTriggered: {
+            if (userSettings.xChatDND == false) {
+                status = "idle"
+                xChatTypingSignal(myUsername,"addToOnline", status);
+            }
+        }
+    }
+
+    Timer {
+        id: urlCopyTimer
+        interval: 2000
+        repeat: false
+        running: urlCopy2Clipboard == 1
+
+        onTriggered: {
+            urlCopy2Clipboard = 0
+            url2Copy == ""
+        }
+    }
+
     Timer {
         repeat: false
         running: copy2clipboard
@@ -1531,70 +3577,34 @@ ApplicationWindow {
         id: marketValueTimer
         interval: 60000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 && inActive == false
         onTriggered:  {
-            if (standBy == 0) {
-                marketValueChangedSignal("btcusd")
-                marketValueChangedSignal("btceur")
-                marketValueChangedSignal("btcgbp")
-                marketValueChangedSignal("xbybtc")
-                marketValueChangedSignal("xbycha")
-                marketValueChangedSignal("xflbtc")
-                marketValueChangedSignal("xflcha")
-                marketValueChangedSignal("btccha")
-                marketValueChangedSignal("ethbtc")
-                marketValueChangedSignal("ethcha")
-            }
+            findAllMarketValues()
         }
     }
 
     Timer {
         id: explorerTimer1
-        interval: 15000
+        interval: inActive == false? 15000 : 30000
         repeat: true
         running: sessionStart == 1
         onTriggered:  {
-            timerCount = timerCount + 1
-            if (timerCount == 4) {
-                balanceCheck = "all"
-                timerCount = 0
-            }
-            else {
-                balanceCheck = "xby"
-            }
-
-            clearWalletList()
-            var datamodelWallet = []
             var datamodelPending = []
+            for (var e = 0; e < pendingList.count; e ++) {
+                if(pendingList.get(e).value === "false" || pendingList.get(e).value === "true") {
+                    if (pendingList.get(e).value === "false") {
+                        var checks = pendingList.get(e).check
+                        pendingList.setProperty(e, "check", checks + 1)
+                    }
 
-            for (var i = 0; i < walletList.count; ++i) {
-                datamodelWallet.push(walletList.get(i))
+                    datamodelPending.push(pendingList.get(e))
+                }
             };
-            for (var e = 0; e < pendingList.count; ++e) {
-                datamodelPending.push(pendingList.get(e))
-            };
-            var walletListJson = JSON.stringify(datamodelWallet)
             var pendingListJson = JSON.stringify(datamodelPending)
-
-            updateBalanceSignal(walletListJson, balanceCheck);
 
             if (explorerBusy == false) {
                 checkTxStatus(pendingListJson);
             };
-
-            if (pendingList.count > 1) {
-                for (var o = 0; 0 < pendingList.count; ++o) {
-                    var times = 0
-                    if (pendingList.get(o).check >= 0) {
-                        times = pendingList.get(o).check
-                    }
-                    else {
-                        pendingList.setProperty(o, "check", 0)
-                        times = 0
-                    }
-                pendingList.setProperty(o, "check", (times + 1))
-                }
-            }
         }
     }
 
@@ -1602,7 +3612,7 @@ ApplicationWindow {
         id: loginTimer
         interval: 30000
         repeat: true
-        running: false //sessionStart == 1
+        running: sessionStart == 1 && inActive == false
 
         onTriggered: {
             if (interactionTracker == 1) {
@@ -1613,10 +3623,9 @@ ApplicationWindow {
                 sessionTime = sessionTime +1
                 if (sessionTime >= 10){
                     sessionTime = 0
-                    if (standBy == 0) {
-                        standBy = 1
-                        mainRoot.push("../StandBy.qml")
-                    }
+                    status = "idle"
+                    inActive = true
+                    xChatTypingSignal(myUsername,"addToOnline", status);
                 }
             }
         }
@@ -1626,10 +3635,12 @@ ApplicationWindow {
         id: networkTimer
         interval: 60000
         repeat: true
-        running: sessionStart == 1
+        running: sessionStart == 1 && inActive == false
 
         onTriggered: {
-            if (standBy == 0) {
+            if (checkingSessionID == false) {
+                checkingSessionID = true
+                console.log("checking session ID")
                 checkSessionId()
             }
         }
@@ -1649,17 +3660,60 @@ ApplicationWindow {
         }
     }
 
+    Mobile.SwipeBack {
+        z: 100
+        anchors.right: parent.right
+        anchors.top: parent.top
+    }
+
     // Order of the pages
     StackView {
         id: mainRoot
-        initialItem: "../main.qml"
+        z: 1
         anchors.fill: parent
+        initialItem:
+            Component{
+            MediaPlayer {
+                id: introSound
+                source: "qrc:/sounds/intro_01.wav"
+                volume: 1
+                autoPlay: true
+            }
+        }
+    }
+
+    Mobile.DeviceButtons {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Mobile.LogOut {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
+    }
+
+    Mobile.DragBar {
+        z: 100
+        visible: myOS !== "android" && myOS !== "ios"
+    }
+
+    Mobile.NetworkError {
+        z:100
+        id: myNetworkError
+    }
+
+    Mobile.Goodbey {
+        z: 100
+        anchors.left: parent.left
+        anchors.top: parent.top
     }
 
     // native back button
     onClosing: {
         if (mainRoot.depth > 1) {
             close.accepted = false
+            backButtonPressed()
         }
     }
 }

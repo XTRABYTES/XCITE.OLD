@@ -16,6 +16,7 @@ import SortFilterProxyModel 0.2
 import QtGraphicalEffects 1.0
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     width: parent.width
@@ -38,7 +39,7 @@ Rectangle {
             color:"transparent"
             clip: true
 
-            Controls.CardBody {
+            Mobile.CardBody {
                 id: myCardBody
             }
 
@@ -88,7 +89,7 @@ Rectangle {
             }
 
             Label {
-                property real txAmount: (Number.fromLocaleString(Qt.locale("en_US"),amount) )/ 100000000
+                property int txAmount: (Number.fromLocaleString(Qt.locale("en_US"),amount) )/ 100000000
                 property int decimals: txAmount == 0? 2 : (txAmount <= 1000 ? 8 : (txAmount <= 1000000 ? 4 : 2))
                 property var amountArray: (txAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                 id: amountValue1
@@ -104,7 +105,7 @@ Rectangle {
             }
 
             Label {
-                property real txAmount: (Number.fromLocaleString(Qt.locale("en_US"),amount))/ 100000000
+                property int txAmount: (Number.fromLocaleString(Qt.locale("en_US"),amount) )/ 100000000
                 property int decimals: txAmount == 0? 2 : (txAmount <= 1000 ? 8 : (txAmount <= 1000000 ? 4 : 2))
                 property var amountArray: (txAmount.toLocaleString(Qt.locale("en_US"), "f", decimals)).split('.')
                 id: amountValue2

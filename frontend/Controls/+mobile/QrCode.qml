@@ -11,7 +11,7 @@ Item {
         contentHeight: qrID.height + qrBorder.height + pubKey.height + publicKey.height + 207.5
         anchors.left: parent.left
         anchors.top: parent.top
-        anchors.bottom: Screen.bottom
+        //anchors.bottom: Screen.bottom
         boundsBehavior: Flickable.StopAtBounds
         clip: true
 

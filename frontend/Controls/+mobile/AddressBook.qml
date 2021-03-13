@@ -18,11 +18,13 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: allAddressCards
-    width: Screen.width
+    width: appWidth
     height: parent.height - 75
+    anchors.top: parent.top
     color: "transparent"
 
     property alias cardSpacing: allAddresses.spacing
@@ -33,10 +35,10 @@ Rectangle {
 
         Rectangle {
             id: addressRow
-            width: Screen.width
+            width: appWidth
             height: 140
             color: "transparent"
-            anchors.horizontalCenter: Screen.horizontalCenter
+            anchors.horizontalCenter: xcite.horizontalCenter
             state: "big"
             clip: true
 
@@ -48,7 +50,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                Controls.CardBody {
+                Mobile.CardBody {
 
                 }
 
@@ -183,12 +185,12 @@ Rectangle {
                         }
 
                         onClicked: {
-                            selectedAddress = addressHash.text
                             selectedCoin = coin
                             walletIndex = defaultWallet(coin)
                             addressIndex = uniqueNR
                             switchState = 1
                             transferTracker = 1
+                            selectedAddress = addressHash.text
                         }
                     }
                 }

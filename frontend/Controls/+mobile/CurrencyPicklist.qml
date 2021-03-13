@@ -106,12 +106,22 @@ Rectangle {
                         if (currencyTracker === 1) {
                             currencyTracker = 0
                             sumBalance()
-                            saveCurrency =false
+                            fiatTicker = fiatCurrencies.get(userSettings.defaultCurrency).ticker
+                            saveCurrency = false
                         }
                     }
 
                     onSaveFailed: {
                         if (currencyTracker === 1) {
+                            userSettings.defaultCurrency = oldCurrency
+                            currencyChangeFailed = 1
+                            saveCurrency = false
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (currencyTracker === 1) {
+                            networkError = 1
                             userSettings.defaultCurrency = oldCurrency
                             currencyChangeFailed = 1
                             saveCurrency = false

@@ -6,13 +6,31 @@ import QtMultimedia 5.8
 import QtQuick.Window 2.2
 
 Item {
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     visible: scanQRTracker == 1
+    state: scanQRTracker == 1? "up" : "down"
+
+    states: [
+        State {
+            name: "up"
+        },
+        State {
+            name: "down"
+        }
+    ]
 
     property alias key: pubKey.text
+    property bool qrFound: false
+
+    onStateChanged: {
+        if (scanQRTracker == 0 && qrFound == false) {
+            selectedAddress = ""
+            publicKey.text = "scanning..."
+        }
+    }
 
     Timer {
         id: timer
@@ -23,13 +41,14 @@ Item {
         onTriggered:{
             scanQRTracker = 0
             publicKey.text = "scanning..."
+            qrFound = false
         }
     }
 
     Camera {
         id: camera
         position: Camera.BackFace
-        cameraState: cameraPermission === true? ((transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1 || importKeyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState) : Camera.UnloadedState
+        cameraState: cameraPermission === true? ((transferTracker == 1 || addressTracker == 1 || addAddressTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState) : Camera.UnloadedState
         focus {
             focusMode: Camera.FocusContinuous
             focusPointMode: CameraFocus.FocusPointAuto
@@ -141,53 +160,13 @@ Item {
         }
     }
 
-    Rectangle {
-        id: cancelScanButton
-        width: doubbleButtonWidth / 2
-        height: 34
-        color: "transparent"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        visible: scanQRTracker == 1
-
-        MouseArea {
-            anchors.fill: cancelScanButton
-
-            onPressed: {
-                click01.play()
-            }
-
-            onCanceled: {
-            }
-
-            onReleased: {
-            }
-
-            onClicked: {
-                scanQRTracker = 0
-                selectedAddress = ""
-                publicKey.text = "scanning..."
-            }
-        }
-    }
-
-    Text {
-        text: "BACK"
-        font.family: xciteMobile.name //"Brandon Grotesque"
-        font.pointSize: 14
-        font.bold: true
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        anchors.horizontalCenter: cancelScanButton.horizontalCenter
-        anchors.verticalCenter: cancelScanButton.verticalCenter
-    }
-
     QZXingFilter {
         id: qrFilter
 
         decoder {
             enabledDecoders: QZXing.DecoderFormat_QR_CODE
             onTagFound: {
+                qrFound = true
                 console.log(tag);
                 selectedAddress = ""
                 scanning = ""
@@ -195,15 +174,18 @@ Item {
                 selectedAddress = publicKey.text
                 timer.start()
             }
+
+            tryHarder: true
+
         }
+
 
         captureRect: {
             // setup bindings
             videoOutput.contentRect;
             videoOutput.sourceRect;
-            // only scan the central quarter of the area for a barcode
             return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
-                                                                                       0.22, 0.09, 0.56, 0.82
+                                                                                       0.25, 0.25, 0.5, 0.5
                                                                                        )));
         }
     }

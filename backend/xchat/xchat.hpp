@@ -17,6 +17,7 @@
 #include <QString>
 #include <QVariant>
 
+//#include <QtMqtt/QMqttClient>
 #include <QNetworkConfigurationManager>
 
 #include "xchataiml.hpp"
@@ -111,7 +112,6 @@ signals:
     void clearOnlineNodeList();
 
 public slots:
-    void SubmitMsgCall(const QString &msg);
     void SubmitMsg(const QString &msg);
     bool CheckUserInputForKeyWord(const QString msg);
     bool CheckAIInputForKeyWord(const QString msg);
@@ -128,11 +128,13 @@ public slots:
     void getOnlineNodesSlot(QByteArray, QMap<QString,QVariant>);
 
 private slots:
+    void mqtt_StateChanged();
 
 private:
     bool internetActive = true;
     QObject *window;
     XchatAIML *m_pXchatAiml;
+    //QMqttClient *mqtt_client;
     QString topic = "xcite/xchat";
     QString me = "";
     QString fastestServer = "";

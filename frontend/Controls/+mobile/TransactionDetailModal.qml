@@ -17,15 +17,26 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: transactionDetailModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: transactionDetailTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+
+    property int myTracker: transactionDetailTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            selectedAddressList = "input"
+            myTransactionAdresses.transactionAddresses = "input"
+            address2Copy = ""
+        }
+    }
 
     states: [
         State {
@@ -34,7 +45,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: transactionDetailModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: transactionDetailModal; anchors.topMargin: transactionDetailModal.height}
         }
     ]
 
@@ -122,6 +133,7 @@ Rectangle {
         font.pixelSize: 16
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Label {
@@ -146,6 +158,7 @@ Rectangle {
         font.pixelSize: 18
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Label {
@@ -171,6 +184,7 @@ Rectangle {
         font.pixelSize: 18
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Label {
@@ -186,6 +200,7 @@ Rectangle {
         font.pixelSize: 14
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Label {
@@ -199,6 +214,7 @@ Rectangle {
         font.pixelSize: 18
         font.bold: true
         color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: transactionDetailsCollected === true
     }
 
     Timer {
@@ -217,16 +233,35 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        id: inputBtn
+        width: parent.width/2
+        height: 45
+        color: maincolor
+        anchors.bottom: addressArea.top
+        anchors.left: parent.left
+        opacity: selectedAddressList == "input"? 1 : 0.5
+    }
+
+    Rectangle {
+        id: outputBtn
+        width: parent.width/2
+        height: 45
+        color: maincolor
+        anchors.bottom: addressArea.top
+        anchors.right: parent.right
+        opacity: selectedAddressList == "output"? 1 : 0.5
+    }
+
     Label {
         id: inputLabel
-        text: "Paying Addresses"
-        anchors.left: parent.left
-        anchors.leftMargin: 28
+        text: "Inputs"
+        anchors.horizontalCenter: inputBtn.horizontalCenter
         anchors.top: confirmationAmount.bottom
         anchors.topMargin: 20
         rightPadding: 5
-        horizontalAlignment: Text.AlignLeft
-        width: selectedAddressList == "input"? inputLabel.implicitWidth : ((parent.width - 56) - receiveLabel.width)
+        horizontalAlignment: Text.AlignHCenter
+        width: inputBtn.width
         font.family: xciteMobile.name
         font.pixelSize: 18
         font.bold: selectedAddressList == "input"
@@ -259,14 +294,13 @@ Rectangle {
 
     Label {
         id: receiveLabel
-        text: "Receiving Addresses"
-        anchors.right: parent.right
-        anchors.rightMargin: 28
+        text: "Outputs"
+        anchors.horizontalCenter: outputBtn.horizontalCenter
         anchors.top: confirmationAmount.bottom
         anchors.topMargin: 20
         leftPadding: 5
-        horizontalAlignment: Text.AlignRight
-        width: selectedAddressList == "output"? receiveLabel.implicitWidth : ((parent.width - 56) - inputLabel.width)
+        horizontalAlignment: Text.AlignHCenter
+        width: outputBtn.width
         font.family: xciteMobile.name
         font.pixelSize: 18
         font.bold: selectedAddressList == "output"
@@ -307,6 +341,7 @@ Rectangle {
         color: "transparent"
         state: "down"
         clip: true
+        visible: transactionDetailsCollected === true
 
         states: [
             State {
@@ -331,14 +366,14 @@ Rectangle {
             }
         ]
 
-        Controls.TransactionAddressList {
+        Mobile.TransactionAddressList {
             id: myTransactionAdresses
         }
     }
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -355,12 +390,40 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        z: 3
+        width: parent.width
+        height: parent.height
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        color: "black"
+        opacity: 0.50
+        visible: transactionDetailsCollected === false
+
+        MouseArea {
+            anchors.fill: parent
+        }
+    }
+
+    AnimatedImage  {
+        z: 3
+        id: waitingDots
+        source: 'qrc:/gifs/loading-gif_01.gif'
+        width: 90
+        height: 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: inputLabel.bottom
+        anchors.topMargin: 30
+        playing: transactionDetailsCollected === false
+        visible: transactionDetailsCollected === false
+    }
+
     Label {
         id: closeDetailModal
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -385,9 +448,6 @@ Rectangle {
 
             onClicked: {
                 transactionDetailTracker = 0;
-                selectedAddressList = "input"
-                myTransactionAdresses.transactionAddresses = "input"
-                address2Copy = ""
             }
         }
     }

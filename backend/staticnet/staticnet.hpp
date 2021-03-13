@@ -36,6 +36,8 @@ public:
     QNetworkReply *reply;
     void request(const QJsonArray *params);
     static QStringList usedUtxo;
+    static QStringList pendingUtxo;
+    static QString queue_name;
 
 public Q_SLOTS:
     void slotNetworkError(QNetworkReply::NetworkError error);
@@ -49,6 +51,28 @@ signals:
 private:
     QNetworkRequest req;
     QNetworkAccessManager *manager;
+
+};
+
+class ProcessReplyWorker : public QObject {
+    Q_OBJECT
+
+public:
+    ProcessReplyWorker(const QJsonArray *params);
+    ~ProcessReplyWorker();
+
+public slots:
+
+signals:
+
+public Q_SLOTS:
+    void processReply(QString msg, const QJsonArray *params);
+
+private:
+    QString msg;
+    QString target_addr;
+    QString send_amount;
+    QString priv_key;
 
 };
 
@@ -71,11 +95,11 @@ signals:
 
 
 public Q_SLOTS:
-    void unspent_request(const QJsonArray *params);
+    //void unspent_request(const QJsonArray *params);
     void unspent_onResponse(QString id, QString utxo, QString target, QString amount, QString privkey, QStringList usedUtxo);
     void calculate_fee(const QString inputs, const QString outputs);
-    void txbroadcast_request(const QJsonArray *params);
-    void txbroadcast_onResponse(QJsonArray params, QJsonObject );
+    //void txbroadcast_request(const QJsonArray *params);
+    //void txbroadcast_onResponse(QJsonArray params, QJsonObject );
 
 
 private:
@@ -89,8 +113,9 @@ private:
     std::string RawTransaction;
     StaticNetHttpClient *client;
     bool tooBig;
-    int nMinFee;
     int nBaseFee = 100000000;
+    int dust_soft_limit = 100000000;
+    int nMinFee;
 };
 
 
@@ -113,14 +138,20 @@ public Q_SLOTS:
     void request(const QJsonArray *params);
     void srequest(const QJsonArray *params);
     void onResponse(QJsonArray params, QJsonObject );
+    //void sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params);
+    void sendToDicom(QByteArray docByteArray, QString msgID, const QJsonArray *params);
+    //void processReply(QString reply, const QJsonArray *params);
     int errorString(QString errorstr);
+    QString selectNode();
 
 private:
     QString msg;
     QString target_addr;
     QString send_amount;
     QString priv_key;
-    QStringList pendingUtxo;
+    QString Germany_02 = "85.214.143.20";
+    QString selectedNode;
+
     void CmdParser(const QJsonArray *params);
     StaticNetHttpClient *client;
     void help();
@@ -137,6 +168,7 @@ public:
     void Initialize();
     bool CheckUserInputForKeyWord(const QString msg, int *traceID);
 
+
     QString GetConnectStr() {
         return ConnectStr;
     };
@@ -149,18 +181,23 @@ public:
 
 public slots:
     void errorString(const QString error);
+    //void staticPopup(QString auth, QString msg);
+    void replyFromNetwork(QString msg);
     void onResponseFromStaticnet(QJsonObject response) {
         qDebug() << "staticnet response recevied";       
     }
 
 signals:
 	 void ResponseFromStaticnet(QJsonObject);
-     void sendFee(QString fee_, QString rawTx_, QString receiver_, QString sender_, QString sendAmount_, QString traceId_);
+     void returnQueue(QString queue_);
+     void sendFee(QString fee_, QString rawTx_, QString receiver_, QString sender_,QString usedCoins_, QString sendAmount_, QString traceId_);
      void rawTxFailed();
-     void fundsLow();
+     void fundsLow(QString error);
      void utxoError();
      void txFailed(QString id);
      void txSuccess(QString id, QString msg);
+     void txVoutInfo(QString spent, QString txdb, int txValue);
+     void txVoutError();
 
 private:
     boost::mutex mutex;

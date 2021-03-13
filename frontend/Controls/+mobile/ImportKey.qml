@@ -18,15 +18,22 @@ import QZXing 2.3
 import QtMultimedia 5.8
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addWalletModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: importKeyTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
+
+    onStateChanged: {
+        if (importKeyTracker == 0) {
+            timer1.start()
+        }
+    }
 
     MouseArea {
         anchors.fill: parent
@@ -39,7 +46,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addWalletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: addWalletModal.height}
         }
     ]
 
@@ -54,7 +61,6 @@ Rectangle {
     property int editSaved: 0
     property int editFailed : 0
     property int newWallet: 0
-    property bool addingWallet: false
     property int importWalletFailed: 0
     property int invalidAddress: 0
     property int addressExists: 0
@@ -67,6 +73,7 @@ Rectangle {
     property int saveErrorNR: 0
     property bool importInitiated: false
     property string failError: ""
+    property bool qrFound: false
 
     function compareTx() {
         addressExists = 0
@@ -103,7 +110,7 @@ Rectangle {
 
     Rectangle {
         z: 2
-        width: Screen.width
+        width: parent.width
         height: 50
         color: bgcolor
         anchors.horizontalCenter: parent.horizontalCenter
@@ -203,7 +210,7 @@ Rectangle {
             Controls.TextInput {
                 id: newName
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 placeholder: "WALLET LABEL"
                 text: ""
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -241,7 +248,7 @@ Rectangle {
             Controls.TextInput {
                 id: newAddress
                 height: 34
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 placeholder: "PRIVATE KEY"
                 text: ""
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -407,11 +414,9 @@ Rectangle {
 
                         onAddressExtracted: {
                             if (importKeyTracker == 1 && importInitiated == true) {
-                                console.log("Address is: " + addressID)
-                                console.log("PubKey is: " + publicKey)
-                                privateKey.text = newAddress.text
-                                publicKey.text = pubKey
-                                addressHash.text = addressID
+                                privateKey.text = priv
+                                publicKey.text = pub
+                                addressHash.text = addr
                                 newWallet = 1
                                 importInitiated = false
                             }
@@ -437,7 +442,7 @@ Rectangle {
                         && newAddress.text !== ""
                         && invalidAddress == 0
                         && addressExists == 0 && labelExists == 0) ? "#F2F2F2" : "#979797"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: importWalletButton.horizontalCenter
                 anchors.verticalCenter: importWalletButton.verticalCenter
                 visible: scanQRTracker == 0 && importInitiated == false
@@ -477,11 +482,11 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 10
-            visible: newWallet == 1 && editSaved == 0
+            visible: newWallet == 1 && editSaved == 0 && editFailed == 0
 
             Text {
                 id: walletCreatedText
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 2
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignHCenter
@@ -536,7 +541,7 @@ Rectangle {
 
             Label {
                 id: publicKey
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
                 horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WrapAnywhere
@@ -563,7 +568,7 @@ Rectangle {
 
             Label {
                 id: privateKey
-                width: doubbleButtonWidth
+                width:(myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
                 horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WrapAnywhere
@@ -601,7 +606,7 @@ Rectangle {
 
             Text {
                 id: warningPrivateKey
-                width: doubbleButtonWidth
+                width:(myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: 3
                 anchors.left: addressHash.left
                 horizontalAlignment: Text.AlignJustify
@@ -616,13 +621,14 @@ Rectangle {
 
             Rectangle {
                 id: addWalletButton
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 height: 34
                 anchors.top: warningPrivateKey.bottom
                 anchors.topMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: maincolor
                 opacity: 0.25
+                visible: addingWallet == false
 
                 MouseArea {
                     anchors.fill: parent
@@ -633,9 +639,11 @@ Rectangle {
                     }
 
                     onReleased: {
-                        addingWallet = true
-                        saveErrorNR = 0
-                        addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                        if (addingWallet == false) {
+                            addingWallet = true
+                            saveErrorNR = 0
+                            addWalletToList(coin, newName.text, addressHash.text, publicKey.text, privateKey.text, false)
+                        }
                     }
                 }
 
@@ -665,11 +673,6 @@ Rectangle {
                                 walletList.remove(walletID)
                                 addressID = addressID -1
                                 addressList.remove(addressID)
-                                newName.text = ""
-                                newAddress.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
                                 scanning = "scanning..."
                                 editFailed = 1
                                 addingWallet = false
@@ -681,11 +684,34 @@ Rectangle {
                                 labelExists = 0
                                 addressExists = 0
                                 invalidAddress = 0
-                                newName.text = ""
-                                newAddress.text = ""
-                                addressHash.text = ""
-                                publicKey.text = ""
-                                privateKey.text = ""
+                                scanning = "scanning..."
+                                editFailed = 1
+                                saveErrorNR = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
+                        }
+                    }
+
+                    onNoInternet: {
+                        if (importKeyTracker == 1 && addingWallet == true) {
+                            networkError = 1
+                            if (userSettings.localKeys === false) {
+                                walletID = walletID - 1
+                                walletList.remove(walletID)
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                scanning = "scanning..."
+                                editFailed = 1
+                                addingWallet = false
+                                walletSaved = false
+                            }
+                            else if (userSettings.localKeys === true && walletSaved ==true) {
+                                addressID = addressID -1
+                                addressList.remove(addressID)
+                                labelExists = 0
+                                addressExists = 0
+                                invalidAddress = 0
                                 scanning = "scanning..."
                                 editFailed = 1
                                 saveErrorNR = 1
@@ -744,14 +770,15 @@ Rectangle {
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
                 color: "#F2F2F2"
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 anchors.horizontalCenter: addWalletButton.horizontalCenter
                 anchors.verticalCenter: addWalletButton.verticalCenter
+                visible: addingWallet == false
             }
 
 
             Rectangle {
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 height: 34
                 anchors.bottom: addWalletButton.bottom
                 anchors.left: addWalletButton.left
@@ -759,6 +786,19 @@ Rectangle {
                 opacity: 0.5
                 border.color: maincolor
                 border.width: 1
+                visible: addingWallet == false
+            }
+
+            AnimatedImage  {
+                id: waitingDots
+                source: 'qrc:/gifs/loading-gif_01.gif'
+                width: 90
+                height: 60
+                anchors.horizontalCenter: addWalletButton.horizontalCenter
+                anchors.top: warningPrivateKey.bottom
+                anchors.topMargin: 40
+                playing: addingWallet == true
+                visible: addingWallet == true
             }
         }
 
@@ -784,7 +824,7 @@ Rectangle {
 
             Label {
                 id: saveFailedLabel
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 maximumLineCount: saveErrorNR == 0? 1 : 4
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
@@ -812,7 +852,7 @@ Rectangle {
 
             Rectangle {
                 id: closeFail
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 color: maincolor
                 opacity: 0.25
@@ -833,6 +873,7 @@ Rectangle {
                             saveErrorNR = 0
                             walletAdded = true
                             importKeyTracker = 0
+                            newWallet = 0
                         }
 
                         editFailed = 0
@@ -845,14 +886,14 @@ Rectangle {
                 text: saveErrorNR == 0? "TRY AGAIN" : "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 color: "#F2F2F2"
                 anchors.horizontalCenter: closeFail.horizontalCenter
                 anchors.verticalCenter: closeFail.verticalCenter
             }
 
             Rectangle {
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 anchors.bottom: closeFail.bottom
                 anchors.left: closeFail.left
@@ -864,7 +905,7 @@ Rectangle {
         }
 
         // Save success state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: addSuccess
             modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
@@ -893,7 +934,7 @@ Rectangle {
 
             Rectangle {
                 id: closeSave
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 color: maincolor
                 opacity: 0.25
@@ -925,6 +966,7 @@ Rectangle {
                         selectedAddress = ""
                         scanning = "scanning..."
                         importKeyTracker = 0
+                        newWallet = 0
                     }
                 }
             }
@@ -933,14 +975,14 @@ Rectangle {
                 text: "OK"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 color: "#F2F2F2"
                 anchors.horizontalCenter: closeSave.horizontalCenter
                 anchors.verticalCenter: closeSave.verticalCenter
             }
 
             Rectangle {
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 anchors.bottom: closeSave.bottom
                 anchors.left: closeSave.left
@@ -952,7 +994,7 @@ Rectangle {
         }
 
         // Import key failed
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: createWalletFailed
             modalHeight: saveError.height + errorLabel.height + closeError.height + 75
             visible: importWalletFailed == 1
@@ -963,13 +1005,13 @@ Rectangle {
                 height: 75
                 fillMode: Image.PreserveAspectFit
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: createWalletSuccess.modalTop
+                anchors.top: createWalletFailed.modalTop
                 anchors.topMargin: 20
             }
 
             Text {
                 id: errorLabel
-                width: doubbleButtonWidth
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/2
                 text: "<b>ERROR</b>:" + walletError
                 anchors.top: saveError.bottom
                 anchors.topMargin: 10
@@ -984,7 +1026,7 @@ Rectangle {
 
             Rectangle {
                 id: closeError
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 color: maincolor
                 opacity: 0.25
@@ -1012,14 +1054,14 @@ Rectangle {
                 text: "TRY AGAIN"
                 font.family: "Brandon Grotesque"
                 font.pointSize: 14
-                font.bold: true
+                font.bold: (myOS == "android" || myOS == "ios")
                 color: themecolor
                 anchors.horizontalCenter: closeError.horizontalCenter
                 anchors.verticalCenter: closeError.verticalCenter
             }
 
             Rectangle {
-                width: doubbleButtonWidth / 2
+                width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : 150
                 height: 34
                 anchors.bottom: closeError.bottom
                 anchors.left: closeError.left
@@ -1033,7 +1075,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1050,72 +1092,243 @@ Rectangle {
         }
     }
 
-    Label {
-        id: closeWalletModal
+    Item {
         z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+        width: parent.width
+        height: parent.height
         anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: importKeyTracker == 1
-                 && editSaved == 0
-                 && editFailed == 0
-                 && scanQRTracker == 0
-                 && importWalletFailed == 0
+        anchors.top: parent.top
+        visible: scanQRTracker == 1
+        state: scanQRTracker == 1? "up" : "down"
 
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
+        onStateChanged: {
+            if (scanQRTracker == 0 && qrFound == false) {
+                selectedAddress = ""
+                publicKey.text = "scanning..."
+            }
         }
 
-        MouseArea {
-            anchors.fill: closeButton
+        Timer {
+            id: timer
+            interval: 1000
+            repeat: false
+            running: false
 
-            Timer {
-                id: timer
-                interval: 300
-                repeat: false
-                running: false
+            onTriggered:{
+                scanQRTracker = 0
+                publicKey.text = "scanning..."
+                qrFound = false
+            }
+        }
 
-                onTriggered: {
-                    newName.text = ""
-                    newAddress.text = ""
-                    addressExists = 0
-                    labelExists = 0
-                    invalidAddress = 0
+        Camera {
+            id: camera
+            position: Camera.BackFace
+            cameraState: cameraPermission === true? ((importKeyTracker == 1) ? (scanQRTracker == 1 ? Camera.ActiveState : Camera.LoadedState) : Camera.UnloadedState) : Camera.UnloadedState
+            focus {
+                focusMode: Camera.FocusContinuous
+                focusPointMode: CameraFocus.FocusPointAuto
+            }
+
+            onCameraStateChanged: {
+                console.log("camera status: " + camera.cameraStatus)
+            }
+        }
+
+        Rectangle {
+            width: parent.width
+            height: parent.height
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            color: bgcolor
+            clip: true
+
+            Label {
+                text: "activating camera..."
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: scanFrame.verticalCenter
+                color: "#F2F2F2"
+                font.family: xciteMobile.name
+                font.bold: true
+                font.pixelSize: 14
+                font.italic: true
+
+            }
+
+            VideoOutput {
+                id: videoOutput
+                source: camera
+                width: parent.width
+                fillMode: VideoOutput.PreserveAspectCrop
+                autoOrientation: true
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: scanFrame.horizontalCenter
+                anchors.verticalCenter: scanFrame.verticalcenter
+                filters: [
+                    qrFilter
+                ]
+            }
+
+            Image {
+                id: scanWindow
+                source: 'qrc:/scan-window_02.svg'
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                opacity: 0.9
+
+                ColorOverlay {
+                    anchors.fill: scanWindow
+                    source: scanWindow
+                    color: darktheme == false? "white" : "black"
+                    opacity: 0.9
+                }
+            }
+
+            Text {
+                id: scanQRLabel
+                text: "SCAN QR CODE"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                font.pixelSize: 20
+                font.family: xciteMobile.name
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Rectangle {
+                id: scanFrame
+                width: 225
+                height: 225
+                radius: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 150
+                color: "transparent"
+                border.width: 1
+                border.color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            }
+
+            Label {
+                id: pubKey
+                text: "PUBLIC KEY"
+                anchors.top: scanFrame.bottom
+                anchors.topMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                font.family: xciteMobile.name
+                font.bold: true
+                font.pixelSize: 14
+                font.letterSpacing: 1
+            }
+
+            Label {
+                id: publicKeyScan
+                text: scanning
+                anchors.top: pubKey.bottom
+                anchors.topMargin: 10
+                anchors.horizontalCenter: pubKey.horizontalCenter
+                color: darktheme == true? "#F2F2F2" : "#2A2C31"
+                font.family: xciteMobile.name
+                font.pixelSize: 12
+                font.italic: publicKey.text == "scanning..."
+
+            }
+        }
+    /**
+        Rectangle {
+            id: cancelScanButton
+            width: doubbleButtonWidth / 2
+            height: 34
+            color: "transparent"
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: scanQRTracker == 1
+
+            MouseArea {
+                anchors.fill: cancelScanButton
+
+                onPressed: {
+                    click01.play()
+                }
+
+                onCanceled: {
+                }
+
+                onReleased: {
+                }
+
+                onClicked: {
                     scanQRTracker = 0
                     selectedAddress = ""
-                    scanning = "scanning..."
+                    publicKey.text = "scanning..."
                 }
             }
+        }
 
-            onPressed: {
-                parent.anchors.topMargin = 14
-                click01.play()
-                detectInteraction()
-            }
+        Text {
+            text: "BACK"
+            font.family: xciteMobile.name
+            font.pointSize: 14
+            font.bold: true
+            color: darktheme == true? "#F2F2F2" : "#2A2C31"
+            anchors.horizontalCenter: cancelScanButton.horizontalCenter
+            anchors.verticalCenter: cancelScanButton.verticalCenter
+        }
+    */
+        QZXingFilter {
+            id: qrFilter
 
-            onClicked: {
-                parent.anchors.topMargin = 10
-                if (importKeyTracker == 1) {
-                    importKeyTracker = 0;
+            decoder {
+                enabledDecoders: QZXing.DecoderFormat_QR_CODE
+                onTagFound: {
+                    qrFound = true
+                    console.log(tag);
+                    selectedAddress = ""
+                    scanning = ""
+                    publicKey.text = tag
+                    selectedAddress = publicKey.text
                     timer.start()
                 }
+                tryHarder: true
+
+            }
+
+            captureRect: {
+                // setup bindings
+                videoOutput.contentRect;
+                videoOutput.sourceRect;
+                return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
+                                                                                           0.25, 0.25, 0.5, 0.5
+                                                                                           )));
             }
         }
     }
 
-    Controls.QrScanner{
-        id: qrScanner
-        z: 10
-        visible: importKeyTracker == 1 && scanQRTracker == 1
+    Timer {
+        id: timer1
+        interval: 300
+        repeat: false
+        running: false
+
+        onTriggered: {
+            newName.text = ""
+            newAddress.text = ""
+            addressHash.text = ""
+            publicKey.text = ""
+            privateKey.text = ""
+            addressExists = 0
+            labelExists = 0
+            invalidAddress = 0
+            scanQRTracker = 0
+            selectedAddress = ""
+            scanning = "scanning..."
+            newWallet = 0
+            editSaved = 0
+            editFailed = 0
+            importWalletFailed = 0
+            addingWallet = false
+        }
     }
 }

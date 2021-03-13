@@ -16,15 +16,16 @@ import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import QtMultimedia 5.8
 
-import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Controls
 
 Rectangle {
     id: notificationModal
-    width: Screen.width
-    height: Screen.height
+    width: appWidth
+    height: appHeight
+    anchors.horizontalCenter: xcite.horizontalCenter
+    anchors.verticalCenter: xcite.verticalCenter
     color: bgcolor
 
-    property bool updatingWallets: false
     property int updateFailed: 0
 
     Text {
@@ -44,7 +45,7 @@ Rectangle {
         width: parent.width
         anchors.top: notificationModalLabel.bottom
         anchors.topMargin: 35
-        anchors.bottom: closeNotificationModal.top
+        anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
         clip: true
@@ -54,24 +55,22 @@ Rectangle {
         }
     }
 
-    Label {
+    Image {
         id: clearNotifications
-        text: "CLEAR ALL"
+        source: darktheme == true? 'qrc:/icons/mobile/trash-icon_01_light.svg' : 'qrc:/icons/mobile/trash-icon_01_dark.svg'
+        height: 25
+        fillMode: Image.PreserveAspectFit
         anchors.right: parent.right
-        anchors.rightMargin: 14
+        anchors.rightMargin: 30
         anchors.bottom: notificationList.top
         anchors.bottomMargin: 5
-        font.pixelSize: 12
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        font.letterSpacing: 2
-        visible: alertList.count > 1
+        visible: myNotifications.filteredCount > 0
 
         MouseArea {
-            height: 20
+            height: 25
+            width: 25
             anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.right: parent.right
+            anchors.horizontalCenter: parent.horizontalCenter
 
             onPressed: {
                 click01.play()
@@ -79,79 +78,117 @@ Rectangle {
             }
 
             onClicked: {
-                if (updatingWallets == false) {
-                    alertList.clear();
-                    alertList.append({"date": "", "origin": "", "message": ""});
-                    checkNotifications()
-                    updatingWallets = true
+                if (updatingWalletsNotif == false) {
+                    updatingWalletsNotif = true
+                    clearAlertList();
+                    checkNotifications();
                     updateToAccount()
-                    appsTracker = 0
-                    selectedPage = "home"
-                    mainRoot.pop()
-                }
-            }
-        }
-
-        Connections {
-            target: UserSettings
-
-            onSaveSucceeded: {
-                if (selectedPage == "notif" && updatingWallets == true) {
-                    updatingWallets == false
-                }
-            }
-
-            onSaveFailed: {
-                if (selectedPage == "notif" && updatingWallets == true) {
-                    updateFailed = 1
-                    updatingWallets == false
                 }
             }
         }
     }
 
-    Item {
-        z: 12
-        width: popupUpdateFail.width
-        height: 50
+    Label {
+        id: updateLabel
+        text: "Updating account"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -100
-        visible: updateFailed == 1
+        anchors.verticalCenterOffset: -50
+        font.pixelSize: 16
+        font.family: "Brandon Grotesque"
+        color: darktheme == true? "#F2F2F2" : "#2A2C31"
+        visible: updatingWalletsNotif == true
+    }
 
-        Rectangle {
-            id: popupUpdateFail
-            height: 50
-            width: popupFailText.width + 56
-            color: "#34363D"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
+    AnimatedImage  {
+        id: waitingDots
+        source: 'qrc:/gifs/loading-gif_01.gif'
+        width: 90
+        height: 60
+        anchors.horizontalCenter: updateLabel.horizontalCenter
+        anchors.top: updateLabel.bottom
+        anchors.bottomMargin: -10
+        playing: updatingWalletsNotif == true
+        visible: updatingWalletsNotif == true
+    }
+
+    Connections {
+        target: UserSettings
+
+        onSaveSucceeded: {
+            if (updatingWalletsNotif == true) {
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
         }
 
-        Label {
-            id: popupFailText
-            text: "FAILED update your wallets!"
-            font.family: "Brandon Grotesque"
-            font.pointSize: 14
-            font.bold: true
-            color: "#E55541"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
+        onSaveFailed: {
+            if (updatingWalletsNotif == true) {
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
         }
 
-        Timer {
-            repeat: false
-            running: updateFailed == 1
-            interval: 2000
+        onNoInternet: {
+            if (updatingWalletsNotif == true) {
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
 
-            onTriggered: updateFailed = 0
+        onSaveFailedDBError: {
+            if (updatingWalletsNotif == true) {
+                failError = "Database ERROR"
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+
+        onSaveFailedAPIError: {
+            if (updatingWalletsNotif == true) {
+                failError = "Network ERROR"
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+
+        onSaveFailedInputError: {
+            if (updatingWalletsNotif == true) {
+                failError = "Input ERROR"
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
+        }
+
+        onSaveFailedUnknownError: {
+            if (updatingWalletsNotif == true) {
+                failError = "Unknown ERROR"
+                appsTracker = 0
+                selectedPage = "home"
+                mainRoot.pop()
+                updatingWalletsNotif = false
+            }
         }
     }
+
+
 
     Item {
         z: 3
-        width: Screen.width
-        height: myOS === "android"? 125 : 145
+        width: parent.width
+        height: myOS === "android"? 75 : 95
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -163,44 +200,6 @@ Rectangle {
                 GradientStop { position: 0.0; color: "transparent" }
                 GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-            }
-        }
-    }
-
-    Label {
-        id: closeNotificationModal
-        z: 10
-        text: "CLOSE"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: parent.width
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                appsTracker = 0
-                selectedPage = "home"
-                mainRoot.pop()
             }
         }
     }

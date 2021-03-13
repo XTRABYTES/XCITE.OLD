@@ -17,7 +17,7 @@ import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 
-import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Controls
 
 Item {
 
@@ -26,8 +26,10 @@ Item {
     Rectangle {
         id: backgroundSetup
         z: 1
-        width: Screen.width
-        height: Screen.height
+        width: appWidth
+        height: appHeight
+        anchors.horizontalCenter: xcite.horizontalCenter
+        anchors.verticalCenter: xcite.verticalCenter
         color: "#14161B"
 
         LinearGradient {
@@ -39,25 +41,29 @@ Item {
                 GradientStop { position: 0.0; color: darktheme == false?"#00072778" : "#FF162124" }
                 GradientStop { position: 1.0; color: darktheme == false?"#FF072778" : "#00162124" }
             }
+            visible: (myOS == "android" || myOS == "ios")
         }
 
         Image {
             id: largeLogo
+            z: (myOS == "android" || myOS == "ios")? undefined : 4
             source: 'qrc:/icons/XBY_logo_large.svg'
-            width: parent.width * 2
-            height: (largeLogo.width / 75) * 65
-            anchors.top: parent.top
+            width: (myOS == "android" || myOS == "ios")? backgroundSetup.width * 2 : undefined
+            height: (myOS == "android" || myOS == "ios")?(largeLogo.width / 75) * 65 : (appHeight / 75 * 65)
+            fillMode: Image.PreserveAspectFit
+            anchors.top: backgroundSetup.top
             anchors.topMargin: 63
-            anchors.right: parent.right
+            anchors.right: (myOS == "android" || myOS == "ios")? backgroundSetup.right : undefined
+            anchors.horizontalCenter: (myOS == "android" || myOS == "ios")? undefined : backgroundSetup.left
             opacity: 0.5
         }
 
         Label {
             id: welcomeText
-            text: userSettings.accountCreationCompleted === true? "ACCOUNT SETUP COMPLETE" : "WELCOME " + username
+            text: userSettings.accountCreationCompleted === true? "ACCOUNT SETUP COMPLETE" : "WELCOME " + myUsername
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: 10
+            anchors.topMargin: (myOS == "android" || myOS == "ios")? 10 : appWidth/24
             color: maincolor
             font.pixelSize: 20
             font.family: xciteMobile.name
@@ -140,9 +146,10 @@ Item {
 
                 Text {
                     id: createAddressText
-                    width: doubbleButtonWidth
+                    width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                     maximumLineCount: 2
-                    anchors.left: createAddressButton.left
+                    anchors.left: (myOS == "android" || myOS == "ios")? createAddressButton.left : undefined
+                    anchors.horizontalCenter: (myOS == "android" || myOS == "ios")? undefined : parent.horizontalCenter
                     horizontalAlignment: Text.AlignJustify
                     wrapMode: Text.WordWrap
                     text: "If you don’t have an <b>XFUEL</b> wallet or you wish to create a new one."
@@ -155,7 +162,7 @@ Item {
 
                 Rectangle {
                     id: createAddressButton
-                    width: doubbleButtonWidth
+                    width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                     height: 34
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: createAddressText.bottom
@@ -180,9 +187,9 @@ Item {
                         id: createButtonText
                         text: "CREATE NEW ADDRESS"
                         font.family: xciteMobile.name
-                        font.pointSize: 14
+                        font.pointSize: (myOS == "android" || myOS == "ios")? 14 : createAddressButton.height/2
                         color: maincolor
-                        font.bold: true
+                        font.bold: (myOS == "android" || myOS == "ios")
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -190,8 +197,9 @@ Item {
 
                 Text {
                     id: importAddressText
-                    width: doubbleButtonWidth
-                    anchors.left: importAddressButton.left
+                    width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
+                    anchors.left: (myOS == "android" || myOS == "ios")? importAddressButton.left : undefined
+                    anchors.horizontalCenter: (myOS == "android" || myOS == "ios")? undefined : parent.horizontalCenter
                     horizontalAlignment: Text.AlignJustify
                     text: "If you already have an <b>XFUEL</b> wallet."
                     anchors.top: createAddressButton.bottom
@@ -203,7 +211,7 @@ Item {
 
                 Rectangle {
                     id: importAddressButton
-                    width: doubbleButtonWidth
+                    width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                     height: 34
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: importAddressText.bottom
@@ -228,9 +236,9 @@ Item {
                         id: importButtonText
                         text: "IMPORT PRIVATE KEY"
                         font.family: xciteMobile.name
-                        font.pointSize: 14
+                        font.pointSize: (myOS == "android" || myOS == "ios")? 14 : importAddressButton.height/2
                         color: maincolor
-                        font.bold: true
+                        font.bold: (myOS == "android" || myOS == "ios")
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -249,7 +257,7 @@ Item {
                 Text {
                     id: onboardCompleteText
                     text: "You have completed the initial setup for your wallet. ENJOY!"
-                    width: doubbleButtonWidth
+                    width: (myOS == "android" || myOS == "ios")? doubbleButtonWidth : appWidth/3
                     maximumLineCount: 2
                     anchors.horizontalCenter: parent.horizontalCenter
                     horizontalAlignment: Text.AlignHCenter
@@ -262,7 +270,7 @@ Item {
 
                 Rectangle {
                     id: completeButton
-                    width: doubbleButtonWidth / 2
+                    width:(myOS == "android" || myOS == "ios")? doubbleButtonWidth/2 : appWidth/6
                     height: 34
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: onboardCompleteText.bottom
@@ -289,7 +297,7 @@ Item {
                                 gotoWallet = 1
                                 updateToAccount();
                                 mainRoot.pop()
-                                mainRoot.push("../Home.qml")
+                                mainRoot.push("qrc:/+mobile/Home.qml")
                                 sessionStart = 1
                                 selectedPage = "home"
                                 gotoWallet = 0
@@ -305,14 +313,14 @@ Item {
                     font.family: xciteMobile.name
                     font.pointSize: 14
                     color: gotoWallet == 0? themecolor : "#979797"
-                    font.bold: true
+                    font.bold: (myOS == "android" || myOS == "ios")
                     anchors.horizontalCenter: completeButton.horizontalCenter
                     anchors.verticalCenter: completeButton.verticalCenter
                     anchors.verticalCenterOffset: 1
                 }
 
                 Rectangle {
-                    width: doubbleButtonWidth / 2
+                    width: completeButton.width
                     height: 33
                     anchors.horizontalCenter: completeButton.horizontalCenter
                     anchors.bottom: completeButton.bottom
@@ -326,10 +334,11 @@ Item {
 
         Item {
             z: 3
-            width: Screen.width
+            width: appWidth
             height: myOS === "android"? 125 : 145
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
+            visible: (myOS == "android" || myOS == "ios")
 
             LinearGradient {
                 anchors.fill: parent
@@ -346,21 +355,22 @@ Item {
         Image {
             id: combinationMark
             z: 3
-            source: 'qrc:/icons/xby_logo_TM.svg'
-            height: 23.4
+            source: 'qrc:/icons/xby_logo_with_name.png'
             width: 150
+            fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: myOS === "android"? 50 : 70
+            anchors.bottomMargin: myOS === "android"? 50 : (myOS === "ios"? (isIphoneX()? 70 : 50) : 70)
         }
 
         Rectangle {
             id: overlay
             z: 3
-            width: Screen.width
-            height: Screen.height
+            width: appWidth
+            height: appHeight
             color: "#14161B"
             opacity: (importKeyTracker == 1 || createWalletTracker == 1)? 1 : 0
+            visible: (myOS == "android" || myOS == "ios")
 
             LinearGradient {
                 anchors.fill: parent
@@ -375,7 +385,7 @@ Item {
         }
 
         Controls.ImportKey {
-            id: addWalletModal
+            id: importWalletModal
             z: 3
         }
 

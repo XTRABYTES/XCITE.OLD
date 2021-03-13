@@ -19,14 +19,15 @@ import QtMultimedia 5.8
 import QtQuick.Window 2.2
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: addWalletModal
-    width: Screen.width
-    state: viewOnlyTracker == 1? "up" : "down"
-    height: Screen.height
-    color: bgcolor
+    width: appWidth
+    height: appHeight
     anchors.horizontalCenter: parent.horizontalCenter
+    state: viewOnlyTracker == 1? "up" : "down"
+    color: bgcolor
     anchors.top: parent.top
 
     MouseArea {
@@ -40,7 +41,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: addWalletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: addWalletModal; anchors.topMargin: addWalletModal.height}
         }
     ]
 
@@ -54,6 +55,9 @@ Rectangle {
 
     onStateChanged: {
         coin = coinIndex
+        if(viewOnlyTracker == 0) {
+            timer1.start()
+        }
     }
 
     property int addressExists: 0
@@ -63,10 +67,10 @@ Rectangle {
     property int scanQR: 0
     property int editFailed: 0
     property int editSaved: 0
-    property bool addingWallet: false
     property bool walletSaved: false
     property int saveErrorNR: 0
     property string failError: ""
+    property bool qrFound: false
 
     function compareTx() {
         addressExists = 0
@@ -457,6 +461,28 @@ Rectangle {
                     }
                 }
 
+                onNoInternet: {
+                    if (viewOnlyTracker == 1 && addingWallet == true) {
+                        networkError = 1
+                        if (userSettings.localKeys === false) {
+                            walletID = walletID - 1
+                            walletList.remove(walletID)
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            editFailed = 1
+                            addingWallet = false
+                        }
+                        else if (userSettings.localKeys === true && walletSaved == true) {
+                            addressID = addressID -1
+                            addressList.remove(addressID)
+                            saveErrorNR = 1
+                            editFailed = 1
+                            addingWallet = false
+                            walletSaved = false
+                        }
+                    }
+                }
+
                 onSaveFileSucceeded: {
                     if (viewOnlyTracker == 1 && userSettings.localKeys === true && addingWallet == true) {
                         walletSaved = true
@@ -546,7 +572,7 @@ Rectangle {
     }
 
     // Save failed state
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: addWalletFailed
         modalHeight: saveFailed.height + saveFailedLabel.height + saveFailedError.height + closeFail.height + 85
         visible: editFailed == 1
@@ -651,7 +677,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: 125
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -670,11 +696,19 @@ Rectangle {
 
     Item {
         z: 10
-        width: Screen.width
-        height: Screen.height
+        width: parent.width
+        height: parent.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         visible: scanQRTracker == 1
+        state: scanQRTracker == 1? "up" : "down"
+
+        onStateChanged: {
+            if (scanQRTracker == 0 && qrFound == false) {
+                selectedAddress = ""
+                publicKey.text = "scanning..."
+            }
+        }
 
         Timer {
             id: timer
@@ -685,6 +719,7 @@ Rectangle {
             onTriggered:{
                 scanQRTracker = 0
                 publicKey.text = "scanning..."
+                qrFound = false
             }
         }
 
@@ -803,47 +838,6 @@ Rectangle {
             }
         }
 
-        Rectangle {
-            id: cancelScanButton
-            width: doubbleButtonWidth / 2
-            height: 34
-            color: "transparent"
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
-            visible: scanQRTracker == 1
-
-            MouseArea {
-                anchors.fill: cancelScanButton
-
-                onPressed: {
-                    click01.play()
-                }
-
-                onCanceled: {
-                }
-
-                onReleased: {
-                }
-
-                onClicked: {
-                    scanQRTracker = 0
-                    selectedAddress = ""
-                    publicKey.text = "scanning..."
-                }
-            }
-        }
-
-        Text {
-            text: "BACK"
-            font.family: xciteMobile.name
-            font.pointSize: 14
-            font.bold: true
-            color: darktheme == true? "#F2F2F2" : "#2A2C31"
-            anchors.horizontalCenter: cancelScanButton.horizontalCenter
-            anchors.verticalCenter: cancelScanButton.verticalCenter
-        }
-
         QZXingFilter {
             id: qrFilter
 
@@ -854,81 +848,43 @@ Rectangle {
                     selectedAddress = ""
                     scanning = ""
                     publicKey.text = tag
-                    selectedAddress = publicKey.text
+                    newAddress.text = publicKey.text
                     timer.start()
                 }
+                tryHarder: true
+
             }
 
             captureRect: {
-                // setup bindings
-                videoOutput.contentRect;
-                videoOutput.sourceRect;
-                // only scan the central quarter of the area for a barcode
-                return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
-                                                                                           0.22, 0.09, 0.56, 0.82)));
-            }
+                            // setup bindings
+                            videoOutput.contentRect;
+                            videoOutput.sourceRect;
+                            return videoOutput.mapRectToSource(videoOutput.mapNormalizedRectToItem(Qt.rect(
+                                0.25, 0.25, 0.5, 0.5
+                            )));
+                        }
         }
     }
 
-    Label {
-        id: closeWalletModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-        visible: viewOnlyTracker == 1
-                 && scanQRTracker == 0
+    Timer {
+        id: timer1
+        interval: 300
+        repeat: false
+        running: false
 
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: doubbleButtonWidth
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            Timer {
-                id: timer1
-                interval: 300
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    newName.text = ""
-                    newAddress.text = ""
-                    addressExists = 0
-                    labelExists = 0
-                    invalidAddress = 0
-                    scanQRTracker = 0
-                    selectedAddress = ""
-                    scanning = "scanning..."
-                    closeAllClipboard = true
-                }
-            }
-
-            onPressed: {
-                parent.anchors.topMargin = 14
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                parent.anchors.topMargin = 10
-                if (viewOnlyTracker  == 1) {
-                    viewOnlyTracker = 0;
-                    timer1.start()
-                }
-            }
+        onTriggered: {
+            newName.text = ""
+            newAddress.text = ""
+            addressExists = 0
+            labelExists = 0
+            invalidAddress = 0
+            scanQRTracker = 0
+            selectedAddress = ""
+            scanning = "scanning..."
+            closeAllClipboard = true
+            editSaved = 0
+            editFailed = 0
+            addingWallet = false
         }
     }
 }

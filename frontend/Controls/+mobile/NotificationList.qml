@@ -16,13 +16,17 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.8
 import QtQuick.Window 2.2
+import SortFilterProxyModel 0.2
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
+
 
 Rectangle {
     width: parent.width
     height: parent.height
     color: "transparent"
+    property alias filteredCount: filteredAlerts.count
 
     Component {
         id: notificationLine
@@ -35,7 +39,7 @@ Rectangle {
             color:"transparent"
             clip: true
 
-            Controls.CardBody {
+            Mobile.CardBody {
 
             }
 
@@ -87,12 +91,23 @@ Rectangle {
         }
     }
 
+    SortFilterProxyModel {
+        id: filteredAlerts
+        sourceModel: alertList
+        filters: [
+           ValueFilter {
+                roleName: "removed"
+                value: false
+            }
+        ]
+    }
+
     ListView {
         anchors.fill: parent
         id: notificationlist
-        model: alertList
+        model: filteredAlerts
         delegate: notificationLine
-        contentHeight: ((alertList.count - 1) * 130) + 125
+        contentHeight: ((filteredAlerts.count - 1) * 130) + 125
         onDraggingChanged: detectInteraction()
     }
 }

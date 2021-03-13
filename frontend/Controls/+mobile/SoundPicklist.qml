@@ -103,6 +103,15 @@ Rectangle {
                             saveSound = false
                         }
                     }
+
+                    onNoInternet: {
+                        if (soundTracker === 1) {
+                            networkError = 1
+                            userSettings.sound = oldSound
+                            soundChangeFailed = 1
+                            saveSound = false
+                        }
+                    }
                 }
             }
 

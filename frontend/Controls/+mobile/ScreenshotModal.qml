@@ -23,13 +23,22 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: screenShotModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: screenshotTracker == 1? "up" : "down"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
-    anchors.topMargin: Screen.height
+    anchors.topMargin: screenShotModal.height
+
+    property int myTracker: screenshotTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            keyType = ""
+            textForPopup = ""
+        }
+    }
 
     states: [
         State {
@@ -39,7 +48,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: screenShotModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: screenShotModal; anchors.topMargin: screenShotModal.height}
             PropertyChanges { target: screenShotModal; opacity: 0}
         }
     ]
@@ -200,10 +209,9 @@ Rectangle {
     Rectangle {
         id: qrBorder2
         radius: 4
+        height: qrBorder1.height
         width: height
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: privateKeyLabel.top
-        anchors.bottomMargin: 10
         anchors.top: privateKeyTextLabel.bottom
         anchors.topMargin: 5
         color: "#FFFFFF"
@@ -228,8 +236,8 @@ Rectangle {
         width: (implicitWidth/2) + 5
         text: walletList.get(walletIndex).privatekey
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: closeScreenshotModal.top
-        anchors.bottomMargin: 40
+        anchors.top: qrBorder2.bottom
+        anchors.topMargin: 10
         maximumLineCount: 3
         horizontalAlignment: Text.AlignLeft
         wrapMode: Text.WrapAnywhere
@@ -309,7 +317,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -322,44 +330,6 @@ Rectangle {
                 GradientStop { position: 0.0; color: "transparent" }
                 GradientStop { position: 0.5; color: darktheme == true? "#14161B" : "#FDFDFD" }
                 GradientStop { position: 1.0; color: darktheme == true? "#14161B" : "#FDFDFD" }
-            }
-        }
-    }
-
-    Label {
-        id: closeScreenshotModal
-        z: 10
-        text: "BACK"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 14
-        font.family: "Brandon Grotesque"
-        color: darktheme == true? "#F2F2F2" : "#2A2C31"
-
-        Rectangle{
-            id: closeButton
-            height: 34
-            width: parent.width
-            radius: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            color: "transparent"
-
-        }
-
-        MouseArea {
-            anchors.fill: closeButton
-
-            onPressed: {
-                click01.play()
-                detectInteraction()
-            }
-
-            onClicked: {
-                screenshotTracker = 0
-                keyType = ""
-                textForPopup = ""
             }
         }
     }

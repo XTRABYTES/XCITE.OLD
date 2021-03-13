@@ -30,6 +30,30 @@ void staticnet_integration::sendCoinsEntry(QString msg) {
     }
 }
 
+void staticnet_integration::setQueue(QString msg) {
+
+    qDebug() << "set new queue name!";
+    int _traceID;
+    QString sendCoins = "!!staticnet setQueue " + msg;
+    if (staticNet.CheckUserInputForKeyWord(sendCoins, &_traceID)) {
+        qDebug() << "staticnet command accepted";
+    } else {
+        qDebug() << "staticnet command not accepted";
+    }
+}
+
+void staticnet_integration::requestQueue() {
+
+    qDebug() << "queu name requested!";
+    int _traceID;
+    QString sendCoins = "!!staticnet requestQueue";
+    if (staticNet.CheckUserInputForKeyWord(sendCoins, &_traceID)) {
+        qDebug() << "staticnet command accepted";
+    } else {
+        qDebug() << "staticnet command not accepted";
+    }
+}
+
 void staticnet_integration::dicomRequestEntry(QString msg) {
 
     qDebug() << "dicom request";

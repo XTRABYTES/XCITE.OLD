@@ -15,15 +15,18 @@ import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 
 import "qrc:/Controls" as Controls
+import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: sidebar
-    height: Screen.height
+    height: appHeight
     width: 100
     state: appsTracker == 1? "up" : "down"
     color: "#2A2C31"
     anchors.left: parent.left
     z: 100
+
+    property int myTracker: appsTracker
 
     onStateChanged: detectInteraction()
 
@@ -31,10 +34,12 @@ Rectangle {
         State {
             name: "up"
             PropertyChanges { target: sidebar; anchors.leftMargin: 0}
+            PropertyChanges { target: darkArea; width: appWidth - sidebar.width}
         },
         State {
             name: "down"
             PropertyChanges { target: sidebar; anchors.leftMargin: -100}
+            PropertyChanges { target: darkArea; width: 0}
         }
     ]
 
@@ -106,7 +111,7 @@ Rectangle {
                         if (selectedPage != "home") {
                             //push of current page
                             selectedPage = "home"
-                            mainRoot.push("../DashboardForm.qml")
+                            mainRoot.push("qrc:/+mobile/DashboardForm.qml")
                         }
                     }
                 }
@@ -160,7 +165,7 @@ Rectangle {
                         if (selectedPage != "settings") {
                             appsTracker = 0
                             selectedPage = "settings"
-                            mainRoot.push("../WalletSettings.qml")
+                            mainRoot.push("qrc:/+mobile/WalletSettings.qml")
                         }
                     }
                 }
@@ -232,7 +237,6 @@ Rectangle {
                     running: false
 
                     onTriggered: {
-                        appsTracker = 0
                         selectedPage = "backup"
                         mainRoot.push("qrc:/+mobile/WalletBackup.qml");
                     }
@@ -296,7 +300,7 @@ Rectangle {
                         if (selectedPage != "apps") {
                             appsTracker = 0
                             selectedPage = "apps"
-                            mainRoot.push("../Applications.qml")
+                            mainRoot.push("qrc:/+mobile/Applications.qml")
                         }
                     }
                 }
@@ -328,7 +332,7 @@ Rectangle {
                     color: "#E55541"
                     anchors.horizontalCenter: parent.right
                     anchors.verticalCenter: parent.top
-                    visible: alertList.count > 1
+                    visible: alert == true
                 }
 
                 Text {
@@ -361,7 +365,7 @@ Rectangle {
                         if (selectedPage != "notif") {
                             appsTracker = 0
                             selectedPage = "notif"
-                            mainRoot.push("../Notifications.qml")
+                            mainRoot.push("qrc:/+mobile/Notifications.qml")
                         }
                     }
                 }
@@ -433,7 +437,7 @@ Rectangle {
                     standBy = 1
                     screenSaver = 0
                     timer.start()
-                    mainRoot.push("../StandBy.qml")
+                    mainRoot.push("qrc:/+mobile/StandBy.qml")
                     appsTracker = 0
                 }
             }
@@ -443,8 +447,9 @@ Rectangle {
     Item {
         id: logoutSection
         width: sidebar.width
-        height: logoutText.height + 70
+        height: logoutText.height + logout.height
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         visible: appsTracker == 1
 
         Image {
@@ -463,7 +468,6 @@ Rectangle {
             id: logoutText
             text: "LOG OUT"
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 50
             color: maincolor
             font.family: xciteMobile.name
             anchors.horizontalCenter: parent.horizontalCenter
@@ -472,8 +476,8 @@ Rectangle {
 
         Rectangle {
             id: logoutButtonArea
+            height: parent.height
             width: parent.width
-            height: logout.height + logoutText.height + 5
             anchors.top: parent.top
             color: "transparent"
             MouseArea {
@@ -491,8 +495,8 @@ Rectangle {
     }
 
     Rectangle {
+        id: darkArea
         anchors.left: parent.right
-        width: appsTracker == 1 ? (Screen.width - parent.width) : 0
         height: parent.height
         color: "black"
         opacity: 0.5
@@ -507,7 +511,7 @@ Rectangle {
         }
     }
 
-    Controls.Pincode {
+    Mobile.Pincode {
         id: myPincode
         z: 100
         anchors.top: parent.top

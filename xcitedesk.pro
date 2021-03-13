@@ -54,54 +54,53 @@ include(frontend/support/SortFilterProxyModel/SortFilterProxyModel.pri)
 
 INCLUDEPATH += $$PWD/3rdparty
 INCLUDEPATH += $$PWD/3rdparty/include
-INCLUDEPATH += $$PWD/dependencies/include/qamqp/include
 
 SOURCES += main/main.cpp \
-	    backend/support/ttt.cpp \
 	    backend/xchat/xchat.cpp \
 	    backend/xchat/xchataiml.cpp \
 	    backend/staticnet/staticnet.cpp \
-	    backend/xgames/XGames.cpp \
-            backend/xutility/BrokerConnection.cpp \
 	    backend/xutility/xutility.cpp \
 	    backend/xutility/crypto/ctools.cpp \
 	    backend/xutility/transaction/transaction.cpp \
+            backend/p2p/p2p.cpp \
             backend/xchat/xchatconversationmodel.cpp \
             backend/XCITE/nodes/nodetransaction.cpp \
+            backend/testnet/testnet.cpp \
+            backend/testnet/transactionmodel.cpp \
             backend/addressbook/addressbookmodel.cpp \
             backend/support/ClipboardProxy.cpp \
             backend/support/globaleventfilter.cpp \
+            backend/testnet/xchattestnetclient.cpp \
             backend/integrations/MarketValue.cpp \
             backend/integrations/Explorer.cpp \
             backend/support/ReleaseChecker.cpp \
             backend/support/FileDownloader.cpp \
             backend/support/Settings.cpp \
             backend/support/qaesencryption.cpp \
-            backend/integrations/xutility_integration.cpp \
-            backend/integrations/staticnet_integration.cpp \
-            backend/support/DownloadManager.cpp
-
+    backend/integrations/xutility_integration.cpp \
+    backend/integrations/staticnet_integration.cpp
 
 RESOURCES += resources/resources.qrc
 RESOURCES += frontend/frontend.qrc
 
 HEADERS  += backend/xchat/xchat.hpp \
-            backend/support/ttt.h \
-            backend/xchat/xchataiml.hpp \
-            backend/xgames/XGames.hpp \
-            backend/xutility/BrokerConnection.h \
-            backend/xutility/crypto/allocators.h \
-            backend/xutility/crypto/ctools.h \
-            backend/xutility/crypto/numbers.h \
-            backend/xutility/transaction/transaction.h \
-            backend/xutility/transaction/serialize.h \
+	    backend/xchat/xchataiml.hpp \
+	    backend/xutility/crypto/allocators.h \
+	    backend/xutility/crypto/ctools.h \
+	    backend/xutility/crypto/numbers.h \
+	    backend/xutility/transaction/transaction.h \
+	    backend/xutility/transaction/serialize.h \
+            backend/p2p/p2p.hpp \
             backend/xchat/xchatconversationmodel.hpp \
             backend/XCITE/nodes/nodetransaction.h \
 	    backend/staticnet/staticnet.hpp \
 	    backend/xutility/xutility.hpp \
+            backend/testnet/testnet.hpp \
+            backend/testnet/transactionmodel.hpp \
             backend/addressbook/addressbookmodel.hpp \
             backend/support/ClipboardProxy.hpp \
             backend/support/globaleventfilter.hpp \
+            backend/testnet/xchattestnetclient.hpp \
             backend/integrations/MarketValue.hpp \
             backend/support/ReleaseChecker.hpp \
             backend/support/FileDownloader.hpp \
@@ -109,10 +108,8 @@ HEADERS  += backend/xchat/xchat.hpp \
             backend/integrations/MarketValue.hpp \
             backend/integrations/Explorer.hpp \
             backend/support/qaesencryption.h \
-            backend/integrations/xutility_integration.hpp \
-            backend/integrations/staticnet_integration.hpp \
-            backend/support/DownloadManager.hpp \
-            backend/support/URLObject.hpp
+    backend/integrations/xutility_integration.hpp \
+    backend/integrations/staticnet_integration.hpp
 
 DISTFILES += \
     xcite.ico \
@@ -159,7 +156,6 @@ linux:!android {
   LIBS += -lboost_system
   LIBS += -lPocoFoundation -lPocoUtil -lPocoNet
   LIBS += -lamqpcpp 
-  LIBS += -L$$PWD/dependencies/linux/qamqp/ -lqamqp
 }
 
 android {

@@ -1,4 +1,4 @@
-/**
+ /**
  * Filename: MarketValue.cpp
  *
  * XCITE is a secure platform utilizing the XTRABYTES Proof of Signature

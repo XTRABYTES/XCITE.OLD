@@ -21,13 +21,21 @@ import "qrc:/Controls/+mobile" as Mobile
 
 Rectangle {
     id: walletModal
-    width: Screen.width
+    width: appWidth
+    height: appHeight
     state: walletDetailTracker == 0 ? "down" : "up"
-    height: Screen.height
     color: bgcolor
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 50
+
+    property int myTracker: walletDetailTracker
+
+    onMyTrackerChanged: {
+        if (myTracker == 0) {
+            timer.start()
+        }
+    }
 
     LinearGradient {
         anchors.fill: parent
@@ -47,7 +55,7 @@ Rectangle {
         },
         State {
             name: "down"
-            PropertyChanges { target: walletModal; anchors.topMargin: Screen.height}
+            PropertyChanges { target: walletModal; anchors.topMargin: walletModal.height}
         }
     ]
 
@@ -71,14 +79,11 @@ Rectangle {
     property bool oldRemove
     property int editSaved: 0
     property int editFailed: 0
-    property bool editingWallet: false
-    property bool deletingWallet: false
     property int deleteConfirmed: 0
     property int deleteFailed: 0
     property int deleteErrorNr: 0
     property int deleteSuccess: 0
     property bool walletDeleted: false
-    property int deleteWalletTracker: 0
     property int labelExists: 0
     property bool newInclude
     property bool walletEdited
@@ -436,7 +441,6 @@ Rectangle {
                 onSaveSucceeded: {
                     if (walletDetailTracker == 1 && editingWallet == true) {
                         editSaved = 1
-                        editingWallet = false
                         sumBalance()
                     }
                 }
@@ -449,14 +453,34 @@ Rectangle {
                             editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                             newInclude = oldInclude
                             editFailed = 1
-                            editingWallet = false
                         }
                         else if (userSettings.localKeys === true && walletEdited == true) {
                             editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                             newInclude = oldInclude
                             editFailed = 1
                             saveErrorNr = 1
-                            editingWallet = false
+                            walletEdited = false
+                            sumBalance()
+                        }
+
+                    }
+                }
+
+                onNoInternet: {
+                    if (walletDetailTracker == 1 && editingWallet == true) {
+                        networkError = 1
+                        if (userSettings.localKeys === false) {
+                            walletList.setProperty(walletIndex, "label", oldLabel);
+                            walletList.setProperty(walletIndex, "include", oldInclude);
+                            editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
+                            newInclude = oldInclude
+                            editFailed = 1
+                        }
+                        else if (userSettings.localKeys === true && walletEdited == true) {
+                            editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
+                            newInclude = oldInclude
+                            editFailed = 1
+                            saveErrorNr = 1
                             walletEdited = false
                             sumBalance()
                         }
@@ -477,7 +501,6 @@ Rectangle {
                         editWalletInAddreslist(coinName.text, walletList.get(walletIndex).address, oldLabel, oldRemove)
                         editFailed = 1
                         saveErrorNr = 0
-                        editingWallet = false
                     }
                 }
 
@@ -590,7 +613,7 @@ Rectangle {
         }
 
         // Save failed state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: createWalletFailed
             modalHeight: saveFailed.height + saveFailedLabel.height + closeFail.height + 85
             visible: editFailed == 1
@@ -653,12 +676,14 @@ Rectangle {
 
                     onClicked: {
                         if (saveErrorNR == 1) {
+                            newLabel.text = ""
                             saveErrorNR = 0
                             walletEdited = true
                             walletDetailTracker = 0;
                         }
                         editFailed = 0
                         failError = ""
+                        editingWallet = false
                     }
                 }
             }
@@ -686,7 +711,7 @@ Rectangle {
         }
 
         // Save succes state
-        Controls.ReplyModal {
+        Mobile.ReplyModal {
             id: editWalletSucces
             modalHeight: saveSuccess.height + saveSuccessLabel.height + closeSave.height + 75
             visible: editSaved == 1
@@ -739,6 +764,7 @@ Rectangle {
                         addWalletTracker = 0;
                         editSaved = 0;
                         createWalletTracker = 0
+                        editingWallet = false
                     }
                 }
             }
@@ -767,7 +793,7 @@ Rectangle {
     }
 
     // Delete confirm state
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: deleteConfirmation
         modalHeight: deleteText.height + deleteWalletName.height + deleteWalletHash.height + deleteWarning.height + confirmationDeleteButton.height + 99
         visible: deleteWalletTracker == 1
@@ -904,6 +930,24 @@ Rectangle {
                     }
                 }
 
+                onNoInternet: {
+                    if (deleteWalletTracker == 1 && deletingWallet == true) {
+                        networkError = 1
+                        if (userSettings.localKeys === false) {
+                            walletList.setProperty(walletIndex, "remove", false)
+                            editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
+                            deleteFailed = 1
+                            coinListTracker = 0
+                        }
+                        else if (usersettings.localKeys === true && walletDeleted == true) {
+                            editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
+                            deleteFailed = 1
+                            deleteErrorNr = 1
+                            walletDeleted = false
+                        }
+                    }
+                }
+
                 onSaveFileSucceeded: {
                     if (deleteWalletTracker == 1 && userSettings.localKeys === true && deletingWallet == true) {
                         walletDeleted = true
@@ -916,7 +960,6 @@ Rectangle {
                         editWalletInAddreslist(coinName.text, addressHash.text, oldLabel, false)
                         deleteFailed = 1
                         deleteErrorNr = 0
-                        deletingWallet = false
                     }
                 }
 
@@ -1042,7 +1085,7 @@ Rectangle {
     }
 
     // Delete failed state
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: deleteAddresFailed
         modalHeight: failedIcon.height + deleteFailedLabel.height + deleteFailedError.height + closeDeleteFail.height + 85
         visible: deleteFailed == 1
@@ -1104,6 +1147,7 @@ Rectangle {
 
                 onClicked: {
                     if (deleteErrorNr == 1) {
+                        newLabel.text = ""
                         deleteErrorNr = 0
                         walletDeleted = true
                         walletDetailTracker = 0;
@@ -1111,6 +1155,7 @@ Rectangle {
                     deleteFailed = 0
                     deleteWalletTracker = 0
                     failError = ""
+                    deletingAddress = false
                 }
             }
         }
@@ -1138,9 +1183,9 @@ Rectangle {
     }
 
     // Delete success state
-    Controls.ReplyModal {
+    Mobile.ReplyModal {
         id: deleted
-        modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 75
+        modalHeight: deleteSuccess.height + deleteSuccessLabel.height + closeDelete.height + 100
         visible: deleteConfirmed == 1
 
         Image {
@@ -1191,6 +1236,7 @@ Rectangle {
                         newLabel.text = ""
                         deleteWalletTracker = 0
                         deleteConfirmed = 0
+                        deletingAddress = false
                     }
                 }
 
@@ -1241,7 +1287,7 @@ Rectangle {
 
     Item {
         z: 3
-        width: Screen.width
+        width: parent.width
         height: myOS === "android"? 125 : 145
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -1263,7 +1309,7 @@ Rectangle {
         z: 10
         text: "BACK"
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: myOS === "android"? 50 : 70
+        anchors.bottomMargin: myOS === "android"? 50 : (isIphoneX()? 90 : 70)
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 14
         font.family: "Brandon Grotesque"
@@ -1289,6 +1335,7 @@ Rectangle {
                 running: false
 
                 onTriggered: {
+                    newLabel.text = ""
                     walletIndex = 0
                     sumBalance()
                     sumXBY()
@@ -1304,7 +1351,6 @@ Rectangle {
 
             onReleased: {
                 walletDetailTracker = 0;
-                timer.start()
             }
         }
     }

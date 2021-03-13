@@ -28,11 +28,11 @@ TextField {
     id: textInputComponent
     color: "white"
     font.family: xciteMobile.name //"Brandon Grotesque"
-    font.pixelSize: 26
-    leftPadding: calculator == 1? 42 : 18
+    font.pixelSize: height/2
+    leftPadding: calculator == 1? height : height/2
     rightPadding: textboxHeight
-    topPadding: 6
-    bottomPadding: 4
+    topPadding: font.pixelSize/4
+    bottomPadding: font.pixelSize/6
     verticalAlignment: Text.AlignVCenter
     selectByMouse: true
     inputMethodHints: Qt.ImhFormattedNumbersOnly
@@ -75,10 +75,10 @@ TextField {
     Image {
         id: deleteInput
         source: darktheme == true? 'qrc:/icons/mobile/delete-icon_01_light.svg' : 'qrc:/icons/mobile/delete-icon_01_dark.svg'
-        height: 12
-        width: 12
+        height: parent.height/3
+        fillMode: Image.PreserveAspectFit
         anchors.right: textInputComponent.right
-        anchors.rightMargin: 11
+        anchors.rightMargin: height
         anchors.verticalCenter: textInputComponent.verticalCenter
         visible: textInputComponent.text != ""
 
@@ -96,10 +96,10 @@ TextField {
     Image {
         id: amountCalculator
         source: darktheme == true? 'qrc:/icons/mobile/conversion-icon_01_light.svg' : 'qrc:/icons/mobile/conversion-icon_01_dark.svg'
-        height: 16
-        width: 20
+        width: parent.height/2
+        fillMode: Image.PreserveAspectFit
         anchors.left: textInputComponent.left
-        anchors.leftMargin: 11
+        anchors.leftMargin: parent.height/3
         anchors.verticalCenter: textInputComponent.verticalCenter
         visible: calculator == 1
 
