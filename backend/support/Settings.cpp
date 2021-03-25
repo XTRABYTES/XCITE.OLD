@@ -20,14 +20,11 @@
 #include <openssl/err.h>
 #include <cstdint>
 #include <cstring>
-#include <chrono>
-#include <thread>
 #include <tuple>
 #include <QMessageBox>
 #include <QNetworkAccessManager>
 #include "DownloadManager.hpp"
 #include "../xchat/xchat.hpp"
-#include "../xutility/BrokerConnection.h"
 
 #ifdef Q_OS_ANDROID //added to get write permission for Android
 #include <QtAndroid>
@@ -610,10 +607,9 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
                 return;
             }
 
-            connect(&broker, SIGNAL(replyQueueReady()), this, SLOT(sendHello()));
-
             broker.me = m_username;
-            broker.connectQueue("xcite");
+            broker.connectExchange("xchats");
+            broker.connectExchange("xgames");
 
         }else{
             emit loginFailedChanged();
@@ -627,13 +623,6 @@ void Settings::loginFile(QString username, QString password, QString fileLocatio
     }
 }
 
-void Settings::sendHello() {
-    if (!broker.sendHello) {
-
-        broker.sendXChatAllMessage("fedcore_exchange",m_username + " reporting for duty!");
-        broker.sendHello = true;
-    }
-}
 
 void Settings::changePassword(QString oldPassword, QString newPassword){
     if (checkInternet("http://37.59.57.212:8080")) {

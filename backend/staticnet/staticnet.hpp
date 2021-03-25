@@ -54,28 +54,6 @@ private:
 
 };
 
-class ProcessReplyWorker : public QObject {
-    Q_OBJECT
-
-public:
-    ProcessReplyWorker(const QJsonArray *params);
-    ~ProcessReplyWorker();
-
-public slots:
-
-signals:
-
-public Q_SLOTS:
-    void processReply(QString msg, const QJsonArray *params);
-
-private:
-    QString msg;
-    QString target_addr;
-    QString send_amount;
-    QString priv_key;
-
-};
-
 class SendcoinWorker : public QObject {
     Q_OBJECT
 
@@ -95,11 +73,11 @@ signals:
 
 
 public Q_SLOTS:
-    //void unspent_request(const QJsonArray *params);
+    void unspent_request(const QJsonArray *params);
     void unspent_onResponse(QString id, QString utxo, QString target, QString amount, QString privkey, QStringList usedUtxo);
     void calculate_fee(const QString inputs, const QString outputs);
-    //void txbroadcast_request(const QJsonArray *params);
-    //void txbroadcast_onResponse(QJsonArray params, QJsonObject );
+    void txbroadcast_request(const QJsonArray *params);
+    void txbroadcast_onResponse(QJsonArray params, QJsonObject );
 
 
 private:
@@ -138,9 +116,8 @@ public Q_SLOTS:
     void request(const QJsonArray *params);
     void srequest(const QJsonArray *params);
     void onResponse(QJsonArray params, QJsonObject );
-    //void sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params);
-    void sendToDicom(QByteArray docByteArray, QString msgID, const QJsonArray *params);
-    //void processReply(QString reply, const QJsonArray *params);
+    void sendToDicom(QByteArray docByteArray, QString queueName, const QJsonArray *params);
+    void processReply(QString reply, const QJsonArray *params);
     int errorString(QString errorstr);
     QString selectNode();
 
@@ -168,7 +145,6 @@ public:
     void Initialize();
     bool CheckUserInputForKeyWord(const QString msg, int *traceID);
 
-
     QString GetConnectStr() {
         return ConnectStr;
     };
@@ -182,7 +158,6 @@ public:
 public slots:
     void errorString(const QString error);
     //void staticPopup(QString auth, QString msg);
-    void replyFromNetwork(QString msg);
     void onResponseFromStaticnet(QJsonObject response) {
         qDebug() << "staticnet response recevied";       
     }
