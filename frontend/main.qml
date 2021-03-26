@@ -225,7 +225,7 @@ ApplicationWindow {
     property real percentageETH
 
     // Global theme settings, non-editable
-    property string versionNR: (myOS == "android" || myOS == "ios")? "1.2.4" : "0.1.1"
+    property string versionNR: (myOS == "android" || myOS == "ios")? "1.2.5" : "0.1.1"
     property color maincolor: "#0ED8D2"
     property color themecolor: darktheme == true? "#F2F2F2" : "#2A2C31"
     property color bgcolor: darktheme == true? "#14161B" : "#FDFDFD"
